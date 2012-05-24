@@ -1,0 +1,48 @@
+﻿namespace MicroLite
+{
+    using System;
+
+    /// <summary>
+    /// An attribute which can be applied to a class to specify the table name and database schema the table
+    /// exists within.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    public sealed class TableAttribute : Attribute
+    {
+        private readonly string name;
+        private readonly string schema;
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="TableAttribute"/> class.
+        /// </summary>
+        /// <param name="schema">The database schema the table exists within (e.g. 'dbo').</param>
+        /// <param name="name">The name of the table.</param>
+        public TableAttribute(string schema, string name)
+        {
+            this.name = name;
+            this.schema = schema;
+        }
+
+        /// <summary>
+        /// Gets the name of the table.
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return this.name;
+            }
+        }
+
+        /// <summary>
+        /// Gets the schema the table exists within.
+        /// </summary>
+        public string Schema
+        {
+            get
+            {
+                return this.schema;
+            }
+        }
+    }
+}
