@@ -52,7 +52,9 @@
     <Compile Include="IdentifierAttributeTests.cs" />
     <Compile Include="Logging\LogExtensionsTests.cs" />
     <Compile Include="Logging\LogManagerTests.cs" />
+    <Compile Include="PagedResultTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlQueryTests.cs" />
     <Compile Include="TableAttributeTests.cs" />
   </ItemGroup>
   <ItemGroup>
