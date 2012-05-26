@@ -61,6 +61,42 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No connection was found in the app.config with the name {0}.
+        /// </summary>
+        internal static string Configure_ConnectionNotFound {
+            get {
+                return ResourceManager.GetString("Configure_ConnectionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating a session factory for connection [{0}].
+        /// </summary>
+        internal static string Configure_CreatingSessionFactory {
+            get {
+                return ResourceManager.GetString("Configure_CreatingSessionFactory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The provider {0} is currently not supported by the MicroLite framework.
+        /// </summary>
+        internal static string Configure_ProviderNotSupported {
+            get {
+                return ResourceManager.GetString("Configure_ProviderNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading connection named {0} from app.config.
+        /// </summary>
+        internal static string Configure_ReadingConnection {
+            get {
+                return ResourceManager.GetString("Configure_ReadingConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type {0} has no property named &apos;Id&apos;, &apos;{0}Id&apos; or a property with an IdentifierAttribute specified..
         /// </summary>
         internal static string NoIdentifierFoundForType {

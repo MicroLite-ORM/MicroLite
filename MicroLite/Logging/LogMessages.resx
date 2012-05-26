@@ -117,6 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Configure_ConnectionNotFound" xml:space="preserve">
+    <value>No connection was found in the app.config with the name {0}</value>
+  </data>
+  <data name="Configure_CreatingSessionFactory" xml:space="preserve">
+    <value>Creating a session factory for connection [{0}]</value>
+  </data>
+  <data name="Configure_ProviderNotSupported" xml:space="preserve">
+    <value>The provider {0} is currently not supported by the MicroLite framework</value>
+  </data>
+  <data name="Configure_ReadingConnection" xml:space="preserve">
+    <value>Reading connection named {0} from app.config</value>
+  </data>
   <data name="NoIdentifierFoundForType" xml:space="preserve">
     <value>The type {0} has no property named 'Id', '{0}Id' or a property with an IdentifierAttribute specified.</value>
   </data>

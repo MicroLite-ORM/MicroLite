@@ -50,12 +50,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColumnAttribute.cs" />
+    <Compile Include="Configuration\Configure.cs" />
     <Compile Include="Configuration\IConfigureConnection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Configuration\ICreateSessionFactory.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Configuration\Options.cs" />
     <Compile Include="Core\ConnectionManager.cs" />
     <Compile Include="Core\EnumerableExtensions.cs">
       <SubType>Code</SubType>
