@@ -55,6 +55,7 @@
     <Compile Include="Core\ObjectInfoTests.cs" />
     <Compile Include="Core\SqlQueryBuilderTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
+    <Compile Include="ExtensionManagerTests.cs" />
     <Compile Include="IdentifierAttributeTests.cs" />
     <Compile Include="Logging\LogExtensionsTests.cs" />
     <Compile Include="Logging\LogManagerTests.cs" />

@@ -76,6 +76,7 @@
     <Compile Include="Core\StringExtensions.cs" />
     <Compile Include="Core\TableInfo.cs" />
     <Compile Include="Core\Transaction.cs" />
+    <Compile Include="ExtensionManager.cs" />
     <Compile Include="IAdvancedSession.cs" />
     <Compile Include="IdentifierAttribute.cs" />
     <Compile Include="IdentifierStrategy.cs" />
