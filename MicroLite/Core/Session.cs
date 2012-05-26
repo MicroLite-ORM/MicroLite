@@ -203,7 +203,37 @@
             return new PagedResult<T>(page, results);
         }
 
-        public IEnumerable<T> Query<T>(SqlQuery sqlQuery) where T : class, new()
+        public T Single<T>(ValueType identifier) where T : class, new()
+        {
+            this.ThrowIfDisposed();
+
+            if (identifier == null)
+            {
+                throw new ArgumentNullException("identifier");
+            }
+
+            var sqlQuery = this.queryBuilder.SelectQuery(typeof(T), identifier);
+
+            return this.Query<T>(sqlQuery).SingleOrDefault();
+        }
+
+        public void Update<T>(T instance) where T : class, new()
+        {
+            this.ThrowIfDisposed();
+
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            this.Listeners.Each(l => l.BeforeUpdate(instance));
+
+            var sqlQuery = this.queryBuilder.UpdateQuery(instance);
+
+            this.Execute(sqlQuery);
+        }
+
+        internal IEnumerable<T> Query<T>(SqlQuery sqlQuery) where T : class, new()
         {
             this.ThrowIfDisposed();
 
@@ -241,36 +271,6 @@
                 log.TryLogDebug(LogMessages.Session_ClosingConnection, this.id.ToString());
                 command.Connection.Close();
             }
-        }
-
-        public T Single<T>(ValueType identifier) where T : class, new()
-        {
-            this.ThrowIfDisposed();
-
-            if (identifier == null)
-            {
-                throw new ArgumentNullException("identifier");
-            }
-
-            var sqlQuery = this.queryBuilder.SelectQuery(typeof(T), identifier);
-
-            return this.Query<T>(sqlQuery).SingleOrDefault();
-        }
-
-        public void Update<T>(T instance) where T : class, new()
-        {
-            this.ThrowIfDisposed();
-
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            this.Listeners.Each(l => l.BeforeUpdate(instance));
-
-            var sqlQuery = this.queryBuilder.UpdateQuery(instance);
-
-            this.Execute(sqlQuery);
         }
 
         private void ThrowIfDisposed()
