@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests
 {
-    using System.Collections.ObjectModel;
     using NUnit.Framework;
 
     /// <summary>
