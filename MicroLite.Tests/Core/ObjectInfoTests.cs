@@ -190,7 +190,7 @@
         {
             var objectInfo = ObjectInfo.For(typeof(PocoCustomer1));
 
-            Assert.AreEqual("Id", objectInfo.TableInfo.IdentifierColumn);
+            Assert.AreEqual("CustomerId", objectInfo.TableInfo.IdentifierColumn);
             Assert.AreEqual(IdentifierStrategy.DbGenerated, objectInfo.TableInfo.IdentifierStrategy);
         }
 
@@ -303,6 +303,7 @@
         /// </summary>
         private class PocoCustomer1
         {
+            [MicroLite.Column("CustomerId")]
             public int Id
             {
                 get;

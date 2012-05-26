@@ -155,7 +155,7 @@
                         }
                         else if (property.Name.Equals("Id") || property.Name.Equals(this.ForType.Name + "Id"))
                         {
-                            this.TableInfo.IdentifierColumn = property.Name;
+                            this.TableInfo.IdentifierColumn = columnName;
                             this.TableInfo.IdentifierStrategy = IdentifierStrategy.DbGenerated;
                             this.DefaultIdentiferValue = (ValueType)Activator.CreateInstance(property.PropertyType);
                         }
