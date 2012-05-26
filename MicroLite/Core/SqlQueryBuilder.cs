@@ -162,13 +162,13 @@
 
         private StringBuilder CreateSql(StatementType statementType, ObjectInfo objectInfo)
         {
-            var sqlBuilder = new StringBuilder(statementType.ToString().ToUpperInvariant());
+            var sqlBuilder = new StringBuilder();
 
             switch (statementType)
             {
                 case StatementType.Delete:
                     sqlBuilder.AppendFormat(
-                        " FROM [{0}].[{1}]",
+                        "DELETE FROM [{0}].[{1}]",
                         !string.IsNullOrEmpty(objectInfo.TableInfo.Schema) ? objectInfo.TableInfo.Schema : this.defaultTableSchema,
                         objectInfo.TableInfo.Name);
 
@@ -176,7 +176,7 @@
 
                 case StatementType.Insert:
                     sqlBuilder.AppendFormat(
-                        " INTO [{0}].[{1}] (",
+                        "INSERT INTO [{0}].[{1}] (",
                         !string.IsNullOrEmpty(objectInfo.TableInfo.Schema) ? objectInfo.TableInfo.Schema : this.defaultTableSchema,
                         objectInfo.TableInfo.Name);
 
@@ -194,6 +194,8 @@
                     break;
 
                 case StatementType.Select:
+                    sqlBuilder.Append("SELECT");
+
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
                         sqlBuilder.AppendFormat(" [{0}].[{1}],", objectInfo.TableInfo.Name, column);
@@ -210,7 +212,7 @@
 
                 case StatementType.Update:
                     sqlBuilder.AppendFormat(
-                        " [{0}].[{1}] SET",
+                        "UPDATE [{0}].[{1}] SET",
                         !string.IsNullOrEmpty(objectInfo.TableInfo.Schema) ? objectInfo.TableInfo.Schema : this.defaultTableSchema,
                         objectInfo.TableInfo.Name);
 
