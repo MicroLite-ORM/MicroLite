@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="NoIdentifierFoundForType" xml:space="preserve">
+    <value>The type {0} has no property named 'Id', '{0}Id' or a property with an IdentifierAttribute specified.</value>
+  </data>
+  <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
+    <value>Creating ObjectInfo for {0}</value>
+  </data>
+  <data name="ObjectInfo_RetrievingObjectInfo" xml:space="preserve">
+    <value>Retrieving ObjectInfo for {0}</value>
+  </data>
   <data name="Transaction_Committing" xml:space="preserve">
     <value>Transaction {0} committing changes</value>
   </data>
@@ -134,5 +143,14 @@
   </data>
   <data name="Transaction_RollingBack" xml:space="preserve">
     <value>Transaction {0} rolling back changes</value>
+  </data>
+  <data name="TypeMustBeClass" xml:space="preserve">
+    <value>The type {0} is not a class and therefore cannot be used by the MicroLite ORM Framework</value>
+  </data>
+  <data name="TypeMustHaveDefaultConstructor" xml:space="preserve">
+    <value>The type {0} has no default (zero parameter) constructor and therefore cannot be used by the MicroLite ORM Framework</value>
+  </data>
+  <data name="TypeMustNotBeAbstract" xml:space="preserve">
+    <value>The type {0} is abstract and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>
 </root>

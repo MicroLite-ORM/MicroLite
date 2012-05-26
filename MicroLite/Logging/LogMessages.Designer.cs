@@ -61,6 +61,33 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The type {0} has no property named &apos;Id&apos;, &apos;{0}Id&apos; or a property with an IdentifierAttribute specified..
+        /// </summary>
+        internal static string NoIdentifierFoundForType {
+            get {
+                return ResourceManager.GetString("NoIdentifierFoundForType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating ObjectInfo for {0}.
+        /// </summary>
+        internal static string ObjectInfo_CreatingObjectInfo {
+            get {
+                return ResourceManager.GetString("ObjectInfo_CreatingObjectInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving ObjectInfo for {0}.
+        /// </summary>
+        internal static string ObjectInfo_RetrievingObjectInfo {
+            get {
+                return ResourceManager.GetString("ObjectInfo_RetrievingObjectInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction {0} committing changes.
         /// </summary>
         internal static string Transaction_Committing {
@@ -111,6 +138,33 @@ namespace MicroLite.Logging {
         internal static string Transaction_RollingBack {
             get {
                 return ResourceManager.GetString("Transaction_RollingBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type {0} is not a class and therefore cannot be used by the MicroLite ORM Framework.
+        /// </summary>
+        internal static string TypeMustBeClass {
+            get {
+                return ResourceManager.GetString("TypeMustBeClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type {0} has no default (zero parameter) constructor and therefore cannot be used by the MicroLite ORM Framework.
+        /// </summary>
+        internal static string TypeMustHaveDefaultConstructor {
+            get {
+                return ResourceManager.GetString("TypeMustHaveDefaultConstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type {0} is abstract and therefore cannot be used by the MicroLite ORM Framework.
+        /// </summary>
+        internal static string TypeMustNotBeAbstract {
+            get {
+                return ResourceManager.GetString("TypeMustNotBeAbstract", resourceCulture);
             }
         }
     }
