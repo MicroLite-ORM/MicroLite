@@ -115,6 +115,42 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Session {0} closing database connection.
+        /// </summary>
+        internal static string Session_ClosingConnection {
+            get {
+                return ResourceManager.GetString("Session_ClosingConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Session {0} created.
+        /// </summary>
+        internal static string Session_Created {
+            get {
+                return ResourceManager.GetString("Session_Created", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Session {0} disposed.
+        /// </summary>
+        internal static string Session_Disposed {
+            get {
+                return ResourceManager.GetString("Session_Disposed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Session {0} opening database connection.
+        /// </summary>
+        internal static string Session_OpeningConnection {
+            get {
+                return ResourceManager.GetString("Session_OpeningConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction {0} committing changes.
         /// </summary>
         internal static string Transaction_Committing {

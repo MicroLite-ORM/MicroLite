@@ -9,8 +9,19 @@
     /// </summary>
     internal static class ExtensionManager
     {
-        private static readonly IList<Type> listenerTypes = new List<Type>();
         private static readonly IList<Func<IListener>> listenerFactories = new List<Func<IListener>>();
+        private static readonly IList<Type> listenerTypes = new List<Type>();
+
+        internal static void ClearListeners()
+        {
+            listenerFactories.Clear();
+            listenerTypes.Clear();
+        }
+
+        internal static IEnumerable<IListener> CreateListeners()
+        {
+            return listenerFactories.Select(x => x()).ToArray();
+        }
 
         /// <summary>
         /// Registers the listener.
@@ -24,26 +35,18 @@
 
             if (!listenerTypes.Contains(listenerType))
             {
-                Func<IListener> listenerFactory = () =>
+                RegisterListener(() =>
                 {
                     return new T();
-                };
-
-                listenerFactories.Add(listenerFactory);
+                });
 
                 listenerTypes.Add(listenerType);
             }
         }
 
-        internal static IEnumerable<IListener> CreateListeners()
+        internal static void RegisterListener(Func<IListener> listenerFactory)
         {
-            return listenerFactories.Select(x => x()).ToArray();
-        }
-
-        internal static void ClearListeners()
-        {
-            listenerFactories.Clear();
-            listenerTypes.Clear();
+            listenerFactories.Add(listenerFactory);
         }
     }
 }

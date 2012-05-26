@@ -135,6 +135,18 @@
   <data name="ObjectInfo_RetrievingObjectInfo" xml:space="preserve">
     <value>Retrieving ObjectInfo for {0}</value>
   </data>
+  <data name="Session_ClosingConnection" xml:space="preserve">
+    <value>Session {0} closing database connection</value>
+  </data>
+  <data name="Session_Created" xml:space="preserve">
+    <value>Session {0} created</value>
+  </data>
+  <data name="Session_Disposed" xml:space="preserve">
+    <value>Session {0} disposed</value>
+  </data>
+  <data name="Session_OpeningConnection" xml:space="preserve">
+    <value>Session {0} opening database connection</value>
+  </data>
   <data name="Transaction_Committing" xml:space="preserve">
     <value>Transaction {0} committing changes</value>
   </data>

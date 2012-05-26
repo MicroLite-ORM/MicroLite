@@ -57,6 +57,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\ConnectionManager.cs" />
+    <Compile Include="Core\EnumerableExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Core\IConnectionManager.cs" />
     <Compile Include="Core\IdentityListener.cs">
       <SubType>Code</SubType>
@@ -72,6 +75,9 @@
     <Compile Include="Core\ObjectBuilder.cs" />
     <Compile Include="Core\ObjectInfo.cs" />
     <Compile Include="Core\PropertyInfoExtensions.cs" />
+    <Compile Include="Core\Session.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Core\SqlQueryBuilder.cs" />
     <Compile Include="Core\StringExtensions.cs" />
     <Compile Include="Core\TableInfo.cs" />
