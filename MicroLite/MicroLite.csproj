@@ -78,9 +78,11 @@
     <Compile Include="IdentifierStrategy.cs" />
     <Compile Include="IgnoreAttribute.cs" />
     <Compile Include="IHideObjectMembers.cs" />
+    <Compile Include="IListener.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="ITransaction.cs" />
+    <Compile Include="Listener.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Logging\LogManager.cs" />
