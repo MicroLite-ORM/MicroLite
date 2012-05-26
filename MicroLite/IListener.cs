@@ -1,5 +1,7 @@
 ﻿namespace MicroLite
 {
+    using System;
+
     /// <summary>
     /// The interface which exposes hooks into the processing of an object by the MicroLite ORM framework.
     /// </summary>
@@ -22,9 +24,10 @@
         /// <summary>
         /// Invoked before the SqlQuery to insert the record into the database is executed.
         /// </summary>
+        /// <param name="forType">The type the query is for.</param>
         /// <param name="sqlQuery">The SqlQuery to be executed.</param>
         /// <remarks>This is called after IListener.BeforeInsert(instance).</remarks>
-        void BeforeInsert(SqlQuery sqlQuery);
+        void BeforeInsert(Type forType, SqlQuery sqlQuery);
 
         /// <summary>
         /// Invoked before the SqlQuery to update the record in the database is created.

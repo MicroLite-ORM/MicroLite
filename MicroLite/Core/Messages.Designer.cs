@@ -61,6 +61,24 @@ namespace MicroLite.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted using the DbGenerated strategy.
+        /// </summary>
+        internal static string IdentifierAlreadySet {
+            get {
+                return ResourceManager.GetString("IdentifierAlreadySet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object does not have an identifier value so it cannot be updated.
+        /// </summary>
+        internal static string IdentifierNotSet {
+            get {
+                return ResourceManager.GetString("IdentifierNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There are {0} parameters in the SQL statement, however only {1} parameter arguments were supplied..
         /// </summary>
         internal static string ParameterCountMismatch {

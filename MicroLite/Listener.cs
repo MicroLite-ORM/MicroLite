@@ -1,5 +1,7 @@
 ﻿namespace MicroLite
 {
+    using System;
+
     /// <summary>
     /// Empty implementation of IListener.
     /// </summary>
@@ -29,8 +31,9 @@
         /// <summary>
         /// Invoked before the SqlQuery to insert the record into the database is executed.
         /// </summary>
+        /// <param name="forType">The type the query is for.</param>
         /// <param name="sqlQuery">The SqlQuery to be executed.</param>
-        public virtual void BeforeInsert(SqlQuery sqlQuery)
+        public virtual void BeforeInsert(Type forType, SqlQuery sqlQuery)
         {
         }
 

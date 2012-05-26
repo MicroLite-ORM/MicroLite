@@ -46,7 +46,7 @@
 
             var sqlQuery = queryBuilder.InsertQuery<Customer>(customer);
 
-            Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Customers].[DoB], [Customers].[Name], [Customers].[StatusId]) VALUES (@p0, @p1, @p2);SELECT SCOPE_IDENTITY()", sqlQuery.CommandText);
+            Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Customers].[DoB], [Customers].[Name], [Customers].[StatusId]) VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
             Assert.AreEqual(customer.DateOfBirth, sqlQuery.Parameters[0]);
             Assert.AreEqual(customer.Name, sqlQuery.Parameters[1]);
             Assert.AreEqual((int)customer.Status, sqlQuery.Parameters[2]);

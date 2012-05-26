@@ -66,7 +66,7 @@
             }
 
             sqlBuilder.Remove(sqlBuilder.Length - 2, 2);
-            sqlBuilder.Append(");SELECT SCOPE_IDENTITY()"); // todo: Move this to DbAssignedListener.
+            sqlBuilder.Append(")");
 
             return new SqlQuery(sqlBuilder.ToString(), values.ToArray());
         }

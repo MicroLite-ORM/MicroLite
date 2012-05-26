@@ -58,6 +58,9 @@
     </Compile>
     <Compile Include="Core\ConnectionManager.cs" />
     <Compile Include="Core\IConnectionManager.cs" />
+    <Compile Include="Core\IdentityListener.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Core\IObjectBuilder.cs" />
     <Compile Include="Core\ISqlQueryBuilder.cs" />
     <Compile Include="Core\MemberInfoExtensions.cs" />

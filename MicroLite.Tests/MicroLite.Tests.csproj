@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="ColumnAttributeTests.cs" />
     <Compile Include="Core\ConnectionManagerTests.cs" />
+    <Compile Include="Core\IdentityListenerTests.cs" />
     <Compile Include="Core\ObjectBuilderTests.cs" />
     <Compile Include="Core\ObjectInfoTests.cs" />
     <Compile Include="Core\SqlQueryBuilderTests.cs" />
