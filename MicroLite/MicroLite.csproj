@@ -59,6 +59,7 @@
     <Compile Include="Core\ConnectionManager.cs" />
     <Compile Include="Core\IConnectionManager.cs" />
     <Compile Include="Core\IObjectBuilder.cs" />
+    <Compile Include="Core\ISqlQueryBuilder.cs" />
     <Compile Include="Core\MemberInfoExtensions.cs" />
     <Compile Include="Core\Messages.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -68,6 +69,7 @@
     <Compile Include="Core\ObjectBuilder.cs" />
     <Compile Include="Core\ObjectInfo.cs" />
     <Compile Include="Core\PropertyInfoExtensions.cs" />
+    <Compile Include="Core\SqlQueryBuilder.cs" />
     <Compile Include="Core\StringExtensions.cs" />
     <Compile Include="Core\TableInfo.cs" />
     <Compile Include="Core\Transaction.cs" />
