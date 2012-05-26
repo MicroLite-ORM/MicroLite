@@ -56,6 +56,14 @@
     <Compile Include="Configuration\ICreateSessionFactory.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\ConnectionManager.cs" />
+    <Compile Include="Core\IConnectionManager.cs" />
+    <Compile Include="Core\Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\StringExtensions.cs" />
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="IAdvancedSession.cs" />
     <Compile Include="IdentifierAttribute.cs" />
@@ -90,6 +98,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Core\Messages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Logging\LogMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LogMessages.Designer.cs</LastGenOutput>
