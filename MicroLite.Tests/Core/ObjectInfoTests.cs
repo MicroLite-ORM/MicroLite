@@ -1,10 +1,4 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="ObjectInfoTests.cs" company="">
-// TODO: Update copyright text.
-// </copyright>
-// -----------------------------------------------------------------------
-
-namespace MicroLite.Tests.Core
+﻿namespace MicroLite.Tests.Core
 {
     using System;
     using System.Linq;

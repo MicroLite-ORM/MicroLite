@@ -58,12 +58,14 @@
     </Compile>
     <Compile Include="Core\ConnectionManager.cs" />
     <Compile Include="Core\IConnectionManager.cs" />
+    <Compile Include="Core\IObjectBuilder.cs" />
     <Compile Include="Core\MemberInfoExtensions.cs" />
     <Compile Include="Core\Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
+    <Compile Include="Core\ObjectBuilder.cs" />
     <Compile Include="Core\ObjectInfo.cs" />
     <Compile Include="Core\PropertyInfoExtensions.cs" />
     <Compile Include="Core\StringExtensions.cs" />

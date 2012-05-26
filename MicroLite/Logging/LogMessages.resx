@@ -120,6 +120,15 @@
   <data name="NoIdentifierFoundForType" xml:space="preserve">
     <value>The type {0} has no property named 'Id', '{0}Id' or a property with an IdentifierAttribute specified.</value>
   </data>
+  <data name="ObjectBuilder_CreatingInstance" xml:space="preserve">
+    <value>Creating a new instance of {0}</value>
+  </data>
+  <data name="ObjectBuilder_SettingPropertyValue" xml:space="preserve">
+    <value>Setting the property value for {0}.{1}</value>
+  </data>
+  <data name="ObjectBuilder_UnknownProperty" xml:space="preserve">
+    <value>The type {0} does not have a mapped property with the name {1}</value>
+  </data>
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
     <value>Creating ObjectInfo for {0}</value>
   </data>

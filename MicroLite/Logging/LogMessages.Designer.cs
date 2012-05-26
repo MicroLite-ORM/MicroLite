@@ -70,6 +70,33 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creating a new instance of {0}.
+        /// </summary>
+        internal static string ObjectBuilder_CreatingInstance {
+            get {
+                return ResourceManager.GetString("ObjectBuilder_CreatingInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting the property value for {0}.{1}.
+        /// </summary>
+        internal static string ObjectBuilder_SettingPropertyValue {
+            get {
+                return ResourceManager.GetString("ObjectBuilder_SettingPropertyValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type {0} does not have a mapped property with the name {1}.
+        /// </summary>
+        internal static string ObjectBuilder_UnknownProperty {
+            get {
+                return ResourceManager.GetString("ObjectBuilder_UnknownProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creating ObjectInfo for {0}.
         /// </summary>
         internal static string ObjectInfo_CreatingObjectInfo {
