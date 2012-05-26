@@ -135,6 +135,9 @@
   <data name="ObjectInfo_RetrievingObjectInfo" xml:space="preserve">
     <value>Retrieving ObjectInfo for {0}</value>
   </data>
+  <data name="SessionFactory_CreatingSession" xml:space="preserve">
+    <value>Creating a new session</value>
+  </data>
   <data name="Session_ClosingConnection" xml:space="preserve">
     <value>Session {0} closing database connection</value>
   </data>

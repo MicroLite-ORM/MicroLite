@@ -78,6 +78,7 @@
     <Compile Include="Core\Session.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\SessionFactory.cs" />
     <Compile Include="Core\SqlQueryBuilder.cs" />
     <Compile Include="Core\StringExtensions.cs" />
     <Compile Include="Core\TableInfo.cs" />

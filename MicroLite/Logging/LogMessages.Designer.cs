@@ -151,6 +151,15 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creating a new session.
+        /// </summary>
+        internal static string SessionFactory_CreatingSession {
+            get {
+                return ResourceManager.GetString("SessionFactory_CreatingSession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction {0} committing changes.
         /// </summary>
         internal static string Transaction_Committing {

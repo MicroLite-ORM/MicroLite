@@ -53,6 +53,7 @@
     <Compile Include="Core\IdentityListenerTests.cs" />
     <Compile Include="Core\ObjectBuilderTests.cs" />
     <Compile Include="Core\ObjectInfoTests.cs" />
+    <Compile Include="Core\SessionFactoryTests.cs" />
     <Compile Include="Core\SessionTests.cs" />
     <Compile Include="Core\SqlQueryBuilderTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
