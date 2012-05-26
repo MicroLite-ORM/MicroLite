@@ -172,6 +172,8 @@
 
             var sqlQuery = this.queryBuilder.InsertQuery(instance);
 
+            this.Listeners.Each(l => l.BeforeInsert(instance.GetType(), sqlQuery));
+
             var identifier = this.ExecuteScalar<object>(sqlQuery);
 
             this.Listeners.Each(l => l.AfterInsert(instance, identifier));

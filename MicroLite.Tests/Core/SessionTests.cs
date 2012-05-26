@@ -304,7 +304,7 @@
         }
 
         [Test]
-        public void InsertBuildsAndExecutesQueryInvokingListenerBeforeInsertAndListenerAfterInsert()
+        public void InsertBuildsAndExecutesQueryInvokingListeners()
         {
             var customer = new Customer();
             var sqlQuery = new SqlQuery("");
@@ -323,6 +323,7 @@
 
             var mockListener = new Mock<IListener>();
             mockListener.Setup(x => x.AfterInsert(customer, identifier));
+            mockListener.Setup(x => x.BeforeInsert(typeof(Customer), sqlQuery));
             mockListener.Setup(x => x.BeforeInsert(customer));
 
             ExtensionManager.RegisterListener(() =>
@@ -706,7 +707,7 @@
         }
 
         [Test]
-        public void UpdateBuildsAndExecutesQuery()
+        public void UpdateBuildsAndExecutesQueryInvokingListeners()
         {
             var customer = new Customer();
             var sqlQuery = new SqlQuery("");
