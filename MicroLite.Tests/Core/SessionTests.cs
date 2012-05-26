@@ -215,6 +215,32 @@
         }
 
         [Test]
+        public void ExecuteScalarThrowsArgumentNullExceptionForNullSqlQuery()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var exception = Assert.Throws<ArgumentNullException>(() => session.ExecuteScalar<object>(null));
+
+            Assert.AreEqual("sqlQuery", exception.ParamName);
+        }
+
+        [Test]
+        public void ExecuteThrowsArgumentNullExceptionForNullSqlQuery()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Execute(null));
+
+            Assert.AreEqual("sqlQuery", exception.ParamName);
+        }
+
+        [Test]
         public void FetchExecutesAndReturnsResults()
         {
             var sqlQuery = new SqlQuery("");

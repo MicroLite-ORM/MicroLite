@@ -85,6 +85,11 @@
 
         public int Execute(SqlQuery sqlQuery)
         {
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
             try
             {
                 int result;
@@ -112,6 +117,11 @@
 
         public T ExecuteScalar<T>(SqlQuery sqlQuery)
         {
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
             try
             {
                 T result;
@@ -260,7 +270,7 @@
 
             var sqlQuery = this.queryBuilder.UpdateQuery(instance);
 
-            var rowsAffected = this.Execute(sqlQuery);
+            this.Execute(sqlQuery);
         }
 
         private void ThrowIfDisposed()
