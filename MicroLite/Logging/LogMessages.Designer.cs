@@ -59,5 +59,59 @@ namespace MicroLite.Logging {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction {0} committing changes.
+        /// </summary>
+        internal static string Transaction_Committing {
+            get {
+                return ResourceManager.GetString("Transaction_Committing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction {0} created.
+        /// </summary>
+        internal static string Transaction_Created {
+            get {
+                return ResourceManager.GetString("Transaction_Created", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction {0} disposed.
+        /// </summary>
+        internal static string Transaction_Disposed {
+            get {
+                return ResourceManager.GetString("Transaction_Disposed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction {0} is being disposed with uncommitted changes.
+        /// </summary>
+        internal static string Transaction_DisposedUncommitted {
+            get {
+                return ResourceManager.GetString("Transaction_DisposedUncommitted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command enlisted in transaction {0}.
+        /// </summary>
+        internal static string Transaction_EnlistingCommand {
+            get {
+                return ResourceManager.GetString("Transaction_EnlistingCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction {0} rolling back changes.
+        /// </summary>
+        internal static string Transaction_RollingBack {
+            get {
+                return ResourceManager.GetString("Transaction_RollingBack", resourceCulture);
+            }
+        }
     }
 }

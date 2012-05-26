@@ -117,4 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Transaction_Committing" xml:space="preserve">
+    <value>Transaction {0} committing changes</value>
+  </data>
+  <data name="Transaction_Created" xml:space="preserve">
+    <value>Transaction {0} created</value>
+  </data>
+  <data name="Transaction_Disposed" xml:space="preserve">
+    <value>Transaction {0} disposed</value>
+  </data>
+  <data name="Transaction_DisposedUncommitted" xml:space="preserve">
+    <value>Transaction {0} is being disposed with uncommitted changes</value>
+  </data>
+  <data name="Transaction_EnlistingCommand" xml:space="preserve">
+    <value>Command enlisted in transaction {0}</value>
+  </data>
+  <data name="Transaction_RollingBack" xml:space="preserve">
+    <value>Transaction {0} rolling back changes</value>
+  </data>
 </root>
