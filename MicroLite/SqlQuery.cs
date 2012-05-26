@@ -2,14 +2,15 @@
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Text;
 
     /// <summary>
     /// A class which represents a parameterised SQL query.
     /// </summary>
     public sealed class SqlQuery
     {
-        private readonly string commandText;
-        private readonly ReadOnlyCollection<object> parameters;
+        private readonly StringBuilder innerSql;
+        private readonly List<object> parameters;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlQuery"/> class with the supplied command text and parameter values.
@@ -18,8 +19,8 @@
         /// <param name="parameters">The parameter values for the query.</param>
         public SqlQuery(string commandText, params object[] parameters)
         {
-            this.commandText = commandText;
-            this.parameters = new ReadOnlyCollection<object>(parameters ?? new object[0]);
+            this.innerSql = new StringBuilder(commandText);
+            this.parameters = new List<object>(parameters ?? new object[0]);
         }
 
         /// <summary>
@@ -29,7 +30,7 @@
         {
             get
             {
-                return this.commandText;
+                return this.innerSql.ToString();
             }
         }
 
@@ -41,6 +42,14 @@
             get
             {
                 return this.parameters;
+            }
+        }
+
+        internal StringBuilder InnerSql
+        {
+            get
+            {
+                return this.innerSql;
             }
         }
     }

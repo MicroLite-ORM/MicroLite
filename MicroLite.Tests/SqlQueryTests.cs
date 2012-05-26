@@ -18,7 +18,6 @@
 
             Assert.AreEqual(commandText, sqlQuery.CommandText);
             CollectionAssert.AreEqual(parameters, sqlQuery.Parameters);
-            Assert.IsInstanceOf<ReadOnlyCollection<object>>(sqlQuery.Parameters);
         }
     }
 }
