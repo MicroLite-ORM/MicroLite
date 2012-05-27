@@ -155,7 +155,7 @@
         }
 
         [Test]
-        public void ExecuteBuildsAndExecutesCommand()
+        public void ExecuteBuildsAndExecutesCommandNotInTransaction()
         {
             var sqlQuery = new SqlQuery("");
             var result = 1;
@@ -182,6 +182,40 @@
             mockConnectionManager.VerifyAll();
             mockCommand.VerifyAll();
             mockConnection.VerifyAll();
+        }
+
+        [Test]
+        public void ExecuteDoesNotOpenOrCloseConnectionWhenInTransaction()
+        {
+            var sqlQuery = new SqlQuery("");
+            var result = 1;
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
+            mockConnection.Setup(x => x.Open());
+            mockConnection.Setup(x => x.Close());
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(mockConnection.Object);
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(result);
+            mockCommand.Setup(x => x.Transaction).Returns(new Mock<IDbTransaction>().Object);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            Assert.AreEqual(result, session.Execute(sqlQuery));
+
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+
+            mockConnection.Verify(x => x.Open(), Times.Never());
+            mockConnection.Verify(x => x.Close(), Times.Never());
         }
 
         [Test]
@@ -212,6 +246,40 @@
             mockConnectionManager.VerifyAll();
             mockCommand.VerifyAll();
             mockConnection.VerifyAll();
+        }
+
+        [Test]
+        public void ExecuteScalarDoesNotOpenOrCloseConnectionWhenInTransaction()
+        {
+            var sqlQuery = new SqlQuery("");
+            var result = new object();
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
+            mockConnection.Setup(x => x.Open());
+            mockConnection.Setup(x => x.Close());
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(mockConnection.Object);
+            mockCommand.Setup(x => x.ExecuteScalar()).Returns(result);
+            mockCommand.Setup(x => x.Transaction).Returns(new Mock<IDbTransaction>().Object);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            Assert.AreEqual(result, session.ExecuteScalar<object>(sqlQuery));
+
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+
+            mockConnection.Verify(x => x.Open(), Times.Never());
+            mockConnection.Verify(x => x.Close(), Times.Never());
         }
 
         [Test]
@@ -498,6 +566,46 @@
             }
 
             Assert.Throws<ObjectDisposedException>(() => session.Paged<Customer>(null, 1, 25));
+        }
+
+        [Test]
+        public void QueryDoesNotOpenOrCloseConnectionWhenInTransaction()
+        {
+            var sqlQuery = new SqlQuery("");
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+            var reader = mockReader.Object;
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
+            mockConnection.Setup(x => x.Open());
+            mockConnection.Setup(x => x.Close());
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(mockConnection.Object);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.Transaction).Returns(new Mock<IDbTransaction>().Object);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var mockObjectBuilder = new Mock<IObjectBuilder>();
+            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(reader)).Returns(new Customer());
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                mockObjectBuilder.Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var customers = session.Query<Customer>(sqlQuery).ToArray();
+
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+
+            mockConnection.Verify(x => x.Open(), Times.Never());
+            mockConnection.Verify(x => x.Close(), Times.Never());
         }
 
         [Test]

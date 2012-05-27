@@ -28,6 +28,18 @@
         }
 
         [Test]
+        public void BeginTransactionOpensConnection()
+        {
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.Open());
+
+            var connectionManager = new ConnectionManager(mockConnection.Object);
+            connectionManager.BeginTransaction();
+
+            mockConnection.VerifyAll();
+        }
+
+        [Test]
         public void BeginTransactionWithIsolationLevelCallsConnectionBeginTransactionWithIsolationLevel()
         {
             var isolationLevel = IsolationLevel.Chaos;
@@ -41,6 +53,42 @@
             Assert.IsInstanceOf<Transaction>(trasaction);
 
             mockConnection.VerifyAll();
+        }
+
+        [Test]
+        public void BeginTransactionWithIsolationLevelOpensConnection()
+        {
+            var isolationLevel = IsolationLevel.Chaos;
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.Open());
+
+            var connectionManager = new ConnectionManager(mockConnection.Object);
+            connectionManager.BeginTransaction(isolationLevel);
+
+            mockConnection.VerifyAll();
+        }
+
+        [Test]
+        public void BuildEnlistsInActiveTransaction()
+        {
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.SetupAllProperties();
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.BeginTransaction()).Returns(new Mock<IDbTransaction>().Object);
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var sqlQuery = new SqlQuery("EXEC GetTableContents");
+
+            using (var connectionManager = new ConnectionManager(mockConnection.Object))
+            {
+                connectionManager.BeginTransaction();
+
+                var command = connectionManager.Build(sqlQuery);
+
+                Assert.NotNull(command.Transaction);
+            }
         }
 
         [Test]
@@ -76,6 +124,22 @@
         }
 
         [Test]
+        public void BuildForSqlQueryWithStoredProcedureWithoutParameters()
+        {
+            var sqlQuery = new SqlQuery("EXEC GetTableContents");
+
+            using (var connectionManager = new ConnectionManager(new SqlConnection()))
+            {
+                var command = connectionManager.Build(sqlQuery);
+
+                // The command text should only contain the stored procedure name.
+                Assert.AreEqual("GetTableContents", command.CommandText);
+                Assert.AreEqual(CommandType.StoredProcedure, command.CommandType);
+                Assert.AreEqual(0, command.Parameters.Count);
+            }
+        }
+
+        [Test]
         public void BuildForSqlQueryWithStoredProcedureWithParameters()
         {
             var sqlQuery = new SqlQuery(
@@ -98,44 +162,6 @@
                 var parameter2 = (IDataParameter)command.Parameters[1];
                 Assert.AreEqual("@Cust_Name", parameter2.ParameterName);
                 Assert.AreEqual(sqlQuery.Parameters[1], parameter2.Value);
-            }
-        }
-
-        [Test]
-        public void BuildForSqlQueryWithStoredProcedureWithoutParameters()
-        {
-            var sqlQuery = new SqlQuery("EXEC GetTableContents");
-
-            using (var connectionManager = new ConnectionManager(new SqlConnection()))
-            {
-                var command = connectionManager.Build(sqlQuery);
-
-                // The command text should only contain the stored procedure name.
-                Assert.AreEqual("GetTableContents", command.CommandText);
-                Assert.AreEqual(CommandType.StoredProcedure, command.CommandType);
-                Assert.AreEqual(0, command.Parameters.Count);
-            }
-        }
-
-        [Test]
-        public void BuildEnlistsInActiveTransaction()
-        {
-            var mockCommand = new Mock<IDbCommand>();
-            mockCommand.SetupAllProperties();
-
-            var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(new Mock<IDbTransaction>().Object);
-            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
-
-            var sqlQuery = new SqlQuery("EXEC GetTableContents");
-
-            using (var connectionManager = new ConnectionManager(mockConnection.Object))
-            {
-                connectionManager.BeginTransaction();
-
-                var command = connectionManager.Build(sqlQuery);
-
-                Assert.NotNull(command.Transaction);
             }
         }
 

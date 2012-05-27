@@ -21,6 +21,7 @@
 
         public ITransaction BeginTransaction()
         {
+            this.connection.Open();
             var dbTransaction = this.connection.BeginTransaction();
 
             this.currentTransaction = new Transaction(dbTransaction);
@@ -30,6 +31,7 @@
 
         public ITransaction BeginTransaction(IsolationLevel isolationLevel)
         {
+            this.connection.Open();
             var dbTransaction = this.connection.BeginTransaction(isolationLevel);
 
             this.currentTransaction = new Transaction(dbTransaction);

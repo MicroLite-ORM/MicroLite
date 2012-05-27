@@ -96,14 +96,20 @@
 
                 using (var command = this.connectionManager.Build(sqlQuery))
                 {
-                    log.TryLogDebug(LogMessages.Session_OpeningConnection, this.id.ToString());
-                    command.Connection.Open();
+                    if (command.Connection.State == ConnectionState.Closed)
+                    {
+                        log.TryLogDebug(LogMessages.Session_OpeningConnection, this.id.ToString());
+                        command.Connection.Open();
+                    }
 
                     log.TryLogDebug(sqlQuery.CommandText);
                     result = command.ExecuteNonQuery();
 
-                    log.TryLogDebug(LogMessages.Session_ClosingConnection, this.id.ToString());
-                    command.Connection.Close();
+                    if (command.Transaction == null)
+                    {
+                        log.TryLogDebug(LogMessages.Session_ClosingConnection, this.id.ToString());
+                        command.Connection.Close();
+                    }
 
                     return result;
                 }
@@ -128,14 +134,20 @@
 
                 using (var command = this.connectionManager.Build(sqlQuery))
                 {
-                    log.TryLogDebug(LogMessages.Session_OpeningConnection, this.id.ToString());
-                    command.Connection.Open();
+                    if (command.Connection.State == ConnectionState.Closed)
+                    {
+                        log.TryLogDebug(LogMessages.Session_OpeningConnection, this.id.ToString());
+                        command.Connection.Open();
+                    }
 
                     log.TryLogDebug(sqlQuery.CommandText);
                     result = (T)command.ExecuteScalar();
 
-                    log.TryLogDebug(LogMessages.Session_ClosingConnection, this.id.ToString());
-                    command.Connection.Close();
+                    if (command.Transaction == null)
+                    {
+                        log.TryLogDebug(LogMessages.Session_ClosingConnection, this.id.ToString());
+                        command.Connection.Close();
+                    }
 
                     return result;
                 }
@@ -250,8 +262,11 @@
 
                 try
                 {
-                    log.TryLogDebug(LogMessages.Session_OpeningConnection, this.id.ToString());
-                    command.Connection.Open();
+                    if (command.Connection.State == ConnectionState.Closed)
+                    {
+                        log.TryLogDebug(LogMessages.Session_OpeningConnection, this.id.ToString());
+                        command.Connection.Open();
+                    }
 
                     log.TryLogDebug(command.CommandText);
                     reader = command.ExecuteReader();
@@ -270,8 +285,11 @@
                     }
                 }
 
-                log.TryLogDebug(LogMessages.Session_ClosingConnection, this.id.ToString());
-                command.Connection.Close();
+                if (command.Transaction == null)
+                {
+                    log.TryLogDebug(LogMessages.Session_ClosingConnection, this.id.ToString());
+                    command.Connection.Close();
+                }
             }
         }
 
