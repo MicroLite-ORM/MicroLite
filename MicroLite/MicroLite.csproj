@@ -58,12 +58,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Configuration\Options.cs" />
+    <Compile Include="Core\AssignedListener.cs" />
     <Compile Include="Core\ConnectionManager.cs" />
     <Compile Include="Core\EnumerableExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IConnectionManager.cs" />
-    <Compile Include="Core\IdentityListener.cs">
+    <Compile Include="Core\DbGeneratedListener.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IObjectBuilder.cs" />

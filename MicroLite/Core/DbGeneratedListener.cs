@@ -7,7 +7,7 @@
     /// The implementation of <see cref="IListener"/> for setting the instance identifier value if
     /// <see cref="IdentifierStrategy"/>.DbGenerated is used.
     /// </summary>
-    internal sealed class IdentityListener : Listener
+    internal sealed class DbGeneratedListener : Listener
     {
         public override void AfterInsert(object instance, object executeScalarResult)
         {
@@ -31,7 +31,7 @@
             {
                 if (!objectInfo.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.IdentifierAlreadySet);
+                    throw new MicroLiteException(Messages.DbGenerated_IdentifierSetForInsert);
                 }
             }
         }
@@ -54,7 +54,7 @@
             {
                 if (objectInfo.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.IdentifierNotSet);
+                    throw new MicroLiteException(Messages.DbGenerated_IdentifierNotSetForUpdate);
                 }
             }
         }

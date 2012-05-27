@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IdentifierAlreadySet" xml:space="preserve">
-    <value>The object already has an identifier value so it cannot be inserted using the DbGenerated strategy</value>
+  <data name="Assigned_IdentifierNotSetForInsert" xml:space="preserve">
+    <value>The object does not have an identifier value set so it cannot be inserted</value>
   </data>
-  <data name="IdentifierNotSet" xml:space="preserve">
-    <value>The object does not have an identifier value so it cannot be updated</value>
+  <data name="Assigned_IdentifierNotSetForUpdate" xml:space="preserve">
+    <value>The object does not have an identifier value set so it cannot be updated</value>
+  </data>
+  <data name="DbGenerated_IdentifierNotSetForUpdate" xml:space="preserve">
+    <value>The object does not have an identifier value set so it cannot be updated</value>
+  </data>
+  <data name="DbGenerated_IdentifierSetForInsert" xml:space="preserve">
+    <value>The object already has an identifier value so it cannot be inserted using the DbGenerated strategy</value>
   </data>
   <data name="ParameterCountMismatch" xml:space="preserve">
     <value>There are {0} parameters in the SQL statement, however only {1} parameter arguments were supplied.</value>

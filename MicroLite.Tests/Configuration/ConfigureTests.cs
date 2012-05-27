@@ -14,7 +14,7 @@
     public class ConfigureTests
     {
         [Test]
-        public void CreateSessionFactoryRegistersIdentityListener()
+        public void ConfigureRegistersAssignedListener()
         {
             var connectionString = "Data Source=localhost;Initial Catalog=TestDB;";
 
@@ -23,9 +23,26 @@
                 .ForConnection(connectionString, "System.Data.SqlClient")
                 .CreateSessionFactory();
 
-            var listener = ExtensionManager.CreateListeners().Single();
+            var listener = ExtensionManager.CreateListeners()
+                .Single(x => x.GetType() == typeof(AssignedListener));
 
-            Assert.IsInstanceOf<IdentityListener>(listener);
+            Assert.NotNull(listener);
+        }
+
+        [Test]
+        public void ConfigureRegistersDbAssignedListener()
+        {
+            var connectionString = "Data Source=localhost;Initial Catalog=TestDB;";
+
+            var sessionFactory = Configure
+                .Fluently()
+                .ForConnection(connectionString, "System.Data.SqlClient")
+                .CreateSessionFactory();
+
+            var listener = ExtensionManager.CreateListeners()
+                .Single(x => x.GetType() == typeof(DbGeneratedListener));
+
+            Assert.NotNull(listener);
         }
 
         [Test]

@@ -27,6 +27,9 @@
         /// <returns>The next step in the fluent configuration.</returns>
         public static IConfigureConnection Fluently()
         {
+            ExtensionManager.RegisterListener<AssignedListener>();
+            ExtensionManager.RegisterListener<DbGeneratedListener>();
+
             return new Configure();
         }
 
@@ -38,8 +41,6 @@
         /// </returns>
         public ISessionFactory CreateSessionFactory()
         {
-            ExtensionManager.RegisterListener<IdentityListener>();
-
             log.TryLogInfo(LogMessages.Configure_CreatingSessionFactory, this.options.ConnectionString);
             return new SessionFactory(this.options.ConnectionString, this.options.ProviderFactory);
         }

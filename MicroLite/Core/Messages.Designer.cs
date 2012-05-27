@@ -61,20 +61,38 @@ namespace MicroLite.Core {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted using the DbGenerated strategy.
+        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be inserted.
         /// </summary>
-        internal static string IdentifierAlreadySet {
+        internal static string Assigned_IdentifierNotSetForInsert {
             get {
-                return ResourceManager.GetString("IdentifierAlreadySet", resourceCulture);
+                return ResourceManager.GetString("Assigned_IdentifierNotSetForInsert", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The object does not have an identifier value so it cannot be updated.
+        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be updated.
         /// </summary>
-        internal static string IdentifierNotSet {
+        internal static string Assigned_IdentifierNotSetForUpdate {
             get {
-                return ResourceManager.GetString("IdentifierNotSet", resourceCulture);
+                return ResourceManager.GetString("Assigned_IdentifierNotSetForUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be updated.
+        /// </summary>
+        internal static string DbGenerated_IdentifierNotSetForUpdate {
+            get {
+                return ResourceManager.GetString("DbGenerated_IdentifierNotSetForUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted using the DbGenerated strategy.
+        /// </summary>
+        internal static string DbGenerated_IdentifierSetForInsert {
+            get {
+                return ResourceManager.GetString("DbGenerated_IdentifierSetForInsert", resourceCulture);
             }
         }
         
