@@ -1,9 +1,5 @@
 ﻿namespace MicroLite.Tests.Core
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using MicroLite.Core;
     using NUnit.Framework;
 
