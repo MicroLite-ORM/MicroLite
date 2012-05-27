@@ -10,7 +10,7 @@
     /// </summary>
     internal sealed class ConnectionManager : IConnectionManager
     {
-        private static readonly Regex parameterRegex = new Regex(@"@[\w]+", RegexOptions.Compiled);
+        private static readonly Regex parameterRegex = new Regex(@"@[\w]+", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private IDbConnection connection;
         private Transaction currentTransaction;
 
