@@ -109,12 +109,12 @@
                 var parameter1 = (IDataParameter)command.Parameters[0];
                 Assert.AreEqual(ParameterDirection.Input, parameter1.Direction);
                 Assert.AreEqual("@p0", parameter1.ParameterName);
-                Assert.AreEqual(sqlQuery.Parameters[0], parameter1.Value);
+                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
 
                 var parameter2 = (IDataParameter)command.Parameters[1];
                 Assert.AreEqual(ParameterDirection.Input, parameter2.Direction);
                 Assert.AreEqual("@p1", parameter2.ParameterName);
-                Assert.AreEqual(sqlQuery.Parameters[1], parameter2.Value);
+                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
 
                 var parameter3 = (IDataParameter)command.Parameters[2];
                 Assert.AreEqual(ParameterDirection.Input, parameter3.Direction);
@@ -157,11 +157,11 @@
 
                 var parameter1 = (IDataParameter)command.Parameters[0];
                 Assert.AreEqual("@identifier", parameter1.ParameterName);
-                Assert.AreEqual(sqlQuery.Parameters[0], parameter1.Value);
+                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
 
                 var parameter2 = (IDataParameter)command.Parameters[1];
                 Assert.AreEqual("@Cust_Name", parameter2.ParameterName);
-                Assert.AreEqual(sqlQuery.Parameters[1], parameter2.Value);
+                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
             }
         }
 
@@ -177,7 +177,7 @@
             var exception = Assert.Throws<MicroLiteException>(
                 () => connectionManager.Build(sqlQuery));
 
-            Assert.AreEqual(string.Format(Messages.ParameterCountMismatch, "2", "1"), exception.Message);
+            Assert.AreEqual(string.Format(Messages.ArgumentsCountMismatch, "2", "1"), exception.Message);
         }
 
         [Test]

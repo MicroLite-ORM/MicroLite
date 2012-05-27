@@ -61,6 +61,15 @@ namespace MicroLite.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are {0} parameters in the SQL statement, however only {1} parameter arguments were supplied..
+        /// </summary>
+        internal static string ArgumentsCountMismatch {
+            get {
+                return ResourceManager.GetString("ArgumentsCountMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be inserted.
         /// </summary>
         internal static string Assigned_IdentifierNotSetForInsert {
@@ -93,15 +102,6 @@ namespace MicroLite.Core {
         internal static string DbGenerated_IdentifierSetForInsert {
             get {
                 return ResourceManager.GetString("DbGenerated_IdentifierSetForInsert", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There are {0} parameters in the SQL statement, however only {1} parameter arguments were supplied..
-        /// </summary>
-        internal static string ParameterCountMismatch {
-            get {
-                return ResourceManager.GetString("ParameterCountMismatch", resourceCulture);
             }
         }
     }

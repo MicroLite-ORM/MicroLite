@@ -44,9 +44,9 @@
         {
             var parameterNames = parameterRegex.Matches(sqlQuery.CommandText);
 
-            if (parameterNames.Count != sqlQuery.Parameters.Count)
+            if (parameterNames.Count != sqlQuery.Arguments.Count)
             {
-                throw new MicroLiteException(Messages.ParameterCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Parameters.Count.ToString(CultureInfo.InvariantCulture)));
+                throw new MicroLiteException(Messages.ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
             }
 
             var command = this.connection.CreateCommand();
@@ -65,7 +65,7 @@
                 var parameter = command.CreateParameter();
                 parameter.Direction = ParameterDirection.Input;
                 parameter.ParameterName = parameterName;
-                parameter.Value = sqlQuery.Parameters[i] ?? DBNull.Value;
+                parameter.Value = sqlQuery.Arguments[i] ?? DBNull.Value;
 
                 command.Parameters.Add(parameter);
             }

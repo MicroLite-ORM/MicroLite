@@ -16,7 +16,7 @@
             var sqlQuery = new SqlQuery(commandText, parameters);
 
             Assert.AreEqual(commandText, sqlQuery.CommandText);
-            CollectionAssert.AreEqual(parameters, sqlQuery.Parameters);
+            CollectionAssert.AreEqual(parameters, sqlQuery.Arguments);
         }
     }
 }

@@ -1,54 +1,50 @@
 ﻿namespace MicroLite
 {
     using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// A class which represents a parameterised SQL query.
     /// </summary>
     public sealed class SqlQuery
     {
-        private readonly StringBuilder innerSql;
-        private readonly List<object> parameters;
+        private readonly List<object> arguments;
+        private string commandText;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlQuery"/> class with the supplied command text and parameter values.
         /// </summary>
         /// <param name="commandText">The SQL command text.</param>
-        /// <param name="parameters">The parameter values for the query.</param>
-        public SqlQuery(string commandText, params object[] parameters)
+        /// <param name="arguments">The parameter values for the query.</param>
+        public SqlQuery(string commandText, params object[] arguments)
         {
-            this.innerSql = new StringBuilder(commandText);
-            this.parameters = new List<object>(parameters ?? new object[0]);
+            this.commandText = commandText;
+            this.arguments = new List<object>(arguments ?? new object[0]);
         }
 
         /// <summary>
-        /// Gets the SQL statement or stored procedure to execute at the data source.
+        /// Gets the parameter values of the SQL statement or stored procedure.
+        /// </summary>
+        public IList<object> Arguments
+        {
+            get
+            {
+                return this.arguments;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the SQL statement or stored procedure to execute at the data source.
         /// </summary>
         public string CommandText
         {
             get
             {
-                return this.innerSql.ToString();
+                return this.commandText;
             }
-        }
 
-        /// <summary>
-        /// Gets the parameters of the SQL statement or stored procedure.
-        /// </summary>
-        public IList<object> Parameters
-        {
-            get
+            set
             {
-                return this.parameters;
-            }
-        }
-
-        internal StringBuilder InnerSql
-        {
-            get
-            {
-                return this.innerSql;
+                this.commandText = value;
             }
         }
     }

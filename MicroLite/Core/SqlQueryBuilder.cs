@@ -77,7 +77,7 @@
             long toRowNumber = (fromRowNumber - 1) + resultsPerPage;
 
             List<object> parameters = new List<object>();
-            parameters.AddRange(sqlQuery.Parameters);
+            parameters.AddRange(sqlQuery.Arguments);
             parameters.Add(fromRowNumber);
             parameters.Add(toRowNumber);
 

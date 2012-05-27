@@ -29,7 +29,7 @@
             var sqlQuery = queryBuilder.DeleteQuery<Customer>(customer);
 
             Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
-            Assert.AreEqual(customer.Id, sqlQuery.Parameters[0]);
+            Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
         }
 
         [Test]
@@ -47,9 +47,9 @@
             var sqlQuery = queryBuilder.InsertQuery<Customer>(customer);
 
             Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Customers].[DoB], [Customers].[Name], [Customers].[StatusId]) VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
-            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Parameters[0]);
-            Assert.AreEqual(customer.Name, sqlQuery.Parameters[1]);
-            Assert.AreEqual((int)customer.Status, sqlQuery.Parameters[2]);
+            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);
+            Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
+            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
         }
 
         [Test]
@@ -61,8 +61,8 @@
             var paged = queryBuilder.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT CustomerId, Name, DoB, StatusId FROM (SELECT CustomerId, Name, DoB, StatusId, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
-            Assert.AreEqual(paged.Parameters[0], 1);
-            Assert.AreEqual(paged.Parameters[1], 25);
+            Assert.AreEqual(paged.Arguments[0], 1);
+            Assert.AreEqual(paged.Arguments[1], 25);
         }
 
         [Test]
@@ -74,8 +74,8 @@
             var paged = queryBuilder.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
-            Assert.AreEqual(paged.Parameters[0], 1);
-            Assert.AreEqual(paged.Parameters[1], 25);
+            Assert.AreEqual(paged.Arguments[0], 1);
+            Assert.AreEqual(paged.Arguments[1], 25);
         }
 
         [Test]
@@ -87,8 +87,8 @@
             var paged = queryBuilder.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
-            Assert.AreEqual(paged.Parameters[0], 1);
-            Assert.AreEqual(paged.Parameters[1], 25);
+            Assert.AreEqual(paged.Arguments[0], 1);
+            Assert.AreEqual(paged.Arguments[1], 25);
         }
 
         [Test]
@@ -100,8 +100,8 @@
             var paged = queryBuilder.Page(sqlQuery, 2, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
-            Assert.AreEqual(paged.Parameters[0], 26);
-            Assert.AreEqual(paged.Parameters[1], 50);
+            Assert.AreEqual(paged.Arguments[0], 26);
+            Assert.AreEqual(paged.Arguments[1], 50);
         }
 
         [Test]
@@ -113,9 +113,9 @@
             var paged = queryBuilder.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
-            Assert.AreEqual(paged.Parameters[0], sqlQuery.Parameters[0]);
-            Assert.AreEqual(paged.Parameters[1], 1);
-            Assert.AreEqual(paged.Parameters[2], 25);
+            Assert.AreEqual(paged.Arguments[0], sqlQuery.Arguments[0]);
+            Assert.AreEqual(paged.Arguments[1], 1);
+            Assert.AreEqual(paged.Arguments[2], 25);
         }
 
         [Test]
@@ -127,9 +127,9 @@
             var paged = queryBuilder.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
-            Assert.AreEqual(paged.Parameters[0], sqlQuery.Parameters[0]);
-            Assert.AreEqual(paged.Parameters[1], 1);
-            Assert.AreEqual(paged.Parameters[2], 25);
+            Assert.AreEqual(paged.Arguments[0], sqlQuery.Arguments[0]);
+            Assert.AreEqual(paged.Arguments[1], 1);
+            Assert.AreEqual(paged.Arguments[2], 25);
         }
 
         [Test]
@@ -151,9 +151,9 @@
             var paged = queryBuilder.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
-            Assert.AreEqual(paged.Parameters[0], sqlQuery.Parameters[0]);
-            Assert.AreEqual(paged.Parameters[1], 1);
-            Assert.AreEqual(paged.Parameters[2], 25);
+            Assert.AreEqual(paged.Arguments[0], sqlQuery.Arguments[0]);
+            Assert.AreEqual(paged.Arguments[1], 1);
+            Assert.AreEqual(paged.Arguments[2], 25);
         }
 
         [Test]
@@ -176,10 +176,10 @@
             var paged = queryBuilder.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC) AS RowNumber FROM [Sales].[Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
-            Assert.AreEqual(paged.Parameters[0], sqlQuery.Parameters[0]);
-            Assert.AreEqual(paged.Parameters[1], sqlQuery.Parameters[1]);
-            Assert.AreEqual(paged.Parameters[2], 1);
-            Assert.AreEqual(paged.Parameters[3], 25);
+            Assert.AreEqual(paged.Arguments[0], sqlQuery.Arguments[0]);
+            Assert.AreEqual(paged.Arguments[1], sqlQuery.Arguments[1]);
+            Assert.AreEqual(paged.Arguments[2], 1);
+            Assert.AreEqual(paged.Arguments[3], 25);
         }
 
         [Test]
@@ -192,7 +192,7 @@
             var sqlQuery = queryBuilder.SelectQuery(typeof(Customer), identifier);
 
             Assert.AreEqual("SELECT [Customers].[DoB], [Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
-            Assert.AreEqual(identifier, sqlQuery.Parameters[0]);
+            Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
         }
 
         [Test]
@@ -211,10 +211,10 @@
             var sqlQuery = queryBuilder.UpdateQuery<Customer>(customer);
 
             Assert.AreEqual("UPDATE [Sales].[Customers] SET [Customers].[DoB] = @p0, [Customers].[Name] = @p1, [Customers].[StatusId] = @p2 WHERE [Customers].[CustomerId] = @p3", sqlQuery.CommandText);
-            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Parameters[0]);
-            Assert.AreEqual(customer.Name, sqlQuery.Parameters[1]);
-            Assert.AreEqual((int)customer.Status, sqlQuery.Parameters[2]);
-            Assert.AreEqual(customer.Id, sqlQuery.Parameters[3]);
+            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);
+            Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
+            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
+            Assert.AreEqual(customer.Id, sqlQuery.Arguments[3]);
         }
 
         [MicroLite.Table(schema: "Sales", name: "Customers")]

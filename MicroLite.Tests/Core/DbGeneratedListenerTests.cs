@@ -31,7 +31,7 @@
             listener.BeforeInsert(typeof(Customer), sqlQuery);
 
             Assert.AreEqual(";SELECT SCOPE_IDENTITY()", sqlQuery.CommandText);
-            CollectionAssert.IsEmpty(sqlQuery.Parameters);
+            CollectionAssert.IsEmpty(sqlQuery.Arguments);
         }
 
         [Test]
@@ -43,7 +43,7 @@
             listener.BeforeInsert(typeof(CustomerWithAssigned), sqlQuery);
 
             Assert.AreEqual(string.Empty, sqlQuery.CommandText);
-            CollectionAssert.IsEmpty(sqlQuery.Parameters);
+            CollectionAssert.IsEmpty(sqlQuery.Arguments);
         }
 
         [Test]

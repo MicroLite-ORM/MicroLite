@@ -42,7 +42,7 @@
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
-                sqlQuery.InnerSql.Append(";SELECT SCOPE_IDENTITY()");
+                sqlQuery.CommandText += ";SELECT SCOPE_IDENTITY()";
             }
         }
 
