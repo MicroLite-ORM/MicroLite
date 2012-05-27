@@ -7,7 +7,7 @@
     /// </summary>
     public sealed class SqlQuery
     {
-        private readonly List<object> arguments;
+        private readonly List<object> arguments = new List<object>();
         private string commandText;
 
         /// <summary>
@@ -18,7 +18,7 @@
         public SqlQuery(string commandText, params object[] arguments)
         {
             this.commandText = commandText;
-            this.arguments = new List<object>(arguments ?? new object[0]);
+            this.arguments.AddRange(arguments ?? new object[0]);
         }
 
         /// <summary>
