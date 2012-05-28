@@ -116,22 +116,19 @@
 
         private void AppendPredicate(string appendFormat, string predicate, params object[] args)
         {
-            int argsAdded = 0;
+            this.arguments.AddRange(args);
+
+            var argsAdded = 0;
+
             var predicateReWriter = new StringBuilder(predicate);
 
             var parameterNames = new HashSet<string>(parameterRegex.Matches(predicate).Cast<Match>().Select(x => x.Value));
 
-            foreach (var parameterName in parameterNames)
+            foreach (var parameterName in parameterNames.OrderByDescending(n => n))
             {
-                var newParameterName = "@p" + this.arguments.Count.ToString(CultureInfo.InvariantCulture);
+                var newParameterName = "@p" + (this.arguments.Count - ++argsAdded).ToString(CultureInfo.InvariantCulture);
 
                 predicateReWriter.Replace(parameterName, newParameterName);
-
-                if (argsAdded < args.Length)
-                {
-                    this.arguments.Add(args[argsAdded]);
-                    argsAdded++;
-                }
             }
 
             this.innerSql.AppendFormat(appendFormat, predicateReWriter.ToString());
