@@ -39,10 +39,11 @@
         /// </summary>
         /// <typeparam name="T">The type of object.</typeparam>
         /// <param name="instance">The instance to delete from the database.</param>
+        /// <returns>true if the object was deleted successfully; otherwise false.</returns>
         /// <exception cref="ObjectDisposedException">Thrown if session has been disposed.</exception>
         /// <exception cref="ArgumentNullException">Thrown if supplied instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the delete command.</exception>
-        void Delete<T>(T instance) where T : class, new();
+        bool Delete<T>(T instance) where T : class, new();
 
         /// <summary>
         /// Executes the specified SQL query and returns the matching objects in a list.

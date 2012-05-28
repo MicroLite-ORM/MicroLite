@@ -58,7 +58,7 @@
             return this.connectionManager.BeginTransaction(isolationLevel);
         }
 
-        public void Delete<T>(T instance) where T : class, new()
+        public bool Delete<T>(T instance) where T : class, new()
         {
             this.ThrowIfDisposed();
 
@@ -69,7 +69,7 @@
 
             var sqlQuery = this.queryBuilder.DeleteQuery(instance);
 
-            this.Execute(sqlQuery);
+            return this.Execute(sqlQuery) == 1;
         }
 
         public void Dispose()

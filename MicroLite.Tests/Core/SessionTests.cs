@@ -49,7 +49,7 @@
         }
 
         [Test]
-        public void DeleteInstanceBuildsAndExecutesQuery()
+        public void DeleteInstanceReturnsFalseIfNoRecordsDeleted()
         {
             var customer = new Customer();
             var sqlQuery = new SqlQuery("");
@@ -59,7 +59,7 @@
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-            mockCommand.Setup(x => x.ExecuteNonQuery());
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
@@ -70,7 +70,36 @@
                 new Mock<IObjectBuilder>().Object,
                 mockQueryBuilder.Object);
 
-            session.Delete(customer);
+            Assert.IsFalse(session.Delete(customer));
+
+            mockQueryBuilder.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Test]
+        public void DeleteInstanceReturnsTrueIfRecordDeleted()
+        {
+            var customer = new Customer();
+            var sqlQuery = new SqlQuery("");
+
+            var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
+            mockQueryBuilder.Setup(x => x.DeleteQuery(customer)).Returns(sqlQuery);
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockQueryBuilder.Object);
+
+            Assert.IsTrue(session.Delete(customer));
 
             mockQueryBuilder.VerifyAll();
             mockConnectionManager.VerifyAll();
