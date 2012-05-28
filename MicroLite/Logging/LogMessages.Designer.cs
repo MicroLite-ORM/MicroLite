@@ -142,11 +142,47 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignoring the property {0}.{1}.
+        /// </summary>
+        internal static string ObjectInfo_IgnoringProperty {
+            get {
+                return ResourceManager.GetString("ObjectInfo_IgnoringProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping the {0} class to the {1} table.
+        /// </summary>
+        internal static string ObjectInfo_MappingClassToTable {
+            get {
+                return ResourceManager.GetString("ObjectInfo_MappingClassToTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping the {0}.{1} property to the column {2}.
+        /// </summary>
+        internal static string ObjectInfo_MappingColumnToProperty {
+            get {
+                return ResourceManager.GetString("ObjectInfo_MappingColumnToProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Retrieving ObjectInfo for {0}.
         /// </summary>
         internal static string ObjectInfo_RetrievingObjectInfo {
             get {
                 return ResourceManager.GetString("ObjectInfo_RetrievingObjectInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping the {0}.{1} property as the identifier with the strategy {2}.
+        /// </summary>
+        internal static string ObjectInfo_UsingPropertyAsIdentifier {
+            get {
+                return ResourceManager.GetString("ObjectInfo_UsingPropertyAsIdentifier", resourceCulture);
             }
         }
         

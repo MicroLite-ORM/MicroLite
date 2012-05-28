@@ -128,6 +128,7 @@
             {
                 if (property.GetAttribute<IgnoreAttribute>(inherit: true) != null)
                 {
+                    log.TryLogDebug(LogMessages.ObjectInfo_IgnoringProperty, this.ForType.FullName, property.Name);
                     continue;
                 }
 
@@ -137,6 +138,7 @@
 
                     var columnName = columnAttribute != null ? columnAttribute.Name : property.Name;
 
+                    log.TryLogDebug(LogMessages.ObjectInfo_MappingColumnToProperty, this.ForType.FullName, property.Name, columnName);
                     this.properties.Add(columnName, property);
 
                     this.TableInfo.Columns.Add(columnName);
@@ -147,12 +149,14 @@
 
                         if (identifierAttribute != null)
                         {
+                            log.TryLogDebug(LogMessages.ObjectInfo_UsingPropertyAsIdentifier, this.ForType.FullName, property.Name, identifierAttribute.IdentifierStrategy.ToString());
                             this.TableInfo.IdentifierColumn = columnName;
                             this.TableInfo.IdentifierStrategy = identifierAttribute.IdentifierStrategy;
                             this.DefaultIdentiferValue = (ValueType)Activator.CreateInstance(property.PropertyType);
                         }
                         else if (property.Name.Equals("Id") || property.Name.Equals(this.ForType.Name + "Id"))
                         {
+                            log.TryLogDebug(LogMessages.ObjectInfo_UsingPropertyAsIdentifier, this.ForType.FullName, property.Name, "DbGenerated");
                             this.TableInfo.IdentifierColumn = columnName;
                             this.TableInfo.IdentifierStrategy = IdentifierStrategy.DbGenerated;
                             this.DefaultIdentiferValue = (ValueType)Activator.CreateInstance(property.PropertyType);
@@ -168,11 +172,13 @@
 
             if (tableAttribute != null)
             {
+                log.TryLogDebug(LogMessages.ObjectInfo_MappingClassToTable, this.ForType.FullName, tableAttribute.Schema + "." + tableAttribute.Name);
                 this.TableInfo.Name = tableAttribute.Name;
                 this.TableInfo.Schema = tableAttribute.Schema;
             }
             else
             {
+                log.TryLogDebug(LogMessages.ObjectInfo_MappingClassToTable, this.ForType.FullName, this.ForType.Name);
                 this.TableInfo.Name = this.ForType.Name;
             }
         }

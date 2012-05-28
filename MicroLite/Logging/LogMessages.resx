@@ -144,8 +144,20 @@
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
     <value>Creating ObjectInfo for {0}</value>
   </data>
+  <data name="ObjectInfo_IgnoringProperty" xml:space="preserve">
+    <value>Ignoring the property {0}.{1}</value>
+  </data>
+  <data name="ObjectInfo_MappingClassToTable" xml:space="preserve">
+    <value>Mapping the {0} class to the {1} table</value>
+  </data>
+  <data name="ObjectInfo_MappingColumnToProperty" xml:space="preserve">
+    <value>Mapping the {0}.{1} property to the column {2}</value>
+  </data>
   <data name="ObjectInfo_RetrievingObjectInfo" xml:space="preserve">
     <value>Retrieving ObjectInfo for {0}</value>
+  </data>
+  <data name="ObjectInfo_UsingPropertyAsIdentifier" xml:space="preserve">
+    <value>Mapping the {0}.{1} property as the identifier with the strategy {2}</value>
   </data>
   <data name="SessionFactory_CreatingSession" xml:space="preserve">
     <value>Creating a new session</value>
