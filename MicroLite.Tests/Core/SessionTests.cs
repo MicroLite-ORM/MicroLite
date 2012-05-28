@@ -394,7 +394,7 @@
             mockListener.Setup(x => x.BeforeInsert(typeof(Customer), sqlQuery));
             mockListener.Setup(x => x.BeforeInsert(customer));
 
-            ExtensionManager.RegisterListener(() =>
+            Listeners.Add(() =>
             {
                 return mockListener.Object;
             });
@@ -701,7 +701,7 @@
         [SetUp]
         public void SetUp()
         {
-            ExtensionManager.ClearListeners();
+            Listeners.Clear();
         }
 
         [Test]
@@ -811,7 +811,7 @@
         [TestFixtureTearDown]
         public void TearDown()
         {
-            ExtensionManager.ClearListeners();
+            Listeners.Clear();
         }
 
         [Test]
@@ -840,7 +840,7 @@
             var mockListener = new Mock<IListener>();
             mockListener.Setup(x => x.BeforeUpdate(customer));
 
-            ExtensionManager.RegisterListener(() =>
+            Listeners.Add(() =>
             {
                 return mockListener.Object;
             });

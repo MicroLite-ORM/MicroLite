@@ -1,4 +1,4 @@
-﻿namespace MicroLite
+﻿namespace MicroLite.Core
 {
     using System;
 

@@ -86,7 +86,7 @@
     <Compile Include="Core\StringExtensions.cs" />
     <Compile Include="Core\TableInfo.cs" />
     <Compile Include="Core\Transaction.cs" />
-    <Compile Include="ExtensionManager.cs" />
+    <Compile Include="Core\Listeners.cs" />
     <Compile Include="IAdvancedSession.cs" />
     <Compile Include="IAndOrOrderBy.cs" />
     <Compile Include="IdentifierAttribute.cs" />
@@ -94,14 +94,14 @@
     <Compile Include="IFrom.cs" />
     <Compile Include="IgnoreAttribute.cs" />
     <Compile Include="IHideObjectMembers.cs" />
-    <Compile Include="IListener.cs" />
+    <Compile Include="Core\IListener.cs" />
     <Compile Include="IOrderBy.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="IToSqlQuery.cs" />
     <Compile Include="ITransaction.cs" />
     <Compile Include="IWhereOrOrderBy.cs" />
-    <Compile Include="Listener.cs" />
+    <Compile Include="Core\Listener.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Logging\LogManager.cs" />

@@ -27,8 +27,8 @@
         /// <returns>The next step in the fluent configuration.</returns>
         public static IConfigureConnection Fluently()
         {
-            ExtensionManager.RegisterListener<AssignedListener>();
-            ExtensionManager.RegisterListener<DbGeneratedListener>();
+            Listeners.Add<AssignedListener>();
+            Listeners.Add<DbGeneratedListener>();
 
             return new Configure();
         }

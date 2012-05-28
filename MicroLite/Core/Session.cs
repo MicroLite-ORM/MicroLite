@@ -44,7 +44,7 @@
         {
             get
             {
-                return this.listeners ?? (this.listeners = ExtensionManager.CreateListeners());
+                return this.listeners ?? (this.listeners = Core.Listeners.Create());
             }
         }
 

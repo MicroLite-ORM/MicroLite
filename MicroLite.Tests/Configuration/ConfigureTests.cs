@@ -23,7 +23,7 @@
                 .ForConnection(connectionString, "System.Data.SqlClient")
                 .CreateSessionFactory();
 
-            var listener = ExtensionManager.CreateListeners()
+            var listener = Listeners.Create()
                 .Single(x => x.GetType() == typeof(AssignedListener));
 
             Assert.NotNull(listener);
@@ -39,7 +39,7 @@
                 .ForConnection(connectionString, "System.Data.SqlClient")
                 .CreateSessionFactory();
 
-            var listener = ExtensionManager.CreateListeners()
+            var listener = Listeners.Create()
                 .Single(x => x.GetType() == typeof(DbGeneratedListener));
 
             Assert.NotNull(listener);
@@ -115,7 +115,7 @@
         [SetUp]
         public void SetUp()
         {
-            ExtensionManager.ClearListeners();
+            Listeners.Clear();
         }
     }
 }
