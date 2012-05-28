@@ -11,7 +11,7 @@
     /// <summary>
     /// A helper class for creating a dynamic <see cref="SqlQuery"/>.
     /// </summary>
-    public sealed class SqlBuilder : IFrom, IWhereOrOrderBy, IAndOrOrderBy, IOrderBy, IToSqlQuery
+    public sealed class SqlBuilder : IFrom, IWhereOrOrderBy, IAndOrOrderBy, IOrderBy, IToSqlQuery, IWithParameter
     {
         private static readonly Regex parameterRegex = new Regex(@"(@p\d)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private readonly List<object> arguments = new List<object>();
@@ -19,7 +19,24 @@
 
         private SqlBuilder(string startingSql)
         {
-            this.innerSql.AppendLine(startingSql);
+            if (startingSql.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase))
+            {
+                this.innerSql.AppendLine(startingSql);
+            }
+            else
+            {
+                this.innerSql.Append(startingSql);
+            }
+        }
+
+        /// <summary>
+        /// Species the name of the specified procedure to be executed.
+        /// </summary>
+        /// <param name="procedure">The name of the stored procedure.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public static IWithParameter Execute(string procedure)
+        {
+            return new SqlBuilder("EXEC " + procedure + " ");
         }
 
         /// <summary>
@@ -125,6 +142,20 @@
         public IAndOrOrderBy Where(string predicate, params object[] args)
         {
             this.AppendPredicate(" WHERE ({0})", predicate, args);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies that the stored procedure should be executed the supplied parameter and argument.
+        /// </summary>
+        /// <param name="parameter">The parameter to be added.</param>
+        /// <param name="arg">The argument value for the parameter.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IWithParameter WithParameter(string parameter, object arg)
+        {
+            this.arguments.Add(arg);
+            this.innerSql.Append(parameter + ", ");
 
             return this;
         }

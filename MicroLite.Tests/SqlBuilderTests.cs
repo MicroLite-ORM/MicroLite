@@ -10,6 +10,23 @@
     public class SqlBuilderTests
     {
         [Test]
+        public void Execute()
+        {
+            var sqlQuery = SqlBuilder.Execute("GetCustomerInvoices")
+                .WithParameter("@CustomerId", 7633245)
+                .WithParameter("@StartDate", DateTime.Today.AddMonths(-3))
+                .WithParameter("@EndDate", DateTime.Today)
+                .ToSqlQuery();
+
+            Assert.AreEqual(3, sqlQuery.Arguments.Count);
+            Assert.AreEqual(7633245, sqlQuery.Arguments[0]);
+            Assert.AreEqual(DateTime.Today.AddMonths(-3), sqlQuery.Arguments[1]);
+            Assert.AreEqual(DateTime.Today, sqlQuery.Arguments[2]);
+
+            Assert.AreEqual("EXEC GetCustomerInvoices @CustomerId, @StartDate, @EndDate", sqlQuery.CommandText);
+        }
+
+        [Test]
         public void SelectFrom()
         {
             var sqlQuery = SqlBuilder.Select("Column1", "Column2")

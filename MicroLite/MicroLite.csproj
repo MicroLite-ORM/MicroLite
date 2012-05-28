@@ -102,6 +102,7 @@
     <Compile Include="ITransaction.cs" />
     <Compile Include="IWhereOrOrderBy.cs" />
     <Compile Include="Core\Listener.cs" />
+    <Compile Include="IWithParameter.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Logging\LogManager.cs" />
