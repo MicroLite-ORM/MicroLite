@@ -1,4 +1,4 @@
-﻿namespace MicroLite
+﻿namespace MicroLite.Syntax
 {
     /// <summary>
     /// The interface to end the fluent build syntax.

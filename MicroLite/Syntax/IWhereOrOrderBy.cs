@@ -1,4 +1,4 @@
-﻿namespace MicroLite
+﻿namespace MicroLite.Syntax
 {
     /// <summary>
     /// The interface which specifies the where method in the fluent sql builder syntax.
