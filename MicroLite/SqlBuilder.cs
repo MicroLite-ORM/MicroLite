@@ -9,13 +9,13 @@
     /// <summary>
     /// A helper class for creating a dynamic <see cref="SqlQuery"/>.
     /// </summary>
-    public sealed class SqlQueryBuilder : IFrom, IWhereOrOrderBy, IAndOrOrderBy, IOrderBy, IToSqlQuery
+    public sealed class SqlBuilder : IFrom, IWhereOrOrderBy, IAndOrOrderBy, IOrderBy, IToSqlQuery
     {
         private static readonly Regex parameterRegex = new Regex(@"(@p\d)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder();
 
-        private SqlQueryBuilder(string startingSql)
+        private SqlBuilder(string startingSql)
         {
             this.innerSql.AppendLine(startingSql);
         }
@@ -27,7 +27,7 @@
         /// <returns>The next step in the fluent sql builder.</returns>
         public static IFrom Select(params string[] columns)
         {
-            return new SqlQueryBuilder("SELECT " + string.Join(", ", columns));
+            return new SqlBuilder("SELECT " + string.Join(", ", columns));
         }
 
         /// <summary>

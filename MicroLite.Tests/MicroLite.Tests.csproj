@@ -65,7 +65,7 @@
     <Compile Include="Logging\LogManagerTests.cs" />
     <Compile Include="PagedResultTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlQueryBuilderTests.cs" />
+    <Compile Include="SqlBuilderTests.cs" />
     <Compile Include="SqlQueryTests.cs" />
     <Compile Include="TableAttributeTests.cs" />
   </ItemGroup>

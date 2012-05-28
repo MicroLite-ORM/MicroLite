@@ -4,15 +4,15 @@
     using NUnit.Framework;
 
     /// <summary>
-    /// Unit Tests for the <see cref="SqlQueryBuilder"/> class.
+    /// Unit Tests for the <see cref="SqlBuilder"/> class.
     /// </summary>
     [TestFixture]
-    public class SqlQueryBuilderTests
+    public class SqlBuilderTests
     {
         [Test]
         public void SelectFrom()
         {
-            var sqlQuery = SqlQueryBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
                 .From("Table")
                 .ToSqlQuery();
 
@@ -23,7 +23,7 @@
         [Test]
         public void SelectFromOrderByAscending()
         {
-            var sqlQuery = SqlQueryBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
                 .From("Table")
                 .OrderByAscending("Column1")
                 .ToSqlQuery();
@@ -35,7 +35,7 @@
         [Test]
         public void SelectFromOrderByDescending()
         {
-            var sqlQuery = SqlQueryBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
                 .From("Table")
                 .OrderByDescending("Column1")
                 .ToSqlQuery();
@@ -47,7 +47,7 @@
         [Test]
         public void SelectFromWhere()
         {
-            var sqlQuery = SqlQueryBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
                 .From("Table")
                 .Where("Column1 = @p0", "Foo")
                 .ToSqlQuery();
@@ -61,7 +61,7 @@
         [Test]
         public void SelectFromWhereAnd()
         {
-            var sqlQuery = SqlQueryBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
                 .From("Table")
                 .Where("Column1 = @p0", "Foo")
                 .AndWhere("Column2 = @p0", "Bar")
@@ -77,7 +77,7 @@
         [Test]
         public void SelectFromWhereComplex()
         {
-            var sqlQuery = SqlQueryBuilder.Select("Column1", "Column2", "Column3")
+            var sqlQuery = SqlBuilder.Select("Column1", "Column2", "Column3")
                 .From("Table")
                 .Where("Column1 = @p0 OR @p0 IS NULL", "Foo")
                 .AndWhere("Column2 BETWEEN @p0 AND @p1", DateTime.Today.AddDays(-1), DateTime.Today)
@@ -99,7 +99,7 @@
         [Test]
         public void SelectFromWhereOr()
         {
-            var sqlQuery = SqlQueryBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
                 .From("Table")
                 .Where("Column1 = @p0", "Foo")
                 .OrWhere("Column2 = @p0", "Bar")
