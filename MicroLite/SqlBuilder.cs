@@ -1,10 +1,12 @@
 ﻿namespace MicroLite
 {
+    using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
+    using MicroLite.Core;
 
     /// <summary>
     /// A helper class for creating a dynamic <see cref="SqlQuery"/>.
@@ -28,6 +30,19 @@
         public static IFrom Select(params string[] columns)
         {
             return new SqlBuilder("SELECT " + string.Join(", ", columns));
+        }
+
+        /// <summary>
+        /// Selects all mapped columns from the table the supplied type maps to.
+        /// </summary>
+        /// <param name="forType">The type to select the columns for.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public static IWhereOrOrderBy SelectFrom(Type forType)
+        {
+            var objectInfo = ObjectInfo.For(forType);
+
+            return Select(objectInfo.TableInfo.Columns.ToArray())
+                .From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name);
         }
 
         /// <summary>

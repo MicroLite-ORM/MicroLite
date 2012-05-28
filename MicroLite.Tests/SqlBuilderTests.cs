@@ -45,6 +45,15 @@
         }
 
         [Test]
+        public void SelectFromType()
+        {
+            var sqlQuery = SqlBuilder.SelectFrom(typeof(Customer)).ToSqlQuery();
+
+            CollectionAssert.IsEmpty(sqlQuery.Arguments);
+            Assert.AreEqual("SELECT DoB, CustomerId, Name\r\n FROM Sales.Customers", sqlQuery.CommandText);
+        }
+
+        [Test]
         public void SelectFromWhere()
         {
             var sqlQuery = SqlBuilder.Select("Column1", "Column2")
@@ -110,6 +119,35 @@
             Assert.AreEqual("Bar", sqlQuery.Arguments[1]);
 
             Assert.AreEqual("SELECT Column1, Column2\r\n FROM Table\r\n WHERE (Column1 = @p0)\r\n OR (Column2 = @p1)", sqlQuery.CommandText);
+        }
+
+        [MicroLite.Table(schema: "Sales", name: "Customers")]
+        private class Customer
+        {
+            public Customer()
+            {
+            }
+
+            [MicroLite.Column("DoB")]
+            public DateTime DateOfBirth
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Column("CustomerId")]
+            [MicroLite.Identifier(IdentifierStrategy.DbGenerated)]
+            public int Id
+            {
+                get;
+                set;
+            }
+
+            public string Name
+            {
+                get;
+                set;
+            }
         }
     }
 }
