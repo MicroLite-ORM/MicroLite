@@ -58,13 +58,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Configuration\Options.cs" />
-    <Compile Include="Core\AssignedListener.cs" />
+    <Compile Include="Listeners\AssignedListener.cs" />
     <Compile Include="Core\ConnectionManager.cs" />
     <Compile Include="FrameworkExtensions\EnumerableExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IConnectionManager.cs" />
-    <Compile Include="Core\DbGeneratedListener.cs">
+    <Compile Include="Listeners\DbGeneratedListener.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IObjectBuilder.cs" />
@@ -84,8 +84,13 @@
     <Compile Include="Core\SqlQueryBuilder.cs" />
     <Compile Include="FrameworkExtensions\StringExtensions.cs" />
     <Compile Include="Core\Transaction.cs" />
-    <Compile Include="Core\Listeners.cs" />
+    <Compile Include="Listeners\ListenerManager.cs" />
     <Compile Include="IAdvancedSession.cs" />
+    <Compile Include="Listeners\Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
     <Compile Include="ObjectInfo.cs" />
     <Compile Include="Syntax\IAndOrOrderBy.cs" />
     <Compile Include="IdentifierAttribute.cs" />
@@ -93,14 +98,14 @@
     <Compile Include="Syntax\IFrom.cs" />
     <Compile Include="IgnoreAttribute.cs" />
     <Compile Include="IHideObjectMembers.cs" />
-    <Compile Include="Core\IListener.cs" />
+    <Compile Include="Listeners\IListener.cs" />
     <Compile Include="Syntax\IOrderBy.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="Syntax\IToSqlQuery.cs" />
     <Compile Include="ITransaction.cs" />
     <Compile Include="Syntax\IWhereOrOrderBy.cs" />
-    <Compile Include="Core\Listener.cs" />
+    <Compile Include="Listeners\Listener.cs" />
     <Compile Include="Syntax\IWithParameter.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
@@ -130,6 +135,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Core\Messages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Listeners\Messages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>

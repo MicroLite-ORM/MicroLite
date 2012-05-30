@@ -1,7 +1,7 @@
 ﻿namespace MicroLite.Tests.Core
 {
     using System;
-    using MicroLite.Core;
+    using MicroLite.Listeners;
     using NUnit.Framework;
 
     /// <summary>

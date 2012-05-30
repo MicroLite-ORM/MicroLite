@@ -5,6 +5,7 @@
     using System.Data.Common;
     using MicroLite.Core;
     using MicroLite.FrameworkExtensions;
+    using MicroLite.Listeners;
     using MicroLite.Logging;
 
     /// <summary>
@@ -28,8 +29,8 @@
         /// <returns>The next step in the fluent configuration.</returns>
         public static IConfigureConnection Fluently()
         {
-            Listeners.Add<AssignedListener>();
-            Listeners.Add<DbGeneratedListener>();
+            ListenerManager.Add<AssignedListener>();
+            ListenerManager.Add<DbGeneratedListener>();
 
             return new Configure();
         }

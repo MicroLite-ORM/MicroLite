@@ -5,6 +5,7 @@
     using System.Data;
     using System.Linq;
     using MicroLite.FrameworkExtensions;
+    using MicroLite.Listeners;
     using MicroLite.Logging;
 
     /// <summary>
@@ -45,7 +46,7 @@
         {
             get
             {
-                return this.listeners ?? (this.listeners = Core.Listeners.Create());
+                return this.listeners ?? (this.listeners = ListenerManager.Create());
             }
         }
 

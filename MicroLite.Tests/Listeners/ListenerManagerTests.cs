@@ -1,31 +1,31 @@
 ﻿namespace MicroLite.Tests.Core
 {
     using System.Linq;
-    using MicroLite.Core;
+    using MicroLite.Listeners;
     using NUnit.Framework;
 
     /// <summary>
-    /// Unit Tests for the <see cref="Listeners"/> class.
+    /// Unit Tests for the <see cref="ListenerManager"/> class.
     /// </summary>
     [TestFixture]
-    public class ListenersTests
+    public class ListenerManagerTests
     {
         [Test]
         public void AddOnlyAddsTypeOnce()
         {
-            Listeners.Add<TestListener>();
-            Listeners.Add<TestListener>();
+            ListenerManager.Add<TestListener>();
+            ListenerManager.Add<TestListener>();
 
-            Assert.AreEqual(1, Listeners.Create().Count());
+            Assert.AreEqual(1, ListenerManager.Create().Count());
         }
 
         [Test]
         public void CreateReturnsNewInstanceOfEachTypeOnEachCall()
         {
-            Listeners.Add<TestListener>();
+            ListenerManager.Add<TestListener>();
 
-            var listener1 = Listeners.Create().Single();
-            var listener2 = Listeners.Create().Single();
+            var listener1 = ListenerManager.Create().Single();
+            var listener2 = ListenerManager.Create().Single();
 
             Assert.AreNotSame(listener1, listener2);
         }
@@ -33,13 +33,13 @@
         [SetUp]
         public void SetUp()
         {
-            Listeners.Clear();
+            ListenerManager.Clear();
         }
 
         [TestFixtureTearDown]
         public void TearDown()
         {
-            Listeners.Clear();
+            ListenerManager.Clear();
         }
 
         private class TestListener : Listener

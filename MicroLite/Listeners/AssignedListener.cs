@@ -1,4 +1,4 @@
-﻿namespace MicroLite.Core
+﻿namespace MicroLite.Listeners
 {
     /// <summary>
     /// The implementation of <see cref="IListener"/> for checking the instance identifier value if

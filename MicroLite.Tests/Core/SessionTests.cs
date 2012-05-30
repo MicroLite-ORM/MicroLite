@@ -5,6 +5,7 @@
     using System.Data;
     using System.Linq;
     using MicroLite.Core;
+    using MicroLite.Listeners;
     using Moq;
     using NUnit.Framework;
 
@@ -423,7 +424,7 @@
             mockListener.Setup(x => x.BeforeInsert(typeof(Customer), sqlQuery));
             mockListener.Setup(x => x.BeforeInsert(customer));
 
-            Listeners.Add(() =>
+            ListenerManager.Add(() =>
             {
                 return mockListener.Object;
             });
@@ -730,7 +731,7 @@
         [SetUp]
         public void SetUp()
         {
-            Listeners.Clear();
+            ListenerManager.Clear();
         }
 
         [Test]
@@ -840,7 +841,7 @@
         [TestFixtureTearDown]
         public void TearDown()
         {
-            Listeners.Clear();
+            ListenerManager.Clear();
         }
 
         [Test]
@@ -869,7 +870,7 @@
             var mockListener = new Mock<IListener>();
             mockListener.Setup(x => x.BeforeUpdate(customer));
 
-            Listeners.Add(() =>
+            ListenerManager.Add(() =>
             {
                 return mockListener.Object;
             });

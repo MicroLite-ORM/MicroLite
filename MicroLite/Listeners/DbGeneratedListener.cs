@@ -1,4 +1,4 @@
-﻿namespace MicroLite.Core
+﻿namespace MicroLite.Listeners
 {
     using System;
     using System.Globalization;

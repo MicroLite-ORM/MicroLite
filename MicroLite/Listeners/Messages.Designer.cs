@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MicroLite.Core {
+namespace MicroLite.Listeners {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace MicroLite.Core {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MicroLite.Core.Messages", typeof(Messages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MicroLite.Listeners.Messages", typeof(Messages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,38 @@ namespace MicroLite.Core {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are {0} parameters in the SQL statement, however only {1} parameter arguments were supplied..
+        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be inserted.
         /// </summary>
-        internal static string ArgumentsCountMismatch {
+        internal static string Assigned_IdentifierNotSetForInsert {
             get {
-                return ResourceManager.GetString("ArgumentsCountMismatch", resourceCulture);
+                return ResourceManager.GetString("Assigned_IdentifierNotSetForInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be updated.
+        /// </summary>
+        internal static string Assigned_IdentifierNotSetForUpdate {
+            get {
+                return ResourceManager.GetString("Assigned_IdentifierNotSetForUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be updated.
+        /// </summary>
+        internal static string DbGenerated_IdentifierNotSetForUpdate {
+            get {
+                return ResourceManager.GetString("DbGenerated_IdentifierNotSetForUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted using the DbGenerated strategy.
+        /// </summary>
+        internal static string DbGenerated_IdentifierSetForInsert {
+            get {
+                return ResourceManager.GetString("DbGenerated_IdentifierSetForInsert", resourceCulture);
             }
         }
     }

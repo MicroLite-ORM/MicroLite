@@ -1,4 +1,4 @@
-﻿namespace MicroLite.Core
+﻿namespace MicroLite.Listeners
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@
     /// <summary>
     /// The class which manages the IListeners used by the MicroLite ORM framework.
     /// </summary>
-    internal static class Listeners
+    internal static class ListenerManager
     {
         private static readonly IList<Func<IListener>> listenerFactories = new List<Func<IListener>>();
         private static readonly IList<Type> listenerTypes = new List<Type>();

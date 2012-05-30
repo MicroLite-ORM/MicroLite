@@ -5,6 +5,7 @@
     using MicroLite.Configuration;
     using MicroLite.Core;
     using MicroLite.FrameworkExtensions;
+    using MicroLite.Listeners;
     using MicroLite.Logging;
     using NUnit.Framework;
 
@@ -24,7 +25,7 @@
                 .ForConnection(connectionString, "System.Data.SqlClient")
                 .CreateSessionFactory();
 
-            var listener = Listeners.Create()
+            var listener = ListenerManager.Create()
                 .Single(x => x.GetType() == typeof(AssignedListener));
 
             Assert.NotNull(listener);
@@ -40,7 +41,7 @@
                 .ForConnection(connectionString, "System.Data.SqlClient")
                 .CreateSessionFactory();
 
-            var listener = Listeners.Create()
+            var listener = ListenerManager.Create()
                 .Single(x => x.GetType() == typeof(DbGeneratedListener));
 
             Assert.NotNull(listener);
@@ -116,7 +117,7 @@
         [SetUp]
         public void SetUp()
         {
-            Listeners.Clear();
+            ListenerManager.Clear();
         }
     }
 }
