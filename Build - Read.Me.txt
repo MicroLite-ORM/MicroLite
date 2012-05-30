@@ -1,0 +1,2 @@
+Before building, ensure that you have StyleCop installed (currently version 4.7.23.0)
+If running on a 64 bit machine, run the PowerShell (x86) executable otherwise the StyleCop.targets won't be found.
