@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Linq;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
     /// <summary>

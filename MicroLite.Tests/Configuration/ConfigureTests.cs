@@ -4,6 +4,7 @@
     using System.Linq;
     using MicroLite.Configuration;
     using MicroLite.Core;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
     using NUnit.Framework;
 
@@ -100,7 +101,7 @@
             var exception = Assert.Throws<MicroLiteException>(
                 () => Configure.Fluently().ForConnection("TestDB"));
 
-            Assert.AreEqual(string.Format(LogMessages.Configure_ConnectionNotFound, "TestDB"), exception.Message);
+            Assert.AreEqual(LogMessages.Configure_ConnectionNotFound.FormatWith("TestDB"), exception.Message);
         }
 
         [Test]

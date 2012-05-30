@@ -60,7 +60,7 @@
     <Compile Include="Configuration\Options.cs" />
     <Compile Include="Core\AssignedListener.cs" />
     <Compile Include="Core\ConnectionManager.cs" />
-    <Compile Include="Core\EnumerableExtensions.cs">
+    <Compile Include="FrameworkExtensions\EnumerableExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IConnectionManager.cs" />
@@ -69,7 +69,7 @@
     </Compile>
     <Compile Include="Core\IObjectBuilder.cs" />
     <Compile Include="Core\ISqlQueryBuilder.cs" />
-    <Compile Include="Core\MemberInfoExtensions.cs" />
+    <Compile Include="FrameworkExtensions\MemberInfoExtensions.cs" />
     <Compile Include="Core\Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -77,13 +77,13 @@
     </Compile>
     <Compile Include="Core\ObjectBuilder.cs" />
     <Compile Include="Core\ObjectInfo.cs" />
-    <Compile Include="Core\PropertyInfoExtensions.cs" />
+    <Compile Include="FrameworkExtensions\PropertyInfoExtensions.cs" />
     <Compile Include="Core\Session.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\SessionFactory.cs" />
     <Compile Include="Core\SqlQueryBuilder.cs" />
-    <Compile Include="Core\StringExtensions.cs" />
+    <Compile Include="FrameworkExtensions\StringExtensions.cs" />
     <Compile Include="Core\TableInfo.cs" />
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="Core\Listeners.cs" />

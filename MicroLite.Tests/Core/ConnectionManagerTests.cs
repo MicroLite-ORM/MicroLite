@@ -4,6 +4,7 @@
     using System.Data;
     using System.Data.SqlClient;
     using MicroLite.Core;
+    using MicroLite.FrameworkExtensions;
     using Moq;
     using NUnit.Framework;
 
@@ -177,7 +178,7 @@
             var exception = Assert.Throws<MicroLiteException>(
                 () => connectionManager.Build(sqlQuery));
 
-            Assert.AreEqual(string.Format(Messages.ArgumentsCountMismatch, "2", "1"), exception.Message);
+            Assert.AreEqual(Messages.ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
         }
 
         [Test]

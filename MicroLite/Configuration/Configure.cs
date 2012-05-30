@@ -4,6 +4,7 @@
     using System.Configuration;
     using System.Data.Common;
     using MicroLite.Core;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
     /// <summary>

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Data;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
     /// <summary>

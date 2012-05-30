@@ -4,6 +4,7 @@
     using System.Data;
     using System.Globalization;
     using System.Text.RegularExpressions;
+    using MicroLite.FrameworkExtensions;
 
     /// <summary>
     /// The default implementation of <see cref="IConnectionManager"/>.

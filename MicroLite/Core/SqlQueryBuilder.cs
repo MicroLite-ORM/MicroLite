@@ -6,6 +6,7 @@
     using System.Globalization;
     using System.Text;
     using System.Text.RegularExpressions;
+    using MicroLite.FrameworkExtensions;
 
     /// <summary>
     /// The implementation of <see cref="ISqlQueryBuilder"/> for MsSql server.
