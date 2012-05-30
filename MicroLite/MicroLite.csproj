@@ -76,7 +76,6 @@
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\ObjectBuilder.cs" />
-    <Compile Include="Core\ObjectInfo.cs" />
     <Compile Include="FrameworkExtensions\PropertyInfoExtensions.cs" />
     <Compile Include="Core\Session.cs">
       <SubType>Code</SubType>
@@ -84,10 +83,10 @@
     <Compile Include="Core\SessionFactory.cs" />
     <Compile Include="Core\SqlQueryBuilder.cs" />
     <Compile Include="FrameworkExtensions\StringExtensions.cs" />
-    <Compile Include="Core\TableInfo.cs" />
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="Core\Listeners.cs" />
     <Compile Include="IAdvancedSession.cs" />
+    <Compile Include="ObjectInfo.cs" />
     <Compile Include="Syntax\IAndOrOrderBy.cs" />
     <Compile Include="IdentifierAttribute.cs" />
     <Compile Include="IdentifierStrategy.cs" />
@@ -117,6 +116,7 @@
     <Compile Include="SqlBuilder.cs" />
     <Compile Include="SqlQuery.cs" />
     <Compile Include="TableAttribute.cs" />
+    <Compile Include="TableInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">

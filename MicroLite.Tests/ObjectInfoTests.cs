@@ -1,4 +1,4 @@
-﻿namespace MicroLite.Tests.Core
+﻿namespace MicroLite.Tests
 {
     using System;
     using System.Linq;

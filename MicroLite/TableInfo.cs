@@ -1,4 +1,4 @@
-﻿namespace MicroLite.Core
+﻿namespace MicroLite
 {
     using System.Collections.Generic;
 
