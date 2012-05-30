@@ -10,18 +10,16 @@
         /// <summary>
         /// Creates a SqlQuery to perform a delete for the given instance.
         /// </summary>
-        /// <typeparam name="T">The type of object.</typeparam>
         /// <param name="instance">The instance to build the query for.</param>
         /// <returns>A <see cref="SqlQuery"/> to delete a record.</returns>
-        SqlQuery DeleteQuery<T>(T instance);
+        SqlQuery DeleteQuery(object instance);
 
         /// <summary>
         /// Creates a SqlQuery to perform an insert for the given instance.
         /// </summary>
-        /// <typeparam name="T">The type of object.</typeparam>
         /// <param name="instance">The instance to build the query for.</param>
         /// <returns>A <see cref="SqlQuery"/> to insert a record.</returns>
-        SqlQuery InsertQuery<T>(T instance);
+        SqlQuery InsertQuery(object instance);
 
         /// <summary>
         /// Pages the specified SQL query.
@@ -43,9 +41,8 @@
         /// <summary>
         /// Creates a SqlQuery to perform an update for the given instance.
         /// </summary>
-        /// <typeparam name="T">The type of object.</typeparam>
         /// <param name="instance">The instance to build the query for.</param>
         /// <returns>A <see cref="SqlQuery"/> to update a record.</returns>
-        SqlQuery UpdateQuery<T>(T instance);
+        SqlQuery UpdateQuery(object instance);
     }
 }

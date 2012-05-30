@@ -24,9 +24,9 @@
         {
         }
 
-        public SqlQuery DeleteQuery<T>(T instance)
+        public SqlQuery DeleteQuery(object instance)
         {
-            var objectInfo = ObjectInfo.For(typeof(T));
+            var objectInfo = ObjectInfo.For(instance.GetType());
 
             var identifierPropertyInfo =
                 objectInfo.GetPropertyInfoForColumn(objectInfo.TableInfo.IdentifierColumn);
@@ -43,9 +43,9 @@
             return new SqlQuery(sqlBuilder.ToString(), new[] { identifierValue });
         }
 
-        public SqlQuery InsertQuery<T>(T instance)
+        public SqlQuery InsertQuery(object instance)
         {
-            var objectInfo = ObjectInfo.For(typeof(T));
+            var objectInfo = ObjectInfo.For(instance.GetType());
 
             var values = new List<object>();
 
@@ -117,9 +117,9 @@
             return new SqlQuery(sqlBuilder.ToString(), new[] { identifier });
         }
 
-        public SqlQuery UpdateQuery<T>(T instance)
+        public SqlQuery UpdateQuery(object instance)
         {
-            var objectInfo = ObjectInfo.For(typeof(T));
+            var objectInfo = ObjectInfo.For(instance.GetType());
 
             var values = new List<object>();
 

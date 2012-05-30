@@ -26,7 +26,7 @@
 
             var queryBuilder = new SqlQueryBuilder();
 
-            var sqlQuery = queryBuilder.DeleteQuery<Customer>(customer);
+            var sqlQuery = queryBuilder.DeleteQuery(customer);
 
             Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
@@ -44,7 +44,7 @@
 
             var queryBuilder = new SqlQueryBuilder();
 
-            var sqlQuery = queryBuilder.InsertQuery<Customer>(customer);
+            var sqlQuery = queryBuilder.InsertQuery(customer);
 
             Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Customers].[DoB], [Customers].[Name], [Customers].[StatusId]) VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
             Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);
@@ -208,7 +208,7 @@
 
             var queryBuilder = new SqlQueryBuilder();
 
-            var sqlQuery = queryBuilder.UpdateQuery<Customer>(customer);
+            var sqlQuery = queryBuilder.UpdateQuery(customer);
 
             Assert.AreEqual("UPDATE [Sales].[Customers] SET [Customers].[DoB] = @p0, [Customers].[Name] = @p1, [Customers].[StatusId] = @p2 WHERE [Customers].[CustomerId] = @p3", sqlQuery.CommandText);
             Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);
