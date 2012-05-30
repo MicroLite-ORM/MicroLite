@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
     using MicroLite.Configuration;
-    using MicroLite.Core;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Logging;

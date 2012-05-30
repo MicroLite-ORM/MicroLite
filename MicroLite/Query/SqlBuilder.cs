@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
-    using MicroLite.Core;
 
     /// <summary>
     /// A helper class for creating a dynamic <see cref="SqlQuery"/>.
