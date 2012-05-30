@@ -1,4 +1,4 @@
-﻿namespace MicroLite
+﻿namespace MicroLite.Query
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,6 @@
     using System.Text;
     using System.Text.RegularExpressions;
     using MicroLite.Core;
-    using MicroLite.Syntax;
 
     /// <summary>
     /// A helper class for creating a dynamic <see cref="SqlQuery"/>.

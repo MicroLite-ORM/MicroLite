@@ -1,4 +1,4 @@
-﻿namespace MicroLite.Syntax
+﻿namespace MicroLite.Query
 {
     /// <summary>
     /// The interface to end the fluent build syntax.

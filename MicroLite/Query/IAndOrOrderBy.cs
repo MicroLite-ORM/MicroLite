@@ -1,4 +1,4 @@
-﻿namespace MicroLite.Syntax
+﻿namespace MicroLite.Query
 {
     /// <summary>
     /// The interface which specifies the and/or methods to extend the where clause in the fluent sql builder syntax.

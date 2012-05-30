@@ -1,6 +1,7 @@
-﻿namespace MicroLite.Tests
+﻿namespace MicroLite.Tests.Query
 {
     using System;
+    using MicroLite.Query;
     using NUnit.Framework;
 
     /// <summary>

@@ -92,21 +92,21 @@
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
     <Compile Include="ObjectInfo.cs" />
-    <Compile Include="Syntax\IAndOrOrderBy.cs" />
+    <Compile Include="Query\IAndOrOrderBy.cs" />
     <Compile Include="IdentifierAttribute.cs" />
     <Compile Include="IdentifierStrategy.cs" />
-    <Compile Include="Syntax\IFrom.cs" />
+    <Compile Include="Query\IFrom.cs" />
     <Compile Include="IgnoreAttribute.cs" />
     <Compile Include="IHideObjectMembers.cs" />
     <Compile Include="Listeners\IListener.cs" />
-    <Compile Include="Syntax\IOrderBy.cs" />
+    <Compile Include="Query\IOrderBy.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
-    <Compile Include="Syntax\IToSqlQuery.cs" />
+    <Compile Include="Query\IToSqlQuery.cs" />
     <Compile Include="ITransaction.cs" />
-    <Compile Include="Syntax\IWhereOrOrderBy.cs" />
+    <Compile Include="Query\IWhereOrOrderBy.cs" />
     <Compile Include="Listeners\Listener.cs" />
-    <Compile Include="Syntax\IWithParameter.cs" />
+    <Compile Include="Query\IWithParameter.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Logging\LogManager.cs" />
@@ -118,7 +118,7 @@
     <Compile Include="MicroLiteException.cs" />
     <Compile Include="PagedResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlBuilder.cs" />
+    <Compile Include="Query\SqlBuilder.cs" />
     <Compile Include="SqlQuery.cs" />
     <Compile Include="TableAttribute.cs" />
     <Compile Include="TableInfo.cs" />

@@ -1,4 +1,4 @@
-﻿namespace MicroLite.Syntax
+﻿namespace MicroLite.Query
 {
     /// <summary>
     /// The interface which specifies the from method in the fluent sql builder syntax.
