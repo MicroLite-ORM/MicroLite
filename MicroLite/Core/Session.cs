@@ -60,7 +60,7 @@
             return this.connectionManager.BeginTransaction(isolationLevel);
         }
 
-        public bool Delete<T>(T instance) where T : class, new()
+        public bool Delete(object instance)
         {
             this.ThrowIfDisposed();
 
@@ -173,7 +173,7 @@
             return this.Query<T>(sqlQuery).ToList();
         }
 
-        public void Insert<T>(T instance) where T : class, new()
+        public void Insert(object instance)
         {
             this.ThrowIfDisposed();
 
@@ -233,7 +233,7 @@
             return this.Query<T>(sqlQuery).SingleOrDefault();
         }
 
-        public void Update<T>(T instance) where T : class, new()
+        public void Update(object instance)
         {
             this.ThrowIfDisposed();
 

@@ -115,7 +115,7 @@
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlQueryBuilder>().Object);
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Delete<Customer>(null));
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Delete(null));
 
             Assert.AreEqual("instance", exception.ParamName);
         }
@@ -450,7 +450,7 @@
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlQueryBuilder>().Object);
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Insert<Customer>(null));
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Insert(null));
 
             Assert.AreEqual("instance", exception.ParamName);
         }
@@ -891,7 +891,7 @@
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlQueryBuilder>().Object);
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Update<Customer>(null));
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Update(null));
 
             Assert.AreEqual("instance", exception.ParamName);
         }

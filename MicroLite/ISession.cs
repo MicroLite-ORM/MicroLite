@@ -7,10 +7,6 @@
     /// <summary>
     /// The interface which provides methods to map objects to database queries.
     /// </summary>
-    /// <remarks>
-    /// The new() constraint is so that users get compile time warnings that the class they are using must have
-    /// a default constructor rather than getting an exception at runtime when the object is first analysed for use.
-    /// </remarks>
     public interface ISession : IHideObjectMembers, IDisposable
     {
         /// <summary>
@@ -37,13 +33,12 @@
         /// <summary>
         /// Deletes the database record for the supplied instance.
         /// </summary>
-        /// <typeparam name="T">The type of object.</typeparam>
         /// <param name="instance">The instance to delete from the database.</param>
         /// <returns>true if the object was deleted successfully; otherwise false.</returns>
         /// <exception cref="ObjectDisposedException">Thrown if session has been disposed.</exception>
         /// <exception cref="ArgumentNullException">Thrown if supplied instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the delete command.</exception>
-        bool Delete<T>(T instance) where T : class, new();
+        bool Delete(object instance);
 
         /// <summary>
         /// Executes the specified SQL query and returns the matching objects in a list.
@@ -59,12 +54,11 @@
         /// <summary>
         /// Inserts a new database record for the supplied instance.
         /// </summary>
-        /// <typeparam name="T">The type of object.</typeparam>
         /// <param name="instance">The instance to persist the values for.</param>
         /// <exception cref="ObjectDisposedException">Thrown if session has been disposed.</exception>
         /// <exception cref="ArgumentNullException">Thrown if supplied instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the insert command.</exception>
-        void Insert<T>(T instance) where T : class, new();
+        void Insert(object instance);
 
         /// <summary>
         /// Pages the specified SQL query and returns an <see cref="PagedResult&lt;T&gt;"/> containing the desired results.
@@ -92,11 +86,10 @@
         /// <summary>
         /// Updates the database record for the supplied instance with the current property values.
         /// </summary>
-        /// <typeparam name="T">The type of object.</typeparam>
         /// <param name="instance">The instance to persist the values for.</param>
         /// <exception cref="ObjectDisposedException">Thrown if session has been disposed.</exception>
         /// <exception cref="ArgumentNullException">Thrown if supplied instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the update command.</exception>
-        void Update<T>(T instance) where T : class, new();
+        void Update(object instance);
     }
 }
