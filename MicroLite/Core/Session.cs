@@ -74,6 +74,25 @@
             return this.Execute(sqlQuery) == 1;
         }
 
+        public bool Delete(Type type, object identifier)
+        {
+            this.ThrowIfDisposed();
+
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (identifier == null)
+            {
+                throw new ArgumentNullException("identifier");
+            }
+
+            var sqlQuery = this.queryBuilder.DeleteQuery(type, identifier);
+
+            return this.Execute(sqlQuery) == 1;
+        }
+
         public void Dispose()
         {
             if (!this.disposed)

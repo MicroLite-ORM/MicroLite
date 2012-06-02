@@ -33,6 +33,19 @@
         }
 
         [Test]
+        public void DeleteQueryForTypeByIdentifier()
+        {
+            object identifier = 239845763;
+
+            var queryBuilder = new SqlQueryBuilder();
+
+            var sqlQuery = queryBuilder.DeleteQuery(typeof(Customer), identifier);
+
+            Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
+            Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
+        }
+
+        [Test]
         public void InsertQuery()
         {
             var customer = new Customer

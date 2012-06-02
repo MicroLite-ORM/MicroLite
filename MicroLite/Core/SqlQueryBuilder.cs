@@ -26,12 +26,21 @@
 
         public SqlQuery DeleteQuery(object instance)
         {
-            var objectInfo = ObjectInfo.For(instance.GetType());
+            var forType = instance.GetType();
+
+            var objectInfo = ObjectInfo.For(forType);
 
             var identifierPropertyInfo =
                 objectInfo.GetPropertyInfoForColumn(objectInfo.TableInfo.IdentifierColumn);
 
             var identifierValue = identifierPropertyInfo.GetValue(instance);
+
+            return this.DeleteQuery(forType, identifierValue);
+        }
+
+        public SqlQuery DeleteQuery(Type type, object identifier)
+        {
+            var objectInfo = ObjectInfo.For(type);
 
             var sqlBuilder = this.CreateSql(StatementType.Delete, objectInfo);
             sqlBuilder.AppendFormat(
@@ -40,7 +49,7 @@
                 objectInfo.TableInfo.IdentifierColumn,
                 this.FormatParameter(0));
 
-            return new SqlQuery(sqlBuilder.ToString(), new[] { identifierValue });
+            return new SqlQuery(sqlBuilder.ToString(), new[] { identifier });
         }
 
         public SqlQuery InsertQuery(object instance)

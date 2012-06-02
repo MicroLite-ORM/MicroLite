@@ -15,6 +15,14 @@
         SqlQuery DeleteQuery(object instance);
 
         /// <summary>
+        /// Creates a SqlQuery to perform a delete for the given identifier.
+        /// </summary>
+        /// <param name="forType">For type.</param>
+        /// <param name="identifier">The identifier value for the target record to delete.</param>
+        /// <returns>A <see cref="SqlQuery"/> to delete a record.</returns>
+        SqlQuery DeleteQuery(Type forType, object identifier);
+
+        /// <summary>
         /// Creates a SqlQuery to perform an insert for the given instance.
         /// </summary>
         /// <param name="instance">The instance to build the query for.</param>

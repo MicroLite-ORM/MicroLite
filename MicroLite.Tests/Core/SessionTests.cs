@@ -167,6 +167,139 @@
         }
 
         [Test]
+        public void DeleteTypeByIdentifierReturnsFalseIfNoRecordsDeleted()
+        {
+            var type = typeof(Customer);
+            var identifier = 1234;
+            var sqlQuery = new SqlQuery("");
+
+            var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
+            mockQueryBuilder.Setup(x => x.DeleteQuery(type, identifier)).Returns(sqlQuery);
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockQueryBuilder.Object);
+
+            Assert.IsFalse(session.Delete(type, identifier));
+
+            mockQueryBuilder.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Test]
+        public void DeleteTypeByIdentifierReturnsTrueIfRecordDeleted()
+        {
+            var type = typeof(Customer);
+            var identifier = 1234;
+            var sqlQuery = new SqlQuery("");
+
+            var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
+            mockQueryBuilder.Setup(x => x.DeleteQuery(type, identifier)).Returns(sqlQuery);
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockQueryBuilder.Object);
+
+            Assert.IsTrue(session.Delete(type, identifier));
+
+            mockQueryBuilder.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Test]
+        public void DeleteTypeByIdentifierThrowsArgumentNullExceptionForNullIdentifier()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Delete(typeof(Customer), null));
+
+            Assert.AreEqual("identifier", exception.ParamName);
+        }
+
+        [Test]
+        public void DeleteTypeByIdentifierThrowsArgumentNullExceptionForNullType()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Delete(null, 1234));
+
+            Assert.AreEqual("type", exception.ParamName);
+        }
+
+        [Test]
+        public void DeleteTypeByIdentifierThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
+        {
+            var type = typeof(Customer);
+            var identifier = 1234;
+            var sqlQuery = new SqlQuery("");
+
+            var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
+            mockQueryBuilder.Setup(x => x.DeleteQuery(type, identifier)).Returns(sqlQuery);
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Throws<InvalidOperationException>();
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockQueryBuilder.Object);
+
+            var exception = Assert.Throws<MicroLiteException>(() => session.Delete(type, identifier));
+
+            Assert.NotNull(exception.InnerException);
+            Assert.AreEqual(exception.InnerException.Message, exception.Message);
+
+            // Command should still be disposed.
+            mockCommand.VerifyAll();
+        }
+
+        [Test]
+        public void DeleteTypeByIdentifierThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            using (session)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => session.Delete(typeof(Customer), 1234));
+        }
+
+        [Test]
         public void DisposeDisposesConnectionManager()
         {
             var mockConnectionManager = new Mock<IConnectionManager>();
