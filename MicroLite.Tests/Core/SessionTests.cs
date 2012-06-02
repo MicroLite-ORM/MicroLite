@@ -16,6 +16,19 @@
     public class SessionTests
     {
         [Test]
+        public void AdvancedReturnsSameSessionByDifferentinterface()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var advancedSession = session.Advanced;
+
+            Assert.AreSame(session, advancedSession);
+        }
+
+        [Test]
         public void BeginTransactionCallsConnectionManagerBeginTransaction()
         {
             var mockConnectionManager = new Mock<IConnectionManager>();
