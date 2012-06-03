@@ -1,9 +1,21 @@
-﻿namespace MicroLite.Query
+﻿// -----------------------------------------------------------------------
+// <copyright file="IWhereOrOrderBy.cs" company="MicroLite">
+// Copyright 2012 Trevor Pilley
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// </copyright>
+// -----------------------------------------------------------------------
+namespace MicroLite.Query
 {
     /// <summary>
     /// The interface which specifies the where method in the fluent sql builder syntax.
     /// </summary>
-    public interface IWhereOrOrderBy : IOrderBy, IToSqlQuery, IHideObjectMembers
+    public interface IWhereOrOrderBy : IOrderBy, IToSqlQuery, IHideObjectMethods
     {
         /// <summary>
         /// Specifies the where clause for the query.

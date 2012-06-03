@@ -97,7 +97,7 @@
     <Compile Include="IdentifierStrategy.cs" />
     <Compile Include="Query\IFrom.cs" />
     <Compile Include="IgnoreAttribute.cs" />
-    <Compile Include="IHideObjectMembers.cs" />
+    <Compile Include="IHideObjectMethods.cs" />
     <Compile Include="Listeners\IListener.cs" />
     <Compile Include="Query\IOrderBy.cs" />
     <Compile Include="ISession.cs" />

@@ -1,4 +1,16 @@
-﻿namespace MicroLite
+﻿// -----------------------------------------------------------------------
+// <copyright file="IAdvancedSession.cs" company="MicroLite">
+// Copyright 2012 Trevor Pilley
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// </copyright>
+// -----------------------------------------------------------------------
+namespace MicroLite
 {
     using System;
 
@@ -9,7 +21,7 @@
     /// These operations allow for more advanded use and have been moved to a separate property to avoid
     /// cluttering the ISession API.
     /// </remarks>
-    public interface IAdvancedSession : IHideObjectMembers
+    public interface IAdvancedSession : IHideObjectMethods
     {
         /// <summary>
         /// Deletes the database record for the type with the supplied identifier.

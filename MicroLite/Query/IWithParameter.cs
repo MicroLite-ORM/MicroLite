@@ -1,9 +1,21 @@
-﻿namespace MicroLite.Query
+﻿// -----------------------------------------------------------------------
+// <copyright file="IWithParameter.cs" company="MicroLite">
+// Copyright 2012 Trevor Pilley
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// </copyright>
+// -----------------------------------------------------------------------
+namespace MicroLite.Query
 {
     /// <summary>
     /// The interface which specifies a parameter and argument for a stored procedure in the fluent sql builder syntax.
     /// </summary>
-    public interface IWithParameter : IToSqlQuery, IHideObjectMembers
+    public interface IWithParameter : IToSqlQuery, IHideObjectMethods
     {
         /// <summary>
         /// Specifies that the stored procedure should be executed the supplied parameter and argument.

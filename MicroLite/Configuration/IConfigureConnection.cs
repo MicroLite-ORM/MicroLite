@@ -1,10 +1,22 @@
-﻿namespace MicroLite.Configuration
+﻿// -----------------------------------------------------------------------
+// <copyright file="IConfigureConnection.cs" company="MicroLite">
+// Copyright 2012 Trevor Pilley
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// </copyright>
+// -----------------------------------------------------------------------
+namespace MicroLite.Configuration
 {
     /// <summary>
     /// The interface which specifies the options for configuring the connection in the fluent configuration
     /// of the MicroLite ORM framework.
     /// </summary>
-    public interface IConfigureConnection : IHideObjectMembers
+    public interface IConfigureConnection : IHideObjectMethods
     {
         /// <summary>
         /// Specifies the named connection string in the app config to be used.

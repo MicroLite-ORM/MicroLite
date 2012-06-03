@@ -1,14 +1,26 @@
-﻿namespace MicroLite
+﻿// -----------------------------------------------------------------------
+// <copyright file="IHideObjectMethods.cs" company="MicroLite">
+// Copyright 2012 Trevor Pilley
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// </copyright>
+// -----------------------------------------------------------------------
+namespace MicroLite
 {
     using System;
     using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
-    /// Helper interface used to hide the base System.Object members from the API to make it much cleaner in Visual Studio intellisense.
+    /// An interface used to hide the 4 System.Object instance methods from the API in Visual Studio intellisense.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public interface IHideObjectMembers
+    public interface IHideObjectMethods
     {
         /// <summary>
         /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
@@ -33,9 +45,9 @@
         /// Gets the type.
         /// </summary>
         /// <returns>The type of the object.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "We're hiding Object.GetType")]
-        [SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "GetType", Justification = "We're hiding Object.GetType")]
         [EditorBrowsable(EditorBrowsableState.Never)]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "The method is defined on System.Object, this interface is just to hide it from intelisense in Visual Studio")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "GetType", Justification = "The method is defined on System.Object, this interface is just to hide it from intelisense in Visual Studio")]
         Type GetType();
 
         /// <summary>
