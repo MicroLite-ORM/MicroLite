@@ -18,7 +18,7 @@ namespace MicroLite
     /// The interface which provides access to advanced operations.
     /// </summary>
     /// <remarks>
-    /// These operations allow for more advanded use and have been moved to a separate property to avoid
+    /// These operations allow for more advanded use and have been moved to a separate interface to avoid
     /// cluttering the ISession API.
     /// </remarks>
     public interface IAdvancedSession : IHideObjectMethods

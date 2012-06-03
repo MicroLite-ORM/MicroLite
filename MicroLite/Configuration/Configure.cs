@@ -36,7 +36,7 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// The entry method to initialise the configuration process.
+        /// Begins the configuration process using the fluent API.
         /// </summary>
         /// <returns>The next step in the fluent configuration.</returns>
         public static IConfigureConnection Fluently()

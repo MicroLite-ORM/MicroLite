@@ -17,7 +17,7 @@ namespace MicroLite
     using System.Data;
 
     /// <summary>
-    /// The interface which provides methods to map objects to database queries.
+    /// The interface which provides the basic methods to map objects to database records.
     /// </summary>
     public interface ISession : IHideObjectMethods, IDisposable
     {

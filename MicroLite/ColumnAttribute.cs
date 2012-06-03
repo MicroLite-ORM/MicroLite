@@ -15,8 +15,7 @@ namespace MicroLite
     using System;
 
     /// <summary>
-    /// An attribute which can be applied to a property to specify the column name if it is different to the
-    /// property name.
+    /// An attribute which can be applied to a property to specify the column name that the property maps to.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class ColumnAttribute : Attribute
@@ -26,14 +25,14 @@ namespace MicroLite
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnAttribute"/> class.
         /// </summary>
-        /// <param name="name">The name of the column in the database table.</param>
+        /// <param name="name">The name of the column in the database table that the property maps to.</param>
         public ColumnAttribute(string name)
         {
             this.name = name;
         }
 
         /// <summary>
-        /// Gets the name of the column in the database table.
+        /// Gets the name of the column in the database table that the property maps to
         /// </summary>
         public string Name
         {
