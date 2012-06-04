@@ -13,6 +13,7 @@
 namespace MicroLite.Logging
 {
     using System;
+    using System.Diagnostics;
 
     /// <summary>
     /// A class which the MicroLite ORM framework can call to resolve an ILog implementation.
@@ -20,12 +21,29 @@ namespace MicroLite.Logging
     public static class LogManager
     {
         /// <summary>
-        /// Gets or sets the function which can be called by MicroLite to resolve the ILog to use.
+        /// Gets or sets the function which can be called by MicroLite to resolve the <see cref="ILog"/> to use.
         /// </summary>
         public static Func<string, ILog> GetLogger
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// Gets the log for the current (calling) class.
+        /// </summary>
+        /// <returns>The <see cref="ILog"/> for the class which called the method.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "The method will return a different ILog depending on the caller, it shouldn't be a property.")]
+        public static ILog GetCurrentClassLog()
+        {
+            if (GetLogger != null)
+            {
+                var stackFrame = new StackFrame(skipFrames: 1);
+
+                return GetLog(stackFrame.GetMethod().DeclaringType.FullName);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -35,7 +53,7 @@ namespace MicroLite.Logging
         /// <returns>
         /// The <see cref="ILog"/> for the supplied log name or null if LogManager.GetLogger nas not been set.
         /// </returns>
-        public static ILog GetLogInstance(string name)
+        public static ILog GetLog(string name)
         {
             if (GetLogger != null)
             {

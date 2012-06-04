@@ -26,7 +26,7 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("Session {id}")]
     internal sealed class Session : ISession, IAdvancedSession
     {
-        private static readonly ILog log = LogManager.GetLogInstance("MicroLite.Session");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.Session");
         private readonly IConnectionManager connectionManager;
         private readonly Guid id = Guid.NewGuid();
         private readonly IObjectBuilder objectBuilder;

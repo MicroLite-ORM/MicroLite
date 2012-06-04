@@ -22,7 +22,7 @@ namespace MicroLite.Core
     /// </summary>
     internal sealed class ObjectBuilder : IObjectBuilder
     {
-        private static readonly ILog log = LogManager.GetLogInstance("MicroLite.ObjectBuilder");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.ObjectBuilder");
 
         public T BuildNewInstance<T>(IDataReader reader)
             where T : class, new()

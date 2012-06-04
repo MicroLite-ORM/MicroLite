@@ -25,7 +25,7 @@ namespace MicroLite
     internal sealed class ObjectInfo
     {
         private static readonly object locker = new object();
-        private static readonly ILog log = LogManager.GetLogInstance("MicroLite.ObjectInfo");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.ObjectInfo");
         private static readonly IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
 
         // The properties (key is the property name, value is the property info for the property).

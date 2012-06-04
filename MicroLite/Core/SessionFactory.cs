@@ -22,7 +22,7 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("SessionFactory for {ConnectionString}")]
     internal sealed class SessionFactory : ISessionFactory
     {
-        private static readonly ILog log = LogManager.GetLogInstance("MicroLite.SessionFactory");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.SessionFactory");
         private readonly string connectionString;
         private readonly object locker = new object();
         private readonly DbProviderFactory providerFactory;

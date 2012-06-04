@@ -22,7 +22,7 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("Transaction {id},  Committed {WasCommitted}")]
     internal sealed class Transaction : ITransaction
     {
-        private static readonly ILog log = LogManager.GetLogInstance("MicroLite.Transaction");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.Transaction");
         private readonly Guid id = Guid.NewGuid();
         private bool disposed;
         private IDbTransaction transaction;

@@ -11,24 +11,49 @@
     public class LogManagerTests
     {
         [Test]
-        public void GetLogInstanceReturnsLogIfGetLoggerSet()
+        public void GetCurrentClassLogReturnsNullIfGetLoggerNotSet()
+        {
+            Assert.IsNull(LogManager.GetCurrentClassLog());
+        }
+
+        [Test]
+        public void GetCurrentClassLogReturnsLogIfGetLoggerSet()
         {
             var log = new Mock<ILog>().Object;
 
             LogManager.GetLogger = (string name) =>
             {
+                Assert.AreEqual(typeof(LogManagerTests).FullName, name);
+
                 return log;
             };
 
-            var logInstance = LogManager.GetLogInstance("MyLog");
+            var logInstance = LogManager.GetCurrentClassLog();
 
             Assert.AreSame(log, logInstance);
         }
 
         [Test]
-        public void GetLogInstanceReturnsNullIfGetLoggerNotSet()
+        public void GetLogByNameReturnsLogIfGetLoggerSet()
         {
-            Assert.IsNull(LogManager.GetLogInstance("MyLog"));
+            var log = new Mock<ILog>().Object;
+
+            LogManager.GetLogger = (string name) =>
+            {
+                Assert.AreEqual("LogManagerTests", name);
+
+                return log;
+            };
+
+            var logInstance = LogManager.GetLog("LogManagerTests");
+
+            Assert.AreSame(log, logInstance);
+        }
+
+        [Test]
+        public void GetLogByNameReturnsNullIfGetLoggerNotSet()
+        {
+            Assert.IsNull(LogManager.GetLog("LogManagerTests"));
         }
 
         [SetUp]

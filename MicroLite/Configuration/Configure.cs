@@ -146,7 +146,7 @@ namespace MicroLite.Configuration
         {
             if (log == null)
             {
-                log = LogManager.GetLogInstance("MicroLite.Configure");
+                log = LogManager.GetLog("MicroLite.Configure");
             }
         }
     }
