@@ -92,6 +92,45 @@
         }
 
         [Test]
+        public void PageWithMultiWhereAndMultiOrderByMultiLine()
+        {
+            var sqlQuery = new SqlQuery(@"SELECT
+ [Customers].[CustomerId],
+ [Customers].[Name],
+ [Customers].[DoB],
+ [Customers].[StatusId]
+ FROM
+ [Sales].[Customers]
+ WHERE
+ ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)
+ ORDER BY
+ [Customers].[Name] ASC,
+ [Customers].[DoB] ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
+
+            var queryBuilder = new SqlQueryBuilder();
+            var paged = queryBuilder.Page(sqlQuery, 1, 25);
+
+            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC) AS RowNumber FROM [Sales].[Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
+            Assert.AreEqual(paged.Arguments[0], sqlQuery.Arguments[0]);
+            Assert.AreEqual(paged.Arguments[1], sqlQuery.Arguments[1]);
+            Assert.AreEqual(paged.Arguments[2], 1);
+            Assert.AreEqual(paged.Arguments[3], 25);
+        }
+
+        [Test]
+        public void PageWithNoWhereButOrderBy()
+        {
+            var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [dbo].[Customers] ORDER BY [CustomerId] ASC");
+
+            var queryBuilder = new SqlQueryBuilder();
+            var paged = queryBuilder.Page(sqlQuery, 1, 25);
+
+            Assert.AreEqual("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM (SELECT [CustomerId], [Name], [DoB], [StatusId], ROW_NUMBER() OVER(ORDER BY [CustomerId] ASC) AS RowNumber FROM [dbo].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+            Assert.AreEqual(paged.Arguments[0], 1);
+            Assert.AreEqual(paged.Arguments[1], 25);
+        }
+
+        [Test]
         public void PageWithNoWhereOrOrderByFirstResultsPage()
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]");
@@ -115,20 +154,6 @@
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
             Assert.AreEqual(paged.Arguments[0], 26);
             Assert.AreEqual(paged.Arguments[1], 50);
-        }
-
-        [Test]
-        public void PageWithWhereButNoOrderBy()
-        {
-            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", CustomerStatus.Active);
-
-            var queryBuilder = new SqlQueryBuilder();
-            var paged = queryBuilder.Page(sqlQuery, 1, 25);
-
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
-            Assert.AreEqual(paged.Arguments[0], sqlQuery.Arguments[0]);
-            Assert.AreEqual(paged.Arguments[1], 1);
-            Assert.AreEqual(paged.Arguments[2], 25);
         }
 
         [Test]
@@ -170,29 +195,17 @@
         }
 
         [Test]
-        public void PageWithMultiWhereAndMultiOrderByMultiLine()
+        public void PageWithWhereButNoOrderBy()
         {
-            var sqlQuery = new SqlQuery(@"SELECT
- [Customers].[CustomerId],
- [Customers].[Name],
- [Customers].[DoB],
- [Customers].[StatusId]
- FROM
- [Sales].[Customers]
- WHERE
- ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)
- ORDER BY
- [Customers].[Name] ASC,
- [Customers].[DoB] ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
+            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", CustomerStatus.Active);
 
             var queryBuilder = new SqlQueryBuilder();
             var paged = queryBuilder.Page(sqlQuery, 1, 25);
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC) AS RowNumber FROM [Sales].[Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
+            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
             Assert.AreEqual(paged.Arguments[0], sqlQuery.Arguments[0]);
-            Assert.AreEqual(paged.Arguments[1], sqlQuery.Arguments[1]);
-            Assert.AreEqual(paged.Arguments[2], 1);
-            Assert.AreEqual(paged.Arguments[3], 25);
+            Assert.AreEqual(paged.Arguments[1], 1);
+            Assert.AreEqual(paged.Arguments[2], 25);
         }
 
         [Test]
