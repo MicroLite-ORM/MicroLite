@@ -1,6 +1,7 @@
 properties {
-  $base_dir = Resolve-Path .
-  $build_dir = "$base_dir\build\"
+  $baseDir = Resolve-Path .
+  $buildDir = "$baseDir\build"
+  $buildDir40 = "$buildDir\4.0\"
   $projectName = "MicroLite"
 }
 
@@ -8,14 +9,14 @@ Task Default -depends RunTests
 
 Task RunTests -Depends Build {
   Write-Host "Running $projectName.Tests" -ForegroundColor Green
-  Exec {  & $base_dir\tools\nunit\nunit-console-x86.exe "$build_dir\$projectName.Tests.dll" /nologo /nodots /noxml }
+  Exec {  & $baseDir\tools\nunit\nunit-console-x86.exe "$buildDir40\$projectName.Tests.dll" /nologo /nodots /noxml }
 }
 
 Task Build -Depends Clean {
-  Remove-Item -force -recurse $build_dir -ErrorAction SilentlyContinue
-
-  Write-Host "Building $projectName.sln" -ForegroundColor Green
-  Exec { msbuild "$projectName.sln" /t:Build /p:"Configuration=Release;OutDir=$build_dir" /v:quiet }
+  Remove-Item -force -recurse $buildDir -ErrorAction SilentlyContinue
+ 
+  Write-Host "Building $projectName.sln for .net 4.0" -ForegroundColor Green
+  Exec { msbuild "$projectName.sln" /target:Build "/property:Configuration=Release;OutDir=$buildDir40;TargetFrameworkVersion=v4.0" /verbosity:quiet }
 }
 
 Task Clean {
