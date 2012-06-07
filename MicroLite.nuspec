@@ -12,11 +12,6 @@
     <releaseNotes>See https://github.com/TrevorPilley/MicroLite/wiki/Release-Notes for a summary of changes made in this release of the package.</releaseNotes>
     <copyright>Copyright 2012</copyright>
     <tags>Micro ORM Framework POCO Database</tags>
-		<frameworkAssemblies>
-			<frameworkAssembly assemblyName="System.Core" />
-			<frameworkAssembly assemblyName="System.Configuration" />
-			<frameworkAssembly assemblyName="System.Data" />
-		</frameworkAssemblies>
   </metadata>
   <files>
     <file src="..\build\3.5\MicroLite.dll" target="lib\net35-client" />
