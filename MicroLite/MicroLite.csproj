@@ -51,9 +51,11 @@
   <ItemGroup>
     <Compile Include="ColumnAttribute.cs" />
     <Compile Include="Configuration\Configure.cs" />
+    <Compile Include="Configuration\ConfigureExtensions.cs" />
     <Compile Include="Configuration\IConfigureConnection.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Configuration\IConfigureExtensions.cs" />
     <Compile Include="Configuration\ICreateSessionFactory.cs">
       <SubType>Code</SubType>
     </Compile>

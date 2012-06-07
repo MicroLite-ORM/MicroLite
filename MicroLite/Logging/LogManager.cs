@@ -23,7 +23,7 @@ namespace MicroLite.Logging
         /// <summary>
         /// Gets or sets the function which can be called by MicroLite to resolve the <see cref="ILog"/> to use.
         /// </summary>
-        public static Func<string, ILog> GetLogger
+        internal static Func<string, ILog> GetLogger
         {
             get;
             set;
@@ -53,7 +53,7 @@ namespace MicroLite.Logging
         /// <returns>
         /// The <see cref="ILog"/> for the supplied log name or null if LogManager.GetLogger nas not been set.
         /// </returns>
-        public static ILog GetLog(string name)
+        internal static ILog GetLog(string name)
         {
             if (GetLogger != null)
             {

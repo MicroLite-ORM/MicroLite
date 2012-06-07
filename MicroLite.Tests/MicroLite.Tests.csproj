@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColumnAttributeTests.cs" />
+    <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
     <Compile Include="Listeners\AssignedListenerTests.cs" />
     <Compile Include="Core\ConnectionManagerTests.cs" />

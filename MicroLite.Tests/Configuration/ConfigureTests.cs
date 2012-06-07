@@ -60,6 +60,15 @@
         }
 
         [Test]
+        public void ExtensionsReturnsNewInstanceOnEachCall()
+        {
+            var extensions1 = Configure.Extensions();
+            var extensions2 = Configure.Extensions();
+
+            Assert.AreNotSame(extensions1, extensions2);
+        }
+
+        [Test]
         public void FluentlyReturnsNewInstanceOnEachCall()
         {
             var configure1 = Configure.Fluently();

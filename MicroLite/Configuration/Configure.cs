@@ -36,6 +36,15 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
+        /// Enables extensions to be loaded.
+        /// </summary>
+        /// <returns>The interface which provides the extension points.</returns>
+        public static IConfigureExtensions Extensions()
+        {
+            return new ConfigureExtensions();
+        }
+
+        /// <summary>
         /// Begins the configuration process using the fluent API.
         /// </summary>
         /// <returns>The next step in the fluent configuration.</returns>
