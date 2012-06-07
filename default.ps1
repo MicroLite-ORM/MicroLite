@@ -11,21 +11,15 @@ Task Default -depends RunTests, Build35, Build40
 Task Build35 {
   Remove-Item -force -recurse $buildDir35 -ErrorAction SilentlyContinue
   
-  Write-Host "Cleaning $projectName.csproj" -ForegroundColor Green
-  Exec { msbuild "$projectName\$projectName.csproj" /t:Clean /p:Configuration=Release /v:quiet }
- 
   Write-Host "Building $projectName.csproj for .net 3.5" -ForegroundColor Green
-  Exec { msbuild "$projectName\$projectName.csproj" /target:Build "/property:Configuration=Release;OutDir=$buildDir35;TargetFrameworkVersion=v3.5;TargetFrameworkProfile=Client" /verbosity:quiet }
+  Exec { msbuild "$projectName\$projectName.csproj" /target:Rebuild "/property:Configuration=Release;OutDir=$buildDir35;TargetFrameworkVersion=v3.5;TargetFrameworkProfile=Client" /verbosity:quiet }
 }
 
 Task Build40 {
   Remove-Item -force -recurse $buildDir40 -ErrorAction SilentlyContinue
   
-  Write-Host "Cleaning $projectName.csproj" -ForegroundColor Green
-  Exec { msbuild "$projectName\$projectName.csproj" /t:Clean /p:Configuration=Release /v:quiet }
- 
   Write-Host "Building $projectName.csproj for .net 4.0" -ForegroundColor Green
-  Exec { msbuild "$projectName\$projectName.csproj" /target:Build "/property:Configuration=Release;OutDir=$buildDir40;TargetFrameworkVersion=v4.0;TargetFrameworkProfile=Client" /verbosity:quiet }
+  Exec { msbuild "$projectName\$projectName.csproj" /target:Rebuild "/property:Configuration=Release;OutDir=$buildDir40;TargetFrameworkVersion=v4.0;TargetFrameworkProfile=Client" /verbosity:quiet }
 }
 
 Task RunTests -Depends Build {
