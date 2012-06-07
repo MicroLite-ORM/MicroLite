@@ -2,3 +2,7 @@ Before building, ensure that you have StyleCop installed (currently version 4.7.
 If running on a 64 bit machine, run the PowerShell (x86) executable otherwise the StyleCop.targets won't be found.
 
 run build.ps1, this will build the solution and run all the tests, then build the .net 3.5 and .net 4.0 release builds of the MicroLite.dll in the build folder
+
+To build a NuGet package and specify the version (replace 0.9.0 with the actual version) e.g.
+
+.\build-nuget.ps1 -Version 0.9.0

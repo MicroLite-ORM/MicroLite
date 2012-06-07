@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>MicroLite</id>
+    <version>0.0.0</version>
+    <authors>Trevor Pilley</authors>
+    <owners>Trevor Pilley</owners>
+    <licenseUrl>https://github.com/TrevorPilley/MicroLite/Licence.txt</licenseUrl>
+    <projectUrl>https://github.com/TrevorPilley/MicroLite/wiki</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Micro ORM Framework</description>
+    <releaseNotes>See https://github.com/TrevorPilley/MicroLite/wiki/Release-Notes for a summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright 2012</copyright>
+    <tags>Micro ORM Framework POCO Database</tags>
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System.Core" />
+			<frameworkAssembly assemblyName="System.Configuration" />
+			<frameworkAssembly assemblyName="System.Data" />
+		</frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="..\build\3.5\MicroLite.dll" target="lib\net35-client" />
+    <file src="..\build\3.5\MicroLite.xml" target="lib\net35-client" />
+    <file src="..\build\4.0\MicroLite.dll" target="lib\net40-client" />
+    <file src="..\build\4.0\MicroLite.xml" target="lib\net40-client" />
+  </files>
+</package>
