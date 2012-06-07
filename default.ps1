@@ -1,9 +1,9 @@
 properties {
+  $projectName = "MicroLite"
   $baseDir = Resolve-Path .
   $buildDir = "$baseDir\build"
   $buildDir35 = "$buildDir\3.5\"
   $buildDir40 = "$buildDir\4.0\"
-  $projectName = "MicroLite"
 }
 
 Task Default -depends RunTests, Build35, Build40
@@ -33,7 +33,6 @@ Task Build -Depends Clean {
 }
 
 Task Clean {
-  Remove-Item -force -recurse $buildDir -ErrorAction SilentlyContinue
 
   Write-Host "Cleaning $projectName.sln" -ForegroundColor Green
   Exec { msbuild "$projectName.sln" /t:Clean /p:Configuration=Release /v:quiet }
