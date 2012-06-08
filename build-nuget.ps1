@@ -1,6 +1,7 @@
 param(
   [string]$projectName = $(throw "project name is a required parameter."),
-  [string]$version = $(throw "version is a required parameter.")
+  [string]$version = $(throw "version is a required parameter."),
+  [bool]$push
 )
 
 $scriptPath = Split-Path $MyInvocation.InvocationName
@@ -23,5 +24,8 @@ if (Test-Path "$nuGetExe.old")
 Write-Host "Pack $nuSpec -> $nuGetPackage" -ForegroundColor Green
 & $nuGetExe Pack $nuSpec -Version $version -OutputDirectory $buildDir -BasePath $buildDir
 
-Write-Host "Push $nuGetPackage -> http://nuget.org" -ForegroundColor Green
-& $nuGetExe Push $nuGetPackage
+if($push)
+{
+  Write-Host "Push $nuGetPackage -> http://nuget.org" -ForegroundColor Green
+  & $nuGetExe Push $nuGetPackage
+}

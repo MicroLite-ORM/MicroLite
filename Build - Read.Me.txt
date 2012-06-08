@@ -4,5 +4,8 @@ If running on a 64 bit machine, run the PowerShell (x86) executable otherwise th
 ** To just build the binaries in release mode with all tests run:
 .\build.ps1
 
-** To build and push a NuGet package you must specify the project name and version:
+** To build the NuGet package you must specify the project name and version:
 .\build-nuget.ps1 -projectName MicroLite -version 1.0.0-alpha
+
+** To also push it to NuGet.org after creating the .nupkg you must supply push true:
+.\build-nuget.ps1 -projectName MicroLite -version 1.0.0-alpha -push $true
