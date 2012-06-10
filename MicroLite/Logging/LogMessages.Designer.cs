@@ -97,6 +97,15 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Setting the identifier value for an instance of the type {0} to {1}.
+        /// </summary>
+        internal static string DbGeneratedListener_SettingIdentifierValue {
+            get {
+                return ResourceManager.GetString("DbGeneratedListener_SettingIdentifierValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type {0} has no property named &apos;Id&apos;, &apos;{0}Id&apos; or a property with an IdentifierAttribute specified..
         /// </summary>
         internal static string NoIdentifierFoundForType {

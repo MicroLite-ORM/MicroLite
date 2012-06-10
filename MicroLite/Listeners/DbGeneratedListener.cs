@@ -14,6 +14,7 @@ namespace MicroLite.Listeners
 {
     using System;
     using System.Globalization;
+    using MicroLite.Logging;
 
     /// <summary>
     /// The implementation of <see cref="IListener"/> for setting the instance identifier value if
@@ -21,6 +22,8 @@ namespace MicroLite.Listeners
     /// </summary>
     internal sealed class DbGeneratedListener : Listener
     {
+        private static readonly ILog log = LogManager.GetLog("MicroLite.DbGeneratedListener");
+
         public override void AfterInsert(object instance, object executeScalarResult)
         {
             var objectInfo = ObjectInfo.For(instance.GetType());
@@ -31,6 +34,7 @@ namespace MicroLite.Listeners
 
                 var identifierValue = Convert.ChangeType(executeScalarResult, propertyInfo.PropertyType, CultureInfo.InvariantCulture);
 
+                log.TryLogDebug(LogMessages.DbGeneratedListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
                 propertyInfo.SetValue(instance, identifierValue, null);
             }
         }

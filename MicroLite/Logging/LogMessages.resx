@@ -129,6 +129,9 @@
   <data name="Configure_ReadingConnection" xml:space="preserve">
     <value>Reading connection named {0} from app.config</value>
   </data>
+  <data name="DbGeneratedListener_SettingIdentifierValue" xml:space="preserve">
+    <value>Setting the identifier value for an instance of the type {0} to {1}</value>
+  </data>
   <data name="NoIdentifierFoundForType" xml:space="preserve">
     <value>The type {0} has no property named 'Id', '{0}Id' or a property with an IdentifierAttribute specified.</value>
   </data>
