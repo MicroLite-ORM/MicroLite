@@ -49,6 +49,46 @@
             Assert.AreEqual(exception.InnerException.Message, exception.Message);
         }
 
+        /// <summary>
+        /// Issue #7 - ObjectBuilder throws exception converting int to nullable int.
+        /// </summary>
+        [Test]
+        public void PropertyValueIsSetToNullForNullableInt()
+        {
+            var mockDataReader = new Mock<IDataReader>();
+            mockDataReader.Setup(x => x.FieldCount).Returns(1);
+
+            mockDataReader.Setup(x => x.GetName(0)).Returns("ReferredById");
+
+            mockDataReader.Setup(x => x[0]).Returns((int?)null);
+
+            var objectBuilder = new ObjectBuilder();
+
+            var customer = objectBuilder.BuildNewInstance<Customer>(mockDataReader.Object);
+
+            Assert.IsNull(customer.ReferredById);
+        }
+
+        /// <summary>
+        /// Issue #7 - ObjectBuilder throws exception converting int to nullable int.
+        /// </summary>
+        [Test]
+        public void PropertyValueIsSetToValueForNullableInt()
+        {
+            var mockDataReader = new Mock<IDataReader>();
+            mockDataReader.Setup(x => x.FieldCount).Returns(1);
+
+            mockDataReader.Setup(x => x.GetName(0)).Returns("ReferredById");
+
+            mockDataReader.Setup(x => x[0]).Returns((int?)1235);
+
+            var objectBuilder = new ObjectBuilder();
+
+            var customer = objectBuilder.BuildNewInstance<Customer>(mockDataReader.Object);
+
+            Assert.AreEqual(1235, customer.ReferredById);
+        }
+
         [Test]
         public void PropertyValuesAreSetCorrectly()
         {
@@ -96,6 +136,12 @@
             }
 
             public string Name
+            {
+                get;
+                set;
+            }
+
+            public int? ReferredById
             {
                 get;
                 set;

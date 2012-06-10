@@ -34,14 +34,27 @@ namespace MicroLite.FrameworkExtensions
 
         internal static void SetValue<T>(this PropertyInfo propertyInfo, T instance, object value)
         {
+            if (value == null && propertyInfo.PropertyType.IsValueType && propertyInfo.PropertyType.IsGenericType)
+            {
+                return;
+            }
+
             if (propertyInfo.PropertyType.IsEnum)
             {
                 propertyInfo.SetValue(instance, value, null);
             }
             else
             {
-                var converted = Convert.ChangeType(value, propertyInfo.PropertyType, CultureInfo.InvariantCulture);
-                propertyInfo.SetValue(instance, converted, null);
+                if (propertyInfo.PropertyType.IsValueType && propertyInfo.PropertyType.IsGenericType)
+                {
+                    ValueType converted = (ValueType)value;
+                    propertyInfo.SetValue(instance, converted, null);
+                }
+                else
+                {
+                    var converted = Convert.ChangeType(value, propertyInfo.PropertyType, CultureInfo.InvariantCulture);
+                    propertyInfo.SetValue(instance, converted, null);
+                }
             }
         }
     }
