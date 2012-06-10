@@ -34,7 +34,7 @@ namespace MicroLite.FrameworkExtensions
 
         internal static void SetValue<T>(this PropertyInfo propertyInfo, T instance, object value)
         {
-            if (value == null && propertyInfo.PropertyType.IsValueType && propertyInfo.PropertyType.IsGenericType)
+            if (value == DBNull.Value && propertyInfo.PropertyType.IsValueType && propertyInfo.PropertyType.IsGenericType)
             {
                 return;
             }

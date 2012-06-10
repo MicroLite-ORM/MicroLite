@@ -50,7 +50,7 @@
         }
 
         /// <summary>
-        /// Issue #7 - ObjectBuilder throws exception converting int to nullable int.
+        /// Issue #8 - ObjectBuilder throws exception converting DBNull to nullable ValueType.
         /// </summary>
         [Test]
         public void PropertyValueIsSetToNullForNullableInt()
@@ -60,7 +60,7 @@
 
             mockDataReader.Setup(x => x.GetName(0)).Returns("ReferredById");
 
-            mockDataReader.Setup(x => x[0]).Returns((int?)null);
+            mockDataReader.Setup(x => x[0]).Returns(DBNull.Value);
 
             var objectBuilder = new ObjectBuilder();
 
