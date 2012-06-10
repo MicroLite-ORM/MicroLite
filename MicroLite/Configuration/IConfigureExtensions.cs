@@ -13,7 +13,6 @@
 namespace MicroLite.Configuration
 {
     using System;
-    using MicroLite.Listeners;
     using MicroLite.Logging;
 
     /// <summary>

@@ -14,7 +14,6 @@ namespace MicroLite
 {
     using System;
     using System.ComponentModel;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// An interface used to hide the 4 System.Object instance methods from the API in Visual Studio intellisense.
