@@ -27,10 +27,11 @@ namespace MicroLite
         private static readonly object locker = new object();
         private static readonly ILog log = LogManager.GetLog("MicroLite.ObjectInfo");
         private static readonly IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
+        private readonly Type forType;
 
         // The properties (key is the property name, value is the property info for the property).
         private readonly IDictionary<string, PropertyInfo> properties = new Dictionary<string, PropertyInfo>();
-        private readonly Type forType;
+
         private readonly TableInfo tableInfo = new TableInfo();
 
         private ObjectInfo(Type forType)
@@ -108,7 +109,7 @@ namespace MicroLite
 
             var identifierValue = identifierPropertyInfo.GetValue(instance);
 
-            return identifierValue.Equals(this.DefaultIdentiferValue);
+            return object.Equals(identifierValue, this.DefaultIdentiferValue);
         }
 
         private static void VerifyType(Type forType)
@@ -165,14 +166,22 @@ namespace MicroLite
                             log.TryLogDebug(LogMessages.ObjectInfo_UsingPropertyAsIdentifier, this.ForType.FullName, property.Name, identifierAttribute.IdentifierStrategy.ToString());
                             this.TableInfo.IdentifierColumn = columnName;
                             this.TableInfo.IdentifierStrategy = identifierAttribute.IdentifierStrategy;
-                            this.DefaultIdentiferValue = (ValueType)Activator.CreateInstance(property.PropertyType);
+
+                            if (property.PropertyType.IsValueType)
+                            {
+                                this.DefaultIdentiferValue = (ValueType)Activator.CreateInstance(property.PropertyType);
+                            }
                         }
                         else if (property.Name.Equals("Id") || property.Name.Equals(this.ForType.Name + "Id"))
                         {
                             log.TryLogDebug(LogMessages.ObjectInfo_UsingPropertyAsIdentifier, this.ForType.FullName, property.Name, "DbGenerated");
                             this.TableInfo.IdentifierColumn = columnName;
                             this.TableInfo.IdentifierStrategy = IdentifierStrategy.DbGenerated;
-                            this.DefaultIdentiferValue = (ValueType)Activator.CreateInstance(property.PropertyType);
+
+                            if (property.PropertyType.IsValueType)
+                            {
+                                this.DefaultIdentiferValue = (ValueType)Activator.CreateInstance(property.PropertyType);
+                            }
                         }
                     }
                 }

@@ -250,7 +250,7 @@ namespace MicroLite.Core
             return new PagedResult<T>(page, results);
         }
 
-        public T Single<T>(ValueType identifier) where T : class, new()
+        public T Single<T>(object identifier) where T : class, new()
         {
             this.ThrowIfDisposed();
 

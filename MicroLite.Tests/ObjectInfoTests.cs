@@ -35,6 +35,14 @@
         }
 
         [Test]
+        public void DefaultIdentifierValueIsSetCorrectlyForString()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
+
+            Assert.IsNull(objectInfo.DefaultIdentiferValue);
+        }
+
+        [Test]
         public void ForReturnsSameInstanceOnEachCall()
         {
             var objectInfo1 = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
@@ -150,6 +158,20 @@
             Assert.IsTrue(objectInfo.HasDefaultIdentifierValue(customer));
 
             customer.Id = 123;
+            Assert.IsFalse(objectInfo.HasDefaultIdentifierValue(customer));
+        }
+
+        [Test]
+        public void HasDefaultStringValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
+
+            var customer = new CustomerWithStringIdentifier();
+
+            customer.Id = null;
+            Assert.IsTrue(objectInfo.HasDefaultIdentifierValue(customer));
+
+            customer.Id = "AFIK";
             Assert.IsFalse(objectInfo.HasDefaultIdentifierValue(customer));
         }
 
@@ -296,6 +318,15 @@
 
         private class CustomerWithNoIdentifier
         {
+        }
+
+        private class CustomerWithStringIdentifier
+        {
+            public string Id
+            {
+                get;
+                set;
+            }
         }
 
         /// <summary>

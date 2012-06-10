@@ -93,7 +93,7 @@ namespace MicroLite
         /// <exception cref="ArgumentNullException">Thrown if supplied instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Single", Justification = "It's used in loads of places by the linq extension methods as a method name.")]
-        T Single<T>(ValueType identifier) where T : class, new();
+        T Single<T>(object identifier) where T : class, new();
 
         /// <summary>
         /// Updates the database record for the supplied instance with the current property values.
