@@ -13,8 +13,10 @@
 namespace MicroLite.Core
 {
     using System;
+    using System.Collections.Generic;
     using System.Data;
     using System.Globalization;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using MicroLite.FrameworkExtensions;
 
@@ -55,7 +57,7 @@ namespace MicroLite.Core
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The purpose of this method is to build a command and return it.")]
         public IDbCommand Build(SqlQuery sqlQuery)
         {
-            var parameterNames = parameterRegex.Matches(sqlQuery.CommandText);
+            var parameterNames = new HashSet<string>(parameterRegex.Matches(sqlQuery.CommandText).Cast<Match>().Select(x => x.Value)).ToList();
 
             if (parameterNames.Count != sqlQuery.Arguments.Count)
             {
@@ -73,7 +75,7 @@ namespace MicroLite.Core
 
             for (int i = 0; i < parameterNames.Count; i++)
             {
-                var parameterName = parameterNames[i].Value;
+                var parameterName = parameterNames[i];
 
                 var parameter = command.CreateParameter();
                 parameter.Direction = ParameterDirection.Input;

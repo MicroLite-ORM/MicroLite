@@ -124,6 +124,36 @@
             }
         }
 
+        /// <summary>
+        /// Issue #6 - The argument count check needs to cater for the same argument being used twice.
+        /// </summary>
+        [Test]
+        public void BuildForSqlQueryWithSqlTextWhichUsesSameParameterTwice()
+        {
+            var sqlQuery = new SqlQuery(
+                "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value1] = @p1 OR @p1 IS NULL",
+                new object[] { 100, "hello" });
+
+            using (var connectionManager = new ConnectionManager(new SqlConnection()))
+            {
+                var command = connectionManager.Build(sqlQuery);
+
+                Assert.AreEqual(sqlQuery.CommandText, command.CommandText);
+                Assert.AreEqual(CommandType.Text, command.CommandType);
+                Assert.AreEqual(2, command.Parameters.Count);
+
+                var parameter1 = (IDataParameter)command.Parameters[0];
+                Assert.AreEqual(ParameterDirection.Input, parameter1.Direction);
+                Assert.AreEqual("@p0", parameter1.ParameterName);
+                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
+
+                var parameter2 = (IDataParameter)command.Parameters[1];
+                Assert.AreEqual(ParameterDirection.Input, parameter2.Direction);
+                Assert.AreEqual("@p1", parameter2.ParameterName);
+                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
+            }
+        }
+
         [Test]
         public void BuildForSqlQueryWithStoredProcedureWithoutParameters()
         {
