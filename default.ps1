@@ -12,7 +12,7 @@ Task Build35 {
   Remove-Item -force -recurse $buildDir35 -ErrorAction SilentlyContinue
   
   Write-Host "Building $projectName.csproj for .net 3.5" -ForegroundColor Green
-  Exec { msbuild "$projectName\$projectName.csproj" /target:Rebuild "/property:Configuration=Release;OutDir=$buildDir35;TargetFrameworkVersion=v3.5;TargetFrameworkProfile=Client" /verbosity:quiet }
+  Exec { msbuild "$projectName\$projectName.csproj" /target:Rebuild "/property:Configuration=Release;DefineConstants=NET_3_5;OutDir=$buildDir35;TargetFrameworkVersion=v3.5;TargetFrameworkProfile=Client" /verbosity:quiet }
 }
 
 Task Build40 {
