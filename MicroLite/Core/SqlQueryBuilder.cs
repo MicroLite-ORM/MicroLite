@@ -75,16 +75,19 @@ namespace MicroLite.Core
 
             foreach (var column in objectInfo.TableInfo.Columns)
             {
-                if (!column.Equals(objectInfo.TableInfo.IdentifierColumn))
+                if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
+                    && column.Equals(objectInfo.TableInfo.IdentifierColumn))
                 {
-                    sqlBuilder.Append(this.FormatParameter(values.Count) + ", ");
-
-                    var propertyInfo = objectInfo.GetPropertyInfoForColumn(column);
-
-                    var value = propertyInfo.GetValue(instance);
-
-                    values.Add(value);
+                    continue;
                 }
+
+                sqlBuilder.Append(this.FormatParameter(values.Count) + ", ");
+
+                var propertyInfo = objectInfo.GetPropertyInfoForColumn(column);
+
+                var value = propertyInfo.GetValue(instance);
+
+                values.Add(value);
             }
 
             sqlBuilder.Remove(sqlBuilder.Length - 2, 2);
@@ -204,10 +207,13 @@ namespace MicroLite.Core
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
-                        if (!column.Equals(objectInfo.TableInfo.IdentifierColumn))
+                        if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
+                            && column.Equals(objectInfo.TableInfo.IdentifierColumn))
                         {
-                            sqlBuilder.AppendFormat("[{0}].[{1}], ", objectInfo.TableInfo.Name, column);
+                            continue;
                         }
+
+                        sqlBuilder.AppendFormat("[{0}].[{1}], ", objectInfo.TableInfo.Name, column);
                     }
 
                     sqlBuilder.Remove(sqlBuilder.Length - 2, 2);

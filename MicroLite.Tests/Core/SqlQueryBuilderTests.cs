@@ -19,7 +19,7 @@
         [Test]
         public void DeleteQueryForInstance()
         {
-            var customer = new Customer
+            var customer = new CustomerWithDbGenerated
             {
                 Id = 122672
             };
@@ -39,16 +39,39 @@
 
             var queryBuilder = new SqlQueryBuilder();
 
-            var sqlQuery = queryBuilder.DeleteQuery(typeof(Customer), identifier);
+            var sqlQuery = queryBuilder.DeleteQuery(typeof(CustomerWithDbGenerated), identifier);
 
             Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
         }
 
+        /// <summary>
+        /// Issue #11 - Identifier property value should be included on insert for IdentifierStrategy.Assigned.
+        /// </summary>
         [Test]
-        public void InsertQuery()
+        public void InsertQueryForAssignedInstance()
         {
-            var customer = new Customer
+            var customer = new CustomerWithAssigned
+            {
+                Id = 6245543,
+                Name = "Trevor Pilley",
+                Status = CustomerStatus.Active
+            };
+
+            var queryBuilder = new SqlQueryBuilder();
+
+            var sqlQuery = queryBuilder.InsertQuery(customer);
+
+            Assert.AreEqual("INSERT INTO [Marketing].[Customers] ([Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId]) VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
+            Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
+            Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
+            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
+        }
+
+        [Test]
+        public void InsertQueryForDbGeneratedInstance()
+        {
+            var customer = new CustomerWithDbGenerated
             {
                 DateOfBirth = new System.DateTime(1982, 11, 27),
                 Name = "Trevor Pilley",
@@ -215,7 +238,7 @@
 
             var queryBuilder = new SqlQueryBuilder();
 
-            var sqlQuery = queryBuilder.SelectQuery(typeof(Customer), identifier);
+            var sqlQuery = queryBuilder.SelectQuery(typeof(CustomerWithDbGenerated), identifier);
 
             Assert.AreEqual("SELECT [Customers].[DoB], [Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
@@ -224,7 +247,7 @@
         [Test]
         public void UpdateQuery()
         {
-            var customer = new Customer
+            var customer = new CustomerWithDbGenerated
             {
                 DateOfBirth = new System.DateTime(1982, 11, 27),
                 Id = 134875,
@@ -243,10 +266,39 @@
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[3]);
         }
 
-        [MicroLite.Table(schema: "Sales", name: "Customers")]
-        private class Customer
+        [MicroLite.Table(schema: "Marketing", name: "Customers")]
+        private class CustomerWithAssigned
         {
-            public Customer()
+            public CustomerWithAssigned()
+            {
+            }
+
+            [MicroLite.Column("CustomerId")]
+            [MicroLite.Identifier(IdentifierStrategy.Assigned)]
+            public int Id
+            {
+                get;
+                set;
+            }
+
+            public string Name
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Column("StatusId")]
+            public CustomerStatus Status
+            {
+                get;
+                set;
+            }
+        }
+
+        [MicroLite.Table(schema: "Sales", name: "Customers")]
+        private class CustomerWithDbGenerated
+        {
+            public CustomerWithDbGenerated()
             {
             }
 
