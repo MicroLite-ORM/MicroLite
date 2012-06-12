@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="DbGeneratedListener.cs" company="MicroLite">
+// <copyright file="IdentityListener.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,23 +18,23 @@ namespace MicroLite.Listeners
 
     /// <summary>
     /// The implementation of <see cref="IListener"/> for setting the instance identifier value if
-    /// <see cref="IdentifierStrategy"/>.DbGenerated is used.
+    /// <see cref="IdentifierStrategy"/>.Identity is used.
     /// </summary>
-    internal sealed class DbGeneratedListener : Listener
+    internal sealed class IdentityListener : Listener
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.DbGeneratedListener");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.IdentityListener");
 
         public override void AfterInsert(object instance, object executeScalarResult)
         {
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
             {
                 var propertyInfo = objectInfo.GetPropertyInfoForColumn(objectInfo.TableInfo.IdentifierColumn);
 
                 var identifierValue = Convert.ChangeType(executeScalarResult, propertyInfo.PropertyType, CultureInfo.InvariantCulture);
 
-                log.TryLogDebug(LogMessages.DbGeneratedListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
+                log.TryLogDebug(LogMessages.IdentityListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
                 propertyInfo.SetValue(instance, identifierValue, null);
             }
         }
@@ -43,11 +43,11 @@ namespace MicroLite.Listeners
         {
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
             {
                 if (!objectInfo.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.DbGenerated_IdentifierSetForInsert);
+                    throw new MicroLiteException(Messages.Identity_IdentifierSetForInsert);
                 }
             }
         }
@@ -56,7 +56,7 @@ namespace MicroLite.Listeners
         {
             var objectInfo = ObjectInfo.For(forType);
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
             {
                 sqlQuery.CommandText += ";SELECT SCOPE_IDENTITY()";
             }
@@ -66,11 +66,11 @@ namespace MicroLite.Listeners
         {
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
             {
                 if (objectInfo.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.DbGenerated_IdentifierNotSetForUpdate);
+                    throw new MicroLiteException(Messages.Identity_IdentifierNotSetForUpdate);
                 }
             }
         }

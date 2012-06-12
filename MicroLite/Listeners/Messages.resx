@@ -123,10 +123,10 @@
   <data name="Assigned_IdentifierNotSetForUpdate" xml:space="preserve">
     <value>The object does not have an identifier value set so it cannot be updated</value>
   </data>
-  <data name="DbGenerated_IdentifierNotSetForUpdate" xml:space="preserve">
+  <data name="Identity_IdentifierNotSetForUpdate" xml:space="preserve">
     <value>The object does not have an identifier value set so it cannot be updated</value>
   </data>
-  <data name="DbGenerated_IdentifierSetForInsert" xml:space="preserve">
-    <value>The object already has an identifier value so it cannot be inserted using the DbGenerated strategy</value>
+  <data name="Identity_IdentifierSetForInsert" xml:space="preserve">
+    <value>The object already has an identifier value so it cannot be inserted using the Identity strategy</value>
   </data>
 </root>

@@ -204,7 +204,7 @@
             var objectInfo = ObjectInfo.For(typeof(PocoCustomer2));
 
             Assert.AreEqual("PocoCustomer2Id", objectInfo.TableInfo.IdentifierColumn);
-            Assert.AreEqual(IdentifierStrategy.DbGenerated, objectInfo.TableInfo.IdentifierStrategy);
+            Assert.AreEqual(IdentifierStrategy.Identity, objectInfo.TableInfo.IdentifierStrategy);
         }
 
         [Test]
@@ -213,7 +213,7 @@
             var objectInfo = ObjectInfo.For(typeof(PocoCustomer1));
 
             Assert.AreEqual("CustomerId", objectInfo.TableInfo.IdentifierColumn);
-            Assert.AreEqual(IdentifierStrategy.DbGenerated, objectInfo.TableInfo.IdentifierStrategy);
+            Assert.AreEqual(IdentifierStrategy.Identity, objectInfo.TableInfo.IdentifierStrategy);
         }
 
         [Test]

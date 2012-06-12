@@ -19,7 +19,7 @@
         [Test]
         public void DeleteQueryForInstance()
         {
-            var customer = new CustomerWithDbGenerated
+            var customer = new CustomerWithIdentity
             {
                 Id = 122672
             };
@@ -39,7 +39,7 @@
 
             var queryBuilder = new SqlQueryBuilder();
 
-            var sqlQuery = queryBuilder.DeleteQuery(typeof(CustomerWithDbGenerated), identifier);
+            var sqlQuery = queryBuilder.DeleteQuery(typeof(CustomerWithIdentity), identifier);
 
             Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
@@ -69,9 +69,9 @@
         }
 
         [Test]
-        public void InsertQueryForDbGeneratedInstance()
+        public void InsertQueryForIdentityInstance()
         {
-            var customer = new CustomerWithDbGenerated
+            var customer = new CustomerWithIdentity
             {
                 DateOfBirth = new System.DateTime(1982, 11, 27),
                 Name = "Trevor Pilley",
@@ -238,7 +238,7 @@
 
             var queryBuilder = new SqlQueryBuilder();
 
-            var sqlQuery = queryBuilder.SelectQuery(typeof(CustomerWithDbGenerated), identifier);
+            var sqlQuery = queryBuilder.SelectQuery(typeof(CustomerWithIdentity), identifier);
 
             Assert.AreEqual("SELECT [Customers].[DoB], [Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
@@ -247,7 +247,7 @@
         [Test]
         public void UpdateQuery()
         {
-            var customer = new CustomerWithDbGenerated
+            var customer = new CustomerWithIdentity
             {
                 DateOfBirth = new System.DateTime(1982, 11, 27),
                 Id = 134875,
@@ -296,9 +296,9 @@
         }
 
         [MicroLite.Table(schema: "Sales", name: "Customers")]
-        private class CustomerWithDbGenerated
+        private class CustomerWithIdentity
         {
-            public CustomerWithDbGenerated()
+            public CustomerWithIdentity()
             {
             }
 
@@ -310,7 +310,7 @@
             }
 
             [MicroLite.Column("CustomerId")]
-            [MicroLite.Identifier(IdentifierStrategy.DbGenerated)]
+            [MicroLite.Identifier(IdentifierStrategy.Identity)]
             public int Id
             {
                 get;

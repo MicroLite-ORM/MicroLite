@@ -174,9 +174,9 @@ namespace MicroLite
                         }
                         else if (property.Name.Equals("Id") || property.Name.Equals(this.ForType.Name + "Id"))
                         {
-                            log.TryLogDebug(LogMessages.ObjectInfo_UsingPropertyAsIdentifier, this.ForType.FullName, property.Name, "DbGenerated");
+                            log.TryLogDebug(LogMessages.ObjectInfo_UsingPropertyAsIdentifier, this.ForType.FullName, property.Name, "Identity");
                             this.TableInfo.IdentifierColumn = columnName;
-                            this.TableInfo.IdentifierStrategy = IdentifierStrategy.DbGenerated;
+                            this.TableInfo.IdentifierStrategy = IdentifierStrategy.Identity;
 
                             if (property.PropertyType.IsValueType)
                             {

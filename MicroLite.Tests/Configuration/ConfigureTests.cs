@@ -41,7 +41,7 @@
                 .CreateSessionFactory();
 
             var listener = ListenerManager.Create()
-                .Single(x => x.GetType() == typeof(DbGeneratedListener));
+                .Single(x => x.GetType() == typeof(IdentityListener));
 
             Assert.NotNull(listener);
         }

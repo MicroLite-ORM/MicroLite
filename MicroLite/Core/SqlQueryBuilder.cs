@@ -75,7 +75,7 @@ namespace MicroLite.Core
 
             foreach (var column in objectInfo.TableInfo.Columns)
             {
-                if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
+                if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity
                     && column.Equals(objectInfo.TableInfo.IdentifierColumn))
                 {
                     continue;
@@ -207,7 +207,7 @@ namespace MicroLite.Core
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
-                        if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
+                        if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity
                             && column.Equals(objectInfo.TableInfo.IdentifierColumn))
                         {
                             continue;

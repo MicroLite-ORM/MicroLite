@@ -66,7 +66,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IConnectionManager.cs" />
-    <Compile Include="Listeners\DbGeneratedListener.cs">
+    <Compile Include="Listeners\IdentityListener.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IObjectBuilder.cs" />
@@ -143,6 +143,7 @@
     <EmbeddedResource Include="Listeners\Messages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Logging\LogMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>

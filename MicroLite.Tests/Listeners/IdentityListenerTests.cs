@@ -5,10 +5,10 @@
     using NUnit.Framework;
 
     /// <summary>
-    /// Unit tests for the <see cref="DbGeneratedListener"/> class.
+    /// Unit tests for the <see cref="IdentityListener"/> class.
     /// </summary>
     [TestFixture]
-    public class DbGeneratedListenerTests
+    public class IdentityListenerTests
     {
         [Test]
         public void AfterInsertSetsIdentifierValue()
@@ -16,7 +16,7 @@
             var customer = new Customer();
             decimal scalarResult = 4354;
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentityListener();
             listener.AfterInsert(customer, scalarResult);
 
             Assert.AreEqual(Convert.ToInt32(scalarResult), customer.Id);
@@ -27,7 +27,7 @@
         {
             var sqlQuery = new SqlQuery(string.Empty);
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentityListener();
             listener.BeforeInsert(typeof(Customer), sqlQuery);
 
             Assert.AreEqual(";SELECT SCOPE_IDENTITY()", sqlQuery.CommandText);
@@ -39,7 +39,7 @@
         {
             var sqlQuery = new SqlQuery(string.Empty);
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentityListener();
             listener.BeforeInsert(typeof(CustomerWithAssigned), sqlQuery);
 
             Assert.AreEqual(string.Empty, sqlQuery.CommandText);
@@ -54,7 +54,7 @@
                 Id = 0
             };
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentityListener();
 
             listener.BeforeInsert(customer);
         }
@@ -67,11 +67,11 @@
                 Id = 1242534
             };
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentityListener();
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeInsert(customer));
 
-            Assert.AreEqual(Messages.DbGenerated_IdentifierSetForInsert, exception.Message);
+            Assert.AreEqual(Messages.Identity_IdentifierSetForInsert, exception.Message);
         }
 
         [Test]
@@ -82,7 +82,7 @@
                 Id = 1242534
             };
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentityListener();
 
             listener.BeforeUpdate(customer);
         }
@@ -95,16 +95,16 @@
                 Id = 0
             };
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentityListener();
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeUpdate(customer));
 
-            Assert.AreEqual(Messages.DbGenerated_IdentifierNotSetForUpdate, exception.Message);
+            Assert.AreEqual(Messages.Identity_IdentifierNotSetForUpdate, exception.Message);
         }
 
         private class Customer
         {
-            [MicroLite.Identifier(IdentifierStrategy.DbGenerated)]
+            [MicroLite.Identifier(IdentifierStrategy.Identity)]
             public int Id
             {
                 get;

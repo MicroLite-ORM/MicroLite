@@ -154,7 +154,7 @@
             }
 
             [MicroLite.Column("CustomerId")]
-            [MicroLite.Identifier(IdentifierStrategy.DbGenerated)]
+            [MicroLite.Identifier(IdentifierStrategy.Identity)]
             public int Id
             {
                 get;
