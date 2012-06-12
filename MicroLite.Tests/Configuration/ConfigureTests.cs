@@ -31,7 +31,23 @@
         }
 
         [Test]
-        public void ConfigureRegistersDbAssignedListener()
+        public void ConfigureRegistersGuidListener()
+        {
+            var connectionString = "Data Source=localhost;Initial Catalog=TestDB;";
+
+            var sessionFactory = Configure
+                .Fluently()
+                .ForConnection(connectionString, "System.Data.SqlClient")
+                .CreateSessionFactory();
+
+            var listener = ListenerManager.Create()
+                .Single(x => x.GetType() == typeof(GuidListener));
+
+            Assert.NotNull(listener);
+        }
+
+        [Test]
+        public void ConfigureRegistersIdentityListener()
         {
             var connectionString = "Data Source=localhost;Initial Catalog=TestDB;";
 

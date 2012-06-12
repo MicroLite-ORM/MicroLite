@@ -1,40 +1,28 @@
-﻿namespace MicroLite.Tests.Core
+﻿namespace MicroLite.Tests.Listeners
 {
+    using System;
     using MicroLite.Listeners;
     using NUnit.Framework;
 
     /// <summary>
-    /// Unit Tests for the <see cref="AssignedListener"/> class.
+    /// Unit Tests for the <see cref="GuidListener"/> class.
     /// </summary>
     [TestFixture]
-    public class AssignedListenerTests
+    public class GuidListenerTests
     {
         [Test]
-        public void BeforeInsertDoesNotThrowIfIdentifierSet()
+        public void BeforeInsertSetsIdentifierValueToNewGuid()
         {
             var customer = new Customer
             {
-                Id = 1234
+                Id = Guid.Empty
             };
 
-            var listener = new AssignedListener();
+            var listener = new GuidListener();
 
             listener.BeforeInsert(customer);
-        }
 
-        [Test]
-        public void BeforeInsertThrowsMicroLiteExceptionIfIdentifierNotSet()
-        {
-            var customer = new Customer
-            {
-                Id = 0
-            };
-
-            var listener = new AssignedListener();
-
-            var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeInsert(customer));
-
-            Assert.AreEqual(Messages.Assigned_IdentifierNotSetForInsert, exception.Message);
+            Assert.AreNotEqual(Guid.Empty, customer.Id);
         }
 
         [Test]
@@ -42,10 +30,10 @@
         {
             var customer = new Customer
             {
-                Id = 1242534
+                Id = Guid.NewGuid()
             };
 
-            var listener = new AssignedListener();
+            var listener = new GuidListener();
 
             listener.BeforeUpdate(customer);
         }
@@ -55,10 +43,10 @@
         {
             var customer = new Customer
             {
-                Id = 0
+                Id = Guid.Empty
             };
 
-            var listener = new AssignedListener();
+            var listener = new GuidListener();
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeUpdate(customer));
 
@@ -67,8 +55,8 @@
 
         private class Customer
         {
-            [MicroLite.Identifier(IdentifierStrategy.Assigned)]
-            public int Id
+            [MicroLite.Identifier(IdentifierStrategy.Guid)]
+            public Guid Id
             {
                 get;
                 set;

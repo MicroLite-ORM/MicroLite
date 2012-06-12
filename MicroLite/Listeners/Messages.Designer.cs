@@ -70,29 +70,20 @@ namespace MicroLite.Listeners {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be updated.
-        /// </summary>
-        internal static string Assigned_IdentifierNotSetForUpdate {
-            get {
-                return ResourceManager.GetString("Assigned_IdentifierNotSetForUpdate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be updated.
-        /// </summary>
-        internal static string Identity_IdentifierNotSetForUpdate {
-            get {
-                return ResourceManager.GetString("Identity_IdentifierNotSetForUpdate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted using the Identity strategy.
         /// </summary>
         internal static string Identity_IdentifierSetForInsert {
             get {
                 return ResourceManager.GetString("Identity_IdentifierSetForInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be updated.
+        /// </summary>
+        internal static string IListener_IdentifierNotSetForUpdate {
+            get {
+                return ResourceManager.GetString("IListener_IdentifierNotSetForUpdate", resourceCulture);
             }
         }
     }

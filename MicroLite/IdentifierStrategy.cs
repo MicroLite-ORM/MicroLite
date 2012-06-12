@@ -26,5 +26,10 @@ namespace MicroLite
         /// The identifier value is assigned by user code prior to insert.
         /// </summary>
         Assigned = 1,
+
+        /// <summary>
+        /// The identifier is automatically assigned a new System.Guid as it's value prior to insert.
+        /// </summary>
+        Guid = 2,
     }
 }

@@ -99,7 +99,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeUpdate(customer));
 
-            Assert.AreEqual(Messages.Identity_IdentifierNotSetForUpdate, exception.Message);
+            Assert.AreEqual(Messages.IListener_IdentifierNotSetForUpdate, exception.Message);
         }
 
         private class Customer

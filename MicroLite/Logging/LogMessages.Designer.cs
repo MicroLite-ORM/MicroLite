@@ -99,9 +99,9 @@ namespace MicroLite.Logging {
         /// <summary>
         ///   Looks up a localized string similar to Setting the identifier value for an instance of the type {0} to {1}.
         /// </summary>
-        internal static string IdentityListener_SettingIdentifierValue {
+        internal static string IListener_SettingIdentifierValue {
             get {
-                return ResourceManager.GetString("IdentityListener_SettingIdentifierValue", resourceCulture);
+                return ResourceManager.GetString("IListener_SettingIdentifierValue", resourceCulture);
             }
         }
         

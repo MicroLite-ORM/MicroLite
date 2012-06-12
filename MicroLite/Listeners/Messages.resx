@@ -120,13 +120,10 @@
   <data name="Assigned_IdentifierNotSetForInsert" xml:space="preserve">
     <value>The object does not have an identifier value set so it cannot be inserted</value>
   </data>
-  <data name="Assigned_IdentifierNotSetForUpdate" xml:space="preserve">
-    <value>The object does not have an identifier value set so it cannot be updated</value>
-  </data>
-  <data name="Identity_IdentifierNotSetForUpdate" xml:space="preserve">
-    <value>The object does not have an identifier value set so it cannot be updated</value>
-  </data>
   <data name="Identity_IdentifierSetForInsert" xml:space="preserve">
     <value>The object already has an identifier value so it cannot be inserted using the Identity strategy</value>
+  </data>
+  <data name="IListener_IdentifierNotSetForUpdate" xml:space="preserve">
+    <value>The object does not have an identifier value set so it cannot be updated</value>
   </data>
 </root>

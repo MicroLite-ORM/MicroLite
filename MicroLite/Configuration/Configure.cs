@@ -51,6 +51,7 @@ namespace MicroLite.Configuration
         public static IConfigureConnection Fluently()
         {
             ListenerManager.Add<AssignedListener>();
+            ListenerManager.Add<GuidListener>();
             ListenerManager.Add<IdentityListener>();
 
             return new Configure();

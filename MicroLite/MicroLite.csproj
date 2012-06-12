@@ -66,6 +66,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IConnectionManager.cs" />
+    <Compile Include="Listeners\GuidListener.cs" />
     <Compile Include="Listeners\IdentityListener.cs">
       <SubType>Code</SubType>
     </Compile>
