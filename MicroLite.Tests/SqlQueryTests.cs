@@ -63,7 +63,7 @@
         }
 
         [Test]
-        public void GetHashCode()
+        public void GetHashCodeValue()
         {
             var sqlQuery = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", 10);
 
