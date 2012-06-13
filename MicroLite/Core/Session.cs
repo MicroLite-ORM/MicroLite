@@ -135,7 +135,7 @@ namespace MicroLite.Core
                         command.Connection.Open();
                     }
 
-                    log.TryLogDebug(sqlQuery.CommandText);
+                    log.TryLogInfo(sqlQuery.CommandText);
                     result = command.ExecuteNonQuery();
 
                     if (command.Transaction == null)
@@ -173,7 +173,7 @@ namespace MicroLite.Core
                         command.Connection.Open();
                     }
 
-                    log.TryLogDebug(sqlQuery.CommandText);
+                    log.TryLogInfo(sqlQuery.CommandText);
                     result = (T)command.ExecuteScalar();
 
                     if (command.Transaction == null)
@@ -301,7 +301,7 @@ namespace MicroLite.Core
                         command.Connection.Open();
                     }
 
-                    log.TryLogDebug(command.CommandText);
+                    log.TryLogInfo(command.CommandText);
                     reader = command.ExecuteReader();
                 }
                 catch (Exception e)
