@@ -18,7 +18,7 @@ namespace MicroLite.Configuration
     /// <summary>
     /// The class used to configure extensions to the MicroLite ORM framework.
     /// </summary>
-    internal class ConfigureExtensions : IConfigureExtensions
+    internal sealed class ConfigureExtensions : IConfigureExtensions, IHideObjectMethods
     {
         public void SetLogResolver(Func<string, ILog> logResolver)
         {
