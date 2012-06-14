@@ -120,4 +120,10 @@
   <data name="ArgumentsCountMismatch" xml:space="preserve">
     <value>There are {0} parameters in the SQL statement, however only {1} parameter arguments were supplied.</value>
   </data>
+  <data name="MustHaveAtLeast1Result" xml:space="preserve">
+    <value>There must be at least 1 result per page</value>
+  </data>
+  <data name="PagesStartAtOne" xml:space="preserve">
+    <value>The first page which can be requested is page 1</value>
+  </data>
 </root>

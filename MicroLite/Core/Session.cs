@@ -118,6 +118,8 @@ namespace MicroLite.Core
 
         public int Execute(SqlQuery sqlQuery)
         {
+            this.ThrowIfDisposed();
+
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
@@ -156,6 +158,8 @@ namespace MicroLite.Core
 
         public T ExecuteScalar<T>(SqlQuery sqlQuery)
         {
+            this.ThrowIfDisposed();
+
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
@@ -235,12 +239,12 @@ namespace MicroLite.Core
 
             if (page < 1)
             {
-                throw new ArgumentOutOfRangeException("page");
+                throw new ArgumentOutOfRangeException("page", Messages.PagesStartAtOne);
             }
 
             if (resultsPerPage < 1)
             {
-                throw new ArgumentOutOfRangeException("resultsPerPage");
+                throw new ArgumentOutOfRangeException("resultsPerPage", Messages.MustHaveAtLeast1Result);
             }
 
             var query = this.queryBuilder.Page(sqlQuery, page, resultsPerPage);

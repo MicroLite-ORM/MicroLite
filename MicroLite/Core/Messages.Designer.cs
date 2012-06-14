@@ -68,5 +68,23 @@ namespace MicroLite.Core {
                 return ResourceManager.GetString("ArgumentsCountMismatch", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There must be at least 1 result per page.
+        /// </summary>
+        internal static string MustHaveAtLeast1Result {
+            get {
+                return ResourceManager.GetString("MustHaveAtLeast1Result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The first page which can be requested is page 1.
+        /// </summary>
+        internal static string PagesStartAtOne {
+            get {
+                return ResourceManager.GetString("PagesStartAtOne", resourceCulture);
+            }
+        }
     }
 }

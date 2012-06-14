@@ -472,6 +472,21 @@
         }
 
         [Test]
+        public void ExecuteScalarThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            using (session)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => session.ExecuteScalar<int>(new SqlQuery("SELECT")));
+        }
+
+        [Test]
         public void ExecuteThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new Session(
@@ -482,6 +497,21 @@
             var exception = Assert.Throws<ArgumentNullException>(() => session.Execute(null));
 
             Assert.AreEqual("sqlQuery", exception.ParamName);
+        }
+
+        [Test]
+        public void ExecuteThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            using (session)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => session.Execute(new SqlQuery("SELECT")));
         }
 
         [Test]
@@ -713,6 +743,7 @@
                 () => session.Paged<Customer>(new SqlQuery(""), 0, 25));
 
             Assert.AreEqual("page", exception.ParamName);
+            Assert.IsTrue(exception.Message.StartsWith(MicroLite.Core.Messages.PagesStartAtOne));
         }
 
         [Test]
@@ -727,6 +758,7 @@
                 () => session.Paged<Customer>(new SqlQuery(""), 1, 0));
 
             Assert.AreEqual("resultsPerPage", exception.ParamName);
+            Assert.IsTrue(exception.Message.StartsWith(MicroLite.Core.Messages.MustHaveAtLeast1Result));
         }
 
         [Test]
