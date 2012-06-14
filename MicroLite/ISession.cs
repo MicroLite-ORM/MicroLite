@@ -59,7 +59,7 @@ namespace MicroLite
         /// <param name="sqlQuery">The SQL query to execute.</param>
         /// <returns>The objects that match the query in a list.</returns>
         /// <exception cref="ObjectDisposedException">Thrown if session has been disposed.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if supplied instance is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if supplied SqlQuery is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         IList<T> Fetch<T>(SqlQuery sqlQuery) where T : class, new();
 
@@ -80,6 +80,10 @@ namespace MicroLite
         /// <param name="page">The page number (supply a 1 for first page).</param>
         /// <param name="resultsPerPage">The number of results per page.</param>
         /// <returns>An <see cref="PagedResult&lt;T&gt;"/> containing the desired results.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if supplied SqlQuery is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if page or resultsPerPage are below 1.</exception>
+        /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         PagedResult<T> Paged<T>(SqlQuery sqlQuery, long page, long resultsPerPage) where T : class, new();
 
         /// <summary>
