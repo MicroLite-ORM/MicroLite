@@ -70,6 +70,26 @@
         }
 
         /// <summary>
+        /// Issue #19 - Null strings in a column result in empty strings in the property
+        /// </summary>
+        [Test]
+        public void PropertyValueIsSetToNullIdReaderValueIsDBNull()
+        {
+            var mockDataReader = new Mock<IDataReader>();
+            mockDataReader.Setup(x => x.FieldCount).Returns(1);
+
+            mockDataReader.Setup(x => x.GetName(0)).Returns("Name");
+
+            mockDataReader.Setup(x => x[0]).Returns(DBNull.Value);
+
+            var objectBuilder = new ObjectBuilder();
+
+            var customer = objectBuilder.BuildNewInstance<Customer>(mockDataReader.Object);
+
+            Assert.IsNull(customer.Name);
+        }
+
+        /// <summary>
         /// Issue #7 - ObjectBuilder throws exception converting int to nullable int.
         /// </summary>
         [Test]

@@ -34,7 +34,7 @@ namespace MicroLite.FrameworkExtensions
 
         internal static void SetValue<T>(this PropertyInfo propertyInfo, T instance, object value)
         {
-            if (value == DBNull.Value && propertyInfo.PropertyType.IsValueType && propertyInfo.PropertyType.IsGenericType)
+            if (value == DBNull.Value)
             {
                 return;
             }
@@ -42,19 +42,20 @@ namespace MicroLite.FrameworkExtensions
             if (propertyInfo.PropertyType.IsEnum)
             {
                 propertyInfo.SetValue(instance, value, null);
+                return;
+            }
+
+            if (propertyInfo.PropertyType.IsValueType && propertyInfo.PropertyType.IsGenericType)
+            {
+                // The property is a nullable struct (e.g. int? or DateTime?) so cast the object to a ValueType
+                // otherwise we get an InvalidCastException (Issue 7)
+                ValueType converted = (ValueType)value;
+                propertyInfo.SetValue(instance, converted, null);
             }
             else
             {
-                if (propertyInfo.PropertyType.IsValueType && propertyInfo.PropertyType.IsGenericType)
-                {
-                    ValueType converted = (ValueType)value;
-                    propertyInfo.SetValue(instance, converted, null);
-                }
-                else
-                {
-                    var converted = Convert.ChangeType(value, propertyInfo.PropertyType, CultureInfo.InvariantCulture);
-                    propertyInfo.SetValue(instance, converted, null);
-                }
+                var converted = Convert.ChangeType(value, propertyInfo.PropertyType, CultureInfo.InvariantCulture);
+                propertyInfo.SetValue(instance, converted, null);
             }
         }
     }
