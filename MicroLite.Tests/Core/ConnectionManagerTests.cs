@@ -77,8 +77,12 @@
             mockCommand.SetupAllProperties();
 
             var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(new Mock<IDbTransaction>().Object);
+            var mockTransaction = new Mock<IDbTransaction>();
+
+            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
 
             var sqlQuery = new SqlQuery("EXEC GetTableContents");
 
@@ -229,6 +233,7 @@
         public void DisposeDisposesCurrentTransaction()
         {
             var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
             mockTransaction.Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();

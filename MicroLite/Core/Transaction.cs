@@ -46,9 +46,13 @@ namespace MicroLite.Core
         {
             try
             {
+                var connection = this.transaction.Connection;
+
                 log.TryLogInfo(LogMessages.Transaction_Committing, this.id.ToString());
                 this.transaction.Commit();
                 this.wasCommitted = true;
+
+                connection.Close();
             }
             catch (Exception e)
             {
@@ -79,8 +83,12 @@ namespace MicroLite.Core
         {
             try
             {
+                var connection = this.transaction.Connection;
+
                 log.TryLogInfo(LogMessages.Transaction_RollingBack, this.id.ToString());
                 this.transaction.Rollback();
+
+                connection.Close();
             }
             catch (Exception e)
             {
