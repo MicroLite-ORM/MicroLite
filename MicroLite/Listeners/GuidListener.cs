@@ -14,6 +14,7 @@ namespace MicroLite.Listeners
 {
     using System;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The implementation of <see cref="IListener"/> for setting the instance identifier value if

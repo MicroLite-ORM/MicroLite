@@ -12,6 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Listeners
 {
+    using MicroLite.Mapping;
+
     /// <summary>
     /// The implementation of <see cref="IListener"/> for checking the instance identifier value if
     /// <see cref="IdentifierStrategy"/>.Assigned is used.

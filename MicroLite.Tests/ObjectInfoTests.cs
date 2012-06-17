@@ -204,7 +204,7 @@
             var objectInfo = ObjectInfo.For(typeof(PocoCustomer2));
 
             Assert.AreEqual("PocoCustomer2Id", objectInfo.TableInfo.IdentifierColumn);
-            Assert.AreEqual(IdentifierStrategy.Identity, objectInfo.TableInfo.IdentifierStrategy);
+            Assert.AreEqual(MicroLite.Mapping.IdentifierStrategy.Identity, objectInfo.TableInfo.IdentifierStrategy);
         }
 
         [Test]
@@ -213,7 +213,7 @@
             var objectInfo = ObjectInfo.For(typeof(PocoCustomer1));
 
             Assert.AreEqual("CustomerId", objectInfo.TableInfo.IdentifierColumn);
-            Assert.AreEqual(IdentifierStrategy.Identity, objectInfo.TableInfo.IdentifierStrategy);
+            Assert.AreEqual(MicroLite.Mapping.IdentifierStrategy.Identity, objectInfo.TableInfo.IdentifierStrategy);
         }
 
         [Test]
@@ -221,7 +221,7 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            Assert.AreEqual(IdentifierStrategy.Assigned, objectInfo.TableInfo.IdentifierStrategy);
+            Assert.AreEqual(MicroLite.Mapping.IdentifierStrategy.Assigned, objectInfo.TableInfo.IdentifierStrategy);
         }
 
         [Test]
@@ -250,7 +250,7 @@
 
         private class CustomerWithGuidIdentifier
         {
-            [MicroLite.Identifier(IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
             public Guid Id
             {
                 get;
@@ -258,7 +258,7 @@
             }
         }
 
-        [MicroLite.Table("Sales", "Customers")]
+        [MicroLite.Mapping.Table("Sales", "Customers")]
         private class CustomerWithIntegerIdentifier
         {
             public CustomerWithIntegerIdentifier()
@@ -273,15 +273,15 @@
                 }
             }
 
-            [MicroLite.Column("DoB")]
+            [MicroLite.Mapping.Column("DoB")]
             public DateTime DateOfBirth
             {
                 get;
                 set;
             }
 
-            [MicroLite.Column("CustomerId")]
-            [MicroLite.Identifier(IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
+            [MicroLite.Mapping.Column("CustomerId")]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
             public int Id
             {
                 get;
@@ -294,14 +294,14 @@
                 set;
             }
 
-            [MicroLite.Column("StatusId")]
+            [MicroLite.Mapping.Column("StatusId")]
             public CustomerStatus Status
             {
                 get;
                 set;
             }
 
-            [MicroLite.Ignore]
+            [MicroLite.Mapping.Ignore]
             public string TempraryNotes
             {
                 get;
@@ -334,7 +334,7 @@
         /// </summary>
         private class PocoCustomer1
         {
-            [MicroLite.Column("CustomerId")]
+            [MicroLite.Mapping.Column("CustomerId")]
             public int Id
             {
                 get;

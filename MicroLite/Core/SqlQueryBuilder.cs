@@ -19,6 +19,7 @@ namespace MicroLite.Core
     using System.Text;
     using System.Text.RegularExpressions;
     using MicroLite.FrameworkExtensions;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The implementation of <see cref="ISqlQueryBuilder"/> for MsSql server.

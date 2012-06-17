@@ -49,7 +49,7 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColumnAttribute.cs" />
+    <Compile Include="Mapping\ColumnAttribute.cs" />
     <Compile Include="Configuration\Configure.cs" />
     <Compile Include="Configuration\ConfigureExtensions.cs" />
     <Compile Include="Configuration\IConfigureConnection.cs">
@@ -96,10 +96,10 @@
     </Compile>
     <Compile Include="ObjectInfo.cs" />
     <Compile Include="Query\IAndOrOrderBy.cs" />
-    <Compile Include="IdentifierAttribute.cs" />
-    <Compile Include="IdentifierStrategy.cs" />
+    <Compile Include="Mapping\IdentifierAttribute.cs" />
+    <Compile Include="Mapping\IdentifierStrategy.cs" />
     <Compile Include="Query\IFrom.cs" />
-    <Compile Include="IgnoreAttribute.cs" />
+    <Compile Include="Mapping\IgnoreAttribute.cs" />
     <Compile Include="IHideObjectMethods.cs" />
     <Compile Include="Listeners\IListener.cs" />
     <Compile Include="Query\IOrderBy.cs" />
@@ -123,7 +123,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\SqlBuilder.cs" />
     <Compile Include="SqlQuery.cs" />
-    <Compile Include="TableAttribute.cs" />
+    <Compile Include="Mapping\TableAttribute.cs" />
     <Compile Include="TableInfo.cs" />
   </ItemGroup>
   <ItemGroup>

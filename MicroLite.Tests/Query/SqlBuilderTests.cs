@@ -139,22 +139,22 @@
             Assert.AreEqual("SELECT Column1, Column2\r\n FROM Table\r\n WHERE (Column1 = @p0)\r\n OR (Column2 = @p1)", sqlQuery.CommandText);
         }
 
-        [MicroLite.Table(schema: "Sales", name: "Customers")]
+        [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
         private class Customer
         {
             public Customer()
             {
             }
 
-            [MicroLite.Column("DoB")]
+            [MicroLite.Mapping.Column("DoB")]
             public DateTime DateOfBirth
             {
                 get;
                 set;
             }
 
-            [MicroLite.Column("CustomerId")]
-            [MicroLite.Identifier(IdentifierStrategy.Identity)]
+            [MicroLite.Mapping.Column("CustomerId")]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Identity)]
             public int Id
             {
                 get;

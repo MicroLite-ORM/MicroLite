@@ -55,7 +55,7 @@
 
         private class Customer
         {
-            [MicroLite.Identifier(IdentifierStrategy.Guid)]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Guid)]
             public Guid Id
             {
                 get;

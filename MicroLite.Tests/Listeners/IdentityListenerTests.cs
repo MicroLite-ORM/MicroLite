@@ -104,7 +104,7 @@
 
         private class Customer
         {
-            [MicroLite.Identifier(IdentifierStrategy.Identity)]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Identity)]
             public int Id
             {
                 get;
@@ -114,7 +114,7 @@
 
         private class CustomerWithAssigned
         {
-            [MicroLite.Identifier(IdentifierStrategy.Assigned)]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Assigned)]
             public int Id
             {
                 get;

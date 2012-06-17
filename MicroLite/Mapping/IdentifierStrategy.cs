@@ -10,7 +10,7 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite
+namespace MicroLite.Mapping
 {
     /// <summary>
     /// The supported types of strategy used to manage a row identifier.

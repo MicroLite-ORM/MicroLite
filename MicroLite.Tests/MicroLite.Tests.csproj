@@ -48,7 +48,7 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColumnAttributeTests.cs" />
+    <Compile Include="Mapping\ColumnAttributeTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
     <Compile Include="Listeners\AssignedListenerTests.cs" />
@@ -61,7 +61,7 @@
     <Compile Include="Core\SqlQueryBuilderTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
     <Compile Include="Listeners\ListenerManagerTests.cs" />
-    <Compile Include="IdentifierAttributeTests.cs" />
+    <Compile Include="Mapping\IdentifierAttributeTests.cs" />
     <Compile Include="Logging\LogExtensionsTests.cs" />
     <Compile Include="Logging\LogManagerTests.cs" />
     <Compile Include="ObjectInfoTests.cs" />
@@ -69,7 +69,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\SqlBuilderTests.cs" />
     <Compile Include="SqlQueryTests.cs" />
-    <Compile Include="TableAttributeTests.cs" />
+    <Compile Include="Mapping\TableAttributeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicroLite\MicroLite.csproj">

@@ -10,7 +10,7 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite
+namespace MicroLite.Mapping
 {
     using System;
 

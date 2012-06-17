@@ -2,6 +2,7 @@
 {
     using System;
     using MicroLite.Core;
+    using MicroLite.Mapping;
     using NUnit.Framework;
 
     /// <summary>
@@ -266,15 +267,15 @@
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[3]);
         }
 
-        [MicroLite.Table(schema: "Marketing", name: "Customers")]
+        [MicroLite.Mapping.Table(schema: "Marketing", name: "Customers")]
         private class CustomerWithAssigned
         {
             public CustomerWithAssigned()
             {
             }
 
-            [MicroLite.Column("CustomerId")]
-            [MicroLite.Identifier(IdentifierStrategy.Assigned)]
+            [MicroLite.Mapping.Column("CustomerId")]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Assigned)]
             public int Id
             {
                 get;
@@ -287,7 +288,7 @@
                 set;
             }
 
-            [MicroLite.Column("StatusId")]
+            [MicroLite.Mapping.Column("StatusId")]
             public CustomerStatus Status
             {
                 get;
@@ -295,22 +296,22 @@
             }
         }
 
-        [MicroLite.Table(schema: "Sales", name: "Customers")]
+        [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
         private class CustomerWithIdentity
         {
             public CustomerWithIdentity()
             {
             }
 
-            [MicroLite.Column("DoB")]
+            [MicroLite.Mapping.Column("DoB")]
             public DateTime DateOfBirth
             {
                 get;
                 set;
             }
 
-            [MicroLite.Column("CustomerId")]
-            [MicroLite.Identifier(IdentifierStrategy.Identity)]
+            [MicroLite.Mapping.Column("CustomerId")]
+            [MicroLite.Mapping.Identifier(IdentifierStrategy.Identity)]
             public int Id
             {
                 get;
@@ -323,7 +324,7 @@
                 set;
             }
 
-            [MicroLite.Column("StatusId")]
+            [MicroLite.Mapping.Column("StatusId")]
             public CustomerStatus Status
             {
                 get;

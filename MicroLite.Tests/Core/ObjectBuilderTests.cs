@@ -141,14 +141,14 @@
             {
             }
 
-            [MicroLite.Column("DoB")]
+            [MicroLite.Mapping.Column("DoB")]
             public DateTime DateOfBirth
             {
                 get;
                 set;
             }
 
-            [MicroLite.Column("CustomerId")]
+            [MicroLite.Mapping.Column("CustomerId")]
             public int Id
             {
                 get;
@@ -167,7 +167,7 @@
                 set;
             }
 
-            [MicroLite.Column("StatusId")]
+            [MicroLite.Mapping.Column("StatusId")]
             public CustomerStatus Status
             {
                 get;

@@ -13,6 +13,7 @@
 namespace MicroLite
 {
     using System.Collections.Generic;
+    using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{Schema}.{Name}")]
     internal sealed class TableInfo

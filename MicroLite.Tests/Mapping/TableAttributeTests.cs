@@ -1,5 +1,6 @@
-﻿namespace MicroLite.Tests
+﻿namespace MicroLite.Tests.Mapping
 {
+    using MicroLite.Mapping;
     using NUnit.Framework;
 
     /// <summary>

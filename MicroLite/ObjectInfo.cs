@@ -17,6 +17,7 @@ namespace MicroLite
     using System.Reflection;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The class which describes a type and the table it is mapped to.
