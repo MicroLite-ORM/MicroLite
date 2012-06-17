@@ -32,7 +32,6 @@
         public void CommitCallsDbTransactionCommitAndSetsWasCommittedToTrueIfCommitSuccessful()
         {
             var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
             mockTransaction.Setup(x => x.Commit());
 
             var transaction = new Transaction(mockTransaction.Object);
@@ -43,29 +42,10 @@
             mockTransaction.VerifyAll();
         }
 
-        /// <summary>
-        /// Issue #21 - Committing transaction should close connection
-        /// </summary>
-        [Test]
-        public void CommitClosesConnection()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.Close());
-
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            var transaction = new Transaction(mockTransaction.Object);
-            transaction.Commit();
-
-            mockConnection.VerifyAll();
-        }
-
         [Test]
         public void DisposeDoesNotRollbackDbTransactionIfCommittedAndDisposesDbTransaction()
         {
             var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
             mockTransaction.Setup(x => x.Dispose());
             mockTransaction.Setup(x => x.Rollback());
 
@@ -82,7 +62,6 @@
         public void DisposeRollsbackDbTransactionIfNotCommitedAndDisposesDbTransaction()
         {
             var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
             mockTransaction.Setup(x => x.Dispose());
             mockTransaction.Setup(x => x.Rollback());
 
@@ -101,10 +80,7 @@
 
             var command = mockCommand.Object;
 
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-
-            var transaction = new Transaction(mockTransaction.Object);
+            var transaction = new Transaction(new Mock<IDbTransaction>().Object);
             transaction.Commit();
             transaction.Enlist(command);
 
@@ -131,7 +107,6 @@
         public void RollbackCallsDbTransactionRollback()
         {
             var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
             mockTransaction.Setup(x => x.Rollback());
 
             var transaction = new Transaction(mockTransaction.Object);
@@ -152,24 +127,6 @@
 
             Assert.NotNull(exception.InnerException);
             Assert.AreEqual(exception.Message, exception.InnerException.Message);
-        }
-
-        /// <summary>
-        /// Issue #21 - Committing transaction should close connection
-        /// </summary>
-        [Test]
-        public void RollbackClosesConnection()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.Close());
-
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            var transaction = new Transaction(mockTransaction.Object);
-            transaction.Rollback();
-
-            mockConnection.VerifyAll();
         }
     }
 }
