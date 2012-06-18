@@ -27,16 +27,5 @@ namespace MicroLite.Configuration
         /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
         /// <exception cref="System.NotSupportedException">Thrown if the provider name is not supported.</exception>
         ICreateSessionFactory ForConnection(string connectionName);
-
-        /// <summary>
-        /// Specifies the connection string and provider name to be used.
-        /// </summary>
-        /// <param name="connectionString">The connection string.</param>
-        /// <param name="providerName">The provider name.</param>
-        /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if connectionString or providerName is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the provider name is not installed.</exception>
-        /// <exception cref="System.NotSupportedException">Thrown if the provider name is not supported.</exception>
-        ICreateSessionFactory ForConnection(string connectionString, string providerName);
     }
 }

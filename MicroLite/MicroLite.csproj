@@ -59,7 +59,7 @@
     <Compile Include="Configuration\ICreateSessionFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Configuration\Options.cs" />
+    <Compile Include="Core\SessionFactoryOptions.cs" />
     <Compile Include="Listeners\AssignedListener.cs" />
     <Compile Include="Core\ConnectionManager.cs" />
     <Compile Include="FrameworkExtensions\EnumerableExtensions.cs">

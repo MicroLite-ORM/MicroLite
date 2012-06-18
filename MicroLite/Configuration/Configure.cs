@@ -25,8 +25,8 @@ namespace MicroLite.Configuration
     /// </summary>
     public sealed class Configure : IConfigureConnection, ICreateSessionFactory, IHideObjectMethods
     {
-        private static ILog log;
-        private readonly Options options = new Options();
+        private static ILog log = LogManager.GetLog("MicroLite.Configure");
+        private readonly SessionFactoryOptions options = new SessionFactoryOptions();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="Configure"/> class from being created.
@@ -50,6 +50,7 @@ namespace MicroLite.Configuration
         /// <returns>The next step in the fluent configuration.</returns>
         public static IConfigureConnection Fluently()
         {
+            // todo: Find a better place for this:
             ListenerManager.Add<AssignedListener>();
             ListenerManager.Add<GuidListener>();
             ListenerManager.Add<IdentityListener>();
@@ -65,8 +66,8 @@ namespace MicroLite.Configuration
         /// </returns>
         public ISessionFactory CreateSessionFactory()
         {
-            log.TryLogInfo(LogMessages.Configure_CreatingSessionFactory, this.options.ConnectionString);
-            return new SessionFactory(this.options.ConnectionString, this.options.ProviderFactory);
+            log.TryLogInfo(LogMessages.Configure_CreatingSessionFactory, this.options.ConnectionName);
+            return new SessionFactory(this.options);
         }
 
         /// <summary>
@@ -86,8 +87,6 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("connectionName");
             }
 
-            TryToSetLog();
-
             log.TryLogDebug(LogMessages.Configure_ReadingConnection, connectionName);
             var configSection = ConfigurationManager.ConnectionStrings[connectionName];
 
@@ -98,65 +97,23 @@ namespace MicroLite.Configuration
                 throw new MicroLiteException(message);
             }
 
-            return this.ForConnection(configSection.ConnectionString, configSection.ProviderName);
-        }
-
-        /// <summary>
-        /// Specifies the connection string and provider name to be used.
-        /// </summary>
-        /// <param name="connectionString">The connection string.</param>
-        /// <param name="providerName">The provider name.</param>
-        /// <returns>
-        /// The next step in the fluent configuration.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">Thrown if connectionString or providerName is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the provider name is not installed.</exception>
-        /// <exception cref="NotSupportedException">Thrown if the provider name is not supported.</exception>
-        public ICreateSessionFactory ForConnection(string connectionString, string providerName)
-        {
-            if (connectionString == null)
+            if (configSection.ProviderName != "System.Data.SqlClient")
             {
-                throw new ArgumentNullException("connectionString");
-            }
-
-            if (providerName == null)
-            {
-                throw new ArgumentNullException("providerName");
-            }
-
-            TryToSetLog();
-
-            if (providerName != "System.Data.SqlClient")
-            {
-                var message = LogMessages.Configure_ProviderNotSupported.FormatWith(providerName);
+                var message = LogMessages.Configure_ProviderNotSupported.FormatWith(configSection.ProviderName);
                 log.TryLogFatal(message);
                 throw new NotSupportedException(message);
             }
 
             try
             {
-                this.options.ConnectionString = connectionString;
-                this.options.ProviderFactory = DbProviderFactories.GetFactory(providerName);
+                this.options.ConnectionName = configSection.ProviderName;
+                this.options.ConnectionString = configSection.ConnectionString;
+                this.options.ProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
                 return this;
             }
             catch (Exception e)
             {
                 throw new MicroLiteException(e.Message, e);
-            }
-        }
-
-        /// <summary>
-        /// Tries to set the ILog.
-        /// </summary>
-        /// <remarks>
-        /// Unlike for all other classes, the LogManager.GetLogger function will not have been set when the type
-        /// is initialised. Therefore, we cannot inline assign the log in the static field.
-        /// </remarks>
-        private static void TryToSetLog()
-        {
-            if (log == null)
-            {
-                log = LogManager.GetLog("MicroLite.Configure");
             }
         }
     }

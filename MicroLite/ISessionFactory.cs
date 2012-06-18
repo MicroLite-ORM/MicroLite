@@ -18,9 +18,9 @@ namespace MicroLite
     public interface ISessionFactory : IHideObjectMethods
     {
         /// <summary>
-        /// Gets the connection string used by the session factory.
+        /// Gets the name of the connection used by the session factory.
         /// </summary>
-        string ConnectionString
+        string ConnectionName
         {
             get;
         }

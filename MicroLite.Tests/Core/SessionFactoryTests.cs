@@ -12,21 +12,38 @@
     public class SessionFactoryTests
     {
         [Test]
+        public void ConnectionNameReturnsConnectionNameFromOptions()
+        {
+            var options = new SessionFactoryOptions
+            {
+                ConnectionName = "Northwind"
+            };
+
+            var sessionFactory = new SessionFactory(options);
+
+            Assert.AreEqual(options.ConnectionName, sessionFactory.ConnectionName);
+        }
+
+        [Test]
         public void OpenSessionCreatesConnectionAndSetsConnectionString()
         {
-            var connectionString = "Data Source=localhost;Initial Catalog=TestDB;";
-
             var mockConnection = new Mock<DbConnection>();
             mockConnection.SetupProperty(x => x.ConnectionString);
 
             var mockFactory = new Mock<DbProviderFactory>();
             mockFactory.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
-            var sessionFactory = new SessionFactory(connectionString, mockFactory.Object);
+            var options = new SessionFactoryOptions
+            {
+                ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
+                ProviderFactory = mockFactory.Object
+            };
+
+            var sessionFactory = new SessionFactory(options);
             var session = sessionFactory.OpenSession();
 
             mockFactory.VerifyAll();
-            mockConnection.VerifySet(x => x.ConnectionString = connectionString);
+            mockConnection.VerifySet(x => x.ConnectionString = options.ConnectionString);
         }
 
         [Test]
@@ -38,7 +55,13 @@
             var mockFactory = new Mock<DbProviderFactory>();
             mockFactory.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
-            var sessionFactory = new SessionFactory("Data Source=localhost;", mockFactory.Object);
+            var options = new SessionFactoryOptions
+            {
+                ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
+                ProviderFactory = mockFactory.Object
+            };
+
+            var sessionFactory = new SessionFactory(options);
 
             var session1 = sessionFactory.OpenSession();
             var session2 = sessionFactory.OpenSession();

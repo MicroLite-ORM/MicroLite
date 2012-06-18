@@ -13,7 +13,6 @@
 namespace MicroLite.Core
 {
     using System.Data;
-    using System.Data.Common;
     using MicroLite.Logging;
 
     /// <summary>
@@ -23,21 +22,19 @@ namespace MicroLite.Core
     internal sealed class SessionFactory : ISessionFactory
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.SessionFactory");
-        private readonly string connectionString;
         private readonly object locker = new object();
-        private readonly DbProviderFactory providerFactory;
+        private readonly SessionFactoryOptions sessionFactoryOptions;
 
-        internal SessionFactory(string connectionString, DbProviderFactory providerFactory)
+        internal SessionFactory(SessionFactoryOptions sessionFactoryOptions)
         {
-            this.connectionString = connectionString;
-            this.providerFactory = providerFactory;
+            this.sessionFactoryOptions = sessionFactoryOptions;
         }
 
-        public string ConnectionString
+        public string ConnectionName
         {
             get
             {
-                return this.connectionString;
+                return this.sessionFactoryOptions.ConnectionName;
             }
         }
 
@@ -48,10 +45,10 @@ namespace MicroLite.Core
 
             lock (this.locker)
             {
-                connection = this.providerFactory.CreateConnection();
+                connection = this.sessionFactoryOptions.ProviderFactory.CreateConnection();
             }
 
-            connection.ConnectionString = this.ConnectionString;
+            connection.ConnectionString = this.sessionFactoryOptions.ConnectionString;
 
             log.TryLogDebug(LogMessages.SessionFactory_CreatingSession);
             return new Session(new ConnectionManager(connection), new ObjectBuilder(), new SqlQueryBuilder());

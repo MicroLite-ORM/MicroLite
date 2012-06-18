@@ -15,64 +15,11 @@
     public class ConfigureTests
     {
         [Test]
-        public void ConfigureRegistersAssignedListener()
+        public void CreateSessionFactoryReturnsSessionFactoryForNamedConnection()
         {
-            var connectionString = "Data Source=localhost;Initial Catalog=TestDB;";
+            var sessionFactory = Configure.Fluently().ForConnection("SqlConnection").CreateSessionFactory();
 
-            var sessionFactory = Configure
-                .Fluently()
-                .ForConnection(connectionString, "System.Data.SqlClient")
-                .CreateSessionFactory();
-
-            var listener = ListenerManager.Create()
-                .Single(x => x.GetType() == typeof(AssignedListener));
-
-            Assert.NotNull(listener);
-        }
-
-        [Test]
-        public void ConfigureRegistersGuidListener()
-        {
-            var connectionString = "Data Source=localhost;Initial Catalog=TestDB;";
-
-            var sessionFactory = Configure
-                .Fluently()
-                .ForConnection(connectionString, "System.Data.SqlClient")
-                .CreateSessionFactory();
-
-            var listener = ListenerManager.Create()
-                .Single(x => x.GetType() == typeof(GuidListener));
-
-            Assert.NotNull(listener);
-        }
-
-        [Test]
-        public void ConfigureRegistersIdentityListener()
-        {
-            var connectionString = "Data Source=localhost;Initial Catalog=TestDB;";
-
-            var sessionFactory = Configure
-                .Fluently()
-                .ForConnection(connectionString, "System.Data.SqlClient")
-                .CreateSessionFactory();
-
-            var listener = ListenerManager.Create()
-                .Single(x => x.GetType() == typeof(IdentityListener));
-
-            Assert.NotNull(listener);
-        }
-
-        [Test]
-        public void CreateSessionFactoryReturnsSessionFactoryForConnectionString()
-        {
-            var connectionString = "Data Source=localhost;Initial Catalog=TestDB;";
-
-            var sessionFactory = Configure
-                .Fluently()
-                .ForConnection(connectionString, "System.Data.SqlClient")
-                .CreateSessionFactory();
-
-            Assert.AreEqual(connectionString, sessionFactory.ConnectionString);
+            Assert.AreEqual("System.Data.SqlClient", sessionFactory.ConnectionName);
         }
 
         [Test]
@@ -82,6 +29,42 @@
             var extensions2 = Configure.Extensions();
 
             Assert.AreNotSame(extensions1, extensions2);
+        }
+
+        [Test]
+        public void FluentlyRegistersAssignedListener()
+        {
+            var sessionFactory = Configure
+                .Fluently();
+
+            var listener = ListenerManager.Create()
+                .Single(x => x.GetType() == typeof(AssignedListener));
+
+            Assert.NotNull(listener);
+        }
+
+        [Test]
+        public void FluentlyRegistersGuidListener()
+        {
+            var sessionFactory = Configure
+                .Fluently();
+
+            var listener = ListenerManager.Create()
+                .Single(x => x.GetType() == typeof(GuidListener));
+
+            Assert.NotNull(listener);
+        }
+
+        [Test]
+        public void FluentlyRegistersIdentityListener()
+        {
+            var sessionFactory = Configure
+                .Fluently();
+
+            var listener = ListenerManager.Create()
+                .Single(x => x.GetType() == typeof(IdentityListener));
+
+            Assert.NotNull(listener);
         }
 
         [Test]
@@ -103,24 +86,6 @@
         }
 
         [Test]
-        public void ForConnectionThrowsArgumentNullExceptionForNullConnectionString()
-        {
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => Configure.Fluently().ForConnection(null, string.Empty));
-
-            Assert.AreEqual(exception.ParamName, "connectionString");
-        }
-
-        [Test]
-        public void ForConnectionThrowsArgumentNullExceptionForNullProviderName()
-        {
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => Configure.Fluently().ForConnection(string.Empty, null));
-
-            Assert.AreEqual(exception.ParamName, "providerName");
-        }
-
-        [Test]
         public void ForConnectionThrowsMicroLiteExceptionIfConnectionNameNotInConfigSection()
         {
             var exception = Assert.Throws<MicroLiteException>(
@@ -130,12 +95,12 @@
         }
 
         [Test]
-        public void ForConnectionThrowsMicroLiteExceptionIfProviderNameIsInvalid()
+        public void ForConnectionThrowsNotSupportedExceptionIfProviderNameNotSupported()
         {
             var exception = Assert.Throws<NotSupportedException>(
-                () => Configure.Fluently().ForConnection("Data Source=localhost;Initial Catalog=TestDB;", "InvalidProviderName"));
+                () => Configure.Fluently().ForConnection("OleConnection"));
 
-            Assert.AreEqual(LogMessages.Configure_ProviderNotSupported.FormatWith("InvalidProviderName"), exception.Message);
+            Assert.AreEqual(LogMessages.Configure_ProviderNotSupported.FormatWith("System.Data.OleDb"), exception.Message);
         }
 
         [SetUp]
