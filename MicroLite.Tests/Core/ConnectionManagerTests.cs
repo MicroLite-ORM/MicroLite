@@ -21,9 +21,9 @@
             mockConnection.Setup(x => x.BeginTransaction()).Returns(new Mock<IDbTransaction>().Object);
 
             var connectionManager = new ConnectionManager(mockConnection.Object);
-            var trasaction = connectionManager.BeginTransaction();
+            var transaction = connectionManager.BeginTransaction();
 
-            Assert.IsInstanceOf<Transaction>(trasaction);
+            Assert.IsInstanceOf<Transaction>(transaction);
 
             mockConnection.VerifyAll();
         }
@@ -49,9 +49,9 @@
             mockConnection.Setup(x => x.BeginTransaction(isolationLevel)).Returns(new Mock<IDbTransaction>().Object);
 
             var connectionManager = new ConnectionManager(mockConnection.Object);
-            var trasaction = connectionManager.BeginTransaction(isolationLevel);
+            var transaction = connectionManager.BeginTransaction(isolationLevel);
 
-            Assert.IsInstanceOf<Transaction>(trasaction);
+            Assert.IsInstanceOf<Transaction>(transaction);
 
             mockConnection.VerifyAll();
         }
@@ -213,6 +213,60 @@
                 () => connectionManager.Build(sqlQuery));
 
             Assert.AreEqual(Messages.ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
+        }
+
+        [Test]
+        public void CurrentTransactionReturnsCurrentTransactionIfActive()
+        {
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.BeginTransaction()).Returns(new Mock<IDbTransaction>().Object);
+
+            var connectionManager = new ConnectionManager(mockConnection.Object);
+            var transaction = connectionManager.BeginTransaction();
+
+            Assert.AreSame(transaction, connectionManager.CurrentTransaction);
+        }
+
+        [Test]
+        public void CurrentTransactionReturnsNullIfNoTransactionActive()
+        {
+            var connectionManager = new ConnectionManager(new Mock<IDbConnection>().Object);
+
+            Assert.IsNull(connectionManager.CurrentTransaction);
+        }
+
+        [Test]
+        public void CurrentTransactionReturnsNullOnceTransactionCommitted()
+        {
+            var mockConnection = new Mock<IDbConnection>();
+            var mockTransaction = new Mock<IDbTransaction>();
+
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
+
+            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
+
+            var connectionManager = new ConnectionManager(mockConnection.Object);
+            var transaction = connectionManager.BeginTransaction();
+            transaction.Commit();
+
+            Assert.IsNull(connectionManager.CurrentTransaction);
+        }
+
+        [Test]
+        public void CurrentTransactionReturnsNullOnceTransactionRolledback()
+        {
+            var mockConnection = new Mock<IDbConnection>();
+            var mockTransaction = new Mock<IDbTransaction>();
+
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
+
+            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
+
+            var connectionManager = new ConnectionManager(mockConnection.Object);
+            var transaction = connectionManager.BeginTransaction();
+            transaction.Rollback();
+
+            Assert.IsNull(connectionManager.CurrentTransaction);
         }
 
         [Test]

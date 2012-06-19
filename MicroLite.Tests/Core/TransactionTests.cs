@@ -13,6 +13,19 @@
     public class TransactionTests
     {
         [Test]
+        public void CommitCallsDbTransactionCommit()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Commit());
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Commit();
+
+            mockTransaction.VerifyAll();
+        }
+
+        [Test]
         public void CommitCallsDbTransactionCommitAndReThrowsExceptionIfCommitFails()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -24,23 +37,6 @@
 
             Assert.NotNull(exception.InnerException);
             Assert.AreEqual(exception.Message, exception.InnerException.Message);
-
-            Assert.IsFalse(transaction.WasCommitted);
-        }
-
-        [Test]
-        public void CommitCallsDbTransactionCommitAndSetsWasCommittedToTrueIfCommitSuccessful()
-        {
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Commit());
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-
-            var transaction = new Transaction(mockTransaction.Object);
-            transaction.Commit();
-
-            Assert.IsTrue(transaction.WasCommitted);
-
-            mockTransaction.VerifyAll();
         }
 
         /// <summary>
@@ -59,6 +55,38 @@
             transaction.Commit();
 
             mockConnection.VerifyAll();
+        }
+
+        [Test]
+        public void CommitDoesNotRaiseCompleteEventIfCommitFails()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Commit()).Throws<InvalidOperationException>();
+
+            bool completed = false;
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Complete += (s, e) => completed = true;
+
+            Assert.Throws<MicroLiteException>(() => transaction.Commit());
+
+            Assert.IsFalse(completed);
+        }
+
+        [Test]
+        public void CommitRaisesCompleteEventIfCommitSuccessful()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Commit());
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            bool completed = false;
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Complete += (s, e) => completed = true;
+            transaction.Commit();
+
+            Assert.IsTrue(completed);
         }
 
         [Test]
@@ -170,6 +198,22 @@
             transaction.Rollback();
 
             mockConnection.VerifyAll();
+        }
+
+        [Test]
+        public void RollbackRaisesCompleteEventIfRollbackSuccessful()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Commit());
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            bool completed = false;
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Complete += (s, e) => completed = true;
+            transaction.Rollback();
+
+            Assert.IsTrue(completed);
         }
     }
 }

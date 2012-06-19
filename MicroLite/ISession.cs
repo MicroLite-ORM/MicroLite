@@ -30,6 +30,14 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets the current transaction is one active.
+        /// </summary>
+        ITransaction Transaction
+        {
+            get;
+        }
+
+        /// <summary>
         /// Begins the transaction with the default isolation level of of the connection.
         /// </summary>
         /// <returns>The transaction.</returns>

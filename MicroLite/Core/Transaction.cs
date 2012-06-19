@@ -14,19 +14,20 @@ namespace MicroLite.Core
 {
     using System;
     using System.Data;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
     /// <summary>
     /// The default implementation of <see cref="ITransaction"/>.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Transaction {id},  Committed {WasCommitted}")]
+    [System.Diagnostics.DebuggerDisplay("Transaction {id},  Committed {committed}")]
     internal sealed class Transaction : ITransaction
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.Transaction");
         private readonly Guid id = Guid.NewGuid();
+        private bool committed;
         private bool disposed;
         private IDbTransaction transaction;
-        private bool wasCommitted;
 
         internal Transaction(IDbTransaction transaction)
         {
@@ -34,13 +35,7 @@ namespace MicroLite.Core
             this.transaction = transaction;
         }
 
-        internal bool WasCommitted
-        {
-            get
-            {
-                return this.wasCommitted;
-            }
-        }
+        internal event EventHandler Complete;
 
         public void Commit()
         {
@@ -50,7 +45,9 @@ namespace MicroLite.Core
 
                 log.TryLogInfo(LogMessages.Transaction_Committing, this.id.ToString());
                 this.transaction.Commit();
-                this.wasCommitted = true;
+
+                this.committed = true;
+                this.Complete.Raise(this);
 
                 connection.Close();
             }
@@ -65,7 +62,7 @@ namespace MicroLite.Core
         {
             if (!this.disposed)
             {
-                if (!this.wasCommitted)
+                if (!this.committed)
                 {
                     log.TryLogWarn(LogMessages.Transaction_DisposedUncommitted, this.id.ToString());
                     this.Rollback();
@@ -88,6 +85,8 @@ namespace MicroLite.Core
                 log.TryLogInfo(LogMessages.Transaction_RollingBack, this.id.ToString());
                 this.transaction.Rollback();
 
+                this.Complete.Raise(this);
+
                 connection.Close();
             }
             catch (Exception e)
@@ -99,7 +98,7 @@ namespace MicroLite.Core
 
         internal void Enlist(IDbCommand command)
         {
-            if (!this.WasCommitted)
+            if (!this.committed)
             {
                 log.TryLogInfo(LogMessages.Transaction_EnlistingCommand, this.id.ToString());
                 command.Transaction = this.transaction;

@@ -54,6 +54,14 @@ namespace MicroLite.Core
             }
         }
 
+        public ITransaction Transaction
+        {
+            get
+            {
+                return this.connectionManager.CurrentTransaction;
+            }
+        }
+
         private IEnumerable<IListener> Listeners
         {
             get

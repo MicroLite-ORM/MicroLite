@@ -17,6 +17,11 @@ namespace MicroLite.Core
 
     internal interface IConnectionManager : IDisposable
     {
+        ITransaction CurrentTransaction
+        {
+            get;
+        }
+
         ITransaction BeginTransaction();
 
         ITransaction BeginTransaction(System.Data.IsolationLevel isolationLevel);

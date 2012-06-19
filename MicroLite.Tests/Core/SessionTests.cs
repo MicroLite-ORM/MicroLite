@@ -1023,6 +1023,22 @@
         }
 
         [Test]
+        public void TransactionReturnsConnectionManagerCurrentTransaction()
+        {
+            var transaction = new Mock<ITransaction>().Object;
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CurrentTransaction).Returns(transaction);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            Assert.AreSame(transaction, session.Transaction);
+        }
+
+        [Test]
         public void UpdateBuildsAndExecutesQueryInvokingListeners()
         {
             var customer = new Customer();
