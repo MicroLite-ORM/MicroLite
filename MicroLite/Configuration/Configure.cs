@@ -13,6 +13,7 @@
 namespace MicroLite.Configuration
 {
     using System;
+    using System.Collections.Generic;
     using System.Configuration;
     using System.Data.Common;
     using MicroLite.Core;
@@ -26,6 +27,7 @@ namespace MicroLite.Configuration
     public sealed class Configure : IConfigureConnection, ICreateSessionFactory, IHideObjectMethods
     {
         private static ILog log = LogManager.GetLog("MicroLite.Configure");
+        private static IList<ISessionFactory> sessionFactories = new List<ISessionFactory>();
         private readonly SessionFactoryOptions options = new SessionFactoryOptions();
 
         /// <summary>
@@ -33,6 +35,17 @@ namespace MicroLite.Configuration
         /// </summary>
         private Configure()
         {
+        }
+
+        /// <summary>
+        /// Gets the session factories created by the configuration.
+        /// </summary>
+        public static IEnumerable<ISessionFactory> SessionFactories
+        {
+            get
+            {
+                return Configure.sessionFactories;
+            }
         }
 
         /// <summary>
@@ -67,7 +80,11 @@ namespace MicroLite.Configuration
         public ISessionFactory CreateSessionFactory()
         {
             log.TryLogInfo(LogMessages.Configure_CreatingSessionFactory, this.options.ConnectionName);
-            return new SessionFactory(this.options);
+            var sessionFactory = new SessionFactory(this.options);
+
+            sessionFactories.Add(sessionFactory);
+
+            return sessionFactory;
         }
 
         /// <summary>

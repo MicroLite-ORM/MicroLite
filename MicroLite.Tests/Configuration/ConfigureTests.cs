@@ -15,6 +15,14 @@
     public class ConfigureTests
     {
         [Test]
+        public void CreateSessionFactoryAddsInstanceToStaticProperty()
+        {
+            var sessionFactory = Configure.Fluently().ForConnection("SqlConnection").CreateSessionFactory();
+
+            CollectionAssert.Contains(Configure.SessionFactories, sessionFactory);
+        }
+
+        [Test]
         public void CreateSessionFactoryReturnsSessionFactoryForNamedConnection()
         {
             var sessionFactory = Configure.Fluently().ForConnection("SqlConnection").CreateSessionFactory();
