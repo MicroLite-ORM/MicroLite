@@ -19,7 +19,7 @@
         {
             var sessionFactory = Configure.Fluently().ForConnection("SqlConnection").CreateSessionFactory();
 
-            Assert.AreEqual("System.Data.SqlClient", sessionFactory.ConnectionName);
+            Assert.AreEqual("SqlConnection", sessionFactory.ConnectionName);
         }
 
         [Test]
