@@ -30,8 +30,8 @@ namespace MicroLite
         private static readonly IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
         private readonly Type forType;
 
-        // The properties (key is the property name, value is the property info for the property).
-        private readonly IDictionary<string, PropertyInfo> properties = new Dictionary<string, PropertyInfo>();
+        // The properties (key is the column name, value is the property info for the property).
+        private readonly IDictionary<string, PropertyInfo> columnProperties = new Dictionary<string, PropertyInfo>();
 
         private readonly TableInfo tableInfo = new TableInfo();
 
@@ -96,9 +96,9 @@ namespace MicroLite
 
         internal PropertyInfo GetPropertyInfoForColumn(string columnName)
         {
-            if (this.properties.ContainsKey(columnName))
+            if (this.columnProperties.ContainsKey(columnName))
             {
-                return this.properties[columnName];
+                return this.columnProperties[columnName];
             }
 
             return null;
@@ -154,7 +154,7 @@ namespace MicroLite
                     var columnName = columnAttribute != null ? columnAttribute.Name : property.Name;
 
                     log.TryLogDebug(LogMessages.ObjectInfo_MappingColumnToProperty, this.ForType.FullName, property.Name, columnName);
-                    this.properties.Add(columnName, property);
+                    this.columnProperties.Add(columnName, property);
 
                     this.TableInfo.Columns.Add(columnName);
 
