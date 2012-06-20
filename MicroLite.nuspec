@@ -5,7 +5,7 @@
     <version>0.0.0</version>
     <authors>Trevor Pilley</authors>
     <owners>Trevor Pilley</owners>
-    <licenseUrl>https://github.com/TrevorPilley/MicroLite/blob/master/License.txt</licenseUrl>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/TrevorPilley/MicroLite/wiki</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Micro ORM Framework</description>
