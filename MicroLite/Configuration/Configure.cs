@@ -106,7 +106,7 @@ namespace MicroLite.Configuration
 
             try
             {
-                this.options.ConnectionName = configSection.ProviderName;
+                this.options.ConnectionName = configSection.Name;
                 this.options.ConnectionString = configSection.ConnectionString;
                 this.options.ProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
                 return this;
