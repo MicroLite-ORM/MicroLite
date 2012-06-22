@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MicroLite")]
 [assembly: AssemblyProduct("MicroLite")]
-[assembly: AssemblyCopyright("© Copyright MicroLite. All rights reserved.")]
+[assembly: AssemblyCopyright("© Copyright 2012 Trevor Pilley all rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
