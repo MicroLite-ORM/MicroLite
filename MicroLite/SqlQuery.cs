@@ -21,6 +21,7 @@ namespace MicroLite
     {
         private readonly List<object> arguments = new List<object>();
         private string commandText;
+        private int timeout = 30;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlQuery"/> class with the supplied command text and parameter values.
@@ -57,6 +58,22 @@ namespace MicroLite
             set
             {
                 this.commandText = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the timeout in seconds for the query.
+        /// </summary>
+        public int Timeout
+        {
+            get
+            {
+                return this.timeout;
+            }
+
+            set
+            {
+                this.timeout = value;
             }
         }
 

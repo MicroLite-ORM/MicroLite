@@ -75,6 +75,7 @@ namespace MicroLite.Core
             }
 
             var command = this.connection.CreateCommand();
+            command.CommandTimeout = sqlQuery.Timeout;
             SetCommandText(command, sqlQuery);
             SetCommandType(command, sqlQuery);
 
