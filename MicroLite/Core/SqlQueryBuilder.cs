@@ -41,7 +41,7 @@ namespace MicroLite.Core
         {
             var forType = instance.GetType();
 
-            var objectInfo = ObjectInfo.For(forType);
+            var objectInfo = MicroLite.ObjectInfo.For(forType);
 
             var identifierPropertyInfo =
                 objectInfo.GetPropertyInfoForColumn(objectInfo.TableInfo.IdentifierColumn);
@@ -53,7 +53,7 @@ namespace MicroLite.Core
 
         public SqlQuery DeleteQuery(Type type, object identifier)
         {
-            var objectInfo = ObjectInfo.For(type);
+            var objectInfo = MicroLite.ObjectInfo.For(type);
 
             var sqlBuilder = this.CreateSql(StatementType.Delete, objectInfo);
             sqlBuilder.AppendFormat(
@@ -67,7 +67,7 @@ namespace MicroLite.Core
 
         public SqlQuery InsertQuery(object instance)
         {
-            var objectInfo = ObjectInfo.For(instance.GetType());
+            var objectInfo = MicroLite.ObjectInfo.For(instance.GetType());
 
             var values = new List<object>();
 
@@ -129,7 +129,7 @@ namespace MicroLite.Core
 
         public SqlQuery SelectQuery(Type forType, object identifier)
         {
-            var objectInfo = ObjectInfo.For(forType);
+            var objectInfo = MicroLite.ObjectInfo.For(forType);
 
             var sqlBuilder = this.CreateSql(StatementType.Select, objectInfo);
 
@@ -144,7 +144,7 @@ namespace MicroLite.Core
 
         public SqlQuery UpdateQuery(object instance)
         {
-            var objectInfo = ObjectInfo.For(instance.GetType());
+            var objectInfo = MicroLite.ObjectInfo.For(instance.GetType());
 
             var values = new List<object>();
 
@@ -186,7 +186,7 @@ namespace MicroLite.Core
             return new SqlQuery(sqlBuilder.ToString(), values.ToArray());
         }
 
-        private StringBuilder CreateSql(StatementType statementType, ObjectInfo objectInfo)
+        private StringBuilder CreateSql(StatementType statementType, MicroLite.ObjectInfo objectInfo)
         {
             var sqlBuilder = new StringBuilder();
 

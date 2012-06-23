@@ -27,7 +27,7 @@ namespace MicroLite.Listeners
 
         public override void AfterInsert(object instance, object executeScalarResult)
         {
-            var objectInfo = ObjectInfo.For(instance.GetType());
+            var objectInfo = MicroLite.ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
             {
@@ -42,7 +42,7 @@ namespace MicroLite.Listeners
 
         public override void BeforeInsert(object instance)
         {
-            var objectInfo = ObjectInfo.For(instance.GetType());
+            var objectInfo = MicroLite.ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
             {
@@ -55,7 +55,7 @@ namespace MicroLite.Listeners
 
         public override void BeforeInsert(Type forType, SqlQuery sqlQuery)
         {
-            var objectInfo = ObjectInfo.For(forType);
+            var objectInfo = MicroLite.ObjectInfo.For(forType);
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
             {
@@ -65,7 +65,7 @@ namespace MicroLite.Listeners
 
         public override void BeforeUpdate(object instance)
         {
-            var objectInfo = ObjectInfo.For(instance.GetType());
+            var objectInfo = MicroLite.ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
             {
