@@ -19,6 +19,24 @@
         }
 
         [Test]
+        public void ConstructorThrowsArgumentNullExceptionForNullForTableInfo()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new ObjectInfo(typeof(CustomerWithIntegerIdentifier), null));
+
+            Assert.AreEqual("tableInfo", exception.ParamName);
+        }
+
+        [Test]
+        public void ConstructorThrowsArgumentNullExceptionForNullForType()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new ObjectInfo(null, null));
+
+            Assert.AreEqual("forType", exception.ParamName);
+        }
+
+        [Test]
         public void DefaultIdentifierValueIsSetCorrectlyForGuid()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));

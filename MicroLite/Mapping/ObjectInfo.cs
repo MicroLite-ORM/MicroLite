@@ -30,7 +30,7 @@ namespace MicroLite.Mapping
         private static readonly IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
         private static IMappingConvention mappingConvention = new LooseAttributeMappingConvention();
 
-        // The properties (key is the column name, value is the property info for the property).
+        // Key is the column name, value is the property info for the property.
         private readonly IDictionary<string, PropertyInfo> columnProperties;
 
         private readonly Type forType;
