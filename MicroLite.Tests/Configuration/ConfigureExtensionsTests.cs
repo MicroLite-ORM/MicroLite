@@ -3,6 +3,7 @@
     using System;
     using MicroLite.Configuration;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
     using NUnit.Framework;
 
     /// <summary>
@@ -31,7 +32,7 @@
             var configureExtensions = new ConfigureExtensions();
             configureExtensions.SetMappingConvention(new MicroLite.Mapping.StrictAttributeMappingConvention());
 
-            Assert.IsInstanceOf<MicroLite.Mapping.StrictAttributeMappingConvention>(MicroLite.Mapping.ObjectInfo.MappingConvention);
+            Assert.IsInstanceOf<MicroLite.Mapping.StrictAttributeMappingConvention>(ObjectInfo.MappingConvention);
         }
 
         [Test]
@@ -51,7 +52,7 @@
             LogManager.GetLogger = null;
 
             // Ensure that the MappingConvention is cleared before each test.
-            MicroLite.Mapping.ObjectInfo.MappingConvention = null;
+            ObjectInfo.MappingConvention = null;
         }
 
         [TestFixtureTearDown]
@@ -61,7 +62,7 @@
             LogManager.GetLogger = null;
 
             // Ensure that the MappingConvention is set to the default after all tests have been run.
-            MicroLite.Mapping.ObjectInfo.MappingConvention = new MicroLite.Mapping.LooseAttributeMappingConvention();
+            ObjectInfo.MappingConvention = new MicroLite.Mapping.LooseAttributeMappingConvention();
         }
     }
 }

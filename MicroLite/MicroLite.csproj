@@ -109,7 +109,6 @@
     <Compile Include="Mapping\TableInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ObjectInfo.cs" />
     <Compile Include="Query\IAndOrOrderBy.cs" />
     <Compile Include="Mapping\IdentifierAttribute.cs" />
     <Compile Include="Mapping\IdentifierStrategy.cs" />
@@ -139,7 +138,6 @@
     <Compile Include="Query\SqlBuilder.cs" />
     <Compile Include="SqlQuery.cs" />
     <Compile Include="Mapping\TableAttribute.cs" />
-    <Compile Include="TableInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">

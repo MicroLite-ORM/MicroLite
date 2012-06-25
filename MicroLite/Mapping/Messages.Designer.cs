@@ -63,9 +63,9 @@ namespace MicroLite.Mapping {
         /// <summary>
         ///   Looks up a localized string similar to No ColumnInfo was supplied with IsIdentifier set to true.
         /// </summary>
-        internal static string NoIdentifierColumn {
+        internal static string TableInfo_NoIdentifierColumn {
             get {
-                return ResourceManager.GetString("NoIdentifierColumn", resourceCulture);
+                return ResourceManager.GetString("TableInfo_NoIdentifierColumn", resourceCulture);
             }
         }
     }

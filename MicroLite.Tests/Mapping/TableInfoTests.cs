@@ -69,7 +69,7 @@
             var exception = Assert.Throws<MicroLiteException>(
                 () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.Identity, name: "Customers", schema: "Sales"));
 
-            Assert.AreEqual(Messages.NoIdentifierColumn, exception.Message);
+            Assert.AreEqual(Messages.TableInfo_NoIdentifierColumn, exception.Message);
         }
 
         private class Customer

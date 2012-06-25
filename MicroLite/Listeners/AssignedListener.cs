@@ -22,7 +22,7 @@ namespace MicroLite.Listeners
     {
         public override void BeforeInsert(object instance)
         {
-            var objectInfo = MicroLite.ObjectInfo.For(instance.GetType());
+            var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
             {
@@ -35,7 +35,7 @@ namespace MicroLite.Listeners
 
         public override void BeforeUpdate(object instance)
         {
-            var objectInfo = MicroLite.ObjectInfo.For(instance.GetType());
+            var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
             {

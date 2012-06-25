@@ -60,7 +60,7 @@ namespace MicroLite.Mapping
 
             if (identifierColumn == null)
             {
-                throw new MicroLiteException(Messages.NoIdentifierColumn);
+                throw new MicroLiteException(Messages.TableInfo_NoIdentifierColumn);
             }
 
             this.columns = new List<ColumnInfo>(columns);
