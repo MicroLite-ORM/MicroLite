@@ -61,6 +61,24 @@ namespace MicroLite.Mapping {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignoring {0}.{1} as it has no ColumnAttribute.
+        /// </summary>
+        internal static string StrictAttributeMappingConvention_IgnoringProperty {
+            get {
+                return ResourceManager.GetString("StrictAttributeMappingConvention_IgnoringProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type {0} is not decorated with a TableAttribute.
+        /// </summary>
+        internal static string StrictAttributeMappingConvention_NoTableAttribute {
+            get {
+                return ResourceManager.GetString("StrictAttributeMappingConvention_NoTableAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No ColumnInfo was supplied with IsIdentifier set to true.
         /// </summary>
         internal static string TableInfo_NoIdentifierColumn {

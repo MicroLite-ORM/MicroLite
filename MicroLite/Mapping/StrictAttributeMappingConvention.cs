@@ -13,6 +13,11 @@
 namespace MicroLite.Mapping
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using MicroLite.FrameworkExtensions;
+    using MicroLite.Logging;
 
     /// <summary>
     /// The implementation of <see cref="IMappingConvention"/> which uses attributes to map tables and columns
@@ -20,9 +25,52 @@ namespace MicroLite.Mapping
     /// </summary>
     internal sealed class StrictAttributeMappingConvention : IMappingConvention
     {
+        private static readonly ILog log = LogManager.GetLog("MicroLite.StrictAttributeMappingConvention");
+
         public ObjectInfo CreateObjectInfo(Type forType)
         {
-            throw new NotImplementedException();
+            var tableAttribute = forType.GetAttribute<TableAttribute>(inherit: false);
+
+            if (tableAttribute == null)
+            {
+                var message = Messages.StrictAttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName);
+                log.TryLogFatal(message);
+                throw new MicroLiteException(message);
+            }
+
+            var identifierStrategy = MicroLite.Mapping.IdentifierStrategy.Identity;
+            var columns = new List<ColumnInfo>();
+
+            var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+            foreach (var property in properties.Where(p => p.CanRead && p.CanWrite))
+            {
+                var columnAttribute = property.GetAttribute<ColumnAttribute>(inherit: true);
+
+                if (columnAttribute == null)
+                {
+                    log.TryLogDebug(LogMessages.ObjectInfo_IgnoringProperty, forType.FullName, property.Name);
+                    continue;
+                }
+
+                var identifierAttribute = property.GetAttribute<IdentifierAttribute>(inherit: true);
+
+                if (identifierAttribute != null)
+                {
+                    identifierStrategy = identifierAttribute.IdentifierStrategy;
+                }
+
+                var columnInfo = new ColumnInfo(
+                    columnName: columnAttribute.Name,
+                    isIdentifier: identifierAttribute == null ? false : true,
+                    propertyInfo: property);
+
+                columns.Add(columnInfo);
+            }
+
+            var tableInfo = new TableInfo(columns, identifierStrategy, tableAttribute.Name, tableAttribute.Schema);
+
+            return new ObjectInfo(forType, tableInfo);
         }
     }
 }
