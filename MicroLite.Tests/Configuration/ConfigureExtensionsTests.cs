@@ -4,6 +4,7 @@
     using MicroLite.Configuration;
     using MicroLite.Logging;
     using MicroLite.Mapping;
+    using Moq;
     using NUnit.Framework;
 
     /// <summary>
@@ -29,10 +30,12 @@
         [Test]
         public void SetMappingConventionSetsObjectInfoMappingConvention()
         {
-            var configureExtensions = new ConfigureExtensions();
-            configureExtensions.SetMappingConvention(new MicroLite.Mapping.StrictAttributeMappingConvention());
+            var mappingConvention = new Mock<IMappingConvention>().Object;
 
-            Assert.IsInstanceOf<MicroLite.Mapping.StrictAttributeMappingConvention>(ObjectInfo.MappingConvention);
+            var configureExtensions = new ConfigureExtensions();
+            configureExtensions.SetMappingConvention(mappingConvention);
+
+            Assert.AreSame(mappingConvention, ObjectInfo.MappingConvention);
         }
 
         [Test]
@@ -62,7 +65,7 @@
             LogManager.GetLogger = null;
 
             // Ensure that the MappingConvention is set to the default after all tests have been run.
-            ObjectInfo.MappingConvention = new MicroLite.Mapping.LooseAttributeMappingConvention();
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
         }
     }
 }

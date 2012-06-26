@@ -28,7 +28,7 @@ namespace MicroLite.Mapping
         private static readonly object locker = new object();
         private static readonly ILog log = LogManager.GetLog("ObjectInfo");
         private static readonly IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
-        private static IMappingConvention mappingConvention = new LooseAttributeMappingConvention();
+        private static IMappingConvention mappingConvention = new AttributeMappingConvention();
 
         // Key is the column name, value is the property info for the property.
         private readonly IDictionary<string, PropertyInfo> columnProperties;

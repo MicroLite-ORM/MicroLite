@@ -49,7 +49,6 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ConfigurationExtensions.cs" />
     <Compile Include="FrameworkExtensions\EventHandlerExtensions.cs" />
     <Compile Include="Mapping\ColumnAttribute.cs" />
     <Compile Include="Configuration\Configure.cs" />
@@ -98,14 +97,13 @@
     </Compile>
     <Compile Include="Mapping\ColumnInfo.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
-    <Compile Include="Mapping\LooseAttributeMappingConvention.cs" />
     <Compile Include="Mapping\Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
     <Compile Include="Mapping\ObjectInfo.cs" />
-    <Compile Include="Mapping\StrictAttributeMappingConvention.cs" />
+    <Compile Include="Mapping\AttributeMappingConvention.cs" />
     <Compile Include="Mapping\TableInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -113,7 +111,6 @@
     <Compile Include="Mapping\IdentifierAttribute.cs" />
     <Compile Include="Mapping\IdentifierStrategy.cs" />
     <Compile Include="Query\IFrom.cs" />
-    <Compile Include="Mapping\IgnoreAttribute.cs" />
     <Compile Include="IHideObjectMethods.cs" />
     <Compile Include="Listeners\IListener.cs" />
     <Compile Include="Query\IOrderBy.cs" />

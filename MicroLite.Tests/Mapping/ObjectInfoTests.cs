@@ -190,8 +190,10 @@
         {
         }
 
+        [MicroLite.Mapping.Table("Sales", "Customers")]
         private class CustomerWithGuidIdentifier
         {
+            [MicroLite.Mapping.Column("CustomerId")]
             [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
             public Guid Id
             {
@@ -230,6 +232,7 @@
                 set;
             }
 
+            [MicroLite.Mapping.Column("Name")]
             public string Name
             {
                 get;
@@ -238,13 +241,6 @@
 
             [MicroLite.Mapping.Column("StatusId")]
             public CustomerStatus Status
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Ignore]
-            public string TempraryNotes
             {
                 get;
                 set;
@@ -262,8 +258,11 @@
         {
         }
 
+        [MicroLite.Mapping.Table("Sales", "Customers")]
         private class CustomerWithStringIdentifier
         {
+            [MicroLite.Mapping.Column("CustomerId")]
+            [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)]
             public string Id
             {
                 get;

@@ -6,10 +6,10 @@
     using NUnit.Framework;
 
     /// <summary>
-    /// Unit Tests for the <see cref="StrictAttributeMappingConvention"/> class.
+    /// Unit Tests for the <see cref="AttributeMappingConvention"/> class.
     /// </summary>
     [TestFixture]
-    public class StrictAttributeMappingConventionTests
+    public class AttributeMappingConventionTests
     {
         private enum CustomerStatus
         {
@@ -20,7 +20,7 @@
         [Test]
         public void CreateObjectInfoThrowsMicroLiteExceptionIfNoTableAttribute()
         {
-            var mappingConvention = new StrictAttributeMappingConvention();
+            var mappingConvention = new AttributeMappingConvention();
 
             var exception = Assert.Throws<MicroLiteException>(
                 () => mappingConvention.CreateObjectInfo(typeof(CustomerWithNoTableAttribute)));
@@ -31,7 +31,7 @@
         [Test]
         public void TableInfoColumnsAreMappedCorrectly()
         {
-            var mappingConvention = new StrictAttributeMappingConvention();
+            var mappingConvention = new AttributeMappingConvention();
             var objectInfo = mappingConvention.CreateObjectInfo(typeof(Customer));
 
             var columns = objectInfo.TableInfo.Columns.ToArray();
@@ -58,7 +58,7 @@
         [Test]
         public void TableInfoHasCorrectProperties()
         {
-            var mappingConvention = new StrictAttributeMappingConvention();
+            var mappingConvention = new AttributeMappingConvention();
             var objectInfo = mappingConvention.CreateObjectInfo(typeof(Customer));
 
             Assert.AreEqual("CustomerId", objectInfo.TableInfo.IdentifierColumn);

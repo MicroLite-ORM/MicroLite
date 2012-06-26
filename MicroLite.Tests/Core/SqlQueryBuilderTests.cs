@@ -282,6 +282,7 @@
                 set;
             }
 
+            [MicroLite.Mapping.Column("Name")]
             public string Name
             {
                 get;
@@ -318,6 +319,7 @@
                 set;
             }
 
+            [MicroLite.Mapping.Column("Name")]
             public string Name
             {
                 get;

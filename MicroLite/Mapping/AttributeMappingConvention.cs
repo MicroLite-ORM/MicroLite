@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="StrictAttributeMappingConvention.cs" company="MicroLite">
+// <copyright file="AttributeMappingConvention.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,14 +21,19 @@ namespace MicroLite.Mapping
 
     /// <summary>
     /// The implementation of <see cref="IMappingConvention"/> which uses attributes to map tables and columns
-    /// to types and properties only maps if an attribute is present.
+    /// to types and properties only maps if an attribute is present (opt-in).
     /// </summary>
-    internal sealed class StrictAttributeMappingConvention : IMappingConvention
+    internal sealed class AttributeMappingConvention : IMappingConvention
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.StrictAttributeMappingConvention");
 
         public ObjectInfo CreateObjectInfo(Type forType)
         {
+            if (forType == null)
+            {
+                throw new ArgumentNullException("forType");
+            }
+
             var tableAttribute = forType.GetAttribute<TableAttribute>(inherit: false);
 
             if (tableAttribute == null)
