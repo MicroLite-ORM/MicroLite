@@ -16,6 +16,7 @@ namespace MicroLite.Core
     using System.Data;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The default implementation of <see cref="IObjectBuilder"/>.

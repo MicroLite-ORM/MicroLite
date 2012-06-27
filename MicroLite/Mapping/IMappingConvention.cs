@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IgnoreAttribute.cs" company="MicroLite">
+// <copyright file="IMappingConvention.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,15 @@ namespace MicroLite.Mapping
     using System;
 
     /// <summary>
-    /// An attribute which can be applied to a property to specify that it should be ignored by the
-    /// MicroLite ORM framework.
+    /// The interface for a class which implements a mapping convention between a class and a table.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public sealed class IgnoreAttribute : Attribute
+    public interface IMappingConvention
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="IgnoreAttribute"/> class.
+        /// Creates the object info for the supplied type.
         /// </summary>
-        public IgnoreAttribute()
-        {
-        }
+        /// <param name="forType">The type to create the object info for.</param>
+        /// <returns>The <see cref="ObjectInfo"/> for the supplied type.</returns>
+        ObjectInfo CreateObjectInfo(Type forType);
     }
 }

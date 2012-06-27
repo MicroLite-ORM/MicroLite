@@ -26,8 +26,8 @@ namespace MicroLite.Configuration
     /// </summary>
     public sealed class Configure : IConfigureConnection, ICreateSessionFactory, IHideObjectMethods
     {
-        private static ILog log = LogManager.GetLog("MicroLite.Configure");
-        private static IList<ISessionFactory> sessionFactories = new List<ISessionFactory>();
+        private static readonly ILog log = LogManager.GetLog("MicroLite.Configure");
+        private static readonly IList<ISessionFactory> sessionFactories = new List<ISessionFactory>();
         private readonly SessionFactoryOptions options = new SessionFactoryOptions();
 
         /// <summary>

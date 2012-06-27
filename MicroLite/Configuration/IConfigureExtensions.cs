@@ -14,6 +14,7 @@ namespace MicroLite.Configuration
 {
     using System;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The interface which specifies the options for configuring extensions to the MicroLite ORM framework.
@@ -25,5 +26,12 @@ namespace MicroLite.Configuration
         /// </summary>
         /// <param name="logResolver">The function to resolve an ILog.</param>
         void SetLogResolver(Func<string, ILog> logResolver);
+
+        /// <summary>
+        /// Sets the mapping convention.
+        /// </summary>
+        /// <param name="mappingConvention">The mapping convention to use.</param>
+        /// <exception cref="ArgumentNullException">Thrown if mappingConvention is null.</exception>
+        void SetMappingConvention(IMappingConvention mappingConvention);
     }
 }

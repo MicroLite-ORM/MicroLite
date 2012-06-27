@@ -135,6 +135,7 @@
             Assert.AreEqual(CustomerStatus.Active, customer.Status);
         }
 
+        [MicroLite.Mapping.Table("Sales", "Customers")]
         private class Customer
         {
             public Customer()
@@ -149,18 +150,21 @@
             }
 
             [MicroLite.Mapping.Column("CustomerId")]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Identity)]
             public int Id
             {
                 get;
                 set;
             }
 
+            [MicroLite.Mapping.Column("Name")]
             public string Name
             {
                 get;
                 set;
             }
 
+            [MicroLite.Mapping.Column("ReferredById")]
             public int? ReferredById
             {
                 get;

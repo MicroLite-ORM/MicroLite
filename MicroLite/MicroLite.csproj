@@ -95,12 +95,22 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
-    <Compile Include="ObjectInfo.cs" />
+    <Compile Include="Mapping\ColumnInfo.cs" />
+    <Compile Include="Mapping\IMappingConvention.cs" />
+    <Compile Include="Mapping\Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Mapping\ObjectInfo.cs" />
+    <Compile Include="Mapping\AttributeMappingConvention.cs" />
+    <Compile Include="Mapping\TableInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Query\IAndOrOrderBy.cs" />
     <Compile Include="Mapping\IdentifierAttribute.cs" />
     <Compile Include="Mapping\IdentifierStrategy.cs" />
     <Compile Include="Query\IFrom.cs" />
-    <Compile Include="Mapping\IgnoreAttribute.cs" />
     <Compile Include="IHideObjectMethods.cs" />
     <Compile Include="Listeners\IListener.cs" />
     <Compile Include="Query\IOrderBy.cs" />
@@ -125,7 +135,6 @@
     <Compile Include="Query\SqlBuilder.cs" />
     <Compile Include="SqlQuery.cs" />
     <Compile Include="Mapping\TableAttribute.cs" />
-    <Compile Include="TableInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">
@@ -150,6 +159,10 @@
     <EmbeddedResource Include="Logging\LogMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LogMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mapping\Messages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

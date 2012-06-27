@@ -259,7 +259,7 @@ namespace MicroLite.Core
 
             var results = this.Query<T>(query).ToList();
 
-            return new PagedResult<T>(page, results);
+            return new PagedResult<T>(page, results, resultsPerPage);
         }
 
         public T Single<T>(object identifier) where T : class, new()

@@ -18,6 +18,7 @@ namespace MicroLite.Query
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// A helper class for creating a dynamic <see cref="SqlQuery"/>.
@@ -69,7 +70,7 @@ namespace MicroLite.Query
         {
             var objectInfo = ObjectInfo.For(forType);
 
-            return Select(objectInfo.TableInfo.Columns.ToArray())
+            return Select(objectInfo.TableInfo.Columns.Select(c => c.ColumnName).ToArray())
                 .From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name);
         }
 
