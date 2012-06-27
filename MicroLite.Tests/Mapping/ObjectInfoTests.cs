@@ -1,9 +1,9 @@
-﻿namespace MicroLite.Tests
+﻿namespace MicroLite.Tests.Mapping
 {
     using System;
-    using System.Linq;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
     using NUnit.Framework;
 
     /// <summary>
@@ -19,19 +19,37 @@
         }
 
         [Test]
-        public void DefaultIdentiferValueIsSetCorrectlyForGuid()
+        public void ConstructorThrowsArgumentNullExceptionForNullForTableInfo()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new ObjectInfo(typeof(CustomerWithIntegerIdentifier), null));
 
-            Assert.AreEqual(Guid.Empty, objectInfo.DefaultIdentiferValue);
+            Assert.AreEqual("tableInfo", exception.ParamName);
         }
 
         [Test]
-        public void DefaultIdentiferValueIsSetCorrectlyForInteger()
+        public void ConstructorThrowsArgumentNullExceptionForNullForType()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new ObjectInfo(null, null));
+
+            Assert.AreEqual("forType", exception.ParamName);
+        }
+
+        [Test]
+        public void DefaultIdentifierValueIsSetCorrectlyForGuid()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
+
+            Assert.AreEqual(Guid.Empty, objectInfo.DefaultIdentifierValue);
+        }
+
+        [Test]
+        public void DefaultIdentifierValueIsSetCorrectlyForInteger()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            Assert.AreEqual(0, objectInfo.DefaultIdentiferValue);
+            Assert.AreEqual(0, objectInfo.DefaultIdentifierValue);
         }
 
         [Test]
@@ -39,7 +57,7 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
 
-            Assert.IsNull(objectInfo.DefaultIdentiferValue);
+            Assert.IsNull(objectInfo.DefaultIdentifierValue);
         }
 
         [Test]
@@ -78,17 +96,6 @@
 
             Assert.AreEqual(
                 LogMessages.TypeMustHaveDefaultConstructor.FormatWith(typeof(CustomerWithNoDefaultConstructor).Name),
-                exception.Message);
-        }
-
-        [Test]
-        public void ForThrowsMicroLiteExceptionIfNoIdentifierPropertyFound()
-        {
-            var exception = Assert.Throws<MicroLiteException>(
-                () => ObjectInfo.For(typeof(CustomerWithNoIdentifier)));
-
-            Assert.AreEqual(
-                LogMessages.NoIdentifierFoundForType.FormatWith(typeof(CustomerWithNoIdentifier).Name),
                 exception.Message);
         }
 
@@ -175,71 +182,6 @@
             Assert.IsFalse(objectInfo.HasDefaultIdentifierValue(customer));
         }
 
-        [Test]
-        public void TableInfoColumnInfoAreCapturedCorrectly()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var columns = objectInfo.TableInfo.Columns.ToArray();
-
-            Assert.AreEqual(4, columns.Length);
-
-            Assert.AreEqual("DoB", columns[0]); // From Column attribute.
-            Assert.AreEqual("CustomerId", columns[1]); // From Column attribute.
-            Assert.AreEqual("Name", columns[2]); // From property name.
-            Assert.AreEqual("StatusId", columns[3]); // From Column attribute.
-        }
-
-        [Test]
-        public void TableInfoIdentifierColumnIsSetCorrectly()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            Assert.AreEqual("CustomerId", objectInfo.TableInfo.IdentifierColumn);
-        }
-
-        [Test]
-        public void TableInfoIdentifierColumnIsSetCorrectlyForPocoWithClassNameIdProperty()
-        {
-            var objectInfo = ObjectInfo.For(typeof(PocoCustomer2));
-
-            Assert.AreEqual("PocoCustomer2Id", objectInfo.TableInfo.IdentifierColumn);
-            Assert.AreEqual(MicroLite.Mapping.IdentifierStrategy.Identity, objectInfo.TableInfo.IdentifierStrategy);
-        }
-
-        [Test]
-        public void TableInfoIdentifierColumnIsSetCorrectlyForPocoWithIdProperty()
-        {
-            var objectInfo = ObjectInfo.For(typeof(PocoCustomer1));
-
-            Assert.AreEqual("CustomerId", objectInfo.TableInfo.IdentifierColumn);
-            Assert.AreEqual(MicroLite.Mapping.IdentifierStrategy.Identity, objectInfo.TableInfo.IdentifierStrategy);
-        }
-
-        [Test]
-        public void TableInfoIdentifierStrategyIsSetCorrectly()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            Assert.AreEqual(MicroLite.Mapping.IdentifierStrategy.Assigned, objectInfo.TableInfo.IdentifierStrategy);
-        }
-
-        [Test]
-        public void TableInfoTableNameIsSetCorrectly()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            Assert.AreEqual("Customers", objectInfo.TableInfo.Name);
-        }
-
-        [Test]
-        public void TableInfoTableSchemaIsSetCorrectly()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            Assert.AreEqual("Sales", objectInfo.TableInfo.Schema);
-        }
-
         private struct CustomerStruct
         {
         }
@@ -248,9 +190,11 @@
         {
         }
 
+        [MicroLite.Mapping.Table("Sales", "Customers")]
         private class CustomerWithGuidIdentifier
         {
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
+            [MicroLite.Mapping.Column("CustomerId")]
+            [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
             public Guid Id
             {
                 get;
@@ -281,13 +225,14 @@
             }
 
             [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
+            [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
             public int Id
             {
                 get;
                 set;
             }
 
+            [MicroLite.Mapping.Column("Name")]
             public string Name
             {
                 get;
@@ -296,13 +241,6 @@
 
             [MicroLite.Mapping.Column("StatusId")]
             public CustomerStatus Status
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Ignore]
-            public string TempraryNotes
             {
                 get;
                 set;
@@ -320,34 +258,12 @@
         {
         }
 
+        [MicroLite.Mapping.Table("Sales", "Customers")]
         private class CustomerWithStringIdentifier
         {
-            public string Id
-            {
-                get;
-                set;
-            }
-        }
-
-        /// <summary>
-        /// Used to check that we can auto determine the identifier if there is a property called Id.
-        /// </summary>
-        private class PocoCustomer1
-        {
             [MicroLite.Mapping.Column("CustomerId")]
-            public int Id
-            {
-                get;
-                set;
-            }
-        }
-
-        /// <summary>
-        /// Used to check that we can auto determine the identifier if there is a property called {ClassName}Id.
-        /// </summary>
-        private class PocoCustomer2
-        {
-            public int PocoCustomer2Id
+            [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)]
+            public string Id
             {
                 get;
                 set;

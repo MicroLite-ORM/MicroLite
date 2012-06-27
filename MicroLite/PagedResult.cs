@@ -22,16 +22,19 @@ namespace MicroLite
     {
         private readonly long page;
         private readonly IList<T> results;
+        private readonly long resultsPerPage;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="PagedResult&lt;T&gt;"/> class.
         /// </summary>
-        /// <param name="page">The page.</param>
-        /// <param name="results">The results.</param>
-        public PagedResult(long page, IList<T> results)
+        /// <param name="page">The page number.</param>
+        /// <param name="results">The results in the page.</param>
+        /// <param name="resultsPerPage">The number of results per page.</param>
+        public PagedResult(long page, IList<T> results, long resultsPerPage)
         {
             this.page = page;
             this.results = results;
+            this.resultsPerPage = resultsPerPage;
         }
 
         /// <summary>
@@ -53,6 +56,17 @@ namespace MicroLite
             get
             {
                 return this.results;
+            }
+        }
+
+        /// <summary>
+        /// Gets the number of results per page.
+        /// </summary>
+        public long ResultsPerPage
+        {
+            get
+            {
+                return this.resultsPerPage;
             }
         }
     }

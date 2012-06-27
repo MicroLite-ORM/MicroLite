@@ -53,8 +53,10 @@
             Assert.AreEqual(Messages.IListener_IdentifierNotSetForUpdate, exception.Message);
         }
 
+        [MicroLite.Mapping.Table("Sales", "Customers")]
         private class Customer
         {
+            [MicroLite.Mapping.Column("CustomerId")]
             [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Guid)]
             public Guid Id
             {

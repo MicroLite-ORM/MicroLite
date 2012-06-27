@@ -14,6 +14,7 @@ namespace MicroLite.Configuration
 {
     using System;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The class used to configure extensions to the MicroLite ORM framework.
@@ -23,6 +24,16 @@ namespace MicroLite.Configuration
         public void SetLogResolver(Func<string, ILog> logResolver)
         {
             LogManager.GetLogger = logResolver;
+        }
+
+        public void SetMappingConvention(IMappingConvention mappingConvention)
+        {
+            if (mappingConvention == null)
+            {
+                throw new ArgumentNullException("mappingConvention");
+            }
+
+            ObjectInfo.MappingConvention = mappingConvention;
         }
     }
 }

@@ -201,6 +201,20 @@
         }
 
         [Test]
+        public void BuildSetsDbCommandTimeoutToSqlQueryTime()
+        {
+            var sqlQuery = new SqlQuery("SELECT * FROM [Table]");
+            sqlQuery.Timeout = 42; // Use an oddball time which shouldn't be a default anywhere.
+
+            using (var connectionManager = new ConnectionManager(new SqlConnection()))
+            {
+                var command = connectionManager.Build(sqlQuery);
+
+                Assert.AreEqual(sqlQuery.Timeout, command.CommandTimeout);
+            }
+        }
+
+        [Test]
         public void BuildThrowsMicroLiteExceptionForParameterCountMismatch()
         {
             var sqlQuery = new SqlQuery(

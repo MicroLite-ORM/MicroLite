@@ -1,4 +1,4 @@
-Before building, ensure that you have StyleCop installed (currently version 4.7.30.0)
+Before building, ensure that you have StyleCop installed (currently version 4.7.32.0)
 If running on a 64 bit machine, run the PowerShell (x86) executable otherwise the StyleCop.targets won't be found.
 
 ** To just build the binaries in release mode with all tests run:

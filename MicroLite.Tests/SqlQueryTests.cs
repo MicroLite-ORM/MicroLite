@@ -20,6 +20,14 @@
         }
 
         [Test]
+        public void DefaultTimeoutIs30Seconds()
+        {
+            var sqlQuery = new SqlQuery(string.Empty);
+
+            Assert.AreEqual(30, sqlQuery.Timeout);
+        }
+
+        [Test]
         public void EqualsReturnsFalseIfCommandTextMatchesButArgumentCountDiffers()
         {
             var sqlQuery1 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", 10);
@@ -70,6 +78,17 @@
             var expectedHashCode = sqlQuery.CommandText.GetHashCode() ^ sqlQuery.Arguments.GetHashCode();
 
             Assert.AreEqual(expectedHashCode, sqlQuery.GetHashCode());
+        }
+
+        [Test]
+        public void TimeoutCanBeChanged()
+        {
+            var timeout = 180;
+
+            var sqlQuery = new SqlQuery(string.Empty);
+            sqlQuery.Timeout = timeout;
+
+            Assert.AreEqual(timeout, sqlQuery.Timeout);
         }
 
         [Test]
