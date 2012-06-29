@@ -17,7 +17,7 @@
             var isIdentifier = true;
             var propertyInfo = typeof(Customer).GetProperty("Name");
 
-            var columnInfo = new ColumnInfo(columnName, isIdentifier, propertyInfo);
+            var columnInfo = new ColumnInfo(columnName, propertyInfo, isIdentifier);
 
             Assert.AreEqual(columnName, columnInfo.ColumnName);
             Assert.AreEqual(isIdentifier, columnInfo.IsIdentifier);
@@ -28,7 +28,7 @@
         public void ConstructorThrowsArgumentNullExceptionForNullColumnName()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new ColumnInfo(columnName: null, isIdentifier: false, propertyInfo: null));
+                () => new ColumnInfo(columnName: null, propertyInfo: null, isIdentifier: false));
 
             Assert.AreEqual("columnName", exception.ParamName);
         }
@@ -37,7 +37,7 @@
         public void ConstructorThrowsArgumentNullExceptionForNullPropertyInfo()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new ColumnInfo(columnName: "Name", isIdentifier: false, propertyInfo: null));
+                () => new ColumnInfo(columnName: "Name", propertyInfo: null, isIdentifier: false));
 
             Assert.AreEqual("propertyInfo", exception.ParamName);
         }

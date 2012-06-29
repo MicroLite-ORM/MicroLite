@@ -15,8 +15,8 @@
         {
             var columns = new[]
             {
-                new ColumnInfo("Name", false, typeof(Customer).GetProperty("Name")),
-                new ColumnInfo("Id", true, typeof(Customer).GetProperty("Id"))
+                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false),
+                new ColumnInfo("Id", typeof(Customer).GetProperty("Id"), true)
             };
             var identifierStrategy = IdentifierStrategy.Guid;
             var name = "Customers";
@@ -63,7 +63,7 @@
         {
             var columns = new[]
             {
-                new ColumnInfo("Name", false, typeof(Customer).GetProperty("Name"))
+                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false)
             };
 
             var exception = Assert.Throws<MicroLiteException>(

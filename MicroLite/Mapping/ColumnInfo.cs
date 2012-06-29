@@ -28,9 +28,9 @@ namespace MicroLite.Mapping
         /// Initialises a new instance of the <see cref="ColumnInfo"/> class.
         /// </summary>
         /// <param name="columnName">The name of the column in the database table.</param>
-        /// <param name="isIdentifier">A value indicating whether column is the table identifier column (primary key).</param>
         /// <param name="propertyInfo">The property info for the property the column maps to.</param>
-        public ColumnInfo(string columnName, bool isIdentifier, PropertyInfo propertyInfo)
+        /// <param name="isIdentifier">A value indicating whether column is the table identifier column (primary key).</param>
+        public ColumnInfo(string columnName, PropertyInfo propertyInfo, bool isIdentifier)
         {
             if (columnName == null)
             {
