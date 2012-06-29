@@ -117,13 +117,115 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ArgumentsCountMismatch" xml:space="preserve">
-    <value>There are {0} parameters in the SQL statement, however only {1} parameter arguments were supplied.</value>
+  <data name="ConnectionManager_ArgumentsCountMismatch" xml:space="preserve">
+    <value>There are [{0}] parameters in the SQL statement, however only [{1}] parameter arguments were supplied.</value>
   </data>
-  <data name="MustHaveAtLeast1Result" xml:space="preserve">
+  <data name="AssignedListener_IdentifierNotSetForInsert" xml:space="preserve">
+    <value>The object does not have an identifier value set so it cannot be inserted</value>
+  </data>
+  <data name="Configure_ConnectionNotFound" xml:space="preserve">
+    <value>No connection was found in the app.config with the name [{0}]</value>
+  </data>
+  <data name="Configure_CreatingSessionFactory" xml:space="preserve">
+    <value>Creating a session factory for connection named [{0}]</value>
+  </data>
+  <data name="Configure_ProviderNotSupported" xml:space="preserve">
+    <value>The provider [{0}] is currently not supported by the MicroLite framework</value>
+  </data>
+  <data name="Configure_ReadingConnection" xml:space="preserve">
+    <value>Reading connection named [{0}] from app.config</value>
+  </data>
+  <data name="IdentityListener_IdentifierSetForInsert" xml:space="preserve">
+    <value>The object already has an identifier value so it cannot be inserted using the Identity strategy</value>
+  </data>
+  <data name="IListener_IdentifierNotSetForUpdate" xml:space="preserve">
+    <value>The object does not have an identifier value set so it cannot be updated</value>
+  </data>
+  <data name="IListener_SettingIdentifierValue" xml:space="preserve">
+    <value>Setting the identifier value for an instance of the type [{0}] to [{1}]</value>
+  </data>
+  <data name="Session_MustHaveAtLeast1Result" xml:space="preserve">
     <value>There must be at least 1 result per page</value>
   </data>
-  <data name="PagesStartAtOne" xml:space="preserve">
+  <data name="NoIdentifierFoundForType" xml:space="preserve">
+    <value>The type [{0}] has no property with an IdentifierAttribute specified.</value>
+  </data>
+  <data name="ObjectBuilder_CreatingInstance" xml:space="preserve">
+    <value>Creating a new instance of [{0}]</value>
+  </data>
+  <data name="ObjectBuilder_SettingPropertyValue" xml:space="preserve">
+    <value>Setting the property value for [{0}].[{1}]</value>
+  </data>
+  <data name="ObjectBuilder_UnknownProperty" xml:space="preserve">
+    <value>The type [{0}] does not have a mapped property with the name [{1}]</value>
+  </data>
+  <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
+    <value>Creating ObjectInfo for [{0}]</value>
+  </data>
+  <data name="ObjectInfo_MappingClassToTable" xml:space="preserve">
+    <value>Mapping the {0} class to the {1} table</value>
+  </data>
+  <data name="ObjectInfo_MappingColumnToProperty" xml:space="preserve">
+    <value>Mapping the {0}.{1} property to the column {2}</value>
+  </data>
+  <data name="ObjectInfo_RetrievingObjectInfo" xml:space="preserve">
+    <value>Retrieving ObjectInfo for [{0}]</value>
+  </data>
+  <data name="ObjectInfo_UsingPropertyAsIdentifier" xml:space="preserve">
+    <value>Mapping the {0}.{1} property as the identifier with the strategy {2}</value>
+  </data>
+  <data name="Session_PagesStartAtOne" xml:space="preserve">
     <value>The first page which can be requested is page 1</value>
+  </data>
+  <data name="SessionFactory_CreatingSession" xml:space="preserve">
+    <value>Creating a new session</value>
+  </data>
+  <data name="Session_ClosingConnection" xml:space="preserve">
+    <value>Session [{0}] closing database connection</value>
+  </data>
+  <data name="Session_Created" xml:space="preserve">
+    <value>Session [{0}] created</value>
+  </data>
+  <data name="Session_Disposed" xml:space="preserve">
+    <value>Session [{0}] disposed</value>
+  </data>
+  <data name="Session_OpeningConnection" xml:space="preserve">
+    <value>Session [{0}] opening database connection</value>
+  </data>
+  <data name="AttributeMappingConvention_IgnoringProperty" xml:space="preserve">
+    <value>Ignoring [{0}].[{1}] as it has no ColumnAttribute</value>
+  </data>
+  <data name="AttributeMappingConvention_NoTableAttribute" xml:space="preserve">
+    <value>The type [{0}] is not decorated with a TableAttribute</value>
+  </data>
+  <data name="TableInfo_NoIdentifierColumn" xml:space="preserve">
+    <value>No ColumnInfo was supplied with IsIdentifier set to true</value>
+  </data>
+  <data name="Transaction_Committing" xml:space="preserve">
+    <value>Transaction [{0}] committing changes</value>
+  </data>
+  <data name="Transaction_Created" xml:space="preserve">
+    <value>Transaction [{0}] created</value>
+  </data>
+  <data name="Transaction_Disposed" xml:space="preserve">
+    <value>Transaction [{0}] disposed</value>
+  </data>
+  <data name="Transaction_DisposedUncommitted" xml:space="preserve">
+    <value>Transaction [{0}] is being disposed with uncommitted changes</value>
+  </data>
+  <data name="Transaction_EnlistingCommand" xml:space="preserve">
+    <value>Command enlisted in transaction [{0}]</value>
+  </data>
+  <data name="Transaction_RollingBack" xml:space="preserve">
+    <value>Transaction [{0}] rolling back changes</value>
+  </data>
+  <data name="ObjectInfo_TypeMustBeClass" xml:space="preserve">
+    <value>The type [{0}] is not a class and therefore cannot be used by the MicroLite ORM Framework</value>
+  </data>
+  <data name="ObjectInfo_TypeMustHaveDefaultConstructor" xml:space="preserve">
+    <value>The type [{0}] has no default (zero parameter) constructor and therefore cannot be used by the MicroLite ORM Framework</value>
+  </data>
+  <data name="ObjectInfo_TypeMustNotBeAbstract" xml:space="preserve">
+    <value>The type [{0}] is abstract and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>
 </root>

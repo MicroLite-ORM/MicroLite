@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using NUnit.Framework;
 
@@ -25,7 +26,7 @@
             var exception = Assert.Throws<MicroLiteException>(
                 () => mappingConvention.CreateObjectInfo(typeof(CustomerWithNoTableAttribute)));
 
-            Assert.AreEqual(string.Format(Messages.StrictAttributeMappingConvention_NoTableAttribute, typeof(CustomerWithNoTableAttribute).FullName), exception.Message);
+            Assert.AreEqual(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(typeof(CustomerWithNoTableAttribute).FullName), exception.Message);
         }
 
         [Test]

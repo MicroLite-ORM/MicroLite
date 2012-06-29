@@ -79,7 +79,7 @@ namespace MicroLite.Configuration
         /// </returns>
         public ISessionFactory CreateSessionFactory()
         {
-            log.TryLogInfo(LogMessages.Configure_CreatingSessionFactory, this.options.ConnectionName);
+            log.TryLogInfo(Messages.Configure_CreatingSessionFactory, this.options.ConnectionName);
             var sessionFactory = new SessionFactory(this.options);
 
             sessionFactories.Add(sessionFactory);
@@ -104,19 +104,19 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("connectionName");
             }
 
-            log.TryLogDebug(LogMessages.Configure_ReadingConnection, connectionName);
+            log.TryLogDebug(Messages.Configure_ReadingConnection, connectionName);
             var configSection = ConfigurationManager.ConnectionStrings[connectionName];
 
             if (configSection == null)
             {
-                var message = LogMessages.Configure_ConnectionNotFound.FormatWith(connectionName);
+                var message = Messages.Configure_ConnectionNotFound.FormatWith(connectionName);
                 log.TryLogFatal(message);
                 throw new MicroLiteException(message);
             }
 
             if (configSection.ProviderName != "System.Data.SqlClient")
             {
-                var message = LogMessages.Configure_ProviderNotSupported.FormatWith(configSection.ProviderName);
+                var message = Messages.Configure_ProviderNotSupported.FormatWith(configSection.ProviderName);
                 log.TryLogFatal(message);
                 throw new NotSupportedException(message);
             }

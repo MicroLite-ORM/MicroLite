@@ -38,7 +38,7 @@ namespace MicroLite.Mapping
 
             if (tableAttribute == null)
             {
-                var message = Messages.StrictAttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName);
+                var message = Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName);
                 log.TryLogFatal(message);
                 throw new MicroLiteException(message);
             }
@@ -54,7 +54,7 @@ namespace MicroLite.Mapping
 
                 if (columnAttribute == null)
                 {
-                    log.TryLogDebug(LogMessages.ObjectInfo_IgnoringProperty, forType.FullName, property.Name);
+                    log.TryLogDebug(Messages.AttributeMappingConvention_IgnoringProperty, forType.FullName, property.Name);
                     continue;
                 }
 

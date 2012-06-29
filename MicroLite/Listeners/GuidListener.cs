@@ -34,7 +34,7 @@ namespace MicroLite.Listeners
 
                 var identifierValue = Guid.NewGuid();
 
-                log.TryLogDebug(LogMessages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
+                log.TryLogDebug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
                 propertyInfo.SetValue(instance, identifierValue, null);
             }
         }

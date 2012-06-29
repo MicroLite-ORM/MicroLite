@@ -35,7 +35,7 @@ namespace MicroLite.Listeners
 
                 var identifierValue = Convert.ChangeType(executeScalarResult, propertyInfo.PropertyType, CultureInfo.InvariantCulture);
 
-                log.TryLogDebug(LogMessages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
+                log.TryLogDebug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
                 propertyInfo.SetValue(instance, identifierValue, null);
             }
         }
@@ -48,7 +48,7 @@ namespace MicroLite.Listeners
             {
                 if (!objectInfo.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.Identity_IdentifierSetForInsert);
+                    throw new MicroLiteException(Messages.IdentityListener_IdentifierSetForInsert);
                 }
             }
         }

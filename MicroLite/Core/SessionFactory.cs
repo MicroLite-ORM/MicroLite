@@ -50,7 +50,7 @@ namespace MicroLite.Core
 
             connection.ConnectionString = this.sessionFactoryOptions.ConnectionString;
 
-            log.TryLogDebug(LogMessages.SessionFactory_CreatingSession);
+            log.TryLogDebug(Messages.SessionFactory_CreatingSession);
             return new Session(new ConnectionManager(connection), new ObjectBuilder(), new SqlQueryBuilder());
         }
     }

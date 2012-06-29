@@ -71,7 +71,7 @@ namespace MicroLite.Core
 
             if (parameterNames.Count != sqlQuery.Arguments.Count)
             {
-                throw new MicroLiteException(Messages.ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
+                throw new MicroLiteException(Messages.ConnectionManager_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
             }
 
             var command = this.connection.CreateCommand();

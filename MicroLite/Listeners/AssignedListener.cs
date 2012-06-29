@@ -28,7 +28,7 @@ namespace MicroLite.Listeners
             {
                 if (objectInfo.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.Assigned_IdentifierNotSetForInsert);
+                    throw new MicroLiteException(Messages.AssignedListener_IdentifierNotSetForInsert);
                 }
             }
         }

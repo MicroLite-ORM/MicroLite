@@ -74,11 +74,6 @@
     <Compile Include="Core\IObjectBuilder.cs" />
     <Compile Include="Core\ISqlQueryBuilder.cs" />
     <Compile Include="FrameworkExtensions\MemberInfoExtensions.cs" />
-    <Compile Include="Core\Messages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Messages.resx</DependentUpon>
-    </Compile>
     <Compile Include="Core\ObjectBuilder.cs" />
     <Compile Include="FrameworkExtensions\PropertyInfoExtensions.cs" />
     <Compile Include="Core\Session.cs">
@@ -90,22 +85,17 @@
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="Listeners\ListenerManager.cs" />
     <Compile Include="IAdvancedSession.cs" />
-    <Compile Include="Listeners\Messages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Messages.resx</DependentUpon>
-    </Compile>
     <Compile Include="Mapping\ColumnInfo.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
-    <Compile Include="Mapping\Messages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Messages.resx</DependentUpon>
-    </Compile>
     <Compile Include="Mapping\ObjectInfo.cs" />
     <Compile Include="Mapping\AttributeMappingConvention.cs" />
     <Compile Include="Mapping\TableInfo.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
     <Compile Include="Query\IAndOrOrderBy.cs" />
     <Compile Include="Mapping\IdentifierAttribute.cs" />
@@ -124,11 +114,6 @@
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Logging\LogManager.cs" />
-    <Compile Include="Logging\LogMessages.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LogMessages.resx</DependentUpon>
-    </Compile>
     <Compile Include="MicroLiteException.cs" />
     <Compile Include="PagedResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -147,20 +132,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Core\Messages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Listeners\Messages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Logging\LogMessages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LogMessages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Mapping\Messages.resx">
+    <EmbeddedResource Include="Messages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>

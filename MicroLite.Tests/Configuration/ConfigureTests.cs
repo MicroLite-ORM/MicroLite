@@ -99,7 +99,7 @@
             var exception = Assert.Throws<MicroLiteException>(
                 () => Configure.Fluently().ForConnection("TestDB"));
 
-            Assert.AreEqual(LogMessages.Configure_ConnectionNotFound.FormatWith("TestDB"), exception.Message);
+            Assert.AreEqual(Messages.Configure_ConnectionNotFound.FormatWith("TestDB"), exception.Message);
         }
 
         [Test]
@@ -108,7 +108,7 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => Configure.Fluently().ForConnection("OleConnection"));
 
-            Assert.AreEqual(LogMessages.Configure_ProviderNotSupported.FormatWith("System.Data.OleDb"), exception.Message);
+            Assert.AreEqual(Messages.Configure_ProviderNotSupported.FormatWith("System.Data.OleDb"), exception.Message);
         }
 
         [SetUp]

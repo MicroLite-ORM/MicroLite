@@ -24,14 +24,14 @@ namespace MicroLite.Core
     internal sealed class Transaction : ITransaction
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.Transaction");
-        private readonly Guid id = Guid.NewGuid();
+        private readonly string id = Guid.NewGuid().ToString();
         private bool committed;
         private bool disposed;
         private IDbTransaction transaction;
 
         internal Transaction(IDbTransaction transaction)
         {
-            log.TryLogDebug(LogMessages.Transaction_Created, this.id.ToString());
+            log.TryLogDebug(Messages.Transaction_Created, this.id);
             this.transaction = transaction;
         }
 
@@ -43,7 +43,7 @@ namespace MicroLite.Core
             {
                 var connection = this.transaction.Connection;
 
-                log.TryLogInfo(LogMessages.Transaction_Committing, this.id.ToString());
+                log.TryLogInfo(Messages.Transaction_Committing, this.id);
                 this.transaction.Commit();
 
                 this.committed = true;
@@ -64,14 +64,14 @@ namespace MicroLite.Core
             {
                 if (!this.committed)
                 {
-                    log.TryLogWarn(LogMessages.Transaction_DisposedUncommitted, this.id.ToString());
+                    log.TryLogWarn(Messages.Transaction_DisposedUncommitted, this.id);
                     this.Rollback();
                 }
 
                 this.transaction.Dispose();
                 this.transaction = null;
 
-                log.TryLogDebug(LogMessages.Transaction_Disposed, this.id.ToString());
+                log.TryLogDebug(Messages.Transaction_Disposed, this.id);
                 this.disposed = true;
             }
         }
@@ -82,7 +82,7 @@ namespace MicroLite.Core
             {
                 var connection = this.transaction.Connection;
 
-                log.TryLogInfo(LogMessages.Transaction_RollingBack, this.id.ToString());
+                log.TryLogInfo(Messages.Transaction_RollingBack, this.id);
                 this.transaction.Rollback();
 
                 this.Complete.Raise(this);
@@ -100,7 +100,7 @@ namespace MicroLite.Core
         {
             if (!this.committed)
             {
-                log.TryLogInfo(LogMessages.Transaction_EnlistingCommand, this.id.ToString());
+                log.TryLogInfo(Messages.Transaction_EnlistingCommand, this.id);
                 command.Transaction = this.transaction;
             }
         }

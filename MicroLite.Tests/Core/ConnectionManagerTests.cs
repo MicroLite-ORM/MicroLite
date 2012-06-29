@@ -226,7 +226,7 @@
             var exception = Assert.Throws<MicroLiteException>(
                 () => connectionManager.Build(sqlQuery));
 
-            Assert.AreEqual(Messages.ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
+            Assert.AreEqual(Messages.ConnectionManager_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
         }
 
         [Test]

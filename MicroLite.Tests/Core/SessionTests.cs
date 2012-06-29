@@ -743,7 +743,7 @@
                 () => session.Paged<Customer>(new SqlQuery(""), 0, 25));
 
             Assert.AreEqual("page", exception.ParamName);
-            Assert.IsTrue(exception.Message.StartsWith(MicroLite.Core.Messages.PagesStartAtOne));
+            Assert.IsTrue(exception.Message.StartsWith(Messages.Session_PagesStartAtOne));
         }
 
         [Test]
@@ -758,7 +758,7 @@
                 () => session.Paged<Customer>(new SqlQuery(""), 1, 0));
 
             Assert.AreEqual("resultsPerPage", exception.ParamName);
-            Assert.IsTrue(exception.Message.StartsWith(MicroLite.Core.Messages.MustHaveAtLeast1Result));
+            Assert.IsTrue(exception.Message.StartsWith(Messages.Session_MustHaveAtLeast1Result));
         }
 
         [Test]

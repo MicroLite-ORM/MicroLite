@@ -30,7 +30,7 @@ namespace MicroLite.Core
         {
             var objectInfo = ObjectInfo.For(typeof(T));
 
-            log.TryLogDebug(LogMessages.ObjectBuilder_CreatingInstance, objectInfo.ForType.FullName);
+            log.TryLogDebug(Messages.ObjectBuilder_CreatingInstance, objectInfo.ForType.FullName);
             var instance = new T();
 
             for (int i = 0; i < reader.FieldCount; i++)
@@ -43,7 +43,7 @@ namespace MicroLite.Core
                 {
                     try
                     {
-                        log.TryLogDebug(LogMessages.ObjectBuilder_SettingPropertyValue, objectInfo.ForType.Name, columnName);
+                        log.TryLogDebug(Messages.ObjectBuilder_SettingPropertyValue, objectInfo.ForType.Name, columnName);
                         propertyInfo.SetValue(instance, reader[i]);
                     }
                     catch (Exception e)
@@ -54,7 +54,7 @@ namespace MicroLite.Core
                 }
                 else
                 {
-                    log.TryLogWarn(LogMessages.ObjectBuilder_UnknownProperty, objectInfo.ForType.Name, columnName);
+                    log.TryLogWarn(Messages.ObjectBuilder_UnknownProperty, objectInfo.ForType.Name, columnName);
                 }
             }
 

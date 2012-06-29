@@ -126,12 +126,12 @@ namespace MicroLite.Mapping
                 {
                     VerifyType(forType);
 
-                    log.TryLogDebug(LogMessages.ObjectInfo_CreatingObjectInfo, forType.FullName);
+                    log.TryLogDebug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
                     var objectInfo = MappingConvention.CreateObjectInfo(forType);
                     objectInfos.Add(forType, objectInfo);
                 }
 
-                log.TryLogDebug(LogMessages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
+                log.TryLogDebug(Messages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
                 return objectInfos[forType];
             }
         }
@@ -173,15 +173,15 @@ namespace MicroLite.Mapping
 
             if (!forType.IsClass)
             {
-                message = LogMessages.TypeMustBeClass.FormatWith(forType.Name);
+                message = Messages.ObjectInfo_TypeMustBeClass.FormatWith(forType.Name);
             }
             else if (forType.IsAbstract)
             {
-                message = LogMessages.TypeMustNotBeAbstract.FormatWith(forType.Name);
+                message = Messages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(forType.Name);
             }
             else if (forType.GetConstructor(Type.EmptyTypes) == null)
             {
-                message = LogMessages.TypeMustHaveDefaultConstructor.FormatWith(forType.Name);
+                message = Messages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(forType.Name);
             }
 
             if (message != null)

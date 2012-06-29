@@ -84,7 +84,7 @@
                 () => ObjectInfo.For(typeof(AbstractCustomer)));
 
             Assert.AreEqual(
-                LogMessages.TypeMustNotBeAbstract.FormatWith(typeof(AbstractCustomer).Name),
+                Messages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(typeof(AbstractCustomer).Name),
                 exception.Message);
         }
 
@@ -95,7 +95,7 @@
                 () => ObjectInfo.For(typeof(CustomerWithNoDefaultConstructor)));
 
             Assert.AreEqual(
-                LogMessages.TypeMustHaveDefaultConstructor.FormatWith(typeof(CustomerWithNoDefaultConstructor).Name),
+                Messages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(typeof(CustomerWithNoDefaultConstructor).Name),
                 exception.Message);
         }
 
@@ -106,7 +106,7 @@
                 () => ObjectInfo.For(typeof(CustomerStruct)));
 
             Assert.AreEqual(
-                LogMessages.TypeMustBeClass.FormatWith(typeof(CustomerStruct).Name),
+                Messages.ObjectInfo_TypeMustBeClass.FormatWith(typeof(CustomerStruct).Name),
                 exception.Message);
         }
 

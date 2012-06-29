@@ -28,7 +28,7 @@ namespace MicroLite.Core
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.Session");
         private readonly IConnectionManager connectionManager;
-        private readonly Guid id = Guid.NewGuid();
+        private readonly string id = Guid.NewGuid().ToString();
         private readonly IObjectBuilder objectBuilder;
         private readonly ISqlQueryBuilder queryBuilder;
         private bool disposed;
@@ -43,7 +43,7 @@ namespace MicroLite.Core
             this.objectBuilder = objectBuilder;
             this.queryBuilder = queryBuilder;
 
-            log.TryLogDebug(LogMessages.Session_Created, this.id.ToString());
+            log.TryLogDebug(Messages.Session_Created, this.id);
         }
 
         public IAdvancedSession Advanced
@@ -119,7 +119,7 @@ namespace MicroLite.Core
             {
                 this.connectionManager.Dispose();
 
-                log.TryLogDebug(LogMessages.Session_Disposed, this.id.ToString());
+                log.TryLogDebug(Messages.Session_Disposed, this.id);
                 this.disposed = true;
             }
         }
@@ -141,7 +141,7 @@ namespace MicroLite.Core
                 {
                     if (command.Connection.State == ConnectionState.Closed)
                     {
-                        log.TryLogDebug(LogMessages.Session_OpeningConnection, this.id.ToString());
+                        log.TryLogDebug(Messages.Session_OpeningConnection, this.id);
                         command.Connection.Open();
                     }
 
@@ -150,7 +150,7 @@ namespace MicroLite.Core
 
                     if (command.Transaction == null)
                     {
-                        log.TryLogDebug(LogMessages.Session_ClosingConnection, this.id.ToString());
+                        log.TryLogDebug(Messages.Session_ClosingConnection, this.id);
                         command.Connection.Close();
                     }
 
@@ -181,7 +181,7 @@ namespace MicroLite.Core
                 {
                     if (command.Connection.State == ConnectionState.Closed)
                     {
-                        log.TryLogDebug(LogMessages.Session_OpeningConnection, this.id.ToString());
+                        log.TryLogDebug(Messages.Session_OpeningConnection, this.id);
                         command.Connection.Open();
                     }
 
@@ -190,7 +190,7 @@ namespace MicroLite.Core
 
                     if (command.Transaction == null)
                     {
-                        log.TryLogDebug(LogMessages.Session_ClosingConnection, this.id.ToString());
+                        log.TryLogDebug(Messages.Session_ClosingConnection, this.id);
                         command.Connection.Close();
                     }
 
@@ -247,12 +247,12 @@ namespace MicroLite.Core
 
             if (page < 1)
             {
-                throw new ArgumentOutOfRangeException("page", Messages.PagesStartAtOne);
+                throw new ArgumentOutOfRangeException("page", Messages.Session_PagesStartAtOne);
             }
 
             if (resultsPerPage < 1)
             {
-                throw new ArgumentOutOfRangeException("resultsPerPage", Messages.MustHaveAtLeast1Result);
+                throw new ArgumentOutOfRangeException("resultsPerPage", Messages.Session_MustHaveAtLeast1Result);
             }
 
             var query = this.queryBuilder.Page(sqlQuery, page, resultsPerPage);
@@ -309,7 +309,7 @@ namespace MicroLite.Core
                 {
                     if (command.Connection.State == ConnectionState.Closed)
                     {
-                        log.TryLogDebug(LogMessages.Session_OpeningConnection, this.id.ToString());
+                        log.TryLogDebug(Messages.Session_OpeningConnection, this.id);
                         command.Connection.Open();
                     }
 
@@ -332,7 +332,7 @@ namespace MicroLite.Core
 
                 if (command.Transaction == null)
                 {
-                    log.TryLogDebug(LogMessages.Session_ClosingConnection, this.id.ToString());
+                    log.TryLogDebug(Messages.Session_ClosingConnection, this.id);
                     command.Connection.Close();
                 }
             }

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MicroLite.Logging {
+namespace MicroLite {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace MicroLite.Logging {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class LogMessages {
+    internal class Messages {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal LogMessages() {
+        internal Messages() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace MicroLite.Logging {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MicroLite.Logging.LogMessages", typeof(LogMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MicroLite.Messages", typeof(Messages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,34 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No connection was found in the app.config with the name {0}.
+        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be inserted.
+        /// </summary>
+        internal static string AssignedListener_IdentifierNotSetForInsert {
+            get {
+                return ResourceManager.GetString("AssignedListener_IdentifierNotSetForInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignoring [{0}].[{1}] as it has no ColumnAttribute.
+        /// </summary>
+        internal static string AttributeMappingConvention_IgnoringProperty {
+            get {
+                return ResourceManager.GetString("AttributeMappingConvention_IgnoringProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type [{0}] is not decorated with a TableAttribute.
+        /// </summary>
+        internal static string AttributeMappingConvention_NoTableAttribute {
+            get {
+                return ResourceManager.GetString("AttributeMappingConvention_NoTableAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No connection was found in the app.config with the name [{0}].
         /// </summary>
         internal static string Configure_ConnectionNotFound {
             get {
@@ -70,7 +97,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating a session factory for connection [{0}].
+        ///   Looks up a localized string similar to Creating a session factory for connection named [{0}].
         /// </summary>
         internal static string Configure_CreatingSessionFactory {
             get {
@@ -79,7 +106,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The provider {0} is currently not supported by the MicroLite framework.
+        ///   Looks up a localized string similar to The provider [{0}] is currently not supported by the MicroLite framework.
         /// </summary>
         internal static string Configure_ProviderNotSupported {
             get {
@@ -88,7 +115,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading connection named {0} from app.config.
+        ///   Looks up a localized string similar to Reading connection named [{0}] from app.config.
         /// </summary>
         internal static string Configure_ReadingConnection {
             get {
@@ -97,7 +124,34 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting the identifier value for an instance of the type {0} to {1}.
+        ///   Looks up a localized string similar to There are [{0}] parameters in the SQL statement, however only [{1}] parameter arguments were supplied..
+        /// </summary>
+        internal static string ConnectionManager_ArgumentsCountMismatch {
+            get {
+                return ResourceManager.GetString("ConnectionManager_ArgumentsCountMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted using the Identity strategy.
+        /// </summary>
+        internal static string IdentityListener_IdentifierSetForInsert {
+            get {
+                return ResourceManager.GetString("IdentityListener_IdentifierSetForInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be updated.
+        /// </summary>
+        internal static string IListener_IdentifierNotSetForUpdate {
+            get {
+                return ResourceManager.GetString("IListener_IdentifierNotSetForUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting the identifier value for an instance of the type [{0}] to [{1}].
         /// </summary>
         internal static string IListener_SettingIdentifierValue {
             get {
@@ -106,7 +160,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type {0} has no property named &apos;Id&apos;, &apos;{0}Id&apos; or a property with an IdentifierAttribute specified..
+        ///   Looks up a localized string similar to The type [{0}] has no property with an IdentifierAttribute specified..
         /// </summary>
         internal static string NoIdentifierFoundForType {
             get {
@@ -115,7 +169,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating a new instance of {0}.
+        ///   Looks up a localized string similar to Creating a new instance of [{0}].
         /// </summary>
         internal static string ObjectBuilder_CreatingInstance {
             get {
@@ -124,7 +178,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting the property value for {0}.{1}.
+        ///   Looks up a localized string similar to Setting the property value for [{0}].[{1}].
         /// </summary>
         internal static string ObjectBuilder_SettingPropertyValue {
             get {
@@ -133,7 +187,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type {0} does not have a mapped property with the name {1}.
+        ///   Looks up a localized string similar to The type [{0}] does not have a mapped property with the name [{1}].
         /// </summary>
         internal static string ObjectBuilder_UnknownProperty {
             get {
@@ -142,20 +196,11 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating ObjectInfo for {0}.
+        ///   Looks up a localized string similar to Creating ObjectInfo for [{0}].
         /// </summary>
         internal static string ObjectInfo_CreatingObjectInfo {
             get {
                 return ResourceManager.GetString("ObjectInfo_CreatingObjectInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ignoring the property {0}.{1}.
-        /// </summary>
-        internal static string ObjectInfo_IgnoringProperty {
-            get {
-                return ResourceManager.GetString("ObjectInfo_IgnoringProperty", resourceCulture);
             }
         }
         
@@ -178,11 +223,38 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Retrieving ObjectInfo for {0}.
+        ///   Looks up a localized string similar to Retrieving ObjectInfo for [{0}].
         /// </summary>
         internal static string ObjectInfo_RetrievingObjectInfo {
             get {
                 return ResourceManager.GetString("ObjectInfo_RetrievingObjectInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type [{0}] is not a class and therefore cannot be used by the MicroLite ORM Framework.
+        /// </summary>
+        internal static string ObjectInfo_TypeMustBeClass {
+            get {
+                return ResourceManager.GetString("ObjectInfo_TypeMustBeClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type [{0}] has no default (zero parameter) constructor and therefore cannot be used by the MicroLite ORM Framework.
+        /// </summary>
+        internal static string ObjectInfo_TypeMustHaveDefaultConstructor {
+            get {
+                return ResourceManager.GetString("ObjectInfo_TypeMustHaveDefaultConstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type [{0}] is abstract and therefore cannot be used by the MicroLite ORM Framework.
+        /// </summary>
+        internal static string ObjectInfo_TypeMustNotBeAbstract {
+            get {
+                return ResourceManager.GetString("ObjectInfo_TypeMustNotBeAbstract", resourceCulture);
             }
         }
         
@@ -196,7 +268,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session {0} closing database connection.
+        ///   Looks up a localized string similar to Session [{0}] closing database connection.
         /// </summary>
         internal static string Session_ClosingConnection {
             get {
@@ -205,7 +277,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session {0} created.
+        ///   Looks up a localized string similar to Session [{0}] created.
         /// </summary>
         internal static string Session_Created {
             get {
@@ -214,7 +286,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session {0} disposed.
+        ///   Looks up a localized string similar to Session [{0}] disposed.
         /// </summary>
         internal static string Session_Disposed {
             get {
@@ -223,11 +295,29 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session {0} opening database connection.
+        ///   Looks up a localized string similar to There must be at least 1 result per page.
+        /// </summary>
+        internal static string Session_MustHaveAtLeast1Result {
+            get {
+                return ResourceManager.GetString("Session_MustHaveAtLeast1Result", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Session [{0}] opening database connection.
         /// </summary>
         internal static string Session_OpeningConnection {
             get {
                 return ResourceManager.GetString("Session_OpeningConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The first page which can be requested is page 1.
+        /// </summary>
+        internal static string Session_PagesStartAtOne {
+            get {
+                return ResourceManager.GetString("Session_PagesStartAtOne", resourceCulture);
             }
         }
         
@@ -241,7 +331,16 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction {0} committing changes.
+        ///   Looks up a localized string similar to No ColumnInfo was supplied with IsIdentifier set to true.
+        /// </summary>
+        internal static string TableInfo_NoIdentifierColumn {
+            get {
+                return ResourceManager.GetString("TableInfo_NoIdentifierColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction [{0}] committing changes.
         /// </summary>
         internal static string Transaction_Committing {
             get {
@@ -250,7 +349,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction {0} created.
+        ///   Looks up a localized string similar to Transaction [{0}] created.
         /// </summary>
         internal static string Transaction_Created {
             get {
@@ -259,7 +358,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction {0} disposed.
+        ///   Looks up a localized string similar to Transaction [{0}] disposed.
         /// </summary>
         internal static string Transaction_Disposed {
             get {
@@ -268,7 +367,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction {0} is being disposed with uncommitted changes.
+        ///   Looks up a localized string similar to Transaction [{0}] is being disposed with uncommitted changes.
         /// </summary>
         internal static string Transaction_DisposedUncommitted {
             get {
@@ -277,7 +376,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Command enlisted in transaction {0}.
+        ///   Looks up a localized string similar to Command enlisted in transaction [{0}].
         /// </summary>
         internal static string Transaction_EnlistingCommand {
             get {
@@ -286,38 +385,11 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction {0} rolling back changes.
+        ///   Looks up a localized string similar to Transaction [{0}] rolling back changes.
         /// </summary>
         internal static string Transaction_RollingBack {
             get {
                 return ResourceManager.GetString("Transaction_RollingBack", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The type {0} is not a class and therefore cannot be used by the MicroLite ORM Framework.
-        /// </summary>
-        internal static string TypeMustBeClass {
-            get {
-                return ResourceManager.GetString("TypeMustBeClass", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The type {0} has no default (zero parameter) constructor and therefore cannot be used by the MicroLite ORM Framework.
-        /// </summary>
-        internal static string TypeMustHaveDefaultConstructor {
-            get {
-                return ResourceManager.GetString("TypeMustHaveDefaultConstructor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The type {0} is abstract and therefore cannot be used by the MicroLite ORM Framework.
-        /// </summary>
-        internal static string TypeMustNotBeAbstract {
-            get {
-                return ResourceManager.GetString("TypeMustNotBeAbstract", resourceCulture);
             }
         }
     }

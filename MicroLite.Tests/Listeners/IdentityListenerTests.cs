@@ -71,7 +71,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeInsert(customer));
 
-            Assert.AreEqual(Messages.Identity_IdentifierSetForInsert, exception.Message);
+            Assert.AreEqual(Messages.IdentityListener_IdentifierSetForInsert, exception.Message);
         }
 
         [Test]

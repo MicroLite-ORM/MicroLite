@@ -34,7 +34,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeInsert(customer));
 
-            Assert.AreEqual(Messages.Assigned_IdentifierNotSetForInsert, exception.Message);
+            Assert.AreEqual(Messages.AssignedListener_IdentifierNotSetForInsert, exception.Message);
         }
 
         [Test]
