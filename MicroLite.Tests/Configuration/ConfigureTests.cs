@@ -5,7 +5,6 @@
     using MicroLite.Configuration;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
-    using MicroLite.Logging;
     using NUnit.Framework;
 
     /// <summary>

@@ -2,7 +2,6 @@
 {
     using System;
     using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
     using MicroLite.Mapping;
     using NUnit.Framework;
 
