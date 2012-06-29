@@ -243,7 +243,7 @@
 
             var sqlQuery = queryBuilder.SelectQuery(typeof(CustomerWithIdentity), identifier);
 
-            Assert.AreEqual("SELECT [Customers].[Created], [Customers].[DoB], [Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT [Customers].[Created], [Customers].[DoB], [Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId], [Customers].[Updated] FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
         }
 
@@ -255,18 +255,20 @@
                 DateOfBirth = new System.DateTime(1982, 11, 27),
                 Id = 134875,
                 Name = "Trevor Pilley",
-                Status = CustomerStatus.Active
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now
             };
 
             var queryBuilder = new SqlQueryBuilder();
 
             var sqlQuery = queryBuilder.UpdateQuery(customer);
 
-            Assert.AreEqual("UPDATE [Sales].[Customers] SET [Customers].[DoB] = @p0, [Customers].[Name] = @p1, [Customers].[StatusId] = @p2 WHERE [Customers].[CustomerId] = @p3", sqlQuery.CommandText);
+            Assert.AreEqual("UPDATE [Sales].[Customers] SET [Customers].[DoB] = @p0, [Customers].[Name] = @p1, [Customers].[StatusId] = @p2, [Customers].[Updated] = @p3 WHERE [Customers].[CustomerId] = @p4", sqlQuery.CommandText);
             Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);
             Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
             Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
-            Assert.AreEqual(customer.Id, sqlQuery.Arguments[3]);
+            Assert.AreEqual(customer.Updated, sqlQuery.Arguments[3]);
+            Assert.AreEqual(customer.Id, sqlQuery.Arguments[4]);
         }
 
         [MicroLite.Mapping.Table(schema: "Marketing", name: "Customers")]
@@ -306,7 +308,7 @@
             {
             }
 
-            [MicroLite.Mapping.Column("Created", allowUpdate: false)]
+            [MicroLite.Mapping.Column("Created", allowInsert: true, allowUpdate: false)]
             public DateTime Created
             {
                 get;
@@ -337,6 +339,13 @@
 
             [MicroLite.Mapping.Column("StatusId")]
             public CustomerStatus Status
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("Updated", allowInsert: false, allowUpdate: true)]
+            public DateTime? Updated
             {
                 get;
                 set;

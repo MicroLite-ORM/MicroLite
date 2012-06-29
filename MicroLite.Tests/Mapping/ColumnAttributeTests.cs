@@ -9,9 +9,17 @@
     public class ColumnAttributeTests
     {
         [Test]
+        public void ConstructorSetsAllowInsert()
+        {
+            var columnAttribute = new ColumnAttribute("Foo", allowInsert: true, allowUpdate: false);
+
+            Assert.IsTrue(columnAttribute.AllowInsert);
+        }
+
+        [Test]
         public void ConstructorSetsAllowUpdate()
         {
-            var columnAttribute = new ColumnAttribute("Foo", allowUpdate: true);
+            var columnAttribute = new ColumnAttribute("Foo", allowInsert: false, allowUpdate: true);
 
             Assert.IsTrue(columnAttribute.AllowUpdate);
         }
@@ -21,7 +29,7 @@
         {
             var columnName = "ObjectID";
 
-            var columnAttribute = new ColumnAttribute(columnName, true);
+            var columnAttribute = new ColumnAttribute(columnName);
 
             Assert.AreEqual(columnName, columnAttribute.Name);
         }

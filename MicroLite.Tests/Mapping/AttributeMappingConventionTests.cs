@@ -36,32 +36,43 @@
 
             var columns = objectInfo.TableInfo.Columns.ToArray();
 
-            Assert.AreEqual(5, columns.Length);
+            Assert.AreEqual(6, columns.Length);
 
             Assert.AreEqual("Created", columns[0].ColumnName);
+            Assert.IsTrue(columns[0].AllowInsert);
             Assert.IsFalse(columns[0].AllowUpdate);
             Assert.IsFalse(columns[0].IsIdentifier);
             Assert.AreEqual(typeof(Customer).GetProperty("Created"), columns[0].PropertyInfo);
 
             Assert.AreEqual("DoB", columns[1].ColumnName);
+            Assert.IsTrue(columns[1].AllowInsert);
             Assert.IsTrue(columns[1].AllowUpdate);
             Assert.IsFalse(columns[1].IsIdentifier);
             Assert.AreEqual(typeof(Customer).GetProperty("DateOfBirth"), columns[1].PropertyInfo);
 
             Assert.AreEqual("CustomerId", columns[2].ColumnName);
+            Assert.IsTrue(columns[2].AllowInsert);
             Assert.IsTrue(columns[2].AllowUpdate);
             Assert.IsTrue(columns[2].IsIdentifier);
             Assert.AreEqual(typeof(Customer).GetProperty("Id"), columns[2].PropertyInfo);
 
             Assert.AreEqual("Name", columns[3].ColumnName);
+            Assert.IsTrue(columns[3].AllowInsert);
             Assert.IsTrue(columns[3].AllowUpdate);
             Assert.IsFalse(columns[3].IsIdentifier);
             Assert.AreEqual(typeof(Customer).GetProperty("Name"), columns[3].PropertyInfo);
 
             Assert.AreEqual("StatusId", columns[4].ColumnName);
+            Assert.IsTrue(columns[4].AllowInsert);
             Assert.IsTrue(columns[4].AllowUpdate);
             Assert.IsFalse(columns[4].IsIdentifier);
             Assert.AreEqual(typeof(Customer).GetProperty("Status"), columns[4].PropertyInfo);
+
+            Assert.AreEqual("Updated", columns[5].ColumnName);
+            Assert.IsFalse(columns[5].AllowInsert);
+            Assert.IsTrue(columns[5].AllowUpdate);
+            Assert.IsFalse(columns[5].IsIdentifier);
+            Assert.AreEqual(typeof(Customer).GetProperty("Updated"), columns[5].PropertyInfo);
         }
 
         [Test]
@@ -91,7 +102,7 @@
                 }
             }
 
-            [MicroLite.Mapping.Column("Created", allowUpdate: false)]
+            [MicroLite.Mapping.Column("Created", allowInsert: true, allowUpdate: false)]
             public DateTime Created
             {
                 get;
@@ -122,6 +133,13 @@
 
             [MicroLite.Mapping.Column("StatusId")]
             public CustomerStatus Status
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("Updated", allowInsert: false, allowUpdate: true)]
+            public DateTime? Updated
             {
                 get;
                 set;

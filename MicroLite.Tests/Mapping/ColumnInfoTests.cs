@@ -16,13 +16,15 @@
             var columnName = "Name";
             var propertyInfo = typeof(Customer).GetProperty("Name");
             var isIdentifier = true;
+            var allowInsert = true;
             var allowUpdate = true;
 
-            var columnInfo = new ColumnInfo(columnName, propertyInfo, isIdentifier, allowUpdate);
+            var columnInfo = new ColumnInfo(columnName, propertyInfo, isIdentifier, allowInsert, allowUpdate);
 
             Assert.AreEqual(columnName, columnInfo.ColumnName);
             Assert.AreEqual(propertyInfo, columnInfo.PropertyInfo);
             Assert.AreEqual(isIdentifier, columnInfo.IsIdentifier);
+            Assert.AreEqual(allowInsert, columnInfo.AllowInsert);
             Assert.AreEqual(allowUpdate, columnInfo.AllowUpdate);
         }
 
@@ -30,7 +32,7 @@
         public void ConstructorThrowsArgumentNullExceptionForNullColumnName()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new ColumnInfo(null, null, false, true));
+                () => new ColumnInfo(null, null, false, true, true));
 
             Assert.AreEqual("columnName", exception.ParamName);
         }
@@ -39,7 +41,7 @@
         public void ConstructorThrowsArgumentNullExceptionForNullPropertyInfo()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new ColumnInfo("Name", null, false, true));
+                () => new ColumnInfo("Name", null, false, true, true));
 
             Assert.AreEqual("propertyInfo", exception.ParamName);
         }

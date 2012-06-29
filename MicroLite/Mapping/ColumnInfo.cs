@@ -20,10 +20,11 @@ namespace MicroLite.Mapping
     /// </summary>
     public sealed class ColumnInfo
     {
+        private readonly bool allowInsert;
+        private readonly bool allowUpdate;
         private readonly string columnName;
         private readonly bool isIdentifier;
         private readonly PropertyInfo propertyInfo;
-        private readonly bool allowUpdate;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnInfo"/> class.
@@ -31,11 +32,13 @@ namespace MicroLite.Mapping
         /// <param name="columnName">The name of the column in the database table.</param>
         /// <param name="propertyInfo">The property info for the property the column maps to.</param>
         /// <param name="isIdentifier">A value indicating whether column is the table identifier column (primary key).</param>
+        /// <param name="allowInsert">true if the column can be inserted, otherwise false.</param>
         /// <param name="allowUpdate">true if the column can be updated, otherwise false.</param>
         public ColumnInfo(
             string columnName,
             PropertyInfo propertyInfo,
             bool isIdentifier,
+            bool allowInsert,
             bool allowUpdate)
         {
             if (columnName == null)
@@ -51,11 +54,23 @@ namespace MicroLite.Mapping
             this.columnName = columnName;
             this.isIdentifier = isIdentifier;
             this.propertyInfo = propertyInfo;
+            this.allowInsert = allowInsert;
             this.allowUpdate = allowUpdate;
         }
 
         /// <summary>
-        /// Gets a value indicating whether the column is allowed to be updated.
+        /// Gets a value indicating whether the column value is allowed to be inserted.
+        /// </summary>
+        public bool AllowInsert
+        {
+            get
+            {
+                return this.allowInsert;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the column value is allowed to be updated.
         /// </summary>
         public bool AllowUpdate
         {

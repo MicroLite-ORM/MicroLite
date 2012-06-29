@@ -83,13 +83,16 @@ namespace MicroLite.Core
                     continue;
                 }
 
-                sqlBuilder.Append(this.FormatParameter(values.Count) + ", ");
+                if (column.AllowInsert)
+                {
+                    sqlBuilder.Append(this.FormatParameter(values.Count) + ", ");
 
-                var propertyInfo = objectInfo.GetPropertyInfoForColumn(column.ColumnName);
+                    var propertyInfo = objectInfo.GetPropertyInfoForColumn(column.ColumnName);
 
-                var value = propertyInfo.GetValue(instance);
+                    var value = propertyInfo.GetValue(instance);
 
-                values.Add(value);
+                    values.Add(value);
+                }
             }
 
             sqlBuilder.Remove(sqlBuilder.Length - 2, 2);
@@ -216,7 +219,10 @@ namespace MicroLite.Core
                             continue;
                         }
 
-                        sqlBuilder.AppendFormat("[{0}].[{1}], ", objectInfo.TableInfo.Name, column.ColumnName);
+                        if (column.AllowInsert)
+                        {
+                            sqlBuilder.AppendFormat("[{0}].[{1}], ", objectInfo.TableInfo.Name, column.ColumnName);
+                        }
                     }
 
                     sqlBuilder.Remove(sqlBuilder.Length - 2, 2);
