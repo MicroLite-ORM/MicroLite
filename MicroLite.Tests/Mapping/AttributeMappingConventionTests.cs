@@ -19,6 +19,17 @@
         }
 
         [Test]
+        public void CreateObjectInfoThrowsArgumentNullExceptionForNullType()
+        {
+            var mappingConvention = new AttributeMappingConvention();
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => mappingConvention.CreateObjectInfo(null));
+
+            Assert.AreEqual("forType", exception.ParamName);
+        }
+
+        [Test]
         public void CreateObjectInfoThrowsMicroLiteExceptionIfNoTableAttribute()
         {
             var mappingConvention = new AttributeMappingConvention();
@@ -27,6 +38,15 @@
                 () => mappingConvention.CreateObjectInfo(typeof(CustomerWithNoTableAttribute)));
 
             Assert.AreEqual(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(typeof(CustomerWithNoTableAttribute).FullName), exception.Message);
+        }
+
+        [Test]
+        public void PropertyWithoutColumnAttributeIsIgnored()
+        {
+            var mappingConvention = new AttributeMappingConvention();
+            var objectInfo = mappingConvention.CreateObjectInfo(typeof(Customer));
+
+            Assert.IsFalse(objectInfo.TableInfo.Columns.Any(c => c.ColumnName == "UnMappedProperty"));
         }
 
         [Test]
@@ -134,6 +154,12 @@
 
             [MicroLite.Mapping.Column("StatusId")]
             public CustomerStatus Status
+            {
+                get;
+                set;
+            }
+
+            public string UnMappedProperty
             {
                 get;
                 set;
