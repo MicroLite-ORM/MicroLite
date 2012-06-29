@@ -9,11 +9,19 @@
     public class ColumnAttributeTests
     {
         [Test]
+        public void ConstructorSetsAllowUpdate()
+        {
+            var columnAttribute = new ColumnAttribute("Foo", allowUpdate: true);
+
+            Assert.IsTrue(columnAttribute.AllowUpdate);
+        }
+
+        [Test]
         public void ConstructorSetsName()
         {
             var columnName = "ObjectID";
 
-            var columnAttribute = new ColumnAttribute(columnName);
+            var columnAttribute = new ColumnAttribute(columnName, true);
 
             Assert.AreEqual(columnName, columnAttribute.Name);
         }

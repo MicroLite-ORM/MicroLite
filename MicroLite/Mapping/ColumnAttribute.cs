@@ -21,14 +21,37 @@ namespace MicroLite.Mapping
     public sealed class ColumnAttribute : Attribute
     {
         private readonly string name;
+        private readonly bool allowUpdate;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnAttribute"/> class.
         /// </summary>
         /// <param name="name">The name of the column in the database table that the property maps to.</param>
         public ColumnAttribute(string name)
+            : this(name, allowUpdate: true)
+        {
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="ColumnAttribute"/> class.
+        /// </summary>
+        /// <param name="name">The name of the column in the database table that the property maps to.</param>
+        /// <param name="allowUpdate">true if the column can be updated, otherwise false.</param>
+        public ColumnAttribute(string name, bool allowUpdate)
         {
             this.name = name;
+            this.allowUpdate = allowUpdate;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the column is allowed to be updated.
+        /// </summary>
+        public bool AllowUpdate
+        {
+            get
+            {
+                return this.allowUpdate;
+            }
         }
 
         /// <summary>

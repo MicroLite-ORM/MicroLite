@@ -14,21 +14,23 @@
         public void ConstructorSetsPropertyValues()
         {
             var columnName = "Name";
-            var isIdentifier = true;
             var propertyInfo = typeof(Customer).GetProperty("Name");
+            var isIdentifier = true;
+            var allowUpdate = true;
 
-            var columnInfo = new ColumnInfo(columnName, propertyInfo, isIdentifier);
+            var columnInfo = new ColumnInfo(columnName, propertyInfo, isIdentifier, allowUpdate);
 
             Assert.AreEqual(columnName, columnInfo.ColumnName);
-            Assert.AreEqual(isIdentifier, columnInfo.IsIdentifier);
             Assert.AreEqual(propertyInfo, columnInfo.PropertyInfo);
+            Assert.AreEqual(isIdentifier, columnInfo.IsIdentifier);
+            Assert.AreEqual(allowUpdate, columnInfo.AllowUpdate);
         }
 
         [Test]
         public void ConstructorThrowsArgumentNullExceptionForNullColumnName()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new ColumnInfo(columnName: null, propertyInfo: null, isIdentifier: false));
+                () => new ColumnInfo(null, null, false, true));
 
             Assert.AreEqual("columnName", exception.ParamName);
         }
@@ -37,7 +39,7 @@
         public void ConstructorThrowsArgumentNullExceptionForNullPropertyInfo()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new ColumnInfo(columnName: "Name", propertyInfo: null, isIdentifier: false));
+                () => new ColumnInfo("Name", null, false, true));
 
             Assert.AreEqual("propertyInfo", exception.ParamName);
         }

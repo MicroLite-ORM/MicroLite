@@ -36,23 +36,32 @@
 
             var columns = objectInfo.TableInfo.Columns.ToArray();
 
-            Assert.AreEqual(4, columns.Length);
+            Assert.AreEqual(5, columns.Length);
 
-            Assert.AreEqual("DoB", columns[0].ColumnName);
+            Assert.AreEqual("Created", columns[0].ColumnName);
+            Assert.IsFalse(columns[0].AllowUpdate);
             Assert.IsFalse(columns[0].IsIdentifier);
-            Assert.AreEqual(typeof(Customer).GetProperty("DateOfBirth"), columns[0].PropertyInfo);
+            Assert.AreEqual(typeof(Customer).GetProperty("Created"), columns[0].PropertyInfo);
 
-            Assert.AreEqual("CustomerId", columns[1].ColumnName);
-            Assert.IsTrue(columns[1].IsIdentifier);
-            Assert.AreEqual(typeof(Customer).GetProperty("Id"), columns[1].PropertyInfo);
+            Assert.AreEqual("DoB", columns[1].ColumnName);
+            Assert.IsTrue(columns[1].AllowUpdate);
+            Assert.IsFalse(columns[1].IsIdentifier);
+            Assert.AreEqual(typeof(Customer).GetProperty("DateOfBirth"), columns[1].PropertyInfo);
 
-            Assert.AreEqual("Name", columns[2].ColumnName);
-            Assert.IsFalse(columns[2].IsIdentifier);
-            Assert.AreEqual(typeof(Customer).GetProperty("Name"), columns[2].PropertyInfo);
+            Assert.AreEqual("CustomerId", columns[2].ColumnName);
+            Assert.IsTrue(columns[2].AllowUpdate);
+            Assert.IsTrue(columns[2].IsIdentifier);
+            Assert.AreEqual(typeof(Customer).GetProperty("Id"), columns[2].PropertyInfo);
 
-            Assert.AreEqual("StatusId", columns[3].ColumnName);
+            Assert.AreEqual("Name", columns[3].ColumnName);
+            Assert.IsTrue(columns[3].AllowUpdate);
             Assert.IsFalse(columns[3].IsIdentifier);
-            Assert.AreEqual(typeof(Customer).GetProperty("Status"), columns[3].PropertyInfo);
+            Assert.AreEqual(typeof(Customer).GetProperty("Name"), columns[3].PropertyInfo);
+
+            Assert.AreEqual("StatusId", columns[4].ColumnName);
+            Assert.IsTrue(columns[4].AllowUpdate);
+            Assert.IsFalse(columns[4].IsIdentifier);
+            Assert.AreEqual(typeof(Customer).GetProperty("Status"), columns[4].PropertyInfo);
         }
 
         [Test]
@@ -82,6 +91,13 @@
                 }
             }
 
+            [MicroLite.Mapping.Column("Created", allowUpdate: false)]
+            public DateTime Created
+            {
+                get;
+                set;
+            }
+
             [MicroLite.Mapping.Column("DoB")]
             public DateTime DateOfBirth
             {
@@ -106,12 +122,6 @@
 
             [MicroLite.Mapping.Column("StatusId")]
             public CustomerStatus Status
-            {
-                get;
-                set;
-            }
-
-            public string TempraryNotes
             {
                 get;
                 set;

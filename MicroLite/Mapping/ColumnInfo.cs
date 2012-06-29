@@ -23,6 +23,7 @@ namespace MicroLite.Mapping
         private readonly string columnName;
         private readonly bool isIdentifier;
         private readonly PropertyInfo propertyInfo;
+        private readonly bool allowUpdate;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnInfo"/> class.
@@ -30,7 +31,12 @@ namespace MicroLite.Mapping
         /// <param name="columnName">The name of the column in the database table.</param>
         /// <param name="propertyInfo">The property info for the property the column maps to.</param>
         /// <param name="isIdentifier">A value indicating whether column is the table identifier column (primary key).</param>
-        public ColumnInfo(string columnName, PropertyInfo propertyInfo, bool isIdentifier)
+        /// <param name="allowUpdate">true if the column can be updated, otherwise false.</param>
+        public ColumnInfo(
+            string columnName,
+            PropertyInfo propertyInfo,
+            bool isIdentifier,
+            bool allowUpdate)
         {
             if (columnName == null)
             {
@@ -45,6 +51,18 @@ namespace MicroLite.Mapping
             this.columnName = columnName;
             this.isIdentifier = isIdentifier;
             this.propertyInfo = propertyInfo;
+            this.allowUpdate = allowUpdate;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the column is allowed to be updated.
+        /// </summary>
+        public bool AllowUpdate
+        {
+            get
+            {
+                return this.allowUpdate;
+            }
         }
 
         /// <summary>
