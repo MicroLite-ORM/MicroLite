@@ -153,7 +153,8 @@ namespace MicroLite.Core
 
             foreach (var column in objectInfo.TableInfo.Columns)
             {
-                if (!column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
+                if (column.AllowUpdate
+                    && !column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
                 {
                     sqlBuilder.AppendFormat(
                                 " [{0}].[{1}] = {2},",

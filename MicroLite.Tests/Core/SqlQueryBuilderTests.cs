@@ -74,6 +74,7 @@
         {
             var customer = new CustomerWithIdentity
             {
+                Created = DateTime.Now,
                 DateOfBirth = new System.DateTime(1982, 11, 27),
                 Name = "Trevor Pilley",
                 Status = CustomerStatus.Active
@@ -83,10 +84,11 @@
 
             var sqlQuery = queryBuilder.InsertQuery(customer);
 
-            Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Customers].[DoB], [Customers].[Name], [Customers].[StatusId]) VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
-            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);
-            Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
-            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
+            Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Customers].[Created], [Customers].[DoB], [Customers].[Name], [Customers].[StatusId]) VALUES (@p0, @p1, @p2, @p3)", sqlQuery.CommandText);
+            Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
+            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
+            Assert.AreEqual(customer.Name, sqlQuery.Arguments[2]);
+            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[3]);
         }
 
         [Test]
@@ -241,7 +243,7 @@
 
             var sqlQuery = queryBuilder.SelectQuery(typeof(CustomerWithIdentity), identifier);
 
-            Assert.AreEqual("SELECT [Customers].[DoB], [Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT [Customers].[Created], [Customers].[DoB], [Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
         }
 
@@ -302,6 +304,13 @@
         {
             public CustomerWithIdentity()
             {
+            }
+
+            [MicroLite.Mapping.Column("Created", allowUpdate: false)]
+            public DateTime Created
+            {
+                get;
+                set;
             }
 
             [MicroLite.Mapping.Column("DoB")]
