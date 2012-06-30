@@ -22,6 +22,15 @@
         }
 
         [Test]
+        public void CreateSessionFactoryReturnsSameInstanceForSameConnectionName()
+        {
+            var sessionFactory1 = Configure.Fluently().ForConnection("SqlConnection").CreateSessionFactory();
+            var sessionFactory2 = Configure.Fluently().ForConnection("SqlConnection").CreateSessionFactory();
+
+            Assert.AreSame(sessionFactory1, sessionFactory2);
+        }
+
+        [Test]
         public void CreateSessionFactoryReturnsSessionFactoryForNamedConnection()
         {
             var sessionFactory = Configure.Fluently().ForConnection("SqlConnection").CreateSessionFactory();

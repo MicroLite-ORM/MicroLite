@@ -16,6 +16,7 @@ namespace MicroLite.Configuration
     using System.Collections.Generic;
     using System.Configuration;
     using System.Data.Common;
+    using System.Linq;
     using MicroLite.Core;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
@@ -79,10 +80,15 @@ namespace MicroLite.Configuration
         /// </returns>
         public ISessionFactory CreateSessionFactory()
         {
-            log.TryLogInfo(Messages.Configure_CreatingSessionFactory, this.options.ConnectionName);
-            var sessionFactory = new SessionFactory(this.options);
+            var sessionFactory = SessionFactories.SingleOrDefault(s => s.ConnectionName == this.options.ConnectionName);
 
-            sessionFactories.Add(sessionFactory);
+            if (sessionFactory == null)
+            {
+                log.TryLogInfo(Messages.Configure_CreatingSessionFactory, this.options.ConnectionName);
+                sessionFactory = new SessionFactory(this.options);
+
+                sessionFactories.Add(sessionFactory);
+            }
 
             return sessionFactory;
         }
