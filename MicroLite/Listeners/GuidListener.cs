@@ -20,10 +20,15 @@ namespace MicroLite.Listeners
     /// The implementation of <see cref="IListener"/> for setting the instance identifier value if
     /// <see cref="IdentifierStrategy"/>.Guid is used.
     /// </summary>
-    internal sealed class GuidListener : Listener
+    public sealed class GuidListener : Listener
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.GuidListener");
 
+        /// <summary>
+        /// Invoked before the SqlQuery to insert the record into the database is created.
+        /// </summary>
+        /// <param name="instance">The instance to be inserted.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Although the class and method are public, the method will only ever be called by Session which will have already validated the parameters.")]
         public override void BeforeInsert(object instance)
         {
             var objectInfo = ObjectInfo.For(instance.GetType());
@@ -39,6 +44,11 @@ namespace MicroLite.Listeners
             }
         }
 
+        /// <summary>
+        /// Invoked before the SqlQuery to update the record in the database is created.
+        /// </summary>
+        /// <param name="instance">The instance to be updated.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Although the class and method are public, the method will only ever be called by Session which will have already validated the parameters.")]
         public override void BeforeUpdate(object instance)
         {
             var objectInfo = ObjectInfo.For(instance.GetType());

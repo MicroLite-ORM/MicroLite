@@ -55,6 +55,15 @@ namespace MicroLite.Listeners
         }
 
         /// <summary>
+        /// Clears all IListeners registered.
+        /// </summary>
+        public void Clear()
+        {
+            this.listenerFactories.Clear();
+            this.listenerTypes.Clear();
+        }
+
+        /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns>
@@ -87,15 +96,6 @@ namespace MicroLite.Listeners
         internal void Add(Func<IListener> listenerFactory)
         {
             this.listenerFactories.Add(listenerFactory);
-        }
-
-        /// <summary>
-        /// Clears all IListeners registered.
-        /// </summary>
-        internal void Clear()
-        {
-            this.listenerFactories.Clear();
-            this.listenerTypes.Clear();
         }
     }
 }
