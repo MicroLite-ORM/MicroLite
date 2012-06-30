@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using MicroLite.Core;
+    using MicroLite.Mapping;
     using Moq;
     using NUnit.Framework;
 
@@ -27,7 +28,7 @@
             mockDataReader.Setup(x => x.GetName(0)).Returns("FooBarInvalid");
 
             var objectBuilder = new ObjectBuilder();
-            objectBuilder.BuildNewInstance<Customer>(mockDataReader.Object);
+            objectBuilder.BuildNewInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object);
         }
 
         [Test]
@@ -43,7 +44,7 @@
             var objectBuilder = new ObjectBuilder();
 
             var exception = Assert.Throws<MicroLiteException>(
-                () => objectBuilder.BuildNewInstance<Customer>(mockDataReader.Object));
+                () => objectBuilder.BuildNewInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object));
 
             Assert.NotNull(exception.InnerException);
             Assert.AreEqual(exception.InnerException.Message, exception.Message);
@@ -64,7 +65,7 @@
 
             var objectBuilder = new ObjectBuilder();
 
-            var customer = objectBuilder.BuildNewInstance<Customer>(mockDataReader.Object);
+            var customer = objectBuilder.BuildNewInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object);
 
             Assert.IsNull(customer.ReferredById);
         }
@@ -84,7 +85,7 @@
 
             var objectBuilder = new ObjectBuilder();
 
-            var customer = objectBuilder.BuildNewInstance<Customer>(mockDataReader.Object);
+            var customer = objectBuilder.BuildNewInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object);
 
             Assert.IsNull(customer.Name);
         }
@@ -104,7 +105,7 @@
 
             var objectBuilder = new ObjectBuilder();
 
-            var customer = objectBuilder.BuildNewInstance<Customer>(mockDataReader.Object);
+            var customer = objectBuilder.BuildNewInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object);
 
             Assert.AreEqual(1235, customer.ReferredById);
         }
@@ -127,7 +128,7 @@
 
             var objectBuilder = new ObjectBuilder();
 
-            var customer = objectBuilder.BuildNewInstance<Customer>(mockDataReader.Object);
+            var customer = objectBuilder.BuildNewInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object);
 
             Assert.AreEqual(new DateTime(1982, 11, 27), customer.DateOfBirth);
             Assert.AreEqual(123242, customer.Id);

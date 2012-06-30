@@ -6,6 +6,7 @@
     using System.Linq;
     using MicroLite.Core;
     using MicroLite.Listeners;
+    using MicroLite.Mapping;
     using Moq;
     using NUnit.Framework;
 
@@ -568,7 +569,7 @@
             mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(reader)).Returns(new Customer());
+            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -758,7 +759,7 @@
             mockConnectionManager.Setup(x => x.Build(paged)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(reader)).Returns(new Customer());
+            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
             mockQueryBuilder.Setup(x => x.Page(sqlQuery, 10, 25)).Returns(paged);
@@ -862,7 +863,7 @@
             mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(reader)).Returns(new Customer());
+            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -896,7 +897,7 @@
             mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(reader)).Returns(new Customer());
+            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -1029,7 +1030,7 @@
             mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(reader)).Returns(new Customer());
+            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
             mockQueryBuilder.Setup(x => x.SelectQuery(typeof(Customer), identifier)).Returns(sqlQuery);
@@ -1225,8 +1226,11 @@
             Assert.Throws<ObjectDisposedException>(() => session.Update(new Customer()));
         }
 
+        [MicroLite.Mapping.Table("dbo", "Customers")]
         private class Customer
         {
+            [MicroLite.Mapping.Column("CustomerId")]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Identity)]
             public int Id
             {
                 get;

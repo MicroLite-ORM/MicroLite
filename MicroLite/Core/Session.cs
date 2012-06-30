@@ -19,6 +19,7 @@ namespace MicroLite.Core
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The default implementation of <see cref="ISession"/>.
@@ -328,11 +329,13 @@ namespace MicroLite.Core
                     throw new MicroLiteException(e.Message, e);
                 }
 
+                var objectInfo = ObjectInfo.For(typeof(T));
+
                 using (reader)
                 {
                     while (reader.Read())
                     {
-                        yield return this.objectBuilder.BuildNewInstance<T>(reader);
+                        yield return this.objectBuilder.BuildNewInstance<T>(objectInfo, reader);
                     }
                 }
 

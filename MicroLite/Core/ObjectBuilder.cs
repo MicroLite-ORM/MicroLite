@@ -25,11 +25,9 @@ namespace MicroLite.Core
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.ObjectBuilder");
 
-        public T BuildNewInstance<T>(IDataReader reader)
+        public T BuildNewInstance<T>(ObjectInfo objectInfo, IDataReader reader)
             where T : class, new()
         {
-            var objectInfo = ObjectInfo.For(typeof(T));
-
             log.TryLogDebug(Messages.ObjectBuilder_CreatingInstance, objectInfo.ForType.FullName);
             var instance = new T();
 
