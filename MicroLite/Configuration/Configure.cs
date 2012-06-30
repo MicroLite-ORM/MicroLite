@@ -19,7 +19,6 @@ namespace MicroLite.Configuration
     using System.Linq;
     using MicroLite.Core;
     using MicroLite.FrameworkExtensions;
-    using MicroLite.Listeners;
     using MicroLite.Logging;
 
     /// <summary>
