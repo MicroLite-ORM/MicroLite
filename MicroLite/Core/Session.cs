@@ -66,7 +66,7 @@ namespace MicroLite.Core
         {
             get
             {
-                return this.listeners ?? (this.listeners = ListenerManager.Create());
+                return this.listeners ?? (this.listeners = Listener.Listeners.ToArray());
             }
         }
 
@@ -89,7 +89,11 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
+            this.Listeners.Each(l => l.BeforeDelete(instance));
+
             var sqlQuery = this.queryBuilder.DeleteQuery(instance);
+
+            this.Listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
 
             return this.Execute(sqlQuery) == 1;
         }
@@ -229,7 +233,7 @@ namespace MicroLite.Core
 
             var sqlQuery = this.queryBuilder.InsertQuery(instance);
 
-            this.Listeners.Each(l => l.BeforeInsert(instance.GetType(), sqlQuery));
+            this.Listeners.Each(l => l.BeforeInsert(instance, sqlQuery));
 
             var identifier = this.ExecuteScalar<object>(sqlQuery);
 
@@ -288,6 +292,8 @@ namespace MicroLite.Core
             this.Listeners.Each(l => l.BeforeUpdate(instance));
 
             var sqlQuery = this.queryBuilder.UpdateQuery(instance);
+
+            this.Listeners.Each(l => l.BeforeUpdate(instance, sqlQuery));
 
             this.Execute(sqlQuery);
         }

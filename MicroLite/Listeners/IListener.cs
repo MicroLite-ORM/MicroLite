@@ -12,39 +12,61 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Listeners
 {
-    using System;
-
     /// <summary>
     /// The interface which exposes hooks into the processing of an object by the MicroLite ORM framework.
     /// </summary>
-    internal interface IListener
+    public interface IListener
     {
         /// <summary>
-        /// Invoked after the record for the instance has been inserted into the database.
+        /// Invoked after the SqlQuery to insert the record for the instance has been executed.
         /// </summary>
         /// <param name="instance">The instance which has been inserted.</param>
         /// <param name="executeScalarResult">The execute scalar result.</param>
         void AfterInsert(object instance, object executeScalarResult);
 
         /// <summary>
+        /// Invoked before the SqlQuery to delete the record from the database is created.
+        /// </summary>
+        /// <param name="instance">The instance to be deleted.</param>
+        /// <remarks>This is called before IListener.BeforeDelete(instance, sqlQuery).</remarks>
+        void BeforeDelete(object instance);
+
+        /// <summary>
+        /// Invoked before the SqlQuery to delete the record from the database is executed.
+        /// </summary>
+        /// <param name="instance">The instance to be deleted.</param>
+        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
+        /// <remarks>This is called after IListener.BeforeDelete(instance).</remarks>
+        void BeforeDelete(object instance, SqlQuery sqlQuery);
+
+        /// <summary>
         /// Invoked before the SqlQuery to insert the record into the database is created.
         /// </summary>
         /// <param name="instance">The instance to be inserted.</param>
-        /// <remarks>This is called before IListener.BeforeInsert(sqlQuery).</remarks>
+        /// <remarks>This is called before IListener.BeforeInsert(instance, sqlQuery).</remarks>
         void BeforeInsert(object instance);
 
         /// <summary>
         /// Invoked before the SqlQuery to insert the record into the database is executed.
         /// </summary>
-        /// <param name="forType">The type the query is for.</param>
+        /// <param name="instance">The instance to be inserted.</param>
         /// <param name="sqlQuery">The SqlQuery to be executed.</param>
         /// <remarks>This is called after IListener.BeforeInsert(instance).</remarks>
-        void BeforeInsert(Type forType, SqlQuery sqlQuery);
+        void BeforeInsert(object instance, SqlQuery sqlQuery);
 
         /// <summary>
         /// Invoked before the SqlQuery to update the record in the database is created.
         /// </summary>
         /// <param name="instance">The instance to be updated.</param>
+        /// <remarks>This is called before IListener.BeforeUpdate(instance, sqlQuery).</remarks>
         void BeforeUpdate(object instance);
+
+        /// <summary>
+        /// Invoked before the SqlQuery to update the record in the database is executed.
+        /// </summary>
+        /// <param name="instance">The instance to be updated.</param>
+        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
+        /// <remarks>This is called after IListener.BeforeUpdate(instance).</remarks>
+        void BeforeUpdate(object instance, SqlQuery sqlQuery);
     }
 }

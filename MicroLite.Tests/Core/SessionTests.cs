@@ -63,6 +63,42 @@
         }
 
         [Test]
+        public void DeleteInstanceInvokesListeners()
+        {
+            var customer = new Customer();
+            var sqlQuery = new SqlQuery("");
+
+            var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
+            mockQueryBuilder.Setup(x => x.DeleteQuery(customer)).Returns(sqlQuery);
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var mockListener = new Mock<IListener>();
+            mockListener.Setup(x => x.BeforeDelete(customer));
+            mockListener.Setup(x => x.BeforeDelete(customer, sqlQuery));
+
+            Listener.Listeners.Add(() =>
+            {
+                return mockListener.Object;
+            });
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockQueryBuilder.Object);
+
+            session.Delete(customer);
+
+            mockListener.VerifyAll();
+        }
+
+        [Test]
         public void DeleteInstanceReturnsFalseIfNoRecordsDeleted()
         {
             var customer = new Customer();
@@ -578,7 +614,7 @@
         }
 
         [Test]
-        public void InsertBuildsAndExecutesQueryInvokingListeners()
+        public void InsertBuildsAndExecutesQuery()
         {
             var customer = new Customer();
             var sqlQuery = new SqlQuery("");
@@ -595,12 +631,41 @@
             var mockConnectionManager = new Mock<IConnectionManager>();
             mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
 
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockQueryBuilder.Object);
+
+            session.Insert(customer);
+
+            mockQueryBuilder.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Test]
+        public void InsertInvokesListeners()
+        {
+            var customer = new Customer();
+            var sqlQuery = new SqlQuery("");
+            object identifier = 23543;
+
+            var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
+            mockQueryBuilder.Setup(x => x.InsertQuery(customer)).Returns(sqlQuery);
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteScalar()).Returns(identifier);
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
             var mockListener = new Mock<IListener>();
             mockListener.Setup(x => x.AfterInsert(customer, identifier));
-            mockListener.Setup(x => x.BeforeInsert(typeof(Customer), sqlQuery));
+            mockListener.Setup(x => x.BeforeInsert(customer, sqlQuery));
             mockListener.Setup(x => x.BeforeInsert(customer));
 
-            ListenerManager.Add(() =>
+            Listener.Listeners.Add(() =>
             {
                 return mockListener.Object;
             });
@@ -612,9 +677,6 @@
 
             session.Insert(customer);
 
-            mockQueryBuilder.VerifyAll();
-            mockConnectionManager.VerifyAll();
-            mockCommand.VerifyAll();
             mockListener.VerifyAll();
         }
 
@@ -909,7 +971,7 @@
         [SetUp]
         public void SetUp()
         {
-            ListenerManager.Clear();
+            Listener.Listeners.Clear();
         }
 
         [Test]
@@ -1019,7 +1081,7 @@
         [TestFixtureTearDown]
         public void TearDown()
         {
-            ListenerManager.Clear();
+            Listener.Listeners.Clear();
         }
 
         [Test]
@@ -1039,7 +1101,7 @@
         }
 
         [Test]
-        public void UpdateBuildsAndExecutesQueryInvokingListeners()
+        public void UpdateBuildsAndExecutesQuery()
         {
             var customer = new Customer();
             var sqlQuery = new SqlQuery("");
@@ -1061,19 +1123,46 @@
                 new Mock<IObjectBuilder>().Object,
                 mockQueryBuilder.Object);
 
+            session.Update(customer);
+
+            mockQueryBuilder.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Test]
+        public void UpdateInvokesListeners()
+        {
+            var customer = new Customer();
+            var sqlQuery = new SqlQuery("");
+            var rowsAffected = 1;
+
+            var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
+            mockQueryBuilder.Setup(x => x.UpdateQuery(customer)).Returns(sqlQuery);
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(rowsAffected);
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockQueryBuilder.Object);
+
             var mockListener = new Mock<IListener>();
             mockListener.Setup(x => x.BeforeUpdate(customer));
+            mockListener.Setup(x => x.BeforeUpdate(customer, sqlQuery));
 
-            ListenerManager.Add(() =>
+            Listener.Listeners.Add(() =>
             {
                 return mockListener.Object;
             });
 
             session.Update(customer);
 
-            mockQueryBuilder.VerifyAll();
-            mockConnectionManager.VerifyAll();
-            mockCommand.VerifyAll();
             mockListener.VerifyAll();
         }
 

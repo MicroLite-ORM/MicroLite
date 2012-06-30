@@ -28,7 +28,7 @@
             var sqlQuery = new SqlQuery(string.Empty);
 
             var listener = new IdentityListener();
-            listener.BeforeInsert(typeof(Customer), sqlQuery);
+            listener.BeforeInsert(new Customer(), sqlQuery);
 
             Assert.AreEqual(";SELECT SCOPE_IDENTITY()", sqlQuery.CommandText);
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
@@ -40,7 +40,7 @@
             var sqlQuery = new SqlQuery(string.Empty);
 
             var listener = new IdentityListener();
-            listener.BeforeInsert(typeof(CustomerWithAssigned), sqlQuery);
+            listener.BeforeInsert(new CustomerWithAssigned(), sqlQuery);
 
             Assert.AreEqual(string.Empty, sqlQuery.CommandText);
             CollectionAssert.IsEmpty(sqlQuery.Arguments);

@@ -60,7 +60,7 @@
     <Compile Include="Core\SessionTests.cs" />
     <Compile Include="Core\SqlQueryBuilderTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
-    <Compile Include="Listeners\ListenerManagerTests.cs" />
+    <Compile Include="Listeners\ListenerCollectionTests.cs" />
     <Compile Include="Mapping\ColumnInfoTests.cs" />
     <Compile Include="Mapping\IdentifierAttributeTests.cs" />
     <Compile Include="Logging\LogExtensionsTests.cs" />

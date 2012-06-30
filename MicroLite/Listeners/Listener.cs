@@ -12,8 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Listeners
 {
-    using System;
-
     /// <summary>
     /// Empty implementation of IListener.
     /// </summary>
@@ -21,14 +19,44 @@ namespace MicroLite.Listeners
     /// Provided so that implementations don't have to implement full interface.
     /// Quite possibly a violation of SRP but it does allow for simplified extensions to the framework.
     /// </remarks>
-    internal abstract class Listener : IListener
+    public abstract class Listener : IListener
     {
+        private static readonly ListenerCollection collection = new ListenerCollection();
+
         /// <summary>
-        /// Invoked after the record for the instance has been inserted into the database.
+        /// Gets the listener collection which contains all listeners registered with the MicroLite ORM framework.
+        /// </summary>
+        public static ListenerCollection Listeners
+        {
+            get
+            {
+                return collection;
+            }
+        }
+
+        /// <summary>
+        /// Invoked after the SqlQuery to insert the record for the instance has been executed.
         /// </summary>
         /// <param name="instance">The instance which has been inserted.</param>
         /// <param name="executeScalarResult">The execute scalar result.</param>
         public virtual void AfterInsert(object instance, object executeScalarResult)
+        {
+        }
+
+        /// <summary>
+        /// Invoked before the SqlQuery to delete the record from the database is created.
+        /// </summary>
+        /// <param name="instance">The instance to be deleted.</param>
+        public virtual void BeforeDelete(object instance)
+        {
+        }
+
+        /// <summary>
+        /// Invoked before the SqlQuery to delete the record from the database is executed.
+        /// </summary>
+        /// <param name="instance">The instance to be deleted.</param>
+        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
+        public virtual void BeforeDelete(object instance, SqlQuery sqlQuery)
         {
         }
 
@@ -43,9 +71,9 @@ namespace MicroLite.Listeners
         /// <summary>
         /// Invoked before the SqlQuery to insert the record into the database is executed.
         /// </summary>
-        /// <param name="forType">The type the query is for.</param>
+        /// <param name="instance">The instance to be inserted.</param>
         /// <param name="sqlQuery">The SqlQuery to be executed.</param>
-        public virtual void BeforeInsert(Type forType, SqlQuery sqlQuery)
+        public virtual void BeforeInsert(object instance, SqlQuery sqlQuery)
         {
         }
 
@@ -54,6 +82,15 @@ namespace MicroLite.Listeners
         /// </summary>
         /// <param name="instance">The instance to be updated.</param>
         public virtual void BeforeUpdate(object instance)
+        {
+        }
+
+        /// <summary>
+        /// Invoked before the SqlQuery to update the record in the database is executed.
+        /// </summary>
+        /// <param name="instance">The instance to be updated.</param>
+        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
+        public virtual void BeforeUpdate(object instance, SqlQuery sqlQuery)
         {
         }
     }

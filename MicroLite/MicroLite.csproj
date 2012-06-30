@@ -83,7 +83,7 @@
     <Compile Include="Core\SqlQueryBuilder.cs" />
     <Compile Include="FrameworkExtensions\StringExtensions.cs" />
     <Compile Include="Core\Transaction.cs" />
-    <Compile Include="Listeners\ListenerManager.cs" />
+    <Compile Include="Listeners\ListenerCollection.cs" />
     <Compile Include="IAdvancedSession.cs" />
     <Compile Include="Mapping\ColumnInfo.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />

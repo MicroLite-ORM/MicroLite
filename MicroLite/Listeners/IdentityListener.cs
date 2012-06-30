@@ -53,9 +53,9 @@ namespace MicroLite.Listeners
             }
         }
 
-        public override void BeforeInsert(Type forType, SqlQuery sqlQuery)
+        public override void BeforeInsert(object instance, SqlQuery sqlQuery)
         {
-            var objectInfo = ObjectInfo.For(forType);
+            var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
             {

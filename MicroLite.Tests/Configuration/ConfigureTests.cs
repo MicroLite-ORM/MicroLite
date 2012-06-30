@@ -1,10 +1,8 @@
 ﻿namespace MicroLite.Tests.Configuration
 {
     using System;
-    using System.Linq;
     using MicroLite.Configuration;
     using MicroLite.FrameworkExtensions;
-    using MicroLite.Listeners;
     using NUnit.Framework;
 
     /// <summary>
@@ -48,42 +46,6 @@
         }
 
         [Test]
-        public void FluentlyRegistersAssignedListener()
-        {
-            var sessionFactory = Configure
-                .Fluently();
-
-            var listener = ListenerManager.Create()
-                .Single(x => x.GetType() == typeof(AssignedListener));
-
-            Assert.NotNull(listener);
-        }
-
-        [Test]
-        public void FluentlyRegistersGuidListener()
-        {
-            var sessionFactory = Configure
-                .Fluently();
-
-            var listener = ListenerManager.Create()
-                .Single(x => x.GetType() == typeof(GuidListener));
-
-            Assert.NotNull(listener);
-        }
-
-        [Test]
-        public void FluentlyRegistersIdentityListener()
-        {
-            var sessionFactory = Configure
-                .Fluently();
-
-            var listener = ListenerManager.Create()
-                .Single(x => x.GetType() == typeof(IdentityListener));
-
-            Assert.NotNull(listener);
-        }
-
-        [Test]
         public void FluentlyReturnsNewInstanceOnEachCall()
         {
             var configure1 = Configure.Fluently();
@@ -117,12 +79,6 @@
                 () => Configure.Fluently().ForConnection("OleConnection"));
 
             Assert.AreEqual(Messages.Configure_ProviderNotSupported.FormatWith("System.Data.OleDb"), exception.Message);
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            ListenerManager.Clear();
         }
     }
 }
