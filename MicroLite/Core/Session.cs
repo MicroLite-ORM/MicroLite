@@ -73,11 +73,15 @@ namespace MicroLite.Core
 
         public ITransaction BeginTransaction()
         {
+            this.ThrowIfDisposed();
+
             return this.connectionManager.BeginTransaction();
         }
 
         public ITransaction BeginTransaction(IsolationLevel isolationLevel)
         {
+            this.ThrowIfDisposed();
+
             return this.connectionManager.BeginTransaction(isolationLevel);
         }
 

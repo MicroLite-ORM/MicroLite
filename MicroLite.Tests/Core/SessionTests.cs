@@ -46,6 +46,21 @@
         }
 
         [Test]
+        public void BeginTransactionThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            using (session)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => session.BeginTransaction());
+        }
+
+        [Test]
         public void BeginTransactionWithIsolationLevelCallsConnectionManagerBeginTransactionWithIsolationLevel()
         {
             var isolationLevel = IsolationLevel.Chaos;
@@ -61,6 +76,21 @@
             session.BeginTransaction(isolationLevel);
 
             mockConnectionManager.VerifyAll();
+        }
+
+        [Test]
+        public void BeginTransactionWithIsolationLevelThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            using (session)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => session.BeginTransaction(IsolationLevel.ReadCommitted));
         }
 
         [Test]
