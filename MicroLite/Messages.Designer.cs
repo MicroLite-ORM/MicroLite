@@ -88,42 +88,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No connection was found in the app.config with the name [{0}].
-        /// </summary>
-        internal static string Configure_ConnectionNotFound {
-            get {
-                return ResourceManager.GetString("Configure_ConnectionNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creating a session factory for connection named [{0}].
-        /// </summary>
-        internal static string Configure_CreatingSessionFactory {
-            get {
-                return ResourceManager.GetString("Configure_CreatingSessionFactory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The provider [{0}] is currently not supported by the MicroLite ORM framework.
-        /// </summary>
-        internal static string Configure_ProviderNotSupported {
-            get {
-                return ResourceManager.GetString("Configure_ProviderNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reading connection named [{0}] from app.config.
-        /// </summary>
-        internal static string Configure_ReadingConnection {
-            get {
-                return ResourceManager.GetString("Configure_ReadingConnection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Using logger [{0}]..
         /// </summary>
         internal static string ConfigureExtensions_UsingLogger {
@@ -147,6 +111,42 @@ namespace MicroLite {
         internal static string ConnectionManager_ArgumentsCountMismatch {
             get {
                 return ResourceManager.GetString("ConnectionManager_ArgumentsCountMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No connection was found in the app.config with the name [{0}].
+        /// </summary>
+        internal static string FluentConfiguration_ConnectionNotFound {
+            get {
+                return ResourceManager.GetString("FluentConfiguration_ConnectionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating a session factory for connection named [{0}].
+        /// </summary>
+        internal static string FluentConfiguration_CreatingSessionFactory {
+            get {
+                return ResourceManager.GetString("FluentConfiguration_CreatingSessionFactory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The provider [{0}] is currently not supported by the MicroLite ORM framework.
+        /// </summary>
+        internal static string FluentConfiguration_ProviderNotSupported {
+            get {
+                return ResourceManager.GetString("FluentConfiguration_ProviderNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading connection named [{0}] from app.config.
+        /// </summary>
+        internal static string FluentConfiguration_ReadingConnection {
+            get {
+                return ResourceManager.GetString("FluentConfiguration_ReadingConnection", resourceCulture);
             }
         }
         
