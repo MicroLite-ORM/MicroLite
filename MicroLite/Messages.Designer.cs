@@ -331,6 +331,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute..
+        /// </summary>
+        internal static string TableInfo_ColumnMappedMultipleTimes {
+            get {
+                return ResourceManager.GetString("TableInfo_ColumnMappedMultipleTimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No ColumnInfo was specified with IsIdentifier set to true.
         /// </summary>
         internal static string TableInfo_NoIdentifierColumn {

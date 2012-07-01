@@ -228,4 +228,7 @@
   <data name="ObjectInfo_TypeMustNotBeAbstract" xml:space="preserve">
     <value>The type [{0}] is abstract and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>
+  <data name="TableInfo_ColumnMappedMultipleTimes" xml:space="preserve">
+    <value>The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute.</value>
+  </data>
 </root>

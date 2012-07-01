@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
     using System;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using NUnit.Framework;
 
@@ -56,6 +57,21 @@
                 () => new TableInfo(columns: new ColumnInfo[0], identifierStrategy: IdentifierStrategy.Identity, name: "Customers", schema: null));
 
             Assert.AreEqual("schema", exception.ParamName);
+        }
+
+        [Test]
+        public void ConstructorThrowsMicroLiteExceptionIfMultipleColumnsWithSameName()
+        {
+            var columns = new[]
+            {
+                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true),
+                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true)
+            };
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.Identity, name: "Customers", schema: "Sales"));
+
+            Assert.AreEqual(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith("Name"), exception.Message);
         }
 
         [Test]
