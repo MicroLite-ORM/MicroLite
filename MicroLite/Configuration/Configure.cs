@@ -26,7 +26,7 @@ namespace MicroLite.Configuration
     /// </summary>
     public sealed class Configure : IConfigureConnection, ICreateSessionFactory, IHideObjectMethods
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.Configure");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.Configuration");
         private static readonly IList<ISessionFactory> sessionFactories = new List<ISessionFactory>();
         private readonly SessionFactoryOptions options = new SessionFactoryOptions();
 
@@ -109,16 +109,14 @@ namespace MicroLite.Configuration
 
             if (configSection == null)
             {
-                var message = Messages.Configure_ConnectionNotFound.FormatWith(connectionName);
-                log.TryLogFatal(message);
-                throw new MicroLiteException(message);
+                log.TryLogFatal(Messages.Configure_ConnectionNotFound, connectionName);
+                throw new MicroLiteException(Messages.Configure_ConnectionNotFound.FormatWith(connectionName));
             }
 
             if (configSection.ProviderName != "System.Data.SqlClient")
             {
-                var message = Messages.Configure_ProviderNotSupported.FormatWith(configSection.ProviderName);
-                log.TryLogFatal(message);
-                throw new NotSupportedException(message);
+                log.TryLogFatal(Messages.Configure_ProviderNotSupported, configSection.ProviderName);
+                throw new NotSupportedException(Messages.Configure_ProviderNotSupported.FormatWith(configSection.ProviderName));
             }
 
             try

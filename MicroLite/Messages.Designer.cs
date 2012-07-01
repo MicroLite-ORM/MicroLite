@@ -106,7 +106,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The provider [{0}] is currently not supported by the MicroLite framework.
+        ///   Looks up a localized string similar to The provider [{0}] is currently not supported by the MicroLite ORM framework.
         /// </summary>
         internal static string Configure_ProviderNotSupported {
             get {
@@ -120,6 +120,24 @@ namespace MicroLite {
         internal static string Configure_ReadingConnection {
             get {
                 return ResourceManager.GetString("Configure_ReadingConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using logger [{0}]..
+        /// </summary>
+        internal static string ConfigureExtensions_UsingLogger {
+            get {
+                return ResourceManager.GetString("ConfigureExtensions_UsingLogger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using mapping convention [{0}].
+        /// </summary>
+        internal static string ConfigureExtensions_UsingMappingConvention {
+            get {
+                return ResourceManager.GetString("ConfigureExtensions_UsingMappingConvention", resourceCulture);
             }
         }
         
@@ -178,7 +196,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting the property value for [{0}].[{1}].
+        ///   Looks up a localized string similar to Setting the property value of [{0}].[{1}].
         /// </summary>
         internal static string ObjectBuilder_SettingPropertyValue {
             get {
@@ -205,7 +223,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mapping the {0} class to the {1} table.
+        ///   Looks up a localized string similar to Mapping the [{0}] class to the [{1}] table.
         /// </summary>
         internal static string ObjectInfo_MappingClassToTable {
             get {
@@ -214,7 +232,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mapping the {0}.{1} property to the column {2}.
+        ///   Looks up a localized string similar to Mapping the [{0}].[{1}] property to the column [{2}].
         /// </summary>
         internal static string ObjectInfo_MappingColumnToProperty {
             get {
@@ -241,7 +259,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type [{0}] has no default (zero parameter) constructor and therefore cannot be used by the MicroLite ORM Framework.
+        ///   Looks up a localized string similar to The type [{0}] has no default (parameterless) constructor and therefore cannot be used by the MicroLite ORM Framework.
         /// </summary>
         internal static string ObjectInfo_TypeMustHaveDefaultConstructor {
             get {
@@ -259,7 +277,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mapping the {0}.{1} property as the identifier with the strategy {2}.
+        ///   Looks up a localized string similar to Mapping the [{0}].[{1}] property as the identifier with the strategy [{2}].
         /// </summary>
         internal static string ObjectInfo_UsingPropertyAsIdentifier {
             get {

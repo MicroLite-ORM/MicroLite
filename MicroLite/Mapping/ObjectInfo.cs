@@ -26,7 +26,7 @@ namespace MicroLite.Mapping
     public sealed class ObjectInfo
     {
         private static readonly object locker = new object();
-        private static readonly ILog log = LogManager.GetLog("ObjectInfo");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.ObjectInfo");
         private static readonly IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
         private static IMappingConvention mappingConvention = new AttributeMappingConvention();
 

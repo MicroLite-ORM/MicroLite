@@ -16,6 +16,7 @@ namespace MicroLite.Mapping
     using System.Collections.Generic;
     using System.Linq;
     using MicroLite.FrameworkExtensions;
+    using MicroLite.Logging;
 
     /// <summary>
     /// A class which contains information about a database table .
@@ -23,6 +24,8 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("{Schema}.{Name}")]
     public sealed class TableInfo
     {
+        private static readonly ILog log = LogManager.GetLog("MicroLite.TableInfo");
+
         private readonly ICollection<ColumnInfo> columns;
         private readonly string identifierColumn;
         private readonly IdentifierStrategy identifierStrategy;
@@ -136,11 +139,13 @@ namespace MicroLite.Mapping
 
             if (duplicatedColumn != null)
             {
+                log.TryLogFatal(Messages.TableInfo_ColumnMappedMultipleTimes, duplicatedColumn.Key);
                 throw new MicroLiteException(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
             }
 
             if (!columns.Any(c => c.IsIdentifier))
             {
+                log.TryLogFatal(Messages.TableInfo_NoIdentifierColumn);
                 throw new MicroLiteException(Messages.TableInfo_NoIdentifierColumn);
             }
         }
