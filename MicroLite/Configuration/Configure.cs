@@ -49,7 +49,7 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// Enables extensions to be loaded.
+        /// Begins the process of specifying the extensions which should be used by MicroLite.
         /// </summary>
         /// <returns>The interface which provides the extension points.</returns>
         public static IConfigureExtensions Extensions()

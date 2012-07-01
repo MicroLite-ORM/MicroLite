@@ -62,7 +62,7 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Selects all mapped columns from the table the supplied type maps to.
+        /// Selects all mapped columns from the table the specified type maps to.
         /// </summary>
         /// <param name="forType">The type to select the columns for.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
@@ -159,7 +159,7 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Specifies that the stored procedure should be executed the supplied parameter and argument.
+        /// Specifies that the stored procedure should be executed the specified parameter and argument.
         /// </summary>
         /// <param name="parameter">The parameter to be added.</param>
         /// <param name="arg">The argument value for the parameter.</param>

@@ -41,6 +41,7 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="forType">The type the object info relates to.</param>
         /// <param name="tableInfo">The table info.</param>
+        /// <exception cref="ArgumentNullException">Thrown if forType or tableInfo are null.</exception>
         public ObjectInfo(Type forType, TableInfo tableInfo)
         {
             if (forType == null)
@@ -113,6 +114,8 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="forType">The type to get the object info for.</param>
         /// <returns>The <see cref="ObjectInfo"/> for the specified <see cref="Type"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if forType is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the specified type cannot be used with MicroLite.</exception>
         public static ObjectInfo For(Type forType)
         {
             if (forType == null)
@@ -137,7 +140,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the property info for supplied column name.
+        /// Gets the property info for specified column name.
         /// </summary>
         /// <param name="columnName">Name of the column.</param>
         /// <returns>The <see cref="PropertyInfo"/> for the column, or null if it is not a mapped column.</returns>
@@ -152,7 +155,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Determines whether the supplied instance has the default identifier value.
+        /// Determines whether the specified instance has the default identifier value.
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns>

@@ -124,7 +124,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are [{0}] parameters in the SQL statement, however only [{1}] parameter arguments were supplied..
+        ///   Looks up a localized string similar to There are [{0}] parameters in the SQL statement, however only [{1}] parameter arguments were specified..
         /// </summary>
         internal static string ConnectionManager_ArgumentsCountMismatch {
             get {
@@ -331,7 +331,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No ColumnInfo was supplied with IsIdentifier set to true.
+        ///   Looks up a localized string similar to No ColumnInfo was specified with IsIdentifier set to true.
         /// </summary>
         internal static string TableInfo_NoIdentifierColumn {
             get {
