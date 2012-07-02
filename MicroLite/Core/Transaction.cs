@@ -37,8 +37,6 @@ namespace MicroLite.Core
             this.transaction = transaction;
         }
 
-        internal event EventHandler Complete;
-
         public bool Committed
         {
             get
@@ -75,7 +73,6 @@ namespace MicroLite.Core
                 this.transaction.Commit();
 
                 this.committed = true;
-                this.Complete.Raise(this);
 
                 connection.Close();
             }
@@ -119,8 +116,6 @@ namespace MicroLite.Core
 
                 this.rolledBack = true;
 
-                this.Complete.Raise(this);
-
                 connection.Close();
             }
             catch (Exception e)
@@ -134,7 +129,7 @@ namespace MicroLite.Core
 
         internal void Enlist(IDbCommand command)
         {
-            if (!this.committed)
+            if (this.IsActive)
             {
                 log.TryLogInfo(Messages.Transaction_EnlistingCommand, this.id);
                 command.Transaction = this.transaction;

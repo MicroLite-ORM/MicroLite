@@ -58,38 +58,6 @@
         }
 
         [Test]
-        public void CommitDoesNotRaiseCompleteEventIfCommitFails()
-        {
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Commit()).Throws<InvalidOperationException>();
-
-            bool completed = false;
-
-            var transaction = new Transaction(mockTransaction.Object);
-            transaction.Complete += (s, e) => completed = true;
-
-            Assert.Throws<MicroLiteException>(() => transaction.Commit());
-
-            Assert.IsFalse(completed);
-        }
-
-        [Test]
-        public void CommitRaisesCompleteEventIfCommitSuccessful()
-        {
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Commit());
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-
-            bool completed = false;
-
-            var transaction = new Transaction(mockTransaction.Object);
-            transaction.Complete += (s, e) => completed = true;
-            transaction.Commit();
-
-            Assert.IsTrue(completed);
-        }
-
-        [Test]
         public void CommitSetsCommittedToTrue()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -247,6 +215,24 @@
         }
 
         [Test]
+        public void EnlistDoesNotSetTransactionOnDbCommandIfRolledBack()
+        {
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.SetupProperty(x => x.Transaction);
+
+            var command = mockCommand.Object;
+
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Rollback();
+            transaction.Enlist(command);
+
+            Assert.IsNull(command.Transaction);
+        }
+
+        [Test]
         public void EnlistSetsTransactionOnDbCommandIfNotCommitted()
         {
             var dbTransaction = new Mock<IDbTransaction>().Object;
@@ -305,22 +291,6 @@
             transaction.Rollback();
 
             mockConnection.VerifyAll();
-        }
-
-        [Test]
-        public void RollbackRaisesCompleteEventIfRollbackSuccessful()
-        {
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Commit());
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-
-            bool completed = false;
-
-            var transaction = new Transaction(mockTransaction.Object);
-            transaction.Complete += (s, e) => completed = true;
-            transaction.Rollback();
-
-            Assert.IsTrue(completed);
         }
 
         [Test]
