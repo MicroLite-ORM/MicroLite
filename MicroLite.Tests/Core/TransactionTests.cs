@@ -89,6 +89,76 @@
             Assert.IsTrue(completed);
         }
 
+        [Test]
+        public void CommitSetsCommittedToTrue()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Commit());
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Commit();
+
+            Assert.IsTrue(transaction.Committed);
+        }
+
+        [Test]
+        public void CommitSetsIsActiveToFalseIfDbTransactionCommitErrors()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Commit()).Throws<InvalidOperationException>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            var transaction = new Transaction(mockTransaction.Object);
+
+            try
+            {
+                transaction.Commit();
+            }
+            catch
+            {
+            }
+
+            Assert.IsFalse(transaction.IsActive);
+        }
+
+        [Test]
+        public void CommitSetsIsActiveToFalseIfDbTransactionCommitsSuccessfully()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Commit());
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Commit();
+
+            Assert.IsFalse(transaction.IsActive);
+        }
+
+        [Test]
+        public void ConstructorSetsCommittedToFalse()
+        {
+            var transaction = new Transaction(new Mock<IDbTransaction>().Object);
+
+            Assert.IsFalse(transaction.Committed);
+        }
+
+        [Test]
+        public void ConstructorSetsIsActiveToTrue()
+        {
+            var transaction = new Transaction(new Mock<IDbTransaction>().Object);
+
+            Assert.IsTrue(transaction.IsActive);
+        }
+
+        [Test]
+        public void ConstructorSetsRolledBackToFalse()
+        {
+            var transaction = new Transaction(new Mock<IDbTransaction>().Object);
+
+            Assert.IsFalse(transaction.RolledBack);
+        }
+
         /// <summary>
         /// Issue #48 - This SqlTransaction has completed; it is no longer usable. thrown by Transaction.Dispose.
         /// </summary>
@@ -236,6 +306,52 @@
             transaction.Rollback();
 
             Assert.IsTrue(completed);
+        }
+
+        [Test]
+        public void RollbackSetsIsActiveToFalseIfDbTransactionRollsBackErrors()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockTransaction.Setup(x => x.Rollback()).Throws<InvalidOperationException>();
+
+            var transaction = new Transaction(mockTransaction.Object);
+
+            try
+            {
+                transaction.Rollback();
+            }
+            catch
+            {
+            }
+
+            Assert.IsFalse(transaction.IsActive);
+        }
+
+        [Test]
+        public void RollbackSetsIsActiveToFalseIfDbTransactionRollsBackSuccessfully()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockTransaction.Setup(x => x.Rollback());
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Rollback();
+
+            Assert.IsFalse(transaction.IsActive);
+        }
+
+        [Test]
+        public void RollbackSetsRolledBackToTrue()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockTransaction.Setup(x => x.Rollback());
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Rollback();
+
+            Assert.IsTrue(transaction.RolledBack);
         }
     }
 }

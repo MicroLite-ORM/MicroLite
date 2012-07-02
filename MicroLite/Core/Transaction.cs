@@ -20,11 +20,12 @@ namespace MicroLite.Core
     /// <summary>
     /// The default implementation of <see cref="ITransaction"/>.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Transaction {id},  Committed {committed}")]
+    [System.Diagnostics.DebuggerDisplay("Transaction {id} - Active:{Active}, Committed:{Committed}, RolledBack:{RolledBack}")]
     internal sealed class Transaction : ITransaction
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.Transaction");
         private readonly string id = Guid.NewGuid().ToString();
+        private bool failed;
         private bool committed;
         private bool disposed;
         private bool rolledBack;
@@ -37,6 +38,30 @@ namespace MicroLite.Core
         }
 
         internal event EventHandler Complete;
+
+        public bool Committed
+        {
+            get
+            {
+                return this.committed;
+            }
+        }
+
+        public bool IsActive
+        {
+            get
+            {
+                return !this.committed && !this.rolledBack && !this.failed;
+            }
+        }
+
+        public bool RolledBack
+        {
+            get
+            {
+                return this.rolledBack;
+            }
+        }
 
         public void Commit()
         {
@@ -54,6 +79,8 @@ namespace MicroLite.Core
             }
             catch (Exception e)
             {
+                this.failed = true;
+
                 log.TryLogError(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
@@ -94,6 +121,8 @@ namespace MicroLite.Core
             }
             catch (Exception e)
             {
+                this.failed = true;
+
                 log.TryLogError(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
