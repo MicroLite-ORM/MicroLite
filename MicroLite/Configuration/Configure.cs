@@ -17,16 +17,9 @@ namespace MicroLite.Configuration
     /// <summary>
     /// The class used to configure the MicroLite ORM framework.
     /// </summary>
-    public sealed class Configure
+    public static class Configure
     {
         private static readonly IList<ISessionFactory> sessionFactories = new List<ISessionFactory>();
-
-        /// <summary>
-        /// Prevents a default instance of the <see cref="Configure"/> class from being created.
-        /// </summary>
-        private Configure()
-        {
-        }
 
         /// <summary>
         /// Gets the session factories created by the configuration.

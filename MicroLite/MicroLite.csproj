@@ -50,7 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\FluentConfiguration.cs" />
-    <Compile Include="FrameworkExtensions\EventHandlerExtensions.cs" />
     <Compile Include="Mapping\ColumnAttribute.cs" />
     <Compile Include="Configuration\Configure.cs" />
     <Compile Include="Configuration\ConfigureExtensions.cs" />
