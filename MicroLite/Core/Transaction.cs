@@ -27,6 +27,7 @@ namespace MicroLite.Core
         private readonly string id = Guid.NewGuid().ToString();
         private bool committed;
         private bool disposed;
+        private bool rolledBack;
         private IDbTransaction transaction;
 
         internal Transaction(IDbTransaction transaction)
@@ -62,7 +63,7 @@ namespace MicroLite.Core
         {
             if (!this.disposed)
             {
-                if (!this.committed)
+                if (!this.committed && !this.rolledBack)
                 {
                     log.TryLogWarn(Messages.Transaction_DisposedUncommitted, this.id);
                     this.Rollback();
@@ -84,6 +85,8 @@ namespace MicroLite.Core
 
                 log.TryLogInfo(Messages.Transaction_RollingBack, this.id);
                 this.transaction.Rollback();
+
+                this.rolledBack = true;
 
                 this.Complete.Raise(this);
 

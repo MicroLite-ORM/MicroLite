@@ -89,6 +89,28 @@
             Assert.IsTrue(completed);
         }
 
+        /// <summary>
+        /// Issue #48 - This SqlTransaction has completed; it is no longer usable. thrown by Transaction.Dispose.
+        /// </summary>
+        /// <remarks>
+        /// This was because dispose also called rollback if the transaction was not committed.
+        /// </remarks>
+        [Test]
+        public void DisposeDoesNotRollbackDbTransactionIfAlreadyRolledback()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockTransaction.Setup(x => x.Rollback());
+
+            using (var transaction = new Transaction(mockTransaction.Object))
+            {
+                // Explicitly roll back the transaction.
+                transaction.Rollback();
+            }
+
+            mockTransaction.Verify(x => x.Rollback(), Times.Once());
+        }
+
         [Test]
         public void DisposeDoesNotRollbackDbTransactionIfCommittedAndDisposesDbTransaction()
         {
