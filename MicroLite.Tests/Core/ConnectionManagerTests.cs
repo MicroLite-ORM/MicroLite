@@ -250,40 +250,6 @@
         }
 
         [Test]
-        public void CurrentTransactionReturnsNullOnceTransactionCommitted()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            var mockTransaction = new Mock<IDbTransaction>();
-
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
-
-            var connectionManager = new ConnectionManager(mockConnection.Object);
-            var transaction = connectionManager.BeginTransaction();
-            transaction.Commit();
-
-            Assert.IsNull(connectionManager.CurrentTransaction);
-        }
-
-        [Test]
-        public void CurrentTransactionReturnsNullOnceTransactionRolledback()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            var mockTransaction = new Mock<IDbTransaction>();
-
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
-
-            var connectionManager = new ConnectionManager(mockConnection.Object);
-            var transaction = connectionManager.BeginTransaction();
-            transaction.Rollback();
-
-            Assert.IsNull(connectionManager.CurrentTransaction);
-        }
-
-        [Test]
         public void DisposeClosesAndDisposesConnection()
         {
             var mockConnection = new Mock<IDbConnection>();

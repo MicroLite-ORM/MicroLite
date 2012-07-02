@@ -38,11 +38,6 @@ namespace MicroLite.Core
         {
             get
             {
-                if (this.currentTransaction != null && !this.currentTransaction.IsActive)
-                {
-                    this.currentTransaction = null;
-                }
-
                 return this.currentTransaction;
             }
         }
