@@ -25,9 +25,9 @@ namespace MicroLite.Core
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.Transaction");
         private readonly string id = Guid.NewGuid().ToString();
-        private bool failed;
         private bool committed;
         private bool disposed;
+        private bool failed;
         private bool rolledBack;
         private IDbTransaction transaction;
 
@@ -65,6 +65,8 @@ namespace MicroLite.Core
 
         public void Commit()
         {
+            this.ThrowIfDisposed();
+
             try
             {
                 var connection = this.transaction.Connection;
@@ -106,6 +108,8 @@ namespace MicroLite.Core
 
         public void Rollback()
         {
+            this.ThrowIfDisposed();
+
             try
             {
                 var connection = this.transaction.Connection;
@@ -134,6 +138,14 @@ namespace MicroLite.Core
             {
                 log.TryLogInfo(Messages.Transaction_EnlistingCommand, this.id);
                 command.Transaction = this.transaction;
+            }
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (this.disposed)
+            {
+                throw new ObjectDisposedException(this.GetType().Name);
             }
         }
     }

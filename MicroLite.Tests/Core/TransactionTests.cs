@@ -136,6 +136,21 @@
         }
 
         [Test]
+        public void CommitThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            var transaction = new Transaction(mockTransaction.Object);
+
+            using (transaction)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => transaction.Commit());
+        }
+
+        [Test]
         public void ConstructorSetsCommittedToFalse()
         {
             var transaction = new Transaction(new Mock<IDbTransaction>().Object);
@@ -352,6 +367,21 @@
             transaction.Rollback();
 
             Assert.IsTrue(transaction.RolledBack);
+        }
+
+        [Test]
+        public void RollbackThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            var transaction = new Transaction(mockTransaction.Object);
+
+            using (transaction)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => transaction.Rollback());
         }
     }
 }
