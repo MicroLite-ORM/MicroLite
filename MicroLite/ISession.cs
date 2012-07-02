@@ -30,7 +30,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the current transaction if one is active.
+        /// Gets the current transaction or null if one has not been started.
         /// </summary>
         ITransaction Transaction
         {
