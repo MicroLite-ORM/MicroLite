@@ -13,37 +13,39 @@
     public class TransactionTests
     {
         [Test]
-        public void CommitCallsDbTransactionCommit()
+        public void BeginOpensConnectionAndBeginsTransaction()
         {
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Commit());
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.BeginTransaction()).Returns(new Mock<IDbTransaction>().Object);
+            mockConnection.Setup(x => x.Open());
 
-            var transaction = new Transaction(mockTransaction.Object);
-            transaction.Commit();
+            var transaction = Transaction.Begin(mockConnection.Object);
 
-            mockTransaction.VerifyAll();
+            Assert.IsTrue(transaction.IsActive);
+            Assert.IsFalse(transaction.WasCommitted);
+            Assert.IsFalse(transaction.WasRolledBack);
+
+            mockConnection.VerifyAll();
         }
 
         [Test]
-        public void CommitCallsDbTransactionCommitAndReThrowsExceptionIfCommitFails()
+        public void BeginWithIsolationLevelOpensConnectionAndBeginsTransaction()
         {
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Commit()).Throws<InvalidOperationException>();
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.BeginTransaction(IsolationLevel.Chaos)).Returns(new Mock<IDbTransaction>().Object);
+            mockConnection.Setup(x => x.Open());
 
-            var transaction = new Transaction(mockTransaction.Object);
+            var transaction = Transaction.Begin(mockConnection.Object, IsolationLevel.Chaos);
 
-            var exception = Assert.Throws<MicroLiteException>(() => transaction.Commit());
+            Assert.IsTrue(transaction.IsActive);
+            Assert.IsFalse(transaction.WasCommitted);
+            Assert.IsFalse(transaction.WasRolledBack);
 
-            Assert.NotNull(exception.InnerException);
-            Assert.AreEqual(exception.Message, exception.InnerException.Message);
+            mockConnection.VerifyAll();
         }
 
-        /// <summary>
-        /// Issue #21 - Committing transaction should close connection
-        /// </summary>
         [Test]
-        public void CommitClosesConnection()
+        public void CommitCallsDbConnectionClose()
         {
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.Close());
@@ -58,49 +60,55 @@
         }
 
         [Test]
-        public void CommitSetsCommittedToTrue()
+        public void CommitCallsDbTransactionCommit()
         {
             var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
             mockTransaction.Setup(x => x.Commit());
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Commit();
+
+            mockTransaction.VerifyAll();
+        }
+
+        [Test]
+        public void CommitCallsDbTransactionCommitAndReThrowsExceptionIfCommitFails()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockTransaction.Setup(x => x.Commit()).Throws<InvalidOperationException>();
+
+            var transaction = new Transaction(mockTransaction.Object);
+
+            var exception = Assert.Throws<MicroLiteException>(() => transaction.Commit());
+
+            Assert.IsInstanceOf<InvalidOperationException>(exception.InnerException);
+            Assert.AreEqual(exception.Message, exception.InnerException.Message);
+        }
+
+        [Test]
+        public void CommitSetsIsActiveToFalse()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Commit();
+
+            Assert.IsFalse(transaction.IsActive);
+        }
+
+        [Test]
+        public void CommitSetsWasCommittedToTrue()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
             mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
 
             var transaction = new Transaction(mockTransaction.Object);
             transaction.Commit();
 
             Assert.IsTrue(transaction.WasCommitted);
-        }
-
-        [Test]
-        public void CommitSetsIsActiveToFalseIfDbTransactionCommitErrors()
-        {
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Commit()).Throws<InvalidOperationException>();
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-
-            var transaction = new Transaction(mockTransaction.Object);
-
-            try
-            {
-                transaction.Commit();
-            }
-            catch
-            {
-            }
-
-            Assert.IsFalse(transaction.IsActive);
-        }
-
-        [Test]
-        public void CommitSetsIsActiveToFalseIfDbTransactionCommitsSuccessfully()
-        {
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Commit());
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-
-            var transaction = new Transaction(mockTransaction.Object);
-            transaction.Commit();
-
-            Assert.IsFalse(transaction.IsActive);
         }
 
         [Test]
@@ -116,30 +124,6 @@
             }
 
             Assert.Throws<ObjectDisposedException>(() => transaction.Commit());
-        }
-
-        [Test]
-        public void ConstructorSetsCommittedToFalse()
-        {
-            var transaction = new Transaction(new Mock<IDbTransaction>().Object);
-
-            Assert.IsFalse(transaction.WasCommitted);
-        }
-
-        [Test]
-        public void ConstructorSetsIsActiveToTrue()
-        {
-            var transaction = new Transaction(new Mock<IDbTransaction>().Object);
-
-            Assert.IsTrue(transaction.IsActive);
-        }
-
-        [Test]
-        public void ConstructorSetsRolledBackToFalse()
-        {
-            var transaction = new Transaction(new Mock<IDbTransaction>().Object);
-
-            Assert.IsFalse(transaction.WasRolledBack);
         }
 
         /// <summary>
@@ -186,10 +170,11 @@
         {
             var mockTransaction = new Mock<IDbTransaction>();
             mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
             mockTransaction.Setup(x => x.Dispose());
             mockTransaction.Setup(x => x.Rollback());
 
-            using (new Transaction(mockTransaction.Object))
+            using (var transaction = new Transaction(mockTransaction.Object))
             {
             }
 
@@ -235,17 +220,35 @@
         [Test]
         public void EnlistSetsTransactionOnDbCommandIfNotCommitted()
         {
-            var dbTransaction = new Mock<IDbTransaction>().Object;
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.SetupProperty(x => x.Transaction);
 
             var command = mockCommand.Object;
 
-            var transaction = new Transaction(dbTransaction);
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            var dbTransaction = mockTransaction.Object;
+
+            var transaction = new Transaction(mockTransaction.Object);
             transaction.Enlist(command);
 
             Assert.AreSame(dbTransaction, command.Transaction);
+        }
+
+        [Test]
+        public void RollbackCallsDbConnectionClose()
+        {
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.Close());
+
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Rollback();
+
+            mockConnection.VerifyAll();
         }
 
         [Test]
@@ -265,60 +268,22 @@
         public void RollbackCallsDbTransactionRollbackAndReThrowsExceptionIfRollbackFails()
         {
             var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
             mockTransaction.Setup(x => x.Rollback()).Throws<InvalidOperationException>();
 
             var transaction = new Transaction(mockTransaction.Object);
 
             var exception = Assert.Throws<MicroLiteException>(() => transaction.Rollback());
 
-            Assert.NotNull(exception.InnerException);
+            Assert.IsInstanceOf<InvalidOperationException>(exception.InnerException);
             Assert.AreEqual(exception.Message, exception.InnerException.Message);
         }
 
-        /// <summary>
-        /// Issue #21 - Committing transaction should close connection
-        /// </summary>
         [Test]
-        public void RollbackClosesConnection()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.Close());
-
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            var transaction = new Transaction(mockTransaction.Object);
-            transaction.Rollback();
-
-            mockConnection.VerifyAll();
-        }
-
-        [Test]
-        public void RollbackSetsIsActiveToFalseIfDbTransactionRollsBackErrors()
+        public void RollbackSetsIsActiveToFalse()
         {
             var mockTransaction = new Mock<IDbTransaction>();
             mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-            mockTransaction.Setup(x => x.Rollback()).Throws<InvalidOperationException>();
-
-            var transaction = new Transaction(mockTransaction.Object);
-
-            try
-            {
-                transaction.Rollback();
-            }
-            catch
-            {
-            }
-
-            Assert.IsFalse(transaction.IsActive);
-        }
-
-        [Test]
-        public void RollbackSetsIsActiveToFalseIfDbTransactionRollsBackSuccessfully()
-        {
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-            mockTransaction.Setup(x => x.Rollback());
 
             var transaction = new Transaction(mockTransaction.Object);
             transaction.Rollback();
@@ -327,11 +292,10 @@
         }
 
         [Test]
-        public void RollbackSetsRolledBackToTrue()
+        public void RollbackSetsWasRolledBackToTrue()
         {
             var mockTransaction = new Mock<IDbTransaction>();
             mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-            mockTransaction.Setup(x => x.Rollback());
 
             var transaction = new Transaction(mockTransaction.Object);
             transaction.Rollback();

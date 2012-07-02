@@ -19,7 +19,7 @@ namespace MicroLite.Core
     /// <summary>
     /// The default implementation of <see cref="ITransaction"/>.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Transaction {id} - Active:{Active}, Committed:{Committed}, RolledBack:{RolledBack}")]
+    [System.Diagnostics.DebuggerDisplay("Transaction {id} - Active:{IsActive}, Committed:{WasCommitted}, RolledBack:{WasRolledBack}")]
     internal sealed class Transaction : ITransaction
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.Transaction");
@@ -30,6 +30,11 @@ namespace MicroLite.Core
         private bool rolledBack;
         private IDbTransaction transaction;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="Transaction"/> class.
+        /// </summary>
+        /// <param name="transaction">The transaction.</param>
+        /// <remarks>This is to enable easier unit testing only, all production code should call Transaction.Begin().</remarks>
         internal Transaction(IDbTransaction transaction)
         {
             log.TryLogDebug(Messages.Transaction_Created, this.id);
@@ -126,6 +131,24 @@ namespace MicroLite.Core
                 log.TryLogError(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
+        }
+
+        internal static Transaction Begin(IDbConnection connection)
+        {
+            connection.Open();
+
+            var dbTransaction = connection.BeginTransaction();
+
+            return new Transaction(dbTransaction);
+        }
+
+        internal static Transaction Begin(IDbConnection connection, IsolationLevel isolationLevel)
+        {
+            connection.Open();
+
+            var dbTransaction = connection.BeginTransaction(isolationLevel);
+
+            return new Transaction(dbTransaction);
         }
 
         internal void Enlist(IDbCommand command)
