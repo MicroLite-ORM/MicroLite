@@ -237,4 +237,10 @@
   <data name="ConfigureExtensions_UsingMappingConvention" xml:space="preserve">
     <value>Using mapping convention [{0}]</value>
   </data>
+  <data name="Transaction_Committed" xml:space="preserve">
+    <value>Transaction [{0}] committed changes</value>
+  </data>
+  <data name="Transaction_RolledBack" xml:space="preserve">
+    <value>Transaction [{0}] rolled back changes</value>
+  </data>
 </root>

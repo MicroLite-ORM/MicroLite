@@ -367,6 +367,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transaction [{0}] committed changes.
+        /// </summary>
+        internal static string Transaction_Committed {
+            get {
+                return ResourceManager.GetString("Transaction_Committed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction [{0}] committing changes.
         /// </summary>
         internal static string Transaction_Committing {
@@ -408,6 +417,15 @@ namespace MicroLite {
         internal static string Transaction_EnlistingCommand {
             get {
                 return ResourceManager.GetString("Transaction_EnlistingCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction [{0}] rolled back changes.
+        /// </summary>
+        internal static string Transaction_RolledBack {
+            get {
+                return ResourceManager.GetString("Transaction_RolledBack", resourceCulture);
             }
         }
         

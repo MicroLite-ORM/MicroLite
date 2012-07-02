@@ -71,6 +71,7 @@ namespace MicroLite.Core
 
                 log.TryLogInfo(Messages.Transaction_Committing, this.id);
                 this.transaction.Commit();
+                log.TryLogInfo(Messages.Transaction_Committed, this.id);
 
                 this.committed = true;
 
@@ -113,6 +114,7 @@ namespace MicroLite.Core
 
                 log.TryLogInfo(Messages.Transaction_RollingBack, this.id);
                 this.transaction.Rollback();
+                log.TryLogInfo(Messages.Transaction_RolledBack, this.id);
 
                 this.rolledBack = true;
 
