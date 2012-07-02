@@ -20,14 +20,6 @@ namespace MicroLite
     public interface ITransaction : IHideObjectMethods, IDisposable
     {
         /// <summary>
-        /// Gets a value indicating whether this <see cref="ITransaction"/> has been committed.
-        /// </summary>
-        bool Committed
-        {
-            get;
-        }
-
-        /// <summary>
         /// Gets a value indicating whether this <see cref="ITransaction"/> is active.
         /// </summary>
         bool IsActive
@@ -36,9 +28,17 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets a value indicating whether this <see cref="ITransaction"/> has been committed.
+        /// </summary>
+        bool WasCommitted
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets a value indicating whether this <see cref="ITransaction"/> has been rolled back.
         /// </summary>
-        bool RolledBack
+        bool WasRolledBack
         {
             get;
         }

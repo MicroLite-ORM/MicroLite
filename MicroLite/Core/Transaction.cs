@@ -14,7 +14,6 @@ namespace MicroLite.Core
 {
     using System;
     using System.Data;
-    using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
     /// <summary>
@@ -37,14 +36,6 @@ namespace MicroLite.Core
             this.transaction = transaction;
         }
 
-        public bool Committed
-        {
-            get
-            {
-                return this.committed;
-            }
-        }
-
         public bool IsActive
         {
             get
@@ -53,7 +44,15 @@ namespace MicroLite.Core
             }
         }
 
-        public bool RolledBack
+        public bool WasCommitted
+        {
+            get
+            {
+                return this.committed;
+            }
+        }
+
+        public bool WasRolledBack
         {
             get
             {

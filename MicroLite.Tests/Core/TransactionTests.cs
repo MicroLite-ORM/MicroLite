@@ -67,7 +67,7 @@
             var transaction = new Transaction(mockTransaction.Object);
             transaction.Commit();
 
-            Assert.IsTrue(transaction.Committed);
+            Assert.IsTrue(transaction.WasCommitted);
         }
 
         [Test]
@@ -123,7 +123,7 @@
         {
             var transaction = new Transaction(new Mock<IDbTransaction>().Object);
 
-            Assert.IsFalse(transaction.Committed);
+            Assert.IsFalse(transaction.WasCommitted);
         }
 
         [Test]
@@ -139,7 +139,7 @@
         {
             var transaction = new Transaction(new Mock<IDbTransaction>().Object);
 
-            Assert.IsFalse(transaction.RolledBack);
+            Assert.IsFalse(transaction.WasRolledBack);
         }
 
         /// <summary>
@@ -336,7 +336,7 @@
             var transaction = new Transaction(mockTransaction.Object);
             transaction.Rollback();
 
-            Assert.IsTrue(transaction.RolledBack);
+            Assert.IsTrue(transaction.WasRolledBack);
         }
 
         [Test]
