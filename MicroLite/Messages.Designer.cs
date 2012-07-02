@@ -178,15 +178,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type [{0}] has no property with an IdentifierAttribute specified..
-        /// </summary>
-        internal static string NoIdentifierFoundForType {
-            get {
-                return ResourceManager.GetString("NoIdentifierFoundForType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Creating a new instance of [{0}].
         /// </summary>
         internal static string ObjectBuilder_CreatingInstance {
@@ -223,20 +214,20 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mapping the [{0}] class to the [{1}] table.
-        /// </summary>
-        internal static string ObjectInfo_MappingClassToTable {
-            get {
-                return ResourceManager.GetString("ObjectInfo_MappingClassToTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mapping the [{0}].[{1}] property to the column [{2}].
+        ///   Looks up a localized string similar to Mapping the property [{0}].[{1}] to the column [{2}].
         /// </summary>
         internal static string ObjectInfo_MappingColumnToProperty {
             get {
                 return ResourceManager.GetString("ObjectInfo_MappingColumnToProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping the type [{0}] to the table [{1}].[{2}].
+        /// </summary>
+        internal static string ObjectInfo_MappingTypeToTable {
+            get {
+                return ResourceManager.GetString("ObjectInfo_MappingTypeToTable", resourceCulture);
             }
         }
         
@@ -273,15 +264,6 @@ namespace MicroLite {
         internal static string ObjectInfo_TypeMustNotBeAbstract {
             get {
                 return ResourceManager.GetString("ObjectInfo_TypeMustNotBeAbstract", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mapping the [{0}].[{1}] property as the identifier with the strategy [{2}].
-        /// </summary>
-        internal static string ObjectInfo_UsingPropertyAsIdentifier {
-            get {
-                return ResourceManager.GetString("ObjectInfo_UsingPropertyAsIdentifier", resourceCulture);
             }
         }
         

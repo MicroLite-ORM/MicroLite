@@ -14,7 +14,6 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
@@ -31,7 +30,7 @@ namespace MicroLite.Mapping
         private static IMappingConvention mappingConvention = new AttributeMappingConvention();
 
         // Key is the column name, value is the property info for the property.
-        private readonly IDictionary<string, PropertyInfo> columnProperties;
+        private readonly IDictionary<string, PropertyInfo> columnProperties = new Dictionary<string, PropertyInfo>();
 
         private readonly Type forType;
         private readonly TableInfo tableInfo;
@@ -54,9 +53,15 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("tableInfo");
             }
 
+            log.TryLogDebug(Messages.ObjectInfo_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             this.forType = forType;
             this.tableInfo = tableInfo;
-            this.columnProperties = this.tableInfo.Columns.ToDictionary(x => x.ColumnName, x => x.PropertyInfo);
+
+            foreach (var columnInfo in this.tableInfo.Columns)
+            {
+                log.TryLogDebug(Messages.ObjectInfo_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                this.columnProperties.Add(columnInfo.ColumnName, columnInfo.PropertyInfo);
+            }
 
             var identifierPropertyInfo = this.columnProperties[this.tableInfo.IdentifierColumn];
             if (identifierPropertyInfo.PropertyType.IsValueType)
