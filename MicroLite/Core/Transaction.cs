@@ -28,6 +28,7 @@ namespace MicroLite.Core
         private bool disposed;
         private bool failed;
         private bool rolledBack;
+        private IDbConnection connection;
         private IDbTransaction transaction;
 
         /// <summary>
@@ -37,8 +38,10 @@ namespace MicroLite.Core
         /// <remarks>This is to enable easier unit testing only, all production code should call Transaction.Begin().</remarks>
         internal Transaction(IDbTransaction transaction)
         {
-            log.TryLogDebug(Messages.Transaction_Created, this.id);
             this.transaction = transaction;
+            this.connection = transaction.Connection;
+
+            log.TryLogDebug(Messages.Transaction_Created, this.id);
         }
 
         public bool IsActive
@@ -71,15 +74,13 @@ namespace MicroLite.Core
 
             try
             {
-                var connection = this.transaction.Connection;
-
                 log.TryLogInfo(Messages.Transaction_Committing, this.id);
                 this.transaction.Commit();
                 log.TryLogInfo(Messages.Transaction_Committed, this.id);
 
                 this.committed = true;
 
-                connection.Close();
+                this.connection.Close();
             }
             catch (Exception e)
             {
@@ -114,15 +115,13 @@ namespace MicroLite.Core
 
             try
             {
-                var connection = this.transaction.Connection;
-
                 log.TryLogInfo(Messages.Transaction_RollingBack, this.id);
                 this.transaction.Rollback();
                 log.TryLogInfo(Messages.Transaction_RolledBack, this.id);
 
                 this.rolledBack = true;
 
-                connection.Close();
+                this.connection.Close();
             }
             catch (Exception e)
             {

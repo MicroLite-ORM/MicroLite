@@ -38,7 +38,11 @@
         public void BeginTransactionReturnsSameTransactionIfActive()
         {
             var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(new Mock<IDbTransaction>().Object);
+            var mockTransaction = new Mock<IDbTransaction>();
+
+            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
+
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
 
             var connectionManager = new ConnectionManager(mockConnection.Object);
 
@@ -72,7 +76,11 @@
         public void BeginTransactionWithIsolationLevelReturnsSameTransactionIfActive()
         {
             var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(new Mock<IDbTransaction>().Object);
+            var mockTransaction = new Mock<IDbTransaction>();
+
+            mockConnection.Setup(x => x.BeginTransaction(IsolationLevel.Chaos)).Returns(mockTransaction.Object);
+
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
 
             var connectionManager = new ConnectionManager(mockConnection.Object);
 
