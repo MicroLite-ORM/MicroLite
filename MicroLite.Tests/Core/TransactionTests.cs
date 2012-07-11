@@ -64,6 +64,25 @@
         }
 
         /// <summary>
+        /// Issue #58 - Calling RollBack if Committed successfully should throw an InvalidOperationException.
+        /// </summary>
+        [Test]
+        public void CallingRollBackIfCommittedShouldResultInInvalidOperationExceptionBeingThrown()
+        {
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.Close());
+
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Commit();
+
+            var exception = Assert.Throws<InvalidOperationException>(() => transaction.Rollback());
+            Assert.AreEqual(Messages.Transaction_Completed, exception.Message);
+        }
+
+        /// <summary>
         /// Issue #57 - Calling RollBack more than once should throw an InvalidOperationException.
         /// </summary>
         [Test]
