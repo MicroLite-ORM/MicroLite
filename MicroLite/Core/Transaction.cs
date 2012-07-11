@@ -95,7 +95,7 @@ namespace MicroLite.Core
         {
             if (!this.disposed)
             {
-                if (!this.committed && !this.rolledBack)
+                if (this.IsActive)
                 {
                     log.TryLogWarn(Messages.Transaction_DisposedUncommitted, this.id);
                     this.Rollback();
