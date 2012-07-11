@@ -367,6 +367,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transaction [{0}] has been completed.
+        /// </summary>
+        internal static string Transaction_Completed {
+            get {
+                return ResourceManager.GetString("Transaction_Completed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction [{0}] created.
         /// </summary>
         internal static string Transaction_Created {

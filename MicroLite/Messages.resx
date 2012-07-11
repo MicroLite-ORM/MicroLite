@@ -237,4 +237,7 @@
   <data name="Transaction_RolledBack" xml:space="preserve">
     <value>Transaction [{0}] rolled back changes</value>
   </data>
+  <data name="Transaction_Completed" xml:space="preserve">
+    <value>Transaction [{0}] has been completed</value>
+  </data>
 </root>

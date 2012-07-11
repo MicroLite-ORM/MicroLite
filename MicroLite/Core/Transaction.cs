@@ -25,10 +25,10 @@ namespace MicroLite.Core
         private static readonly ILog log = LogManager.GetLog("MicroLite.Transaction");
         private readonly string id = Guid.NewGuid().ToString();
         private bool committed;
+        private IDbConnection connection;
         private bool disposed;
         private bool failed;
         private bool rolledBack;
-        private IDbConnection connection;
         private IDbTransaction transaction;
 
         /// <summary>
@@ -71,6 +71,7 @@ namespace MicroLite.Core
         public void Commit()
         {
             this.ThrowIfDisposed();
+            this.ThrowIfNotActive();
 
             try
             {
@@ -164,6 +165,14 @@ namespace MicroLite.Core
             if (this.disposed)
             {
                 throw new ObjectDisposedException(this.GetType().Name);
+            }
+        }
+
+        private void ThrowIfNotActive()
+        {
+            if (!this.IsActive)
+            {
+                throw new InvalidOperationException(Messages.Transaction_Completed);
             }
         }
     }

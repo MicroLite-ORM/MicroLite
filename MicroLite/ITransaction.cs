@@ -46,6 +46,7 @@ namespace MicroLite
         /// <summary>
         /// Commits the transaction, applying all changes made within the transaction scope.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the transaction is not active.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error committing the transaction.</exception>
         void Commit();
 

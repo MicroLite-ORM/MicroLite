@@ -44,6 +44,25 @@
             mockConnection.VerifyAll();
         }
 
+        /// <summary>
+        /// Issue #56 - Calling Commit more than once should throw an InvalidOperationException.
+        /// </summary>
+        [Test]
+        public void CallingCommitTwiceShouldResultInInvalidOperationExceptionBeingThrown()
+        {
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.Close());
+
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
+
+            var transaction = new Transaction(mockTransaction.Object);
+            transaction.Commit();
+
+            var exception = Assert.Throws<InvalidOperationException>(() => transaction.Commit());
+            Assert.AreEqual(Messages.Transaction_Completed, exception.Message);
+        }
+
         [Test]
         public void CommitCallsDbConnectionClose()
         {
