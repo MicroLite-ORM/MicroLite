@@ -113,6 +113,7 @@ namespace MicroLite.Core
         public void Rollback()
         {
             this.ThrowIfDisposed();
+            this.ThrowIfRolledBack();
 
             try
             {
@@ -171,6 +172,14 @@ namespace MicroLite.Core
         private void ThrowIfNotActive()
         {
             if (!this.IsActive)
+            {
+                throw new InvalidOperationException(Messages.Transaction_Completed);
+            }
+        }
+
+        private void ThrowIfRolledBack()
+        {
+            if (this.rolledBack)
             {
                 throw new InvalidOperationException(Messages.Transaction_Completed);
             }
