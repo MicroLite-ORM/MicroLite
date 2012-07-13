@@ -144,24 +144,14 @@ namespace MicroLite.Core
 
             try
             {
-                int result;
-
                 using (var command = this.connectionManager.Build(sqlQuery))
                 {
-                    if (command.Connection.State == ConnectionState.Closed)
-                    {
-                        log.TryLogDebug(Messages.Session_OpeningConnection, this.id);
-                        command.Connection.Open();
-                    }
+                    this.OpenConnectionIfClosed(command);
 
                     log.TryLogInfo(sqlQuery.CommandText);
-                    result = command.ExecuteNonQuery();
+                    var result = command.ExecuteNonQuery();
 
-                    if (command.Transaction == null)
-                    {
-                        log.TryLogDebug(Messages.Session_ClosingConnection, this.id);
-                        command.Connection.Close();
-                    }
+                    this.CloseConnectionIfNotInTransaction(command);
 
                     return result;
                 }
@@ -184,24 +174,14 @@ namespace MicroLite.Core
 
             try
             {
-                T result;
-
                 using (var command = this.connectionManager.Build(sqlQuery))
                 {
-                    if (command.Connection.State == ConnectionState.Closed)
-                    {
-                        log.TryLogDebug(Messages.Session_OpeningConnection, this.id);
-                        command.Connection.Open();
-                    }
+                    this.OpenConnectionIfClosed(command);
 
                     log.TryLogInfo(sqlQuery.CommandText);
-                    result = (T)command.ExecuteScalar();
+                    var result = (T)command.ExecuteScalar();
 
-                    if (command.Transaction == null)
-                    {
-                        log.TryLogDebug(Messages.Session_ClosingConnection, this.id);
-                        command.Connection.Close();
-                    }
+                    this.CloseConnectionIfNotInTransaction(command);
 
                     return result;
                 }
@@ -264,9 +244,9 @@ namespace MicroLite.Core
                 throw new ArgumentOutOfRangeException("resultsPerPage", Messages.Session_MustHaveAtLeast1Result);
             }
 
-            var query = this.queryBuilder.Page(sqlQuery, page, resultsPerPage);
+            var pagedSqlQuery = this.queryBuilder.Page(sqlQuery, page, resultsPerPage);
 
-            var results = this.Query<T>(query).ToList();
+            var results = this.Query<T>(pagedSqlQuery).ToList();
 
             return new PagedResult<T>(page, results, resultsPerPage);
         }
@@ -319,11 +299,7 @@ namespace MicroLite.Core
 
                 try
                 {
-                    if (command.Connection.State == ConnectionState.Closed)
-                    {
-                        log.TryLogDebug(Messages.Session_OpeningConnection, this.id);
-                        command.Connection.Open();
-                    }
+                    this.OpenConnectionIfClosed(command);
 
                     log.TryLogInfo(command.CommandText);
                     reader = command.ExecuteReader();
@@ -357,17 +333,31 @@ namespace MicroLite.Core
 
                 try
                 {
-                    if (command.Transaction == null)
-                    {
-                        log.TryLogDebug(Messages.Session_ClosingConnection, this.id);
-                        command.Connection.Close();
-                    }
+                    this.CloseConnectionIfNotInTransaction(command);
                 }
                 catch (Exception e)
                 {
                     log.TryLogError(e.Message, e);
                     throw new MicroLiteException(e.Message, e);
                 }
+            }
+        }
+
+        private void CloseConnectionIfNotInTransaction(IDbCommand command)
+        {
+            if (command.Transaction == null)
+            {
+                log.TryLogDebug(Messages.Session_ClosingConnection, this.id);
+                command.Connection.Close();
+            }
+        }
+
+        private void OpenConnectionIfClosed(IDbCommand command)
+        {
+            if (command.Connection.State == ConnectionState.Closed)
+            {
+                log.TryLogDebug(Messages.Session_OpeningConnection, this.id);
+                command.Connection.Open();
             }
         }
 
