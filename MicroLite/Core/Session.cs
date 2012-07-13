@@ -315,6 +315,7 @@ namespace MicroLite.Core
             using (var command = this.connectionManager.Build(sqlQuery))
             {
                 IDataReader reader;
+                bool hasRow = false;
 
                 try
                 {
@@ -326,6 +327,7 @@ namespace MicroLite.Core
 
                     log.TryLogInfo(command.CommandText);
                     reader = command.ExecuteReader();
+                    hasRow = reader.Read();
                 }
                 catch (Exception e)
                 {
@@ -337,16 +339,34 @@ namespace MicroLite.Core
 
                 using (reader)
                 {
-                    while (reader.Read())
+                    while (hasRow)
                     {
                         yield return this.objectBuilder.BuildNewInstance<T>(objectInfo, reader);
+
+                        try
+                        {
+                            hasRow = reader.Read();
+                        }
+                        catch (Exception e)
+                        {
+                            log.TryLogError(e.Message, e);
+                            throw new MicroLiteException(e.Message, e);
+                        }
                     }
                 }
 
-                if (command.Transaction == null)
+                try
                 {
-                    log.TryLogDebug(Messages.Session_ClosingConnection, this.id);
-                    command.Connection.Close();
+                    if (command.Transaction == null)
+                    {
+                        log.TryLogDebug(Messages.Session_ClosingConnection, this.id);
+                        command.Connection.Close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    log.TryLogError(e.Message, e);
+                    throw new MicroLiteException(e.Message, e);
                 }
             }
         }

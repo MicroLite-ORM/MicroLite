@@ -957,6 +957,40 @@
             Assert.AreEqual("sqlQuery", exception.ParamName);
         }
 
+        /// <summary>
+        /// Issue #54 - If an exception is thrown by IDbReader.Read() it should be wrapped and thrown inside a MicroLiteException.
+        /// </summary>
+        [Test]
+        public void QueryThrowsMicroLiteExceptionIfDataReaderReadThrowsException()
+        {
+            var sqlQuery = new SqlQuery("");
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.Read()).Throws<InvalidOperationException>();
+            var reader = mockReader.Object;
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var exception = Assert.Throws<MicroLiteException>(() => session.Query<Customer>(sqlQuery).ToArray());
+
+            Assert.NotNull(exception.InnerException);
+            Assert.AreEqual(exception.InnerException.Message, exception.Message);
+
+            // Command should still be disposed.
+            mockCommand.VerifyAll();
+        }
+
         [Test]
         public void QueryThrowsMicroLiteExceptionIfExecuteReaderThrowsException()
         {
