@@ -104,6 +104,7 @@ namespace MicroLite.Core
 
                 this.transaction.Dispose();
                 this.transaction = null;
+                this.connection = null;
 
                 log.TryLogDebug(Messages.Transaction_Disposed, this.id);
                 this.disposed = true;
