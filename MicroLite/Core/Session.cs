@@ -294,7 +294,7 @@ namespace MicroLite.Core
 
             using (var command = this.connectionManager.Build(sqlQuery))
             {
-                IDataReader reader;
+                IDataReader reader = null;
                 bool hasRow = false;
 
                 try
@@ -307,6 +307,11 @@ namespace MicroLite.Core
                 }
                 catch (Exception e)
                 {
+                    if (reader != null)
+                    {
+                        reader.Close();
+                    }
+
                     log.TryLogError(e.Message, e);
                     throw new MicroLiteException(e.Message, e);
                 }

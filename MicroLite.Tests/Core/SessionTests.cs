@@ -959,6 +959,7 @@
 
         /// <summary>
         /// Issue #54 - If an exception is thrown by IDbReader.Read() it should be wrapped and thrown inside a MicroLiteException.
+        /// Issue #59 - IDbReader is not closed on error.
         /// </summary>
         [Test]
         public void QueryThrowsMicroLiteExceptionIfDataReaderReadThrowsException()
@@ -967,6 +968,7 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Throws<InvalidOperationException>();
+            mockReader.Setup(x => x.Close());
             var reader = mockReader.Object;
 
             var mockCommand = new Mock<IDbCommand>();
@@ -987,8 +989,11 @@
             Assert.NotNull(exception.InnerException);
             Assert.AreEqual(exception.InnerException.Message, exception.Message);
 
+            // DataReader should be closed if there is an exception.
+            mockReader.Verify(x => x.Close());
+
             // Command should still be disposed.
-            mockCommand.VerifyAll();
+            mockCommand.Verify(x => x.Dispose());
         }
 
         [Test]
@@ -1015,7 +1020,7 @@
             Assert.AreEqual(exception.InnerException.Message, exception.Message);
 
             // Command should still be disposed.
-            mockCommand.VerifyAll();
+            mockCommand.Verify(x => x.Dispose());
         }
 
         [Test]
