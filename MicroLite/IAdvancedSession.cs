@@ -24,13 +24,13 @@ namespace MicroLite
     public interface IAdvancedSession : IHideObjectMethods
     {
         /// <summary>
-        /// Deletes the database record for the type with the supplied identifier.
+        /// Deletes the database record for the type with the specified identifier.
         /// </summary>
         /// <param name="type">The type to delete.</param>
         /// <param name="identifier">The identifier of the record to delete.</param>
         /// <returns>true if the object was deleted successfully; otherwise false.</returns>
-        /// <exception cref="ObjectDisposedException">Thrown if session has been disposed.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if supplied type or identifier is null.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the specified type or identifier is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the delete command.</exception>
         bool Delete(Type type, object identifier);
 
@@ -39,19 +39,19 @@ namespace MicroLite
         /// </summary>
         /// <param name="sqlQuery">The SQL query to execute.</param>
         /// <returns>The number of rows affected by the sql query.</returns>
-        /// <exception cref="ObjectDisposedException">Thrown if session has been disposed.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if supplied SqlQuery is null.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the command.</exception>
         int Execute(SqlQuery sqlQuery);
 
         /// <summary>
-        /// Executes the supplied SQL query as a scalar command.
+        /// Executes the specified SQL query as a scalar command.
         /// </summary>
         /// <typeparam name="T">The type of result to be returned.</typeparam>
         /// <param name="sqlQuery">The SQL query to execute.</param>
         /// <returns>The result of the scalar query.</returns>
-        /// <exception cref="ObjectDisposedException">Thrown if session has been disposed.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if supplied SqlQuery is null.</exception>
+        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the command.</exception>
         T ExecuteScalar<T>(SqlQuery sqlQuery);
     }

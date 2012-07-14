@@ -44,22 +44,20 @@ namespace MicroLite.Core
 
         public ITransaction BeginTransaction()
         {
-            this.connection.Open();
-            var dbTransaction = this.connection.BeginTransaction();
-
-            this.currentTransaction = new Transaction(dbTransaction);
-            this.currentTransaction.Complete += this.CurrentTransaction_Complete;
+            if (this.currentTransaction == null || !this.currentTransaction.IsActive)
+            {
+                this.currentTransaction = Transaction.Begin(this.connection);
+            }
 
             return this.currentTransaction;
         }
 
         public ITransaction BeginTransaction(IsolationLevel isolationLevel)
         {
-            this.connection.Open();
-            var dbTransaction = this.connection.BeginTransaction(isolationLevel);
-
-            this.currentTransaction = new Transaction(dbTransaction);
-            this.currentTransaction.Complete += this.CurrentTransaction_Complete;
+            if (this.currentTransaction == null || !this.currentTransaction.IsActive)
+            {
+                this.currentTransaction = Transaction.Begin(this.connection, isolationLevel);
+            }
 
             return this.currentTransaction;
         }
@@ -142,12 +140,6 @@ namespace MicroLite.Core
             command.CommandType = sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
                 ? CommandType.StoredProcedure
                 : CommandType.Text;
-        }
-
-        private void CurrentTransaction_Complete(object sender, EventArgs e)
-        {
-            this.currentTransaction.Complete -= this.CurrentTransaction_Complete;
-            this.currentTransaction = null;
         }
     }
 }

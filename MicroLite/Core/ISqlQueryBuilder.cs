@@ -47,7 +47,7 @@ namespace MicroLite.Core
         /// <param name="sqlQuery">The SQL query.</param>
         /// <param name="page">The page number to get the results for.</param>
         /// <param name="resultsPerPage">The number of results to be shown per page.</param>
-        /// <returns>A <see cref="SqlQuery"/> to return the paged results of the supplied query.</returns>
+        /// <returns>A <see cref="SqlQuery"/> to return the paged results of the specified query.</returns>
         SqlQuery Page(SqlQuery sqlQuery, long page, long resultsPerPage);
 
         /// <summary>

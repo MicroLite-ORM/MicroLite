@@ -34,25 +34,23 @@ namespace MicroLite.Core
             for (int i = 0; i < reader.FieldCount; i++)
             {
                 var columnName = reader.GetName(i);
-
                 var propertyInfo = objectInfo.GetPropertyInfoForColumn(columnName);
 
-                if (propertyInfo != null)
-                {
-                    try
-                    {
-                        log.TryLogDebug(Messages.ObjectBuilder_SettingPropertyValue, objectInfo.ForType.Name, columnName);
-                        propertyInfo.SetValue(instance, reader[i]);
-                    }
-                    catch (Exception e)
-                    {
-                        log.TryLogFatal(e.Message, e);
-                        throw new MicroLiteException(e.Message, e);
-                    }
-                }
-                else
+                if (propertyInfo == null)
                 {
                     log.TryLogWarn(Messages.ObjectBuilder_UnknownProperty, objectInfo.ForType.Name, columnName);
+                    continue;
+                }
+
+                try
+                {
+                    log.TryLogDebug(Messages.ObjectBuilder_SettingPropertyValue, objectInfo.ForType.Name, columnName);
+                    propertyInfo.SetValue(instance, reader[i]);
+                }
+                catch (Exception e)
+                {
+                    log.TryLogFatal(e.Message, e);
+                    throw new MicroLiteException(e.Message, e);
                 }
             }
 

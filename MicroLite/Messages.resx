@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ConnectionManager_ArgumentsCountMismatch" xml:space="preserve">
-    <value>There are [{0}] parameters in the SQL statement, however only [{1}] parameter arguments were supplied.</value>
+    <value>There are [{0}] parameters in the SQL statement, however only [{1}] parameter arguments were specified.</value>
   </data>
   <data name="AssignedListener_IdentifierNotSetForInsert" xml:space="preserve">
     <value>The object does not have an identifier value set so it cannot be inserted</value>
   </data>
-  <data name="Configure_ConnectionNotFound" xml:space="preserve">
+  <data name="FluentConfiguration_ConnectionNotFound" xml:space="preserve">
     <value>No connection was found in the app.config with the name [{0}]</value>
   </data>
-  <data name="Configure_CreatingSessionFactory" xml:space="preserve">
+  <data name="FluentConfiguration_CreatingSessionFactory" xml:space="preserve">
     <value>Creating a session factory for connection named [{0}]</value>
   </data>
-  <data name="Configure_ProviderNotSupported" xml:space="preserve">
-    <value>The provider [{0}] is currently not supported by the MicroLite framework</value>
+  <data name="FluentConfiguration_ProviderNotSupported" xml:space="preserve">
+    <value>The provider [{0}] is currently not supported by the MicroLite ORM framework</value>
   </data>
-  <data name="Configure_ReadingConnection" xml:space="preserve">
+  <data name="FluentConfiguration_ReadingConnection" xml:space="preserve">
     <value>Reading connection named [{0}] from app.config</value>
   </data>
   <data name="IdentityListener_IdentifierSetForInsert" xml:space="preserve">
@@ -147,14 +147,11 @@
   <data name="Session_MustHaveAtLeast1Result" xml:space="preserve">
     <value>There must be at least 1 result per page</value>
   </data>
-  <data name="NoIdentifierFoundForType" xml:space="preserve">
-    <value>The type [{0}] has no property with an IdentifierAttribute specified.</value>
-  </data>
   <data name="ObjectBuilder_CreatingInstance" xml:space="preserve">
     <value>Creating a new instance of [{0}]</value>
   </data>
   <data name="ObjectBuilder_SettingPropertyValue" xml:space="preserve">
-    <value>Setting the property value for [{0}].[{1}]</value>
+    <value>Setting the property value of [{0}].[{1}]</value>
   </data>
   <data name="ObjectBuilder_UnknownProperty" xml:space="preserve">
     <value>The type [{0}] does not have a mapped property with the name [{1}]</value>
@@ -162,17 +159,14 @@
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
     <value>Creating ObjectInfo for [{0}]</value>
   </data>
-  <data name="ObjectInfo_MappingClassToTable" xml:space="preserve">
-    <value>Mapping the {0} class to the {1} table</value>
+  <data name="ObjectInfo_MappingTypeToTable" xml:space="preserve">
+    <value>Mapping the type [{0}] to the table [{1}].[{2}]</value>
   </data>
   <data name="ObjectInfo_MappingColumnToProperty" xml:space="preserve">
-    <value>Mapping the {0}.{1} property to the column {2}</value>
+    <value>Mapping the property [{0}].[{1}] to the column [{2}]</value>
   </data>
   <data name="ObjectInfo_RetrievingObjectInfo" xml:space="preserve">
     <value>Retrieving ObjectInfo for [{0}]</value>
-  </data>
-  <data name="ObjectInfo_UsingPropertyAsIdentifier" xml:space="preserve">
-    <value>Mapping the {0}.{1} property as the identifier with the strategy {2}</value>
   </data>
   <data name="Session_PagesStartAtOne" xml:space="preserve">
     <value>The first page which can be requested is page 1</value>
@@ -199,7 +193,7 @@
     <value>The type [{0}] is not decorated with a TableAttribute</value>
   </data>
   <data name="TableInfo_NoIdentifierColumn" xml:space="preserve">
-    <value>No ColumnInfo was supplied with IsIdentifier set to true</value>
+    <value>No ColumnInfo was specified with IsIdentifier set to true</value>
   </data>
   <data name="Transaction_Committing" xml:space="preserve">
     <value>Transaction [{0}] committing changes</value>
@@ -223,9 +217,27 @@
     <value>The type [{0}] is not a class and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>
   <data name="ObjectInfo_TypeMustHaveDefaultConstructor" xml:space="preserve">
-    <value>The type [{0}] has no default (zero parameter) constructor and therefore cannot be used by the MicroLite ORM Framework</value>
+    <value>The type [{0}] has no default (parameterless) constructor and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>
   <data name="ObjectInfo_TypeMustNotBeAbstract" xml:space="preserve">
     <value>The type [{0}] is abstract and therefore cannot be used by the MicroLite ORM Framework</value>
+  </data>
+  <data name="TableInfo_ColumnMappedMultipleTimes" xml:space="preserve">
+    <value>The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute.</value>
+  </data>
+  <data name="ConfigureExtensions_UsingLogger" xml:space="preserve">
+    <value>Using logger [{0}].</value>
+  </data>
+  <data name="ConfigureExtensions_UsingMappingConvention" xml:space="preserve">
+    <value>Using mapping convention [{0}]</value>
+  </data>
+  <data name="Transaction_Committed" xml:space="preserve">
+    <value>Transaction [{0}] committed changes</value>
+  </data>
+  <data name="Transaction_RolledBack" xml:space="preserve">
+    <value>Transaction [{0}] rolled back changes</value>
+  </data>
+  <data name="Transaction_Completed" xml:space="preserve">
+    <value>Transaction [{0}] has been completed</value>
   </data>
 </root>

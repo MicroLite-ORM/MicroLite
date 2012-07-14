@@ -14,7 +14,6 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
@@ -26,12 +25,12 @@ namespace MicroLite.Mapping
     public sealed class ObjectInfo
     {
         private static readonly object locker = new object();
-        private static readonly ILog log = LogManager.GetLog("ObjectInfo");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.ObjectInfo");
         private static readonly IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
         private static IMappingConvention mappingConvention = new AttributeMappingConvention();
 
         // Key is the column name, value is the property info for the property.
-        private readonly IDictionary<string, PropertyInfo> columnProperties;
+        private readonly IDictionary<string, PropertyInfo> columnProperties = new Dictionary<string, PropertyInfo>();
 
         private readonly Type forType;
         private readonly TableInfo tableInfo;
@@ -41,6 +40,7 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="forType">The type the object info relates to.</param>
         /// <param name="tableInfo">The table info.</param>
+        /// <exception cref="ArgumentNullException">Thrown if forType or tableInfo are null.</exception>
         public ObjectInfo(Type forType, TableInfo tableInfo)
         {
             if (forType == null)
@@ -53,9 +53,15 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("tableInfo");
             }
 
+            log.TryLogDebug(Messages.ObjectInfo_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             this.forType = forType;
             this.tableInfo = tableInfo;
-            this.columnProperties = this.tableInfo.Columns.ToDictionary(x => x.ColumnName, x => x.PropertyInfo);
+
+            foreach (var columnInfo in this.tableInfo.Columns)
+            {
+                log.TryLogDebug(Messages.ObjectInfo_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                this.columnProperties.Add(columnInfo.ColumnName, columnInfo.PropertyInfo);
+            }
 
             var identifierPropertyInfo = this.columnProperties[this.tableInfo.IdentifierColumn];
             if (identifierPropertyInfo.PropertyType.IsValueType)
@@ -113,6 +119,8 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="forType">The type to get the object info for.</param>
         /// <returns>The <see cref="ObjectInfo"/> for the specified <see cref="Type"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if forType is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the specified type cannot be used with MicroLite.</exception>
         public static ObjectInfo For(Type forType)
         {
             if (forType == null)
@@ -137,7 +145,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the property info for supplied column name.
+        /// Gets the property info for specified column name.
         /// </summary>
         /// <param name="columnName">Name of the column.</param>
         /// <returns>The <see cref="PropertyInfo"/> for the column, or null if it is not a mapped column.</returns>
@@ -152,7 +160,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Determines whether the supplied instance has the default identifier value.
+        /// Determines whether the specified instance has the default identifier value.
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns>

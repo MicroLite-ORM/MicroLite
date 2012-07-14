@@ -24,7 +24,7 @@ namespace MicroLite
         private int timeout = 30;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="SqlQuery"/> class with the supplied command text and parameter values.
+        /// Initialises a new instance of the <see cref="SqlQuery"/> class with the specified command text and parameter values.
         /// </summary>
         /// <param name="commandText">The SQL command text.</param>
         /// <param name="arguments">The parameter values for the query.</param>

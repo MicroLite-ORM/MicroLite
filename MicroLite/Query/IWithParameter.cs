@@ -18,7 +18,7 @@ namespace MicroLite.Query
     public interface IWithParameter : IToSqlQuery, IHideObjectMethods
     {
         /// <summary>
-        /// Specifies that the stored procedure should be executed the supplied parameter and argument.
+        /// Specifies that the stored procedure should be executed the specified parameter and argument.
         /// </summary>
         /// <param name="parameter">The parameter to be added.</param>
         /// <param name="arg">The argument value for the parameter.</param>
