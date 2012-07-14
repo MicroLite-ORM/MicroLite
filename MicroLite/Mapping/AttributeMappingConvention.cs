@@ -25,7 +25,7 @@ namespace MicroLite.Mapping
     /// </summary>
     internal sealed class AttributeMappingConvention : IMappingConvention
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.StrictAttributeMappingConvention");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.AttributeMappingConvention");
 
         public ObjectInfo CreateObjectInfo(Type forType)
         {
@@ -38,9 +38,8 @@ namespace MicroLite.Mapping
 
             if (tableAttribute == null)
             {
-                var message = Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName);
-                log.TryLogFatal(message);
-                throw new MicroLiteException(message);
+                log.TryLogFatal(Messages.AttributeMappingConvention_NoTableAttribute, forType.FullName);
+                throw new MicroLiteException(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName));
             }
 
             var identifierStrategy = MicroLite.Mapping.IdentifierStrategy.Identity;

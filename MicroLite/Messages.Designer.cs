@@ -88,47 +88,65 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Using logger [{0}]..
+        /// </summary>
+        internal static string ConfigureExtensions_UsingLogger {
+            get {
+                return ResourceManager.GetString("ConfigureExtensions_UsingLogger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using mapping convention [{0}].
+        /// </summary>
+        internal static string ConfigureExtensions_UsingMappingConvention {
+            get {
+                return ResourceManager.GetString("ConfigureExtensions_UsingMappingConvention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are [{0}] parameters in the SQL statement, however only [{1}] parameter arguments were specified..
+        /// </summary>
+        internal static string ConnectionManager_ArgumentsCountMismatch {
+            get {
+                return ResourceManager.GetString("ConnectionManager_ArgumentsCountMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No connection was found in the app.config with the name [{0}].
         /// </summary>
-        internal static string Configure_ConnectionNotFound {
+        internal static string FluentConfiguration_ConnectionNotFound {
             get {
-                return ResourceManager.GetString("Configure_ConnectionNotFound", resourceCulture);
+                return ResourceManager.GetString("FluentConfiguration_ConnectionNotFound", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Creating a session factory for connection named [{0}].
         /// </summary>
-        internal static string Configure_CreatingSessionFactory {
+        internal static string FluentConfiguration_CreatingSessionFactory {
             get {
-                return ResourceManager.GetString("Configure_CreatingSessionFactory", resourceCulture);
+                return ResourceManager.GetString("FluentConfiguration_CreatingSessionFactory", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The provider [{0}] is currently not supported by the MicroLite framework.
+        ///   Looks up a localized string similar to The provider [{0}] is currently not supported by the MicroLite ORM framework.
         /// </summary>
-        internal static string Configure_ProviderNotSupported {
+        internal static string FluentConfiguration_ProviderNotSupported {
             get {
-                return ResourceManager.GetString("Configure_ProviderNotSupported", resourceCulture);
+                return ResourceManager.GetString("FluentConfiguration_ProviderNotSupported", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Reading connection named [{0}] from app.config.
         /// </summary>
-        internal static string Configure_ReadingConnection {
+        internal static string FluentConfiguration_ReadingConnection {
             get {
-                return ResourceManager.GetString("Configure_ReadingConnection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There are [{0}] parameters in the SQL statement, however only [{1}] parameter arguments were supplied..
-        /// </summary>
-        internal static string ConnectionManager_ArgumentsCountMismatch {
-            get {
-                return ResourceManager.GetString("ConnectionManager_ArgumentsCountMismatch", resourceCulture);
+                return ResourceManager.GetString("FluentConfiguration_ReadingConnection", resourceCulture);
             }
         }
         
@@ -160,15 +178,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type [{0}] has no property with an IdentifierAttribute specified..
-        /// </summary>
-        internal static string NoIdentifierFoundForType {
-            get {
-                return ResourceManager.GetString("NoIdentifierFoundForType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Creating a new instance of [{0}].
         /// </summary>
         internal static string ObjectBuilder_CreatingInstance {
@@ -178,7 +187,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting the property value for [{0}].[{1}].
+        ///   Looks up a localized string similar to Setting the property value of [{0}].[{1}].
         /// </summary>
         internal static string ObjectBuilder_SettingPropertyValue {
             get {
@@ -205,20 +214,20 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mapping the {0} class to the {1} table.
-        /// </summary>
-        internal static string ObjectInfo_MappingClassToTable {
-            get {
-                return ResourceManager.GetString("ObjectInfo_MappingClassToTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mapping the {0}.{1} property to the column {2}.
+        ///   Looks up a localized string similar to Mapping the property [{0}].[{1}] to the column [{2}].
         /// </summary>
         internal static string ObjectInfo_MappingColumnToProperty {
             get {
                 return ResourceManager.GetString("ObjectInfo_MappingColumnToProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping the type [{0}] to the table [{1}].[{2}].
+        /// </summary>
+        internal static string ObjectInfo_MappingTypeToTable {
+            get {
+                return ResourceManager.GetString("ObjectInfo_MappingTypeToTable", resourceCulture);
             }
         }
         
@@ -241,7 +250,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type [{0}] has no default (zero parameter) constructor and therefore cannot be used by the MicroLite ORM Framework.
+        ///   Looks up a localized string similar to The type [{0}] has no default (parameterless) constructor and therefore cannot be used by the MicroLite ORM Framework.
         /// </summary>
         internal static string ObjectInfo_TypeMustHaveDefaultConstructor {
             get {
@@ -255,15 +264,6 @@ namespace MicroLite {
         internal static string ObjectInfo_TypeMustNotBeAbstract {
             get {
                 return ResourceManager.GetString("ObjectInfo_TypeMustNotBeAbstract", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mapping the {0}.{1} property as the identifier with the strategy {2}.
-        /// </summary>
-        internal static string ObjectInfo_UsingPropertyAsIdentifier {
-            get {
-                return ResourceManager.GetString("ObjectInfo_UsingPropertyAsIdentifier", resourceCulture);
             }
         }
         
@@ -331,11 +331,29 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No ColumnInfo was supplied with IsIdentifier set to true.
+        ///   Looks up a localized string similar to The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute..
+        /// </summary>
+        internal static string TableInfo_ColumnMappedMultipleTimes {
+            get {
+                return ResourceManager.GetString("TableInfo_ColumnMappedMultipleTimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No ColumnInfo was specified with IsIdentifier set to true.
         /// </summary>
         internal static string TableInfo_NoIdentifierColumn {
             get {
                 return ResourceManager.GetString("TableInfo_NoIdentifierColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction [{0}] committed changes.
+        /// </summary>
+        internal static string Transaction_Committed {
+            get {
+                return ResourceManager.GetString("Transaction_Committed", resourceCulture);
             }
         }
         
@@ -345,6 +363,15 @@ namespace MicroLite {
         internal static string Transaction_Committing {
             get {
                 return ResourceManager.GetString("Transaction_Committing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction [{0}] has been completed.
+        /// </summary>
+        internal static string Transaction_Completed {
+            get {
+                return ResourceManager.GetString("Transaction_Completed", resourceCulture);
             }
         }
         
@@ -381,6 +408,15 @@ namespace MicroLite {
         internal static string Transaction_EnlistingCommand {
             get {
                 return ResourceManager.GetString("Transaction_EnlistingCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction [{0}] rolled back changes.
+        /// </summary>
+        internal static string Transaction_RolledBack {
+            get {
+                return ResourceManager.GetString("Transaction_RolledBack", resourceCulture);
             }
         }
         

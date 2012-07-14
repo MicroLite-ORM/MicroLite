@@ -20,10 +20,10 @@ namespace MicroLite.Mapping
     public interface IMappingConvention
     {
         /// <summary>
-        /// Creates the object info for the supplied type.
+        /// Creates the object info for the specified type.
         /// </summary>
         /// <param name="forType">The type to create the object info for.</param>
-        /// <returns>The <see cref="ObjectInfo"/> for the supplied type.</returns>
+        /// <returns>The <see cref="ObjectInfo"/> for the specified type.</returns>
         ObjectInfo CreateObjectInfo(Type forType);
     }
 }

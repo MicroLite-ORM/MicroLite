@@ -35,6 +35,7 @@ namespace MicroLite.Mapping
         /// <param name="isIdentifier">A value indicating whether column is the table identifier column (primary key).</param>
         /// <param name="allowInsert">true if the column can be inserted, otherwise false.</param>
         /// <param name="allowUpdate">true if the column can be updated, otherwise false.</param>
+        /// <exception cref="ArgumentNullException">Thrown if columnName or propertyInfo are null.</exception>
         public ColumnInfo(
             string columnName,
             PropertyInfo propertyInfo,

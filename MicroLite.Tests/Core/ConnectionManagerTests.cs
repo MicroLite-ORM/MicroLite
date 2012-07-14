@@ -15,59 +15,79 @@
     public class ConnectionManagerTests
     {
         [Test]
-        public void BeginTransactionCallsConnectionBeginTransaction()
+        public void BeginTransactionReturnsNewTransactionIfActive()
         {
             var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(new Mock<IDbTransaction>().Object);
+            var mockTransaction = new Mock<IDbTransaction>();
+
+            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
+
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
 
             var connectionManager = new ConnectionManager(mockConnection.Object);
-            var transaction = connectionManager.BeginTransaction();
 
-            Assert.IsInstanceOf<Transaction>(transaction);
+            var transaction1 = connectionManager.BeginTransaction();
+            transaction1.Commit();
 
-            mockConnection.VerifyAll();
+            var transaction2 = connectionManager.BeginTransaction();
+
+            Assert.AreNotSame(transaction1, transaction2);
         }
 
         [Test]
-        public void BeginTransactionOpensConnection()
+        public void BeginTransactionReturnsSameTransactionIfActive()
         {
             var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.Open());
+            var mockTransaction = new Mock<IDbTransaction>();
+
+            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
+
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
 
             var connectionManager = new ConnectionManager(mockConnection.Object);
-            connectionManager.BeginTransaction();
 
-            mockConnection.VerifyAll();
+            var transaction1 = connectionManager.BeginTransaction();
+            var transaction2 = connectionManager.BeginTransaction();
+
+            Assert.AreSame(transaction1, transaction2);
         }
 
         [Test]
-        public void BeginTransactionWithIsolationLevelCallsConnectionBeginTransactionWithIsolationLevel()
+        public void BeginTransactionWithIsolationLevelReturnsNewTransactionIfActive()
         {
-            var isolationLevel = IsolationLevel.Chaos;
-
             var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.BeginTransaction(isolationLevel)).Returns(new Mock<IDbTransaction>().Object);
+            var mockTransaction = new Mock<IDbTransaction>();
+
+            mockConnection.Setup(x => x.BeginTransaction(IsolationLevel.Chaos)).Returns(mockTransaction.Object);
+
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
 
             var connectionManager = new ConnectionManager(mockConnection.Object);
-            var transaction = connectionManager.BeginTransaction(isolationLevel);
 
-            Assert.IsInstanceOf<Transaction>(transaction);
+            var transaction1 = connectionManager.BeginTransaction(IsolationLevel.Chaos);
+            transaction1.Commit();
 
-            mockConnection.VerifyAll();
+            var transaction2 = connectionManager.BeginTransaction(IsolationLevel.Chaos);
+
+            Assert.AreNotSame(transaction1, transaction2);
         }
 
         [Test]
-        public void BeginTransactionWithIsolationLevelOpensConnection()
+        public void BeginTransactionWithIsolationLevelReturnsSameTransactionIfActive()
         {
-            var isolationLevel = IsolationLevel.Chaos;
-
             var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.Open());
+            var mockTransaction = new Mock<IDbTransaction>();
+
+            mockConnection.Setup(x => x.BeginTransaction(IsolationLevel.Chaos)).Returns(mockTransaction.Object);
+
+            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
 
             var connectionManager = new ConnectionManager(mockConnection.Object);
-            connectionManager.BeginTransaction(isolationLevel);
 
-            mockConnection.VerifyAll();
+            var transaction1 = connectionManager.BeginTransaction(IsolationLevel.Chaos);
+            var transaction2 = connectionManager.BeginTransaction(IsolationLevel.Chaos);
+
+            Assert.AreSame(transaction1, transaction2);
         }
 
         [Test]
@@ -242,43 +262,9 @@
         }
 
         [Test]
-        public void CurrentTransactionReturnsNullIfNoTransactionActive()
+        public void CurrentTransactionReturnsNullIfNoTransactionStarted()
         {
             var connectionManager = new ConnectionManager(new Mock<IDbConnection>().Object);
-
-            Assert.IsNull(connectionManager.CurrentTransaction);
-        }
-
-        [Test]
-        public void CurrentTransactionReturnsNullOnceTransactionCommitted()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            var mockTransaction = new Mock<IDbTransaction>();
-
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
-
-            var connectionManager = new ConnectionManager(mockConnection.Object);
-            var transaction = connectionManager.BeginTransaction();
-            transaction.Commit();
-
-            Assert.IsNull(connectionManager.CurrentTransaction);
-        }
-
-        [Test]
-        public void CurrentTransactionReturnsNullOnceTransactionRolledback()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            var mockTransaction = new Mock<IDbTransaction>();
-
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
-
-            var connectionManager = new ConnectionManager(mockConnection.Object);
-            var transaction = connectionManager.BeginTransaction();
-            transaction.Rollback();
 
             Assert.IsNull(connectionManager.CurrentTransaction);
         }

@@ -46,6 +46,21 @@
         }
 
         [Test]
+        public void BeginTransactionThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            using (session)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => session.BeginTransaction());
+        }
+
+        [Test]
         public void BeginTransactionWithIsolationLevelCallsConnectionManagerBeginTransactionWithIsolationLevel()
         {
             var isolationLevel = IsolationLevel.Chaos;
@@ -61,6 +76,21 @@
             session.BeginTransaction(isolationLevel);
 
             mockConnectionManager.VerifyAll();
+        }
+
+        [Test]
+        public void BeginTransactionWithIsolationLevelThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            using (session)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => session.BeginTransaction(IsolationLevel.ReadCommitted));
         }
 
         [Test]
@@ -927,6 +957,45 @@
             Assert.AreEqual("sqlQuery", exception.ParamName);
         }
 
+        /// <summary>
+        /// Issue #54 - If an exception is thrown by IDbReader.Read() it should be wrapped and thrown inside a MicroLiteException.
+        /// Issue #59 - IDbReader is not closed on error.
+        /// </summary>
+        [Test]
+        public void QueryThrowsMicroLiteExceptionIfDataReaderReadThrowsException()
+        {
+            var sqlQuery = new SqlQuery("");
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.Read()).Throws<InvalidOperationException>();
+            mockReader.Setup(x => x.Close());
+            var reader = mockReader.Object;
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var exception = Assert.Throws<MicroLiteException>(() => session.Query<Customer>(sqlQuery).ToArray());
+
+            Assert.NotNull(exception.InnerException);
+            Assert.AreEqual(exception.InnerException.Message, exception.Message);
+
+            // DataReader should be closed if there is an exception.
+            mockReader.Verify(x => x.Close());
+
+            // Command should still be disposed.
+            mockCommand.Verify(x => x.Dispose());
+        }
+
         [Test]
         public void QueryThrowsMicroLiteExceptionIfExecuteReaderThrowsException()
         {
@@ -951,7 +1020,7 @@
             Assert.AreEqual(exception.InnerException.Message, exception.Message);
 
             // Command should still be disposed.
-            mockCommand.VerifyAll();
+            mockCommand.Verify(x => x.Dispose());
         }
 
         [Test]

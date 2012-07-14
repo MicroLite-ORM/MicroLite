@@ -47,11 +47,11 @@ namespace MicroLite.Logging
         }
 
         /// <summary>
-        /// Gets the log instance with the supplied name.
+        /// Gets the log instance with the specified name.
         /// </summary>
         /// <param name="name">The name of the log to get.</param>
         /// <returns>
-        /// The <see cref="ILog"/> for the supplied log name or null if LogManager.GetLogger nas not been set.
+        /// The <see cref="ILog"/> for the specified log name or null if LogManager.GetLogger nas not been set.
         /// </returns>
         internal static ILog GetLog(string name)
         {

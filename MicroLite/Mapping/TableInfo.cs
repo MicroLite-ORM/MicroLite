@@ -15,6 +15,8 @@ namespace MicroLite.Mapping
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using MicroLite.FrameworkExtensions;
+    using MicroLite.Logging;
 
     /// <summary>
     /// A class which contains information about a database table .
@@ -22,6 +24,8 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("{Schema}.{Name}")]
     public sealed class TableInfo
     {
+        private static readonly ILog log = LogManager.GetLog("MicroLite.TableInfo");
+
         private readonly ICollection<ColumnInfo> columns;
         private readonly string identifierColumn;
         private readonly IdentifierStrategy identifierStrategy;
@@ -35,6 +39,8 @@ namespace MicroLite.Mapping
         /// <param name="identifierStrategy">The identifier strategy used by the table.</param>
         /// <param name="name">The name of the table.</param>
         /// <param name="schema">The name of the schema the table exists within.</param>
+        /// <exception cref="ArgumentNullException">Thrown if columns, name or schema are null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if no identifier column is specified.</exception>
         public TableInfo(
             IEnumerable<ColumnInfo> columns,
             IdentifierStrategy identifierStrategy,
@@ -56,15 +62,10 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("schema");
             }
 
-            var identifierColumn = columns.SingleOrDefault(c => c.IsIdentifier);
-
-            if (identifierColumn == null)
-            {
-                throw new MicroLiteException(Messages.TableInfo_NoIdentifierColumn);
-            }
+            ValidateColumns(columns);
 
             this.columns = new List<ColumnInfo>(columns);
-            this.identifierColumn = identifierColumn.ColumnName;
+            this.identifierColumn = columns.Single(c => c.IsIdentifier).ColumnName;
             this.identifierStrategy = identifierStrategy;
             this.name = name;
             this.schema = schema;
@@ -122,6 +123,30 @@ namespace MicroLite.Mapping
             get
             {
                 return this.schema;
+            }
+        }
+
+        private static void ValidateColumns(IEnumerable<ColumnInfo> columns)
+        {
+            var duplicatedColumn = columns
+                .GroupBy(c => c.ColumnName)
+                .Select(x => new
+                {
+                    Key = x.Key,
+                    Count = x.Count()
+                })
+                .FirstOrDefault(x => x.Count > 1);
+
+            if (duplicatedColumn != null)
+            {
+                log.TryLogFatal(Messages.TableInfo_ColumnMappedMultipleTimes, duplicatedColumn.Key);
+                throw new MicroLiteException(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
+            }
+
+            if (!columns.Any(c => c.IsIdentifier))
+            {
+                log.TryLogFatal(Messages.TableInfo_NoIdentifierColumn);
+                throw new MicroLiteException(Messages.TableInfo_NoIdentifierColumn);
             }
         }
     }
