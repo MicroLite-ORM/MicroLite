@@ -26,9 +26,8 @@ namespace MicroLite.Core
         /// <typeparam name="T">The type of object to be built.</typeparam>
         /// <param name="objectInfo">The <see cref="ObjectInfo"/> for the type to be built.</param>
         /// <param name="reader">The <see cref="IDataReader"/> containing the values to populate the object with.</param>
-        /// <returns>
-        /// The new instance populated with the values from the <see cref="IDataReader"/>.
-        /// </returns>
+        /// <returns>The new instance populated with the values from the <see cref="IDataReader"/>.</returns>
+        /// <exception cref="MicroLiteException">Thrown if there is an exception setting a property value.</exception>
         T BuildNewInstance<T>(ObjectInfo objectInfo, IDataReader reader) where T : class, new();
     }
 }
