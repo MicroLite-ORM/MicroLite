@@ -265,6 +265,18 @@ namespace MicroLite.Core
             return this.Query<T>(sqlQuery).SingleOrDefault();
         }
 
+        public T Single<T>(SqlQuery sqlQuery) where T : class, new()
+        {
+            this.ThrowIfDisposed();
+
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            return this.Query<T>(sqlQuery).SingleOrDefault();
+        }
+
         public void Update(object instance)
         {
             this.ThrowIfDisposed();
