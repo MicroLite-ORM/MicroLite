@@ -28,6 +28,7 @@ namespace MicroLite.Core
         private IDbConnection connection;
         private bool disposed;
         private bool failed;
+        private IsolationLevel isolationLevel;
         private bool rolledBack;
         private IDbTransaction transaction;
 
@@ -40,6 +41,7 @@ namespace MicroLite.Core
         {
             this.transaction = transaction;
             this.connection = transaction.Connection;
+            this.isolationLevel = transaction.IsolationLevel;
 
             log.TryLogDebug(Messages.Transaction_Created, this.id);
         }
@@ -49,6 +51,14 @@ namespace MicroLite.Core
             get
             {
                 return !this.committed && !this.rolledBack && !this.failed;
+            }
+        }
+
+        public IsolationLevel IsolationLevel
+        {
+            get
+            {
+                return this.isolationLevel;
             }
         }
 
