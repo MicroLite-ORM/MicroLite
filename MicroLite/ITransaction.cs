@@ -13,6 +13,7 @@
 namespace MicroLite
 {
     using System;
+    using System.Data;
 
     /// <summary>
     /// The interface for a database transaction.
@@ -23,6 +24,14 @@ namespace MicroLite
         /// Gets a value indicating whether this <see cref="ITransaction"/> is active.
         /// </summary>
         bool IsActive
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the isolation level of the transaction.
+        /// </summary>
+        IsolationLevel IsolationLevel
         {
             get;
         }

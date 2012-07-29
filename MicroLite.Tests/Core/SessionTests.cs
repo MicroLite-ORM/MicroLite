@@ -17,7 +17,7 @@
     public class SessionTests
     {
         [Test]
-        public void AdvancedReturnsSameSessionByDifferentinterface()
+        public void AdvancedReturnsSameSessionByDifferentInterface()
         {
             var session = new Session(
                 new Mock<IConnectionManager>().Object,
@@ -1045,7 +1045,7 @@
         }
 
         [Test]
-        public void SingleExecutesAndReturnsNull()
+        public void SingleIdentifierExecutesAndReturnsNull()
         {
             var identifier = 100;
             var sqlQuery = new SqlQuery("");
@@ -1081,7 +1081,7 @@
         }
 
         [Test]
-        public void SingleExecutesAndReturnsResult()
+        public void SingleIdentifierExecutesAndReturnsResult()
         {
             var identifier = 100;
             var sqlQuery = new SqlQuery("");
@@ -1121,20 +1121,22 @@
         }
 
         [Test]
-        public void SingleThrowsArgumentNullExceptionForNullIdentifier()
+        public void SingleIdentifierThrowsArgumentNullExceptionForNullIdentifier()
         {
             var session = new Session(
                 new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlQueryBuilder>().Object);
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Single<Customer>(null));
+            object identifier = null;
+
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Single<Customer>(identifier));
 
             Assert.AreEqual("identifier", exception.ParamName);
         }
 
         [Test]
-        public void SingleThrowsObjectDisposedExceptionIfDisposed()
+        public void SingleIdentifierThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new Session(
                 new Mock<IConnectionManager>().Object,
@@ -1146,6 +1148,102 @@
             }
 
             Assert.Throws<ObjectDisposedException>(() => session.Single<Customer>(1));
+        }
+
+        [Test]
+        public void SingleSqlQuertExecutesAndReturnsResult()
+        {
+            var sqlQuery = new SqlQuery("");
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+            var reader = mockReader.Object;
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var mockObjectBuilder = new Mock<IObjectBuilder>();
+            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                mockObjectBuilder.Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var customer = session.Single<Customer>(sqlQuery);
+
+            Assert.NotNull(customer);
+
+            mockReader.VerifyAll();
+            mockCommand.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockObjectBuilder.VerifyAll();
+        }
+
+        [Test]
+        public void SingleSqlQueryExecutesAndReturnsNull()
+        {
+            var sqlQuery = new SqlQuery("");
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.Read()).Returns(false);
+            var reader = mockReader.Object;
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var customer = session.Single<Customer>(sqlQuery);
+
+            Assert.IsNull(customer);
+
+            mockReader.VerifyAll();
+            mockCommand.VerifyAll();
+            mockConnectionManager.VerifyAll();
+        }
+
+        [Test]
+        public void SingleSqlQueryThrowsArgumentNullExceptionForNullIdentifier()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            SqlQuery sqlQuery = null;
+
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Single<Customer>(sqlQuery));
+
+            Assert.AreEqual("sqlQuery", exception.ParamName);
+        }
+
+        [Test]
+        public void SingleSqlQueryThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            using (session)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => session.Single<Customer>(new SqlQuery("")));
         }
 
         [TestFixtureTearDown]
