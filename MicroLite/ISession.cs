@@ -108,6 +108,18 @@ namespace MicroLite
         T Single<T>(object identifier) where T : class, new();
 
         /// <summary>
+        /// Returns a single instance based upon the specified SQL query, or null if no results are returned.
+        /// </summary>
+        /// <typeparam name="T">The type of object.</typeparam>
+        /// <param name="sqlQuery">The SQL query to execute.</param>
+        /// <returns>An instance of the specified type or null if no matching record exists.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the specified instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Single", Justification = "It's used in loads of places by the linq extension methods as a method name.")]
+        T Single<T>(SqlQuery sqlQuery) where T : class, new();
+
+        /// <summary>
         /// Updates the database record for the specified instance with the current property values.
         /// </summary>
         /// <param name="instance">The instance to persist the values for.</param>

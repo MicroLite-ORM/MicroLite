@@ -314,6 +314,19 @@
         }
 
         [Test]
+        public void IsolationLevelReurnsTransactionIsolationLevel()
+        {
+            var mockDbTransaction = new Mock<IDbTransaction>();
+            mockDbTransaction.Setup(x => x.IsolationLevel).Returns(IsolationLevel.Chaos);
+
+            var dbTransaction = mockDbTransaction.Object;
+
+            var transaction = new Transaction(dbTransaction);
+
+            Assert.AreEqual(dbTransaction.IsolationLevel, transaction.IsolationLevel);
+        }
+
+        [Test]
         public void RollbackCallsDbConnectionClose()
         {
             var mockConnection = new Mock<IDbConnection>();
