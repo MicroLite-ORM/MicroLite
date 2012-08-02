@@ -62,13 +62,14 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("schema");
             }
 
-            ValidateColumns(columns);
-
-            this.columns = new List<ColumnInfo>(columns);
-            this.identifierColumn = columns.Single(c => c.IsIdentifier).ColumnName;
             this.identifierStrategy = identifierStrategy;
             this.name = name;
             this.schema = schema;
+
+            this.ValidateColumns(columns);
+
+            this.columns = new List<ColumnInfo>(columns);
+            this.identifierColumn = columns.Single(c => c.IsIdentifier).ColumnName;
         }
 
         /// <summary>
@@ -126,9 +127,9 @@ namespace MicroLite.Mapping
             }
         }
 
-        private static void ValidateColumns(IEnumerable<ColumnInfo> columns)
+        private void ValidateColumns(IEnumerable<ColumnInfo> mappedColumns)
         {
-            var duplicatedColumn = columns
+            var duplicatedColumn = mappedColumns
                 .GroupBy(c => c.ColumnName)
                 .Select(x => new
                 {
@@ -143,10 +144,10 @@ namespace MicroLite.Mapping
                 throw new MicroLiteException(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
             }
 
-            if (!columns.Any(c => c.IsIdentifier))
+            if (!mappedColumns.Any(c => c.IsIdentifier))
             {
-                log.TryLogFatal(Messages.TableInfo_NoIdentifierColumn);
-                throw new MicroLiteException(Messages.TableInfo_NoIdentifierColumn);
+                log.TryLogFatal(Messages.TableInfo_NoIdentifierColumn, this.schema, this.name);
+                throw new MicroLiteException(Messages.TableInfo_NoIdentifierColumn.FormatWith(this.schema, this.name));
             }
         }
     }

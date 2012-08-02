@@ -61,7 +61,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be inserted.
+        ///   Looks up a localized string similar to The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted..
         /// </summary>
         internal static string AssignedListener_IdentifierNotSetForInsert {
             get {
@@ -70,7 +70,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignoring [{0}].[{1}] as it has no ColumnAttribute.
+        ///   Looks up a localized string similar to The property [{0}].[{1}] will not be mapped by MicroLite as it has no ColumnAttribute.
         /// </summary>
         internal static string AttributeMappingConvention_IgnoringProperty {
             get {
@@ -79,7 +79,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type [{0}] is not decorated with a TableAttribute.
+        ///   Looks up a localized string similar to The type [{0}] cannot be used by MicroLite as is not decorated with a TableAttribute.
         /// </summary>
         internal static string AttributeMappingConvention_NoTableAttribute {
             get {
@@ -88,7 +88,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using logger [{0}]..
+        ///   Looks up a localized string similar to Using logger [{0}].
         /// </summary>
         internal static string ConfigureExtensions_UsingLogger {
             get {
@@ -106,7 +106,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are [{0}] parameters in the SQL statement, however only [{1}] parameter arguments were specified..
+        ///   Looks up a localized string similar to The number of parameters in the SQL statement and the number of specified parameter arguments should match. However [{0}] parameters used in the SQL statement and [{1}] parameter arguments were specified..
         /// </summary>
         internal static string ConnectionManager_ArgumentsCountMismatch {
             get {
@@ -196,7 +196,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type [{0}] does not have a mapped property with the name [{1}].
+        ///   Looks up a localized string similar to The results contain a column with the name [{1}], however the type [{0}] does not have a mapped property with the column name [{1}].
         /// </summary>
         internal static string ObjectBuilder_UnknownProperty {
             get {
@@ -205,7 +205,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating ObjectInfo for [{0}].
+        ///   Looks up a localized string similar to Creating the ObjectInfo for the type [{0}].
         /// </summary>
         internal static string ObjectInfo_CreatingObjectInfo {
             get {
@@ -232,7 +232,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Retrieving ObjectInfo for [{0}].
+        ///   Looks up a localized string similar to Retrieving the ObjectInfo for [{0}].
         /// </summary>
         internal static string ObjectInfo_RetrievingObjectInfo {
             get {
@@ -331,7 +331,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute..
+        ///   Looks up a localized string similar to The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute.
         /// </summary>
         internal static string TableInfo_ColumnMappedMultipleTimes {
             get {
@@ -340,7 +340,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No ColumnInfo was specified with IsIdentifier set to true.
+        ///   Looks up a localized string similar to No column has been mapped as the identifier for the table [{0}].[{1}].
         /// </summary>
         internal static string TableInfo_NoIdentifierColumn {
             get {

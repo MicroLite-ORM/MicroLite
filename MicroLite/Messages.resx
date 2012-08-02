@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ConnectionManager_ArgumentsCountMismatch" xml:space="preserve">
-    <value>There are [{0}] parameters in the SQL statement, however only [{1}] parameter arguments were specified.</value>
+    <value>The number of parameters in the SQL statement and the number of specified parameter arguments should match. However [{0}] parameters used in the SQL statement and [{1}] parameter arguments were specified.</value>
   </data>
   <data name="AssignedListener_IdentifierNotSetForInsert" xml:space="preserve">
-    <value>The object does not have an identifier value set so it cannot be inserted</value>
+    <value>The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted.</value>
   </data>
   <data name="FluentConfiguration_ConnectionNotFound" xml:space="preserve">
     <value>No connection was found in the app.config with the name [{0}]</value>
@@ -154,10 +154,10 @@
     <value>Setting the property value of [{0}].[{1}]</value>
   </data>
   <data name="ObjectBuilder_UnknownProperty" xml:space="preserve">
-    <value>The type [{0}] does not have a mapped property with the name [{1}]</value>
+    <value>The results contain a column with the name [{1}], however the type [{0}] does not have a mapped property with the column name [{1}]</value>
   </data>
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
-    <value>Creating ObjectInfo for [{0}]</value>
+    <value>Creating the ObjectInfo for the type [{0}]</value>
   </data>
   <data name="ObjectInfo_MappingTypeToTable" xml:space="preserve">
     <value>Mapping the type [{0}] to the table [{1}].[{2}]</value>
@@ -166,7 +166,7 @@
     <value>Mapping the property [{0}].[{1}] to the column [{2}]</value>
   </data>
   <data name="ObjectInfo_RetrievingObjectInfo" xml:space="preserve">
-    <value>Retrieving ObjectInfo for [{0}]</value>
+    <value>Retrieving the ObjectInfo for [{0}]</value>
   </data>
   <data name="Session_PagesStartAtOne" xml:space="preserve">
     <value>The first page which can be requested is page 1</value>
@@ -187,13 +187,13 @@
     <value>Session [{0}] opening database connection</value>
   </data>
   <data name="AttributeMappingConvention_IgnoringProperty" xml:space="preserve">
-    <value>Ignoring [{0}].[{1}] as it has no ColumnAttribute</value>
+    <value>The property [{0}].[{1}] will not be mapped by MicroLite as it has no ColumnAttribute</value>
   </data>
   <data name="AttributeMappingConvention_NoTableAttribute" xml:space="preserve">
-    <value>The type [{0}] is not decorated with a TableAttribute</value>
+    <value>The type [{0}] cannot be used by MicroLite as is not decorated with a TableAttribute</value>
   </data>
   <data name="TableInfo_NoIdentifierColumn" xml:space="preserve">
-    <value>No ColumnInfo was specified with IsIdentifier set to true</value>
+    <value>No column has been mapped as the identifier for the table [{0}].[{1}]</value>
   </data>
   <data name="Transaction_Committing" xml:space="preserve">
     <value>Transaction [{0}] committing changes</value>
@@ -223,10 +223,10 @@
     <value>The type [{0}] is abstract and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>
   <data name="TableInfo_ColumnMappedMultipleTimes" xml:space="preserve">
-    <value>The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute.</value>
+    <value>The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute</value>
   </data>
   <data name="ConfigureExtensions_UsingLogger" xml:space="preserve">
-    <value>Using logger [{0}].</value>
+    <value>Using logger [{0}]</value>
   </data>
   <data name="ConfigureExtensions_UsingMappingConvention" xml:space="preserve">
     <value>Using mapping convention [{0}]</value>
