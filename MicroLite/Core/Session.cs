@@ -25,7 +25,7 @@ namespace MicroLite.Core
     /// The default implementation of <see cref="ISession"/>.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("Session {id}")]
-    internal sealed class Session : ISession, IAdvancedSession
+    internal sealed class Session : ISession, IAdvancedSession, IIncludeSession
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.Session");
         private readonly IConnectionManager connectionManager;
@@ -48,6 +48,14 @@ namespace MicroLite.Core
         }
 
         public IAdvancedSession Advanced
+        {
+            get
+            {
+                return this;
+            }
+        }
+
+        public IIncludeSession Include
         {
             get
             {
@@ -225,6 +233,11 @@ namespace MicroLite.Core
             this.Listeners.Each(l => l.AfterInsert(instance, identifier));
         }
 
+        public IIncludeMany<T> Many<T>(SqlQuery sqlQuery) where T : class, new()
+        {
+            throw new NotImplementedException();
+        }
+
         public PagedResult<T> Paged<T>(SqlQuery sqlQuery, long page, long resultsPerPage) where T : class, new()
         {
             this.ThrowIfDisposed();
@@ -296,7 +309,17 @@ namespace MicroLite.Core
 
 #endif
 
-        public T Single<T>(object identifier) where T : class, new()
+        IInclude<T> IIncludeSession.Single<T>(object identifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        IInclude<T> IIncludeSession.Single<T>(SqlQuery sqlQuery)
+        {
+            throw new NotImplementedException();
+        }
+
+        T ISession.Single<T>(object identifier)
         {
             this.ThrowIfDisposed();
 
@@ -310,7 +333,7 @@ namespace MicroLite.Core
             return this.Query<T>(sqlQuery).SingleOrDefault();
         }
 
-        public T Single<T>(SqlQuery sqlQuery) where T : class, new()
+        T ISession.Single<T>(SqlQuery sqlQuery)
         {
             this.ThrowIfDisposed();
 

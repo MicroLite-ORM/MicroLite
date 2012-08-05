@@ -646,6 +646,19 @@
         }
 
         [Test]
+        public void IncludeReturnsSameSessionByDifferentInterface()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var includeSession = session.Include;
+
+            Assert.AreSame(session, includeSession);
+        }
+
+        [Test]
         public void InsertBuildsAndExecutesQuery()
         {
             var customer = new Customer();
@@ -1156,7 +1169,7 @@
             var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
             mockQueryBuilder.Setup(x => x.SelectQuery(typeof(Customer), identifier)).Returns(sqlQuery);
 
-            var session = new Session(
+            ISession session = new Session(
                 mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 mockQueryBuilder.Object);
@@ -1195,7 +1208,7 @@
             var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
             mockQueryBuilder.Setup(x => x.SelectQuery(typeof(Customer), identifier)).Returns(sqlQuery);
 
-            var session = new Session(
+            ISession session = new Session(
                 mockConnectionManager.Object,
                 mockObjectBuilder.Object,
                 mockQueryBuilder.Object);
@@ -1214,7 +1227,7 @@
         [Test]
         public void SingleIdentifierThrowsArgumentNullExceptionForNullIdentifier()
         {
-            var session = new Session(
+            ISession session = new Session(
                 new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlQueryBuilder>().Object);
@@ -1229,7 +1242,7 @@
         [Test]
         public void SingleIdentifierThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new Session(
+            ISession session = new Session(
                 new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlQueryBuilder>().Object);
@@ -1261,7 +1274,7 @@
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
-            var session = new Session(
+            ISession session = new Session(
                 mockConnectionManager.Object,
                 mockObjectBuilder.Object,
                 new Mock<ISqlQueryBuilder>().Object);
@@ -1293,7 +1306,7 @@
             var mockConnectionManager = new Mock<IConnectionManager>();
             mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
 
-            var session = new Session(
+            ISession session = new Session(
                 mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlQueryBuilder>().Object);
@@ -1310,7 +1323,7 @@
         [Test]
         public void SingleSqlQueryThrowsArgumentNullExceptionForNullIdentifier()
         {
-            var session = new Session(
+            ISession session = new Session(
                 new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlQueryBuilder>().Object);
@@ -1325,7 +1338,7 @@
         [Test]
         public void SingleSqlQueryThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new Session(
+            ISession session = new Session(
                 new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlQueryBuilder>().Object);
