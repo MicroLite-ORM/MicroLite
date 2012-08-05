@@ -13,6 +13,7 @@
 namespace MicroLite
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// The interface which provides access to advanced operations.
@@ -54,5 +55,19 @@ namespace MicroLite
         /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the command.</exception>
         T ExecuteScalar<T>(SqlQuery sqlQuery);
+
+#if !NET_3_5
+
+        /// <summary>
+        /// Executes the specified SQL query and returns the results as a list of dynamic objects.
+        /// </summary>
+        /// <param name="sqlQuery">The SQL query to execute.</param>
+        /// <returns>The results as a list of dynamic objects.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if there is an error executing the command.</exception>
+        IList<dynamic> Projection(SqlQuery sqlQuery);
+
+#endif
     }
 }

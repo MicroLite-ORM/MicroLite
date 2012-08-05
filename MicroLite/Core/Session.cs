@@ -251,6 +251,51 @@ namespace MicroLite.Core
             return new PagedResult<T>(page, results, resultsPerPage);
         }
 
+#if !NET_3_5
+
+        public IList<dynamic> Projection(SqlQuery sqlQuery)
+        {
+            this.ThrowIfDisposed();
+
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            try
+            {
+                using (var command = this.connectionManager.Build(sqlQuery))
+                {
+                    this.OpenConnectionIfClosed(command);
+
+                    log.TryLogInfo(sqlQuery.CommandText);
+
+                    var results = new List<dynamic>();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var expando = this.objectBuilder.BuildDynamic(reader);
+
+                            results.Add(expando);
+                        }
+                    }
+
+                    this.CloseConnectionIfNotInTransaction(command);
+
+                    return results;
+                }
+            }
+            catch (Exception e)
+            {
+                log.TryLogError(e.Message, e);
+                throw new MicroLiteException(e.Message, e);
+            }
+        }
+
+#endif
+
         public T Single<T>(object identifier) where T : class, new()
         {
             this.ThrowIfDisposed();
@@ -334,7 +379,7 @@ namespace MicroLite.Core
                 {
                     while (hasRow)
                     {
-                        yield return this.objectBuilder.BuildNewInstance<T>(objectInfo, reader);
+                        yield return this.objectBuilder.BuildInstance<T>(objectInfo, reader);
 
                         try
                         {

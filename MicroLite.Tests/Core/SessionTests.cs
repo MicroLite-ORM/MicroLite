@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Dynamic;
     using System.Linq;
     using MicroLite.Core;
     using MicroLite.Listeners;
@@ -599,7 +600,7 @@
             mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -789,7 +790,7 @@
             mockConnectionManager.Setup(x => x.Build(paged)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
             mockQueryBuilder.Setup(x => x.Page(sqlQuery, 10, 25)).Returns(paged);
@@ -870,6 +871,96 @@
         }
 
         [Test]
+        public void ProjectionExecutesAndReturnsResults()
+        {
+            var sqlQuery = new SqlQuery("");
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+            var reader = mockReader.Object;
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var mockObjectBuilder = new Mock<IObjectBuilder>();
+            mockObjectBuilder.Setup(x => x.BuildDynamic(reader)).Returns(new ExpandoObject());
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                mockObjectBuilder.Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var results = session.Projection(sqlQuery);
+
+            Assert.AreEqual(1, results.Count);
+
+            mockReader.VerifyAll();
+            mockCommand.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockObjectBuilder.VerifyAll();
+        }
+
+        [Test]
+        public void ProjectionThrowsArgumentNullExceptionForNullSqlQuery()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Projection(null));
+
+            Assert.AreEqual("sqlQuery", exception.ParamName);
+        }
+
+        [Test]
+        public void ProjectionThrowsMicroLiteExceptionIfExecuteReaderThrowsException()
+        {
+            var sqlQuery = new SqlQuery("");
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteReader()).Throws<InvalidOperationException>();
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            var exception = Assert.Throws<MicroLiteException>(() => session.Projection(sqlQuery));
+
+            Assert.NotNull(exception.InnerException);
+            Assert.AreEqual(exception.InnerException.Message, exception.Message);
+
+            // Command should still be disposed.
+            mockCommand.Verify(x => x.Dispose());
+        }
+
+        [Test]
+        public void ProjectionThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlQueryBuilder>().Object);
+
+            using (session)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => session.Projection(null));
+        }
+
+        [Test]
         public void QueryDoesNotOpenOrCloseConnectionWhenInTransaction()
         {
             var sqlQuery = new SqlQuery("");
@@ -893,7 +984,7 @@
             mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -927,7 +1018,7 @@
             mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -1099,7 +1190,7 @@
             mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockQueryBuilder = new Mock<ISqlQueryBuilder>();
             mockQueryBuilder.Setup(x => x.SelectQuery(typeof(Customer), identifier)).Returns(sqlQuery);
@@ -1168,7 +1259,7 @@
             mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildNewInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var session = new Session(
                 mockConnectionManager.Object,
