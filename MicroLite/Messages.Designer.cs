@@ -178,6 +178,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are multiple records returned in the results list.
+        /// </summary>
+        internal static string IncludeSingle_SingleResultExpected {
+            get {
+                return ResourceManager.GetString("IncludeSingle_SingleResultExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creating a new instance of [{0}].
         /// </summary>
         internal static string ObjectBuilder_CreatingInstance {

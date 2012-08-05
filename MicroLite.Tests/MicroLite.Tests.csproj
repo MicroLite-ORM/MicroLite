@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Configuration\FluentConfigurationTests.cs" />
     <Compile Include="Core\IncludeManyTests.cs" />
+    <Compile Include="Core\IncludeSingleTests.cs" />
     <Compile Include="Mapping\ColumnAttributeTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />

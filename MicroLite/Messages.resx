@@ -240,4 +240,7 @@
   <data name="Transaction_Completed" xml:space="preserve">
     <value>Transaction [{0}] has been completed</value>
   </data>
+  <data name="IncludeSingle_SingleResultExpected" xml:space="preserve">
+    <value>There are multiple records returned in the results list</value>
+  </data>
 </root>

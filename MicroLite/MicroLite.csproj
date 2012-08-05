@@ -53,6 +53,7 @@
     <Compile Include="Configuration\FluentConfiguration.cs" />
     <Compile Include="Core\Include.cs" />
     <Compile Include="Core\IncludeMany.cs" />
+    <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="IInclude.cs" />
     <Compile Include="IIncludeMany.cs" />
     <Compile Include="ISessionInclude.cs" />
