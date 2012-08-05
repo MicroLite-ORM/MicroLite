@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ISessionInclude.cs" company="MicroLite">
+// <copyright file="IIncludeSession.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ namespace MicroLite
     /// These operations allow for batch included values and have been moved to a separate interface to avoid
     /// cluttering the ISession API.
     /// </remarks>
-    public interface ISessionInclude : IHideObjectMethods
+    public interface IIncludeSession : IHideObjectMethods
     {
         /// <summary>
         /// Includes many instances based upon the specified SQL query.
