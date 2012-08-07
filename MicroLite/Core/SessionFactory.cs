@@ -13,6 +13,7 @@
 namespace MicroLite.Core
 {
     using System.Data;
+    using MicroLite.Dialect;
     using MicroLite.Logging;
 
     /// <summary>
@@ -51,7 +52,10 @@ namespace MicroLite.Core
             connection.ConnectionString = this.sessionFactoryOptions.ConnectionString;
 
             log.TryLogDebug(Messages.SessionFactory_CreatingSession);
-            return new Session(new ConnectionManager(connection), new ObjectBuilder(), new SqlQueryBuilder());
+            return new Session(
+                new ConnectionManager(connection),
+                new ObjectBuilder(),
+                SqlDialectFactory.GetDialect("MicroLite.Dialect.MsSqlDialect"));
         }
     }
 }

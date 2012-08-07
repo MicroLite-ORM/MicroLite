@@ -1,15 +1,15 @@
-﻿namespace MicroLite.Tests.Core
+﻿namespace MicroLite.Tests.Dialect
 {
     using System;
-    using MicroLite.Core;
+    using MicroLite.Dialect;
     using MicroLite.Mapping;
     using NUnit.Framework;
 
     /// <summary>
-    /// Unit Tests for the <see cref="SqlQueryBuilder"/> class.
+    /// Unit Tests for the <see cref="MsSqlDialect"/> class.
     /// </summary>
     [TestFixture]
-    public class SqlQueryBuilderTests
+    public class MsSqlDialectTests
     {
         private enum CustomerStatus
         {
@@ -25,9 +25,9 @@
                 Id = 122672
             };
 
-            var queryBuilder = new SqlQueryBuilder();
+            var sqlDialect = new MsSqlDialect();
 
-            var sqlQuery = queryBuilder.DeleteQuery(customer);
+            var sqlQuery = sqlDialect.DeleteQuery(customer);
 
             Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
@@ -38,9 +38,9 @@
         {
             object identifier = 239845763;
 
-            var queryBuilder = new SqlQueryBuilder();
+            var sqlDialect = new MsSqlDialect();
 
-            var sqlQuery = queryBuilder.DeleteQuery(typeof(CustomerWithIdentity), identifier);
+            var sqlQuery = sqlDialect.DeleteQuery(typeof(CustomerWithIdentity), identifier);
 
             Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
@@ -59,9 +59,9 @@
                 Status = CustomerStatus.Active
             };
 
-            var queryBuilder = new SqlQueryBuilder();
+            var sqlDialect = new MsSqlDialect();
 
-            var sqlQuery = queryBuilder.InsertQuery(customer);
+            var sqlQuery = sqlDialect.InsertQuery(customer);
 
             Assert.AreEqual("INSERT INTO [Marketing].[Customers] ([Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId]) VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
@@ -80,9 +80,9 @@
                 Status = CustomerStatus.Active
             };
 
-            var queryBuilder = new SqlQueryBuilder();
+            var sqlDialect = new MsSqlDialect();
 
-            var sqlQuery = queryBuilder.InsertQuery(customer);
+            var sqlQuery = sqlDialect.InsertQuery(customer);
 
             Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Customers].[Created], [Customers].[DoB], [Customers].[Name], [Customers].[StatusId]) VALUES (@p0, @p1, @p2, @p3)", sqlQuery.CommandText);
             Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
@@ -96,8 +96,8 @@
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
 
-            var queryBuilder = new SqlQueryBuilder();
-            var paged = queryBuilder.Page(sqlQuery, 1, 25);
+            var sqlDialect = new MsSqlDialect();
+            var paged = sqlDialect.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT CustomerId, Name, DoB, StatusId FROM (SELECT CustomerId, Name, DoB, StatusId, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
             Assert.AreEqual(paged.Arguments[0], 1);
@@ -109,8 +109,8 @@
         {
             var sqlQuery = new SqlQuery("SELECT * FROM Customers");
 
-            var queryBuilder = new SqlQueryBuilder();
-            var paged = queryBuilder.Page(sqlQuery, 1, 25);
+            var sqlDialect = new MsSqlDialect();
+            var paged = sqlDialect.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
             Assert.AreEqual(paged.Arguments[0], 1);
@@ -133,8 +133,8 @@
  [Customers].[Name] ASC,
  [Customers].[DoB] ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
 
-            var queryBuilder = new SqlQueryBuilder();
-            var paged = queryBuilder.Page(sqlQuery, 1, 25);
+            var sqlDialect = new MsSqlDialect();
+            var paged = sqlDialect.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC) AS RowNumber FROM [Sales].[Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
             Assert.AreEqual(paged.Arguments[0], sqlQuery.Arguments[0]);
@@ -148,8 +148,8 @@
         {
             var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [dbo].[Customers] ORDER BY [CustomerId] ASC");
 
-            var queryBuilder = new SqlQueryBuilder();
-            var paged = queryBuilder.Page(sqlQuery, 1, 25);
+            var sqlDialect = new MsSqlDialect();
+            var paged = sqlDialect.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM (SELECT [CustomerId], [Name], [DoB], [StatusId], ROW_NUMBER() OVER(ORDER BY [CustomerId] ASC) AS RowNumber FROM [dbo].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
             Assert.AreEqual(paged.Arguments[0], 1);
@@ -161,8 +161,8 @@
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]");
 
-            var queryBuilder = new SqlQueryBuilder();
-            var paged = queryBuilder.Page(sqlQuery, 1, 25);
+            var sqlDialect = new MsSqlDialect();
+            var paged = sqlDialect.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
             Assert.AreEqual(paged.Arguments[0], 1);
@@ -174,8 +174,8 @@
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]");
 
-            var queryBuilder = new SqlQueryBuilder();
-            var paged = queryBuilder.Page(sqlQuery, 2, 25);
+            var sqlDialect = new MsSqlDialect();
+            var paged = sqlDialect.Page(sqlQuery, 2, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
             Assert.AreEqual(paged.Arguments[0], 26);
@@ -187,8 +187,8 @@
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
 
-            var queryBuilder = new SqlQueryBuilder();
-            var paged = queryBuilder.Page(sqlQuery, 1, 25);
+            var sqlDialect = new MsSqlDialect();
+            var paged = sqlDialect.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
             Assert.AreEqual(paged.Arguments[0], sqlQuery.Arguments[0]);
@@ -211,8 +211,8 @@
  ORDER BY
  [Customers].[Name] ASC", new object[] { CustomerStatus.Active });
 
-            var queryBuilder = new SqlQueryBuilder();
-            var paged = queryBuilder.Page(sqlQuery, 1, 25);
+            var sqlDialect = new MsSqlDialect();
+            var paged = sqlDialect.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
             Assert.AreEqual(paged.Arguments[0], sqlQuery.Arguments[0]);
@@ -225,8 +225,8 @@
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", CustomerStatus.Active);
 
-            var queryBuilder = new SqlQueryBuilder();
-            var paged = queryBuilder.Page(sqlQuery, 1, 25);
+            var sqlDialect = new MsSqlDialect();
+            var paged = sqlDialect.Page(sqlQuery, 1, 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
             Assert.AreEqual(paged.Arguments[0], sqlQuery.Arguments[0]);
@@ -239,9 +239,9 @@
         {
             object identifier = 12345421;
 
-            var queryBuilder = new SqlQueryBuilder();
+            var sqlDialect = new MsSqlDialect();
 
-            var sqlQuery = queryBuilder.SelectQuery(typeof(CustomerWithIdentity), identifier);
+            var sqlQuery = sqlDialect.SelectQuery(typeof(CustomerWithIdentity), identifier);
 
             Assert.AreEqual("SELECT [Customers].[Created], [Customers].[DoB], [Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId], [Customers].[Updated] FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
@@ -259,9 +259,9 @@
                 Updated = DateTime.Now
             };
 
-            var queryBuilder = new SqlQueryBuilder();
+            var sqlDialect = new MsSqlDialect();
 
-            var sqlQuery = queryBuilder.UpdateQuery(customer);
+            var sqlQuery = sqlDialect.UpdateQuery(customer);
 
             Assert.AreEqual("UPDATE [Sales].[Customers] SET [Customers].[DoB] = @p0, [Customers].[Name] = @p1, [Customers].[StatusId] = @p2, [Customers].[Updated] = @p3 WHERE [Customers].[CustomerId] = @p4", sqlQuery.CommandText);
             Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);

@@ -243,4 +243,7 @@
   <data name="IncludeSingle_SingleResultExpected" xml:space="preserve">
     <value>There are multiple records returned in the results list</value>
   </data>
+  <data name="SqlDialectFactory_DialectNotSupported" xml:space="preserve">
+    <value>The sql dialect [{0}] is currently not supported by the MicroLite ORM framework</value>
+  </data>
 </root>

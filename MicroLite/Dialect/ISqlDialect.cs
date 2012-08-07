@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ISqlQueryBuilder.cs" company="MicroLite">
+// <copyright file="ISqlDialect.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Core
+namespace MicroLite.Dialect
 {
     using System;
 
     /// <summary>
     /// The interface for a class which builds an <see cref="SqlQuery"/> for a object instance.
     /// </summary>
-    internal interface ISqlQueryBuilder
+    internal interface ISqlDialect
     {
         /// <summary>
         /// Creates a SqlQuery to perform a delete for the given instance.

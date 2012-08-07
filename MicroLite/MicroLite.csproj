@@ -54,6 +54,7 @@
     <Compile Include="Core\Include.cs" />
     <Compile Include="Core\IncludeMany.cs" />
     <Compile Include="Core\IncludeSingle.cs" />
+    <Compile Include="Dialect\SqlDialectFactory.cs" />
     <Compile Include="IInclude.cs" />
     <Compile Include="IIncludeMany.cs" />
     <Compile Include="IIncludeSession.cs" />
@@ -79,7 +80,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IObjectBuilder.cs" />
-    <Compile Include="Core\ISqlQueryBuilder.cs" />
+    <Compile Include="Dialect\ISqlDialect.cs" />
     <Compile Include="FrameworkExtensions\MemberInfoExtensions.cs" />
     <Compile Include="Core\ObjectBuilder.cs" />
     <Compile Include="FrameworkExtensions\PropertyInfoExtensions.cs" />
@@ -87,7 +88,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\SessionFactory.cs" />
-    <Compile Include="Core\SqlQueryBuilder.cs" />
+    <Compile Include="Dialect\MsSqlDialect.cs" />
     <Compile Include="FrameworkExtensions\StringExtensions.cs" />
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="Listeners\ListenerCollection.cs" />

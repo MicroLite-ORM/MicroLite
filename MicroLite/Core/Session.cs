@@ -16,6 +16,7 @@ namespace MicroLite.Core
     using System.Collections.Generic;
     using System.Data;
     using System.Linq;
+    using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Logging;
@@ -31,18 +32,18 @@ namespace MicroLite.Core
         private readonly IConnectionManager connectionManager;
         private readonly string id = Guid.NewGuid().ToString();
         private readonly IObjectBuilder objectBuilder;
-        private readonly ISqlQueryBuilder queryBuilder;
+        private readonly ISqlDialect sqlDialect;
         private bool disposed;
         private IEnumerable<IListener> listeners;
 
         internal Session(
             IConnectionManager connectionManager,
             IObjectBuilder objectBuilder,
-            ISqlQueryBuilder queryBuilder)
+            ISqlDialect sqlDialect)
         {
             this.connectionManager = connectionManager;
             this.objectBuilder = objectBuilder;
-            this.queryBuilder = queryBuilder;
+            this.sqlDialect = sqlDialect;
 
             log.TryLogDebug(Messages.Session_Created, this.id);
         }
@@ -104,7 +105,7 @@ namespace MicroLite.Core
 
             this.Listeners.Each(l => l.BeforeDelete(instance));
 
-            var sqlQuery = this.queryBuilder.DeleteQuery(instance);
+            var sqlQuery = this.sqlDialect.DeleteQuery(instance);
 
             this.Listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
 
@@ -125,7 +126,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("identifier");
             }
 
-            var sqlQuery = this.queryBuilder.DeleteQuery(type, identifier);
+            var sqlQuery = this.sqlDialect.DeleteQuery(type, identifier);
 
             return this.Execute(sqlQuery) == 1;
         }
@@ -224,7 +225,7 @@ namespace MicroLite.Core
 
             this.Listeners.Each(l => l.BeforeInsert(instance));
 
-            var sqlQuery = this.queryBuilder.InsertQuery(instance);
+            var sqlQuery = this.sqlDialect.InsertQuery(instance);
 
             this.Listeners.Each(l => l.BeforeInsert(instance, sqlQuery));
 
@@ -257,7 +258,7 @@ namespace MicroLite.Core
                 throw new ArgumentOutOfRangeException("resultsPerPage", Messages.Session_MustHaveAtLeast1Result);
             }
 
-            var pagedSqlQuery = this.queryBuilder.Page(sqlQuery, page, resultsPerPage);
+            var pagedSqlQuery = this.sqlDialect.Page(sqlQuery, page, resultsPerPage);
 
             var results = this.Query<T>(pagedSqlQuery).ToList();
 
@@ -328,7 +329,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("identifier");
             }
 
-            var sqlQuery = this.queryBuilder.SelectQuery(typeof(T), identifier);
+            var sqlQuery = this.sqlDialect.SelectQuery(typeof(T), identifier);
 
             return this.Query<T>(sqlQuery).SingleOrDefault();
         }
@@ -356,7 +357,7 @@ namespace MicroLite.Core
 
             this.Listeners.Each(l => l.BeforeUpdate(instance));
 
-            var sqlQuery = this.queryBuilder.UpdateQuery(instance);
+            var sqlQuery = this.sqlDialect.UpdateQuery(instance);
 
             this.Listeners.Each(l => l.BeforeUpdate(instance, sqlQuery));
 

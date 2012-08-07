@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SqlQueryBuilder.cs" company="MicroLite">
+// <copyright file="MsSqlDialect.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,7 +10,7 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Core
+namespace MicroLite.Dialect
 {
     using System;
     using System.Collections.Generic;
@@ -22,9 +22,9 @@ namespace MicroLite.Core
     using MicroLite.Mapping;
 
     /// <summary>
-    /// The implementation of <see cref="ISqlQueryBuilder"/> for MsSql server.
+    /// The implementation of <see cref="ISqlDialect"/> for MsSql server.
     /// </summary>
-    internal sealed class SqlQueryBuilder : ISqlQueryBuilder
+    internal sealed class MsSqlDialect : ISqlDialect
     {
         private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly Regex selectRegex = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
@@ -33,7 +33,11 @@ namespace MicroLite.Core
         private readonly string defaultTableSchema = "dbo";
         private readonly string parameterPrefix = "@";
 
-        internal SqlQueryBuilder()
+        /// <summary>
+        /// Initialises a new instance of the <see cref="MsSqlDialect"/> class.
+        /// </summary>
+        /// <remarks>Constructor needs to be public so that it can be instantiated by SqlDialectFactory.</remarks>
+        public MsSqlDialect()
         {
         }
 

@@ -340,6 +340,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The sql dialect [{0}] is currently not supported by the MicroLite ORM framework.
+        /// </summary>
+        internal static string SqlDialectFactory_DialectNotSupported {
+            get {
+                return ResourceManager.GetString("SqlDialectFactory_DialectNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute.
         /// </summary>
         internal static string TableInfo_ColumnMappedMultipleTimes {

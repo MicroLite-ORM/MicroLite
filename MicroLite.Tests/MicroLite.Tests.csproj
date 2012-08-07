@@ -52,6 +52,7 @@
     <Compile Include="Configuration\FluentConfigurationTests.cs" />
     <Compile Include="Core\IncludeManyTests.cs" />
     <Compile Include="Core\IncludeSingleTests.cs" />
+    <Compile Include="Dialect\SqlDialectFactoryTests.cs" />
     <Compile Include="Mapping\ColumnAttributeTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
@@ -62,7 +63,7 @@
     <Compile Include="Core\ObjectBuilderTests.cs" />
     <Compile Include="Core\SessionFactoryTests.cs" />
     <Compile Include="Core\SessionTests.cs" />
-    <Compile Include="Core\SqlQueryBuilderTests.cs" />
+    <Compile Include="Dialect\MsSqlDialectTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
     <Compile Include="Listeners\ListenerCollectionTests.cs" />
     <Compile Include="Mapping\ColumnInfoTests.cs" />
