@@ -62,19 +62,6 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Selects all mapped columns from the table the specified type maps to.
-        /// </summary>
-        /// <param name="forType">The type to select the columns for.</param>
-        /// <returns>The next step in the fluent sql builder.</returns>
-        public static IWhereOrOrderBy SelectFrom(Type forType)
-        {
-            var objectInfo = ObjectInfo.For(forType);
-
-            return Select(objectInfo.TableInfo.Columns.Select(c => c.ColumnName).ToArray())
-                .From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name);
-        }
-
-        /// <summary>
         /// Adds a predicate as an AND to the where clause of the query.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
@@ -97,6 +84,27 @@ namespace MicroLite.Query
             this.innerSql.AppendLine(" FROM " + table);
 
             return this;
+        }
+
+        /// <summary>
+        /// Specifies the type to perform the query against.
+        /// </summary>
+        /// <param name="forType">The type of object the query relates to.</param>
+        /// <returns>
+        /// The next step in the fluent sql builder.
+        /// </returns>
+        public IWhereOrOrderBy From(Type forType)
+        {
+            var objectInfo = ObjectInfo.For(forType);
+
+            IFrom select = this;
+
+            if (this.innerSql.ToString().StartsWith("SELECT *", StringComparison.Ordinal))
+            {
+                select = Select(objectInfo.TableInfo.Columns.Select(c => c.ColumnName).ToArray());
+            }
+
+            return select.From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name);
         }
 
         /// <summary>

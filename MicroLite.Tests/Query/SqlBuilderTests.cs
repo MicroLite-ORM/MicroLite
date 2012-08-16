@@ -28,17 +28,6 @@
         }
 
         [Test]
-        public void SelectFrom()
-        {
-            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
-                .From("Table")
-                .ToSqlQuery();
-
-            CollectionAssert.IsEmpty(sqlQuery.Arguments);
-            Assert.AreEqual("SELECT Column1, Column2\r\n FROM Table", sqlQuery.CommandText);
-        }
-
-        [Test]
         public void SelectFromOrderByAscending()
         {
             var sqlQuery = SqlBuilder.Select("Column1", "Column2")
@@ -63,9 +52,44 @@
         }
 
         [Test]
-        public void SelectFromType()
+        public void SelectFromSpecifyingColumnsAndTableName()
         {
-            var sqlQuery = SqlBuilder.SelectFrom(typeof(Customer)).ToSqlQuery();
+            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
+                .From("Table")
+                .ToSqlQuery();
+
+            CollectionAssert.IsEmpty(sqlQuery.Arguments);
+            Assert.AreEqual("SELECT Column1, Column2\r\n FROM Table", sqlQuery.CommandText);
+        }
+
+        [Test]
+        public void SelectFromSpecifyingColumnsAndType()
+        {
+            var sqlQuery = SqlBuilder.Select("Name", "DoB")
+                .From(typeof(Customer))
+                .ToSqlQuery();
+
+            CollectionAssert.IsEmpty(sqlQuery.Arguments);
+            Assert.AreEqual("SELECT Name, DoB\r\n FROM Sales.Customers", sqlQuery.CommandText);
+        }
+
+        [Test]
+        public void SelectFromSpecifyingWildcardAndTableName()
+        {
+            var sqlQuery = SqlBuilder.Select("*")
+                .From("Table")
+                .ToSqlQuery();
+
+            CollectionAssert.IsEmpty(sqlQuery.Arguments);
+            Assert.AreEqual("SELECT *\r\n FROM Table", sqlQuery.CommandText);
+        }
+
+        [Test]
+        public void SelectFromSpecifyingWildcardAndType()
+        {
+            var sqlQuery = SqlBuilder.Select("*")
+                .From(typeof(Customer))
+                .ToSqlQuery();
 
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
             Assert.AreEqual("SELECT DoB, CustomerId, Name\r\n FROM Sales.Customers", sqlQuery.CommandText);

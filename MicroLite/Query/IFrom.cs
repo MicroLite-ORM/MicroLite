@@ -12,6 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Query
 {
+    using System;
+
     /// <summary>
     /// The interface which specifies the from method in the fluent sql builder syntax.
     /// </summary>
@@ -23,5 +25,13 @@ namespace MicroLite.Query
         /// <param name="table">The name of the table.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         IWhereOrOrderBy From(string table);
+
+        /// <summary>
+        /// Specifies the type to perform the query against.
+        /// </summary>
+        /// <param name="forType">The type of object the query relates to.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <remarks>Results in all columns being named if the select list is 'SELECT *'.</remarks>
+        IWhereOrOrderBy From(Type forType);
     }
 }
