@@ -30,7 +30,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the include operations.
+        /// Gets the operations which allow additional objects to be queried in a single database call.
         /// </summary>
         IIncludeSession Include
         {
