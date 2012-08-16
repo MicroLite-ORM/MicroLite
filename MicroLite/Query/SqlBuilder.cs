@@ -23,7 +23,7 @@ namespace MicroLite.Query
     /// <summary>
     /// A helper class for creating a dynamic <see cref="SqlQuery"/>.
     /// </summary>
-    public sealed class SqlBuilder : IFrom, IWhereOrOrderBy, IAndOrOrderBy, IOrderBy, IToSqlQuery, IWithParameter
+    public sealed class SqlBuilder : IFrom, IFunction, IWhereOrOrderBy, IAndOrOrderBy, IOrderBy, IToSqlQuery, IWithParameter
     {
         private static readonly Regex parameterRegex = new Regex(@"(@p\d)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private readonly List<object> arguments = new List<object>();
@@ -31,7 +31,7 @@ namespace MicroLite.Query
 
         private SqlBuilder(string startingSql)
         {
-            if (startingSql.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase))
+            if (startingSql.StartsWith("SELECT ", StringComparison.OrdinalIgnoreCase))
             {
                 this.innerSql.AppendLine(startingSql);
             }
@@ -52,7 +52,16 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Selects the specified columns.
+        /// Creates a new query which calls an Sql function.
+        /// </summary>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public static IFunction Select()
+        {
+            return new SqlBuilder("SELECT");
+        }
+
+        /// <summary>
+        /// Creates a new query which selects the specified columns.
         /// </summary>
         /// <param name="columns">The columns to be included in the query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
@@ -72,6 +81,22 @@ namespace MicroLite.Query
             this.AppendPredicate(" AND ({0})", predicate, args);
 
             return this;
+        }
+
+        /// <summary>
+        /// Specifies the type of object to count records for which match the specified filter.
+        /// </summary>
+        /// <param name="forType">The type of object the query relates to.</param>
+        /// <returns>
+        /// The next step in the fluent sql builder.
+        /// </returns>
+        public IWhereOrOrderBy Count(Type forType)
+        {
+            var objectInfo = ObjectInfo.For(forType);
+
+            this.innerSql.AppendLine(" COUNT(" + objectInfo.TableInfo.IdentifierColumn + ")");
+
+            return this.From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name);
         }
 
         /// <summary>

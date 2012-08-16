@@ -28,6 +28,17 @@
         }
 
         [Test]
+        public void SelectCount()
+        {
+            var sqlQuery = SqlBuilder.Select()
+                .Count(typeof(Customer))
+                .ToSqlQuery();
+
+            CollectionAssert.IsEmpty(sqlQuery.Arguments);
+            Assert.AreEqual("SELECT COUNT(CustomerId)\r\n FROM Sales.Customers", sqlQuery.CommandText);
+        }
+
+        [Test]
         public void SelectFromOrderByAscending()
         {
             var sqlQuery = SqlBuilder.Select("Column1", "Column2")
