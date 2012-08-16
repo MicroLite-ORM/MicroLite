@@ -45,5 +45,14 @@ namespace MicroLite.Core
             get;
             set;
         }
+
+        /// <summary>
+        /// Gets or sets the sql dialect for the connection.
+        /// </summary>
+        internal string SqlDialect
+        {
+            get;
+            set;
+        }
     }
 }

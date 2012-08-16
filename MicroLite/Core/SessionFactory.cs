@@ -55,7 +55,7 @@ namespace MicroLite.Core
             return new Session(
                 new ConnectionManager(connection),
                 new ObjectBuilder(),
-                SqlDialectFactory.GetDialect("MicroLite.Dialect.MsSqlDialect"));
+                SqlDialectFactory.GetDialect(this.sessionFactoryOptions.SqlDialect));
         }
     }
 }
