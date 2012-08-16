@@ -24,14 +24,13 @@ namespace MicroLite.Dialect
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for MsSql server.
     /// </summary>
-    internal sealed class MsSqlDialect : ISqlDialect
+    internal sealed class MsSqlDialect : SqlDialect
     {
         private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly Regex selectRegex = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly Regex tableNameRegex = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private readonly string defaultTableSchema = "dbo";
-        private readonly string parameterPrefix = "@";
 
         /// <summary>
         /// Initialises a new instance of the <see cref="MsSqlDialect"/> class.
@@ -41,21 +40,7 @@ namespace MicroLite.Dialect
         {
         }
 
-        public SqlQuery DeleteQuery(object instance)
-        {
-            var forType = instance.GetType();
-
-            var objectInfo = ObjectInfo.For(forType);
-
-            var identifierPropertyInfo =
-                objectInfo.GetPropertyInfoForColumn(objectInfo.TableInfo.IdentifierColumn);
-
-            var identifierValue = identifierPropertyInfo.GetValue(instance);
-
-            return this.DeleteQuery(forType, identifierValue);
-        }
-
-        public SqlQuery DeleteQuery(Type type, object identifier)
+        public override SqlQuery DeleteQuery(Type type, object identifier)
         {
             var objectInfo = ObjectInfo.For(type);
 
@@ -69,7 +54,7 @@ namespace MicroLite.Dialect
             return new SqlQuery(sqlBuilder.ToString(), new[] { identifier });
         }
 
-        public SqlQuery InsertQuery(object instance)
+        public override SqlQuery InsertQuery(object instance)
         {
             var objectInfo = ObjectInfo.For(instance.GetType());
 
@@ -104,7 +89,7 @@ namespace MicroLite.Dialect
             return new SqlQuery(sqlBuilder.ToString(), values.ToArray());
         }
 
-        public SqlQuery Page(SqlQuery sqlQuery, long page, long resultsPerPage)
+        public override SqlQuery Page(SqlQuery sqlQuery, long page, long resultsPerPage)
         {
             long fromRowNumber = ((page - 1) * resultsPerPage) + 1;
             long toRowNumber = (fromRowNumber - 1) + resultsPerPage;
@@ -134,7 +119,7 @@ namespace MicroLite.Dialect
             return new SqlQuery(sqlBuilder.ToString(), parameters.ToArray());
         }
 
-        public SqlQuery SelectQuery(Type forType, object identifier)
+        public override SqlQuery SelectQuery(Type forType, object identifier)
         {
             var objectInfo = ObjectInfo.For(forType);
 
@@ -149,7 +134,7 @@ namespace MicroLite.Dialect
             return new SqlQuery(sqlBuilder.ToString(), new[] { identifier });
         }
 
-        public SqlQuery UpdateQuery(object instance)
+        public override SqlQuery UpdateQuery(object instance)
         {
             var objectInfo = ObjectInfo.For(instance.GetType());
 
@@ -264,7 +249,7 @@ namespace MicroLite.Dialect
 
         private string FormatParameter(int parameterPosition)
         {
-            return this.parameterPrefix + "p" + parameterPosition.ToString(CultureInfo.InvariantCulture);
+            return "@p" + parameterPosition.ToString(CultureInfo.InvariantCulture);
         }
     }
 }
