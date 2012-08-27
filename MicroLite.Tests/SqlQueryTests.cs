@@ -8,6 +8,14 @@
     public class SqlQueryTests
     {
         [Test]
+        public void ConstructorSetsArgumentsToEmptyListIfNoneSpecified()
+        {
+            var sqlQuery = new SqlQuery(string.Empty);
+
+            Assert.NotNull(sqlQuery.Arguments);
+        }
+
+        [Test]
         public void ConstructorSetsProperties()
         {
             var commandText = "SELECT * FROM Table WHERE Id = @p0";
