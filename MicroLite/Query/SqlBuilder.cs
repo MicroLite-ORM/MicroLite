@@ -42,6 +42,34 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Combines the specified SQL queries into a single SqlQuery.
+        /// </summary>
+        /// <param name="sqlQueries">The SQL queries to be combined.</param>
+        /// <returns>The combined <see cref="SqlQuery" />.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if sqlQueries is null.</exception>
+        public static SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
+        {
+            if (sqlQueries == null)
+            {
+                throw new ArgumentNullException("sqlQueries");
+            }
+
+            int argumentsCount = 0;
+            var sqlBuilder = new StringBuilder();
+
+            foreach (var sqlQuery in sqlQueries)
+            {
+                argumentsCount += sqlQuery.Arguments.Count;
+
+                var sql = ReNumberParameters(sqlQuery.CommandText, argumentsCount);
+
+                sqlBuilder.AppendLine(sql + ";");
+            }
+
+            return new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
+        }
+
+        /// <summary>
         /// Species the name of the specified procedure to be executed.
         /// </summary>
         /// <param name="procedure">The name of the stored procedure.</param>
@@ -205,24 +233,42 @@ namespace MicroLite.Query
             return this;
         }
 
+        /// <summary>
+        /// Re-numbers the parameters in the SQL based upon the total number of arguments.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <param name="argumentsCount">The number of arguments.</param>
+        /// <returns>The re-numbered SQL</returns>
+        private static string ReNumberParameters(string sql, int argumentsCount)
+        {
+            var argsAdded = 0;
+
+            var predicateReWriter = new StringBuilder(sql);
+
+            var parameterNames = new HashSet<string>(parameterRegex.Matches(sql).Cast<Match>().Select(x => x.Value));
+
+            if (parameterNames.Count > 0)
+            {
+                var parameterPrefix = parameterNames.First().Substring(0, 2);
+
+                foreach (var parameterName in parameterNames.OrderByDescending(n => n))
+                {
+                    var newParameterName = parameterPrefix + (argumentsCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
+
+                    predicateReWriter.Replace(parameterName, newParameterName);
+                }
+            }
+
+            return predicateReWriter.ToString();
+        }
+
         private void AppendPredicate(string appendFormat, string predicate, params object[] args)
         {
             this.arguments.AddRange(args);
 
-            var argsAdded = 0;
+            var renumberedPredicate = ReNumberParameters(predicate, this.arguments.Count);
 
-            var predicateReWriter = new StringBuilder(predicate);
-
-            var parameterNames = new HashSet<string>(parameterRegex.Matches(predicate).Cast<Match>().Select(x => x.Value));
-
-            foreach (var parameterName in parameterNames.OrderByDescending(n => n))
-            {
-                var newParameterName = "@p" + (this.arguments.Count - ++argsAdded).ToString(CultureInfo.InvariantCulture);
-
-                predicateReWriter.Replace(parameterName, newParameterName);
-            }
-
-            this.innerSql.AppendFormat(appendFormat, predicateReWriter.ToString());
+            this.innerSql.AppendFormat(appendFormat, renumberedPredicate);
             this.innerSql.AppendLine();
         }
     }
