@@ -24,11 +24,11 @@ namespace MicroLite.Core
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.Transaction");
         private readonly string id = Guid.NewGuid().ToString();
+        private readonly IsolationLevel isolationLevel;
         private bool committed;
         private IDbConnection connection;
         private bool disposed;
         private bool failed;
-        private IsolationLevel isolationLevel;
         private bool rolledBack;
         private IDbTransaction transaction;
 

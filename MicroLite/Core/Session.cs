@@ -30,12 +30,12 @@ namespace MicroLite.Core
         private static readonly ILog log = LogManager.GetLog("MicroLite.Session");
         private readonly IConnectionManager connectionManager;
         private readonly string id = Guid.NewGuid().ToString();
+        private readonly Queue<Include> includes = new Queue<Include>();
         private readonly IObjectBuilder objectBuilder;
+        private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
         private readonly ISqlDialect sqlDialect;
         private bool disposed;
-        private Queue<Include> includes = new Queue<Include>();
         private IEnumerable<IListener> listeners;
-        private Queue<SqlQuery> queries = new Queue<SqlQuery>();
 
         internal Session(
             IConnectionManager connectionManager,
