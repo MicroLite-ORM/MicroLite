@@ -51,7 +51,10 @@ namespace MicroLite
                 sqlBuilder.AppendLine(sql + ";");
             }
 
-            return new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
+            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
+            combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
+
+            return combinedQuery;
         }
 
         /// <summary>

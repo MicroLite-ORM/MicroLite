@@ -29,6 +29,19 @@
         }
 
         [Test]
+        public void CombineShouldSetTimeoutToLongestTimeout()
+        {
+            var sqlQuery1 = new SqlQuery(string.Empty);
+            var sqlQuery2 = new SqlQuery(string.Empty);
+
+            sqlQuery1.Timeout = 42;
+
+            var sqlQuery = SqlUtil.Combine(new[] { sqlQuery1, sqlQuery2 });
+
+            Assert.AreEqual(sqlQuery1.Timeout, sqlQuery.Timeout);
+        }
+
+        [Test]
         public void CombineThrowsArgumentNullException()
         {
             var exception = Assert.Throws<ArgumentNullException>(() => SqlUtil.Combine(null));
