@@ -130,6 +130,7 @@
     <Compile Include="Query\SqlBuilder.cs" />
     <Compile Include="SqlQuery.cs" />
     <Compile Include="Mapping\TableAttribute.cs" />
+    <Compile Include="SqlUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">
