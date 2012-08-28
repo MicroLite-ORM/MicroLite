@@ -20,7 +20,6 @@ namespace MicroLite.Core
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Logging;
-    using MicroLite.Mapping;
 
     /// <summary>
     /// The default implementation of <see cref="ISession"/>.
@@ -34,7 +33,9 @@ namespace MicroLite.Core
         private readonly IObjectBuilder objectBuilder;
         private readonly ISqlDialect sqlDialect;
         private bool disposed;
+        private Queue<Include> includes = new Queue<Include>();
         private IEnumerable<IListener> listeners;
+        private Queue<SqlQuery> queries = new Queue<SqlQuery>();
 
         internal Session(
             IConnectionManager connectionManager,
@@ -78,6 +79,55 @@ namespace MicroLite.Core
             {
                 return this.listeners ?? (this.listeners = Listener.Listeners.ToArray());
             }
+        }
+
+        IInclude<T> IIncludeSession.Single<T>(object identifier)
+        {
+            this.ThrowIfDisposed();
+
+            if (identifier == null)
+            {
+                throw new ArgumentNullException("identifier");
+            }
+
+            var sqlQuery = this.sqlDialect.SelectQuery(typeof(T), identifier);
+
+            return this.Include.Single<T>(sqlQuery);
+        }
+
+        IInclude<T> IIncludeSession.Single<T>(SqlQuery sqlQuery)
+        {
+            this.ThrowIfDisposed();
+
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            var include = new IncludeSingle<T>();
+
+            this.includes.Enqueue(include);
+            this.queries.Enqueue(sqlQuery);
+
+            return include;
+        }
+
+        T ISession.Single<T>(object identifier)
+        {
+            var include = this.Include.Single<T>(identifier);
+
+            this.ExecuteAllQueries();
+
+            return include.Value;
+        }
+
+        T ISession.Single<T>(SqlQuery sqlQuery)
+        {
+            var include = this.Include.Single<T>(sqlQuery);
+
+            this.ExecuteAllQueries();
+
+            return include.Value;
         }
 
         public ITransaction BeginTransaction()
@@ -204,14 +254,11 @@ namespace MicroLite.Core
 
         public IList<T> Fetch<T>(SqlQuery sqlQuery) where T : class, new()
         {
-            this.ThrowIfDisposed();
+            var include = this.Include.Many<T>(sqlQuery);
 
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
+            this.ExecuteAllQueries();
 
-            return this.Query<T>(sqlQuery).ToList();
+            return include.Values;
         }
 
         public void Insert(object instance)
@@ -236,7 +283,19 @@ namespace MicroLite.Core
 
         public IIncludeMany<T> Many<T>(SqlQuery sqlQuery) where T : class, new()
         {
-            throw new NotImplementedException();
+            this.ThrowIfDisposed();
+
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            var include = new IncludeMany<T>();
+
+            this.includes.Enqueue(include);
+            this.queries.Enqueue(sqlQuery);
+
+            return include;
         }
 
         public PagedResult<T> Paged<T>(SqlQuery sqlQuery, long page, long resultsPerPage) where T : class, new()
@@ -260,9 +319,11 @@ namespace MicroLite.Core
 
             var pagedSqlQuery = this.sqlDialect.Page(sqlQuery, page, resultsPerPage);
 
-            var results = this.Query<T>(pagedSqlQuery).ToList();
+            var include = this.Include.Many<T>(pagedSqlQuery);
 
-            return new PagedResult<T>(page, results, resultsPerPage);
+            this.ExecuteAllQueries();
+
+            return new PagedResult<T>(page, include.Values, resultsPerPage);
         }
 
 #if !NET_3_5
@@ -310,42 +371,6 @@ namespace MicroLite.Core
 
 #endif
 
-        IInclude<T> IIncludeSession.Single<T>(object identifier)
-        {
-            throw new NotImplementedException();
-        }
-
-        IInclude<T> IIncludeSession.Single<T>(SqlQuery sqlQuery)
-        {
-            throw new NotImplementedException();
-        }
-
-        T ISession.Single<T>(object identifier)
-        {
-            this.ThrowIfDisposed();
-
-            if (identifier == null)
-            {
-                throw new ArgumentNullException("identifier");
-            }
-
-            var sqlQuery = this.sqlDialect.SelectQuery(typeof(T), identifier);
-
-            return this.Query<T>(sqlQuery).SingleOrDefault();
-        }
-
-        T ISession.Single<T>(SqlQuery sqlQuery)
-        {
-            this.ThrowIfDisposed();
-
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            return this.Query<T>(sqlQuery).SingleOrDefault();
-        }
-
         public void Update(object instance)
         {
             this.ThrowIfDisposed();
@@ -364,77 +389,57 @@ namespace MicroLite.Core
             this.Execute(sqlQuery);
         }
 
-        internal IEnumerable<T> Query<T>(SqlQuery sqlQuery) where T : class, new()
-        {
-            this.ThrowIfDisposed();
-
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            using (var command = this.connectionManager.Build(sqlQuery))
-            {
-                IDataReader reader = null;
-                bool hasRow = false;
-
-                try
-                {
-                    this.OpenConnectionIfClosed(command);
-
-                    log.TryLogInfo(command.CommandText);
-                    reader = command.ExecuteReader();
-                    hasRow = reader.Read();
-                }
-                catch (Exception e)
-                {
-                    if (reader != null)
-                    {
-                        reader.Close();
-                    }
-
-                    log.TryLogError(e.Message, e);
-                    throw new MicroLiteException(e.Message, e);
-                }
-
-                var objectInfo = ObjectInfo.For(typeof(T));
-
-                using (reader)
-                {
-                    while (hasRow)
-                    {
-                        yield return this.objectBuilder.BuildInstance<T>(objectInfo, reader);
-
-                        try
-                        {
-                            hasRow = reader.Read();
-                        }
-                        catch (Exception e)
-                        {
-                            log.TryLogError(e.Message, e);
-                            throw new MicroLiteException(e.Message, e);
-                        }
-                    }
-                }
-
-                try
-                {
-                    this.CloseConnectionIfNotInTransaction(command);
-                }
-                catch (Exception e)
-                {
-                    log.TryLogError(e.Message, e);
-                    throw new MicroLiteException(e.Message, e);
-                }
-            }
-        }
-
         private void CloseConnectionIfNotInTransaction(IDbCommand command)
         {
             if (command.Transaction == null)
             {
                 log.TryLogDebug(Messages.Session_ClosingConnection, this.id);
                 command.Connection.Close();
+            }
+        }
+
+        private void ExecuteAllQueries()
+        {
+            try
+            {
+                var sqlQuery = SqlUtil.Combine(this.queries);
+
+                using (var command = this.connectionManager.Build(sqlQuery))
+                {
+                    try
+                    {
+                        this.OpenConnectionIfClosed(command);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            do
+                            {
+                                var include = this.includes.Dequeue();
+                                include.BuildValue(reader, this.objectBuilder);
+                            }
+                            while (reader.NextResult());
+                        }
+                    }
+                    finally
+                    {
+                        this.CloseConnectionIfNotInTransaction(command);
+                    }
+                }
+            }
+            catch (MicroLiteException)
+            {
+                // Don't re-wrap MicroLite exceptions
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.TryLogError(e.Message, e);
+                throw new MicroLiteException(e.Message, e);
+            }
+            finally
+            {
+                this.includes.Clear();
+                this.queries.Clear();
             }
         }
 

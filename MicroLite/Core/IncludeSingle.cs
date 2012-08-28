@@ -33,15 +33,16 @@ namespace MicroLite.Core
 
         internal override void BuildValue(IDataReader reader, IObjectBuilder objectBuilder)
         {
-            reader.Read();
-
-            var objectInfo = ObjectInfo.For(typeof(T));
-
-            this.value = objectBuilder.BuildInstance<T>(objectInfo, reader);
-
             if (reader.Read())
             {
-                throw new MicroLiteException(Messages.IncludeSingle_SingleResultExpected);
+                var objectInfo = ObjectInfo.For(typeof(T));
+
+                this.value = objectBuilder.BuildInstance<T>(objectInfo, reader);
+
+                if (reader.Read())
+                {
+                    throw new MicroLiteException(Messages.IncludeSingle_SingleResultExpected);
+                }
             }
         }
     }

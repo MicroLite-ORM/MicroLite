@@ -37,9 +37,16 @@
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(false);
 
+            var reader = mockReader.Object;
+
+            var mockObjectBuilder = new Mock<IObjectBuilder>();
+            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader));
+
             var include = new IncludeSingle<Customer>();
 
-            include.BuildValue(mockReader.Object, new Mock<IObjectBuilder>().Object);
+            include.BuildValue(reader, mockObjectBuilder.Object);
+
+            mockObjectBuilder.Verify(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader), Times.Never(), "If the first call to IDataReader.Read() returns false, we should not try and create an object.");
 
             Assert.IsNull(include.Value);
         }
