@@ -294,7 +294,7 @@
                 set;
             }
 
-            [MicroLite.Mapping.Column("Id")]
+            [MicroLite.Mapping.Column("InvoiceId")]
             [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Identity)]
             public int Id
             {

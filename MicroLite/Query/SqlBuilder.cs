@@ -21,7 +21,7 @@ namespace MicroLite.Query
     /// <summary>
     /// A helper class for creating a dynamic <see cref="SqlQuery" />.
     /// </summary>
-    public sealed class SqlBuilder : IFrom, IFunction, IWhereOrOrderBy, IAndOrOrderBy, IOrderBy, IToSqlQuery, IWithParameter
+    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IOrderBy, IToSqlQuery, IWithParameter
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder();
@@ -49,21 +49,17 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Creates a new query which calls an Sql function.
-        /// </summary>
-        /// <returns>The next step in the fluent sql builder.</returns>
-        public static IFunction Select()
-        {
-            return new SqlBuilder("SELECT");
-        }
-
-        /// <summary>
         /// Creates a new query which selects the specified columns.
         /// </summary>
         /// <param name="columns">The columns to be included in the query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        public static IFrom Select(params string[] columns)
+        public static IFunctionOrFrom Select(params string[] columns)
         {
+            if (columns == null || columns.Length == 0)
+            {
+                return new SqlBuilder("SELECT");
+            }
+
             return new SqlBuilder("SELECT " + string.Join(", ", columns));
         }
 

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IFunction.cs" company="MicroLite">
+// <copyright file="IFunctionOrFrom.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@ namespace MicroLite.Query
     /// <summary>
     /// The interface which specifies the from method or function in the fluent sql builder syntax.
     /// </summary>
-    public interface IFunction : IHideObjectMethods
+    public interface IFunctionOrFrom : IFrom, IHideObjectMethods
     {
         /// <summary>
         /// Selects the average value in the specified column.

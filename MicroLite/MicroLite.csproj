@@ -110,7 +110,7 @@
     <Compile Include="Mapping\IdentifierAttribute.cs" />
     <Compile Include="Mapping\IdentifierStrategy.cs" />
     <Compile Include="Query\IFrom.cs" />
-    <Compile Include="Query\IFunction.cs" />
+    <Compile Include="Query\IFunctionOrFrom.cs" />
     <Compile Include="IHideObjectMethods.cs" />
     <Compile Include="Listeners\IListener.cs" />
     <Compile Include="Query\IOrderBy.cs" />
