@@ -20,6 +20,13 @@ namespace MicroLite.Query
     public interface IFunction : IHideObjectMethods
     {
         /// <summary>
+        /// Selects the average value in the specified column.
+        /// </summary>
+        /// <param name="column">The column to query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IFrom Average(string column);
+
+        /// <summary>
         /// Specifies the type of object to count records for which match the specified filter.
         /// </summary>
         /// <param name="forType">The type of object the query relates to.</param>

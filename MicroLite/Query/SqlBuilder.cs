@@ -81,6 +81,18 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Selects the average value in the specified column.
+        /// </summary>
+        /// <param name="column">The column to query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IFrom Average(string column)
+        {
+            this.innerSql.AppendLine(" AVG(" + column + ")");
+
+            return this;
+        }
+
+        /// <summary>
         /// Specifies the type of object to count records for which match the specified filter.
         /// </summary>
         /// <param name="forType">The type of object the query relates to.</param>

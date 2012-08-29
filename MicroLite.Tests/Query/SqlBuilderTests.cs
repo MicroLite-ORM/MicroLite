@@ -28,6 +28,22 @@
         }
 
         [Test]
+        public void SelectAverage()
+        {
+            var sqlQuery = SqlBuilder
+                .Select()
+                .Average("Total")
+                .From(typeof(Invoice))
+                .Where("CustomerId = @p0", 1022)
+                .ToSqlQuery();
+
+            Assert.AreEqual(1, sqlQuery.Arguments.Count);
+            Assert.AreEqual(1022, sqlQuery.Arguments[0]);
+
+            Assert.AreEqual("SELECT AVG(Total)\r\n FROM Sales.Invoices\r\n WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+        }
+
+        [Test]
         public void SelectCount()
         {
             var sqlQuery = SqlBuilder.Select()
