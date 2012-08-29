@@ -21,31 +21,24 @@ namespace MicroLite.Query
     /// <summary>
     /// A helper class for creating a dynamic <see cref="SqlQuery" />.
     /// </summary>
-    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IOrderBy, IToSqlQuery, IWithParameter
+    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder();
 
         private SqlBuilder(string startingSql)
         {
-            if (startingSql.StartsWith("SELECT ", StringComparison.OrdinalIgnoreCase))
-            {
-                this.innerSql.AppendLine(startingSql);
-            }
-            else
-            {
-                this.innerSql.Append(startingSql);
-            }
+            this.innerSql.Append(startingSql);
         }
 
         /// <summary>
-        /// Species the name of the specified procedure to be executed.
+        /// Species the name of the procedure to be executed.
         /// </summary>
         /// <param name="procedure">The name of the stored procedure.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         public static IWithParameter Execute(string procedure)
         {
-            return new SqlBuilder("EXEC " + procedure + " ");
+            return new SqlBuilder("EXEC " + procedure);
         }
 
         /// <summary>
@@ -83,7 +76,12 @@ namespace MicroLite.Query
         /// <returns>The next step in the fluent sql builder.</returns>
         public IFrom Average(string column)
         {
-            this.innerSql.AppendLine(" AVG(" + column + ")");
+            if (this.innerSql.Length > 6)
+            {
+                this.innerSql.Append(",");
+            }
+
+            this.innerSql.Append(" AVG(" + column + ")");
 
             return this;
         }
@@ -99,7 +97,7 @@ namespace MicroLite.Query
         {
             var objectInfo = ObjectInfo.For(forType);
 
-            this.innerSql.AppendLine(" COUNT(" + objectInfo.TableInfo.IdentifierColumn + ")");
+            this.innerSql.Append(" COUNT(" + objectInfo.TableInfo.IdentifierColumn + ")");
 
             return this.From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name);
         }
@@ -111,7 +109,7 @@ namespace MicroLite.Query
         /// <returns>The next step in the fluent sql builder.</returns>
         public IWhereOrOrderBy From(string table)
         {
-            this.innerSql.AppendLine(" FROM " + table);
+            this.innerSql.Append(" FROM " + table);
 
             return this;
         }
@@ -138,13 +136,30 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Groups the results of the query by the specified columns.
+        /// </summary>
+        /// <param name="columns">The columns to group by.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IOrderBy GroupBy(params string[] columns)
+        {
+            this.innerSql.Append(" GROUP BY " + string.Join(", ", columns));
+
+            return this;
+        }
+
+        /// <summary>
         /// Selects the maximum value in the specified column.
         /// </summary>
         /// <param name="column">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         public IFrom Max(string column)
         {
-            this.innerSql.AppendLine(" MAX(" + column + ")");
+            if (this.innerSql.Length > 6)
+            {
+                this.innerSql.Append(",");
+            }
+
+            this.innerSql.Append(" MAX(" + column + ")");
 
             return this;
         }
@@ -156,7 +171,12 @@ namespace MicroLite.Query
         /// <returns>The next step in the fluent sql builder.</returns>
         public IFrom Min(string column)
         {
-            this.innerSql.AppendLine(" MIN(" + column + ")");
+            if (this.innerSql.Length > 6)
+            {
+                this.innerSql.Append(",");
+            }
+
+            this.innerSql.Append(" MIN(" + column + ")");
 
             return this;
         }
@@ -168,7 +188,7 @@ namespace MicroLite.Query
         /// <returns>The next step in the fluent sql builder.</returns>
         public IOrderBy OrderByAscending(string column)
         {
-            this.innerSql.AppendLine(" ORDER BY " + column + " ASC");
+            this.innerSql.Append(" ORDER BY " + column + " ASC");
 
             return this;
         }
@@ -180,7 +200,7 @@ namespace MicroLite.Query
         /// <returns>The next step in the fluent sql builder.</returns>
         public IOrderBy OrderByDescending(string column)
         {
-            this.innerSql.AppendLine(" ORDER BY " + column + " DESC");
+            this.innerSql.Append(" ORDER BY " + column + " DESC");
 
             return this;
         }
@@ -205,7 +225,12 @@ namespace MicroLite.Query
         /// <returns>The next step in the fluent sql builder.</returns>
         public IFrom Sum(string column)
         {
-            this.innerSql.AppendLine(" SUM(" + column + ")");
+            if (this.innerSql.Length > 6)
+            {
+                this.innerSql.Append(",");
+            }
+
+            this.innerSql.Append(" SUM(" + column + ")");
 
             return this;
         }
@@ -216,7 +241,7 @@ namespace MicroLite.Query
         /// <returns>The created <see cref="SqlQuery"/>.</returns>
         public SqlQuery ToSqlQuery()
         {
-            return new SqlQuery(this.innerSql.ToString(0, this.innerSql.Length - 2), this.arguments.ToArray());
+            return new SqlQuery(this.innerSql.ToString(), this.arguments.ToArray());
         }
 
         /// <summary>
@@ -240,8 +265,13 @@ namespace MicroLite.Query
         /// <returns>The next step in the fluent sql builder.</returns>
         public IWithParameter WithParameter(string parameter, object arg)
         {
+            if (this.arguments.Count > 0)
+            {
+                this.innerSql.Append(",");
+            }
+
             this.arguments.Add(arg);
-            this.innerSql.Append(parameter + ", ");
+            this.innerSql.Append(" " + parameter);
 
             return this;
         }
@@ -253,7 +283,6 @@ namespace MicroLite.Query
             var renumberedPredicate = SqlUtil.ReNumberParameters(predicate, this.arguments.Count);
 
             this.innerSql.AppendFormat(appendFormat, renumberedPredicate);
-            this.innerSql.AppendLine();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IWhereOrOrderBy.cs" company="MicroLite">
+// <copyright file="IGroupBy.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,16 +13,15 @@
 namespace MicroLite.Query
 {
     /// <summary>
-    /// The interface which specifies the where method in the fluent sql builder syntax.
+    /// The interface which specifies the group by method in the fluent sql builder syntax.
     /// </summary>
-    public interface IWhereOrOrderBy : IGroupBy, IOrderBy, IToSqlQuery, IHideObjectMethods
+    public interface IGroupBy : IHideObjectMethods
     {
         /// <summary>
-        /// Specifies the where clause for the query.
+        /// Groups the results of the query by the specified columns.
         /// </summary>
-        /// <param name="predicate">The predicate.</param>
-        /// <param name="args">The args.</param>
+        /// <param name="columns">The columns to group by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IAndOrOrderBy Where(string predicate, params object[] args);
+        IOrderBy GroupBy(params string[] columns);
     }
 }

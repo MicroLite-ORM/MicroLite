@@ -113,6 +113,7 @@
     <Compile Include="Query\IFunctionOrFrom.cs" />
     <Compile Include="IHideObjectMethods.cs" />
     <Compile Include="Listeners\IListener.cs" />
+    <Compile Include="Query\IGroupBy.cs" />
     <Compile Include="Query\IOrderBy.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />

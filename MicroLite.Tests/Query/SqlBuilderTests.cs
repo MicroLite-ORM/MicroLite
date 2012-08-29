@@ -41,7 +41,23 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT AVG(Total)\r\n FROM Sales.Invoices\r\n WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT AVG(Total) FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+        }
+
+        [Test]
+        public void SelectAverageWithOtherColumn()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("CustomerId")
+                .Average("Total")
+                .From(typeof(Invoice))
+                .Where("CustomerId = @p0", 1022)
+                .ToSqlQuery();
+
+            Assert.AreEqual(1, sqlQuery.Arguments.Count);
+            Assert.AreEqual(1022, sqlQuery.Arguments[0]);
+
+            Assert.AreEqual("SELECT CustomerId, AVG(Total) FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -53,7 +69,7 @@
                 .ToSqlQuery();
 
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
-            Assert.AreEqual("SELECT COUNT(CustomerId)\r\n FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT COUNT(CustomerId) FROM Sales.Customers", sqlQuery.CommandText);
         }
 
         [Test]
@@ -66,7 +82,7 @@
                 .ToSqlQuery();
 
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
-            Assert.AreEqual("SELECT Column1, Column2\r\n FROM Table\r\n ORDER BY Column1 ASC", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT Column1, Column2 FROM Table ORDER BY Column1 ASC", sqlQuery.CommandText);
         }
 
         [Test]
@@ -79,7 +95,7 @@
                 .ToSqlQuery();
 
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
-            Assert.AreEqual("SELECT Column1, Column2\r\n FROM Table\r\n ORDER BY Column1 DESC", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT Column1, Column2 FROM Table ORDER BY Column1 DESC", sqlQuery.CommandText);
         }
 
         [Test]
@@ -91,7 +107,7 @@
                 .ToSqlQuery();
 
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
-            Assert.AreEqual("SELECT Column1, Column2\r\n FROM Table", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT Column1, Column2 FROM Table", sqlQuery.CommandText);
         }
 
         [Test]
@@ -103,7 +119,7 @@
                 .ToSqlQuery();
 
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
-            Assert.AreEqual("SELECT Name, DoB\r\n FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT Name, DoB FROM Sales.Customers", sqlQuery.CommandText);
         }
 
         [Test]
@@ -115,7 +131,7 @@
                 .ToSqlQuery();
 
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
-            Assert.AreEqual("SELECT *\r\n FROM Table", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT * FROM Table", sqlQuery.CommandText);
         }
 
         [Test]
@@ -127,7 +143,7 @@
                 .ToSqlQuery();
 
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
-            Assert.AreEqual("SELECT DoB, CustomerId, Name\r\n FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT DoB, CustomerId, Name FROM Sales.Customers", sqlQuery.CommandText);
         }
 
         [Test]
@@ -142,7 +158,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual("Foo", sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT Column1, Column2\r\n FROM Table\r\n WHERE (Column1 = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT Column1, Column2 FROM Table WHERE (Column1 = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -159,7 +175,7 @@
             Assert.AreEqual("Foo", sqlQuery.Arguments[0]);
             Assert.AreEqual("Bar", sqlQuery.Arguments[1]);
 
-            Assert.AreEqual("SELECT Column1, Column2\r\n FROM Table\r\n WHERE (Column1 = @p0)\r\n AND (Column2 = @p1)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT Column1, Column2 FROM Table WHERE (Column1 = @p0) AND (Column2 = @p1)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -182,7 +198,7 @@
             Assert.AreEqual(3, sqlQuery.Arguments[5]);
             Assert.AreEqual(4, sqlQuery.Arguments[6]);
 
-            Assert.AreEqual("SELECT Column1, Column2, Column3\r\n FROM Table\r\n WHERE (Column1 = @p0 OR @p0 IS NULL)\r\n AND (Column2 BETWEEN @p1 AND @p2)\r\n OR (Column3 IN (@p3, @p4, @p5, @p6))", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT Column1, Column2, Column3 FROM Table WHERE (Column1 = @p0 OR @p0 IS NULL) AND (Column2 BETWEEN @p1 AND @p2) OR (Column3 IN (@p3, @p4, @p5, @p6))", sqlQuery.CommandText);
         }
 
         [Test]
@@ -199,7 +215,7 @@
             Assert.AreEqual("Foo", sqlQuery.Arguments[0]);
             Assert.AreEqual("Bar", sqlQuery.Arguments[1]);
 
-            Assert.AreEqual("SELECT Column1, Column2\r\n FROM Table\r\n WHERE (Column1 = @p0)\r\n OR (Column2 = @p1)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT Column1, Column2 FROM Table WHERE (Column1 = @p0) OR (Column2 = @p1)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -215,7 +231,23 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT MAX(Total)\r\n FROM Sales.Invoices\r\n WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT MAX(Total) FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+        }
+
+        [Test]
+        public void SelectMaxWithOtherColumn()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("CustomerId")
+                .Max("Total")
+                .From(typeof(Invoice))
+                .Where("CustomerId = @p0", 1022)
+                .ToSqlQuery();
+
+            Assert.AreEqual(1, sqlQuery.Arguments.Count);
+            Assert.AreEqual(1022, sqlQuery.Arguments[0]);
+
+            Assert.AreEqual("SELECT CustomerId, MAX(Total) FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -231,7 +263,23 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT MIN(Total)\r\n FROM Sales.Invoices\r\n WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT MIN(Total) FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+        }
+
+        [Test]
+        public void SelectMinWithOtherColumn()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("CustomerId")
+                .Min("Total")
+                .From(typeof(Invoice))
+                .Where("CustomerId = @p0", 1022)
+                .ToSqlQuery();
+
+            Assert.AreEqual(1, sqlQuery.Arguments.Count);
+            Assert.AreEqual(1022, sqlQuery.Arguments[0]);
+
+            Assert.AreEqual("SELECT CustomerId, MIN(Total) FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -247,7 +295,40 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT SUM(Total)\r\n FROM Sales.Invoices\r\n WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT SUM(Total) FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+        }
+
+        [Test]
+        public void SelectSumWithOtherColumn()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("CustomerId")
+                .Sum("Total")
+                .From(typeof(Invoice))
+                .Where("CustomerId = @p0", 1022)
+                .ToSqlQuery();
+
+            Assert.AreEqual(1, sqlQuery.Arguments.Count);
+            Assert.AreEqual(1022, sqlQuery.Arguments[0]);
+
+            Assert.AreEqual("SELECT CustomerId, SUM(Total) FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+        }
+
+        [Test]
+        public void SelectWhereGroupByOrderBy()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("CustomerId")
+                .Sum("Total")
+                .From("Invoices")
+                .Where("OrderDate > @p0", new DateTime(2000, 1, 1))
+                .GroupBy("Total")
+                .ToSqlQuery();
+
+            Assert.AreEqual(1, sqlQuery.Arguments.Count);
+            Assert.AreEqual(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
+
+            Assert.AreEqual("SELECT CustomerId, SUM(Total) FROM Invoices WHERE (OrderDate > @p0) GROUP BY Total", sqlQuery.CommandText);
         }
 
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
