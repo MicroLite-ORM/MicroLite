@@ -48,9 +48,9 @@ namespace MicroLite.Query
         IFrom Min(string column);
 
         /// <summary>
-        /// Sums the specified column.
+        /// Selects the sum of the values in the specified column.
         /// </summary>
-        /// <param name="column">The column to sum.</param>
+        /// <param name="column">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         IFrom Sum(string column);
     }

@@ -19,7 +19,7 @@ namespace MicroLite.Query
     using MicroLite.Mapping;
 
     /// <summary>
-    /// A helper class for creating a dynamic <see cref="SqlQuery"/>.
+    /// A helper class for creating a dynamic <see cref="SqlQuery" />.
     /// </summary>
     public sealed class SqlBuilder : IFrom, IFunction, IWhereOrOrderBy, IAndOrOrderBy, IOrderBy, IToSqlQuery, IWithParameter
     {
@@ -203,9 +203,9 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Sums the specified column.
+        /// Selects the sum of the values in the specified column.
         /// </summary>
-        /// <param name="column">The column to sum.</param>
+        /// <param name="column">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         public IFrom Sum(string column)
         {

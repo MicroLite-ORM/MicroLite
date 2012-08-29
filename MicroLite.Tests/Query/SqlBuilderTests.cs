@@ -13,7 +13,8 @@
         [Test]
         public void Execute()
         {
-            var sqlQuery = SqlBuilder.Execute("GetCustomerInvoices")
+            var sqlQuery = SqlBuilder
+                .Execute("GetCustomerInvoices")
                 .WithParameter("@CustomerId", 7633245)
                 .WithParameter("@StartDate", DateTime.Today.AddMonths(-3))
                 .WithParameter("@EndDate", DateTime.Today)
@@ -46,7 +47,8 @@
         [Test]
         public void SelectCount()
         {
-            var sqlQuery = SqlBuilder.Select()
+            var sqlQuery = SqlBuilder
+                .Select()
                 .Count(typeof(Customer))
                 .ToSqlQuery();
 
@@ -57,7 +59,8 @@
         [Test]
         public void SelectFromOrderByAscending()
         {
-            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder
+                .Select("Column1", "Column2")
                 .From("Table")
                 .OrderByAscending("Column1")
                 .ToSqlQuery();
@@ -69,7 +72,8 @@
         [Test]
         public void SelectFromOrderByDescending()
         {
-            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder
+                .Select("Column1", "Column2")
                 .From("Table")
                 .OrderByDescending("Column1")
                 .ToSqlQuery();
@@ -81,7 +85,8 @@
         [Test]
         public void SelectFromSpecifyingColumnsAndTableName()
         {
-            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder
+                .Select("Column1", "Column2")
                 .From("Table")
                 .ToSqlQuery();
 
@@ -92,7 +97,8 @@
         [Test]
         public void SelectFromSpecifyingColumnsAndType()
         {
-            var sqlQuery = SqlBuilder.Select("Name", "DoB")
+            var sqlQuery = SqlBuilder
+                .Select("Name", "DoB")
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
@@ -103,7 +109,8 @@
         [Test]
         public void SelectFromSpecifyingWildcardAndTableName()
         {
-            var sqlQuery = SqlBuilder.Select("*")
+            var sqlQuery = SqlBuilder
+                .Select("*")
                 .From("Table")
                 .ToSqlQuery();
 
@@ -114,7 +121,8 @@
         [Test]
         public void SelectFromSpecifyingWildcardAndType()
         {
-            var sqlQuery = SqlBuilder.Select("*")
+            var sqlQuery = SqlBuilder
+                .Select("*")
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
@@ -125,7 +133,8 @@
         [Test]
         public void SelectFromWhere()
         {
-            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder
+                .Select("Column1", "Column2")
                 .From("Table")
                 .Where("Column1 = @p0", "Foo")
                 .ToSqlQuery();
@@ -139,7 +148,8 @@
         [Test]
         public void SelectFromWhereAnd()
         {
-            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder
+                .Select("Column1", "Column2")
                 .From("Table")
                 .Where("Column1 = @p0", "Foo")
                 .AndWhere("Column2 = @p0", "Bar")
@@ -155,7 +165,8 @@
         [Test]
         public void SelectFromWhereComplex()
         {
-            var sqlQuery = SqlBuilder.Select("Column1", "Column2", "Column3")
+            var sqlQuery = SqlBuilder
+                .Select("Column1", "Column2", "Column3")
                 .From("Table")
                 .Where("Column1 = @p0 OR @p0 IS NULL", "Foo")
                 .AndWhere("Column2 BETWEEN @p0 AND @p1", DateTime.Today.AddDays(-1), DateTime.Today)
@@ -177,7 +188,8 @@
         [Test]
         public void SelectFromWhereOr()
         {
-            var sqlQuery = SqlBuilder.Select("Column1", "Column2")
+            var sqlQuery = SqlBuilder
+                .Select("Column1", "Column2")
                 .From("Table")
                 .Where("Column1 = @p0", "Foo")
                 .OrWhere("Column2 = @p0", "Bar")
@@ -223,9 +235,10 @@
         }
 
         [Test]
-        public void Sum()
+        public void SelectSum()
         {
-            var sqlQuery = SqlBuilder.Select()
+            var sqlQuery = SqlBuilder
+                .Select()
                 .Sum("Total")
                 .From(typeof(Invoice))
                 .Where("CustomerId = @p0", 1022)
