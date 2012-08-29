@@ -130,6 +130,18 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Selects the minimum value in the specified column.
+        /// </summary>
+        /// <param name="column">The column to query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IFrom Min(string column)
+        {
+            this.innerSql.AppendLine(" MIN(" + column + ")");
+
+            return this;
+        }
+
+        /// <summary>
         /// Orders the results of the query by the specified column in ascending order.
         /// </summary>
         /// <param name="column">The column to order by.</param>
