@@ -175,6 +175,22 @@
         }
 
         [Test]
+        public void SelectMax()
+        {
+            var sqlQuery = SqlBuilder
+                .Select()
+                .Max("Total")
+                .From(typeof(Invoice))
+                .Where("CustomerId = @p0", 1022)
+                .ToSqlQuery();
+
+            Assert.AreEqual(1, sqlQuery.Arguments.Count);
+            Assert.AreEqual(1022, sqlQuery.Arguments[0]);
+
+            Assert.AreEqual("SELECT MAX(Total)\r\n FROM Sales.Invoices\r\n WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+        }
+
+        [Test]
         public void SelectMin()
         {
             var sqlQuery = SqlBuilder

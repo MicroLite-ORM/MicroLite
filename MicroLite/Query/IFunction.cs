@@ -27,6 +27,13 @@ namespace MicroLite.Query
         IWhereOrOrderBy Count(Type forType);
 
         /// <summary>
+        /// Selects the maximum value in the specified column.
+        /// </summary>
+        /// <param name="column">The column to query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IFrom Max(string column);
+
+        /// <summary>
         /// Selects the minimum value in the specified column.
         /// </summary>
         /// <param name="column">The column to query.</param>

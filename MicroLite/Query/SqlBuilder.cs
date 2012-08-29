@@ -130,6 +130,18 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Selects the maximum value in the specified column.
+        /// </summary>
+        /// <param name="column">The column to query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IFrom Max(string column)
+        {
+            this.innerSql.AppendLine(" MAX(" + column + ")");
+
+            return this;
+        }
+
+        /// <summary>
         /// Selects the minimum value in the specified column.
         /// </summary>
         /// <param name="column">The column to query.</param>
