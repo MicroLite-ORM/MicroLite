@@ -12,8 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Query
 {
-    using System;
-
     /// <summary>
     /// The interface which specifies the from method or function in the fluent sql builder syntax.
     /// </summary>
@@ -27,11 +25,11 @@ namespace MicroLite.Query
         IFrom Average(string column);
 
         /// <summary>
-        /// Specifies the type of object to count records for which match the specified filter.
+        /// Selects the number of records which match the specified filter.
         /// </summary>
-        /// <param name="forType">The type of object the query relates to.</param>
+        /// <param name="column">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IWhereOrOrderBy Count(Type forType);
+        IFrom Count(string column);
 
         /// <summary>
         /// Selects the maximum value in the specified column.

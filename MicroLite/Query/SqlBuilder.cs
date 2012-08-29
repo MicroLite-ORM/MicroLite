@@ -87,19 +87,20 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Specifies the type of object to count records for which match the specified filter.
+        /// Selects the number of records which match the specified filter.
         /// </summary>
-        /// <param name="forType">The type of object the query relates to.</param>
-        /// <returns>
-        /// The next step in the fluent sql builder.
-        /// </returns>
-        public IWhereOrOrderBy Count(Type forType)
+        /// <param name="column">The column to query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IFrom Count(string column)
         {
-            var objectInfo = ObjectInfo.For(forType);
+            if (this.innerSql.Length > 6)
+            {
+                this.innerSql.Append(",");
+            }
 
-            this.innerSql.Append(" COUNT(" + objectInfo.TableInfo.IdentifierColumn + ")");
+            this.innerSql.Append(" COUNT(" + column + ")");
 
-            return this.From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name);
+            return this;
         }
 
         /// <summary>
@@ -118,9 +119,7 @@ namespace MicroLite.Query
         /// Specifies the type to perform the query against.
         /// </summary>
         /// <param name="forType">The type of object the query relates to.</param>
-        /// <returns>
-        /// The next step in the fluent sql builder.
-        /// </returns>
+        /// <returns>The next step in the fluent sql builder.</returns>
         public IWhereOrOrderBy From(Type forType)
         {
             var objectInfo = ObjectInfo.For(forType);

@@ -65,11 +65,25 @@
         {
             var sqlQuery = SqlBuilder
                 .Select()
-                .Count(typeof(Customer))
+                .Count("CustomerId")
+                .From(typeof(Customer))
                 .ToSqlQuery();
 
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
             Assert.AreEqual("SELECT COUNT(CustomerId) FROM Sales.Customers", sqlQuery.CommandText);
+        }
+
+        [Test]
+        public void SelectCountWithOtherColumn()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("CustomerId")
+                .Count("CustomerId")
+                .From(typeof(Customer))
+                .ToSqlQuery();
+
+            CollectionAssert.IsEmpty(sqlQuery.Arguments);
+            Assert.AreEqual("SELECT CustomerId, COUNT(CustomerId) FROM Sales.Customers", sqlQuery.CommandText);
         }
 
         [Test]
