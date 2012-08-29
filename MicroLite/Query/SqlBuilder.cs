@@ -167,6 +167,18 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Sums the specified column.
+        /// </summary>
+        /// <param name="column">The column to sum.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IFrom Sum(string column)
+        {
+            this.innerSql.AppendLine(" SUM(" + column + ")");
+
+            return this;
+        }
+
+        /// <summary>
         /// Creates a <see cref="SqlQuery"/> from the values specified.
         /// </summary>
         /// <returns>The created <see cref="SqlQuery"/>.</returns>

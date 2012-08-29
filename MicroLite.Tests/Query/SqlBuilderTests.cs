@@ -174,6 +174,21 @@
             Assert.AreEqual("SELECT Column1, Column2\r\n FROM Table\r\n WHERE (Column1 = @p0)\r\n OR (Column2 = @p1)", sqlQuery.CommandText);
         }
 
+        [Test]
+        public void Sum()
+        {
+            var sqlQuery = SqlBuilder.Select()
+                .Sum("Total")
+                .From(typeof(Invoice))
+                .Where("CustomerId = @p0", 1022)
+                .ToSqlQuery();
+
+            Assert.AreEqual(1, sqlQuery.Arguments.Count);
+            Assert.AreEqual(1022, sqlQuery.Arguments[0]);
+
+            Assert.AreEqual("SELECT SUM(Total)\r\n FROM Sales.Invoices\r\n WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+        }
+
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
         private class Customer
         {
@@ -198,6 +213,36 @@
 
             [MicroLite.Mapping.Column("Name")]
             public string Name
+            {
+                get;
+                set;
+            }
+        }
+
+        [MicroLite.Mapping.Table(schema: "Sales", name: "Invoices")]
+        private class Invoice
+        {
+            public Invoice()
+            {
+            }
+
+            [MicroLite.Mapping.Column("CustomerId")]
+            public int CustomerId
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("Id")]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Identity)]
+            public int Id
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("Total")]
+            public decimal Total
             {
                 get;
                 set;

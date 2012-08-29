@@ -25,5 +25,12 @@ namespace MicroLite.Query
         /// <param name="forType">The type of object the query relates to.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         IWhereOrOrderBy Count(Type forType);
+
+        /// <summary>
+        /// Sums the specified column.
+        /// </summary>
+        /// <param name="column">The column to sum.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IFrom Sum(string column);
     }
 }
