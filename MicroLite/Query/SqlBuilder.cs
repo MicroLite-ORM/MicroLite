@@ -72,16 +72,27 @@ namespace MicroLite.Query
         /// <summary>
         /// Selects the average value in the specified column.
         /// </summary>
-        /// <param name="column">The column to query.</param>
+        /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        public IFrom Average(string column)
+        public IFrom Average(string columnName)
+        {
+            return this.Average(columnName, columnName);
+        }
+
+        /// <summary>
+        /// Selects the average value in the specified column.
+        /// </summary>
+        /// <param name="columnName">The column to query.</param>
+        /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IFrom Average(string columnName, string columnAlias)
         {
             if (this.innerSql.Length > 6)
             {
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" AVG(" + column + ")");
+            this.innerSql.Append(" AVG(" + columnName + ") AS " + columnAlias);
 
             return this;
         }
@@ -89,16 +100,27 @@ namespace MicroLite.Query
         /// <summary>
         /// Selects the number of records which match the specified filter.
         /// </summary>
-        /// <param name="column">The column to query.</param>
+        /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        public IFrom Count(string column)
+        public IFrom Count(string columnName)
+        {
+            return this.Count(columnName, columnName);
+        }
+
+        /// <summary>
+        /// Selects the number of records which match the specified filter.
+        /// </summary>
+        /// <param name="columnName">The column to query.</param>
+        /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IFrom Count(string columnName, string columnAlias)
         {
             if (this.innerSql.Length > 6)
             {
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" COUNT(" + column + ")");
+            this.innerSql.Append(" COUNT(" + columnName + ") AS " + columnAlias);
 
             return this;
         }
@@ -149,16 +171,27 @@ namespace MicroLite.Query
         /// <summary>
         /// Selects the maximum value in the specified column.
         /// </summary>
-        /// <param name="column">The column to query.</param>
+        /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        public IFrom Max(string column)
+        public IFrom Max(string columnName)
+        {
+            return this.Max(columnName, columnName);
+        }
+
+        /// <summary>
+        /// Selects the maximum value in the specified column.
+        /// </summary>
+        /// <param name="columnName">The column to query.</param>
+        /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IFrom Max(string columnName, string columnAlias)
         {
             if (this.innerSql.Length > 6)
             {
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" MAX(" + column + ")");
+            this.innerSql.Append(" MAX(" + columnName + ") AS " + columnAlias);
 
             return this;
         }
@@ -166,16 +199,27 @@ namespace MicroLite.Query
         /// <summary>
         /// Selects the minimum value in the specified column.
         /// </summary>
-        /// <param name="column">The column to query.</param>
+        /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        public IFrom Min(string column)
+        public IFrom Min(string columnName)
+        {
+            return this.Min(columnName, columnName);
+        }
+
+        /// <summary>
+        /// Selects the minimum value in the specified column.
+        /// </summary>
+        /// <param name="columnName">The column to query.</param>
+        /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IFrom Min(string columnName, string columnAlias)
         {
             if (this.innerSql.Length > 6)
             {
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" MIN(" + column + ")");
+            this.innerSql.Append(" MIN(" + columnName + ") AS " + columnAlias);
 
             return this;
         }
@@ -220,16 +264,27 @@ namespace MicroLite.Query
         /// <summary>
         /// Selects the sum of the values in the specified column.
         /// </summary>
-        /// <param name="column">The column to query.</param>
+        /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        public IFrom Sum(string column)
+        public IFrom Sum(string columnName)
+        {
+            return this.Sum(columnName, columnName);
+        }
+
+        /// <summary>
+        /// Selects the sum of the values in the specified column.
+        /// </summary>
+        /// <param name="columnName">The column to query.</param>
+        /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IFrom Sum(string columnName, string columnAlias)
         {
             if (this.innerSql.Length > 6)
             {
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" SUM(" + column + ")");
+            this.innerSql.Append(" SUM(" + columnName + ") AS " + columnAlias);
 
             return this;
         }

@@ -20,36 +20,76 @@ namespace MicroLite.Query
         /// <summary>
         /// Selects the average value in the specified column.
         /// </summary>
-        /// <param name="column">The column to query.</param>
+        /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IFrom Average(string column);
+        IFrom Average(string columnName);
+
+        /// <summary>
+        /// Selects the average value in the specified column.
+        /// </summary>
+        /// <param name="columnName">The column to query.</param>
+        /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IFrom Average(string columnName, string columnAlias);
 
         /// <summary>
         /// Selects the number of records which match the specified filter.
         /// </summary>
-        /// <param name="column">The column to query.</param>
+        /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IFrom Count(string column);
+        IFrom Count(string columnName);
+
+        /// <summary>
+        /// Selects the number of records which match the specified filter.
+        /// </summary>
+        /// <param name="columnName">The column to query.</param>
+        /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IFrom Count(string columnName, string columnAlias);
 
         /// <summary>
         /// Selects the maximum value in the specified column.
         /// </summary>
-        /// <param name="column">The column to query.</param>
+        /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IFrom Max(string column);
+        IFrom Max(string columnName);
+
+        /// <summary>
+        /// Selects the maximum value in the specified column.
+        /// </summary>
+        /// <param name="columnName">The column to query.</param>
+        /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IFrom Max(string columnName, string columnAlias);
 
         /// <summary>
         /// Selects the minimum value in the specified column.
         /// </summary>
-        /// <param name="column">The column to query.</param>
+        /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IFrom Min(string column);
+        IFrom Min(string columnName);
+
+        /// <summary>
+        /// Selects the minimum value in the specified column.
+        /// </summary>
+        /// <param name="columnName">The column to query.</param>
+        /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IFrom Min(string columnName, string columnAlias);
 
         /// <summary>
         /// Selects the sum of the values in the specified column.
         /// </summary>
-        /// <param name="column">The column to query.</param>
+        /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IFrom Sum(string column);
+        IFrom Sum(string columnName);
+
+        /// <summary>
+        /// Selects the sum of the values in the specified column.
+        /// </summary>
+        /// <param name="columnName">The column to query.</param>
+        /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IFrom Sum(string columnName, string columnAlias);
     }
 }
