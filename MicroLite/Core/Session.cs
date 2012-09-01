@@ -203,7 +203,7 @@ namespace MicroLite.Core
 
             try
             {
-                using (var command = this.connectionManager.Build(sqlQuery))
+                using (var command = this.connectionManager.BuildCommand(sqlQuery))
                 {
                     this.OpenConnectionIfClosed(command);
 
@@ -233,7 +233,7 @@ namespace MicroLite.Core
 
             try
             {
-                using (var command = this.connectionManager.Build(sqlQuery))
+                using (var command = this.connectionManager.BuildCommand(sqlQuery))
                 {
                     this.OpenConnectionIfClosed(command);
 
@@ -339,7 +339,7 @@ namespace MicroLite.Core
 
             try
             {
-                using (var command = this.connectionManager.Build(sqlQuery))
+                using (var command = this.connectionManager.BuildCommand(sqlQuery))
                 {
                     this.OpenConnectionIfClosed(command);
 
@@ -404,7 +404,7 @@ namespace MicroLite.Core
             {
                 var sqlQuery = SqlUtil.Combine(this.queries);
 
-                using (var command = this.connectionManager.Build(sqlQuery))
+                using (var command = this.connectionManager.BuildCommand(sqlQuery))
                 {
                     try
                     {

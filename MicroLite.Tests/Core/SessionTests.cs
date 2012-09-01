@@ -109,7 +109,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var mockListener = new Mock<IListener>();
             mockListener.Setup(x => x.BeforeDelete(customer));
@@ -145,7 +145,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -174,7 +174,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -216,7 +216,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -263,7 +263,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -293,7 +293,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -349,7 +349,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -414,7 +414,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -446,7 +446,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -478,7 +478,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -510,7 +510,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -597,7 +597,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
@@ -674,7 +674,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -703,7 +703,7 @@
             mockCommand.Setup(x => x.ExecuteScalar()).Returns(identifier);
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var mockListener = new Mock<IListener>();
             mockListener.Setup(x => x.AfterInsert(customer, identifier));
@@ -753,7 +753,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -800,7 +800,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(paged)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(paged)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
@@ -898,7 +898,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildDynamic(reader)).Returns(new ExpandoObject());
@@ -942,7 +942,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -995,7 +995,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.SelectQuery(typeof(Customer), identifier)).Returns(sqlQuery);
@@ -1031,7 +1031,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
@@ -1100,7 +1100,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
@@ -1135,7 +1135,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             ISession session = new Session(
                 mockConnectionManager.Object,
@@ -1219,7 +1219,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -1248,7 +1248,7 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(rowsAffected);
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -1297,7 +1297,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.Build(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 mockConnectionManager.Object,

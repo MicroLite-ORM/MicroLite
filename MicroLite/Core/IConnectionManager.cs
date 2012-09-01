@@ -26,6 +26,6 @@ namespace MicroLite.Core
 
         ITransaction BeginTransaction(System.Data.IsolationLevel isolationLevel);
 
-        IDbCommand Build(SqlQuery sqlQuery);
+        IDbCommand BuildCommand(SqlQuery sqlQuery);
     }
 }

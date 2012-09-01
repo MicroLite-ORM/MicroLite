@@ -91,7 +91,7 @@
         }
 
         [Test]
-        public void BuildEnlistsInActiveTransaction()
+        public void BuildCommandEnlistsInActiveTransaction()
         {
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.SetupAllProperties();
@@ -110,14 +110,14 @@
             {
                 connectionManager.BeginTransaction();
 
-                var command = connectionManager.Build(sqlQuery);
+                var command = connectionManager.BuildCommand(sqlQuery);
 
                 Assert.NotNull(command.Transaction);
             }
         }
 
         [Test]
-        public void BuildForSqlQueryWithSqlText()
+        public void BuildCommandForSqlQueryWithSqlText()
         {
             var sqlQuery = new SqlQuery(
                 "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value1] = @p1 AND [Table].[Value2] = @p2",
@@ -125,7 +125,7 @@
 
             using (var connectionManager = new ConnectionManager(new SqlConnection()))
             {
-                var command = connectionManager.Build(sqlQuery);
+                var command = connectionManager.BuildCommand(sqlQuery);
 
                 Assert.AreEqual(sqlQuery.CommandText, command.CommandText);
                 Assert.AreEqual(CommandType.Text, command.CommandType);
@@ -152,7 +152,7 @@
         /// Issue #6 - The argument count check needs to cater for the same argument being used twice.
         /// </summary>
         [Test]
-        public void BuildForSqlQueryWithSqlTextWhichUsesSameParameterTwice()
+        public void BuildCommandForSqlQueryWithSqlTextWhichUsesSameParameterTwice()
         {
             var sqlQuery = new SqlQuery(
                 "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value1] = @p1 OR @p1 IS NULL",
@@ -160,7 +160,7 @@
 
             using (var connectionManager = new ConnectionManager(new SqlConnection()))
             {
-                var command = connectionManager.Build(sqlQuery);
+                var command = connectionManager.BuildCommand(sqlQuery);
 
                 Assert.AreEqual(sqlQuery.CommandText, command.CommandText);
                 Assert.AreEqual(CommandType.Text, command.CommandType);
@@ -179,13 +179,13 @@
         }
 
         [Test]
-        public void BuildForSqlQueryWithStoredProcedureWithoutParameters()
+        public void BuildCommandForSqlQueryWithStoredProcedureWithoutParameters()
         {
             var sqlQuery = new SqlQuery("EXEC GetTableContents");
 
             using (var connectionManager = new ConnectionManager(new SqlConnection()))
             {
-                var command = connectionManager.Build(sqlQuery);
+                var command = connectionManager.BuildCommand(sqlQuery);
 
                 // The command text should only contain the stored procedure name.
                 Assert.AreEqual("GetTableContents", command.CommandText);
@@ -195,7 +195,7 @@
         }
 
         [Test]
-        public void BuildForSqlQueryWithStoredProcedureWithParameters()
+        public void BuildCommandForSqlQueryWithStoredProcedureWithParameters()
         {
             var sqlQuery = new SqlQuery(
                 "EXEC GetTableContents @identifier, @Cust_Name",
@@ -203,7 +203,7 @@
 
             using (var connectionManager = new ConnectionManager(new SqlConnection()))
             {
-                var command = connectionManager.Build(sqlQuery);
+                var command = connectionManager.BuildCommand(sqlQuery);
 
                 // The command text should only contain the stored procedure name.
                 Assert.AreEqual("GetTableContents", command.CommandText);
@@ -221,21 +221,21 @@
         }
 
         [Test]
-        public void BuildSetsDbCommandTimeoutToSqlQueryTime()
+        public void BuildCommandSetsDbCommandTimeoutToSqlQueryTime()
         {
             var sqlQuery = new SqlQuery("SELECT * FROM [Table]");
             sqlQuery.Timeout = 42; // Use an oddball time which shouldn't be a default anywhere.
 
             using (var connectionManager = new ConnectionManager(new SqlConnection()))
             {
-                var command = connectionManager.Build(sqlQuery);
+                var command = connectionManager.BuildCommand(sqlQuery);
 
                 Assert.AreEqual(sqlQuery.Timeout, command.CommandTimeout);
             }
         }
 
         [Test]
-        public void BuildThrowsMicroLiteExceptionForParameterCountMismatch()
+        public void BuildCommandThrowsMicroLiteExceptionForParameterCountMismatch()
         {
             var sqlQuery = new SqlQuery(
                 "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value] = @p1",
@@ -244,7 +244,7 @@
             var connectionManager = new ConnectionManager(new Mock<IDbConnection>().Object);
 
             var exception = Assert.Throws<MicroLiteException>(
-                () => connectionManager.Build(sqlQuery));
+                () => connectionManager.BuildCommand(sqlQuery));
 
             Assert.AreEqual(Messages.ConnectionManager_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
         }

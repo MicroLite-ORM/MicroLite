@@ -63,7 +63,7 @@ namespace MicroLite.Core
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The purpose of this method is to build a command and return it.")]
-        public IDbCommand Build(SqlQuery sqlQuery)
+        public IDbCommand BuildCommand(SqlQuery sqlQuery)
         {
             var parameterNames = new HashSet<string>(parameterRegex.Matches(sqlQuery.CommandText).Cast<Match>().Select(x => x.Value)).ToList();
 
@@ -76,22 +76,11 @@ namespace MicroLite.Core
             command.CommandTimeout = sqlQuery.Timeout;
             SetCommandText(command, sqlQuery);
             SetCommandType(command, sqlQuery);
+            AddParameters(command, sqlQuery, parameterNames);
 
             if (this.currentTransaction != null)
             {
                 this.currentTransaction.Enlist(command);
-            }
-
-            for (int i = 0; i < parameterNames.Count; i++)
-            {
-                var parameterName = parameterNames[i];
-
-                var parameter = command.CreateParameter();
-                parameter.Direction = ParameterDirection.Input;
-                parameter.ParameterName = parameterName;
-                parameter.Value = sqlQuery.Arguments[i] ?? DBNull.Value;
-
-                command.Parameters.Add(parameter);
             }
 
             return command;
@@ -110,6 +99,21 @@ namespace MicroLite.Core
             {
                 this.currentTransaction.Dispose();
                 this.currentTransaction = null;
+            }
+        }
+
+        private static void AddParameters(IDbCommand command, SqlQuery sqlQuery, List<string> parameterNames)
+        {
+            for (int i = 0; i < parameterNames.Count; i++)
+            {
+                var parameterName = parameterNames[i];
+
+                var parameter = command.CreateParameter();
+                parameter.Direction = ParameterDirection.Input;
+                parameter.ParameterName = parameterName;
+                parameter.Value = sqlQuery.Arguments[i] ?? DBNull.Value;
+
+                command.Parameters.Add(parameter);
             }
         }
 
