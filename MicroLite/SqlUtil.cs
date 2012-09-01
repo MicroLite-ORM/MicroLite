@@ -14,6 +14,7 @@ namespace MicroLite
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Globalization;
     using System.Linq;
     using System.Text;
@@ -24,7 +25,7 @@ namespace MicroLite
     /// </summary>
     internal static class SqlUtil
     {
-        private static readonly Regex parameterRegex = new Regex(@"(@p\d)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex parameterRegex = new Regex(@"(@[\w]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
 
         /// <summary>
         /// Combines the specified SQL queries into a single SqlQuery.
@@ -58,12 +59,49 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets the type of the command.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The <see cref="CommandType"/> for the specified command text</returns>
+        internal static CommandType GetCommandType(string commandText)
+        {
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase))
+            {
+                return CommandType.StoredProcedure;
+            }
+
+            return CommandType.Text;
+        }
+
+        /// <summary>
+        /// Gets the position of the first parameter in the specified command text.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The position of the first parameter in the command text or -1 if no parameters are found.</returns>
+        internal static int GetFirstParameterPosition(string commandText)
+        {
+            var firstParameterPosition = commandText.IndexOf('@', 0);
+
+            return firstParameterPosition;
+        }
+
+        /// <summary>
+        /// Gets the parameter names from the specified command text.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The parameter names in the command text.</returns>
+        internal static IList<string> GetParameterNames(string commandText)
+        {
+            return new HashSet<string>(parameterRegex.Matches(commandText).Cast<Match>().Select(x => x.Value)).ToList();
+        }
+
+        /// <summary>
         /// Re-numbers the parameters in the SQL based upon the total number of arguments.
         /// </summary>
         /// <param name="sql">The SQL.</param>
-        /// <param name="argumentsCount">The total number of arguments.</param>
+        /// <param name="totalArgumentCount">The total number of arguments.</param>
         /// <returns>The re-numbered SQL</returns>
-        internal static string ReNumberParameters(string sql, int argumentsCount)
+        internal static string ReNumberParameters(string sql, int totalArgumentCount)
         {
             var argsAdded = 0;
 
@@ -77,7 +115,7 @@ namespace MicroLite
 
                 foreach (var parameterName in parameterNames.OrderByDescending(n => n))
                 {
-                    var newParameterName = parameterPrefix + (argumentsCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
+                    var newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
 
                     predicateReWriter.Replace(parameterName, newParameterName);
                 }

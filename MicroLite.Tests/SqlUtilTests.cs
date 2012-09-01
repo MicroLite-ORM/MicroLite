@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests
 {
     using System;
+    using System.Data;
     using NUnit.Framework;
 
     /// <summary>
@@ -47,6 +48,71 @@
             var exception = Assert.Throws<ArgumentNullException>(() => SqlUtil.Combine(null));
 
             Assert.AreEqual("sqlQueries", exception.ParamName);
+        }
+
+        [Test]
+        public void GetCommandTypeForExecStatement()
+        {
+            var commandType = SqlUtil.GetCommandType("EXEC sp_Proc");
+
+            Assert.AreEqual(CommandType.StoredProcedure, commandType);
+        }
+
+        [Test]
+        public void GetCommandTypeForSelectStatement()
+        {
+            var commandType = SqlUtil.GetCommandType("SELECT *");
+
+            Assert.AreEqual(CommandType.Text, commandType);
+        }
+
+        [Test]
+        public void GetFirstParameterPositionWithMultipleParameters()
+        {
+            var position = SqlUtil.GetFirstParameterPosition("SELECT * FROM TABLE WHERE Column1 = @p0 AND Column2 = @p1");
+
+            Assert.AreEqual(36, position);
+        }
+
+        [Test]
+        public void GetFirstParameterPositionWithNoParameters()
+        {
+            var position = SqlUtil.GetFirstParameterPosition("SELECT * FROM TABLE");
+
+            Assert.AreEqual(-1, position);
+        }
+
+        [Test]
+        public void GetFirstParameterPositionWithSingleParameter()
+        {
+            var position = SqlUtil.GetFirstParameterPosition("SELECT * FROM TABLE WHERE Column1 = @p0");
+
+            Assert.AreEqual(36, position);
+        }
+
+        [Test]
+        public void GetParameterNames()
+        {
+            var parameterNames = SqlUtil.GetParameterNames("SELECT * FROM TABLE WHERE Col1 = @p0 AND (Col2 = @p1 OR @p1 IS NULL)");
+
+            Assert.AreEqual(2, parameterNames.Count);
+            CollectionAssert.AreEquivalent(new[] { "@p0", "@p1" }, parameterNames);
+        }
+
+        [Test]
+        public void ReNumberParametersNoExistingArguments()
+        {
+            var commandText = SqlUtil.ReNumberParameters("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", totalArgumentCount: 2);
+
+            Assert.AreEqual("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", commandText);
+        }
+
+        [Test]
+        public void ReNumberParametersWithExistingArguments()
+        {
+            var commandText = SqlUtil.ReNumberParameters("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", totalArgumentCount: 4);
+
+            Assert.AreEqual("(Column1 = @p2 OR @p2 IS NULL) AND Column2 = @p3", commandText);
         }
     }
 }
