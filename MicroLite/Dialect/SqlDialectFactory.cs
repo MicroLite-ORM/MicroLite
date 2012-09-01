@@ -26,8 +26,6 @@ namespace MicroLite.Dialect
             { "MicroLite.Dialect.MsSqlDialect", typeof(MsSqlDialect) }
         };
 
-        private static readonly object locker = new object();
-
         /// <summary>
         /// Gets the dialect with the specified name.
         /// </summary>
@@ -36,12 +34,9 @@ namespace MicroLite.Dialect
         /// <exception cref="NotSupportedException">The specified dialect name is not supported.</exception>
         internal static ISqlDialect GetDialect(string dialectName)
         {
-            lock (locker)
+            if (dialects.ContainsKey(dialectName))
             {
-                if (dialects.ContainsKey(dialectName))
-                {
-                    return (ISqlDialect)Activator.CreateInstance(dialects[dialectName]);
-                }
+                return (ISqlDialect)Activator.CreateInstance(dialects[dialectName]);
             }
 
             throw new NotSupportedException(Messages.SqlDialectFactory_DialectNotSupported.FormatWith(dialectName));
