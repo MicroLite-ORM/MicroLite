@@ -20,8 +20,6 @@ namespace MicroLite
     public sealed class SqlQuery
     {
         private readonly List<object> arguments = new List<object>();
-        private string commandText;
-        private int timeout = 30;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlQuery"/> class with the specified command text and parameter values.
@@ -30,8 +28,9 @@ namespace MicroLite
         /// <param name="arguments">The parameter values for the query.</param>
         public SqlQuery(string commandText, params object[] arguments)
         {
-            this.commandText = commandText;
+            this.CommandText = commandText;
             this.arguments.AddRange(arguments ?? new object[0]);
+            this.Timeout = 30;
         }
 
         /// <summary>
@@ -50,15 +49,8 @@ namespace MicroLite
         /// </summary>
         public string CommandText
         {
-            get
-            {
-                return this.commandText;
-            }
-
-            set
-            {
-                this.commandText = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -66,15 +58,8 @@ namespace MicroLite
         /// </summary>
         public int Timeout
         {
-            get
-            {
-                return this.timeout;
-            }
-
-            set
-            {
-                this.timeout = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
