@@ -129,9 +129,6 @@
   <data name="FluentConfiguration_CreatingSessionFactory" xml:space="preserve">
     <value>Creating a session factory for connection named [{0}]</value>
   </data>
-  <data name="FluentConfiguration_ProviderNotSupported" xml:space="preserve">
-    <value>The provider [{0}] is currently not supported by the MicroLite ORM framework</value>
-  </data>
   <data name="FluentConfiguration_ReadingConnection" xml:space="preserve">
     <value>Reading connection named [{0}] from app.config</value>
   </data>

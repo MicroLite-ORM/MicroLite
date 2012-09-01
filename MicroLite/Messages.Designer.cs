@@ -133,15 +133,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The provider [{0}] is currently not supported by the MicroLite ORM framework.
-        /// </summary>
-        internal static string FluentConfiguration_ProviderNotSupported {
-            get {
-                return ResourceManager.GetString("FluentConfiguration_ProviderNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Reading connection named [{0}] from app.config.
         /// </summary>
         internal static string FluentConfiguration_ReadingConnection {

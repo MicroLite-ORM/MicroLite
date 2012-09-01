@@ -81,12 +81,6 @@ namespace MicroLite.Configuration
                 throw new MicroLiteException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
 
-            if (configSection.ProviderName != "System.Data.SqlClient")
-            {
-                log.TryLogFatal(Messages.FluentConfiguration_ProviderNotSupported, configSection.ProviderName);
-                throw new NotSupportedException(Messages.FluentConfiguration_ProviderNotSupported.FormatWith(configSection.ProviderName));
-            }
-
             try
             {
                 this.options.ConnectionName = configSection.Name;
