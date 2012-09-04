@@ -4,9 +4,17 @@ properties {
   $buildDir = "$baseDir\build"
   $buildDir35 = "$buildDir\3.5\"
   $buildDir40 = "$buildDir\4.0\"
+  $helpDir = "$buildDir\help\"
 }
 
-Task Default -depends RunTests, Build35, Build40
+Task Default -depends RunTests, Build35, Build40, BuildHelp
+
+Task BuildHelp {
+  Remove-Item -force -recurse $helpDir -ErrorAction SilentlyContinue
+  
+  Write-Host "Building $projectName.shfbproj" -ForegroundColor Green
+  Exec { msbuild "$projectName.shfbproj" }  
+}
 
 Task Build35 {
   Remove-Item -force -recurse $buildDir35 -ErrorAction SilentlyContinue
