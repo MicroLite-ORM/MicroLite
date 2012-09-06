@@ -68,12 +68,13 @@
                 .Average("Total")
                 .From(typeof(Invoice))
                 .Where("CustomerId = @p0", 1022)
+                .GroupBy("CustomerId")
                 .ToSqlQuery();
 
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT CustomerId, AVG(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT CustomerId, AVG(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0) GROUP BY CustomerId", sqlQuery.CommandText);
         }
 
         [Test]
@@ -106,13 +107,14 @@
         public void SelectCountWithOtherColumn()
         {
             var sqlQuery = SqlBuilder
-                .Select("CustomerId")
+                .Select("ServiceId")
                 .Count("CustomerId")
                 .From(typeof(Customer))
+                .GroupBy("ServiceId")
                 .ToSqlQuery();
 
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
-            Assert.AreEqual("SELECT CustomerId, COUNT(CustomerId) AS CustomerId FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT ServiceId, COUNT(CustomerId) AS CustomerId FROM Sales.Customers GROUP BY ServiceId", sqlQuery.CommandText);
         }
 
         [Test]
