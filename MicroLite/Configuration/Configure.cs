@@ -36,6 +36,7 @@ namespace MicroLite.Configuration
         /// Begins the process of specifying the extensions which should be used by MicroLite.
         /// </summary>
         /// <returns>The interface which provides the extension points.</returns>
+        /// <remarks>Extensions should be configured before configuring any connections.</remarks>
         public static IConfigureExtensions Extensions()
         {
             return new ConfigureExtensions();
