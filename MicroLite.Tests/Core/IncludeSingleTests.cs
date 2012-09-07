@@ -52,7 +52,7 @@
         }
 
         [Test]
-        public void ValueReturnsNullIfNuildValueNotCalled()
+        public void ValueReturnsNullIfBuildValueNotCalled()
         {
             var include = new IncludeSingle<Customer>();
 

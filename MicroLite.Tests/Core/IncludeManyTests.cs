@@ -27,7 +27,7 @@
         }
 
         [Test]
-        public void ValuesReturnsNullIfNuildValueNotCalled()
+        public void ValuesReturnsNullIfBuildValueNotCalled()
         {
             var include = new IncludeMany<Customer>();
 
