@@ -16,7 +16,7 @@ namespace MicroLite.Core
     using MicroLite.Mapping;
 
     /// <summary>
-    /// The default implementation of <see cref="IInclude&lt;T&gt;"/>.
+    /// The default implementation of <see cref="IInclude&lt;T&gt;"/> for mapped objects.
     /// </summary>
     /// <typeparam name="T">The type of object to be included.</typeparam>
     internal sealed class IncludeSingle<T> : Include, IInclude<T> where T : class, new()
