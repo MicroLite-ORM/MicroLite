@@ -238,9 +238,12 @@
     <value>Transaction [{0}] has been completed</value>
   </data>
   <data name="IncludeSingle_SingleResultExpected" xml:space="preserve">
-    <value>There are multiple records returned in the results list</value>
+    <value>There are multiple records returned in the results list, the single query should return a single row only</value>
   </data>
   <data name="SqlDialectFactory_DialectNotSupported" xml:space="preserve">
     <value>The sql dialect [{0}] is currently not supported by the MicroLite ORM framework</value>
+  </data>
+  <data name="IncludeScalar_MultipleColumns" xml:space="preserve">
+    <value>The scalar query should return a single row with a single column</value>
   </data>
 </root>

@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Configuration\FluentConfigurationTests.cs" />
     <Compile Include="Core\IncludeManyTests.cs" />
+    <Compile Include="Core\IncludeScalarTests.cs" />
     <Compile Include="Core\IncludeSingleTests.cs" />
     <Compile Include="Dialect\SqlDialectFactoryTests.cs" />
     <Compile Include="Mapping\ColumnAttributeTests.cs" />

@@ -169,7 +169,16 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are multiple records returned in the results list.
+        ///   Looks up a localized string similar to The scalar query should return a single row with a single column.
+        /// </summary>
+        internal static string IncludeScalar_MultipleColumns {
+            get {
+                return ResourceManager.GetString("IncludeScalar_MultipleColumns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are multiple records returned in the results list, the single query should return a single row only.
         /// </summary>
         internal static string IncludeSingle_SingleResultExpected {
             get {

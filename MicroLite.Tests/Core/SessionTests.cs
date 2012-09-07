@@ -1152,7 +1152,7 @@
         }
 
         [Test]
-        public void SingleSqlQueryThrowsArgumentNullExceptionForNullIdentifier()
+        public void SingleSqlQueryThrowsArgumentNullExceptionForNullSqlQuery()
         {
             ISession session = new Session(
                 new Mock<IConnectionManager>().Object,
@@ -1179,6 +1179,73 @@
             }
 
             Assert.Throws<ObjectDisposedException>(() => session.Single<Customer>(new SqlQuery("")));
+        }
+
+        [Test]
+        public void IncludeScalarThrowsObjectDisposedExceptionIfDisposed()
+        {
+            ISession session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlDialect>().Object);
+
+            using (session)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => session.Include.Scalar<int>(new SqlQuery("")));
+        }
+
+        [Test]
+        public void IncludeScalarThrowsArgumentNullExceptionForNullSqlQuery()
+        {
+            ISession session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlDialect>().Object);
+
+            SqlQuery sqlQuery = null;
+
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Include.Scalar<int>(sqlQuery));
+
+            Assert.AreEqual("sqlQuery", exception.ParamName);
+        }
+
+        [Test]
+        public void IncludeScalarSqlQueryExecutesAndReturnsResult()
+        {
+            var sqlQuery = new SqlQuery("");
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(1);
+            mockReader.Setup(x => x[0]).Returns(10);
+            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+            var reader = mockReader.Object;
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
+
+            ISession session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlDialect>().Object);
+
+            var includeScalar = session.Include.Scalar<int>(sqlQuery);
+
+            // HACK: to force session to execute the query.
+            // TODO: find a better way, we don't really want to make the method non private just for testing though...
+            typeof(Session).GetMethod("ExecuteAllQueries", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).Invoke(session, null);
+
+            Assert.AreEqual(10, includeScalar.Value);
+
+            mockReader.VerifyAll();
+            mockCommand.VerifyAll();
+            mockConnectionManager.VerifyAll();
         }
 
         [TestFixtureTearDown]

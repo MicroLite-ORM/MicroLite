@@ -371,6 +371,23 @@ namespace MicroLite.Core
 
 #endif
 
+        public IInclude<T> Scalar<T>(SqlQuery sqlQuery)
+        {
+            this.ThrowIfDisposed();
+
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            var include = new IncludeScalar<T>();
+
+            this.includes.Enqueue(include);
+            this.queries.Enqueue(sqlQuery);
+
+            return include;
+        }
+
         public void Update(object instance)
         {
             this.ThrowIfDisposed();
