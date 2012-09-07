@@ -108,7 +108,7 @@ namespace MicroLite.Query
         ///     .AndWhere("LastName = @p0", "Smith") // Each time, the parameter number relates to the individual method call.
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0) AND (LastName = @p1)
+        /// Would generate SELECT [Columns] FROM Customers WHERE (FirstName = @p0) AND (LastName = @p1)
         /// @p0 would be John
         /// @p1 would be Smith
         /// </example>
@@ -121,7 +121,7 @@ namespace MicroLite.Query
         ///     .Where("FirstName = @p0 AND LastName = @p1", "John", "Smith")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 AND LastName = @p1)
+        /// Would generate SELECT [Columns] FROM Customers WHERE (FirstName = @p0 AND LastName = @p1)
         /// @p0 would be John
         /// @p1 would be Smith
         /// </example>
