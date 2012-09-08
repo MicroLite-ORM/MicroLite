@@ -31,7 +31,7 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 
 if ($version)
 {
-	UpdateAssemblyInfoFiles($version)
+	UpdateAssemblyInfoFiles($version.SubString(0, 5))
 }
 
 # Run the psake build script to create the release binaries
