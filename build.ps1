@@ -11,6 +11,29 @@ $nuGetExe = "$scriptPath\.nuget\NuGet.exe"
 $nuSpec = "$scriptPath\$projectName.nuspec"
 $nuGetPackage = "$buildDir\$projectName.$version.nupkg"
 
+function UpdateAssemblyInfoFiles ([string] $buildVersion)
+{
+	$assemblyVersionPattern = 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
+	$fileVersionPattern = 'AssemblyFileVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
+	$assemblyVersion = 'AssemblyVersion("' + $buildVersion + '.0")';
+	$fileVersion = 'AssemblyFileVersion("' + $buildVersion + '.0")';
+	
+	Get-ChildItem $scriptPath -r -filter AssemblyInfo.cs | ForEach-Object {
+		$filename = $_.Directory.ToString() + '\' + $_.Name
+		$filename + ' -> ' + $buildVersion
+			
+		(Get-Content $filename) | ForEach-Object {
+			% {$_ -replace $assemblyVersionPattern, $assemblyVersion } |
+			% {$_ -replace $fileVersionPattern, $fileVersion }
+		} | Set-Content $filename -Encoding UTF8
+	}
+}
+
+if ($version)
+{
+	UpdateAssemblyInfoFiles($version)
+}
+
 # Run the psake build script to create the release binaries
 Import-Module (Join-Path $scriptPath tools\psake\psake.psm1) -ErrorAction SilentlyContinue
 
