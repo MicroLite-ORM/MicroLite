@@ -18,11 +18,13 @@ namespace MicroLite
     /// The result of a paged query.
     /// </summary>
     /// <typeparam name="T">The type of object the contained in the results.</typeparam>
+    [System.Diagnostics.DebuggerDisplay("Page {Page} of {TotalPages} showing {ResultsPerPage} results per page with a total of {TotalResults} results")]
     public sealed class PagedResult<T>
     {
         private readonly long page;
         private readonly IList<T> results;
         private readonly long resultsPerPage;
+        private readonly long totalResults;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="PagedResult&lt;T&gt;"/> class.
@@ -30,11 +32,13 @@ namespace MicroLite
         /// <param name="page">The page number.</param>
         /// <param name="results">The results in the page.</param>
         /// <param name="resultsPerPage">The number of results per page.</param>
-        public PagedResult(long page, IList<T> results, long resultsPerPage)
+        /// <param name="totalResults">The total number of results.</param>
+        public PagedResult(long page, IList<T> results, long resultsPerPage, long totalResults)
         {
             this.page = page;
             this.results = results;
             this.resultsPerPage = resultsPerPage;
+            this.totalResults = totalResults;
         }
 
         /// <summary>
@@ -67,6 +71,28 @@ namespace MicroLite
             get
             {
                 return this.resultsPerPage;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of pages.
+        /// </summary>
+        public long TotalPages
+        {
+            get
+            {
+                return this.TotalResults / this.ResultsPerPage;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of results.
+        /// </summary>
+        public long TotalResults
+        {
+            get
+            {
+                return this.totalResults;
             }
         }
     }

@@ -18,6 +18,54 @@
         }
 
         [Test]
+        public void CountQueryNoWhereOrOrderBy()
+        {
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
+
+            var sqlDialect = new MsSqlDialect();
+            var countQuery = sqlDialect.CountQuery(sqlQuery);
+
+            Assert.AreEqual("SELECT COUNT(*) FROM Customers", countQuery.CommandText);
+            Assert.AreEqual(0, countQuery.Arguments.Count);
+        }
+
+        [Test]
+        public void CountQueryWithNoWhereButOrderBy()
+        {
+            var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [dbo].[Customers] ORDER BY [CustomerId] ASC");
+
+            var sqlDialect = new MsSqlDialect();
+            var countQuery = sqlDialect.CountQuery(sqlQuery);
+
+            Assert.AreEqual("SELECT COUNT(*) FROM [dbo].[Customers]", countQuery.CommandText);
+            Assert.AreEqual(0, countQuery.Arguments.Count);
+        }
+
+        [Test]
+        public void CountQueryWithWhereAndOrderBy()
+        {
+            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
+
+            var sqlDialect = new MsSqlDialect();
+            var countQuery = sqlDialect.CountQuery(sqlQuery);
+
+            Assert.AreEqual("SELECT COUNT(*) FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", countQuery.CommandText);
+            Assert.AreEqual(sqlQuery.Arguments[0], countQuery.Arguments[0], "The first argument should be the first argument from the original query");
+        }
+
+        [Test]
+        public void CountQueryWithWhereButNoOrderBy()
+        {
+            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", CustomerStatus.Active);
+
+            var sqlDialect = new MsSqlDialect();
+            var countQuery = sqlDialect.CountQuery(sqlQuery);
+
+            Assert.AreEqual("SELECT COUNT(*) FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", countQuery.CommandText);
+            Assert.AreEqual(sqlQuery.Arguments[0], countQuery.Arguments[0], "The first argument should be the first argument from the original query");
+        }
+
+        [Test]
         public void DeleteQueryForInstance()
         {
             var customer = new CustomerWithIdentity

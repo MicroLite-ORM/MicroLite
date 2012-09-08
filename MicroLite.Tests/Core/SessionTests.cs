@@ -787,11 +787,15 @@
         [Test]
         public void PagedExecutesAndReturnsResults()
         {
-            var sqlQuery = new SqlQuery("");
-            var paged = new SqlQuery("");
+            var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
+            var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
+            var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
 
             var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+            mockReader.Setup(x => x.FieldCount).Returns(1);
+            mockReader.Setup(x => x[0]).Returns(100);
+            mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
             var reader = mockReader.Object;
 
             var mockCommand = new Mock<IDbCommand>();
@@ -800,13 +804,14 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.BuildCommand(paged)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.BuildCommand(It.IsAny<SqlQuery>())).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.Page(sqlQuery, 10, 25)).Returns(paged);
+            mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
+            mockSqlDialect.Setup(x => x.Page(sqlQuery, 10, 25)).Returns(pagedQuery);
 
             var session = new Session(
                 mockConnectionManager.Object,

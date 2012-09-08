@@ -21,6 +21,8 @@ namespace MicroLite.Dialect
     /// </summary>
     internal abstract class SqlDialect : ISqlDialect
     {
+        public abstract SqlQuery CountQuery(SqlQuery sqlQuery);
+
         public SqlQuery DeleteQuery(object instance)
         {
             var forType = instance.GetType();

@@ -20,6 +20,13 @@ namespace MicroLite.Dialect
     internal interface ISqlDialect
     {
         /// <summary>
+        /// Creates an SqlQuery to count the number of records which would be returned by the specified SqlQuery.
+        /// </summary>
+        /// <param name="sqlQuery">The SQL query.</param>
+        /// <returns>An <see cref="SqlQuery"/> to count the number of records which would be returned by the specified SqlQuery.</returns>
+        SqlQuery CountQuery(SqlQuery sqlQuery);
+
+        /// <summary>
         /// Creates a SqlQuery to perform a delete for the given instance.
         /// </summary>
         /// <param name="instance">The instance to build the query for.</param>

@@ -16,6 +16,7 @@ namespace MicroLite.Dialect
     using System.Collections.Generic;
     using System.Data;
     using System.Globalization;
+    using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
     using MicroLite.FrameworkExtensions;
@@ -38,6 +39,19 @@ namespace MicroLite.Dialect
         /// <remarks>Constructor needs to be public so that it can be instantiated by SqlDialectFactory.</remarks>
         public MsSqlDialect()
         {
+        }
+
+        public override SqlQuery CountQuery(SqlQuery sqlQuery)
+        {
+            var qualifiedTableName = tableNameRegex.Match(sqlQuery.CommandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            var whereMatchValue = whereRegex.Match(sqlQuery.CommandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            var whereClause = !string.IsNullOrEmpty(whereMatchValue) ? " WHERE " + whereMatchValue : string.Empty;
+
+            var sqlBuilder = new StringBuilder("SELECT COUNT(*) FROM ");
+            sqlBuilder.Append(qualifiedTableName);
+            sqlBuilder.Append(whereClause);
+
+            return new SqlQuery(sqlBuilder.ToString(), sqlQuery.Arguments.ToArray());
         }
 
         public override SqlQuery DeleteQuery(Type type, object identifier)

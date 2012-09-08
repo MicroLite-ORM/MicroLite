@@ -317,13 +317,15 @@ namespace MicroLite.Core
                 throw new ArgumentOutOfRangeException("resultsPerPage", Messages.Session_MustHaveAtLeast1Result);
             }
 
+            var countSqlQuery = this.sqlDialect.CountQuery(sqlQuery);
             var pagedSqlQuery = this.sqlDialect.Page(sqlQuery, page, resultsPerPage);
 
-            var include = this.Include.Many<T>(pagedSqlQuery);
+            var includeCount = this.Include.Scalar<int>(countSqlQuery);
+            var includeMany = this.Include.Many<T>(pagedSqlQuery);
 
             this.ExecuteAllQueries();
 
-            return new PagedResult<T>(page, include.Values, resultsPerPage);
+            return new PagedResult<T>(page, includeMany.Values, resultsPerPage, includeCount.Value);
         }
 
 #if !NET_3_5
