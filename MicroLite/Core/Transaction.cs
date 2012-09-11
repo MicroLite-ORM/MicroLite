@@ -23,7 +23,6 @@ namespace MicroLite.Core
     internal sealed class Transaction : ITransaction
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.Transaction");
-        private readonly string id = Guid.NewGuid().ToString();
         private readonly IsolationLevel isolationLevel;
         private bool committed;
         private IDbConnection connection;
@@ -43,7 +42,7 @@ namespace MicroLite.Core
             this.connection = transaction.Connection;
             this.isolationLevel = transaction.IsolationLevel;
 
-            log.TryLogDebug(Messages.Transaction_Created, this.id);
+            log.TryLogDebug(Messages.Transaction_Created);
         }
 
         public bool IsActive
@@ -85,9 +84,9 @@ namespace MicroLite.Core
 
             try
             {
-                log.TryLogInfo(Messages.Transaction_Committing, this.id);
+                log.TryLogInfo(Messages.Transaction_Committing);
                 this.transaction.Commit();
-                log.TryLogInfo(Messages.Transaction_Committed, this.id);
+                log.TryLogInfo(Messages.Transaction_Committed);
 
                 this.committed = true;
 
@@ -108,7 +107,7 @@ namespace MicroLite.Core
             {
                 if (this.IsActive)
                 {
-                    log.TryLogWarn(Messages.Transaction_DisposedUncommitted, this.id);
+                    log.TryLogWarn(Messages.Transaction_DisposedUncommitted);
                     this.Rollback();
                 }
 
@@ -116,7 +115,7 @@ namespace MicroLite.Core
                 this.transaction = null;
                 this.connection = null;
 
-                log.TryLogDebug(Messages.Transaction_Disposed, this.id);
+                log.TryLogDebug(Messages.Transaction_Disposed);
                 this.disposed = true;
             }
         }
@@ -128,9 +127,9 @@ namespace MicroLite.Core
 
             try
             {
-                log.TryLogInfo(Messages.Transaction_RollingBack, this.id);
+                log.TryLogInfo(Messages.Transaction_RollingBack);
                 this.transaction.Rollback();
-                log.TryLogInfo(Messages.Transaction_RolledBack, this.id);
+                log.TryLogInfo(Messages.Transaction_RolledBack);
 
                 this.rolledBack = true;
 
@@ -167,7 +166,7 @@ namespace MicroLite.Core
         {
             if (this.IsActive)
             {
-                log.TryLogInfo(Messages.Transaction_EnlistingCommand, this.id);
+                log.TryLogInfo(Messages.Transaction_EnlistingCommand);
                 command.Transaction = this.transaction;
             }
         }

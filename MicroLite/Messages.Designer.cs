@@ -277,7 +277,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session [{0}] closing database connection.
+        ///   Looks up a localized string similar to Session closing database connection.
         /// </summary>
         internal static string Session_ClosingConnection {
             get {
@@ -286,7 +286,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session [{0}] created.
+        ///   Looks up a localized string similar to Session created.
         /// </summary>
         internal static string Session_Created {
             get {
@@ -295,7 +295,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session [{0}] disposed.
+        ///   Looks up a localized string similar to Session disposed.
         /// </summary>
         internal static string Session_Disposed {
             get {
@@ -313,7 +313,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session [{0}] opening database connection.
+        ///   Looks up a localized string similar to Session opening database connection.
         /// </summary>
         internal static string Session_OpeningConnection {
             get {
@@ -367,7 +367,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] committed changes.
+        ///   Looks up a localized string similar to Transaction committed changes.
         /// </summary>
         internal static string Transaction_Committed {
             get {
@@ -376,7 +376,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] committing changes.
+        ///   Looks up a localized string similar to Transaction committing changes.
         /// </summary>
         internal static string Transaction_Committing {
             get {
@@ -385,7 +385,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] has been completed.
+        ///   Looks up a localized string similar to Transaction has been completed.
         /// </summary>
         internal static string Transaction_Completed {
             get {
@@ -394,7 +394,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] created.
+        ///   Looks up a localized string similar to Transaction created.
         /// </summary>
         internal static string Transaction_Created {
             get {
@@ -403,7 +403,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] disposed.
+        ///   Looks up a localized string similar to Transaction disposed.
         /// </summary>
         internal static string Transaction_Disposed {
             get {
@@ -412,7 +412,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] is being disposed with uncommitted changes.
+        ///   Looks up a localized string similar to Transaction is being disposed with uncommitted changes.
         /// </summary>
         internal static string Transaction_DisposedUncommitted {
             get {
@@ -421,7 +421,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Command enlisted in transaction [{0}].
+        ///   Looks up a localized string similar to Command enlisted in transaction.
         /// </summary>
         internal static string Transaction_EnlistingCommand {
             get {
@@ -430,7 +430,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] rolled back changes.
+        ///   Looks up a localized string similar to Transaction rolled back changes.
         /// </summary>
         internal static string Transaction_RolledBack {
             get {
@@ -439,7 +439,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] rolling back changes.
+        ///   Looks up a localized string similar to Transaction rolling back changes.
         /// </summary>
         internal static string Transaction_RollingBack {
             get {

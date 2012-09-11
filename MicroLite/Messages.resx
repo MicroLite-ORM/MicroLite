@@ -172,16 +172,16 @@
     <value>Creating a new session</value>
   </data>
   <data name="Session_ClosingConnection" xml:space="preserve">
-    <value>Session [{0}] closing database connection</value>
+    <value>Session closing database connection</value>
   </data>
   <data name="Session_Created" xml:space="preserve">
-    <value>Session [{0}] created</value>
+    <value>Session created</value>
   </data>
   <data name="Session_Disposed" xml:space="preserve">
-    <value>Session [{0}] disposed</value>
+    <value>Session disposed</value>
   </data>
   <data name="Session_OpeningConnection" xml:space="preserve">
-    <value>Session [{0}] opening database connection</value>
+    <value>Session opening database connection</value>
   </data>
   <data name="AttributeMappingConvention_IgnoringProperty" xml:space="preserve">
     <value>The property [{0}].[{1}] will not be mapped by MicroLite as it has no ColumnAttribute</value>
@@ -193,22 +193,22 @@
     <value>No column has been mapped as the identifier for the table [{0}].[{1}]</value>
   </data>
   <data name="Transaction_Committing" xml:space="preserve">
-    <value>Transaction [{0}] committing changes</value>
+    <value>Transaction committing changes</value>
   </data>
   <data name="Transaction_Created" xml:space="preserve">
-    <value>Transaction [{0}] created</value>
+    <value>Transaction created</value>
   </data>
   <data name="Transaction_Disposed" xml:space="preserve">
-    <value>Transaction [{0}] disposed</value>
+    <value>Transaction disposed</value>
   </data>
   <data name="Transaction_DisposedUncommitted" xml:space="preserve">
-    <value>Transaction [{0}] is being disposed with uncommitted changes</value>
+    <value>Transaction is being disposed with uncommitted changes</value>
   </data>
   <data name="Transaction_EnlistingCommand" xml:space="preserve">
-    <value>Command enlisted in transaction [{0}]</value>
+    <value>Command enlisted in transaction</value>
   </data>
   <data name="Transaction_RollingBack" xml:space="preserve">
-    <value>Transaction [{0}] rolling back changes</value>
+    <value>Transaction rolling back changes</value>
   </data>
   <data name="ObjectInfo_TypeMustBeClass" xml:space="preserve">
     <value>The type [{0}] is not a class and therefore cannot be used by the MicroLite ORM Framework</value>
@@ -229,13 +229,13 @@
     <value>Using mapping convention [{0}]</value>
   </data>
   <data name="Transaction_Committed" xml:space="preserve">
-    <value>Transaction [{0}] committed changes</value>
+    <value>Transaction committed changes</value>
   </data>
   <data name="Transaction_RolledBack" xml:space="preserve">
-    <value>Transaction [{0}] rolled back changes</value>
+    <value>Transaction rolled back changes</value>
   </data>
   <data name="Transaction_Completed" xml:space="preserve">
-    <value>Transaction [{0}] has been completed</value>
+    <value>Transaction has been completed</value>
   </data>
   <data name="IncludeSingle_SingleResultExpected" xml:space="preserve">
     <value>There are multiple records returned in the results list, the single query should return a single row only</value>

@@ -60,6 +60,8 @@
     <Compile Include="IInclude.cs" />
     <Compile Include="IIncludeMany.cs" />
     <Compile Include="IIncludeSession.cs" />
+    <Compile Include="Logging\CurrentSessionIdResolver.cs" />
+    <Compile Include="Logging\SessionLoggingContext.cs" />
     <Compile Include="Mapping\ColumnAttribute.cs" />
     <Compile Include="Configuration\Configure.cs" />
     <Compile Include="Configuration\ConfigureExtensions.cs" />
