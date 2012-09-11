@@ -13,6 +13,4 @@ Although the current version only supports Microsoft SQL Server, it offers a num
 
 To find out more, head over to the wiki and see how easy it is to use!
 
-Also, checkout the [Sample Applications](https://github.com/TrevorPilley/MicroLite.Samples) using the MicroLite ORM Framework.
-
 [![Powered by NDepend](https://github.com/TrevorPilley/MicroLite/raw/master/tools/PoweredByNDependLogo.PNG)](http://ndepend.com/)
