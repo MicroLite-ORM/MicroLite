@@ -404,9 +404,9 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Orders the results of the query by the specified column in ascending order.
+        /// Orders the results of the query by the specified columns in ascending order.
         /// </summary>
-        /// <param name="column">The column to order by.</param>
+        /// <param name="columns">The columns to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <example>
         /// <code>
@@ -418,17 +418,17 @@ namespace MicroLite.Query
         /// </code>
         /// Would generate SELECT [Columns] FROM Customers ORDER BY CustomerId ASC
         /// </example>
-        public IOrderBy OrderByAscending(string column)
+        public IOrderBy OrderByAscending(params string[] columns)
         {
-            this.innerSql.Append(" ORDER BY " + column + " ASC");
+            this.innerSql.Append(" ORDER BY " + string.Join(", ", columns) + " ASC");
 
             return this;
         }
 
         /// <summary>
-        /// Orders the results of the query by the specified column in descending order.
+        /// Orders the results of the query by the specified columns in descending order.
         /// </summary>
-        /// <param name="column">The column to order by.</param>
+        /// <param name="columns">The columns to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <example>
         /// <code>
@@ -440,9 +440,9 @@ namespace MicroLite.Query
         /// </code>
         /// Would generate SELECT [Columns] FROM Customers ORDER BY CustomerId DESC
         /// </example>
-        public IOrderBy OrderByDescending(string column)
+        public IOrderBy OrderByDescending(params string[] columns)
         {
-            this.innerSql.Append(" ORDER BY " + column + " DESC");
+            this.innerSql.Append(" ORDER BY " + string.Join(", ", columns) + " DESC");
 
             return this;
         }
