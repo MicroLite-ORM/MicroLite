@@ -47,9 +47,11 @@ namespace MicroLite
             {
                 argumentsCount += sqlQuery.Arguments.Count;
 
-                var sql = ReNumberParameters(sqlQuery.CommandText, argumentsCount);
+                var commandText = sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
+                    ? sqlQuery.CommandText
+                    : ReNumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                sqlBuilder.AppendLine(sql + ";");
+                sqlBuilder.AppendLine(commandText + ";");
             }
 
             var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());

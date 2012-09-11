@@ -29,6 +29,27 @@
                 sqlQuery.CommandText);
         }
 
+        /// <summary>
+        /// Issue #90 - Re-Writing parameters should not happen if the query is a stored procedure.
+        /// </summary>
+        [Test]
+        public void CombineShouldNotReNumberParametersForStoredProcedure()
+        {
+            var sqlQuery1 = new SqlQuery("SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1", "Foo", 100);
+            var sqlQuery2 = new SqlQuery("EXEC CustomersByStatus @StatusId", 2);
+
+            var sqlQuery = SqlUtil.Combine(new[] { sqlQuery1, sqlQuery2 });
+
+            Assert.AreEqual(3, sqlQuery.Arguments.Count);
+            Assert.AreEqual("Foo", sqlQuery.Arguments[0]);
+            Assert.AreEqual(100, sqlQuery.Arguments[1]);
+            Assert.AreEqual(2, sqlQuery.Arguments[2]);
+
+            Assert.AreEqual(
+                "SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1;\r\nEXEC CustomersByStatus @StatusId",
+                sqlQuery.CommandText);
+        }
+
         [Test]
         public void CombineShouldSetTimeoutToLongestTimeout()
         {
