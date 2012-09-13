@@ -134,10 +134,11 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     var query = new SqlQuery(@"SELECT Customer.Name AS CustomerName, Invoice.Total AS InvoiceTotal
-        ///         FROM Customers Customer
-        ///         INNER JOIN Invoices Invoice ON Invoice.CustomerId = Customer.CustomerId
-        ///         GROUP BY Invoice.CustomerId");
+        ///     var query = new SqlQuery(@"SELECT Customer.Name AS CustomerName, SUM(Invoices.InvoiceTotal) AS InvoiceTotal
+        ///         FROM Customers
+        ///         INNER JOIN Invoices ON Invoices.CustomerID = Customers.CustomerID
+        ///         GROUP BY Customers.Name
+        ///         ORDER BY InvoiceTotal DESC");
         ///
         ///     var results = session.Advanced.Projection(query);
         ///
