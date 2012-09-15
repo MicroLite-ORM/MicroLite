@@ -26,6 +26,32 @@
         }
 
         [Test]
+        public void MoreResultsAvailableReturnsFalseIfNoMoreResults()
+        {
+            var page = 10;
+            var results = new List<Customer> { new Customer() };
+            var resultsPerPage = 10;
+            var totalResults = 100;
+
+            var pagedResults = new PagedResult<Customer>(page, results, resultsPerPage, totalResults);
+
+            Assert.IsFalse(pagedResults.MoreResultsAvailable);
+        }
+
+        [Test]
+        public void MoreResultsAvailableReturnsTrueIfMoreResults()
+        {
+            var page = 1;
+            var results = new List<Customer> { new Customer() };
+            var resultsPerPage = 10;
+            var totalResults = 100;
+
+            var pagedResults = new PagedResult<Customer>(page, results, resultsPerPage, totalResults);
+
+            Assert.IsTrue(pagedResults.MoreResultsAvailable);
+        }
+
+        [Test]
         public void TotalPages()
         {
             var resultsPerPage = 10;

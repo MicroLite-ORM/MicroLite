@@ -42,6 +42,17 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets a value indicating whether there are more results available.
+        /// </summary>
+        public bool MoreResultsAvailable
+        {
+            get
+            {
+                return this.Page < this.TotalPages;
+            }
+        }
+
+        /// <summary>
         /// Gets the page number for the results.
         /// </summary>
         public long Page
