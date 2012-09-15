@@ -34,7 +34,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the parameter values of the SQL statement or stored procedure.
+        /// Gets the parameter values of the SQL query.
         /// </summary>
         public IList<object> Arguments
         {
@@ -45,7 +45,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets or sets the SQL statement or stored procedure to execute at the data source.
+        /// Gets or sets the SQL statement execute against the data source.
         /// </summary>
         public string CommandText
         {

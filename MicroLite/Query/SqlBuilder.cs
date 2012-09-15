@@ -19,7 +19,7 @@ namespace MicroLite.Query
     using MicroLite.Mapping;
 
     /// <summary>
-    /// A helper class for creating a dynamic <see cref="SqlQuery" />.
+    /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
     public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter
     {
