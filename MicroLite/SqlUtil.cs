@@ -105,22 +105,23 @@ namespace MicroLite
         /// <returns>The re-numbered SQL</returns>
         internal static string ReNumberParameters(string sql, int totalArgumentCount)
         {
+            var parameterNames = GetParameterNames(sql);
+
+            if (parameterNames.Count == 0)
+            {
+                return sql;
+            }
+
             var argsAdded = 0;
+            var parameterPrefix = parameterNames.First().Substring(0, 2);
 
             var predicateReWriter = new StringBuilder(sql);
 
-            var parameterNames = new HashSet<string>(parameterRegex.Matches(sql).Cast<Match>().Select(x => x.Value));
-
-            if (parameterNames.Count > 0)
+            foreach (var parameterName in parameterNames.OrderByDescending(n => n))
             {
-                var parameterPrefix = parameterNames.First().Substring(0, 2);
+                var newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
 
-                foreach (var parameterName in parameterNames.OrderByDescending(n => n))
-                {
-                    var newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
-
-                    predicateReWriter.Replace(parameterName, newParameterName);
-                }
+                predicateReWriter.Replace(parameterName, newParameterName);
             }
 
             return predicateReWriter.ToString();
