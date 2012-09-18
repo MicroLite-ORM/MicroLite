@@ -43,6 +43,15 @@ namespace MicroLite.Mapping
             }
 
             var identifierStrategy = MicroLite.Mapping.IdentifierStrategy.Identity;
+            var columns = CreateColumnInfos(forType, ref identifierStrategy);
+
+            var tableInfo = new TableInfo(columns, identifierStrategy, tableAttribute.Name, tableAttribute.Schema);
+
+            return new ObjectInfo(forType, tableInfo);
+        }
+
+        private static List<ColumnInfo> CreateColumnInfos(Type forType, ref IdentifierStrategy identifierStrategy)
+        {
             var columns = new List<ColumnInfo>();
 
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
@@ -74,9 +83,7 @@ namespace MicroLite.Mapping
                 columns.Add(columnInfo);
             }
 
-            var tableInfo = new TableInfo(columns, identifierStrategy, tableAttribute.Name, tableAttribute.Schema);
-
-            return new ObjectInfo(forType, tableInfo);
+            return columns;
         }
     }
 }

@@ -6,6 +6,7 @@
     /// <summary>
     /// Unit Tests for the <see cref="IdentifierAttribute"/> class.
     /// </summary>
+    [TestFixture]
     public class IdentifierAttributeTests
     {
         [Test]

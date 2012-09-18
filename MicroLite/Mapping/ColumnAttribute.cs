@@ -17,6 +17,35 @@ namespace MicroLite.Mapping
     /// <summary>
     /// An attribute which can be applied to a property to specify the column name that the property maps to.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// // Option 1 - Column and property name match.
+    /// [Column("FirstName")]
+    /// public int FirstName
+    /// {
+    ///     get;
+    ///     set;
+    /// }
+    /// </code>
+    /// <code>
+    /// // Option 2 - Column and property name differ.
+    /// [Column("FName")]
+    /// public int FirstName
+    /// {
+    ///     get;
+    ///     set;
+    /// }
+    /// </code>
+    /// <code>
+    /// // Additionally, it is possible to restrict insert or updates to a column.
+    /// [Column("Created", allowInsert: true, allowUpdate: false)]
+    /// public DateTime Created
+    /// {
+    ///     get;
+    ///     set;
+    /// }
+    /// </code>
+    /// </example>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class ColumnAttribute : Attribute
     {

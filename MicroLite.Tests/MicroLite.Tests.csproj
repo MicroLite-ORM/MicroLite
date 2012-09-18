@@ -12,6 +12,8 @@
     <AssemblyName>MicroLite.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,11 +39,12 @@
     <AssemblyOriginatorKeyFile>..\MicroLite.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=2.6.1.12217, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.2.6.1\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,6 +52,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\FluentConfigurationTests.cs" />
+    <Compile Include="Core\IncludeManyTests.cs" />
+    <Compile Include="Core\IncludeScalarTests.cs" />
+    <Compile Include="Core\IncludeSingleTests.cs" />
+    <Compile Include="Dialect\SqlDialectFactoryTests.cs" />
+    <Compile Include="Logging\CurrentSessionIdResolverTests.cs" />
+    <Compile Include="Logging\SessionLoggingContextTests.cs" />
     <Compile Include="Mapping\ColumnAttributeTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
@@ -59,7 +68,7 @@
     <Compile Include="Core\ObjectBuilderTests.cs" />
     <Compile Include="Core\SessionFactoryTests.cs" />
     <Compile Include="Core\SessionTests.cs" />
-    <Compile Include="Core\SqlQueryBuilderTests.cs" />
+    <Compile Include="Dialect\MsSqlDialectTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
     <Compile Include="Listeners\ListenerCollectionTests.cs" />
     <Compile Include="Mapping\ColumnInfoTests.cs" />
@@ -74,6 +83,7 @@
     <Compile Include="Query\SqlBuilderTests.cs" />
     <Compile Include="SqlQueryTests.cs" />
     <Compile Include="Mapping\TableAttributeTests.cs" />
+    <Compile Include="SqlUtilTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicroLite\MicroLite.csproj">
@@ -86,9 +96,15 @@
       <Link>MicroLite.snk</Link>
     </None>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

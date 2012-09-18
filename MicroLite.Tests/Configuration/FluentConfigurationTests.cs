@@ -69,10 +69,8 @@
         {
             var fluentConfiguration = new FluentConfiguration();
 
-            var exception = Assert.Throws<NotSupportedException>(
-                () => fluentConfiguration.ForConnection("OleConnection"));
-
-            Assert.AreEqual(Messages.FluentConfiguration_ProviderNotSupported.FormatWith("System.Data.OleDb"), exception.Message);
+            var exception = Assert.Throws<MicroLiteException>(
+                () => fluentConfiguration.ForConnection("ConnectionWithInvalidProviderName"));
         }
     }
 }

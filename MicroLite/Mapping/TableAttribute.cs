@@ -18,6 +18,15 @@ namespace MicroLite.Mapping
     /// An attribute which can be applied to a class to specify the table name and database schema the table
     /// exists within.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// [Table("dbo", "Customers")]
+    /// public class Customer
+    /// {
+    ///    ...
+    /// }
+    /// </code>
+    /// </example>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public sealed class TableAttribute : Attribute
     {

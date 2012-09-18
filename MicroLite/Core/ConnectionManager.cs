@@ -16,8 +16,6 @@ namespace MicroLite.Core
     using System.Collections.Generic;
     using System.Data;
     using System.Globalization;
-    using System.Linq;
-    using System.Text.RegularExpressions;
     using MicroLite.FrameworkExtensions;
 
     /// <summary>
@@ -25,7 +23,6 @@ namespace MicroLite.Core
     /// </summary>
     internal sealed class ConnectionManager : IConnectionManager
     {
-        private static readonly Regex parameterRegex = new Regex(@"@[\w]+", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private IDbConnection connection;
         private Transaction currentTransaction;
 
@@ -63,9 +60,9 @@ namespace MicroLite.Core
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The purpose of this method is to build a command and return it.")]
-        public IDbCommand Build(SqlQuery sqlQuery)
+        public IDbCommand BuildCommand(SqlQuery sqlQuery)
         {
-            var parameterNames = new HashSet<string>(parameterRegex.Matches(sqlQuery.CommandText).Cast<Match>().Select(x => x.Value)).ToList();
+            var parameterNames = SqlUtil.GetParameterNames(sqlQuery.CommandText);
 
             if (parameterNames.Count != sqlQuery.Arguments.Count)
             {
@@ -74,24 +71,13 @@ namespace MicroLite.Core
 
             var command = this.connection.CreateCommand();
             command.CommandTimeout = sqlQuery.Timeout;
+            command.CommandType = SqlUtil.GetCommandType(sqlQuery.CommandText);
             SetCommandText(command, sqlQuery);
-            SetCommandType(command, sqlQuery);
+            AddParameters(command, sqlQuery, parameterNames);
 
             if (this.currentTransaction != null)
             {
                 this.currentTransaction.Enlist(command);
-            }
-
-            for (int i = 0; i < parameterNames.Count; i++)
-            {
-                var parameterName = parameterNames[i];
-
-                var parameter = command.CreateParameter();
-                parameter.Direction = ParameterDirection.Input;
-                parameter.ParameterName = parameterName;
-                parameter.Value = sqlQuery.Arguments[i] ?? DBNull.Value;
-
-                command.Parameters.Add(parameter);
             }
 
             return command;
@@ -113,12 +99,27 @@ namespace MicroLite.Core
             }
         }
 
+        private static void AddParameters(IDbCommand command, SqlQuery sqlQuery, IList<string> parameterNames)
+        {
+            for (int i = 0; i < parameterNames.Count; i++)
+            {
+                var parameterName = parameterNames[i];
+
+                var parameter = command.CreateParameter();
+                parameter.Direction = ParameterDirection.Input;
+                parameter.ParameterName = parameterName;
+                parameter.Value = sqlQuery.Arguments[i] ?? DBNull.Value;
+
+                command.Parameters.Add(parameter);
+            }
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
         private static void SetCommandText(IDbCommand command, SqlQuery sqlQuery)
         {
             if (sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase))
             {
-                var firstParameterPosition = sqlQuery.CommandText.IndexOf('@', 0);
+                var firstParameterPosition = SqlUtil.GetFirstParameterPosition(sqlQuery.CommandText);
 
                 if (firstParameterPosition > 4)
                 {
@@ -133,13 +134,6 @@ namespace MicroLite.Core
             {
                 command.CommandText = sqlQuery.CommandText;
             }
-        }
-
-        private static void SetCommandType(IDbCommand command, SqlQuery sqlQuery)
-        {
-            command.CommandType = sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
-                ? CommandType.StoredProcedure
-                : CommandType.Text;
         }
     }
 }

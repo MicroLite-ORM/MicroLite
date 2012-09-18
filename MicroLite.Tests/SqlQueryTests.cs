@@ -5,8 +5,17 @@
     /// <summary>
     /// Unit Tests for the <see cref="SqlQuery"/> class.
     /// </summary>
+    [TestFixture]
     public class SqlQueryTests
     {
+        [Test]
+        public void ConstructorSetsArgumentsToEmptyListIfNoneSpecified()
+        {
+            var sqlQuery = new SqlQuery(string.Empty);
+
+            Assert.NotNull(sqlQuery.Arguments);
+        }
+
         [Test]
         public void ConstructorSetsProperties()
         {

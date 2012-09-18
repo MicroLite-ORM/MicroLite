@@ -18,10 +18,10 @@ namespace MicroLite
     /// <summary>
     /// The interface for a database transaction.
     /// </summary>
-    public interface ITransaction : IHideObjectMethods, IDisposable
+    public interface ITransaction : IDisposable, IHideObjectMethods
     {
         /// <summary>
-        /// Gets a value indicating whether this <see cref="ITransaction"/> is active.
+        /// Gets a value indicating whether this transaction is active.
         /// </summary>
         bool IsActive
         {
@@ -37,7 +37,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="ITransaction"/> has been committed.
+        /// Gets a value indicating whether this transaction has been committed.
         /// </summary>
         bool WasCommitted
         {
@@ -45,7 +45,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="ITransaction"/> has been rolled back.
+        /// Gets a value indicating whether this transaction has been rolled back.
         /// </summary>
         bool WasRolledBack
         {
