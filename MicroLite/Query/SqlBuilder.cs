@@ -25,6 +25,7 @@ namespace MicroLite.Query
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder();
+        private bool addedOrder = false;
 
         private SqlBuilder(string startingSql)
         {
@@ -420,7 +421,7 @@ namespace MicroLite.Query
         /// </example>
         public IOrderBy OrderByAscending(params string[] columns)
         {
-            this.innerSql.Append(" ORDER BY " + string.Join(", ", columns) + " ASC");
+            this.AddOrder(columns, " ASC");
 
             return this;
         }
@@ -442,7 +443,7 @@ namespace MicroLite.Query
         /// </example>
         public IOrderBy OrderByDescending(params string[] columns)
         {
-            this.innerSql.Append(" ORDER BY " + string.Join(", ", columns) + " DESC");
+            this.AddOrder(columns, " DESC");
 
             return this;
         }
@@ -612,6 +613,19 @@ namespace MicroLite.Query
             this.innerSql.Append(" " + parameter);
 
             return this;
+        }
+
+        private void AddOrder(string[] columns, string direction)
+        {
+            if (!this.addedOrder)
+            {
+                this.innerSql.Append(" ORDER BY " + string.Join(", ", columns) + direction);
+                this.addedOrder = true;
+            }
+            else
+            {
+                this.innerSql.Append(", " + string.Join(", ", columns) + direction);
+            }
         }
 
         private void AppendPredicate(string appendFormat, string predicate, params object[] args)
