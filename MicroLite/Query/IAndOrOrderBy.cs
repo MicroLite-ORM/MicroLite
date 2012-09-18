@@ -15,7 +15,7 @@ namespace MicroLite.Query
     /// <summary>
     /// The interface which specifies the and/or methods to extend the where clause in the fluent sql builder syntax.
     /// </summary>
-    public interface IAndOrOrderBy : IOrderBy, IToSqlQuery, IHideObjectMethods
+    public interface IAndOrOrderBy : IGroupBy, IOrderBy, IToSqlQuery, IHideObjectMethods
     {
         /// <summary>
         /// Adds a predicate as an AND to the where clause of the query.

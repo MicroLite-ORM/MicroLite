@@ -18,6 +18,17 @@ namespace MicroLite.Mapping
     /// An attribute which can be applied to a property to specify that it maps to the row identifier (primary key)
     /// in the table and also defines the <see cref="IdentifierStrategy"/> used to manage the identifier's value.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// [Column("CustomerId")]
+    /// [Identifier(IdentifierStrategy.Identity)]
+    /// public int Id
+    /// {
+    ///     get;
+    ///     set;
+    /// }
+    /// </code>
+    /// </example>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class IdentifierAttribute : Attribute
     {

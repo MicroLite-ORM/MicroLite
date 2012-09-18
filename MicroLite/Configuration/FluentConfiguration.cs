@@ -62,6 +62,11 @@ namespace MicroLite.Configuration
         /// <exception cref="NotSupportedException">Thrown if the provider name is not supported.</exception>
         public ICreateSessionFactory ForConnection(string connectionName)
         {
+            return this.ForConnection(connectionName, "MicroLite.Dialect.MsSqlDialect");
+        }
+
+        private ICreateSessionFactory ForConnection(string connectionName, string sqlDialect)
+        {
             if (connectionName == null)
             {
                 throw new ArgumentNullException("connectionName");
@@ -76,21 +81,18 @@ namespace MicroLite.Configuration
                 throw new MicroLiteException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
 
-            if (configSection.ProviderName != "System.Data.SqlClient")
-            {
-                log.TryLogFatal(Messages.FluentConfiguration_ProviderNotSupported, configSection.ProviderName);
-                throw new NotSupportedException(Messages.FluentConfiguration_ProviderNotSupported.FormatWith(configSection.ProviderName));
-            }
-
             try
             {
                 this.options.ConnectionName = configSection.Name;
                 this.options.ConnectionString = configSection.ConnectionString;
                 this.options.ProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
+                this.options.SqlDialect = sqlDialect;
+
                 return this;
             }
             catch (Exception e)
             {
+                log.TryLogError(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }

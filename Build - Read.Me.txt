@@ -1,11 +1,18 @@
-Before building, ensure that you have StyleCop installed (currently version 4.7.32.0)
+Requirements:
+ 
+  - .NET 4.0
+
+Before building, ensure that you have StyleCop installed (currently version 4.7.35.0)
 If running on a 64 bit machine, run the PowerShell (x86) executable otherwise the StyleCop.targets won't be found.
 
-** To just build the binaries in release mode with all tests run:
-.\build.ps1
+** By default, the build will run in release mode, run all tests and generate the compiled help:
 
-** To build the NuGet package you must specify the project name and version:
-.\build-nuget.ps1 -projectName MicroLite -version X.X.X
+	.\build.ps1
+
+** To also build the NuGet package you must specify the version:
+
+	.\build-nuget.ps1 -version X.X.X
 
 ** To also push it to NuGet.org after creating the .nupkg you must supply push true:
-.\build-nuget.ps1 -projectName MicroLite -version X.X.X -push $true
+
+	.\build-nuget.ps1 -version X.X.X -push $true

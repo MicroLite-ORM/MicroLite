@@ -43,6 +43,7 @@
     <AssemblyOriginatorKeyFile>..\MicroLite.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -50,6 +51,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\FluentConfiguration.cs" />
+    <Compile Include="Core\Include.cs" />
+    <Compile Include="Core\IncludeMany.cs" />
+    <Compile Include="Core\IncludeScalar.cs" />
+    <Compile Include="Core\IncludeSingle.cs" />
+    <Compile Include="Dialect\SqlDialect.cs" />
+    <Compile Include="Dialect\SqlDialectFactory.cs" />
+    <Compile Include="IInclude.cs" />
+    <Compile Include="IIncludeMany.cs" />
+    <Compile Include="IIncludeSession.cs" />
+    <Compile Include="Logging\CurrentSessionIdResolver.cs" />
+    <Compile Include="Logging\SessionLoggingContext.cs" />
     <Compile Include="Mapping\ColumnAttribute.cs" />
     <Compile Include="Configuration\Configure.cs" />
     <Compile Include="Configuration\ConfigureExtensions.cs" />
@@ -72,7 +84,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IObjectBuilder.cs" />
-    <Compile Include="Core\ISqlQueryBuilder.cs" />
+    <Compile Include="Dialect\ISqlDialect.cs" />
     <Compile Include="FrameworkExtensions\MemberInfoExtensions.cs" />
     <Compile Include="Core\ObjectBuilder.cs" />
     <Compile Include="FrameworkExtensions\PropertyInfoExtensions.cs" />
@@ -80,7 +92,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\SessionFactory.cs" />
-    <Compile Include="Core\SqlQueryBuilder.cs" />
+    <Compile Include="Dialect\MsSqlDialect.cs" />
     <Compile Include="FrameworkExtensions\StringExtensions.cs" />
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="Listeners\ListenerCollection.cs" />
@@ -101,8 +113,10 @@
     <Compile Include="Mapping\IdentifierAttribute.cs" />
     <Compile Include="Mapping\IdentifierStrategy.cs" />
     <Compile Include="Query\IFrom.cs" />
+    <Compile Include="Query\IFunctionOrFrom.cs" />
     <Compile Include="IHideObjectMethods.cs" />
     <Compile Include="Listeners\IListener.cs" />
+    <Compile Include="Query\IGroupBy.cs" />
     <Compile Include="Query\IOrderBy.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
@@ -120,6 +134,7 @@
     <Compile Include="Query\SqlBuilder.cs" />
     <Compile Include="SqlQuery.cs" />
     <Compile Include="Mapping\TableAttribute.cs" />
+    <Compile Include="SqlUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">

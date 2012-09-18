@@ -36,7 +36,8 @@
             var options = new SessionFactoryOptions
             {
                 ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
-                ProviderFactory = mockFactory.Object
+                ProviderFactory = mockFactory.Object,
+                SqlDialect = "MicroLite.Dialect.MsSqlDialect"
             };
 
             var sessionFactory = new SessionFactory(options);
@@ -58,7 +59,8 @@
             var options = new SessionFactoryOptions
             {
                 ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
-                ProviderFactory = mockFactory.Object
+                ProviderFactory = mockFactory.Object,
+                SqlDialect = "MicroLite.Dialect.MsSqlDialect"
             };
 
             var sessionFactory = new SessionFactory(options);

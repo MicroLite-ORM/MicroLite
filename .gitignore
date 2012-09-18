@@ -2,6 +2,7 @@
 bin
 obj
 build
+packages
 
 # mstest test results
 TestResults

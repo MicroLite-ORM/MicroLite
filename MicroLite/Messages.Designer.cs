@@ -61,7 +61,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be inserted.
+        ///   Looks up a localized string similar to The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted..
         /// </summary>
         internal static string AssignedListener_IdentifierNotSetForInsert {
             get {
@@ -70,7 +70,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignoring [{0}].[{1}] as it has no ColumnAttribute.
+        ///   Looks up a localized string similar to The property [{0}].[{1}] will not be mapped by MicroLite as it has no ColumnAttribute.
         /// </summary>
         internal static string AttributeMappingConvention_IgnoringProperty {
             get {
@@ -79,7 +79,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type [{0}] is not decorated with a TableAttribute.
+        ///   Looks up a localized string similar to The type [{0}] cannot be used by MicroLite as is not decorated with a TableAttribute.
         /// </summary>
         internal static string AttributeMappingConvention_NoTableAttribute {
             get {
@@ -88,7 +88,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using logger [{0}]..
+        ///   Looks up a localized string similar to Using logger [{0}].
         /// </summary>
         internal static string ConfigureExtensions_UsingLogger {
             get {
@@ -106,7 +106,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are [{0}] parameters in the SQL statement, however only [{1}] parameter arguments were specified..
+        ///   Looks up a localized string similar to The number of parameters in the SQL statement and the number of specified parameter arguments should match. However [{0}] parameters used in the SQL statement and [{1}] parameter arguments were specified..
         /// </summary>
         internal static string ConnectionManager_ArgumentsCountMismatch {
             get {
@@ -129,15 +129,6 @@ namespace MicroLite {
         internal static string FluentConfiguration_CreatingSessionFactory {
             get {
                 return ResourceManager.GetString("FluentConfiguration_CreatingSessionFactory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The provider [{0}] is currently not supported by the MicroLite ORM framework.
-        /// </summary>
-        internal static string FluentConfiguration_ProviderNotSupported {
-            get {
-                return ResourceManager.GetString("FluentConfiguration_ProviderNotSupported", resourceCulture);
             }
         }
         
@@ -178,6 +169,24 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The scalar query should return a single row with a single column.
+        /// </summary>
+        internal static string IncludeScalar_MultipleColumns {
+            get {
+                return ResourceManager.GetString("IncludeScalar_MultipleColumns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are multiple records returned in the results list, the single query should return a single row only.
+        /// </summary>
+        internal static string IncludeSingle_SingleResultExpected {
+            get {
+                return ResourceManager.GetString("IncludeSingle_SingleResultExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creating a new instance of [{0}].
         /// </summary>
         internal static string ObjectBuilder_CreatingInstance {
@@ -196,7 +205,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type [{0}] does not have a mapped property with the name [{1}].
+        ///   Looks up a localized string similar to The results contain a column with the name [{1}], however the type [{0}] does not have a mapped property with the column name [{1}].
         /// </summary>
         internal static string ObjectBuilder_UnknownProperty {
             get {
@@ -205,7 +214,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating ObjectInfo for [{0}].
+        ///   Looks up a localized string similar to Creating the ObjectInfo for the type [{0}].
         /// </summary>
         internal static string ObjectInfo_CreatingObjectInfo {
             get {
@@ -232,7 +241,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Retrieving ObjectInfo for [{0}].
+        ///   Looks up a localized string similar to Retrieving the ObjectInfo for [{0}].
         /// </summary>
         internal static string ObjectInfo_RetrievingObjectInfo {
             get {
@@ -268,7 +277,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session [{0}] closing database connection.
+        ///   Looks up a localized string similar to Session closing database connection.
         /// </summary>
         internal static string Session_ClosingConnection {
             get {
@@ -277,7 +286,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session [{0}] created.
+        ///   Looks up a localized string similar to Session created.
         /// </summary>
         internal static string Session_Created {
             get {
@@ -286,7 +295,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session [{0}] disposed.
+        ///   Looks up a localized string similar to Session disposed.
         /// </summary>
         internal static string Session_Disposed {
             get {
@@ -304,7 +313,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session [{0}] opening database connection.
+        ///   Looks up a localized string similar to Session opening database connection.
         /// </summary>
         internal static string Session_OpeningConnection {
             get {
@@ -331,7 +340,16 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute..
+        ///   Looks up a localized string similar to The sql dialect [{0}] is currently not supported by the MicroLite ORM framework.
+        /// </summary>
+        internal static string SqlDialectFactory_DialectNotSupported {
+            get {
+                return ResourceManager.GetString("SqlDialectFactory_DialectNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute.
         /// </summary>
         internal static string TableInfo_ColumnMappedMultipleTimes {
             get {
@@ -340,7 +358,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No ColumnInfo was specified with IsIdentifier set to true.
+        ///   Looks up a localized string similar to No column has been mapped as the identifier for the table [{0}].[{1}].
         /// </summary>
         internal static string TableInfo_NoIdentifierColumn {
             get {
@@ -349,7 +367,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] committed changes.
+        ///   Looks up a localized string similar to Transaction committed changes.
         /// </summary>
         internal static string Transaction_Committed {
             get {
@@ -358,7 +376,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] committing changes.
+        ///   Looks up a localized string similar to Transaction committing changes.
         /// </summary>
         internal static string Transaction_Committing {
             get {
@@ -367,7 +385,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] has been completed.
+        ///   Looks up a localized string similar to Transaction has been completed.
         /// </summary>
         internal static string Transaction_Completed {
             get {
@@ -376,7 +394,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] created.
+        ///   Looks up a localized string similar to Transaction created.
         /// </summary>
         internal static string Transaction_Created {
             get {
@@ -385,7 +403,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] disposed.
+        ///   Looks up a localized string similar to Transaction disposed.
         /// </summary>
         internal static string Transaction_Disposed {
             get {
@@ -394,7 +412,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] is being disposed with uncommitted changes.
+        ///   Looks up a localized string similar to Transaction is being disposed with uncommitted changes.
         /// </summary>
         internal static string Transaction_DisposedUncommitted {
             get {
@@ -403,7 +421,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Command enlisted in transaction [{0}].
+        ///   Looks up a localized string similar to Command enlisted in transaction.
         /// </summary>
         internal static string Transaction_EnlistingCommand {
             get {
@@ -412,7 +430,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] rolled back changes.
+        ///   Looks up a localized string similar to Transaction rolled back changes.
         /// </summary>
         internal static string Transaction_RolledBack {
             get {
@@ -421,7 +439,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction [{0}] rolling back changes.
+        ///   Looks up a localized string similar to Transaction rolling back changes.
         /// </summary>
         internal static string Transaction_RollingBack {
             get {

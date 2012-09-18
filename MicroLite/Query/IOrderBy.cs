@@ -18,17 +18,17 @@ namespace MicroLite.Query
     public interface IOrderBy : IToSqlQuery, IHideObjectMethods
     {
         /// <summary>
-        /// Orders the results of the query by the specified column in ascending order.
+        /// Orders the results of the query by the specified columns in ascending order.
         /// </summary>
-        /// <param name="column">The column to order by.</param>
+        /// <param name="columns">The columns to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IOrderBy OrderByAscending(string column);
+        IOrderBy OrderByAscending(params string[] columns);
 
         /// <summary>
-        /// Orders the results of the query by the specified column in descending order.
+        /// Orders the results of the query by the specified columns in descending order.
         /// </summary>
-        /// <param name="column">The column to order by.</param>
+        /// <param name="columns">The columns to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IOrderBy OrderByDescending(string column);
+        IOrderBy OrderByDescending(params string[] columns);
     }
 }
