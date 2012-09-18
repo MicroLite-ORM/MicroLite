@@ -75,7 +75,7 @@ namespace MicroLite.Mapping
                 var columnInfo = new ColumnInfo(
                     columnName: columnAttribute.Name,
                     propertyInfo: property,
-                    isIdentifier: identifierAttribute == null ? false : true,
+                    isIdentifier: identifierAttribute != null,
                     allowInsert: columnAttribute.AllowInsert,
                     allowUpdate: columnAttribute.AllowUpdate);
 
