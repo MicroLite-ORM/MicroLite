@@ -78,7 +78,7 @@ namespace MicroLite
         ///     // Tell the session to include the invoices count.
         ///     var invoicesCount = session.Include.Scalar&lt;int&gt;(invoicesQuery);
         ///
-        ///     // At this point, invoices will point to an IInclude&lt;invoice&gt; which will have it's default value of 0.
+        ///     // At this point, invoices will point to an IInclude&lt;int&gt; which will have it's default value of 0.
         ///     // You can call include for multiple things, they will all be loaded in a single database call once
         ///     // either ISession.Single, ISession.Fetch or ISession.Paged is called.
         ///
@@ -86,7 +86,7 @@ namespace MicroLite
         ///     var customer = session.Single&lt;Customer&gt;(1792);
         ///
         ///     // We can now acces the invoices count for the customer
-        ///     if (invoices.Value > 0)
+        ///     if (invoicesCount.Value > 0)
         ///     {
         ///         ...
         ///     }
@@ -110,9 +110,9 @@ namespace MicroLite
         /// using (var session = sessionFactory.OpenSession())
         /// {
         ///     // Tell the session to include the customer.
-        ///     var customer = session.Include.Single&lt;Customer&gt;(3264);
+        ///     var includeCustomer = session.Include.Single&lt;Customer&gt;(3264);
         ///
-        ///     // At this point, invoices will point to an IInclude&lt;Customer&gt; which will have no value.
+        ///     // At this point, includeCustomer will point to an IInclude&lt;Customer&gt; which will have no value.
         ///     // You can call include for multiple things, they will all be loaded in a single database call once
         ///     // either ISession.Single, ISession.Fetch or ISession.Paged is called.
         ///
@@ -123,7 +123,7 @@ namespace MicroLite
         ///     var invoices = session.Fetch&lt;Invoice&gt;(query);
         ///
         ///     // We can now acces the customer
-        ///     Console.WriteLine(customer.Value.Name);
+        ///     Console.WriteLine(includeCustomer.Value.Name);
         /// }
         /// </code>
         /// </example>

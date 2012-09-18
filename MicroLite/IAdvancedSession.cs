@@ -125,7 +125,7 @@ namespace MicroLite
         ///
         ///     foreach (var item in results)
         ///     {
-        ///         // The property names of each dynamic result will match the column names specified in the query.
+        ///         // The property names of each dynamic result will match (including case) the column names specified in the query.
         ///         Console.WriteLine(item.Name);
         ///         Console.WriteLine(item.DoB);
         ///     }
