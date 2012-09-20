@@ -269,7 +269,7 @@ namespace MicroLite.Query
 
             IFrom select = this;
 
-            if (this.innerSql.ToString().StartsWith("SELECT *", StringComparison.Ordinal))
+            if (this.innerSql.Length > 7 && this.innerSql[7].CompareTo('*') == 0)
             {
                 select = Select(objectInfo.TableInfo.Columns.Select(c => c.ColumnName).ToArray());
             }
