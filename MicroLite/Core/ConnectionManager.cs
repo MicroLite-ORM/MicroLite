@@ -60,6 +60,7 @@ namespace MicroLite.Core
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The purpose of this method is to build a command and return it.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
         public IDbCommand BuildCommand(SqlQuery sqlQuery)
         {
             var parameterNames = SqlUtil.GetParameterNames(sqlQuery.CommandText);
@@ -70,9 +71,9 @@ namespace MicroLite.Core
             }
 
             var command = this.connection.CreateCommand();
+            command.CommandText = SqlUtil.GetCommandText(sqlQuery.CommandText);
             command.CommandTimeout = sqlQuery.Timeout;
             command.CommandType = SqlUtil.GetCommandType(sqlQuery.CommandText);
-            SetCommandText(command, sqlQuery);
             AddParameters(command, sqlQuery, parameterNames);
 
             if (this.currentTransaction != null)
@@ -111,28 +112,6 @@ namespace MicroLite.Core
                 parameter.Value = sqlQuery.Arguments[i] ?? DBNull.Value;
 
                 command.Parameters.Add(parameter);
-            }
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
-        private static void SetCommandText(IDbCommand command, SqlQuery sqlQuery)
-        {
-            if (sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase))
-            {
-                var firstParameterPosition = SqlUtil.GetFirstParameterPosition(sqlQuery.CommandText);
-
-                if (firstParameterPosition > 4)
-                {
-                    command.CommandText = sqlQuery.CommandText.Substring(4, firstParameterPosition - 4).Trim();
-                }
-                else
-                {
-                    command.CommandText = sqlQuery.CommandText.Substring(4, sqlQuery.CommandText.Length - 4).Trim();
-                }
-            }
-            else
-            {
-                command.CommandText = sqlQuery.CommandText;
             }
         }
     }

@@ -72,6 +72,30 @@
         }
 
         [Test]
+        public void GetCommandTextForSqlText()
+        {
+            var commandText = "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value1] = @p1 AND [Table].[Value2] = @p2";
+
+            Assert.AreEqual(commandText, SqlUtil.GetCommandText(commandText));
+        }
+
+        [Test]
+        public void GetCommandTextForStoredProcedureWithoutParameters()
+        {
+            var commandText = "EXEC GetTableContents @identifier, @Cust_Name";
+
+            Assert.AreEqual("GetTableContents", SqlUtil.GetCommandText(commandText));
+        }
+
+        [Test]
+        public void GetCommandTextForStoredProcedureWithParameters()
+        {
+            var commandText = "EXEC GetTableContents";
+
+            Assert.AreEqual("GetTableContents", SqlUtil.GetCommandText(commandText));
+        }
+
+        [Test]
         public void GetCommandTypeForExecStatement()
         {
             var commandType = SqlUtil.GetCommandType("EXEC sp_Proc");

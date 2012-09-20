@@ -61,6 +61,32 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets the command text to be used in by the IDbCommand.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The command text to be used by the IDbCommand.</returns>
+        internal static string GetCommandText(string commandText)
+        {
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase))
+            {
+                var firstParameterPosition = GetFirstParameterPosition(commandText);
+
+                if (firstParameterPosition > 4)
+                {
+                    return commandText.Substring(4, firstParameterPosition - 4).Trim();
+                }
+                else
+                {
+                    return commandText.Substring(4, commandText.Length - 4).Trim();
+                }
+            }
+            else
+            {
+                return commandText;
+            }
+        }
+
+        /// <summary>
         /// Gets the type of the command.
         /// </summary>
         /// <param name="commandText">The command text.</param>
