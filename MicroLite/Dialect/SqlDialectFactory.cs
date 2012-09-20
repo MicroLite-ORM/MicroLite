@@ -34,9 +34,11 @@ namespace MicroLite.Dialect
         /// <exception cref="NotSupportedException">The specified dialect name is not supported.</exception>
         internal static ISqlDialect GetDialect(string dialectName)
         {
-            if (dialects.ContainsKey(dialectName))
+            Type dialectType;
+
+            if (dialects.TryGetValue(dialectName, out dialectType))
             {
-                return (ISqlDialect)Activator.CreateInstance(dialects[dialectName]);
+                return (ISqlDialect)Activator.CreateInstance(dialectType);
             }
 
             throw new NotSupportedException(Messages.SqlDialectFactory_DialectNotSupported.FormatWith(dialectName));
