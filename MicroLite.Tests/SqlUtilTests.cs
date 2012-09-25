@@ -98,17 +98,23 @@
         [Test]
         public void GetCommandTypeForExecStatement()
         {
-            var commandType = SqlUtil.GetCommandType("EXEC sp_Proc");
-
-            Assert.AreEqual(CommandType.StoredProcedure, commandType);
+            Assert.AreEqual(CommandType.StoredProcedure, SqlUtil.GetCommandType("EXEC sp_Proc"));
         }
 
         [Test]
         public void GetCommandTypeForSelectStatement()
         {
-            var commandType = SqlUtil.GetCommandType("SELECT *");
+            Assert.AreEqual(CommandType.Text, SqlUtil.GetCommandType("SELECT *"));
+        }
 
-            Assert.AreEqual(CommandType.Text, commandType);
+        /// <summary>
+        /// Issue #102 - SqlQuery.GetCommandType should return Text for batch queries
+        /// </summary>
+        [Test]
+        public void GetCommandTypeReturnsTextIfBachedQuery()
+        {
+            Assert.AreEqual(CommandType.Text, SqlUtil.GetCommandType("SELECT * FROM TABLE;EXEC sp_Proc"));
+            Assert.AreEqual(CommandType.Text, SqlUtil.GetCommandType("EXEC sp_Proc;SELECT * FROM TABLE"));
         }
 
         [Test]

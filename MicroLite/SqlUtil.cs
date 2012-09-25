@@ -93,7 +93,7 @@ namespace MicroLite
         /// <returns>The <see cref="CommandType"/> for the specified command text</returns>
         internal static CommandType GetCommandType(string commandText)
         {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase))
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(";"))
             {
                 return CommandType.StoredProcedure;
             }
