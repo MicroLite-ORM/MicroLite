@@ -51,7 +51,7 @@ namespace MicroLite.Core
 
             connection.ConnectionString = this.sessionFactoryOptions.ConnectionString;
 
-            log.TryLogDebug(Messages.SessionFactory_CreatingSession);
+            log.TryLogDebug(Messages.SessionFactory_CreatingSession, this.ConnectionName);
             return new Session(
                 new ConnectionManager(connection),
                 new ObjectBuilder(),

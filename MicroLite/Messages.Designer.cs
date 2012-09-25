@@ -331,7 +331,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating a new session.
+        ///   Looks up a localized string similar to Creating a new session for connection [{0}].
         /// </summary>
         internal static string SessionFactory_CreatingSession {
             get {
