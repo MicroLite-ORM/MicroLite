@@ -67,7 +67,7 @@ namespace MicroLite
         /// <returns>The command text to be used by the IDbCommand.</returns>
         internal static string GetCommandText(string commandText)
         {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase))
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(";"))
             {
                 var firstParameterPosition = GetFirstParameterPosition(commandText);
 

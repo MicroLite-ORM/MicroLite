@@ -95,6 +95,19 @@
             Assert.AreEqual("GetTableContents", SqlUtil.GetCommandText(commandText));
         }
 
+        /// <summary>
+        /// Issue #103 - SqlQuery.GetCommandText should return full command Text for batch queries
+        /// </summary>
+        [Test]
+        public void GetCommandTextReturnsFullTextIfBachedQuery()
+        {
+            var commandTextWithSelectFirst = "SELECT * FROM TABLE;EXEC sp_Proc";
+            Assert.AreEqual(commandTextWithSelectFirst, SqlUtil.GetCommandText(commandTextWithSelectFirst));
+
+            var commandTextWithExecFirst = "EXEC sp_Proc;SELECT * FROM TABLE";
+            Assert.AreEqual(commandTextWithExecFirst, SqlUtil.GetCommandText(commandTextWithExecFirst));
+        }
+
         [Test]
         public void GetCommandTypeForExecStatement()
         {
