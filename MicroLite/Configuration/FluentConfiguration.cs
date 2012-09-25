@@ -25,7 +25,7 @@ namespace MicroLite.Configuration
     /// </summary>
     internal sealed class FluentConfiguration : IConfigureConnection, ICreateSessionFactory, IHideObjectMethods
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.Configuration");
+        private readonly ILog log = LogManager.GetLog("MicroLite.Configuration");
         private readonly SessionFactoryOptions options = new SessionFactoryOptions();
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace MicroLite.Configuration
 
             if (sessionFactory == null)
             {
-                log.TryLogInfo(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
+                this.log.TryLogInfo(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
                 sessionFactory = new SessionFactory(this.options);
 
                 Configure.SessionFactories.Add(sessionFactory);
@@ -72,12 +72,12 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("connectionName");
             }
 
-            log.TryLogDebug(Messages.FluentConfiguration_ReadingConnection, connectionName);
+            this.log.TryLogDebug(Messages.FluentConfiguration_ReadingConnection, connectionName);
             var configSection = ConfigurationManager.ConnectionStrings[connectionName];
 
             if (configSection == null)
             {
-                log.TryLogFatal(Messages.FluentConfiguration_ConnectionNotFound, connectionName);
+                this.log.TryLogFatal(Messages.FluentConfiguration_ConnectionNotFound, connectionName);
                 throw new MicroLiteException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
 
@@ -92,7 +92,7 @@ namespace MicroLite.Configuration
             }
             catch (Exception e)
             {
-                log.TryLogError(e.Message, e);
+                this.log.TryLogError(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }
