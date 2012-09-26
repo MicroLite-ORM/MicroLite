@@ -23,7 +23,7 @@ namespace MicroLite.Configuration
     /// <summary>
     /// The class used to configure the MicroLite ORM framework using the fluent API.
     /// </summary>
-    internal sealed class FluentConfiguration : IConfigureConnection, ICreateSessionFactory, IHideObjectMethods
+    internal sealed class FluentConfiguration : IConfigureConnection, ICreateSessionFactory
     {
         private readonly ILog log = LogManager.GetLog("MicroLite.Configuration");
         private readonly SessionFactoryOptions options = new SessionFactoryOptions();

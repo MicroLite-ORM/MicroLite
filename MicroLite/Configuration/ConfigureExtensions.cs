@@ -19,7 +19,7 @@ namespace MicroLite.Configuration
     /// <summary>
     /// The class used to configure extensions to the MicroLite ORM framework.
     /// </summary>
-    internal sealed class ConfigureExtensions : IConfigureExtensions, IHideObjectMethods
+    internal sealed class ConfigureExtensions : IConfigureExtensions
     {
         private readonly ILog log = LogManager.GetLog("MicroLite.Configuration");
 
