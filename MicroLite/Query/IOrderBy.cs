@@ -15,7 +15,7 @@ namespace MicroLite.Query
     /// <summary>
     /// The interface which specifies the order by method in the fluent sql builder syntax.
     /// </summary>
-    public interface IOrderBy : IToSqlQuery, IHideObjectMethods
+    public interface IOrderBy : IHideObjectMethods, IToSqlQuery
     {
         /// <summary>
         /// Orders the results of the query by the specified columns in ascending order.

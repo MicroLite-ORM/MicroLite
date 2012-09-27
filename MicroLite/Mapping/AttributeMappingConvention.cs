@@ -52,9 +52,8 @@ namespace MicroLite.Mapping
 
         private static List<ColumnInfo> CreateColumnInfos(Type forType, ref IdentifierStrategy identifierStrategy)
         {
-            var columns = new List<ColumnInfo>();
-
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            var columns = new List<ColumnInfo>(properties.Length);
 
             foreach (var property in properties.Where(p => p.CanRead && p.CanWrite))
             {
@@ -76,7 +75,7 @@ namespace MicroLite.Mapping
                 var columnInfo = new ColumnInfo(
                     columnName: columnAttribute.Name,
                     propertyInfo: property,
-                    isIdentifier: identifierAttribute == null ? false : true,
+                    isIdentifier: identifierAttribute != null,
                     allowInsert: columnAttribute.AllowInsert,
                     allowUpdate: columnAttribute.AllowUpdate);
 

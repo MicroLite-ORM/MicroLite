@@ -63,6 +63,11 @@ namespace MicroLite.Core
 
             for (int i = 0; i < reader.FieldCount; i++)
             {
+                if (reader.IsDBNull(i))
+                {
+                    continue;
+                }
+
                 var columnName = reader.GetName(i);
                 var propertyInfo = objectInfo.GetPropertyInfoForColumn(columnName);
 

@@ -78,8 +78,8 @@ namespace MicroLite
                 return false;
             }
 
-            if (sqlQuery.CommandText != this.CommandText
-                || sqlQuery.Arguments.Count != this.Arguments.Count)
+            if (sqlQuery.Arguments.Count != this.Arguments.Count
+                || sqlQuery.CommandText != this.CommandText)
             {
                 return false;
             }
