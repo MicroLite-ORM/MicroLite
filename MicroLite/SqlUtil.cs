@@ -61,13 +61,39 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets the command text to be used in by the IDbCommand.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The command text to be used by the IDbCommand.</returns>
+        internal static string GetCommandText(string commandText)
+        {
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(";"))
+            {
+                var firstParameterPosition = GetFirstParameterPosition(commandText);
+
+                if (firstParameterPosition > 4)
+                {
+                    return commandText.Substring(4, firstParameterPosition - 4).Trim();
+                }
+                else
+                {
+                    return commandText.Substring(4, commandText.Length - 4).Trim();
+                }
+            }
+            else
+            {
+                return commandText;
+            }
+        }
+
+        /// <summary>
         /// Gets the type of the command.
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The <see cref="CommandType"/> for the specified command text</returns>
         internal static CommandType GetCommandType(string commandText)
         {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase))
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(";"))
             {
                 return CommandType.StoredProcedure;
             }
@@ -105,22 +131,23 @@ namespace MicroLite
         /// <returns>The re-numbered SQL</returns>
         internal static string ReNumberParameters(string sql, int totalArgumentCount)
         {
+            var parameterNames = GetParameterNames(sql);
+
+            if (parameterNames.Count == 0)
+            {
+                return sql;
+            }
+
             var argsAdded = 0;
+            var parameterPrefix = parameterNames.First().Substring(0, 2);
 
             var predicateReWriter = new StringBuilder(sql);
 
-            var parameterNames = new HashSet<string>(parameterRegex.Matches(sql).Cast<Match>().Select(x => x.Value));
-
-            if (parameterNames.Count > 0)
+            foreach (var parameterName in parameterNames.OrderByDescending(n => n))
             {
-                var parameterPrefix = parameterNames.First().Substring(0, 2);
+                var newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
 
-                foreach (var parameterName in parameterNames.OrderByDescending(n => n))
-                {
-                    var newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
-
-                    predicateReWriter.Replace(parameterName, newParameterName);
-                }
+                predicateReWriter.Replace(parameterName, newParameterName);
             }
 
             return predicateReWriter.ToString();

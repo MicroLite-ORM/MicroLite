@@ -26,7 +26,7 @@ namespace MicroLite.Logging
         [ThreadStatic]
         private static string currentSessionId;
 
-        private string previousSessionId;
+        private readonly string previousSessionId;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SessionLoggingContext" /> class.

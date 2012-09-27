@@ -15,8 +15,8 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 {
 	$assemblyVersionPattern = 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
 	$fileVersionPattern = 'AssemblyFileVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
-	$assemblyVersion = 'AssemblyVersion("' + $buildVersion + '.0")';
-	$fileVersion = 'AssemblyFileVersion("' + $buildVersion + '.0")';
+	$assemblyVersion = 'AssemblyVersion("' + $buildVersion.SubString(0, 3) + '.0")';
+	$fileVersion = 'AssemblyFileVersion("' + $buildVersion.SubString(0, 5) + '.0")';
 	
 	Get-ChildItem $scriptPath -r -filter AssemblyInfo.cs | ForEach-Object {
 		$filename = $_.Directory.ToString() + '\' + $_.Name
@@ -31,7 +31,7 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 
 if ($version)
 {
-	UpdateAssemblyInfoFiles($version.SubString(0, 5))
+	UpdateAssemblyInfoFiles($version)
 }
 
 # Run the psake build script to create the release binaries

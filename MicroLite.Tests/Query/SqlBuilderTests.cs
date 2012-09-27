@@ -130,6 +130,23 @@
             Assert.AreEqual("SELECT Column1, Column2 FROM Table ORDER BY Column1, Column2 ASC", sqlQuery.CommandText);
         }
 
+        /// <summary>
+        /// Issue #93 - SqlBuilder produces invalid Sql if OrderBy is called multiple times.
+        /// </summary>
+        [Test]
+        public void SelectFromOrderByAscendingThenDescending()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("Column1", "Column2")
+                .From("Table")
+                .OrderByAscending("Column1")
+                .OrderByDescending("Column2")
+                .ToSqlQuery();
+
+            CollectionAssert.IsEmpty(sqlQuery.Arguments);
+            Assert.AreEqual("SELECT Column1, Column2 FROM Table ORDER BY Column1 ASC, Column2 DESC", sqlQuery.CommandText);
+        }
+
         [Test]
         public void SelectFromOrderByDescending()
         {
@@ -141,6 +158,23 @@
 
             CollectionAssert.IsEmpty(sqlQuery.Arguments);
             Assert.AreEqual("SELECT Column1, Column2 FROM Table ORDER BY Column1, Column2 DESC", sqlQuery.CommandText);
+        }
+
+        /// <summary>
+        /// Issue #93 - SqlBuilder produces invalid Sql if OrderBy is called multiple times.
+        /// </summary>
+        [Test]
+        public void SelectFromOrderByDescendingThenAscending()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("Column1", "Column2")
+                .From("Table")
+                .OrderByDescending("Column1")
+                .OrderByAscending("Column2")
+                .ToSqlQuery();
+
+            CollectionAssert.IsEmpty(sqlQuery.Arguments);
+            Assert.AreEqual("SELECT Column1, Column2 FROM Table ORDER BY Column1 DESC, Column2 ASC", sqlQuery.CommandText);
         }
 
         [Test]

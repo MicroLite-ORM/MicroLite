@@ -169,7 +169,7 @@
     <value>The first page which can be requested is page 1</value>
   </data>
   <data name="SessionFactory_CreatingSession" xml:space="preserve">
-    <value>Creating a new session</value>
+    <value>Creating a new session for connection [{0}]</value>
   </data>
   <data name="Session_ClosingConnection" xml:space="preserve">
     <value>Session closing database connection</value>

@@ -19,13 +19,13 @@ namespace MicroLite.Configuration
     /// <summary>
     /// The class used to configure extensions to the MicroLite ORM framework.
     /// </summary>
-    internal sealed class ConfigureExtensions : IConfigureExtensions, IHideObjectMethods
+    internal sealed class ConfigureExtensions : IConfigureExtensions
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.Configuration");
+        private readonly ILog log = LogManager.GetLog("MicroLite.Configuration");
 
         public void SetLogResolver(Func<string, ILog> logResolver)
         {
-            log.TryLogInfo(Messages.ConfigureExtensions_UsingLogger, logResolver != null && logResolver.Method != null ? logResolver.Method.ToString() : string.Empty);
+            this.log.TryLogInfo(Messages.ConfigureExtensions_UsingLogger, logResolver != null && logResolver.Method != null ? logResolver.Method.ToString() : string.Empty);
             LogManager.GetLogger = logResolver;
         }
 
@@ -36,7 +36,7 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("mappingConvention");
             }
 
-            log.TryLogInfo(Messages.ConfigureExtensions_UsingMappingConvention, mappingConvention.GetType().FullName);
+            this.log.TryLogInfo(Messages.ConfigureExtensions_UsingMappingConvention, mappingConvention.GetType().FullName);
             ObjectInfo.MappingConvention = mappingConvention;
         }
     }

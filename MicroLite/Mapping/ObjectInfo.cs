@@ -128,20 +128,23 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("forType");
             }
 
-            lock (locker)
+            ObjectInfo objectInfo;
+
+            if (!objectInfos.TryGetValue(forType, out objectInfo))
             {
-                if (!objectInfos.ContainsKey(forType))
+                VerifyType(forType);
+
+                log.TryLogDebug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
+                objectInfo = MappingConvention.CreateObjectInfo(forType);
+
+                lock (locker)
                 {
-                    VerifyType(forType);
-
-                    log.TryLogDebug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
-                    var objectInfo = MappingConvention.CreateObjectInfo(forType);
-                    objectInfos.Add(forType, objectInfo);
+                    objectInfos[forType] = objectInfo;
                 }
-
-                log.TryLogDebug(Messages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
-                return objectInfos[forType];
             }
+
+            log.TryLogDebug(Messages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
+            return objectInfo;
         }
 
         /// <summary>
@@ -151,12 +154,11 @@ namespace MicroLite.Mapping
         /// <returns>The <see cref="PropertyInfo"/> for the column, or null if it is not a mapped column.</returns>
         public PropertyInfo GetPropertyInfoForColumn(string columnName)
         {
-            if (this.columnProperties.ContainsKey(columnName))
-            {
-                return this.columnProperties[columnName];
-            }
+            PropertyInfo propertyInfo;
 
-            return null;
+            this.columnProperties.TryGetValue(columnName, out propertyInfo);
+
+            return propertyInfo;
         }
 
         /// <summary>

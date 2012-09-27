@@ -19,7 +19,7 @@ namespace MicroLite
     /// <summary>
     /// The interface which provides the basic methods to map objects to database records.
     /// </summary>
-    public interface ISession : IDisposable, IHideObjectMethods
+    public interface ISession : IHideObjectMethods, IDisposable
     {
         /// <summary>
         /// Gets the advanced session operations.
