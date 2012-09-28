@@ -142,20 +142,20 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted using the Identity strategy.
-        /// </summary>
-        internal static string IdentityListener_IdentifierSetForInsert {
-            get {
-                return ResourceManager.GetString("IdentityListener_IdentifierSetForInsert", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be updated.
         /// </summary>
         internal static string IListener_IdentifierNotSetForUpdate {
             get {
                 return ResourceManager.GetString("IListener_IdentifierNotSetForUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted.
+        /// </summary>
+        internal static string IListener_IdentifierSetForInsert {
+            get {
+                return ResourceManager.GetString("IListener_IdentifierSetForInsert", resourceCulture);
             }
         }
         

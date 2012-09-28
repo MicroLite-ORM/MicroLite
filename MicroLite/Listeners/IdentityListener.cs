@@ -60,7 +60,7 @@ namespace MicroLite.Listeners
             {
                 if (!objectInfo.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.IdentityListener_IdentifierSetForInsert);
+                    throw new MicroLiteException(Messages.IListener_IdentifierSetForInsert);
                 }
             }
         }

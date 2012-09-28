@@ -35,6 +35,11 @@ namespace MicroLite.Listeners
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Guid)
             {
+                if (!objectInfo.HasDefaultIdentifierValue(instance))
+                {
+                    throw new MicroLiteException(Messages.IListener_IdentifierSetForInsert);
+                }
+
                 var propertyInfo = objectInfo.GetPropertyInfoForColumn(objectInfo.TableInfo.IdentifierColumn);
 
                 var identifierValue = Guid.NewGuid();

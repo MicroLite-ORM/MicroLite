@@ -11,7 +11,22 @@
     public class GuidListenerTests
     {
         [Test]
-        public void BeforeInsertSetsIdentifierValueToNewGuid()
+        public void BeforeInsertThrowsMicroLiteExceptionIfIdentifierSet()
+        {
+            var customer = new Customer
+            {
+                Id = Guid.NewGuid()
+            };
+
+            var listener = new GuidListener();
+
+            var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeInsert(customer));
+
+            Assert.AreEqual(Messages.IListener_IdentifierSetForInsert, exception.Message);
+        }
+
+        [Test]
+        public void BeforeInsertSetsIdentifierValueToNewGuidIfIdIsEmptyGuid()
         {
             var customer = new Customer
             {
