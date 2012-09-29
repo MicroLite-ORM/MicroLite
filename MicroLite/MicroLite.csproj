@@ -57,9 +57,11 @@
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />
     <Compile Include="Dialect\SqlDialectFactory.cs" />
+    <Compile Include="GuidGenerator.cs" />
     <Compile Include="IInclude.cs" />
     <Compile Include="IIncludeMany.cs" />
     <Compile Include="IIncludeSession.cs" />
+    <Compile Include="Listeners\GuidCombListener.cs" />
     <Compile Include="Logging\CurrentSessionIdResolver.cs" />
     <Compile Include="Logging\SessionLoggingContext.cs" />
     <Compile Include="Mapping\ColumnAttribute.cs" />

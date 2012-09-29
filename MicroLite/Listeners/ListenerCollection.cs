@@ -29,6 +29,7 @@ namespace MicroLite.Listeners
         public ListenerCollection()
         {
             this.Add<AssignedListener>();
+            this.Add<GuidCombListener>();
             this.Add<GuidListener>();
             this.Add<IdentityListener>();
         }
