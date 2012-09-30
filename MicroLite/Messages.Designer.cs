@@ -340,6 +340,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The sql dialect does not support the creation of an SqlQuery for the given statement type.
+        /// </summary>
+        internal static string SqlDialect_StatementTypeNotSupported {
+            get {
+                return ResourceManager.GetString("SqlDialect_StatementTypeNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The sql dialect [{0}] is currently not supported by the MicroLite ORM framework.
         /// </summary>
         internal static string SqlDialectFactory_DialectNotSupported {

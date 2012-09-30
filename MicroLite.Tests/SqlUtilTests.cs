@@ -164,6 +164,38 @@
         }
 
         [Test]
+        public void ReadOrderBy()
+        {
+            var commandText = "SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1 ORDER BY [Column1] ASC, [Column2] DESC";
+
+            Assert.AreEqual("[Column1] ASC, [Column2] DESC", SqlUtil.ReadOrderBy(commandText));
+        }
+
+        [Test]
+        public void ReadSelectList()
+        {
+            var commandText = "SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1";
+
+            Assert.AreEqual("SELECT [Column1], [Column2], [Column3]", SqlUtil.ReadSelectList(commandText));
+        }
+
+        [Test]
+        public void ReadTableName()
+        {
+            var commandText = "SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1";
+
+            Assert.AreEqual("[dbo].[Table1]", SqlUtil.ReadTableName(commandText));
+        }
+
+        [Test]
+        public void ReadWhereClause()
+        {
+            var commandText = "SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1";
+
+            Assert.AreEqual("[Column1] = @p0 AND [Column2] > @p1", SqlUtil.ReadWhereClause(commandText));
+        }
+
+        [Test]
         public void ReNumberParametersNoExistingArguments()
         {
             var commandText = SqlUtil.ReNumberParameters("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", totalArgumentCount: 2);

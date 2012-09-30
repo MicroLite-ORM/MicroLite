@@ -246,4 +246,7 @@
   <data name="IListener_IdentifierSetForInsert" xml:space="preserve">
     <value>The object already has an identifier value so it cannot be inserted</value>
   </data>
+  <data name="SqlDialect_StatementTypeNotSupported" xml:space="preserve">
+    <value>The sql dialect does not support the creation of an SqlQuery for the given statement type</value>
+  </data>
 </root>

@@ -101,7 +101,7 @@
             var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.DeleteQuery(customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -137,7 +137,7 @@
             var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.DeleteQuery(customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -166,7 +166,7 @@
             var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.DeleteQuery(customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -208,7 +208,7 @@
             var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.DeleteQuery(customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -255,7 +255,7 @@
             var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.DeleteQuery(type, identifier)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, type, identifier)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -285,7 +285,7 @@
             var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.DeleteQuery(type, identifier)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, type, identifier)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -341,7 +341,7 @@
             var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.DeleteQuery(type, identifier)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, type, identifier)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -666,7 +666,7 @@
             object identifier = 23543;
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.InsertQuery(customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Insert, customer)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -696,7 +696,7 @@
             object identifier = 23543;
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.InsertQuery(customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Insert, customer)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -745,7 +745,7 @@
             var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.InsertQuery(customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Insert, customer)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -811,7 +811,7 @@
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
-            mockSqlDialect.Setup(x => x.Page(sqlQuery, 10, 25)).Returns(pagedQuery);
+            mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, 10, 25)).Returns(pagedQuery);
 
             var session = new Session(
                 mockConnectionManager.Object,
@@ -1003,7 +1003,7 @@
             mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.SelectQuery(typeof(Customer), identifier)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), identifier)).Returns(sqlQuery);
 
             ISession session = new Session(
                 mockConnectionManager.Object,
@@ -1042,7 +1042,7 @@
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.SelectQuery(typeof(Customer), identifier)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), identifier)).Returns(sqlQuery);
 
             ISession session = new Session(
                 mockConnectionManager.Object,
@@ -1283,7 +1283,7 @@
             var rowsAffected = 1;
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.UpdateQuery(customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Update, customer)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -1313,7 +1313,7 @@
             var rowsAffected = 1;
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.UpdateQuery(customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Update, customer)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
@@ -1361,7 +1361,7 @@
             var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.UpdateQuery(customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Update, customer)).Returns(sqlQuery);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
