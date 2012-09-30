@@ -26,7 +26,7 @@ namespace MicroLite
     internal static class GuidGenerator
     {
         // This call is quite slow so we do it once.
-        private static byte[] nicBytes = NetworkInterface
+        private static readonly byte[] nicBytes = NetworkInterface
             .GetAllNetworkInterfaces()
             .First(x => x.OperationalStatus == OperationalStatus.Up)
             .GetPhysicalAddress()
