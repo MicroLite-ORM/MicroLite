@@ -19,7 +19,7 @@ namespace MicroLite.Configuration
     public interface IConfigureConnection : IHideObjectMethods
     {
         /// <summary>
-        /// Specifies the named connection string in the app config to be used.
+        /// Specifies the name of the connection string in the app config to be used.
         /// </summary>
         /// <param name="connectionName">The name of the connection string in the app config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
@@ -27,5 +27,16 @@ namespace MicroLite.Configuration
         /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
         /// <exception cref="System.NotSupportedException">Thrown if the provider name is not supported.</exception>
         ICreateSessionFactory ForConnection(string connectionName);
+
+        /// <summary>
+        /// Specifies the name of the connection string in the app config and the sql dialect to be used.
+        /// </summary>
+        /// <param name="connectionName">The name of the connection string in the app config.</param>
+        /// <param name="sqlDialect">The name of the sql dialect to use for the connection.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
+        /// <exception cref="System.NotSupportedException">Thrown if the provider name or sql dialect is not supported.</exception>
+        ICreateSessionFactory ForConnection(string connectionName, string sqlDialect);
     }
 }

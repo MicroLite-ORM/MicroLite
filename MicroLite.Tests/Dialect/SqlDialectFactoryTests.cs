@@ -20,11 +20,36 @@
         }
 
         [Test]
+        public void GetDialectReturnsNewInstanceEachCall()
+        {
+            var sqlDialect1 = SqlDialectFactory.GetDialect("MicroLite.Dialect.MsSqlDialect");
+            var sqlDialect2 = SqlDialectFactory.GetDialect("MicroLite.Dialect.MsSqlDialect");
+
+            Assert.AreNotSame(sqlDialect1, sqlDialect2);
+        }
+
+        [Test]
         public void GetDialectThrowsNotSupportedException()
         {
             var dialectName = "MicroLite.Dialect.DB2";
 
             var exception = Assert.Throws<NotSupportedException>(() => SqlDialectFactory.GetDialect(dialectName));
+
+            Assert.AreEqual(Messages.SqlDialectFactory_DialectNotSupported.FormatWith(dialectName), exception.Message);
+        }
+
+        [Test]
+        public void VerifyDialectDoesNotThrowNotSupportedExceptionForSupportedDialect()
+        {
+            SqlDialectFactory.VerifyDialect("MicroLite.Dialect.MsSqlDialect");
+        }
+
+        [Test]
+        public void VerifyDialectThrowsNotSupportedException()
+        {
+            var dialectName = "MicroLite.Dialect.DB2";
+
+            var exception = Assert.Throws<NotSupportedException>(() => SqlDialectFactory.VerifyDialect(dialectName));
 
             Assert.AreEqual(Messages.SqlDialectFactory_DialectNotSupported.FormatWith(dialectName), exception.Message);
         }
