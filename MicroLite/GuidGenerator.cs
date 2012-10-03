@@ -13,6 +13,7 @@
 namespace MicroLite
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net.NetworkInformation;
     using System.Threading;
@@ -25,10 +26,15 @@ namespace MicroLite
     /// </remarks>
     internal static class GuidGenerator
     {
+        private static readonly NetworkInterfaceType[] ignoredInterfaceTypes = new[] { NetworkInterfaceType.Loopback, NetworkInterfaceType.Tunnel };
+
         // This call is quite slow so we do it once.
         private static readonly byte[] nicBytes = NetworkInterface
             .GetAllNetworkInterfaces()
-            .First(x => x.OperationalStatus == OperationalStatus.Up)
+            .Where(ix => !ignoredInterfaceTypes.Contains(ix.NetworkInterfaceType))
+            .OrderBy(ix => ix.OperationalStatus)
+            .ThenByDescending(ix => ix.Speed)
+            .First()
             .GetPhysicalAddress()
             .GetAddressBytes();
 
