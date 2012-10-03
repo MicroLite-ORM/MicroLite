@@ -482,6 +482,23 @@
         }
 
         [Test]
+        public void SelectWhereBetween()
+        {
+            var sqlQuery = SqlBuilder
+                   .Select("Column1")
+                   .From("Table")
+                   .Where("Column1")
+                   .Between(1, 10)
+                   .ToSqlQuery();
+
+            Assert.AreEqual(2, sqlQuery.Arguments.Count);
+            Assert.AreEqual(1, sqlQuery.Arguments[0]);
+            Assert.AreEqual(10, sqlQuery.Arguments[1]);
+
+            Assert.AreEqual("SELECT Column1 FROM Table WHERE (Column1 BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
+        }
+
+        [Test]
         public void SelectWhereGroupByOrderBy()
         {
             var sqlQuery = SqlBuilder

@@ -22,7 +22,7 @@ namespace MicroLite.Query
         /// </summary>
         /// <param name="columnName">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IWhereIn Where(string columnName);
+        IWhereInOrBetween Where(string columnName);
 
         /// <summary>
         /// Specifies the where clause for the query.
