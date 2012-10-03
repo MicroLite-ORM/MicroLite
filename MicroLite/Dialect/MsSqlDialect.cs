@@ -61,51 +61,6 @@ namespace MicroLite.Dialect
             return new SqlQuery(sqlBuilder.ToString(), parameters.ToArray());
         }
 
-        ////public override SqlQuery UpdateQuery(object instance)
-        ////{
-        ////    var objectInfo = ObjectInfo.For(instance.GetType());
-
-        ////    var values = new List<object>();
-
-        ////    var sqlBuilder = this.CreateSql(StatementType.Update, objectInfo);
-
-        ////    foreach (var column in objectInfo.TableInfo.Columns)
-        ////    {
-        ////        if (column.AllowUpdate
-        ////            && !column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
-        ////        {
-        ////            sqlBuilder.AppendFormat(
-        ////                        " [{0}].[{1}] = {2},",
-        ////                        objectInfo.TableInfo.Name,
-        ////                        column.ColumnName,
-        ////                        this.FormatParameter(values.Count));
-
-        ////            var propertyInfo = objectInfo.GetPropertyInfoForColumn(column.ColumnName);
-
-        ////            var value = propertyInfo.GetValue(instance);
-
-        ////            values.Add(value);
-        ////        }
-        ////    }
-
-        ////    sqlBuilder.Remove(sqlBuilder.Length - 1, 1);
-
-        ////    sqlBuilder.AppendFormat(
-        ////        " WHERE [{0}].[{1}] = {2}",
-        ////        objectInfo.TableInfo.Name,
-        ////        objectInfo.TableInfo.IdentifierColumn,
-        ////        this.FormatParameter(values.Count));
-
-        ////    var identifierPropertyInfo =
-        ////        objectInfo.GetPropertyInfoForColumn(objectInfo.TableInfo.IdentifierColumn);
-
-        ////    var identifierValue = identifierPropertyInfo.GetValue(instance);
-
-        ////    values.Add(identifierValue);
-
-        ////    return new SqlQuery(sqlBuilder.ToString(), values.ToArray());
-        ////}
-
         protected override string EscapeSql(string sql)
         {
             return "[" + sql + "]";
