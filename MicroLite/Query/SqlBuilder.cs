@@ -14,6 +14,7 @@ namespace MicroLite.Query
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Text;
     using MicroLite.Mapping;
@@ -21,11 +22,14 @@ namespace MicroLite.Query
     /// <summary>
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
-    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter
+    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereIn
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder();
         private bool addedOrder = false;
+        private bool addedWhere = false;
+        private string operand;
+        private string whereColumnName;
 
         private SqlBuilder(string startingSql)
         {
@@ -91,6 +95,19 @@ namespace MicroLite.Query
             }
 
             return new SqlBuilder("SELECT " + string.Join(", ", columns));
+        }
+
+        /// <summary>
+        /// Adds a column as an AND to the where clause of the query.
+        /// </summary>
+        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IWhereIn AndWhere(string columnName)
+        {
+            this.operand = " AND";
+            this.whereColumnName = columnName;
+
+            return this;
         }
 
         /// <summary>
@@ -301,6 +318,54 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Uses the specified arguments to filter the column.
+        /// </summary>
+        /// <param name="args">The arguments to filter the column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IAndOrOrderBy In(params object[] args)
+        {
+            if (!this.addedWhere)
+            {
+                this.innerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
+
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)));
+
+            this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", predicate, args);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified SqlQuery as a sub query to filter the column.
+        /// </summary>
+        /// <param name="subQuery">The sub query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IAndOrOrderBy In(SqlQuery subQuery)
+        {
+            if (!this.addedWhere)
+            {
+                this.innerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
+
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
+            this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", subQuery.CommandText, subQuery.Arguments.ToArray());
+
+            return this;
+        }
+
+        /// <summary>
         /// Selects the maximum value in the specified column.
         /// </summary>
         /// <param name="columnName">The column to query.</param>
@@ -449,6 +514,19 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Adds a column as an OR to the where clause of the query.
+        /// </summary>
+        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IWhereIn OrWhere(string columnName)
+        {
+            this.operand = " OR";
+            this.whereColumnName = columnName;
+
+            return this;
+        }
+
+        /// <summary>
         /// Adds a predicate as an OR to the where clause of the query.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
@@ -553,6 +631,18 @@ namespace MicroLite.Query
         /// <summary>
         /// Specifies the where clause for the query.
         /// </summary>
+        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IWhereIn Where(string columnName)
+        {
+            this.whereColumnName = columnName;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies the where clause for the query.
+        /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="args">The args.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
@@ -581,6 +671,7 @@ namespace MicroLite.Query
         public IAndOrOrderBy Where(string predicate, params object[] args)
         {
             this.AppendPredicate(" WHERE ({0})", predicate, args);
+            this.addedWhere = true;
 
             return this;
         }
