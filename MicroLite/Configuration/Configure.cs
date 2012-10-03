@@ -57,10 +57,20 @@ namespace MicroLite.Configuration
         /// </summary>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <example>
+        /// Option 1: Use the default SqlDialect which is MicroLite.Dialect.MsSqlDialect.
         /// <code>
         /// var sessionFactory = Configure
         ///     .Fluently()
         ///     .ForConnection("TestDB")
+        ///     .CreateSessionFactory();
+        /// </code>
+        /// </example>
+        /// <example>
+        /// Option 2: Use an alternative SqlDialect which is supported by MicroLite (such as SQLite).
+        /// <code>
+        /// var sessionFactory = Configure
+        ///     .Fluently()
+        ///     .ForConnection("TestDB", "MicroLite.Dialect.SQLiteDialect")
         ///     .CreateSessionFactory();
         /// </code>
         /// </example>
