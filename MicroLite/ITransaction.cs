@@ -60,6 +60,12 @@ namespace MicroLite
         void Commit();
 
         /// <summary>
+        /// Enlists the specified command in the transaction if the transaction is active.
+        /// </summary>
+        /// <param name="command">The command to be enlisted.</param>
+        void Enlist(IDbCommand command);
+
+        /// <summary>
         /// Rollbacks the transaction, undoing all changes made within the transaction scope.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if the transaction has been completed.</exception>

@@ -15,7 +15,7 @@
     public class ConnectionManagerTests
     {
         [Test]
-        public void BeginTransactionReturnsNewTransactionIfActive()
+        public void BeginTransactionShouldReturnANewTransactionIfTheCurrentTransactionIsNotActive()
         {
             var mockConnection = new Mock<IDbConnection>();
             var mockTransaction = new Mock<IDbTransaction>();
@@ -35,7 +35,7 @@
         }
 
         [Test]
-        public void BeginTransactionReturnsSameTransactionIfActive()
+        public void BeginTransactionShouldReturnTheSameTransactionEachTimeItIsCalledWhileTheCurrentTransactionIsActive()
         {
             var mockConnection = new Mock<IDbConnection>();
             var mockTransaction = new Mock<IDbTransaction>();
