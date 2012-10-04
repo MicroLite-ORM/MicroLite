@@ -10,6 +10,17 @@
     public class TableAttributeTests
     {
         [Test]
+        public void ConstructorSetsName()
+        {
+            var name = "Customers";
+
+            var tableAttribute = new TableAttribute(name);
+
+            Assert.AreEqual(name, tableAttribute.Name);
+            Assert.IsNull(tableAttribute.Schema);
+        }
+
+        [Test]
         public void ConstructorSetsSchemaAndName()
         {
             var schema = "dbo";

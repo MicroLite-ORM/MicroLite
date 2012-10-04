@@ -13,9 +13,10 @@
 namespace MicroLite.Dialect
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.Text;
+    using MicroLite.FrameworkExtensions;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for MsSql server.
@@ -27,38 +28,7 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <remarks>Constructor needs to be public so that it can be instantiated by SqlDialectFactory.</remarks>
         public MsSqlDialect()
-            : base("dbo")
         {
-        }
-
-        public override SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
-        {
-            long fromRowNumber = ((page - 1) * resultsPerPage) + 1;
-            long toRowNumber = (fromRowNumber - 1) + resultsPerPage;
-
-            List<object> parameters = new List<object>();
-            parameters.AddRange(sqlQuery.Arguments);
-            parameters.Add(fromRowNumber);
-            parameters.Add(toRowNumber);
-
-            var selectStatement = SqlUtil.ReadSelectList(sqlQuery.CommandText);
-            var qualifiedTableName = SqlUtil.ReadTableName(sqlQuery.CommandText);
-            var position = qualifiedTableName.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1;
-            var tableName = position > 0 ? qualifiedTableName.Substring(position, qualifiedTableName.Length - position) : qualifiedTableName;
-
-            var whereValue = SqlUtil.ReadWhereClause(sqlQuery.CommandText);
-            var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
-
-            var orderByValue = SqlUtil.ReadOrderBy(sqlQuery.CommandText);
-            var orderByClause = "ORDER BY " + (!string.IsNullOrEmpty(orderByValue) ? orderByValue : "(SELECT NULL)");
-
-            var sqlBuilder = new StringBuilder();
-            sqlBuilder.Append(selectStatement);
-            sqlBuilder.Append(" FROM");
-            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " ({0}, ROW_NUMBER() OVER({1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName);
-            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.FormatParameter(parameters.Count - 2), this.FormatParameter(parameters.Count - 1));
-
-            return new SqlQuery(sqlBuilder.ToString(), parameters.ToArray());
         }
 
         protected override string EscapeSql(string sql)
@@ -69,6 +39,33 @@ namespace MicroLite.Dialect
         protected override string FormatParameter(int parameterPosition)
         {
             return "@p" + parameterPosition.ToString(CultureInfo.InvariantCulture);
+        }
+
+        protected override string PageCommandText(string commandText, int argumentCount)
+        {
+            var selectStatement = SqlUtil.ReadSelectList(commandText);
+            var qualifiedTableName = SqlUtil.ReadTableName(commandText);
+            var position = qualifiedTableName.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1;
+            var tableName = position > 0 ? qualifiedTableName.Substring(position, qualifiedTableName.Length - position) : qualifiedTableName;
+
+            var whereValue = SqlUtil.ReadWhereClause(commandText);
+            var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
+
+            var orderByValue = SqlUtil.ReadOrderBy(commandText);
+            var orderByClause = "ORDER BY " + (!string.IsNullOrEmpty(orderByValue) ? orderByValue : "(SELECT NULL)");
+
+            var sqlBuilder = new StringBuilder();
+            sqlBuilder.Append(selectStatement);
+            sqlBuilder.Append(" FROM");
+            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " ({0}, ROW_NUMBER() OVER({1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName);
+            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.FormatParameter(argumentCount - 2), this.FormatParameter(argumentCount - 1));
+
+            return sqlBuilder.ToString();
+        }
+
+        protected override string ResolveTableName(ObjectInfo objectInfo)
+        {
+            return "[{0}].[{1}]".FormatWith(string.IsNullOrEmpty(objectInfo.TableInfo.Schema) ? "dbo" : objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name);
         }
     }
 }

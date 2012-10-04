@@ -25,13 +25,6 @@ namespace MicroLite.Dialect
     /// </summary>
     internal abstract class SqlDialect : ISqlDialect
     {
-        private readonly string defaultTableSchema;
-
-        protected SqlDialect(string defaultTableSchema)
-        {
-            this.defaultTableSchema = defaultTableSchema;
-        }
-
         public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
         {
             var qualifiedTableName = SqlUtil.ReadTableName(sqlQuery.CommandText);
@@ -147,11 +140,28 @@ namespace MicroLite.Dialect
             }
         }
 
-        public abstract SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage);
+        public SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
+        {
+            long fromRowNumber = ((page - 1) * resultsPerPage) + 1;
+            long toRowNumber = (fromRowNumber - 1) + resultsPerPage;
+
+            List<object> arguments = new List<object>();
+            arguments.AddRange(sqlQuery.Arguments);
+            arguments.Add(fromRowNumber);
+            arguments.Add(toRowNumber);
+
+            var commandText = this.PageCommandText(sqlQuery.CommandText, arguments.Count);
+
+            return new SqlQuery(commandText, arguments.ToArray());
+        }
 
         protected abstract string EscapeSql(string sql);
 
         protected abstract string FormatParameter(int parameterPosition);
+
+        protected abstract string PageCommandText(string commandText, int argumentCount);
+
+        protected abstract string ResolveTableName(ObjectInfo objectInfo);
 
         private StringBuilder CreateSql(StatementType statementType, ObjectInfo objectInfo)
         {
@@ -160,18 +170,12 @@ namespace MicroLite.Dialect
             switch (statementType)
             {
                 case StatementType.Delete:
-                    sqlBuilder.AppendFormat(
-                        "DELETE FROM {0}.{1}",
-                        this.EscapeSql(!string.IsNullOrEmpty(objectInfo.TableInfo.Schema) ? objectInfo.TableInfo.Schema : this.defaultTableSchema),
-                        this.EscapeSql(objectInfo.TableInfo.Name));
+                    sqlBuilder.Append("DELETE FROM " + this.ResolveTableName(objectInfo));
 
                     break;
 
                 case StatementType.Insert:
-                    sqlBuilder.AppendFormat(
-                        "INSERT INTO {0}.{1} (",
-                        this.EscapeSql(!string.IsNullOrEmpty(objectInfo.TableInfo.Schema) ? objectInfo.TableInfo.Schema : this.defaultTableSchema),
-                        this.EscapeSql(objectInfo.TableInfo.Name));
+                    sqlBuilder.Append("INSERT INTO " + this.ResolveTableName(objectInfo) + " (");
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
@@ -202,18 +206,12 @@ namespace MicroLite.Dialect
 
                     sqlBuilder.Remove(sqlBuilder.Length - 1, 1);
 
-                    sqlBuilder.AppendFormat(
-                        " FROM {0}.{1}",
-                        this.EscapeSql(!string.IsNullOrEmpty(objectInfo.TableInfo.Schema) ? objectInfo.TableInfo.Schema : this.defaultTableSchema),
-                        this.EscapeSql(objectInfo.TableInfo.Name));
+                    sqlBuilder.Append(" FROM " + this.ResolveTableName(objectInfo));
 
                     break;
 
                 case StatementType.Update:
-                    sqlBuilder.AppendFormat(
-                        "UPDATE {0}.{1} SET",
-                        this.EscapeSql(!string.IsNullOrEmpty(objectInfo.TableInfo.Schema) ? objectInfo.TableInfo.Schema : this.defaultTableSchema),
-                        this.EscapeSql(objectInfo.TableInfo.Name));
+                    sqlBuilder.Append("UPDATE " + this.ResolveTableName(objectInfo) + " SET");
 
                     break;
             }

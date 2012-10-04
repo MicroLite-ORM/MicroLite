@@ -29,6 +29,14 @@
         }
 
         [Test]
+        public void GetDialectReturnsSQLiteDialect()
+        {
+            var sqlDialect = SqlDialectFactory.GetDialect("MicroLite.Dialect.SQLiteDialect");
+
+            Assert.IsInstanceOf<SQLiteDialect>(sqlDialect);
+        }
+
+        [Test]
         public void GetDialectThrowsNotSupportedException()
         {
             var dialectName = "MicroLite.Dialect.DB2";

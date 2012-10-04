@@ -22,7 +22,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
 
-            var mockSqlDialect = new Mock<SqlDialect>("dbo");
+            var mockSqlDialect = new Mock<SqlDialect>();
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -36,7 +36,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [dbo].[Customers] ORDER BY [CustomerId] ASC");
 
-            var mockSqlDialect = new Mock<SqlDialect>("dbo");
+            var mockSqlDialect = new Mock<SqlDialect>();
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -50,7 +50,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
 
-            var mockSqlDialect = new Mock<SqlDialect>("dbo");
+            var mockSqlDialect = new Mock<SqlDialect>();
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -64,7 +64,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", CustomerStatus.Active);
 
-            var mockSqlDialect = new Mock<SqlDialect>("dbo");
+            var mockSqlDialect = new Mock<SqlDialect>();
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -76,7 +76,7 @@
         [Test]
         public void CreateQueryForInstanceThrowsNotSupportedExceptionForStatementTypeBatch()
         {
-            var mockSqlDialect = new Mock<SqlDialect>("dbo");
+            var mockSqlDialect = new Mock<SqlDialect>();
             mockSqlDialect.CallBase = true;
 
             var exception = Assert.Throws<NotSupportedException>(
@@ -88,7 +88,7 @@
         [Test]
         public void CreateQueryForInstanceThrowsNotSupportedExceptionForStatementTypeSelect()
         {
-            var mockSqlDialect = new Mock<SqlDialect>("dbo");
+            var mockSqlDialect = new Mock<SqlDialect>();
             mockSqlDialect.CallBase = true;
 
             var exception = Assert.Throws<NotSupportedException>(
@@ -100,7 +100,7 @@
         [Test]
         public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeBatch()
         {
-            var mockSqlDialect = new Mock<SqlDialect>("dbo");
+            var mockSqlDialect = new Mock<SqlDialect>();
             mockSqlDialect.CallBase = true;
 
             var exception = Assert.Throws<NotSupportedException>(
@@ -112,7 +112,7 @@
         [Test]
         public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeInsert()
         {
-            var mockSqlDialect = new Mock<SqlDialect>("dbo");
+            var mockSqlDialect = new Mock<SqlDialect>();
             mockSqlDialect.CallBase = true;
 
             var exception = Assert.Throws<NotSupportedException>(
@@ -124,7 +124,7 @@
         [Test]
         public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeUpdate()
         {
-            var mockSqlDialect = new Mock<SqlDialect>("dbo");
+            var mockSqlDialect = new Mock<SqlDialect>();
             mockSqlDialect.CallBase = true;
 
             var exception = Assert.Throws<NotSupportedException>(

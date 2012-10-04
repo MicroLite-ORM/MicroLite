@@ -26,7 +26,8 @@ namespace MicroLite.Dialect
 
         private static readonly IDictionary<string, Type> dialects = new Dictionary<string, Type>
         {
-            { "MicroLite.Dialect.MsSqlDialect", typeof(MsSqlDialect) }
+            { "MicroLite.Dialect.MsSqlDialect", typeof(MsSqlDialect) },
+            { "MicroLite.Dialect.SQLiteDialect", typeof(SQLiteDialect) }
         };
 
         /// <summary>
