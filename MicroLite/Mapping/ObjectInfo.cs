@@ -130,15 +130,15 @@ namespace MicroLite.Mapping
 
             ObjectInfo objectInfo;
 
-            if (!objectInfos.TryGetValue(forType, out objectInfo))
+            lock (locker)
             {
-                VerifyType(forType);
-
-                log.TryLogDebug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
-                objectInfo = MappingConvention.CreateObjectInfo(forType);
-
-                lock (locker)
+                if (!objectInfos.TryGetValue(forType, out objectInfo))
                 {
+                    VerifyType(forType);
+
+                    log.TryLogDebug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
+                    objectInfo = MappingConvention.CreateObjectInfo(forType);
+
                     objectInfos[forType] = objectInfo;
                 }
             }
