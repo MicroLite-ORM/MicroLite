@@ -391,7 +391,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            // We need to use the old string.Join(string separator, params string[] value) method while we are also building in .net 3.5
+            // HACK: We need to use the old string.Join(string separator, params string[] value) method while we are also building in .net 3.5
             var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)).ToArray());
 
             this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", predicate, args);

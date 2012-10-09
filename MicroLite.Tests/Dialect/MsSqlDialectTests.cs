@@ -30,7 +30,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Delete, customer);
 
-            Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
+            Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
         }
 
@@ -43,7 +43,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Delete, typeof(CustomerWithIdentity), identifier);
 
-            Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
+            Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
         }
 
@@ -64,7 +64,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
 
-            Assert.AreEqual("INSERT INTO [Marketing].[Customers] ([Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId]) VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
+            Assert.AreEqual("INSERT INTO [Marketing].[Customers] ([CustomerId], [Name], [StatusId]) VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
             Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
             Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
@@ -85,7 +85,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
 
-            Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Customers].[Created], [Customers].[DoB], [Customers].[Name], [Customers].[StatusId]) VALUES (@p0, @p1, @p2, @p3)", sqlQuery.CommandText);
+            Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Created], [DoB], [Name], [StatusId]) VALUES (@p0, @p1, @p2, @p3)", sqlQuery.CommandText);
             Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
             Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
             Assert.AreEqual(customer.Name, sqlQuery.Arguments[2]);
@@ -244,7 +244,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Select, typeof(CustomerWithIdentity), identifier);
 
-            Assert.AreEqual("SELECT [Customers].[Created], [Customers].[DoB], [Customers].[CustomerId], [Customers].[Name], [Customers].[StatusId], [Customers].[Updated] FROM [Sales].[Customers] WHERE [Customers].[CustomerId] = @p0", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated] FROM [Sales].[Customers] WHERE [CustomerId] = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
         }
 
@@ -264,7 +264,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Update, customer);
 
-            Assert.AreEqual("UPDATE [Sales].[Customers] SET [Customers].[DoB] = @p0, [Customers].[Name] = @p1, [Customers].[StatusId] = @p2, [Customers].[Updated] = @p3 WHERE [Customers].[CustomerId] = @p4", sqlQuery.CommandText);
+            Assert.AreEqual("UPDATE [Sales].[Customers] SET [DoB] = @p0, [Name] = @p1, [StatusId] = @p2, [Updated] = @p3 WHERE [CustomerId] = @p4", sqlQuery.CommandText);
             Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);
             Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
             Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);

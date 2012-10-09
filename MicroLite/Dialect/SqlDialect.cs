@@ -88,8 +88,7 @@ namespace MicroLite.Dialect
                             && !column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
                         {
                             updateSqlBuilder.AppendFormat(
-                                        " {0}.{1} = {2},",
-                                        this.EscapeSql(objectInfo.TableInfo.Name),
+                                        " {0} = {1},",
                                         this.EscapeSql(column.ColumnName),
                                         this.FormatParameter(updateValues.Count));
 
@@ -104,8 +103,7 @@ namespace MicroLite.Dialect
                     updateSqlBuilder.Remove(updateSqlBuilder.Length - 1, 1);
 
                     updateSqlBuilder.AppendFormat(
-                        " WHERE {0}.{1} = {2}",
-                        this.EscapeSql(objectInfo.TableInfo.Name),
+                        " WHERE {0} = {1}",
                         this.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
                         this.FormatParameter(updateValues.Count));
 
@@ -128,8 +126,7 @@ namespace MicroLite.Dialect
 
                     var sqlBuilder = this.CreateSql(statementType, objectInfo);
                     sqlBuilder.AppendFormat(
-                        " WHERE {0}.{1} = {2}",
-                        this.EscapeSql(objectInfo.TableInfo.Name),
+                        " WHERE {0} = {1}",
                         this.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
                         this.FormatParameter(0));
 
@@ -187,7 +184,7 @@ namespace MicroLite.Dialect
 
                         if (column.AllowInsert)
                         {
-                            sqlBuilder.AppendFormat("{0}.{1}, ", this.EscapeSql(objectInfo.TableInfo.Name), this.EscapeSql(column.ColumnName));
+                            sqlBuilder.Append(this.EscapeSql(column.ColumnName) + ", ");
                         }
                     }
 
@@ -197,15 +194,10 @@ namespace MicroLite.Dialect
                     break;
 
                 case StatementType.Select:
-                    sqlBuilder.Append("SELECT");
+                    sqlBuilder.Append("SELECT ");
 
-                    foreach (var column in objectInfo.TableInfo.Columns)
-                    {
-                        sqlBuilder.AppendFormat(" {0}.{1},", this.EscapeSql(objectInfo.TableInfo.Name), this.EscapeSql(column.ColumnName));
-                    }
-
-                    sqlBuilder.Remove(sqlBuilder.Length - 1, 1);
-
+                    // HACK: We need to use the old string.Join(string separator, params string[] value) method while we are also building in .net 3.5
+                    sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.EscapeSql(x.ColumnName)).ToArray()));
                     sqlBuilder.Append(" FROM " + this.ResolveTableName(objectInfo));
 
                     break;
