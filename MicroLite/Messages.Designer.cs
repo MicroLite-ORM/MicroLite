@@ -142,6 +142,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be delete.
+        /// </summary>
+        internal static string IListener_IdentifierNotSetForDelete {
+            get {
+                return ResourceManager.GetString("IListener_IdentifierNotSetForDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be updated.
         /// </summary>
         internal static string IListener_IdentifierNotSetForUpdate {

@@ -10,6 +10,34 @@
     public class AssignedListenerTests
     {
         [Test]
+        public void BeforeDeleteDoesNotThrowIfIdentifierSet()
+        {
+            var customer = new Customer
+            {
+                Id = 1242534
+            };
+
+            var listener = new AssignedListener();
+
+            listener.BeforeDelete(customer);
+        }
+
+        [Test]
+        public void BeforeDeleteThrowsMicroLiteExceptionIfIdentifierNotSet()
+        {
+            var customer = new Customer
+            {
+                Id = 0
+            };
+
+            var listener = new AssignedListener();
+
+            var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeDelete(customer));
+
+            Assert.AreEqual(Messages.IListener_IdentifierNotSetForDelete, exception.Message);
+        }
+
+        [Test]
         public void BeforeInsertDoesNotThrowIfIdentifierSet()
         {
             var customer = new Customer

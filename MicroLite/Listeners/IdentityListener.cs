@@ -47,6 +47,24 @@ namespace MicroLite.Listeners
         }
 
         /// <summary>
+        /// Invoked before the SqlQuery to delete the record from the database is created.
+        /// </summary>
+        /// <param name="instance">The instance to be deleted.</param>
+        /// <exception cref="MicroLiteException">Thrown if the identifier value for the object has not been set.</exception>
+        public override void BeforeDelete(object instance)
+        {
+            var objectInfo = ObjectInfo.For(instance.GetType());
+
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
+            {
+                if (objectInfo.HasDefaultIdentifierValue(instance))
+                {
+                    throw new MicroLiteException(Messages.IListener_IdentifierNotSetForDelete);
+                }
+            }
+        }
+
+        /// <summary>
         /// Invoked before the SqlQuery to insert the record into the database is created.
         /// </summary>
         /// <param name="instance">The instance to be inserted.</param>

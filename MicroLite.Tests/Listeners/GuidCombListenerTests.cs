@@ -11,7 +11,7 @@
     public class GuidCombListenerTests
     {
         [Test]
-        public void BeforeInsertThrowsMicroLiteExceptionIfIdentifierSet()
+        public void BeforeDeleteDoesNotThrowIfIdentifierSet()
         {
             var customer = new Customer
             {
@@ -20,9 +20,22 @@
 
             var listener = new GuidCombListener();
 
-            var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeInsert(customer));
+            listener.BeforeDelete(customer);
+        }
 
-            Assert.AreEqual(Messages.IListener_IdentifierSetForInsert, exception.Message);
+        [Test]
+        public void BeforeDeleteThrowsMicroLiteExceptionIfIdentifierNotSet()
+        {
+            var customer = new Customer
+            {
+                Id = Guid.Empty
+            };
+
+            var listener = new GuidCombListener();
+
+            var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeDelete(customer));
+
+            Assert.AreEqual(Messages.IListener_IdentifierNotSetForDelete, exception.Message);
         }
 
         [Test]
@@ -38,6 +51,21 @@
             listener.BeforeInsert(customer);
 
             Assert.AreNotEqual(Guid.Empty, customer.Id);
+        }
+
+        [Test]
+        public void BeforeInsertThrowsMicroLiteExceptionIfIdentifierSet()
+        {
+            var customer = new Customer
+            {
+                Id = Guid.NewGuid()
+            };
+
+            var listener = new GuidCombListener();
+
+            var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeInsert(customer));
+
+            Assert.AreEqual(Messages.IListener_IdentifierSetForInsert, exception.Message);
         }
 
         [Test]
