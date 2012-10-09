@@ -15,7 +15,7 @@ namespace MicroLite.Core
     using System.Data;
 
     /// <summary>
-    /// The class which manages begining a transaction.
+    /// The class which manages beginning a transaction.
     /// </summary>
     internal static class Transaction
     {

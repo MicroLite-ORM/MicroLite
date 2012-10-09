@@ -614,12 +614,12 @@ namespace MicroLite.Query
         ///     .Select("*")
         ///     .From(typeof(Customer))
         ///     .Where("LastName = @p0", "Smith")
-        ///     .OrWhere("LastName = @p0", "Smythe") // Each time, the parameter number relates to the individual method call.
+        ///     .OrWhere("LastName = @p0", "Smithson") // Each time, the parameter number relates to the individual method call.
         ///     .ToSqlQuery();
         /// </code>
         /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0) OR (LastName = @p1)
         /// @p0 would be Smith
-        /// @p1 would be Smythe
+        /// @p1 would be Smithson
         /// </example>
         /// <example>
         /// Additionally, we could construct the query as follows:
@@ -627,12 +627,12 @@ namespace MicroLite.Query
         /// var query = SqlBuilder
         ///     .Select("*")
         ///     .From(typeof(Customer))
-        ///     .Where("LastName = @p0 OR LastName = @p1", "Smith", "Smythe")
+        ///     .Where("LastName = @p0 OR LastName = @p1", "Smith", "Smithson")
         ///     .ToSqlQuery();
         /// </code>
         /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR LastName = @p1)
         /// @p0 would be Smith
-        /// @p1 would be Smythe
+        /// @p1 would be Smithson
         /// </example>
         public IAndOrOrderBy OrWhere(string predicate, params object[] args)
         {
