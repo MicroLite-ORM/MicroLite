@@ -41,7 +41,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT AVG(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -57,7 +57,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT AVG(Total) AS AverageTotal FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT AVG(Total) AS AverageTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -74,7 +74,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT CustomerId, AVG(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0) GROUP BY CustomerId", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT CustomerId, AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0) GROUP BY CustomerId", sqlQuery.CommandText);
         }
 
         [Test]
@@ -310,7 +310,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT MAX(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -326,7 +326,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT MAX(Total) AS MaxTotal FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT MAX(Total) AS MaxTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -342,7 +342,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT CustomerId, MAX(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT CustomerId, MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -358,7 +358,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT MIN(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -374,7 +374,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT MIN(Total) AS MinTotal FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT MIN(Total) AS MinTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -390,7 +390,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT CustomerId, MIN(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT CustomerId, MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -406,7 +406,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT SUM(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -422,7 +422,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT SUM(Total) AS SumTotal FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT SUM(Total) AS SumTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -438,7 +438,7 @@
             Assert.AreEqual(1, sqlQuery.Arguments.Count);
             Assert.AreEqual(1022, sqlQuery.Arguments[0]);
 
-            Assert.AreEqual("SELECT CustomerId, SUM(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
         [Test]
@@ -621,7 +621,7 @@
             }
         }
 
-        [MicroLite.Mapping.Table(schema: "Sales", name: "Invoices")]
+        [MicroLite.Mapping.Table(name: "Invoices")]
         private class Invoice
         {
             public Invoice()

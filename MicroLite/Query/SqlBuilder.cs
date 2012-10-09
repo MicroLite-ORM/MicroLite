@@ -333,7 +333,9 @@ namespace MicroLite.Query
                 select = Select(objectInfo.TableInfo.Columns.Select(c => c.ColumnName).ToArray());
             }
 
-            return select.From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name);
+            return !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
+                ? select.From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name)
+                : select.From(objectInfo.TableInfo.Name);
         }
 
         /// <summary>
