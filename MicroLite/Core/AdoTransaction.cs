@@ -122,6 +122,11 @@ namespace MicroLite.Core
 
         public void Enlist(IDbCommand command)
         {
+            if (command == null)
+            {
+                throw new ArgumentNullException("command");
+            }
+
             if (this.IsActive)
             {
                 log.TryLogInfo(Messages.Transaction_EnlistingCommand);

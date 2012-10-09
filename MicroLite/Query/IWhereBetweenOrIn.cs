@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IWhereInOrBetween.cs" company="MicroLite">
+// <copyright file="IWhereBetweenOrIn.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,7 @@ namespace MicroLite.Query
     /// <summary>
     /// The interface which specifies the where in method in the fluent sql builder syntax.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "WhereIn", Justification = "In this case, it means where in.")]
-    public interface IWhereInOrBetween : IHideObjectMethods
+    public interface IWhereBetweenOrIn : IHideObjectMethods
     {
         /// <summary>
         /// Uses the specified arguments to filter the column.

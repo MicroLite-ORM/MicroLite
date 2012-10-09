@@ -22,7 +22,7 @@ namespace MicroLite.Query
     /// <summary>
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
-    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereInOrBetween
+    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereBetweenOrIn
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder();
@@ -113,7 +113,7 @@ namespace MicroLite.Query
         ///     ...
         /// </code>
         /// </example>
-        public IWhereInOrBetween AndWhere(string columnName)
+        public IWhereBetweenOrIn AndWhere(string columnName)
         {
             this.operand = " AND";
             this.whereColumnName = columnName;
@@ -380,6 +380,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy In(params object[] args)
         {
+            if (args == null)
+            {
+                throw new ArgumentNullException("args");
+            }
+
             if (!this.addedWhere)
             {
                 this.innerSql.Append(" WHERE");
@@ -424,6 +429,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy In(SqlQuery subQuery)
         {
+            if (subQuery == null)
+            {
+                throw new ArgumentNullException("subQuery");
+            }
+
             if (!this.addedWhere)
             {
                 this.innerSql.Append(" WHERE");
@@ -593,7 +603,7 @@ namespace MicroLite.Query
         /// </summary>
         /// <param name="columnName">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        public IWhereInOrBetween OrWhere(string columnName)
+        public IWhereBetweenOrIn OrWhere(string columnName)
         {
             this.operand = " OR";
             this.whereColumnName = columnName;
@@ -718,7 +728,7 @@ namespace MicroLite.Query
         ///     ...
         /// </code>
         /// </example>
-        public IWhereInOrBetween Where(string columnName)
+        public IWhereBetweenOrIn Where(string columnName)
         {
             this.whereColumnName = columnName;
 

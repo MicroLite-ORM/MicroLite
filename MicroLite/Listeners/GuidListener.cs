@@ -31,6 +31,11 @@ namespace MicroLite.Listeners
         /// <exception cref="MicroLiteException">Thrown if the identifier value for the object has not been set.</exception>
         public override void BeforeDelete(object instance)
         {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Guid)
@@ -46,9 +51,13 @@ namespace MicroLite.Listeners
         /// Invoked before the SqlQuery to insert the record into the database is created.
         /// </summary>
         /// <param name="instance">The instance to be inserted.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Although the class and method are public, the method will only ever be called by Session which will have already validated the parameters.")]
         public override void BeforeInsert(object instance)
         {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Guid)
@@ -72,9 +81,13 @@ namespace MicroLite.Listeners
         /// </summary>
         /// <param name="instance">The instance to be updated.</param>
         /// <exception cref="MicroLiteException">Thrown if the identifier value for the object has not been set.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Although the class and method are public, the method will only ever be called by Session which will have already validated the parameters.")]
         public override void BeforeUpdate(object instance)
         {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Guid)
