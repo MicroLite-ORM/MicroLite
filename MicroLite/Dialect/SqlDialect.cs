@@ -54,7 +54,7 @@ namespace MicroLite.Dialect
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
-                        if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity
+                        if (objectInfo.TableInfo.IdentifierStrategy.In(IdentifierStrategy.Identity, IdentifierStrategy.AutoIncrement)
                             && column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
                         {
                             continue;
@@ -176,7 +176,7 @@ namespace MicroLite.Dialect
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
-                        if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity
+                        if (objectInfo.TableInfo.IdentifierStrategy.In(IdentifierStrategy.Identity, IdentifierStrategy.AutoIncrement)
                             && column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
                         {
                             continue;

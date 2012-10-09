@@ -60,6 +60,7 @@
     <Compile Include="Dialect\SqlDialectTests.cs" />
     <Compile Include="Dialect\SQLiteDialectTests.cs" />
     <Compile Include="GuidGeneratorTests.cs" />
+    <Compile Include="Listeners\AutoIncrementListenerTests.cs" />
     <Compile Include="Listeners\GuidCombListenerTests.cs" />
     <Compile Include="Logging\CurrentSessionIdResolverTests.cs" />
     <Compile Include="Logging\SessionLoggingContextTests.cs" />

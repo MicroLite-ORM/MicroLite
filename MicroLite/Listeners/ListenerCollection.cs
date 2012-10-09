@@ -28,10 +28,11 @@ namespace MicroLite.Listeners
         /// </summary>
         public ListenerCollection()
         {
-            this.Add<AssignedListener>();
-            this.Add<GuidCombListener>();
-            this.Add<GuidListener>();
             this.Add<IdentityListener>();
+            this.Add<AssignedListener>();
+            this.Add<GuidListener>();
+            this.Add<GuidCombListener>();
+            this.Add<AutoIncrementListener>();
         }
 
         /// <summary>

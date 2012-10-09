@@ -93,6 +93,28 @@
         }
 
         [Test]
+        public void InsertQueryForAutoIncrementInstance()
+        {
+            var customer = new CustomerWithAutoIncrement
+            {
+                Created = DateTime.Now,
+                DateOfBirth = new System.DateTime(1982, 11, 27),
+                Name = "Trevor Pilley",
+                Status = CustomerStatus.Active
+            };
+
+            var sqlDialect = new SQLiteDialect();
+
+            var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
+
+            Assert.AreEqual("INSERT INTO [Customers] ([Created], [DoB], [Name], [StatusId]) VALUES (@p0, @p1, @p2, @p3)", sqlQuery.CommandText);
+            Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
+            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
+            Assert.AreEqual(customer.Name, sqlQuery.Arguments[2]);
+            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[3]);
+        }
+
+        [Test]
         public void PageNonQualifiedQuery()
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
@@ -325,6 +347,57 @@
 
             [MicroLite.Mapping.Column("CustomerId")]
             [MicroLite.Mapping.Identifier(IdentifierStrategy.Identity)]
+            public int Id
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("Name")]
+            public string Name
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("StatusId")]
+            public CustomerStatus Status
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("Updated", allowInsert: false, allowUpdate: true)]
+            public DateTime? Updated
+            {
+                get;
+                set;
+            }
+        }
+
+        [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
+        private class CustomerWithAutoIncrement
+        {
+            public CustomerWithAutoIncrement()
+            {
+            }
+
+            [MicroLite.Mapping.Column("Created", allowInsert: true, allowUpdate: false)]
+            public DateTime Created
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("DoB")]
+            public DateTime DateOfBirth
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("CustomerId")]
+            [MicroLite.Mapping.Identifier(IdentifierStrategy.AutoIncrement)]
             public int Id
             {
                 get;
