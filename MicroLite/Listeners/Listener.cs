@@ -35,11 +35,29 @@ namespace MicroLite.Listeners
         }
 
         /// <summary>
+        /// Invoked after the SqlQuery to delete the record for the instance has been executed.
+        /// </summary>
+        /// <param name="instance">The instance which has been deleted.</param>
+        /// <param name="rowsAffected">The number of rows affected by the delete.</param>
+        public virtual void AfterDelete(object instance, int rowsAffected)
+        {
+        }
+
+        /// <summary>
         /// Invoked after the SqlQuery to insert the record for the instance has been executed.
         /// </summary>
         /// <param name="instance">The instance which has been inserted.</param>
         /// <param name="executeScalarResult">The execute scalar result.</param>
         public virtual void AfterInsert(object instance, object executeScalarResult)
+        {
+        }
+
+        /// <summary>
+        /// Invoked after the SqlQuery to update the record for the instance has been executed.
+        /// </summary>
+        /// <param name="instance">The instance which has been updates.</param>
+        /// <param name="rowsAffected">The number of rows affected by the update.</param>
+        public virtual void AfterUpdate(object instance, int rowsAffected)
         {
         }
 

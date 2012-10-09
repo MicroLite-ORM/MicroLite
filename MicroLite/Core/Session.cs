@@ -182,7 +182,11 @@ namespace MicroLite.Core
 
                 this.Listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
 
-                return this.Execute(sqlQuery) == 1;
+                var rowsAffected = this.Execute(sqlQuery);
+
+                this.Listeners.Each(l => l.AfterDelete(instance, rowsAffected));
+
+                return rowsAffected == 1;
             }
         }
 
@@ -461,7 +465,9 @@ namespace MicroLite.Core
 
                 this.Listeners.Each(l => l.BeforeUpdate(instance, sqlQuery));
 
-                this.Execute(sqlQuery);
+                var rowsAffected = this.Execute(sqlQuery);
+
+                this.Listeners.Each(l => l.AfterUpdate(instance, rowsAffected));
             }
         }
 

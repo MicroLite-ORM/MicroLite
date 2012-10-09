@@ -18,11 +18,25 @@ namespace MicroLite.Listeners
     public interface IListener
     {
         /// <summary>
+        /// Invoked after the SqlQuery to delete the record for the instance has been executed.
+        /// </summary>
+        /// <param name="instance">The instance which has been deleted.</param>
+        /// <param name="rowsAffected">The number of rows affected by the delete.</param>
+        void AfterDelete(object instance, int rowsAffected);
+
+        /// <summary>
         /// Invoked after the SqlQuery to insert the record for the instance has been executed.
         /// </summary>
         /// <param name="instance">The instance which has been inserted.</param>
         /// <param name="executeScalarResult">The execute scalar result.</param>
         void AfterInsert(object instance, object executeScalarResult);
+
+        /// <summary>
+        /// Invoked after the SqlQuery to update the record for the instance has been executed.
+        /// </summary>
+        /// <param name="instance">The instance which has been updates.</param>
+        /// <param name="rowsAffected">The number of rows affected by the update.</param>
+        void AfterUpdate(object instance, int rowsAffected);
 
         /// <summary>
         /// Invoked before the SqlQuery to delete the record from the database is created.
