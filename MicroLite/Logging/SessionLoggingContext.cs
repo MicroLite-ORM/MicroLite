@@ -19,7 +19,7 @@ namespace MicroLite.Logging
     /// </summary>
     /// <remarks>
     /// ThreadStatic should be ok since MicroLite does not perform any async operations and SessionLoggingContext is internal
-    /// so thread switching in ASP.NET or WCF shouldn't result if this being invalid at any point during logging.
+    /// so thread switching in ASP.NET or WCF shouldn't result in this being invalid at any point during logging.
     /// </remarks>
     internal sealed class SessionLoggingContext : IDisposable
     {
