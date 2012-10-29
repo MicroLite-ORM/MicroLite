@@ -147,6 +147,11 @@
     <None Include="..\MicroLite.snk">
       <Link>MicroLite.snk</Link>
     </None>
+    <None Include="Configuration\_Configuration.cd" />
+    <None Include="Dialect\_Dialect.cd" />
+    <None Include="Listeners\_Listeners.cd" />
+    <None Include="Logging\_Logging.cd" />
+    <None Include="_Session.cd" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Messages.resx">
