@@ -55,9 +55,11 @@ namespace MicroLite.Logging
         /// </returns>
         internal static ILog GetLog(string name)
         {
-            if (GetLogger != null)
+            var getLogger = GetLogger;
+
+            if (getLogger != null)
             {
-                return GetLogger(name);
+                return getLogger(name);
             }
 
             return null;
