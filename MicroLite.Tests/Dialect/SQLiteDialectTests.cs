@@ -123,8 +123,8 @@
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
             Assert.AreEqual("SELECT CustomerId, Name, DoB, StatusId FROM Customers LIMIT @p0,@p1", paged.CommandText);
-            Assert.AreEqual(1, paged.Arguments[0], "The first argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the end row number");
+            Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
 
         [Test]
@@ -136,8 +136,8 @@
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
             Assert.AreEqual("SELECT * FROM Customers LIMIT @p0,@p1", paged.CommandText);
-            Assert.AreEqual(1, paged.Arguments[0], "The first argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the end row number");
+            Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
 
         [Test]
@@ -162,8 +162,8 @@
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1) ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC LIMIT @p2,@p3", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
             Assert.AreEqual(sqlQuery.Arguments[1], paged.Arguments[1], "The second argument should be the second argument from the original query");
-            Assert.AreEqual(1, paged.Arguments[2], "The third argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[3], "The fourth argument should be the end row number");
+            Assert.AreEqual(0, paged.Arguments[2], "The third argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[3], "The fourth argument should be the number of records to return");
         }
 
         [Test]
@@ -175,8 +175,8 @@
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
             Assert.AreEqual("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [Customers] ORDER BY [CustomerId] ASC LIMIT @p0,@p1", paged.CommandText);
-            Assert.AreEqual(1, paged.Arguments[0], "The first argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the end row number");
+            Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
 
         [Test]
@@ -188,8 +188,8 @@
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] LIMIT @p0,@p1", paged.CommandText);
-            Assert.AreEqual(1, paged.Arguments[0], "The first argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the end row number");
+            Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
 
         [Test]
@@ -201,8 +201,8 @@
             var paged = sqlDialect.PageQuery(sqlQuery, page: 2, resultsPerPage: 25);
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] LIMIT @p0,@p1", paged.CommandText);
-            Assert.AreEqual(26, paged.Arguments[0], "The first argument should be the start row number");
-            Assert.AreEqual(50, paged.Arguments[1], "The second argument should be the end row number");
+            Assert.AreEqual(25, paged.Arguments[0], "The first argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
 
         [Test]
@@ -215,8 +215,8 @@
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
-            Assert.AreEqual(1, paged.Arguments[1], "The second argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the end row number");
+            Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
         }
 
         [Test]
@@ -239,8 +239,8 @@
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
-            Assert.AreEqual(1, paged.Arguments[1], "The second argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the end row number");
+            Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
         }
 
         [Test]
@@ -253,8 +253,8 @@
 
             Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] WHERE [Customers].[StatusId] = @p0 LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
-            Assert.AreEqual(1, paged.Arguments[1], "The second argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the end row number");
+            Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
         }
 
         [Test]

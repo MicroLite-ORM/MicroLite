@@ -13,6 +13,7 @@
 namespace MicroLite.Dialect
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Text;
     using MicroLite.Mapping;
@@ -30,6 +31,22 @@ namespace MicroLite.Dialect
         {
         }
 
+        public override SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
+        {
+            long skip = (page - 1) * resultsPerPage;
+
+            List<object> arguments = new List<object>();
+            arguments.AddRange(sqlQuery.Arguments);
+            arguments.Add(skip);
+            arguments.Add(resultsPerPage);
+
+            var sqlBuilder = new StringBuilder(sqlQuery.CommandText);
+            sqlBuilder.Replace(Environment.NewLine, string.Empty);
+            sqlBuilder.Append(SqlUtil.ReNumberParameters(" LIMIT @p0,@p1", arguments.Count));
+
+            return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
+        }
+
         protected override string EscapeSql(string sql)
         {
             return "[" + sql + "]";
@@ -38,15 +55,6 @@ namespace MicroLite.Dialect
         protected override string FormatParameter(int parameterPosition)
         {
             return "@p" + parameterPosition.ToString(CultureInfo.InvariantCulture);
-        }
-
-        protected override string PageCommandText(string commandText, int argumentCount)
-        {
-            var sqlBuilder = new StringBuilder(commandText);
-            sqlBuilder.Replace(Environment.NewLine, string.Empty);
-            sqlBuilder.Append(SqlUtil.ReNumberParameters(" LIMIT @p0,@p1", argumentCount));
-
-            return sqlBuilder.ToString();
         }
 
         protected override string ResolveTableName(ObjectInfo objectInfo)

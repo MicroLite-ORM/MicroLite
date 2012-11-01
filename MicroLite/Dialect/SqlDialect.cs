@@ -137,26 +137,11 @@ namespace MicroLite.Dialect
             }
         }
 
-        public SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
-        {
-            long fromRowNumber = ((page - 1) * resultsPerPage) + 1;
-            long toRowNumber = (fromRowNumber - 1) + resultsPerPage;
-
-            List<object> arguments = new List<object>();
-            arguments.AddRange(sqlQuery.Arguments);
-            arguments.Add(fromRowNumber);
-            arguments.Add(toRowNumber);
-
-            var commandText = this.PageCommandText(sqlQuery.CommandText, arguments.Count);
-
-            return new SqlQuery(commandText, arguments.ToArray());
-        }
+        public abstract SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage);
 
         protected abstract string EscapeSql(string sql);
 
         protected abstract string FormatParameter(int parameterPosition);
-
-        protected abstract string PageCommandText(string commandText, int argumentCount);
 
         protected abstract string ResolveTableName(ObjectInfo objectInfo);
 
