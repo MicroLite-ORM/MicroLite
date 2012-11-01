@@ -215,6 +215,59 @@ namespace MicroLite
         /// </example>
         PagedResult<T> Paged<T>(SqlQuery sqlQuery, long page, long resultsPerPage) where T : class, new();
 
+#if !NET_3_5
+
+        /// <summary>
+        /// Executes the specified SQL query and returns the results as a list of dynamic objects.
+        /// </summary>
+        /// <param name="sqlQuery">The SQL query to execute.</param>
+        /// <returns>The results as a list of dynamic objects.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if there is an error executing the command.</exception>
+        /// <remarks>This method is not available in the .net 3.5 build of MicroLite.</remarks>
+        /// <example>
+        /// <code>
+        /// using (var session = sessionFactory.OpenSession())
+        /// {
+        ///     // Create an ad-hoc query, this could select a number of columns accross multiple tables if desired.
+        ///     var query = new SqlQuery("SELECT Name, DoB FROM Customers");
+        ///
+        ///     // The results of the projection will be an IList&lt;dynamic&gt;
+        ///     var results = session.Advanced.Projection(query);
+        ///
+        ///     foreach (var item in results)
+        ///     {
+        ///         // The property names of each dynamic result will match (including case) the column names specified in the query.
+        ///         Console.WriteLine(item.Name);
+        ///         Console.WriteLine(item.DoB);
+        ///     }
+        /// }
+        /// </code>
+        /// <code>
+        /// using (var session = sessionFactory.OpenSession())
+        /// {
+        ///     var query = new SqlQuery(@"SELECT Customer.Name AS CustomerName, SUM(Invoices.InvoiceTotal) AS InvoiceTotal
+        ///         FROM Customers
+        ///         INNER JOIN Invoices ON Invoices.CustomerID = Customers.CustomerID
+        ///         GROUP BY Customers.Name
+        ///         ORDER BY InvoiceTotal DESC");
+        ///
+        ///     var results = session.Advanced.Projection(query);
+        ///
+        ///     foreach (var item in results)
+        ///     {
+        ///         // The property names of each dynamic result will match the column names specified in the query.
+        ///         Console.WriteLine(item.CustomerName);
+        ///         Console.WriteLine(item.InvoiceTotal);
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        IList<dynamic> Projection(SqlQuery sqlQuery);
+
+#endif
+
         /// <summary>
         /// Returns the instance of the specified type which corresponds to the row with the specified identifier
         /// in the mapped table, or null if the identifier values does not exist in the table.
