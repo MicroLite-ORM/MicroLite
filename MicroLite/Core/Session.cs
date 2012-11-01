@@ -371,7 +371,7 @@ namespace MicroLite.Core
                 var countSqlQuery = this.sqlDialect.CountQuery(sqlQuery);
                 var pagedSqlQuery = this.sqlDialect.PageQuery(sqlQuery, page, resultsPerPage);
 
-                var includeCount = this.Include.Scalar<int>(countSqlQuery);
+                var includeCount = this.Include.Scalar<long>(countSqlQuery);
                 var includeMany = this.Include.Many<T>(pagedSqlQuery);
 
                 this.ExecuteAllQueries();
