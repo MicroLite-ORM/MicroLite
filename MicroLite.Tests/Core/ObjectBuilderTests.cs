@@ -149,9 +149,9 @@
             var mockDataReader = new Mock<IDataReader>();
             mockDataReader.Setup(x => x.FieldCount).Returns(1);
 
-            mockDataReader.Setup(x => x.GetName(0)).Returns("StatusId");
+            mockDataReader.Setup(x => x.GetName(0)).Returns("DoB");
 
-            mockDataReader.Setup(x => x[0]).Returns((decimal)123242.23234);
+            mockDataReader.Setup(x => x[0]).Returns("foo");
 
             var objectBuilder = new ObjectBuilder();
 
