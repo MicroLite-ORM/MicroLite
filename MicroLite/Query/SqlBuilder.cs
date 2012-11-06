@@ -176,7 +176,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT AVG(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Average(string columnName)
         {
@@ -199,7 +199,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT AVG(Total) AS AverageTotal FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT AVG(Total) AS AverageTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Average(string columnName, string columnAlias)
         {
@@ -229,7 +229,7 @@ namespace MicroLite.Query
         ///     .Between(new DateTime(2000, 1, 1), new DateTime(2009, 12, 31))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Sales.Customers WHERE (DateRegistered BETWEEN @p0 AND @p1)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered BETWEEN @p0 AND @p1)
         /// </example>
         public IAndOrOrderBy Between(object lower, object upper)
         {
@@ -258,7 +258,7 @@ namespace MicroLite.Query
         ///     .From(typeof(Customer))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT COUNT(CustomerId) AS CustomerId FROM Sales.Customers
+        /// Will generate SELECT COUNT(CustomerId) AS CustomerId FROM Customers
         /// </example>
         public IFrom Count(string columnName)
         {
@@ -280,7 +280,7 @@ namespace MicroLite.Query
         ///     .From(typeof(Customer))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT COUNT(CustomerId) AS CustomerCount FROM Sales.Customers
+        /// Will generate SELECT COUNT(CustomerId) AS CustomerCount FROM Customers
         /// </example>
         public IFrom Count(string columnName, string columnAlias)
         {
@@ -352,7 +352,7 @@ namespace MicroLite.Query
         ///     .GroupBy("CustomerId")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Sales.Invoices GROUP BY CustomerId
+        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId
         /// </example>
         public IOrderBy GroupBy(params string[] columns)
         {
@@ -376,7 +376,7 @@ namespace MicroLite.Query
         ///     .In("X", "Y", "Z")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Sales.Customers WHERE (Column1 IN (@p0, @p1, @p2))
+        /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 IN (@p0, @p1, @p2))
         /// </example>
         public IAndOrOrderBy In(params object[] args)
         {
@@ -425,7 +425,7 @@ namespace MicroLite.Query
         ///     .In(customerQuery)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Sales.Invoices WHERE (CustomerId IN (SELECT CustomerId FROM Sales.Customers WHERE Age > @p0))
+        /// Will generate SELECT {Columns} FROM Invoices WHERE (CustomerId IN (SELECT CustomerId FROM Customers WHERE Age > @p0))
         /// </example>
         public IAndOrOrderBy In(SqlQuery subQuery)
         {
@@ -465,7 +465,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MAX(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Max(string columnName)
         {
@@ -488,7 +488,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MAX(Total) AS MaxTotal FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MAX(Total) AS MaxTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Max(string columnName, string columnAlias)
         {
@@ -517,7 +517,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MIN(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Min(string columnName)
         {
@@ -540,7 +540,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MIN(Total) AS MinTotal FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MIN(Total) AS MinTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Min(string columnName, string columnAlias)
         {
@@ -666,7 +666,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT SUM(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Sum(string columnName)
         {
@@ -689,7 +689,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT SUM(Total) AS SumTotal FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT SUM(Total) AS SumTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Sum(string columnName, string columnAlias)
         {
