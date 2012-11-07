@@ -59,7 +59,9 @@ namespace MicroLite.Dialect
 
         protected override string ResolveTableName(ObjectInfo objectInfo)
         {
-            return "\"" + objectInfo.TableInfo.Name + "\"";
+            return string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
+                ? "\"" + objectInfo.TableInfo.Name + "\""
+                : "\"" + objectInfo.TableInfo.Schema + "\".\"" + objectInfo.TableInfo.Name + "\"";
         }
     }
 }

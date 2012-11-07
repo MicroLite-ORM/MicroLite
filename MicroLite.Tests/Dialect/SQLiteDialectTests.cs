@@ -64,7 +64,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
 
-            Assert.AreEqual("INSERT INTO \"Customers\" (\"CustomerId\", \"Name\", \"StatusId\") VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
+            Assert.AreEqual("INSERT INTO \"main\".\"Customers\" (\"CustomerId\", \"Name\", \"StatusId\") VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
             Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
             Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
@@ -294,7 +294,7 @@
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[4]);
         }
 
-        [MicroLite.Mapping.Table("Customers")]
+        [MicroLite.Mapping.Table(schema: "main", name: "Customers")]
         private class CustomerWithAssigned
         {
             public CustomerWithAssigned()
