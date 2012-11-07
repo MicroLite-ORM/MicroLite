@@ -49,7 +49,7 @@ namespace MicroLite.Dialect
 
         protected override string EscapeSql(string sql)
         {
-            return "[" + sql + "]";
+            return "\"" + sql + "\"";
         }
 
         protected override string FormatParameter(int parameterPosition)
@@ -59,7 +59,7 @@ namespace MicroLite.Dialect
 
         protected override string ResolveTableName(ObjectInfo objectInfo)
         {
-            return "[" + objectInfo.TableInfo.Name + "]";
+            return "\"" + objectInfo.TableInfo.Name + "\"";
         }
     }
 }

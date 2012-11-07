@@ -30,7 +30,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Delete, customer);
 
-            Assert.AreEqual("DELETE FROM [Customers] WHERE [CustomerId] = @p0", sqlQuery.CommandText);
+            Assert.AreEqual("DELETE FROM \"Customers\" WHERE \"CustomerId\" = @p0", sqlQuery.CommandText);
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
         }
 
@@ -43,7 +43,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Delete, typeof(CustomerWithIdentity), identifier);
 
-            Assert.AreEqual("DELETE FROM [Customers] WHERE [CustomerId] = @p0", sqlQuery.CommandText);
+            Assert.AreEqual("DELETE FROM \"Customers\" WHERE \"CustomerId\" = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
         }
 
@@ -64,32 +64,10 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
 
-            Assert.AreEqual("INSERT INTO [Customers] ([CustomerId], [Name], [StatusId]) VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
+            Assert.AreEqual("INSERT INTO \"Customers\" (\"CustomerId\", \"Name\", \"StatusId\") VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
             Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
             Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
-        }
-
-        [Test]
-        public void InsertQueryForIdentityInstance()
-        {
-            var customer = new CustomerWithIdentity
-            {
-                Created = DateTime.Now,
-                DateOfBirth = new System.DateTime(1982, 11, 27),
-                Name = "Trevor Pilley",
-                Status = CustomerStatus.Active
-            };
-
-            var sqlDialect = new SQLiteDialect();
-
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
-
-            Assert.AreEqual("INSERT INTO [Customers] ([Created], [DoB], [Name], [StatusId]) VALUES (@p0, @p1, @p2, @p3)", sqlQuery.CommandText);
-            Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
-            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
-            Assert.AreEqual(customer.Name, sqlQuery.Arguments[2]);
-            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[3]);
         }
 
         [Test]
@@ -107,7 +85,29 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
 
-            Assert.AreEqual("INSERT INTO [Customers] ([Created], [DoB], [Name], [StatusId]) VALUES (@p0, @p1, @p2, @p3)", sqlQuery.CommandText);
+            Assert.AreEqual("INSERT INTO \"Customers\" (\"Created\", \"DoB\", \"Name\", \"StatusId\") VALUES (@p0, @p1, @p2, @p3)", sqlQuery.CommandText);
+            Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
+            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
+            Assert.AreEqual(customer.Name, sqlQuery.Arguments[2]);
+            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[3]);
+        }
+
+        [Test]
+        public void InsertQueryForIdentityInstance()
+        {
+            var customer = new CustomerWithIdentity
+            {
+                Created = DateTime.Now,
+                DateOfBirth = new System.DateTime(1982, 11, 27),
+                Name = "Trevor Pilley",
+                Status = CustomerStatus.Active
+            };
+
+            var sqlDialect = new SQLiteDialect();
+
+            var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
+
+            Assert.AreEqual("INSERT INTO \"Customers\" (\"Created\", \"DoB\", \"Name\", \"StatusId\") VALUES (@p0, @p1, @p2, @p3)", sqlQuery.CommandText);
             Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
             Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
             Assert.AreEqual(customer.Name, sqlQuery.Arguments[2]);
@@ -144,22 +144,22 @@
         public void PageWithMultiWhereAndMultiOrderByMultiLine()
         {
             var sqlQuery = new SqlQuery(@"SELECT
- [Customers].[CustomerId],
- [Customers].[Name],
- [Customers].[DoB],
- [Customers].[StatusId]
+ ""CustomerId"",
+ ""Name"",
+ ""DoB"",
+ ""StatusId""
  FROM
- [Customers]
+ ""Customers""
  WHERE
- ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)
+ (""StatusId"" = @p0 AND ""DoB"" > @p1)
  ORDER BY
- [Customers].[Name] ASC,
- [Customers].[DoB] ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
+ ""Name"" ASC,
+ ""DoB"" ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
 
             var sqlDialect = new SQLiteDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1) ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC LIMIT @p2,@p3", paged.CommandText);
+            Assert.AreEqual("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" WHERE (\"StatusId\" = @p0 AND \"DoB\" > @p1) ORDER BY \"Name\" ASC, \"DoB\" ASC LIMIT @p2,@p3", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
             Assert.AreEqual(sqlQuery.Arguments[1], paged.Arguments[1], "The second argument should be the second argument from the original query");
             Assert.AreEqual(0, paged.Arguments[2], "The third argument should be the number of records to skip");
@@ -169,12 +169,12 @@
         [Test]
         public void PageWithNoWhereButOrderBy()
         {
-            var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [Customers] ORDER BY [CustomerId] ASC");
+            var sqlQuery = new SqlQuery("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" ORDER BY \"CustomerId\" ASC");
 
             var sqlDialect = new SQLiteDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [Customers] ORDER BY [CustomerId] ASC LIMIT @p0,@p1", paged.CommandText);
+            Assert.AreEqual("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" ORDER BY \"CustomerId\" ASC LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
@@ -182,12 +182,12 @@
         [Test]
         public void PageWithNoWhereOrOrderByFirstResultsPage()
         {
-            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers]");
+            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\"");
 
             var sqlDialect = new SQLiteDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] LIMIT @p0,@p1", paged.CommandText);
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
@@ -195,12 +195,12 @@
         [Test]
         public void PageWithNoWhereOrOrderBySecondResultsPage()
         {
-            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers]");
+            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\"");
 
             var sqlDialect = new SQLiteDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, page: 2, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] LIMIT @p0,@p1", paged.CommandText);
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(25, paged.Arguments[0], "The first argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
@@ -208,12 +208,12 @@
         [Test]
         public void PageWithWhereAndOrderBy()
         {
-            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
+            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 ORDER BY\"Name\" ASC", CustomerStatus.Active);
 
             var sqlDialect = new SQLiteDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC LIMIT @p1,@p2", paged.CommandText);
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 ORDER BY\"Name\" ASC LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
             Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
@@ -223,21 +223,21 @@
         public void PageWithWhereAndOrderByMultiLine()
         {
             var sqlQuery = new SqlQuery(@"SELECT
- [Customers].[CustomerId],
- [Customers].[Name],
- [Customers].[DoB],
- [Customers].[StatusId]
+""CustomerId"",
+""Name"",
+""DoB"",
+""StatusId""
  FROM
- [Customers]
+ ""Customers""
  WHERE
- [Customers].[StatusId] = @p0
+""StatusId"" = @p0
  ORDER BY
- [Customers].[Name] ASC", new object[] { CustomerStatus.Active });
+""Name"" ASC", new object[] { CustomerStatus.Active });
 
             var sqlDialect = new SQLiteDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC LIMIT @p1,@p2", paged.CommandText);
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 ORDER BY\"Name\" ASC LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
             Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
@@ -246,12 +246,12 @@
         [Test]
         public void PageWithWhereButNoOrderBy()
         {
-            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] WHERE [Customers].[StatusId] = @p0", CustomerStatus.Active);
+            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0", CustomerStatus.Active);
 
             var sqlDialect = new SQLiteDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Customers] WHERE [Customers].[StatusId] = @p0 LIMIT @p1,@p2", paged.CommandText);
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
             Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
@@ -266,7 +266,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Select, typeof(CustomerWithIdentity), identifier);
 
-            Assert.AreEqual("SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated] FROM [Customers] WHERE [CustomerId] = @p0", sqlQuery.CommandText);
+            Assert.AreEqual("SELECT \"Created\", \"DoB\", \"CustomerId\", \"Name\", \"StatusId\", \"Updated\" FROM \"Customers\" WHERE \"CustomerId\" = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
         }
 
@@ -286,7 +286,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Update, customer);
 
-            Assert.AreEqual("UPDATE [Customers] SET [DoB] = @p0, [Name] = @p1, [StatusId] = @p2, [Updated] = @p3 WHERE [CustomerId] = @p4", sqlQuery.CommandText);
+            Assert.AreEqual("UPDATE \"Customers\" SET \"DoB\" = @p0, \"Name\" = @p1, \"StatusId\" = @p2, \"Updated\" = @p3 WHERE \"CustomerId\" = @p4", sqlQuery.CommandText);
             Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);
             Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
             Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
@@ -294,7 +294,7 @@
             Assert.AreEqual(customer.Id, sqlQuery.Arguments[4]);
         }
 
-        [MicroLite.Mapping.Table(schema: "Marketing", name: "Customers")]
+        [MicroLite.Mapping.Table("Customers")]
         private class CustomerWithAssigned
         {
             public CustomerWithAssigned()
@@ -324,10 +324,10 @@
             }
         }
 
-        [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
-        private class CustomerWithIdentity
+        [MicroLite.Mapping.Table("Customers")]
+        private class CustomerWithAutoIncrement
         {
-            public CustomerWithIdentity()
+            public CustomerWithAutoIncrement()
             {
             }
 
@@ -346,7 +346,7 @@
             }
 
             [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.Identity)]
+            [MicroLite.Mapping.Identifier(IdentifierStrategy.AutoIncrement)]
             public int Id
             {
                 get;
@@ -375,10 +375,10 @@
             }
         }
 
-        [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
-        private class CustomerWithAutoIncrement
+        [MicroLite.Mapping.Table("Customers")]
+        private class CustomerWithIdentity
         {
-            public CustomerWithAutoIncrement()
+            public CustomerWithIdentity()
             {
             }
 
@@ -397,7 +397,7 @@
             }
 
             [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.AutoIncrement)]
+            [MicroLite.Mapping.Identifier(IdentifierStrategy.Identity)]
             public int Id
             {
                 get;
