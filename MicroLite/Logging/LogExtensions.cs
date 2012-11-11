@@ -13,6 +13,7 @@
 namespace MicroLite.Logging
 {
     using System;
+    using System.Diagnostics;
 
     /// <summary>
     /// Extension methods for the <see cref="ILog"/> interface to simplify writing to the log since there is no
@@ -60,6 +61,11 @@ namespace MicroLite.Logging
                     log.Error(message);
                 }
             }
+
+            if (Debugger.IsAttached)
+            {
+                Trace.TraceError(message, formatArgs);
+            }
         }
 
         /// <summary>
@@ -73,6 +79,11 @@ namespace MicroLite.Logging
             if (log != null)
             {
                 log.Error(message, exception);
+            }
+
+            if (Debugger.IsAttached)
+            {
+                Trace.TraceError(message);
             }
         }
 
@@ -95,6 +106,11 @@ namespace MicroLite.Logging
                     log.Fatal(message);
                 }
             }
+
+            if (Debugger.IsAttached)
+            {
+                Trace.TraceError(message, formatArgs);
+            }
         }
 
         /// <summary>
@@ -108,6 +124,11 @@ namespace MicroLite.Logging
             if (log != null)
             {
                 log.Fatal(message, exception);
+            }
+
+            if (Debugger.IsAttached)
+            {
+                Trace.TraceError(message);
             }
         }
 
@@ -150,6 +171,11 @@ namespace MicroLite.Logging
                 {
                     log.Warn(message);
                 }
+            }
+
+            if (Debugger.IsAttached)
+            {
+                Trace.TraceWarning(message, formatArgs);
             }
         }
     }
