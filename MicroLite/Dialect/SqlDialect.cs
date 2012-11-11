@@ -181,8 +181,11 @@ namespace MicroLite.Dialect
                 case StatementType.Select:
                     sqlBuilder.Append("SELECT ");
 
-                    // HACK: We need to use the old string.Join(string separator, params string[] value) method while we are also building in .net 3.5
+#if NET_3_5
                     sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.EscapeSql(x.ColumnName)).ToArray()));
+#else
+                    sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.EscapeSql(x.ColumnName))));
+#endif
                     sqlBuilder.Append(" FROM " + this.ResolveTableName(objectInfo));
 
                     break;
