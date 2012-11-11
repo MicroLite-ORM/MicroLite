@@ -26,6 +26,12 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Opens a new read only session to the database.
+        /// </summary>
+        /// <returns>A new read only session instance.</returns>
+        IReadOnlySession OpenReadOnlySession();
+
+        /// <summary>
         /// Opens a new session to the database.
         /// </summary>
         /// <returns>A new session instance.</returns>

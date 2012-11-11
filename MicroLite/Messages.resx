@@ -252,4 +252,7 @@
   <data name="IListener_IdentifierNotSetForDelete" xml:space="preserve">
     <value>The object does not have an identifier value set so it cannot be delete</value>
   </data>
+  <data name="SessionFactory_CreatingReadOnlySession" xml:space="preserve">
+    <value>Creating a new read only session for connection [{0}]</value>
+  </data>
 </root>

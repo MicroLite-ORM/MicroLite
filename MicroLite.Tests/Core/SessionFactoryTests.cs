@@ -25,6 +25,53 @@
         }
 
         [Test]
+        public void OpenReadOnlySessionCreatesConnectionAndSetsConnectionString()
+        {
+            var mockConnection = new Mock<DbConnection>();
+            mockConnection.SetupProperty(x => x.ConnectionString);
+
+            var mockFactory = new Mock<DbProviderFactory>();
+            mockFactory.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+
+            var options = new SessionFactoryOptions
+            {
+                ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
+                ProviderFactory = mockFactory.Object,
+                SqlDialect = "MicroLite.Dialect.MsSqlDialect"
+            };
+
+            var sessionFactory = new SessionFactory(options);
+            var session = sessionFactory.OpenReadOnlySession();
+
+            mockFactory.VerifyAll();
+            mockConnection.VerifySet(x => x.ConnectionString = options.ConnectionString);
+        }
+
+        [Test]
+        public void OpenReadOnlySessionReturnsNewInstanceOnEachCall()
+        {
+            var mockConnection = new Mock<DbConnection>();
+            mockConnection.SetupProperty(x => x.ConnectionString);
+
+            var mockFactory = new Mock<DbProviderFactory>();
+            mockFactory.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+
+            var options = new SessionFactoryOptions
+            {
+                ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
+                ProviderFactory = mockFactory.Object,
+                SqlDialect = "MicroLite.Dialect.MsSqlDialect"
+            };
+
+            var sessionFactory = new SessionFactory(options);
+
+            var session1 = sessionFactory.OpenReadOnlySession();
+            var session2 = sessionFactory.OpenReadOnlySession();
+
+            Assert.AreNotSame(session1, session2);
+        }
+
+        [Test]
         public void OpenSessionCreatesConnectionAndSetsConnectionString()
         {
             var mockConnection = new Mock<DbConnection>();

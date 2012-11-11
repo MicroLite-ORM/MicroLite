@@ -340,6 +340,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creating a new read only session for connection [{0}].
+        /// </summary>
+        internal static string SessionFactory_CreatingReadOnlySession {
+            get {
+                return ResourceManager.GetString("SessionFactory_CreatingReadOnlySession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creating a new session for connection [{0}].
         /// </summary>
         internal static string SessionFactory_CreatingSession {
