@@ -18,12 +18,26 @@ namespace MicroLite.Query
     public interface IAndOrOrderBy : IHideObjectMethods, IGroupBy, IOrderBy, IToSqlQuery
     {
         /// <summary>
+        /// Adds a column as an AND to the where clause of the query.
+        /// </summary>
+        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IWhereBetweenOrIn AndWhere(string columnName);
+
+        /// <summary>
         /// Adds a predicate as an AND to the where clause of the query.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="args">The args.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         IAndOrOrderBy AndWhere(string predicate, params object[] args);
+
+        /// <summary>
+        /// Adds a column as an OR to the where clause of the query.
+        /// </summary>
+        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IWhereBetweenOrIn OrWhere(string columnName);
 
         /// <summary>
         /// Adds a predicate as an OR to the where clause of the query.

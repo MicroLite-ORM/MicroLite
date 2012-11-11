@@ -3,6 +3,14 @@
     <StringProperty Name="MergeSettingsFiles">NoMerge</StringProperty>
     <BooleanProperty Name="WriteCache">False</BooleanProperty>
     <StringProperty Name="Culture">en-GB</StringProperty>
+    <CollectionProperty Name="RecognizedWords">
+      <Value>db</Value>
+      <Value>dbo</Value>
+      <Value>Guid</Value>
+      <Value>intellisense</Value>
+      <Value>Lite</Value>
+      <Value>Sql</Value>
+    </CollectionProperty>
   </GlobalSettings>
   <Parsers>
     <Parser ParserId="StyleCop.CSharp.CsParser">

@@ -14,6 +14,7 @@ namespace MicroLite.Query
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Text;
     using MicroLite.Mapping;
@@ -21,11 +22,14 @@ namespace MicroLite.Query
     /// <summary>
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
-    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter
+    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereBetweenOrIn
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder();
         private bool addedOrder = false;
+        private bool addedWhere = false;
+        private string operand;
+        private string whereColumnName;
 
         private SqlBuilder(string startingSql)
         {
@@ -94,13 +98,37 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Adds a column as an AND to the where clause of the query.
+        /// </summary>
+        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify a column to be used with the BETWEEN or IN keywords which is added to the query as an AND.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("LastName = @p0", "Smith")
+        ///     .AndWhere("DateRegistered")
+        ///     ...
+        /// </code>
+        /// </example>
+        public IWhereBetweenOrIn AndWhere(string columnName)
+        {
+            this.operand = " AND";
+            this.whereColumnName = columnName;
+
+            return this;
+        }
+
+        /// <summary>
         /// Adds a predicate as an AND to the where clause of the query.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="args">The args.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <example>
-        /// Adds the an additional predicate to the query as an OR.
+        /// Adds the an additional predicate to the query as an AND.
         /// <code>
         /// var query = SqlBuilder
         ///     .Select("*")
@@ -109,7 +137,7 @@ namespace MicroLite.Query
         ///     .AndWhere("LastName = @p0", "Smith") // Each time, the parameter number relates to the individual method call.
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (FirstName = @p0) AND (LastName = @p1)
+        /// Would generate SELECT {Columns} FROM Customers WHERE (FirstName = @p0) AND (LastName = @p1)
         /// @p0 would be John
         /// @p1 would be Smith
         /// </example>
@@ -122,7 +150,7 @@ namespace MicroLite.Query
         ///     .Where("FirstName = @p0 AND LastName = @p1", "John", "Smith")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (FirstName = @p0 AND LastName = @p1)
+        /// Would generate SELECT {Columns} FROM Customers WHERE (FirstName = @p0 AND LastName = @p1)
         /// @p0 would be John
         /// @p1 would be Smith
         /// </example>
@@ -148,7 +176,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT AVG(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Average(string columnName)
         {
@@ -171,7 +199,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT AVG(Total) AS AverageTotal FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT AVG(Total) AS AverageTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Average(string columnName, string columnAlias)
         {
@@ -181,6 +209,37 @@ namespace MicroLite.Query
             }
 
             this.innerSql.Append(" AVG(" + columnName + ") AS " + columnAlias);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified arguments to filter the column.
+        /// </summary>
+        /// <param name="lower">The inclusive lower value.</param>
+        /// <param name="upper">The inclusive upper value.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being between the 2 specified values.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     .Between(new DateTime(2000, 1, 1), new DateTime(2009, 12, 31))
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered BETWEEN @p0 AND @p1)
+        /// </example>
+        public IAndOrOrderBy Between(object lower, object upper)
+        {
+            if (!this.addedWhere)
+            {
+                this.innerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
+
+            this.AppendPredicate(" (" + this.whereColumnName + " BETWEEN {0})", "@p0 AND @p1", new[] { lower, upper });
 
             return this;
         }
@@ -199,7 +258,7 @@ namespace MicroLite.Query
         ///     .From(typeof(Customer))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT COUNT(CustomerId) AS CustomerId FROM Sales.Customers
+        /// Will generate SELECT COUNT(CustomerId) AS CustomerId FROM Customers
         /// </example>
         public IFrom Count(string columnName)
         {
@@ -221,7 +280,7 @@ namespace MicroLite.Query
         ///     .From(typeof(Customer))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT COUNT(CustomerId) AS CustomerCount FROM Sales.Customers
+        /// Will generate SELECT COUNT(CustomerId) AS CustomerCount FROM Customers
         /// </example>
         public IFrom Count(string columnName, string columnAlias)
         {
@@ -274,7 +333,9 @@ namespace MicroLite.Query
                 select = Select(objectInfo.TableInfo.Columns.Select(c => c.ColumnName).ToArray());
             }
 
-            return select.From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name);
+            return !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
+                ? select.From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name)
+                : select.From(objectInfo.TableInfo.Name);
         }
 
         /// <summary>
@@ -291,11 +352,100 @@ namespace MicroLite.Query
         ///     .GroupBy("CustomerId")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Sales.Invoices GROUP BY CustomerId
+        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId
         /// </example>
         public IOrderBy GroupBy(params string[] columns)
         {
             this.innerSql.Append(" GROUP BY " + string.Join(", ", columns));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified arguments to filter the column.
+        /// </summary>
+        /// <param name="args">The arguments to filter the column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being in the specified values.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("Column1")
+        ///     .In("X", "Y", "Z")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 IN (@p0, @p1, @p2))
+        /// </example>
+        public IAndOrOrderBy In(params object[] args)
+        {
+            if (args == null)
+            {
+                throw new ArgumentNullException("args");
+            }
+
+            if (!this.addedWhere)
+            {
+                this.innerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
+
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
+            // HACK: We need to use the old string.Join(string separator, params string[] value) method while we are also building in .net 3.5
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)).ToArray());
+
+            this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", predicate, args);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified SqlQuery as a sub query to filter the column.
+        /// </summary>
+        /// <param name="subQuery">The sub query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being in the specified values.
+        /// <code>
+        /// var customerQuery = SqlBuilder
+        ///     .Select("CustomerId")
+        ///     .From(typeof(Customer))
+        ///     .Where("Age > @p0", 40)
+        ///     .ToSqlQuery();
+        ///
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Invoice))
+        ///     .Where("CustomerId")
+        ///     .In(customerQuery)
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Invoices WHERE (CustomerId IN (SELECT CustomerId FROM Customers WHERE Age > @p0))
+        /// </example>
+        public IAndOrOrderBy In(SqlQuery subQuery)
+        {
+            if (subQuery == null)
+            {
+                throw new ArgumentNullException("subQuery");
+            }
+
+            if (!this.addedWhere)
+            {
+                this.innerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
+
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
+            this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", subQuery.CommandText, subQuery.Arguments.ToArray());
 
             return this;
         }
@@ -315,7 +465,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MAX(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Max(string columnName)
         {
@@ -338,7 +488,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MAX(Total) AS MaxTotal FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MAX(Total) AS MaxTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Max(string columnName, string columnAlias)
         {
@@ -367,7 +517,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MIN(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Min(string columnName)
         {
@@ -390,7 +540,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MIN(Total) AS MinTotal FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MIN(Total) AS MinTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Min(string columnName, string columnAlias)
         {
@@ -449,6 +599,19 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Adds a column as an OR to the where clause of the query.
+        /// </summary>
+        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public IWhereBetweenOrIn OrWhere(string columnName)
+        {
+            this.operand = " OR";
+            this.whereColumnName = columnName;
+
+            return this;
+        }
+
+        /// <summary>
         /// Adds a predicate as an OR to the where clause of the query.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
@@ -461,12 +624,12 @@ namespace MicroLite.Query
         ///     .Select("*")
         ///     .From(typeof(Customer))
         ///     .Where("LastName = @p0", "Smith")
-        ///     .OrWhere("LastName = @p0", "Smythe") // Each time, the parameter number relates to the individual method call.
+        ///     .OrWhere("LastName = @p0", "Smithson") // Each time, the parameter number relates to the individual method call.
         ///     .ToSqlQuery();
         /// </code>
         /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0) OR (LastName = @p1)
         /// @p0 would be Smith
-        /// @p1 would be Smythe
+        /// @p1 would be Smithson
         /// </example>
         /// <example>
         /// Additionally, we could construct the query as follows:
@@ -474,12 +637,12 @@ namespace MicroLite.Query
         /// var query = SqlBuilder
         ///     .Select("*")
         ///     .From(typeof(Customer))
-        ///     .Where("LastName = @p0 OR LastName = @p1", "Smith", "Smythe")
+        ///     .Where("LastName = @p0 OR LastName = @p1", "Smith", "Smithson")
         ///     .ToSqlQuery();
         /// </code>
         /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR LastName = @p1)
         /// @p0 would be Smith
-        /// @p1 would be Smythe
+        /// @p1 would be Smithson
         /// </example>
         public IAndOrOrderBy OrWhere(string predicate, params object[] args)
         {
@@ -503,7 +666,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT SUM(Total) AS Total FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Sum(string columnName)
         {
@@ -526,7 +689,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT SUM(Total) AS SumTotal FROM Sales.Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT SUM(Total) AS SumTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Sum(string columnName, string columnAlias)
         {
@@ -548,6 +711,28 @@ namespace MicroLite.Query
         public SqlQuery ToSqlQuery()
         {
             return new SqlQuery(this.innerSql.ToString(), this.arguments.ToArray());
+        }
+
+        /// <summary>
+        /// Specifies the where clause for the query.
+        /// </summary>
+        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify a column to be used with the BETWEEN or IN keywords.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     ...
+        /// </code>
+        /// </example>
+        public IWhereBetweenOrIn Where(string columnName)
+        {
+            this.whereColumnName = columnName;
+
+            return this;
         }
 
         /// <summary>
@@ -581,6 +766,7 @@ namespace MicroLite.Query
         public IAndOrOrderBy Where(string predicate, params object[] args)
         {
             this.AppendPredicate(" WHERE ({0})", predicate, args);
+            this.addedWhere = true;
 
             return this;
         }

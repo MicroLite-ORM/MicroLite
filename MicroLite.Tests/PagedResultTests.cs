@@ -59,7 +59,21 @@
 
             var pagedResults = new PagedResult<Customer>(1, null, resultsPerPage, totalResults);
 
-            Assert.AreEqual(totalResults / resultsPerPage, pagedResults.TotalPages);
+            Assert.AreEqual(10, pagedResults.TotalPages);
+        }
+
+        /// <summary>
+        /// Issue #130 - PagedResults shows incorrect Total Pages.
+        /// </summary>
+        [Test]
+        public void TotalPagesReturns1IfTotalResultsLessThanResultsPerPage()
+        {
+            var resultsPerPage = 10;
+            var totalResults = 5;
+
+            var pagedResults = new PagedResult<Customer>(1, null, resultsPerPage, totalResults);
+
+            Assert.AreEqual(1, pagedResults.TotalPages);
         }
 
         private class Customer

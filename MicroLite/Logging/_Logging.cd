@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MicroLite.Logging.CurrentSessionIdResolver">
+    <Position X="5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Logging\CurrentSessionIdResolver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Logging.LogManager">
+    <Position X="2.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAgAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Logging\LogManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Logging.LogExtensions">
+    <Position X="7.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAgAAAAAAAAAAgABAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Logging\LogExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Logging.SessionLoggingContext" BaseTypeListCollapsed="true">
+    <Position X="10" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAIAAIAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Logging\SessionLoggingContext.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="MicroLite.Logging.ILog">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAYAAAAAAAAAAAAAAAAEAAAAAAEAEAAA=</HashCode>
+      <FileName>Logging\ILog.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

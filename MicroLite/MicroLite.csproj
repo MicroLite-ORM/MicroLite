@@ -51,15 +51,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\FluentConfiguration.cs" />
+    <Compile Include="Core\AdoTransaction.cs" />
     <Compile Include="Core\Include.cs" />
     <Compile Include="Core\IncludeMany.cs" />
     <Compile Include="Core\IncludeScalar.cs" />
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />
     <Compile Include="Dialect\SqlDialectFactory.cs" />
+    <Compile Include="Dialect\SQLiteDialect.cs" />
+    <Compile Include="FrameworkExtensions\EnumExtensions.cs" />
+    <Compile Include="GuidGenerator.cs" />
     <Compile Include="IInclude.cs" />
     <Compile Include="IIncludeMany.cs" />
     <Compile Include="IIncludeSession.cs" />
+    <Compile Include="Listeners\AutoIncrementListener.cs" />
+    <Compile Include="Listeners\GuidCombListener.cs" />
     <Compile Include="Logging\CurrentSessionIdResolver.cs" />
     <Compile Include="Logging\SessionLoggingContext.cs" />
     <Compile Include="Mapping\ColumnAttribute.cs" />
@@ -122,6 +128,7 @@
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="Query\IToSqlQuery.cs" />
     <Compile Include="ITransaction.cs" />
+    <Compile Include="Query\IWhereBetweenOrIn.cs" />
     <Compile Include="Query\IWhereOrOrderBy.cs" />
     <Compile Include="Listeners\Listener.cs" />
     <Compile Include="Query\IWithParameter.cs" />
@@ -137,14 +144,14 @@
     <Compile Include="SqlUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">
-      <Link>CodeAnalysisDictionary.xml</Link>
-    </CodeAnalysisDictionary>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\MicroLite.snk">
       <Link>MicroLite.snk</Link>
     </None>
+    <None Include="Configuration\_Configuration.cd" />
+    <None Include="Dialect\_Dialect.cd" />
+    <None Include="Listeners\_Listeners.cd" />
+    <None Include="Logging\_Logging.cd" />
+    <None Include="_Session.cd" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Messages.resx">
@@ -152,6 +159,11 @@
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(ProgramFiles)\MSBuild\StyleCop\v4.7\StyleCop.targets" />

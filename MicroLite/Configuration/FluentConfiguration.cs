@@ -17,6 +17,7 @@ namespace MicroLite.Configuration
     using System.Data.Common;
     using System.Linq;
     using MicroLite.Core;
+    using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
@@ -51,7 +52,7 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// Specifies the named connection string in the app config to be used.
+        /// Specifies the named connection string in the app config to be used with the default MsSqlDialect.
         /// </summary>
         /// <param name="connectionName">The name of the connection string in the app config.</param>
         /// <returns>
@@ -65,7 +66,16 @@ namespace MicroLite.Configuration
             return this.ForConnection(connectionName, "MicroLite.Dialect.MsSqlDialect");
         }
 
-        private ICreateSessionFactory ForConnection(string connectionName, string sqlDialect)
+        /// <summary>
+        /// Specifies the name of the connection string in the app config and the sql dialect to be used.
+        /// </summary>
+        /// <param name="connectionName">The name of the connection string in the app config.</param>
+        /// <param name="sqlDialect">The name of the sql dialect to use for the connection.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
+        /// <exception cref="System.NotSupportedException">Thrown if the provider name or sql dialect is not supported.</exception>
+        public ICreateSessionFactory ForConnection(string connectionName, string sqlDialect)
         {
             if (connectionName == null)
             {
@@ -80,6 +90,8 @@ namespace MicroLite.Configuration
                 this.log.TryLogFatal(Messages.FluentConfiguration_ConnectionNotFound, connectionName);
                 throw new MicroLiteException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
+
+            SqlDialectFactory.VerifyDialect(sqlDialect);
 
             try
             {

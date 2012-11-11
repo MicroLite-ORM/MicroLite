@@ -95,7 +95,7 @@ namespace MicroLite.Core
 
             using (new SessionLoggingContext(this.id))
             {
-                var sqlQuery = this.sqlDialect.SelectQuery(typeof(T), identifier);
+                var sqlQuery = this.sqlDialect.CreateQuery(StatementType.Select, typeof(T), identifier);
 
                 return this.Include.Single<T>(sqlQuery);
             }
@@ -178,11 +178,15 @@ namespace MicroLite.Core
             {
                 this.Listeners.Each(l => l.BeforeDelete(instance));
 
-                var sqlQuery = this.sqlDialect.DeleteQuery(instance);
+                var sqlQuery = this.sqlDialect.CreateQuery(StatementType.Delete, instance);
 
                 this.Listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
 
-                return this.Execute(sqlQuery) == 1;
+                var rowsAffected = this.Execute(sqlQuery);
+
+                this.Listeners.Each(l => l.AfterDelete(instance, rowsAffected));
+
+                return rowsAffected == 1;
             }
         }
 
@@ -202,7 +206,7 @@ namespace MicroLite.Core
 
             using (new SessionLoggingContext(this.id))
             {
-                var sqlQuery = this.sqlDialect.DeleteQuery(type, identifier);
+                var sqlQuery = this.sqlDialect.CreateQuery(StatementType.Delete, type, identifier);
 
                 return this.Execute(sqlQuery) == 1;
             }
@@ -313,7 +317,7 @@ namespace MicroLite.Core
             {
                 this.Listeners.Each(l => l.BeforeInsert(instance));
 
-                var sqlQuery = this.sqlDialect.InsertQuery(instance);
+                var sqlQuery = this.sqlDialect.CreateQuery(StatementType.Insert, instance);
 
                 this.Listeners.Each(l => l.BeforeInsert(instance, sqlQuery));
 
@@ -365,9 +369,9 @@ namespace MicroLite.Core
             using (new SessionLoggingContext(this.id))
             {
                 var countSqlQuery = this.sqlDialect.CountQuery(sqlQuery);
-                var pagedSqlQuery = this.sqlDialect.Page(sqlQuery, page, resultsPerPage);
+                var pagedSqlQuery = this.sqlDialect.PageQuery(sqlQuery, page, resultsPerPage);
 
-                var includeCount = this.Include.Scalar<int>(countSqlQuery);
+                var includeCount = this.Include.Scalar<long>(countSqlQuery);
                 var includeMany = this.Include.Many<T>(pagedSqlQuery);
 
                 this.ExecuteAllQueries();
@@ -457,11 +461,13 @@ namespace MicroLite.Core
             {
                 this.Listeners.Each(l => l.BeforeUpdate(instance));
 
-                var sqlQuery = this.sqlDialect.UpdateQuery(instance);
+                var sqlQuery = this.sqlDialect.CreateQuery(StatementType.Update, instance);
 
                 this.Listeners.Each(l => l.BeforeUpdate(instance, sqlQuery));
 
-                this.Execute(sqlQuery);
+                var rowsAffected = this.Execute(sqlQuery);
+
+                this.Listeners.Each(l => l.AfterUpdate(instance, rowsAffected));
             }
         }
 

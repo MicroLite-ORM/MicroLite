@@ -36,6 +36,15 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Initialises a new instance of the <see cref="TableAttribute"/> class.
         /// </summary>
+        /// <param name="name">The name of the table.</param>
+        public TableAttribute(string name)
+            : this(null, name)
+        {
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="TableAttribute"/> class.
+        /// </summary>
         /// <param name="schema">The database schema the table exists within (e.g. 'dbo').</param>
         /// <param name="name">The name of the table.</param>
         public TableAttribute(string schema, string name)

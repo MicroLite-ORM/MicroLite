@@ -30,9 +30,18 @@ namespace MicroLite.Listeners
         /// </summary>
         /// <param name="instance">The instance which has been inserted.</param>
         /// <param name="executeScalarResult">The execute scalar result.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Although the class and method are public, the method will only ever be called by Session which will have already validated the parameters.")]
         public override void AfterInsert(object instance, object executeScalarResult)
         {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            if (executeScalarResult == null)
+            {
+                throw new ArgumentNullException("executeScalarResult");
+            }
+
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
@@ -47,20 +56,47 @@ namespace MicroLite.Listeners
         }
 
         /// <summary>
+        /// Invoked before the SqlQuery to delete the record from the database is created.
+        /// </summary>
+        /// <param name="instance">The instance to be deleted.</param>
+        /// <exception cref="MicroLiteException">Thrown if the identifier value for the object has not been set.</exception>
+        public override void BeforeDelete(object instance)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            var objectInfo = ObjectInfo.For(instance.GetType());
+
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
+            {
+                if (objectInfo.HasDefaultIdentifierValue(instance))
+                {
+                    throw new MicroLiteException(Messages.IListener_IdentifierNotSetForDelete);
+                }
+            }
+        }
+
+        /// <summary>
         /// Invoked before the SqlQuery to insert the record into the database is created.
         /// </summary>
         /// <param name="instance">The instance to be inserted.</param>
         /// <exception cref="MicroLiteException">Thrown if the identifier value for the object has already been set.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Although the class and method are public, the method will only ever be called by Session which will have already validated the parameters.")]
         public override void BeforeInsert(object instance)
         {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
             {
                 if (!objectInfo.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.IdentityListener_IdentifierSetForInsert);
+                    throw new MicroLiteException(Messages.IListener_IdentifierSetForInsert);
                 }
             }
         }
@@ -70,10 +106,18 @@ namespace MicroLite.Listeners
         /// </summary>
         /// <param name="instance">The instance to be inserted.</param>
         /// <param name="sqlQuery">The SqlQuery to be executed.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Although the class and method are public, the method will only ever be called by Session which will have already validated the parameters.")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "1", Justification = "Although the class and method are public, the method will only ever be called by Session which will have already validated the parameters.")]
         public override void BeforeInsert(object instance, SqlQuery sqlQuery)
         {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
@@ -87,9 +131,13 @@ namespace MicroLite.Listeners
         /// </summary>
         /// <param name="instance">The instance to be updated.</param>
         /// <exception cref="MicroLiteException">Thrown if the identifier value for the object has not been set.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0", Justification = "Although the class and method are public, the method will only ever be called by Session which will have already validated the parameters.")]
         public override void BeforeUpdate(object instance)
         {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)

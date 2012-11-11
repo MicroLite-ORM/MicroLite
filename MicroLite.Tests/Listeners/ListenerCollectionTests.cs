@@ -33,6 +33,26 @@
         }
 
         [Test]
+        public void ConstructorRegistersAutoIncrementListener()
+        {
+            var listenerCollection = new ListenerCollection();
+
+            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(AutoIncrementListener));
+
+            Assert.NotNull(listener);
+        }
+
+        [Test]
+        public void ConstructorRegistersGuidCombListener()
+        {
+            var listenerCollection = new ListenerCollection();
+
+            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(GuidCombListener));
+
+            Assert.NotNull(listener);
+        }
+
+        [Test]
         public void ConstructorRegistersGuidListener()
         {
             var listenerCollection = new ListenerCollection();

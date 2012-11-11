@@ -24,7 +24,7 @@ namespace MicroLite.Core
     internal sealed class ConnectionManager : IConnectionManager
     {
         private IDbConnection connection;
-        private Transaction currentTransaction;
+        private ITransaction currentTransaction;
 
         internal ConnectionManager(IDbConnection connection)
         {

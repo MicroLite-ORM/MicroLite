@@ -142,11 +142,11 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted using the Identity strategy.
+        ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be delete.
         /// </summary>
-        internal static string IdentityListener_IdentifierSetForInsert {
+        internal static string IListener_IdentifierNotSetForDelete {
             get {
-                return ResourceManager.GetString("IdentityListener_IdentifierSetForInsert", resourceCulture);
+                return ResourceManager.GetString("IListener_IdentifierNotSetForDelete", resourceCulture);
             }
         }
         
@@ -156,6 +156,15 @@ namespace MicroLite {
         internal static string IListener_IdentifierNotSetForUpdate {
             get {
                 return ResourceManager.GetString("IListener_IdentifierNotSetForUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted.
+        /// </summary>
+        internal static string IListener_IdentifierSetForInsert {
+            get {
+                return ResourceManager.GetString("IListener_IdentifierSetForInsert", resourceCulture);
             }
         }
         
@@ -336,6 +345,15 @@ namespace MicroLite {
         internal static string SessionFactory_CreatingSession {
             get {
                 return ResourceManager.GetString("SessionFactory_CreatingSession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The sql dialect does not support the creation of an SqlQuery for the given statement type.
+        /// </summary>
+        internal static string SqlDialect_StatementTypeNotSupported {
+            get {
+                return ResourceManager.GetString("SqlDialect_StatementTypeNotSupported", resourceCulture);
             }
         }
         

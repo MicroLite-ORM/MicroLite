@@ -72,5 +72,16 @@
             var exception = Assert.Throws<MicroLiteException>(
                 () => fluentConfiguration.ForConnection("ConnectionWithInvalidProviderName"));
         }
+
+        [Test]
+        public void ForConnectionThrowsNotSupportedExceptionIfSqlDialectNotSupported()
+        {
+            var fluentConfiguration = new FluentConfiguration();
+
+            var exception = Assert.Throws<NotSupportedException>(
+                () => fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.DB2"));
+
+            Assert.AreEqual(Messages.SqlDialectFactory_DialectNotSupported.FormatWith("MicroLite.Dialect.DB2"), exception.Message);
+        }
     }
 }

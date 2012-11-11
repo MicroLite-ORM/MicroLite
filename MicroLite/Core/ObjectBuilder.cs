@@ -22,6 +22,7 @@ namespace MicroLite.Core
 
 #endif
 
+    using System.Globalization;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
     using MicroLite.Mapping;
@@ -80,7 +81,14 @@ namespace MicroLite.Core
                 try
                 {
                     log.TryLogDebug(Messages.ObjectBuilder_SettingPropertyValue, objectInfo.ForType.Name, columnName);
-                    propertyInfo.SetValue(instance, reader[i]);
+                    if (propertyInfo.PropertyType.IsEnum)
+                    {
+                        propertyInfo.SetValue(instance, Convert.ChangeType(reader[i], typeof(int), CultureInfo.InvariantCulture));
+                    }
+                    else
+                    {
+                        propertyInfo.SetValue(instance, reader[i]);
+                    }
                 }
                 catch (Exception e)
                 {

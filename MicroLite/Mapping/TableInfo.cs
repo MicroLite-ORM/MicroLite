@@ -57,11 +57,6 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("name");
             }
 
-            if (schema == null)
-            {
-                throw new ArgumentNullException("schema");
-            }
-
             this.identifierStrategy = identifierStrategy;
             this.name = name;
             this.schema = schema;

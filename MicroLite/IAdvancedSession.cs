@@ -151,6 +151,7 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
+        [Obsolete("This method has been moved to ISession and will be removed in MicroLite 3.0.0, please call session.Projection() instead of session.Advanced.Projection().")]
         IList<dynamic> Projection(SqlQuery sqlQuery);
 
 #endif

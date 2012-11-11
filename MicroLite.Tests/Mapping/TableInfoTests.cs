@@ -51,15 +51,6 @@
         }
 
         [Test]
-        public void ConstructorThrowsArgumentNullExceptionForNullSchema()
-        {
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => new TableInfo(columns: new ColumnInfo[0], identifierStrategy: IdentifierStrategy.Identity, name: "Customers", schema: null));
-
-            Assert.AreEqual("schema", exception.ParamName);
-        }
-
-        [Test]
         public void ConstructorThrowsMicroLiteExceptionIfMultipleColumnsWithSameName()
         {
             var columns = new[]

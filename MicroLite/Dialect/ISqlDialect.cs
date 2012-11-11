@@ -13,6 +13,7 @@
 namespace MicroLite.Dialect
 {
     using System;
+    using System.Data;
 
     /// <summary>
     /// The interface for a class which builds an <see cref="SqlQuery"/> for a object instance.
@@ -27,49 +28,31 @@ namespace MicroLite.Dialect
         SqlQuery CountQuery(SqlQuery sqlQuery);
 
         /// <summary>
-        /// Creates a SqlQuery to perform a delete for the given instance.
+        /// Creates an SqlQuery with the specified statement type for the specified instance.
         /// </summary>
-        /// <param name="instance">The instance to build the query for.</param>
-        /// <returns>A <see cref="SqlQuery"/> to delete a record.</returns>
-        SqlQuery DeleteQuery(object instance);
+        /// <param name="statementType">Type of the statement.</param>
+        /// <param name="instance">The instance to generate the SqlQuery for.</param>
+        /// <returns>The created <see cref="SqlQuery"/>.</returns>
+        /// <exception cref="NotSupportedException">Thrown if the statement type is not supported.</exception>
+        SqlQuery CreateQuery(StatementType statementType, object instance);
 
         /// <summary>
-        /// Creates a SqlQuery to perform a delete for the given identifier.
+        /// Creates an SqlQuery with the specified statement type for the specified type and identifier.
         /// </summary>
-        /// <param name="forType">For type.</param>
-        /// <param name="identifier">The identifier value for the target record to delete.</param>
-        /// <returns>A <see cref="SqlQuery"/> to delete a record.</returns>
-        SqlQuery DeleteQuery(Type forType, object identifier);
+        /// <param name="statementType">Type of the statement.</param>
+        /// <param name="forType">The type of object to create the query for.</param>
+        /// <param name="identifier">The identifier of the instance to create the query for.</param>
+        /// <returns>The created <see cref="SqlQuery" />.</returns>
+        /// <exception cref="NotSupportedException">Thrown if the statement type is not supported.</exception>
+        SqlQuery CreateQuery(StatementType statementType, Type forType, object identifier);
 
         /// <summary>
-        /// Creates a SqlQuery to perform an insert for the given instance.
-        /// </summary>
-        /// <param name="instance">The instance to build the query for.</param>
-        /// <returns>A <see cref="SqlQuery"/> to insert a record.</returns>
-        SqlQuery InsertQuery(object instance);
-
-        /// <summary>
-        /// Pages the specified SQL query.
+        /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the page number and number of results per page.
         /// </summary>
         /// <param name="sqlQuery">The SQL query.</param>
         /// <param name="page">The page number to get the results for.</param>
         /// <param name="resultsPerPage">The number of results to be shown per page.</param>
         /// <returns>A <see cref="SqlQuery"/> to return the paged results of the specified query.</returns>
-        SqlQuery Page(SqlQuery sqlQuery, long page, long resultsPerPage);
-
-        /// <summary>
-        /// Creates a SqlQuery to perform a select for the given type and identifier value.
-        /// </summary>
-        /// <param name="forType">The type of object the query is for.</param>
-        /// <param name="identifier">The identifier value for the target record.</param>
-        /// <returns>A <see cref="SqlQuery"/> to select a specific record.</returns>
-        SqlQuery SelectQuery(Type forType, object identifier);
-
-        /// <summary>
-        /// Creates a SqlQuery to perform an update for the given instance.
-        /// </summary>
-        /// <param name="instance">The instance to build the query for.</param>
-        /// <returns>A <see cref="SqlQuery"/> to update a record.</returns>
-        SqlQuery UpdateQuery(object instance);
+        SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage);
     }
 }
