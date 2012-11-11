@@ -13,7 +13,9 @@
 namespace MicroLite.Core
 {
     using System.Data;
+    using System.Linq;
     using MicroLite.Dialect;
+    using MicroLite.Listeners;
     using MicroLite.Logging;
 
     /// <summary>
@@ -55,7 +57,8 @@ namespace MicroLite.Core
             return new Session(
                 new ConnectionManager(connection),
                 new ObjectBuilder(),
-                SqlDialectFactory.GetDialect(this.sessionFactoryOptions.SqlDialect));
+                SqlDialectFactory.GetDialect(this.sessionFactoryOptions.SqlDialect),
+                Listener.Listeners.ToArray());
         }
     }
 }

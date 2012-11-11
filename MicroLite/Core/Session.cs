@@ -15,7 +15,6 @@ namespace MicroLite.Core
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using System.Linq;
     using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
@@ -31,20 +30,22 @@ namespace MicroLite.Core
         private readonly IConnectionManager connectionManager;
         private readonly string id = Guid.NewGuid().ToString();
         private readonly Queue<Include> includes = new Queue<Include>();
+        private readonly IEnumerable<IListener> listeners;
         private readonly IObjectBuilder objectBuilder;
         private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
         private readonly ISqlDialect sqlDialect;
         private bool disposed;
-        private IEnumerable<IListener> listeners;
 
         internal Session(
             IConnectionManager connectionManager,
             IObjectBuilder objectBuilder,
-            ISqlDialect sqlDialect)
+            ISqlDialect sqlDialect,
+            IEnumerable<IListener> listeners)
         {
             this.connectionManager = connectionManager;
             this.objectBuilder = objectBuilder;
             this.sqlDialect = sqlDialect;
+            this.listeners = listeners;
 
             using (new SessionLoggingContext(this.id))
             {
@@ -73,14 +74,6 @@ namespace MicroLite.Core
             get
             {
                 return this.connectionManager.CurrentTransaction;
-            }
-        }
-
-        private IEnumerable<IListener> Listeners
-        {
-            get
-            {
-                return this.listeners ?? (this.listeners = Listener.Listeners.ToArray());
             }
         }
 
@@ -176,15 +169,15 @@ namespace MicroLite.Core
 
             using (new SessionLoggingContext(this.id))
             {
-                this.Listeners.Each(l => l.BeforeDelete(instance));
+                this.listeners.Each(l => l.BeforeDelete(instance));
 
                 var sqlQuery = this.sqlDialect.CreateQuery(StatementType.Delete, instance);
 
-                this.Listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
+                this.listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
 
                 var rowsAffected = this.Execute(sqlQuery);
 
-                this.Listeners.Each(l => l.AfterDelete(instance, rowsAffected));
+                this.listeners.Each(l => l.AfterDelete(instance, rowsAffected));
 
                 return rowsAffected == 1;
             }
@@ -315,15 +308,15 @@ namespace MicroLite.Core
 
             using (new SessionLoggingContext(this.id))
             {
-                this.Listeners.Each(l => l.BeforeInsert(instance));
+                this.listeners.Each(l => l.BeforeInsert(instance));
 
                 var sqlQuery = this.sqlDialect.CreateQuery(StatementType.Insert, instance);
 
-                this.Listeners.Each(l => l.BeforeInsert(instance, sqlQuery));
+                this.listeners.Each(l => l.BeforeInsert(instance, sqlQuery));
 
                 var identifier = this.ExecuteScalar<object>(sqlQuery);
 
-                this.Listeners.Each(l => l.AfterInsert(instance, identifier));
+                this.listeners.Each(l => l.AfterInsert(instance, identifier));
             }
         }
 
@@ -459,15 +452,15 @@ namespace MicroLite.Core
 
             using (new SessionLoggingContext(this.id))
             {
-                this.Listeners.Each(l => l.BeforeUpdate(instance));
+                this.listeners.Each(l => l.BeforeUpdate(instance));
 
                 var sqlQuery = this.sqlDialect.CreateQuery(StatementType.Update, instance);
 
-                this.Listeners.Each(l => l.BeforeUpdate(instance, sqlQuery));
+                this.listeners.Each(l => l.BeforeUpdate(instance, sqlQuery));
 
                 var rowsAffected = this.Execute(sqlQuery);
 
-                this.Listeners.Each(l => l.AfterUpdate(instance, rowsAffected));
+                this.listeners.Each(l => l.AfterUpdate(instance, rowsAffected));
             }
         }
 
