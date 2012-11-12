@@ -45,20 +45,27 @@
             var mockConnectionManager = new Mock<IConnectionManager>();
             mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
-            var mockListener = new Mock<IListener>();
-            mockListener.Setup(x => x.AfterDelete(customer, 1));
-            mockListener.Setup(x => x.BeforeDelete(customer));
-            mockListener.Setup(x => x.BeforeDelete(customer, sqlQuery));
+            int counter = 0;
+
+            var mockListener1 = new Mock<IListener>();
+            mockListener1.Setup(x => x.AfterDelete(customer, 1)).Callback(() => Assert.AreEqual(6, ++counter));
+            mockListener1.Setup(x => x.BeforeDelete(customer)).Callback(() => Assert.AreEqual(1, ++counter));
+            mockListener1.Setup(x => x.BeforeDelete(customer, sqlQuery)).Callback(() => Assert.AreEqual(3, ++counter));
+
+            var mockListener2 = new Mock<IListener>();
+            mockListener2.Setup(x => x.AfterDelete(customer, 1)).Callback(() => Assert.AreEqual(5, ++counter));
+            mockListener2.Setup(x => x.BeforeDelete(customer)).Callback(() => Assert.AreEqual(2, ++counter));
+            mockListener2.Setup(x => x.BeforeDelete(customer, sqlQuery)).Callback(() => Assert.AreEqual(4, ++counter));
 
             var session = new Session(
                 mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 mockSqlDialect.Object,
-                new[] { mockListener.Object });
+                new[] { mockListener1.Object, mockListener2.Object });
 
             session.Delete(customer);
 
-            mockListener.VerifyAll();
+            mockListener1.VerifyAll();
         }
 
         [Test]
@@ -562,20 +569,27 @@
             var mockConnectionManager = new Mock<IConnectionManager>();
             mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
-            var mockListener = new Mock<IListener>();
-            mockListener.Setup(x => x.AfterInsert(customer, identifier));
-            mockListener.Setup(x => x.BeforeInsert(customer, sqlQuery));
-            mockListener.Setup(x => x.BeforeInsert(customer));
+            int counter = 0;
+
+            var mockListener1 = new Mock<IListener>();
+            mockListener1.Setup(x => x.AfterInsert(customer, identifier)).Callback(() => Assert.AreEqual(6, ++counter));
+            mockListener1.Setup(x => x.BeforeInsert(customer)).Callback(() => Assert.AreEqual(1, ++counter));
+            mockListener1.Setup(x => x.BeforeInsert(customer, sqlQuery)).Callback(() => Assert.AreEqual(3, ++counter));
+
+            var mockListener2 = new Mock<IListener>();
+            mockListener2.Setup(x => x.AfterInsert(customer, identifier)).Callback(() => Assert.AreEqual(5, ++counter));
+            mockListener2.Setup(x => x.BeforeInsert(customer)).Callback(() => Assert.AreEqual(2, ++counter));
+            mockListener2.Setup(x => x.BeforeInsert(customer, sqlQuery)).Callback(() => Assert.AreEqual(4, ++counter));
 
             var session = new Session(
                 mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 mockSqlDialect.Object,
-                new[] { mockListener.Object });
+                new[] { mockListener1.Object, mockListener2.Object });
 
             session.Insert(customer);
 
-            mockListener.VerifyAll();
+            mockListener1.VerifyAll();
         }
 
         [Test]
@@ -688,20 +702,27 @@
             var mockConnectionManager = new Mock<IConnectionManager>();
             mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
-            var mockListener = new Mock<IListener>();
-            mockListener.Setup(x => x.AfterUpdate(customer, 1));
-            mockListener.Setup(x => x.BeforeUpdate(customer));
-            mockListener.Setup(x => x.BeforeUpdate(customer, sqlQuery));
+            int counter = 0;
+
+            var mockListener1 = new Mock<IListener>();
+            mockListener1.Setup(x => x.AfterUpdate(customer, 1)).Callback(() => Assert.AreEqual(6, ++counter));
+            mockListener1.Setup(x => x.BeforeUpdate(customer)).Callback(() => Assert.AreEqual(1, ++counter));
+            mockListener1.Setup(x => x.BeforeUpdate(customer, sqlQuery)).Callback(() => Assert.AreEqual(3, ++counter));
+
+            var mockListener2 = new Mock<IListener>();
+            mockListener2.Setup(x => x.AfterUpdate(customer, 1)).Callback(() => Assert.AreEqual(5, ++counter));
+            mockListener2.Setup(x => x.BeforeUpdate(customer)).Callback(() => Assert.AreEqual(2, ++counter));
+            mockListener2.Setup(x => x.BeforeUpdate(customer, sqlQuery)).Callback(() => Assert.AreEqual(4, ++counter));
 
             var session = new Session(
                 mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 mockSqlDialect.Object,
-                new[] { mockListener.Object });
+                new[] { mockListener1.Object, mockListener2.Object });
 
             session.Update(customer);
 
-            mockListener.VerifyAll();
+            mockListener1.VerifyAll();
         }
 
         [Test]

@@ -15,6 +15,7 @@ namespace MicroLite.Core
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Linq;
     using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
@@ -70,7 +71,7 @@ namespace MicroLite.Core
 
                 var rowsAffected = this.Execute(sqlQuery);
 
-                this.listeners.Each(l => l.AfterDelete(instance, rowsAffected));
+                this.listeners.Reverse().Each(l => l.AfterDelete(instance, rowsAffected));
 
                 return rowsAffected == 1;
             }
@@ -183,7 +184,7 @@ namespace MicroLite.Core
 
                 var identifier = this.ExecuteScalar<object>(sqlQuery);
 
-                this.listeners.Each(l => l.AfterInsert(instance, identifier));
+                this.listeners.Reverse().Each(l => l.AfterInsert(instance, identifier));
             }
         }
 
@@ -206,7 +207,7 @@ namespace MicroLite.Core
 
                 var rowsAffected = this.Execute(sqlQuery);
 
-                this.listeners.Each(l => l.AfterUpdate(instance, rowsAffected));
+                this.listeners.Reverse().Each(l => l.AfterUpdate(instance, rowsAffected));
             }
         }
     }
