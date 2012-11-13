@@ -22,7 +22,7 @@ namespace MicroLite.Core
     /// <typeparam name="T">The type of object to be included.</typeparam>
     internal sealed class IncludeMany<T> : Include, IIncludeMany<T> where T : class, new()
     {
-        private IList<T> values;
+        private readonly IList<T> values = new List<T>();
 
         public IList<T> Values
         {
@@ -34,8 +34,6 @@ namespace MicroLite.Core
 
         internal override void BuildValue(IDataReader reader, IObjectBuilder objectBuilder)
         {
-            this.values = new List<T>();
-
             var objectInfo = ObjectInfo.For(typeof(T));
 
             while (reader.Read())
@@ -44,6 +42,8 @@ namespace MicroLite.Core
 
                 this.values.Add(value);
             }
+
+            this.HasValue = this.values.Count > 0;
         }
     }
 }

@@ -9,105 +9,225 @@
     /// <summary>
     /// Unit Tests for the <see cref="IncludeScalar&lt;T&gt;"/> class.
     /// </summary>
-    [TestFixture]
     public class IncludeScalarTests
     {
-        [Test]
-        public void BuildValueThrowsMicroLiteExceptionIfMoreThanOneColumn()
+        [TestFixture]
+        public class ForAReferenceTypeWhenBuildValueHasBeenCalledAndThereAreNoResults
         {
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(2);
-            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, true }).Dequeue);
+            private IncludeScalar<string> include = new IncludeScalar<string>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
-            var reader = mockReader.Object;
+            public ForAReferenceTypeWhenBuildValueHasBeenCalledAndThereAreNoResults()
+            {
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-            var include = new IncludeScalar<int>();
+                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+            }
 
-            var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object, null));
+            [Test]
+            public void HasValueShouldBeFalse()
+            {
+                Assert.IsFalse(this.include.HasValue);
+            }
 
-            Assert.AreEqual(Messages.IncludeScalar_MultipleColumns, exception.Message);
+            [Test]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Test]
+            public void ValueShouldBeNull()
+            {
+                Assert.IsNull(this.include.Value);
+            }
         }
 
-        [Test]
-        public void BuildValueThrowsMicroLiteExceptionIfMoreThanOneResult()
+        [TestFixture]
+        public class ForAReferenceTypeWhenBuildValueHasBeenCalledAndThereIsOneResult
         {
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(1);
-            mockReader.Setup(x => x[0]).Returns(10);
-            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, true }).Dequeue);
+            private IncludeScalar<string> include = new IncludeScalar<string>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
-            var reader = mockReader.Object;
+            public ForAReferenceTypeWhenBuildValueHasBeenCalledAndThereIsOneResult()
+            {
+                this.mockReader.Setup(x => x.FieldCount).Returns(1);
+                this.mockReader.Setup(x => x[0]).Returns("Foo");
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-            var include = new IncludeScalar<int>();
+                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+            }
 
-            var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object, null));
+            [Test]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.IsTrue(this.include.HasValue);
+            }
 
-            Assert.AreEqual(Messages.IncludeSingle_SingleResultExpected, exception.Message);
+            [Test]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Test]
+            public void ValueShouldBeSetToTheResult()
+            {
+                Assert.AreEqual("Foo", this.include.Value);
+            }
         }
 
-        [Test]
-        public void ValueContainsDefaultValueForReferenceTypeIfBuildValueNotCalled()
+        [TestFixture]
+        public class ForAReferenceTypeWhenBuildValueHasNotBeenCalled
         {
-            var include = new IncludeScalar<string>();
+            private IncludeScalar<string> include = new IncludeScalar<string>();
 
-            Assert.AreEqual(default(string), include.Value);
+            public ForAReferenceTypeWhenBuildValueHasNotBeenCalled()
+            {
+            }
+
+            [Test]
+            public void HasValueShouldBeFalse()
+            {
+                Assert.IsFalse(this.include.HasValue);
+            }
+
+            [Test]
+            public void ValueShouldBeNull()
+            {
+                Assert.IsNull(this.include.Value);
+            }
         }
 
-        [Test]
-        public void ValueContainsDefaultValueForReferenceTypeIfNoResultsInReader()
+        [TestFixture]
+        public class ForAValueTypeWhenBuildValueHasBeenCalledAndThereAreNoResults
         {
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.Read()).Returns(false);
+            private IncludeScalar<int> include = new IncludeScalar<int>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
-            var reader = mockReader.Object;
+            public ForAValueTypeWhenBuildValueHasBeenCalledAndThereAreNoResults()
+            {
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-            var include = new IncludeScalar<string>();
+                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+            }
 
-            include.BuildValue(reader, null);
+            [Test]
+            public void HasValueShouldBeFalse()
+            {
+                Assert.IsFalse(this.include.HasValue);
+            }
 
-            Assert.AreEqual(default(string), include.Value);
+            [Test]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Test]
+            public void ValueShouldBeDefaultValue()
+            {
+                Assert.AreEqual(0, this.include.Value);
+            }
         }
 
-        [Test]
-        public void ValueContainsDefaultValueForValueTypeIfBuildValueNotCalled()
+        [TestFixture]
+        public class ForAValueTypeWhenBuildValueHasBeenCalledAndThereIsOneResult
         {
-            var include = new IncludeScalar<int>();
+            private IncludeScalar<int> include = new IncludeScalar<int>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
-            Assert.AreEqual(default(int), include.Value);
+            public ForAValueTypeWhenBuildValueHasBeenCalledAndThereIsOneResult()
+            {
+                this.mockReader.Setup(x => x.FieldCount).Returns(1);
+                this.mockReader.Setup(x => x[0]).Returns(10);
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+            }
+
+            [Test]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.IsTrue(this.include.HasValue);
+            }
+
+            [Test]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Test]
+            public void ValueShouldBeSetToTheResult()
+            {
+                Assert.AreEqual(10, this.include.Value);
+            }
         }
 
-        [Test]
-        public void ValueContainsDefaultValueForValueTypeIfNoResultsInReader()
+        [TestFixture]
+        public class ForAValueTypeWhenBuildValueHasNotBeenCalled
         {
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.Read()).Returns(false);
+            private IncludeScalar<int> include = new IncludeScalar<int>();
 
-            var reader = mockReader.Object;
+            public ForAValueTypeWhenBuildValueHasNotBeenCalled()
+            {
+            }
 
-            var include = new IncludeScalar<int>();
+            [Test]
+            public void HasValueShouldBeFalse()
+            {
+                Assert.IsFalse(this.include.HasValue);
+            }
 
-            include.BuildValue(reader, null);
-
-            Assert.AreEqual(default(int), include.Value);
+            [Test]
+            public void ValueShouldBeDefaultValue()
+            {
+                Assert.AreEqual(0, this.include.Value);
+            }
         }
 
-        [Test]
-        public void ValueReturnsResults()
+        [TestFixture]
+        public class WhenTheDataReaderContainsMultipleColumns
         {
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(1);
-            mockReader.Setup(x => x[0]).Returns(10);
-            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+            private IncludeScalar<int> include = new IncludeScalar<int>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
-            var reader = mockReader.Object;
+            public WhenTheDataReaderContainsMultipleColumns()
+            {
+                this.mockReader.Setup(x => x.FieldCount).Returns(2);
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, true }).Dequeue);
+            }
 
-            var include = new IncludeScalar<int>();
+            [Test]
+            public void BuildValueShouldThrowAMicroLiteException()
+            {
+                var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object, null));
 
-            include.BuildValue(reader, null);
+                Assert.AreEqual(Messages.IncludeScalar_MultipleColumns, exception.Message);
+            }
+        }
 
-            mockReader.VerifyAll();
+        [TestFixture]
+        public class WhenTheDataReaderContainsMultipleResults
+        {
+            private IncludeScalar<int> include = new IncludeScalar<int>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
-            Assert.AreEqual(10, include.Value);
+            public WhenTheDataReaderContainsMultipleResults()
+            {
+                this.mockReader.Setup(x => x.FieldCount).Returns(1);
+                this.mockReader.Setup(x => x[0]).Returns(10);
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, true }).Dequeue);
+            }
+
+            [Test]
+            public void BuildValueShouldThrowAMicroLiteException()
+            {
+                var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object, null));
+
+                Assert.AreEqual(Messages.IncludeSingle_SingleResultExpected, exception.Message);
+            }
         }
     }
 }

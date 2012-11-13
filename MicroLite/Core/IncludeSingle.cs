@@ -38,6 +38,7 @@ namespace MicroLite.Core
                 var objectInfo = ObjectInfo.For(typeof(T));
 
                 this.value = objectBuilder.BuildInstance<T>(objectInfo, reader);
+                this.HasValue = true;
 
                 if (reader.Read())
                 {

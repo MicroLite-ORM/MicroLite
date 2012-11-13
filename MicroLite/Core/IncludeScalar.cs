@@ -42,6 +42,7 @@ namespace MicroLite.Core
                 }
 
                 this.value = (T)Convert.ChangeType(reader[0], typeof(T), CultureInfo.InvariantCulture);
+                this.HasValue = true;
 
                 if (reader.Read())
                 {

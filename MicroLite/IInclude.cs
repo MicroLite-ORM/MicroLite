@@ -19,11 +19,20 @@ namespace MicroLite
     public interface IInclude<T>
     {
         /// <summary>
+        /// Gets a value indicating whether this include has a value.
+        /// </summary>
+        bool HasValue
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets the included value.
         /// </summary>
         /// <value>
-        /// If the overall query has not been executed, or if the query did not return a result the value will be null.
-        /// Otherwise the result of the query.
+        /// Value will be in one of the following states:
+        ///  - If the overall query has not been executed the value will be equal to its default value (null for reference types).
+        ///  - If the query yielded no results, it will be its default value; otherwise it will be the result of the query.
         /// </value>
         T Value
         {
