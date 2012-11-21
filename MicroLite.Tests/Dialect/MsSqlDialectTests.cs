@@ -19,61 +19,9 @@
         }
 
         [Test]
-        public void DeleteQueryForInstance()
-        {
-            var customer = new CustomerWithIdentity
-            {
-                Id = 122672
-            };
-
-            var sqlDialect = new MsSqlDialect();
-
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Delete, customer);
-
-            Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [CustomerId] = @p0", sqlQuery.CommandText);
-            Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
-        }
-
-        [Test]
-        public void DeleteQueryForTypeByIdentifier()
-        {
-            object identifier = 239845763;
-
-            var sqlDialect = new MsSqlDialect();
-
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Delete, typeof(CustomerWithIdentity), identifier);
-
-            Assert.AreEqual("DELETE FROM [Sales].[Customers] WHERE [CustomerId] = @p0", sqlQuery.CommandText);
-            Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
-        }
-
-        /// <summary>
-        /// Issue #11 - Identifier property value should be included on insert for IdentifierStrategy.Assigned.
-        /// </summary>
-        [Test]
-        public void InsertQueryForAssignedInstance()
-        {
-            var customer = new CustomerWithAssigned
-            {
-                Id = 6245543,
-                Name = "Trevor Pilley",
-                Status = CustomerStatus.Active
-            };
-
-            var sqlDialect = new MsSqlDialect();
-
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
-
-            Assert.AreEqual("INSERT INTO [Marketing].[Customers] ([CustomerId], [Name], [StatusId]) VALUES (@p0, @p1, @p2)", sqlQuery.CommandText);
-            Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
-            Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
-            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
-        }
-
-        [Test]
         public void InsertQueryForIdentityInstance()
         {
-            var customer = new CustomerWithIdentity
+            var customer = new Customer
             {
                 Created = DateTime.Now,
                 DateOfBirth = new System.DateTime(1982, 11, 27),
@@ -235,77 +183,10 @@
             Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the end row number");
         }
 
-        [Test]
-        public void SelectQuery()
-        {
-            object identifier = 12345421;
-
-            var sqlDialect = new MsSqlDialect();
-
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Select, typeof(CustomerWithIdentity), identifier);
-
-            Assert.AreEqual("SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated] FROM [Sales].[Customers] WHERE [CustomerId] = @p0", sqlQuery.CommandText);
-            Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
-        }
-
-        [Test]
-        public void UpdateQuery()
-        {
-            var customer = new CustomerWithIdentity
-            {
-                DateOfBirth = new System.DateTime(1982, 11, 27),
-                Id = 134875,
-                Name = "Trevor Pilley",
-                Status = CustomerStatus.Active,
-                Updated = DateTime.Now
-            };
-
-            var sqlDialect = new MsSqlDialect();
-
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Update, customer);
-
-            Assert.AreEqual("UPDATE [Sales].[Customers] SET [DoB] = @p0, [Name] = @p1, [StatusId] = @p2, [Updated] = @p3 WHERE [CustomerId] = @p4", sqlQuery.CommandText);
-            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);
-            Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
-            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
-            Assert.AreEqual(customer.Updated, sqlQuery.Arguments[3]);
-            Assert.AreEqual(customer.Id, sqlQuery.Arguments[4]);
-        }
-
-        [MicroLite.Mapping.Table(schema: "Marketing", name: "Customers")]
-        private class CustomerWithAssigned
-        {
-            public CustomerWithAssigned()
-            {
-            }
-
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)]
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Name")]
-            public string Name
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("StatusId")]
-            public CustomerStatus Status
-            {
-                get;
-                set;
-            }
-        }
-
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
-        private class CustomerWithIdentity
+        private class Customer
         {
-            public CustomerWithIdentity()
+            public Customer()
             {
             }
 

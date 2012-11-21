@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests.Dialect
 {
     using System;
+    using System.Data;
     using MicroLite.Dialect;
     using Moq;
     using NUnit.Framework;
@@ -133,16 +134,310 @@
             Assert.AreEqual(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
         }
 
-        [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
+        [Test]
+        public void DeleteQueryForInstance()
+        {
+            var customer = new Customer
+            {
+                Id = 122672
+            };
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Delete, customer);
+
+            Assert.AreEqual("DELETE FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
+            Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
+        }
+
+        [Test]
+        public void DeleteQueryForTypeByIdentifier()
+        {
+            object identifier = 239845763;
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Delete, typeof(Customer), identifier);
+
+            Assert.AreEqual("DELETE FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
+            Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
+        }
+
+        /// <summary>
+        /// Issue #11 - Identifier property value should be included on insert for IdentifierStrategy.Assigned.
+        /// </summary>
+        [Test]
+        public void InsertQuery()
+        {
+            var customer = new Customer
+            {
+                Created = DateTime.Now,
+                DateOfBirth = new System.DateTime(1982, 11, 27),
+                Id = 134875,
+                Name = "Trevor Pilley",
+                Status = CustomerStatus.Active,
+            };
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
+
+            Assert.AreEqual("INSERT INTO \"Customers\" (\"Created\", \"DoB\", \"CustomerId\", \"Name\", \"StatusId\") VALUES (?, ?, ?, ?, ?)", sqlQuery.CommandText);
+            Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
+            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
+            Assert.AreEqual(customer.Id, sqlQuery.Arguments[2]);
+            Assert.AreEqual(customer.Name, sqlQuery.Arguments[3]);
+            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[4]);
+        }
+
+        [Test]
+        public void PageNonQualifiedQuery()
+        {
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var paged = mockSqlDialect.Object.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+
+            Assert.AreEqual("SELECT CustomerId, Name, DoB, StatusId FROM Customers LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
+        }
+
+        [Test]
+        public void PageNonQualifiedWildcardQuery()
+        {
+            var sqlQuery = new SqlQuery("SELECT * FROM Customers");
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var paged = mockSqlDialect.Object.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+
+            Assert.AreEqual("SELECT * FROM Customers LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
+        }
+
+        [Test]
+        public void PageWithMultiWhereAndMultiOrderByMultiLine()
+        {
+            var sqlQuery = new SqlQuery(@"SELECT
+ ""CustomerId"",
+ ""Name"",
+ ""DoB"",
+ ""StatusId""
+ FROM
+ ""Customers""
+ WHERE
+ (""StatusId"" = ? AND ""DoB"" > ?)
+ ORDER BY
+ ""Name"" ASC,
+ ""DoB"" ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var paged = mockSqlDialect.Object.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+
+            Assert.AreEqual("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" WHERE (\"StatusId\" = ? AND \"DoB\" > ?) ORDER BY \"Name\" ASC, \"DoB\" ASC LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
+            Assert.AreEqual(sqlQuery.Arguments[1], paged.Arguments[1], "The second argument should be the second argument from the original query");
+            Assert.AreEqual(0, paged.Arguments[2], "The third argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[3], "The fourth argument should be the number of records to return");
+        }
+
+        [Test]
+        public void PageWithNoWhereButOrderBy()
+        {
+            var sqlQuery = new SqlQuery("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" ORDER BY \"CustomerId\" ASC");
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var paged = mockSqlDialect.Object.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+
+            Assert.AreEqual("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" ORDER BY \"CustomerId\" ASC LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
+        }
+
+        [Test]
+        public void PageWithNoWhereOrOrderByFirstResultsPage()
+        {
+            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\"");
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var paged = mockSqlDialect.Object.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
+        }
+
+        [Test]
+        public void PageWithNoWhereOrOrderBySecondResultsPage()
+        {
+            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\"");
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var paged = mockSqlDialect.Object.PageQuery(sqlQuery, page: 2, resultsPerPage: 25);
+
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual(25, paged.Arguments[0], "The first argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
+        }
+
+        [Test]
+        public void PageWithWhereAndOrderBy()
+        {
+            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = ? ORDER BY\"Name\" ASC", CustomerStatus.Active);
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var paged = mockSqlDialect.Object.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = ? ORDER BY\"Name\" ASC LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
+            Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
+        }
+
+        [Test]
+        public void PageWithWhereAndOrderByMultiLine()
+        {
+            var sqlQuery = new SqlQuery(@"SELECT
+""CustomerId"",
+""Name"",
+""DoB"",
+""StatusId""
+ FROM
+ ""Customers""
+ WHERE
+""StatusId"" = ?
+ ORDER BY
+""Name"" ASC", new object[] { CustomerStatus.Active });
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var paged = mockSqlDialect.Object.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = ? ORDER BY\"Name\" ASC LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
+            Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
+        }
+
+        [Test]
+        public void PageWithWhereButNoOrderBy()
+        {
+            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = ?", CustomerStatus.Active);
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var paged = mockSqlDialect.Object.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = ? LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
+            Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
+            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
+        }
+
+        [Test]
+        public void SelectQuery()
+        {
+            object identifier = 12345421;
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Select, typeof(Customer), identifier);
+
+            Assert.AreEqual("SELECT \"Created\", \"DoB\", \"CustomerId\", \"Name\", \"StatusId\", \"Updated\" FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
+            Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
+        }
+
+        [Test]
+        public void UpdateQuery()
+        {
+            var customer = new Customer
+            {
+                DateOfBirth = new System.DateTime(1982, 11, 27),
+                Id = 134875,
+                Name = "Trevor Pilley",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now
+            };
+
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Update, customer);
+
+            Assert.AreEqual("UPDATE \"Customers\" SET \"DoB\" = ?, \"Name\" = ?, \"StatusId\" = ?, \"Updated\" = ? WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
+            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);
+            Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
+            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
+            Assert.AreEqual(customer.Updated, sqlQuery.Arguments[3]);
+            Assert.AreEqual(customer.Id, sqlQuery.Arguments[4]);
+        }
+
+        [MicroLite.Mapping.Table("Customers")]
         private class Customer
         {
             public Customer()
             {
             }
 
+            [MicroLite.Mapping.Column("Created", allowInsert: true, allowUpdate: false)]
+            public DateTime Created
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("DoB")]
+            public DateTime DateOfBirth
+            {
+                get;
+                set;
+            }
+
             [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Identity)]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Assigned)]
             public int Id
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("Name")]
+            public string Name
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("StatusId")]
+            public CustomerStatus Status
+            {
+                get;
+                set;
+            }
+
+            [MicroLite.Mapping.Column("Updated", allowInsert: false, allowUpdate: true)]
+            public DateTime? Updated
             {
                 get;
                 set;
