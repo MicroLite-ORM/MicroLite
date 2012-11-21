@@ -95,7 +95,6 @@
     <Compile Include="Dialect\ISqlDialect.cs" />
     <Compile Include="FrameworkExtensions\MemberInfoExtensions.cs" />
     <Compile Include="Core\ObjectBuilder.cs" />
-    <Compile Include="FrameworkExtensions\PropertyInfoExtensions.cs" />
     <Compile Include="Core\Session.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -13,7 +13,6 @@
 namespace MicroLite
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// The interface which provides access to advanced session operations.

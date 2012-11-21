@@ -42,7 +42,7 @@ namespace MicroLite.Dialect
             switch (statementType)
             {
                 case StatementType.Delete:
-                    var identifierValue = objectInfo.GetPropertyInfoForColumn(objectInfo.TableInfo.IdentifierColumn).GetValue(instance);
+                    var identifierValue = objectInfo.GetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn);
 
                     return this.CreateQuery(StatementType.Delete, forType, identifierValue);
 
@@ -64,9 +64,7 @@ namespace MicroLite.Dialect
                         {
                             insertSqlBuilder.Append(this.FormatParameter(insertValues.Count) + ", ");
 
-                            var propertyInfo = objectInfo.GetPropertyInfoForColumn(column.ColumnName);
-
-                            var value = propertyInfo.GetValue(instance);
+                            var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
 
                             insertValues.Add(value);
                         }
@@ -92,9 +90,7 @@ namespace MicroLite.Dialect
                                         this.EscapeSql(column.ColumnName),
                                         this.FormatParameter(updateValues.Count));
 
-                            var propertyInfo = objectInfo.GetPropertyInfoForColumn(column.ColumnName);
-
-                            var value = propertyInfo.GetValue(instance);
+                            var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
 
                             updateValues.Add(value);
                         }
@@ -107,7 +103,7 @@ namespace MicroLite.Dialect
                         this.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
                         this.FormatParameter(updateValues.Count));
 
-                    updateValues.Add(objectInfo.GetPropertyInfoForColumn(objectInfo.TableInfo.IdentifierColumn).GetValue(instance));
+                    updateValues.Add(objectInfo.GetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn));
 
                     return new SqlQuery(updateSqlBuilder.ToString(), updateValues.ToArray());
 

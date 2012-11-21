@@ -14,7 +14,8 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
+    using System.Globalization;
+    using System.Linq;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
@@ -28,9 +29,6 @@ namespace MicroLite.Mapping
         private static readonly ILog log = LogManager.GetLog("MicroLite.ObjectInfo");
         private static readonly IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
         private static IMappingConvention mappingConvention = new AttributeMappingConvention();
-
-        // Key is the column name, value is the property info for the property.
-        private readonly IDictionary<string, PropertyInfo> columnProperties = new Dictionary<string, PropertyInfo>();
 
         private readonly Type forType;
         private readonly TableInfo tableInfo;
@@ -60,13 +58,11 @@ namespace MicroLite.Mapping
             foreach (var columnInfo in this.tableInfo.Columns)
             {
                 log.TryLogDebug(Messages.ObjectInfo_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
-                this.columnProperties.Add(columnInfo.ColumnName, columnInfo.PropertyInfo);
-            }
 
-            var identifierPropertyInfo = this.columnProperties[this.tableInfo.IdentifierColumn];
-            if (identifierPropertyInfo.PropertyType.IsValueType)
-            {
-                this.DefaultIdentifierValue = (ValueType)Activator.CreateInstance(identifierPropertyInfo.PropertyType);
+                if (columnInfo.IsIdentifier && columnInfo.PropertyInfo.PropertyType.IsValueType)
+                {
+                    this.DefaultIdentifierValue = (ValueType)Activator.CreateInstance(columnInfo.PropertyInfo.PropertyType);
+                }
             }
         }
 
@@ -148,17 +144,43 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the property info for specified column name.
+        /// Gets the property value for the specified column.
         /// </summary>
-        /// <param name="columnName">Name of the column.</param>
-        /// <returns>The <see cref="PropertyInfo"/> for the column, or null if it is not a mapped column.</returns>
-        public PropertyInfo GetPropertyInfoForColumn(string columnName)
+        /// <param name="instance">The instance to retrieve the value from.</param>
+        /// <param name="columnName">Name of the column to get the value for.</param>
+        /// <returns>The value of the property.</returns>
+        public object GetPropertyValueForColumn(object instance, string columnName)
         {
-            PropertyInfo propertyInfo;
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
 
-            this.columnProperties.TryGetValue(columnName, out propertyInfo);
+            if (instance.GetType() != this.ForType)
+            {
+                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
+                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
+            }
 
-            return propertyInfo;
+            var columnInfo = this.TableInfo.Columns.SingleOrDefault(c => c.ColumnName == columnName);
+
+            if (columnInfo == null)
+            {
+                log.TryLogError(Messages.ObjectInfo_ColumnNotMapped, columnName, this.ForType.Name);
+                throw new MicroLiteException(Messages.ObjectInfo_ColumnNotMapped.FormatWith(columnName, this.ForType.Name));
+            }
+
+            log.TryLogDebug(Messages.ObjectInfo_GetPropertyValueForColumn, this.ForType.Name, columnInfo.PropertyInfo.Name, columnName);
+            var value = columnInfo.PropertyInfo.GetValue(instance, null);
+
+            if (columnInfo.PropertyInfo.PropertyType.IsEnum)
+            {
+                return (int)value;
+            }
+            else
+            {
+                return value;
+            }
         }
 
         /// <summary>
@@ -170,11 +192,67 @@ namespace MicroLite.Mapping
         /// </returns>
         public bool HasDefaultIdentifierValue(object instance)
         {
-            var identifierPropertyInfo = this.GetPropertyInfoForColumn(this.TableInfo.IdentifierColumn);
-
-            var identifierValue = identifierPropertyInfo.GetValue(instance);
+            var identifierValue = this.GetPropertyValueForColumn(instance, this.TableInfo.IdentifierColumn);
 
             return object.Equals(identifierValue, this.DefaultIdentifierValue);
+        }
+
+        /// <summary>
+        /// Sets the property value mapped to the specified column on the instance.
+        /// </summary>
+        /// <param name="instance">The instance to set the property value on.</param>
+        /// <param name="columnName">The name of the column the property is mapped to.</param>
+        /// <param name="value">The value to set the property to.</param>
+        public void SetPropertyValueForColumn(object instance, string columnName, object value)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            if (instance.GetType() != this.ForType)
+            {
+                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
+                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
+            }
+
+            var columnInfo = this.TableInfo.Columns.SingleOrDefault(c => c.ColumnName == columnName);
+
+            if (columnInfo == null)
+            {
+                log.TryLogWarn(Messages.ObjectInfo_UnknownProperty, this.ForType.Name, columnName);
+                return;
+            }
+
+            log.TryLogDebug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
+            SetPropertyValue(instance, value, columnInfo);
+        }
+
+        private static void SetPropertyValue(object instance, object value, ColumnInfo columnInfo)
+        {
+            if (value == DBNull.Value)
+            {
+                return;
+            }
+
+            if (columnInfo.PropertyInfo.PropertyType.IsEnum)
+            {
+                columnInfo.PropertyInfo.SetValue(instance, Convert.ToInt32(value, CultureInfo.InvariantCulture), null);
+                return;
+            }
+
+            if (columnInfo.PropertyInfo.PropertyType.IsValueType && columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                // The property is a nullable struct (e.g. int? or DateTime?) so cast the object to a ValueType
+                // otherwise we get an InvalidCastException (Issue #7)
+                ValueType converted = (ValueType)value;
+                columnInfo.PropertyInfo.SetValue(instance, converted, null);
+            }
+            else
+            {
+                var converted = Convert.ChangeType(value, columnInfo.PropertyInfo.PropertyType, CultureInfo.InvariantCulture);
+                columnInfo.PropertyInfo.SetValue(instance, converted, null);
+            }
         }
 
         private static void VerifyType(Type forType)

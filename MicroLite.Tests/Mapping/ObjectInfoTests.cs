@@ -120,23 +120,97 @@
         }
 
         [Test]
-        public void GetPropertyInfoForColumnReturnsCorrectPropertyInfo()
+        public void GetPropertyValueForColumnReturnsIntValueIfPropertyIsEnum()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            Assert.AreEqual("Id", objectInfo.GetPropertyInfoForColumn("CustomerId").Name);
-            Assert.AreEqual("Name", objectInfo.GetPropertyInfoForColumn("Name").Name);
-            Assert.AreEqual("DateOfBirth", objectInfo.GetPropertyInfoForColumn("DoB").Name);
-            Assert.AreEqual("Status", objectInfo.GetPropertyInfoForColumn("StatusId").Name);
+            var customer = new CustomerWithIntegerIdentifier
+            {
+                Status = CustomerStatus.Active
+            };
+
+            var value = (int)objectInfo.GetPropertyValueForColumn(customer, "StatusId");
+
+            Assert.AreEqual(1, value);
         }
 
         [Test]
-        public void GetPropertyInfoForColumnReturnsNullForUnmappedColumns()
+        public void GetPropertyValueForColumnReturnsNullForNullablePropertyValue()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            Assert.IsNull(objectInfo.GetPropertyInfoForColumn("AgeInYears"));
-            Assert.IsNull(objectInfo.GetPropertyInfoForColumn("TempraryNotes"));
+            var customer = new CustomerWithIntegerIdentifier
+            {
+                CreditLimit = null
+            };
+
+            var value = (Decimal?)objectInfo.GetPropertyValueForColumn(customer, "CreditLimit");
+
+            Assert.IsNull(value);
+        }
+
+        [Test]
+        public void GetPropertyValueForColumnReturnsPropertyValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var customer = new CustomerWithIntegerIdentifier
+            {
+                Name = "Trev"
+            };
+
+            var value = (string)objectInfo.GetPropertyValueForColumn(customer, "Name");
+
+            Assert.AreEqual(customer.Name, value);
+        }
+
+        [Test]
+        public void GetPropertyValueForColumnReturnsValueForNullablePropertyWithValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var customer = new CustomerWithIntegerIdentifier
+            {
+                CreditLimit = 10250M
+            };
+
+            var value = (Decimal)objectInfo.GetPropertyValueForColumn(customer, "CreditLimit");
+
+            Assert.AreEqual(customer.CreditLimit.Value, value);
+        }
+
+        [Test]
+        public void GetPropertyValueForColumnThrowsArgumentNullExceptionForNullInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            Assert.Throws<ArgumentNullException>(() => objectInfo.GetPropertyValueForColumn(null, "Name"));
+        }
+
+        [Test]
+        public void GetPropertyValueForColumnThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.GetPropertyValueForColumn(new CustomerWithGuidIdentifier(), "Name"));
+
+            Assert.AreEqual(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Test]
+        public void GetPropertyValueForColumnThrowsMicroLiteExceptionIfInvalidColumnName()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.GetPropertyValueForColumn(new CustomerWithIntegerIdentifier(), "UnknownColumn"));
+
+            Assert.AreEqual(
+                string.Format(Messages.ObjectInfo_ColumnNotMapped, "UnknownColumn", objectInfo.ForType.Name),
+                exception.Message);
         }
 
         [Test]
@@ -181,6 +255,102 @@
             Assert.IsFalse(objectInfo.HasDefaultIdentifierValue(customer));
         }
 
+        [Test]
+        public void SetPropertyValueForColumnIgnoresUnmappedPropertyWithoutThrowingAnException()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            objectInfo.SetPropertyValueForColumn(instance, "UnknownColumn", 1);
+        }
+
+        [Test]
+        public void SetPropertyValueForColumnSetsEnumValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1);
+
+            Assert.AreEqual(instance.Status, CustomerStatus.Active);
+        }
+
+        /// <summary>
+        /// SQLite stores all integers as a long (64bit integer), enums are 32bit integers so the value should be down cast.
+        /// </summary>
+        [Test]
+        public void SetPropertyValueForColumnSetsEnumValueFromLong()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            objectInfo.SetPropertyValueForColumn(instance, "StatusId", (long)1);
+
+            Assert.AreEqual(instance.Status, CustomerStatus.Active);
+        }
+
+        [Test]
+        public void SetPropertyValueForColumnSetsNullablePropertyToNull()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            objectInfo.SetPropertyValueForColumn(instance, "CreditLimit", DBNull.Value);
+
+            Assert.IsNull(instance.CreditLimit);
+        }
+
+        [Test]
+        public void SetPropertyValueForColumnSetsNullablePropertyToValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            objectInfo.SetPropertyValueForColumn(instance, "CreditLimit", 2500M);
+
+            Assert.AreEqual(2500M, instance.CreditLimit.Value);
+        }
+
+        [Test]
+        public void SetPropertyValueForColumnSetsPropertyValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            objectInfo.SetPropertyValueForColumn(instance, "Name", "Trev");
+
+            Assert.AreEqual("Trev", instance.Name);
+        }
+
+        [Test]
+        public void SetPropertyValueForColumnThrowsArgumentNullExceptionForNullInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            Assert.Throws<ArgumentNullException>(() => objectInfo.SetPropertyValueForColumn(null, "StatusId", 1));
+        }
+
+        [Test]
+        public void SetPropertyValueForColumnThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithGuidIdentifier();
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1));
+
+            Assert.AreEqual(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
         private struct CustomerStruct
         {
         }
@@ -214,6 +384,13 @@
                 {
                     return DateTime.Today.Year - this.DateOfBirth.Year;
                 }
+            }
+
+            [MicroLite.Mapping.Column("CreditLimit")]
+            public Decimal? CreditLimit
+            {
+                get;
+                set;
             }
 
             [MicroLite.Mapping.Column("DoB")]

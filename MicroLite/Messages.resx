@@ -147,7 +147,7 @@
   <data name="ObjectBuilder_SettingPropertyValue" xml:space="preserve">
     <value>Setting the property value of [{0}].[{1}]</value>
   </data>
-  <data name="ObjectBuilder_UnknownProperty" xml:space="preserve">
+  <data name="ObjectInfo_UnknownProperty" xml:space="preserve">
     <value>The results contain a column with the name [{1}], however the type [{0}] does not have a mapped property with the column name [{1}]</value>
   </data>
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
@@ -254,5 +254,17 @@
   </data>
   <data name="SessionFactory_CreatingReadOnlySession" xml:space="preserve">
     <value>Creating a new read only session for connection [{0}]</value>
+  </data>
+  <data name="ObjectInfo_GetPropertyValueForColumn" xml:space="preserve">
+    <value>Getting the value of [{0}].[{1}] for the [{2}] column</value>
+  </data>
+  <data name="ObjectInfo_SettingPropertyValue" xml:space="preserve">
+    <value>Setting the property value of [{0}].[{1}]</value>
+  </data>
+  <data name="ObjectInfo_ColumnNotMapped" xml:space="preserve">
+    <value>The column {0} is not mapped to a property on the {1} class</value>
+  </data>
+  <data name="ObjectInfo_TypeMismatch" xml:space="preserve">
+    <value>The type of the object {0} does not match the type for the ObjectInfo {1}</value>
   </data>
 </root>

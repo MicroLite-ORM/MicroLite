@@ -67,12 +67,10 @@ namespace MicroLite.Listeners
                     throw new MicroLiteException(Messages.IListener_IdentifierSetForInsert);
                 }
 
-                var propertyInfo = objectInfo.GetPropertyInfoForColumn(objectInfo.TableInfo.IdentifierColumn);
-
                 var identifierValue = Guid.NewGuid();
 
                 log.TryLogDebug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
-                propertyInfo.SetValue(instance, identifierValue, null);
+                objectInfo.SetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn, identifierValue);
             }
         }
 

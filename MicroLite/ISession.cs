@@ -13,8 +13,6 @@
 namespace MicroLite
 {
     using System;
-    using System.Collections.Generic;
-    using System.Data;
 
     /// <summary>
     /// The interface which provides the write methods to map objects to database records.
