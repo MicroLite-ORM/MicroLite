@@ -149,10 +149,15 @@
       <Link>MicroLite.snk</Link>
     </None>
     <None Include="Configuration\_Configuration.cd" />
+    <None Include="Core\_Includes.cd" />
     <None Include="Core\_Session.cd" />
     <None Include="Dialect\_Dialect.cd" />
     <None Include="Listeners\_Listeners.cd" />
     <None Include="Logging\_Logging.cd" />
+    <None Include="Mapping\_MappingAttributes.cd" />
+    <None Include="Mapping\_MappingConvention.cd" />
+    <None Include="Mapping\_ObjectInfo.cd" />
+    <None Include="Query\_SqlBuilder.cd" />
     <None Include="_Session.cd" />
   </ItemGroup>
   <ItemGroup>
