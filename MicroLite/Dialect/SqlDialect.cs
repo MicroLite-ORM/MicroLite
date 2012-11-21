@@ -15,16 +15,79 @@ namespace MicroLite.Dialect
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Globalization;
     using System.Linq;
     using System.Text;
-    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
 
     /// <summary>
-    /// The base class for implementations of <see cref="ISqlDialect"/>.
+    /// The base class for implementations of <see cref="ISqlDialect" />.
     /// </summary>
     internal abstract class SqlDialect : ISqlDialect
     {
+        /// <summary>
+        /// Gets the close quote character.
+        /// </summary>
+        protected virtual char CloseQuote
+        {
+            get
+            {
+                return '"';
+            }
+        }
+
+        protected virtual IdentifierStrategy[] DatabaseGeneratedStrategies
+        {
+            get
+            {
+                return new IdentifierStrategy[0];
+            }
+        }
+
+        /// <summary>
+        /// Gets the default table schema.
+        /// </summary>
+        protected virtual string DefaultTableSchema
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Gets the open quote character.
+        /// </summary>
+        protected virtual char OpenQuote
+        {
+            get
+            {
+                return '"';
+            }
+        }
+
+        /// <summary>
+        /// Gets the SQL parameter.
+        /// </summary>
+        protected virtual char SqlParameter
+        {
+            get
+            {
+                return '?';
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether SQL parameters include the position (parameter number).
+        /// </summary>
+        protected virtual bool SqlParameterIncludesPosition
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
         {
             var qualifiedTableName = SqlUtil.ReadTableName(sqlQuery.CommandText);
@@ -54,7 +117,7 @@ namespace MicroLite.Dialect
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
-                        if (objectInfo.TableInfo.IdentifierStrategy.In(IdentifierStrategy.Identity, IdentifierStrategy.AutoIncrement)
+                        if (this.DatabaseGeneratedStrategies.Contains(objectInfo.TableInfo.IdentifierStrategy)
                             && column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
                         {
                             continue;
@@ -133,13 +196,64 @@ namespace MicroLite.Dialect
             }
         }
 
-        public abstract SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage);
+        public virtual SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
+        {
+            long skip = (page - 1) * resultsPerPage;
 
-        protected abstract string EscapeSql(string sql);
+            List<object> arguments = new List<object>();
+            arguments.AddRange(sqlQuery.Arguments);
+            arguments.Add(skip);
+            arguments.Add(resultsPerPage);
 
-        protected abstract string FormatParameter(int parameterPosition);
+            var sqlBuilder = new StringBuilder(sqlQuery.CommandText);
+            sqlBuilder.Replace(Environment.NewLine, string.Empty);
+            sqlBuilder.Append(" LIMIT ");
+            sqlBuilder.Append(this.FormatParameter(arguments.Count - 2));
+            sqlBuilder.Append(',');
+            sqlBuilder.Append(this.FormatParameter(arguments.Count - 1));
 
-        protected abstract string ResolveTableName(ObjectInfo objectInfo);
+            return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
+        }
+
+        protected string EscapeSql(string sql)
+        {
+            return this.OpenQuote + sql + this.CloseQuote;
+        }
+
+        protected string FormatParameter(int parameterPosition)
+        {
+            if (this.SqlParameterIncludesPosition)
+            {
+                return this.SqlParameter + ('p' + parameterPosition.ToString(CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                return this.SqlParameter.ToString();
+            }
+        }
+
+        protected string ResolveTableName(ObjectInfo objectInfo)
+        {
+            var schema = !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
+                ? objectInfo.TableInfo.Schema
+                : this.DefaultTableSchema;
+
+            var tableNameBuilder = new StringBuilder();
+
+            if (!string.IsNullOrEmpty(schema))
+            {
+                tableNameBuilder.Append(this.OpenQuote);
+                tableNameBuilder.Append(schema);
+                tableNameBuilder.Append(this.CloseQuote);
+                tableNameBuilder.Append('.');
+            }
+
+            tableNameBuilder.Append(this.OpenQuote);
+            tableNameBuilder.Append(objectInfo.TableInfo.Name);
+            tableNameBuilder.Append(this.CloseQuote);
+
+            return tableNameBuilder.ToString();
+        }
 
         private StringBuilder CreateSql(StatementType statementType, ObjectInfo objectInfo)
         {
@@ -157,7 +271,7 @@ namespace MicroLite.Dialect
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
-                        if (objectInfo.TableInfo.IdentifierStrategy.In(IdentifierStrategy.Identity, IdentifierStrategy.AutoIncrement)
+                        if (this.DatabaseGeneratedStrategies.Contains(objectInfo.TableInfo.IdentifierStrategy)
                             && column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
                         {
                             continue;

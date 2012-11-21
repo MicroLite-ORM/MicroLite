@@ -12,10 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Dialect
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Text;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -31,37 +27,34 @@ namespace MicroLite.Dialect
         {
         }
 
-        public override SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
+        protected override IdentifierStrategy[] DatabaseGeneratedStrategies
         {
-            long skip = (page - 1) * resultsPerPage;
-
-            List<object> arguments = new List<object>();
-            arguments.AddRange(sqlQuery.Arguments);
-            arguments.Add(skip);
-            arguments.Add(resultsPerPage);
-
-            var sqlBuilder = new StringBuilder(sqlQuery.CommandText);
-            sqlBuilder.Replace(Environment.NewLine, string.Empty);
-            sqlBuilder.Append(SqlUtil.ReNumberParameters(" LIMIT @p0,@p1", arguments.Count));
-
-            return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
+            get
+            {
+                return new[] { IdentifierStrategy.AutoIncrement };
+            }
         }
 
-        protected override string EscapeSql(string sql)
+        /// <summary>
+        /// Gets the SQL parameter.
+        /// </summary>
+        protected override char SqlParameter
         {
-            return "\"" + sql + "\"";
+            get
+            {
+                return '@';
+            }
         }
 
-        protected override string FormatParameter(int parameterPosition)
+        /// <summary>
+        /// Gets a value indicating whether SQL parameters include the position (parameter number).
+        /// </summary>
+        protected override bool SqlParameterIncludesPosition
         {
-            return "@p" + parameterPosition.ToString(CultureInfo.InvariantCulture);
-        }
-
-        protected override string ResolveTableName(ObjectInfo objectInfo)
-        {
-            return string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
-                ? "\"" + objectInfo.TableInfo.Name + "\""
-                : "\"" + objectInfo.TableInfo.Schema + "\".\"" + objectInfo.TableInfo.Name + "\"";
+            get
+            {
+                return true;
+            }
         }
     }
 }

@@ -16,7 +16,6 @@ namespace MicroLite.Dialect
     using System.Collections.Generic;
     using System.Globalization;
     using System.Text;
-    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -30,6 +29,58 @@ namespace MicroLite.Dialect
         /// <remarks>Constructor needs to be public so that it can be instantiated by SqlDialectFactory.</remarks>
         public MsSqlDialect()
         {
+        }
+
+        /// <summary>
+        /// Gets the close quote character.
+        /// </summary>
+        protected override char CloseQuote
+        {
+            get
+            {
+                return ']';
+            }
+        }
+
+        protected override IdentifierStrategy[] DatabaseGeneratedStrategies
+        {
+            get
+            {
+                return new[] { IdentifierStrategy.Identity };
+            }
+        }
+
+        /// <summary>
+        /// Gets the open quote character.
+        /// </summary>
+        protected override char OpenQuote
+        {
+            get
+            {
+                return '[';
+            }
+        }
+
+        /// <summary>
+        /// Gets the SQL parameter.
+        /// </summary>
+        protected override char SqlParameter
+        {
+            get
+            {
+                return '@';
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether SQL parameters include the position (parameter number).
+        /// </summary>
+        protected override bool SqlParameterIncludesPosition
+        {
+            get
+            {
+                return true;
+            }
         }
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
@@ -60,21 +111,6 @@ namespace MicroLite.Dialect
             sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.FormatParameter(arguments.Count - 2), this.FormatParameter(arguments.Count - 1));
 
             return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
-        }
-
-        protected override string EscapeSql(string sql)
-        {
-            return "[" + sql + "]";
-        }
-
-        protected override string FormatParameter(int parameterPosition)
-        {
-            return "@p" + parameterPosition.ToString(CultureInfo.InvariantCulture);
-        }
-
-        protected override string ResolveTableName(ObjectInfo objectInfo)
-        {
-            return "[{0}].[{1}]".FormatWith(string.IsNullOrEmpty(objectInfo.TableInfo.Schema) ? "dbo" : objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name);
         }
     }
 }

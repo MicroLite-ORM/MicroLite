@@ -21,7 +21,7 @@
         [Test]
         public void DeleteQueryForInstance()
         {
-            var customer = new CustomerWithIdentity
+            var customer = new CustomerWithAutoIncrement
             {
                 Id = 122672
             };
@@ -41,7 +41,7 @@
 
             var sqlDialect = new SQLiteDialect();
 
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Delete, typeof(CustomerWithIdentity), identifier);
+            var sqlQuery = sqlDialect.CreateQuery(StatementType.Delete, typeof(CustomerWithAutoIncrement), identifier);
 
             Assert.AreEqual("DELETE FROM \"Customers\" WHERE \"CustomerId\" = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
@@ -74,28 +74,6 @@
         public void InsertQueryForAutoIncrementInstance()
         {
             var customer = new CustomerWithAutoIncrement
-            {
-                Created = DateTime.Now,
-                DateOfBirth = new System.DateTime(1982, 11, 27),
-                Name = "Trevor Pilley",
-                Status = CustomerStatus.Active
-            };
-
-            var sqlDialect = new SQLiteDialect();
-
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
-
-            Assert.AreEqual("INSERT INTO \"Customers\" (\"Created\", \"DoB\", \"Name\", \"StatusId\") VALUES (@p0, @p1, @p2, @p3)", sqlQuery.CommandText);
-            Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
-            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
-            Assert.AreEqual(customer.Name, sqlQuery.Arguments[2]);
-            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[3]);
-        }
-
-        [Test]
-        public void InsertQueryForIdentityInstance()
-        {
-            var customer = new CustomerWithIdentity
             {
                 Created = DateTime.Now,
                 DateOfBirth = new System.DateTime(1982, 11, 27),
@@ -264,7 +242,7 @@
 
             var sqlDialect = new SQLiteDialect();
 
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Select, typeof(CustomerWithIdentity), identifier);
+            var sqlQuery = sqlDialect.CreateQuery(StatementType.Select, typeof(CustomerWithAutoIncrement), identifier);
 
             Assert.AreEqual("SELECT \"Created\", \"DoB\", \"CustomerId\", \"Name\", \"StatusId\", \"Updated\" FROM \"Customers\" WHERE \"CustomerId\" = @p0", sqlQuery.CommandText);
             Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
@@ -273,7 +251,7 @@
         [Test]
         public void UpdateQuery()
         {
-            var customer = new CustomerWithIdentity
+            var customer = new CustomerWithAutoIncrement
             {
                 DateOfBirth = new System.DateTime(1982, 11, 27),
                 Id = 134875,
@@ -347,57 +325,6 @@
 
             [MicroLite.Mapping.Column("CustomerId")]
             [MicroLite.Mapping.Identifier(IdentifierStrategy.AutoIncrement)]
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Name")]
-            public string Name
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("StatusId")]
-            public CustomerStatus Status
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Updated", allowInsert: false, allowUpdate: true)]
-            public DateTime? Updated
-            {
-                get;
-                set;
-            }
-        }
-
-        [MicroLite.Mapping.Table("Customers")]
-        private class CustomerWithIdentity
-        {
-            public CustomerWithIdentity()
-            {
-            }
-
-            [MicroLite.Mapping.Column("Created", allowInsert: true, allowUpdate: false)]
-            public DateTime Created
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("DoB")]
-            public DateTime DateOfBirth
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.Identity)]
             public int Id
             {
                 get;

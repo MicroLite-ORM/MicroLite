@@ -60,7 +60,6 @@
     <Compile Include="Dialect\SqlDialect.cs" />
     <Compile Include="Dialect\SqlDialectFactory.cs" />
     <Compile Include="Dialect\SQLiteDialect.cs" />
-    <Compile Include="FrameworkExtensions\EnumExtensions.cs" />
     <Compile Include="GuidGenerator.cs" />
     <Compile Include="IInclude.cs" />
     <Compile Include="IIncludeMany.cs" />
