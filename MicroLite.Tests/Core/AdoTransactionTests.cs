@@ -282,6 +282,19 @@
         }
 
         [Test]
+        public void EnlistThrowsArgumentNullExceptionForNullDbCommand()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
+            var transaction = new AdoTransaction(mockTransaction.Object);
+
+            var exception = Assert.Throws<ArgumentNullException>(() => transaction.Enlist(null));
+
+            Assert.AreEqual("command", exception.ParamName);
+        }
+
+        [Test]
         public void IsolationLevelReurnsTransactionIsolationLevel()
         {
             var mockDbTransaction = new Mock<IDbTransaction>();

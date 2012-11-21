@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests.Core
 {
+    using System;
     using MicroLite.Listeners;
     using NUnit.Framework;
 
@@ -20,6 +21,16 @@
             var listener = new AssignedListener();
 
             listener.BeforeDelete(customer);
+        }
+
+        [Test]
+        public void BeforeDeleteThrowsArgumentNullExceptionForNullInstance()
+        {
+            var listener = new AssignedListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeDelete(null));
+
+            Assert.AreEqual("instance", exception.ParamName);
         }
 
         [Test]
@@ -51,6 +62,16 @@
         }
 
         [Test]
+        public void BeforeInsertThrowsArgumentNullExceptionForNullInstance()
+        {
+            var listener = new AssignedListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeInsert(null));
+
+            Assert.AreEqual("instance", exception.ParamName);
+        }
+
+        [Test]
         public void BeforeInsertThrowsMicroLiteExceptionIfIdentifierNotSet()
         {
             var customer = new Customer
@@ -76,6 +97,16 @@
             var listener = new AssignedListener();
 
             listener.BeforeUpdate(customer);
+        }
+
+        [Test]
+        public void BeforeUpdateThrowsArgumentNullExceptionForNullInstance()
+        {
+            var listener = new AssignedListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeUpdate(null));
+
+            Assert.AreEqual("instance", exception.ParamName);
         }
 
         [Test]

@@ -24,6 +24,16 @@
         }
 
         [Test]
+        public void BeforeDeleteThrowsArgumentNullExceptionForNullInstance()
+        {
+            var listener = new GuidCombListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeDelete(null));
+
+            Assert.AreEqual("instance", exception.ParamName);
+        }
+
+        [Test]
         public void BeforeDeleteThrowsMicroLiteExceptionIfIdentifierNotSet()
         {
             var customer = new Customer
@@ -54,6 +64,16 @@
         }
 
         [Test]
+        public void BeforeInsertThrowsArgumentNullExceptionForNullInstance()
+        {
+            var listener = new GuidCombListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeInsert(null));
+
+            Assert.AreEqual("instance", exception.ParamName);
+        }
+
+        [Test]
         public void BeforeInsertThrowsMicroLiteExceptionIfIdentifierSet()
         {
             var customer = new Customer
@@ -79,6 +99,16 @@
             var listener = new GuidCombListener();
 
             listener.BeforeUpdate(customer);
+        }
+
+        [Test]
+        public void BeforeUpdateThrowsArgumentNullExceptionForNullInstance()
+        {
+            var listener = new GuidCombListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeUpdate(null));
+
+            Assert.AreEqual("instance", exception.ParamName);
         }
 
         [Test]

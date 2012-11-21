@@ -23,6 +23,26 @@
         }
 
         [Test]
+        public void AfterInsertThrowsArgumentNullExceptionForNullExecuteScalarResult()
+        {
+            var listener = new AutoIncrementListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.AfterInsert(new Customer(), null));
+
+            Assert.AreEqual("executeScalarResult", exception.ParamName);
+        }
+
+        [Test]
+        public void AfterInsertThrowsArgumentNullExceptionForNullInstance()
+        {
+            var listener = new AutoIncrementListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.AfterInsert(null, 1));
+
+            Assert.AreEqual("instance", exception.ParamName);
+        }
+
+        [Test]
         public void BeforeDeleteDoesNotThrowIfIdentifierSet()
         {
             var customer = new Customer
@@ -33,6 +53,16 @@
             var listener = new AutoIncrementListener();
 
             listener.BeforeDelete(customer);
+        }
+
+        [Test]
+        public void BeforeDeleteThrowsArgumentNullExceptionForNullInstance()
+        {
+            var listener = new AutoIncrementListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeDelete(null));
+
+            Assert.AreEqual("instance", exception.ParamName);
         }
 
         [Test]
@@ -48,6 +78,26 @@
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeDelete(customer));
 
             Assert.AreEqual(Messages.IListener_IdentifierNotSetForDelete, exception.Message);
+        }
+
+        [Test]
+        public void BeforeInsert2ThrowsArgumentNullExceptionForNullInstance()
+        {
+            var listener = new AutoIncrementListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeInsert(null, new SqlQuery(string.Empty)));
+
+            Assert.AreEqual("instance", exception.ParamName);
+        }
+
+        [Test]
+        public void BeforeInsert2ThrowsArgumentNullExceptionForNullSqlQuery()
+        {
+            var listener = new AutoIncrementListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeInsert(new Customer(), null));
+
+            Assert.AreEqual("sqlQuery", exception.ParamName);
         }
 
         [Test]
@@ -88,6 +138,16 @@
         }
 
         [Test]
+        public void BeforeInsertThrowsArgumentNullExceptionForNullInstance()
+        {
+            var listener = new AutoIncrementListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeInsert(null));
+
+            Assert.AreEqual("instance", exception.ParamName);
+        }
+
+        [Test]
         public void BeforeInsertThrowsMicroLiteExceptionIfIdentifierAlreadySet()
         {
             var customer = new Customer
@@ -113,6 +173,16 @@
             var listener = new AutoIncrementListener();
 
             listener.BeforeUpdate(customer);
+        }
+
+        [Test]
+        public void BeforeUpdateThrowsArgumentNullExceptionForNullInstance()
+        {
+            var listener = new AutoIncrementListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeUpdate(null));
+
+            Assert.AreEqual("instance", exception.ParamName);
         }
 
         [Test]

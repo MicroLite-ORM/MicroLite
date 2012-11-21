@@ -184,7 +184,9 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            Assert.Throws<ArgumentNullException>(() => objectInfo.GetPropertyValueForColumn(null, "Name"));
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetPropertyValueForColumn(null, "Name"));
+
+            Assert.AreEqual("instance", exception.ParamName);
         }
 
         [Test]
@@ -333,7 +335,9 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            Assert.Throws<ArgumentNullException>(() => objectInfo.SetPropertyValueForColumn(null, "StatusId", 1));
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.SetPropertyValueForColumn(null, "StatusId", 1));
+
+            Assert.AreEqual("instance", exception.ParamName);
         }
 
         [Test]

@@ -29,6 +29,22 @@
         }
 
         [Test]
+        public void InThrowArgumentNullExceptionForNullArgs()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(() => SqlBuilder.Select().From("").Where("").In((object[])null));
+
+            Assert.AreEqual("args", exception.ParamName);
+        }
+
+        [Test]
+        public void InThrowArgumentNullExceptionForNullSqlQuery()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(() => SqlBuilder.Select().From("").Where("").In((SqlQuery)null));
+
+            Assert.AreEqual("subQuery", exception.ParamName);
+        }
+
+        [Test]
         public void SelectAverage()
         {
             var sqlQuery = SqlBuilder
