@@ -11,7 +11,7 @@
     public class SqlUtilTests
     {
         [Test]
-        public void Combine()
+        public void CombineWithAtPrefixedParameters()
         {
             var sqlQuery1 = new SqlQuery("SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1", "Foo", 100);
             var sqlQuery2 = new SqlQuery("SELECT [Column_1], [Column_2] FROM [dbo].[Table_2] WHERE ([Column_1] = @p0 OR @p0 IS NULL) AND [Column_2] < @p1", "Bar", -1);
@@ -26,6 +26,44 @@
 
             Assert.AreEqual(
                 "SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1;\r\nSELECT [Column_1], [Column_2] FROM [dbo].[Table_2] WHERE ([Column_1] = @p2 OR @p2 IS NULL) AND [Column_2] < @p3",
+                sqlQuery.CommandText);
+        }
+
+        [Test]
+        public void CombineWithColonPrefixedParameters()
+        {
+            var sqlQuery1 = new SqlQuery("SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = :p0 AND \"Column2\" > :p1", "Foo", 100);
+            var sqlQuery2 = new SqlQuery("SELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = :p0 OR :p0 IS NULL) AND \"Column2\" < :p1", "Bar", -1);
+
+            var sqlQuery = SqlUtil.Combine(new[] { sqlQuery1, sqlQuery2 });
+
+            Assert.AreEqual(4, sqlQuery.Arguments.Count);
+            Assert.AreEqual("Foo", sqlQuery.Arguments[0]);
+            Assert.AreEqual(100, sqlQuery.Arguments[1]);
+            Assert.AreEqual("Bar", sqlQuery.Arguments[2]);
+            Assert.AreEqual(-1, sqlQuery.Arguments[3]);
+
+            Assert.AreEqual(
+                "SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = :p0 AND \"Column2\" > :p1;\r\nSELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = :p2 OR :p2 IS NULL) AND \"Column2\" < :p3",
+                sqlQuery.CommandText);
+        }
+
+        [Test]
+        public void CombineWithQuestionMarkParameters()
+        {
+            var sqlQuery1 = new SqlQuery("SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = ? AND \"Column2\" > ?", "Foo", 100);
+            var sqlQuery2 = new SqlQuery("SELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = ? OR ? IS NULL) AND \"Column2\" < ?", "Bar", -1);
+
+            var sqlQuery = SqlUtil.Combine(new[] { sqlQuery1, sqlQuery2 });
+
+            Assert.AreEqual(4, sqlQuery.Arguments.Count);
+            Assert.AreEqual("Foo", sqlQuery.Arguments[0]);
+            Assert.AreEqual(100, sqlQuery.Arguments[1]);
+            Assert.AreEqual("Bar", sqlQuery.Arguments[2]);
+            Assert.AreEqual(-1, sqlQuery.Arguments[3]);
+
+            Assert.AreEqual(
+                "SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = ? AND \"Column2\" > ?;\r\nSELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = ? OR ? IS NULL) AND \"Column2\" < ?",
                 sqlQuery.CommandText);
         }
 
@@ -155,12 +193,21 @@
         }
 
         [Test]
-        public void GetParameterNames()
+        public void GetParameterNamesWithAtPrefix()
         {
             var parameterNames = SqlUtil.GetParameterNames("SELECT * FROM TABLE WHERE Col1 = @p0 AND (Col2 = @p1 OR @p1 IS NULL)");
 
             Assert.AreEqual(2, parameterNames.Count);
             CollectionAssert.AreEquivalent(new[] { "@p0", "@p1" }, parameterNames);
+        }
+
+        [Test]
+        public void GetParameterNamesWithColonPrefix()
+        {
+            var parameterNames = SqlUtil.GetParameterNames("SELECT * FROM TABLE WHERE Col1 = :p0 AND (Col2 = :p1 OR :p1 IS NULL)");
+
+            Assert.AreEqual(2, parameterNames.Count);
+            CollectionAssert.AreEquivalent(new[] { ":p0", ":p1" }, parameterNames);
         }
 
         [Test]
