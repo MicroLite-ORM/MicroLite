@@ -8,10 +8,10 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>http://microliteorm.wordpress.com/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Micro ORM Framework</description>
+    <description>A Micro ORM Framework designed for ease of use and testability.</description>
     <releaseNotes>See http://microliteorm.wordpress.com/release-notes/ for a summary of changes made in this release of the package.</releaseNotes>
     <copyright>Copyright 2012</copyright>
-    <tags>Micro ORM Framework POCO Database SQL Builder</tags>
+    <tags>Micro ORM Framework POCO Database SQL Builder MsSQL MySQL SQLite Postgre</tags>
   </metadata>
   <files>
     <file src="..\build\3.5\MicroLite.dll" target="lib\net35-client" />
