@@ -58,6 +58,7 @@
     <Compile Include="Core\IncludeScalarTests.cs" />
     <Compile Include="Core\IncludeSingleTests.cs" />
     <Compile Include="Core\ReadOnlySessionTests.cs" />
+    <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
     <Compile Include="Dialect\SqlDialectFactoryTests.cs" />
     <Compile Include="Dialect\SqlDialectTests.cs" />
     <Compile Include="Dialect\SQLiteDialectTests.cs" />

@@ -29,6 +29,14 @@
         }
 
         [Test]
+        public void GetDialectReturnsPostgreSqlDialect()
+        {
+            var sqlDialect = SqlDialectFactory.GetDialect("MicroLite.Dialect.PostgreSqlDialect");
+
+            Assert.IsInstanceOf<PostgreSqlDialect>(sqlDialect);
+        }
+
+        [Test]
         public void GetDialectReturnsSQLiteDialect()
         {
             var sqlDialect = SqlDialectFactory.GetDialect("MicroLite.Dialect.SQLiteDialect");
