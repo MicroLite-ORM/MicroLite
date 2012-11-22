@@ -25,10 +25,9 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     public sealed class ObjectInfo
     {
-        private static readonly object locker = new object();
         private static readonly ILog log = LogManager.GetLog("MicroLite.ObjectInfo");
-        private static readonly IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
         private static IMappingConvention mappingConvention = new AttributeMappingConvention();
+        private static IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
 
         private readonly Type forType;
         private readonly TableInfo tableInfo;
@@ -126,17 +125,17 @@ namespace MicroLite.Mapping
 
             ObjectInfo objectInfo;
 
-            lock (locker)
+            if (!objectInfos.TryGetValue(forType, out objectInfo))
             {
-                if (!objectInfos.TryGetValue(forType, out objectInfo))
-                {
-                    VerifyType(forType);
+                VerifyType(forType);
 
-                    log.TryLogDebug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
-                    objectInfo = MappingConvention.CreateObjectInfo(forType);
+                log.TryLogDebug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
+                objectInfo = MappingConvention.CreateObjectInfo(forType);
 
-                    objectInfos[forType] = objectInfo;
-                }
+                var newObjectInfos = new Dictionary<Type, ObjectInfo>(objectInfos);
+                newObjectInfos[forType] = objectInfo;
+
+                objectInfos = newObjectInfos;
             }
 
             log.TryLogDebug(Messages.ObjectInfo_RetrievingObjectInfo, forType.FullName);

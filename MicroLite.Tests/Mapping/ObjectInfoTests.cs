@@ -69,6 +69,17 @@
         }
 
         [Test]
+        public void ForReturnsSameObjectInfoForSameType()
+        {
+            var forType = typeof(CustomerWithIntegerIdentifier);
+
+            var objectInfo1 = ObjectInfo.For(forType);
+            var objectInfo2 = ObjectInfo.For(forType);
+
+            Assert.AreSame(objectInfo1, objectInfo2);
+        }
+
+        [Test]
         public void ForThrowsArgumentNullExceptonForNullForType()
         {
             var exception = Assert.Throws<ArgumentNullException>(() => ObjectInfo.For(null));
