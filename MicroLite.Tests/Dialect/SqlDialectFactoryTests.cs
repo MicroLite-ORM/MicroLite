@@ -20,6 +20,14 @@
         }
 
         [Test]
+        public void GetDialectReturnsMySqlDialect()
+        {
+            var sqlDialect = SqlDialectFactory.GetDialect("MicroLite.Dialect.MySqlDialect");
+
+            Assert.IsInstanceOf<MySqlDialect>(sqlDialect);
+        }
+
+        [Test]
         public void GetDialectReturnsNewInstanceEachCall()
         {
             var sqlDialect1 = SqlDialectFactory.GetDialect("MicroLite.Dialect.MsSqlDialect");

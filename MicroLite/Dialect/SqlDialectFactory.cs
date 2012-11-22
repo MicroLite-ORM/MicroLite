@@ -28,7 +28,8 @@ namespace MicroLite.Dialect
         {
             { "MicroLite.Dialect.MsSqlDialect", typeof(MsSqlDialect) },
             { "MicroLite.Dialect.SQLiteDialect", typeof(SQLiteDialect) },
-            { "MicroLite.Dialect.PostgreSqlDialect", typeof(PostgreSqlDialect) }
+            { "MicroLite.Dialect.PostgreSqlDialect", typeof(PostgreSqlDialect) },
+            { "MicroLite.Dialect.MySqlDialect", typeof(MySqlDialect) }
         };
 
         /// <summary>
