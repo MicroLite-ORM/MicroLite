@@ -33,7 +33,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
 
-            Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Created], [DoB], [Name], [StatusId]) VALUES (@p0, @p1, @p2, @p3)", sqlQuery.CommandText);
+            Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Created], [DoB], [Name], [StatusId]) VALUES (@p0, @p1, @p2, @p3);SELECT SCOPE_IDENTITY()", sqlQuery.CommandText);
             Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
             Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
             Assert.AreEqual(customer.Name, sqlQuery.Arguments[2]);

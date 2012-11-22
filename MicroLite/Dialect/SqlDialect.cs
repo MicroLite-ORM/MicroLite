@@ -36,6 +36,9 @@ namespace MicroLite.Dialect
             }
         }
 
+        /// <summary>
+        /// Gets the database generated identifier strategies.
+        /// </summary>
         protected virtual IdentifierStrategy[] DatabaseGeneratedStrategies
         {
             get
@@ -63,6 +66,25 @@ namespace MicroLite.Dialect
             get
             {
                 return '"';
+            }
+        }
+
+        /// <summary>
+        /// Gets the select identity string.
+        /// </summary>
+        protected abstract string SelectIdentityString
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the select separator.
+        /// </summary>
+        protected virtual char SelectSeparator
+        {
+            get
+            {
+                return ';';
             }
         }
 
@@ -135,6 +157,12 @@ namespace MicroLite.Dialect
 
                     insertSqlBuilder.Remove(insertSqlBuilder.Length - 2, 2);
                     insertSqlBuilder.Append(")");
+
+                    if (this.DatabaseGeneratedStrategies.Contains(objectInfo.TableInfo.IdentifierStrategy))
+                    {
+                        insertSqlBuilder.Append(this.SelectSeparator);
+                        insertSqlBuilder.Append(this.SelectIdentityString);
+                    }
 
                     return new SqlQuery(insertSqlBuilder.ToString(), insertValues.ToArray());
 

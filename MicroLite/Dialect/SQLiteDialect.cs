@@ -27,11 +27,25 @@ namespace MicroLite.Dialect
         {
         }
 
+        /// <summary>
+        /// Gets the database generated identifier strategies.
+        /// </summary>
         protected override IdentifierStrategy[] DatabaseGeneratedStrategies
         {
             get
             {
                 return new[] { IdentifierStrategy.AutoIncrement };
+            }
+        }
+
+        /// <summary>
+        /// Gets the select identity string.
+        /// </summary>
+        protected override string SelectIdentityString
+        {
+            get
+            {
+                return "SELECT last_insert_rowid()";
             }
         }
 

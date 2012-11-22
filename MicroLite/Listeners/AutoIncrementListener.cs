@@ -97,31 +97,6 @@ namespace MicroLite.Listeners
         }
 
         /// <summary>
-        /// Invoked before the SqlQuery to insert the record into the database is executed.
-        /// </summary>
-        /// <param name="instance">The instance to be inserted.</param>
-        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
-        public override void BeforeInsert(object instance, SqlQuery sqlQuery)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            var objectInfo = ObjectInfo.For(instance.GetType());
-
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.AutoIncrement)
-            {
-                sqlQuery.CommandText += ";SELECT last_insert_rowid()";
-            }
-        }
-
-        /// <summary>
         /// Invoked before the SqlQuery to update the record in the database is created.
         /// </summary>
         /// <param name="instance">The instance to be updated.</param>

@@ -81,50 +81,6 @@
         }
 
         [Test]
-        public void BeforeInsert2ThrowsArgumentNullExceptionForNullInstance()
-        {
-            var listener = new AutoIncrementListener();
-
-            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeInsert(null, new SqlQuery(string.Empty)));
-
-            Assert.AreEqual("instance", exception.ParamName);
-        }
-
-        [Test]
-        public void BeforeInsert2ThrowsArgumentNullExceptionForNullSqlQuery()
-        {
-            var listener = new AutoIncrementListener();
-
-            var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeInsert(new Customer(), null));
-
-            Assert.AreEqual("sqlQuery", exception.ParamName);
-        }
-
-        [Test]
-        public void BeforeInsertAppendsSelectScopeIdentityToCommandText()
-        {
-            var sqlQuery = new SqlQuery(string.Empty);
-
-            var listener = new AutoIncrementListener();
-            listener.BeforeInsert(new Customer(), sqlQuery);
-
-            Assert.AreEqual(";SELECT last_insert_rowid()", sqlQuery.CommandText);
-            CollectionAssert.IsEmpty(sqlQuery.Arguments);
-        }
-
-        [Test]
-        public void BeforeInsertDoesNotChangeCommandText()
-        {
-            var sqlQuery = new SqlQuery(string.Empty);
-
-            var listener = new AutoIncrementListener();
-            listener.BeforeInsert(new CustomerWithAssigned(), sqlQuery);
-
-            Assert.AreEqual(string.Empty, sqlQuery.CommandText);
-            CollectionAssert.IsEmpty(sqlQuery.Arguments);
-        }
-
-        [Test]
         public void BeforeInsertDoesNotThrowIfIdentifierNotSet()
         {
             var customer = new Customer

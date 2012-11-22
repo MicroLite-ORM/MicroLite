@@ -42,6 +42,9 @@ namespace MicroLite.Dialect
             }
         }
 
+        /// <summary>
+        /// Gets the database generated identifier strategies.
+        /// </summary>
         protected override IdentifierStrategy[] DatabaseGeneratedStrategies
         {
             get
@@ -58,6 +61,17 @@ namespace MicroLite.Dialect
             get
             {
                 return '[';
+            }
+        }
+
+        /// <summary>
+        /// Gets the select identity string.
+        /// </summary>
+        protected override string SelectIdentityString
+        {
+            get
+            {
+                return "SELECT SCOPE_IDENTITY()";
             }
         }
 
