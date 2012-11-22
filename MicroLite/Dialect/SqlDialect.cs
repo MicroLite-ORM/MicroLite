@@ -224,24 +224,7 @@ namespace MicroLite.Dialect
             }
         }
 
-        public virtual SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
-        {
-            long skip = (page - 1) * resultsPerPage;
-
-            List<object> arguments = new List<object>();
-            arguments.AddRange(sqlQuery.Arguments);
-            arguments.Add(skip);
-            arguments.Add(resultsPerPage);
-
-            var sqlBuilder = new StringBuilder(sqlQuery.CommandText);
-            sqlBuilder.Replace(Environment.NewLine, string.Empty);
-            sqlBuilder.Append(" LIMIT ");
-            sqlBuilder.Append(this.FormatParameter(arguments.Count - 2));
-            sqlBuilder.Append(',');
-            sqlBuilder.Append(this.FormatParameter(arguments.Count - 1));
-
-            return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
-        }
+        public abstract SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage);
 
         protected string EscapeSql(string sql)
         {

@@ -12,6 +12,9 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Dialect
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -69,6 +72,25 @@ namespace MicroLite.Dialect
             {
                 return "SELECT LAST_INSERT_ID()";
             }
+        }
+
+        public override SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
+        {
+            long skip = (page - 1) * resultsPerPage;
+
+            List<object> arguments = new List<object>();
+            arguments.AddRange(sqlQuery.Arguments);
+            arguments.Add(skip); // offset
+            arguments.Add(resultsPerPage); // count
+
+            var sqlBuilder = new StringBuilder(sqlQuery.CommandText);
+            sqlBuilder.Replace(Environment.NewLine, string.Empty);
+            sqlBuilder.Append(" LIMIT ");
+            sqlBuilder.Append(this.FormatParameter(arguments.Count - 2));
+            sqlBuilder.Append(',');
+            sqlBuilder.Append(this.FormatParameter(arguments.Count - 1));
+
+            return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
         }
     }
 }
