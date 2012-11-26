@@ -22,6 +22,7 @@ namespace MicroLite.Query
     /// <summary>
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("{innerSql}")]
     public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereBetweenOrIn
     {
         private readonly List<object> arguments = new List<object>();
