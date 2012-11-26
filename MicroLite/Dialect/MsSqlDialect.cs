@@ -97,10 +97,10 @@ namespace MicroLite.Dialect
             }
         }
 
-        public override SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
+        public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
-            long fromRowNumber = ((page - 1) * resultsPerPage) + 1;
-            long toRowNumber = (fromRowNumber - 1) + resultsPerPage;
+            long fromRowNumber = pagingOptions.Offset + 1;
+            long toRowNumber = pagingOptions.Offset + pagingOptions.Count;
 
             List<object> arguments = new List<object>();
             arguments.AddRange(sqlQuery.Arguments);

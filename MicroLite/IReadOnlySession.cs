@@ -140,7 +140,29 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        PagedResult<T> Paged<T>(SqlQuery sqlQuery, long page, long resultsPerPage) where T : class, new();
+        PagedResult<T> Paged<T>(SqlQuery sqlQuery, int page, int resultsPerPage) where T : class, new();
+
+        /// <summary>
+        /// Pages the specified SQL query and returns an <see cref="PagedResult&lt;T&gt;"/> containing the desired results.
+        /// </summary>
+        /// <typeparam name="T">The type of object the query relates to.</typeparam>
+        /// <param name="sqlQuery">The SQL query to page before executing.</param>
+        /// <param name="pagingOptions">The <see cref="PagingOptions"/>.</param>
+        /// <returns>A <see cref="PagedResult&lt;T&gt;"/> containing the desired results.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
+        /// <example>
+        /// <code>
+        /// using (var session = sessionFactory.OpenSession())
+        /// {
+        ///     var query = new SqlQuery("SELECT * FROM Customers WHERE LastName = @p0", "Smith");
+        ///
+        ///     var customers = session.Paged&lt;Customer&gt;(query, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
+        /// }
+        /// </code>
+        /// </example>
+        PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions) where T : class, new();
 
 #if !NET_3_5
 

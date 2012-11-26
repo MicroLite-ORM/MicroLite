@@ -83,6 +83,44 @@ namespace MicroLite.Core
             }
         }
 
+        public ITransaction BeginTransaction()
+        {
+            this.ThrowIfDisposed();
+
+            using (new SessionLoggingContext(this.Id))
+            {
+                return this.ConnectionManager.BeginTransaction();
+            }
+        }
+
+        public ITransaction BeginTransaction(IsolationLevel isolationLevel)
+        {
+            this.ThrowIfDisposed();
+
+            using (new SessionLoggingContext(this.Id))
+            {
+                return this.ConnectionManager.BeginTransaction(isolationLevel);
+            }
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public IList<T> Fetch<T>(SqlQuery sqlQuery) where T : class, new()
+        {
+            using (new SessionLoggingContext(this.Id))
+            {
+                var include = this.Include.Many<T>(sqlQuery);
+
+                this.ExecuteAllQueries();
+
+                return include.Values;
+            }
+        }
+
         IInclude<T> IIncludeSession.Single<T>(object identifier)
         {
             this.ThrowIfDisposed();
@@ -144,44 +182,6 @@ namespace MicroLite.Core
             }
         }
 
-        public ITransaction BeginTransaction()
-        {
-            this.ThrowIfDisposed();
-
-            using (new SessionLoggingContext(this.Id))
-            {
-                return this.ConnectionManager.BeginTransaction();
-            }
-        }
-
-        public ITransaction BeginTransaction(IsolationLevel isolationLevel)
-        {
-            this.ThrowIfDisposed();
-
-            using (new SessionLoggingContext(this.Id))
-            {
-                return this.ConnectionManager.BeginTransaction(isolationLevel);
-            }
-        }
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        public IList<T> Fetch<T>(SqlQuery sqlQuery) where T : class, new()
-        {
-            using (new SessionLoggingContext(this.Id))
-            {
-                var include = this.Include.Many<T>(sqlQuery);
-
-                this.ExecuteAllQueries();
-
-                return include.Values;
-            }
-        }
-
         public IIncludeMany<T> Many<T>(SqlQuery sqlQuery) where T : class, new()
         {
             this.ThrowIfDisposed();
@@ -202,7 +202,7 @@ namespace MicroLite.Core
             }
         }
 
-        public PagedResult<T> Paged<T>(SqlQuery sqlQuery, long page, long resultsPerPage) where T : class, new()
+        public PagedResult<T> Paged<T>(SqlQuery sqlQuery, int page, int resultsPerPage) where T : class, new()
         {
             this.ThrowIfDisposed();
 
@@ -211,27 +211,24 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            if (page < 1)
-            {
-                throw new ArgumentOutOfRangeException("page", Messages.Session_PagesStartAtOne);
-            }
+            return this.Paged<T>(sqlQuery, PagingOptions.ForPage(page, resultsPerPage));
+        }
 
-            if (resultsPerPage < 1)
-            {
-                throw new ArgumentOutOfRangeException("resultsPerPage", Messages.Session_MustHaveAtLeast1Result);
-            }
-
+        public PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions) where T : class, new()
+        {
             using (new SessionLoggingContext(this.Id))
             {
                 var countSqlQuery = this.SqlDialect.CountQuery(sqlQuery);
-                var pagedSqlQuery = this.SqlDialect.PageQuery(sqlQuery, page, resultsPerPage);
+                var pagedSqlQuery = this.SqlDialect.PageQuery(sqlQuery, pagingOptions);
 
-                var includeCount = this.Include.Scalar<long>(countSqlQuery);
+                var includeCount = this.Include.Scalar<int>(countSqlQuery);
                 var includeMany = this.Include.Many<T>(pagedSqlQuery);
 
                 this.ExecuteAllQueries();
 
-                return new PagedResult<T>(page, includeMany.Values, resultsPerPage, includeCount.Value);
+                var page = ((pagingOptions.Offset + 1) / pagingOptions.Count) + 1;
+
+                return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
             }
         }
 
@@ -312,15 +309,6 @@ namespace MicroLite.Core
             }
         }
 
-        protected void OpenConnectionIfClosed(IDbCommand command)
-        {
-            if (command.Connection.State == ConnectionState.Closed)
-            {
-                Log.TryLogDebug(Messages.Session_OpeningConnection);
-                command.Connection.Open();
-            }
-        }
-
         protected void Dispose(bool disposing)
         {
             if (disposing && !this.disposed)
@@ -332,6 +320,15 @@ namespace MicroLite.Core
                     Log.TryLogDebug(Messages.Session_Disposed);
                     this.disposed = true;
                 }
+            }
+        }
+
+        protected void OpenConnectionIfClosed(IDbCommand command)
+        {
+            if (command.Connection.State == ConnectionState.Closed)
+            {
+                Log.TryLogDebug(Messages.Session_OpeningConnection);
+                command.Connection.Open();
             }
         }
 

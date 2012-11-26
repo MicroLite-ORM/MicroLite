@@ -96,14 +96,12 @@ namespace MicroLite.Dialect
             }
         }
 
-        public override SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
+        public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
-            long skip = (page - 1) * resultsPerPage;
-
             List<object> arguments = new List<object>();
             arguments.AddRange(sqlQuery.Arguments);
-            arguments.Add(skip); // offset
-            arguments.Add(resultsPerPage); // count
+            arguments.Add(pagingOptions.Offset);
+            arguments.Add(pagingOptions.Count);
 
             var sqlBuilder = new StringBuilder(sqlQuery.CommandText);
             sqlBuilder.Replace(Environment.NewLine, string.Empty);

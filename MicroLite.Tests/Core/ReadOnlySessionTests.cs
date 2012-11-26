@@ -268,7 +268,7 @@
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
-            mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, 10, 25)).Returns(pagedQuery);
+            mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(10, 25))).Returns(pagedQuery);
 
             var session = new ReadOnlySession(
                 mockConnectionManager.Object,
@@ -298,36 +298,6 @@
             var exception = Assert.Throws<ArgumentNullException>(() => session.Paged<Customer>(null, 1, 25));
 
             Assert.AreEqual("sqlQuery", exception.ParamName);
-        }
-
-        [Test]
-        public void PagedThrowsArgumentOutOfRangeExceptionIfPageBelow1()
-        {
-            var session = new ReadOnlySession(
-                new Mock<IConnectionManager>().Object,
-                new Mock<IObjectBuilder>().Object,
-                new Mock<ISqlDialect>().Object);
-
-            var exception = Assert.Throws<ArgumentOutOfRangeException>(
-                () => session.Paged<Customer>(new SqlQuery(""), 0, 25));
-
-            Assert.AreEqual("page", exception.ParamName);
-            Assert.IsTrue(exception.Message.StartsWith(Messages.Session_PagesStartAtOne));
-        }
-
-        [Test]
-        public void PagedThrowsArgumentOutOfRangeExceptionIfResultsPerPageBelow1()
-        {
-            var session = new ReadOnlySession(
-                new Mock<IConnectionManager>().Object,
-                new Mock<IObjectBuilder>().Object,
-                new Mock<ISqlDialect>().Object);
-
-            var exception = Assert.Throws<ArgumentOutOfRangeException>(
-                () => session.Paged<Customer>(new SqlQuery(""), 1, 0));
-
-            Assert.AreEqual("resultsPerPage", exception.ParamName);
-            Assert.IsTrue(exception.Message.StartsWith(Messages.Session_MustHaveAtLeast1Result));
         }
 
         [Test]

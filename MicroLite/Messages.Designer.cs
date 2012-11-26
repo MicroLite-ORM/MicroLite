@@ -322,6 +322,42 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The first page which can be requested is page 1.
+        /// </summary>
+        internal static string PagingOptions_PagesMustBeAtleastOne {
+            get {
+                return ResourceManager.GetString("PagingOptions_PagesMustBeAtleastOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There must be at least 1 result per page.
+        /// </summary>
+        internal static string PagingOptions_ResultsPerPageMustBeAtLeast1 {
+            get {
+                return ResourceManager.GetString("PagingOptions_ResultsPerPageMustBeAtLeast1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It is not possible to skip less than 0 results.
+        /// </summary>
+        internal static string PagingOptions_SkipMustBeZeroOrAbove {
+            get {
+                return ResourceManager.GetString("PagingOptions_SkipMustBeZeroOrAbove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least 1 result must be returned.
+        /// </summary>
+        internal static string PagingOptions_TakeMustBeZeroOrAbove {
+            get {
+                return ResourceManager.GetString("PagingOptions_TakeMustBeZeroOrAbove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Session closing database connection.
         /// </summary>
         internal static string Session_ClosingConnection {
@@ -349,29 +385,11 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There must be at least 1 result per page.
-        /// </summary>
-        internal static string Session_MustHaveAtLeast1Result {
-            get {
-                return ResourceManager.GetString("Session_MustHaveAtLeast1Result", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Session opening database connection.
         /// </summary>
         internal static string Session_OpeningConnection {
             get {
                 return ResourceManager.GetString("Session_OpeningConnection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The first page which can be requested is page 1.
-        /// </summary>
-        internal static string Session_PagesStartAtOne {
-            get {
-                return ResourceManager.GetString("Session_PagesStartAtOne", resourceCulture);
             }
         }
         

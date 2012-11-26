@@ -224,7 +224,7 @@ namespace MicroLite.Dialect
             }
         }
 
-        public abstract SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage);
+        public abstract SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions);
 
         protected string EscapeSql(string sql)
         {

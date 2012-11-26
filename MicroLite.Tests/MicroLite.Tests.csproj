@@ -89,6 +89,7 @@
     <Compile Include="Mapping\AttributeMappingConventionTests.cs" />
     <Compile Include="Mapping\TableInfoTests.cs" />
     <Compile Include="PagedResultTests.cs" />
+    <Compile Include="PagingOptionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\SqlBuilderTests.cs" />
     <Compile Include="SqlQueryTests.cs" />

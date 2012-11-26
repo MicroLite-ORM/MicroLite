@@ -47,7 +47,7 @@
 
             var sqlDialect = new MySqlDialect();
 
-            var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.AreEqual("SELECT CustomerId, Name, DoB, StatusId FROM Customers LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
@@ -61,7 +61,7 @@
 
             var sqlDialect = new MySqlDialect();
 
-            var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.AreEqual("SELECT * FROM Customers LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
@@ -86,7 +86,7 @@
 
             var sqlDialect = new MySqlDialect();
 
-            var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.AreEqual("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" WHERE (\"StatusId\" = @p0 AND \"DoB\" > @p1) ORDER BY \"Name\" ASC, \"DoB\" ASC LIMIT @p2,@p3", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
@@ -102,7 +102,7 @@
 
             var sqlDialect = new MySqlDialect();
 
-            var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.AreEqual("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" ORDER BY \"CustomerId\" ASC LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
@@ -116,7 +116,7 @@
 
             var sqlDialect = new MySqlDialect();
 
-            var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
@@ -130,7 +130,7 @@
 
             var sqlDialect = new MySqlDialect();
 
-            var paged = sqlDialect.PageQuery(sqlQuery, page: 2, resultsPerPage: 25);
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 25));
 
             Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(25, paged.Arguments[0], "The first argument should be the number of records to skip");
@@ -144,7 +144,7 @@
 
             var sqlDialect = new MySqlDialect();
 
-            var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 ORDER BY\"Name\" ASC LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
@@ -169,7 +169,7 @@
 
             var sqlDialect = new MySqlDialect();
 
-            var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 ORDER BY\"Name\" ASC LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
@@ -184,7 +184,7 @@
 
             var sqlDialect = new MySqlDialect();
 
-            var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");

@@ -47,12 +47,13 @@ namespace MicroLite.Dialect
         SqlQuery CreateQuery(StatementType statementType, Type forType, object identifier);
 
         /// <summary>
-        /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the page number and number of results per page.
+        /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the paging options.
         /// </summary>
         /// <param name="sqlQuery">The SQL query.</param>
-        /// <param name="page">The page number to get the results for.</param>
-        /// <param name="resultsPerPage">The number of results to be shown per page.</param>
-        /// <returns>A <see cref="SqlQuery"/> to return the paged results of the specified query.</returns>
-        SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage);
+        /// <param name="pagingOptions">The paging options.</param>
+        /// <returns>
+        /// A <see cref="SqlQuery" /> to return the paged results of the specified query.
+        /// </returns>
+        SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions);
     }
 }
