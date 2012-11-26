@@ -74,6 +74,28 @@ namespace MicroLite.Dialect
             }
         }
 
+        /// <summary>
+        /// Gets the SQL parameter.
+        /// </summary>
+        protected override char SqlParameter
+        {
+            get
+            {
+                return '@';
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether SQL parameters include the position (parameter number).
+        /// </summary>
+        protected override bool SqlParameterIncludesPosition
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public override SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
         {
             long skip = (page - 1) * resultsPerPage;

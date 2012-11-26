@@ -33,7 +33,7 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
 
-            Assert.AreEqual("INSERT INTO `Customers` (`Created`, `DoB`, `Name`, `StatusId`) VALUES (?, ?, ?, ?);SELECT LAST_INSERT_ID()", sqlQuery.CommandText);
+            Assert.AreEqual("INSERT INTO `Customers` (`Created`, `DoB`, `Name`, `StatusId`) VALUES (@p0, @p1, @p2, @p3);SELECT LAST_INSERT_ID()", sqlQuery.CommandText);
             Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
             Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
             Assert.AreEqual(customer.Name, sqlQuery.Arguments[2]);
@@ -49,7 +49,7 @@
 
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT CustomerId, Name, DoB, StatusId FROM Customers LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual("SELECT CustomerId, Name, DoB, StatusId FROM Customers LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
@@ -63,7 +63,7 @@
 
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT * FROM Customers LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual("SELECT * FROM Customers LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
@@ -79,7 +79,7 @@
  FROM
  ""Customers""
  WHERE
- (""StatusId"" = ? AND ""DoB"" > ?)
+ (""StatusId"" = @p0 AND ""DoB"" > @p1)
  ORDER BY
  ""Name"" ASC,
  ""DoB"" ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
@@ -88,7 +88,7 @@
 
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" WHERE (\"StatusId\" = ? AND \"DoB\" > ?) ORDER BY \"Name\" ASC, \"DoB\" ASC LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" WHERE (\"StatusId\" = @p0 AND \"DoB\" > @p1) ORDER BY \"Name\" ASC, \"DoB\" ASC LIMIT @p2,@p3", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
             Assert.AreEqual(sqlQuery.Arguments[1], paged.Arguments[1], "The second argument should be the second argument from the original query");
             Assert.AreEqual(0, paged.Arguments[2], "The third argument should be the number of records to skip");
@@ -104,7 +104,7 @@
 
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" ORDER BY \"CustomerId\" ASC LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" ORDER BY \"CustomerId\" ASC LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
@@ -118,7 +118,7 @@
 
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(0, paged.Arguments[0], "The first argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
@@ -132,7 +132,7 @@
 
             var paged = sqlDialect.PageQuery(sqlQuery, page: 2, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT @p0,@p1", paged.CommandText);
             Assert.AreEqual(25, paged.Arguments[0], "The first argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the number of records to return");
         }
@@ -140,13 +140,13 @@
         [Test]
         public void PageWithWhereAndOrderBy()
         {
-            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = ? ORDER BY\"Name\" ASC", CustomerStatus.Active);
+            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 ORDER BY\"Name\" ASC", CustomerStatus.Active);
 
             var sqlDialect = new MySqlDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = ? ORDER BY\"Name\" ASC LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 ORDER BY\"Name\" ASC LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
             Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
@@ -163,7 +163,7 @@
  FROM
  ""Customers""
  WHERE
-""StatusId"" = ?
+""StatusId"" = @p0
  ORDER BY
 ""Name"" ASC", new object[] { CustomerStatus.Active });
 
@@ -171,7 +171,7 @@
 
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = ? ORDER BY\"Name\" ASC LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 ORDER BY\"Name\" ASC LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
             Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
@@ -180,13 +180,13 @@
         [Test]
         public void PageWithWhereButNoOrderBy()
         {
-            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = ?", CustomerStatus.Active);
+            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0", CustomerStatus.Active);
 
             var sqlDialect = new MySqlDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, page: 1, resultsPerPage: 25);
 
-            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = ? LIMIT ?,?", paged.CommandText);
+            Assert.AreEqual("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 LIMIT @p1,@p2", paged.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
             Assert.AreEqual(0, paged.Arguments[1], "The second argument should be the number of records to skip");
             Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the number of records to return");
