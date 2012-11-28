@@ -100,9 +100,9 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets a value indicating whether SQL parameters include the position (parameter number).
+        /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
-        protected virtual bool SqlParameterIncludesPosition
+        protected virtual bool SupportsNamedParameters
         {
             get
             {
@@ -233,7 +233,7 @@ namespace MicroLite.Dialect
 
         protected string FormatParameter(int parameterPosition)
         {
-            if (this.SqlParameterIncludesPosition)
+            if (this.SupportsNamedParameters)
             {
                 return this.SqlParameter + ('p' + parameterPosition.ToString(CultureInfo.InvariantCulture));
             }

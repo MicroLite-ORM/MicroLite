@@ -87,9 +87,9 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets a value indicating whether SQL parameters include the position (parameter number).
+        /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
-        protected override bool SqlParameterIncludesPosition
+        protected override bool SupportsNamedParameters
         {
             get
             {
