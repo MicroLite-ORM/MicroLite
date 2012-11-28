@@ -18,6 +18,7 @@ namespace MicroLite.Dialect
     using System.Globalization;
     using System.Linq;
     using System.Text;
+    using System.Text.RegularExpressions;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -25,6 +26,11 @@ namespace MicroLite.Dialect
     /// </summary>
     internal abstract class SqlDialect : ISqlDialect
     {
+        private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex selectRegex = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex tableNameRegex = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+
         /// <summary>
         /// Gets the close quote character.
         /// </summary>
@@ -112,8 +118,8 @@ namespace MicroLite.Dialect
 
         public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
         {
-            var qualifiedTableName = SqlUtil.ReadTableName(sqlQuery.CommandText);
-            var whereValue = SqlUtil.ReadWhereClause(sqlQuery.CommandText);
+            var qualifiedTableName = this.ReadTableName(sqlQuery.CommandText);
+            var whereValue = this.ReadWhereClause(sqlQuery.CommandText);
             var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
 
             return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, sqlQuery.Arguments.ToArray());
@@ -241,6 +247,46 @@ namespace MicroLite.Dialect
             {
                 return this.SqlParameter.ToString();
             }
+        }
+
+        /// <summary>
+        /// Reads the order by clause from the specified command text excluding the ORDER BY keyword.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The columns in the order by list.</returns>
+        protected string ReadOrderBy(string commandText)
+        {
+            return orderByRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+        }
+
+        /// <summary>
+        /// Reads the select clause from the specified command text including the SELECT keyword.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The columns in the select list.</returns>
+        protected string ReadSelectList(string commandText)
+        {
+            return selectRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+        }
+
+        /// <summary>
+        /// Reads the name of the table the sql query is targeting.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The name of the table the sql query is targeting.</returns>
+        protected string ReadTableName(string commandText)
+        {
+            return tableNameRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+        }
+
+        /// <summary>
+        /// Reads the where clause from the specified command text excluding the WHERE keyword.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The where clause without the WHERE keyword.</returns>
+        protected string ReadWhereClause(string commandText)
+        {
+            return whereRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
         }
 
         protected string ResolveTableName(ObjectInfo objectInfo)

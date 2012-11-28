@@ -107,15 +107,15 @@ namespace MicroLite.Dialect
             arguments.Add(fromRowNumber);
             arguments.Add(toRowNumber);
 
-            var selectStatement = SqlUtil.ReadSelectList(sqlQuery.CommandText);
-            var qualifiedTableName = SqlUtil.ReadTableName(sqlQuery.CommandText);
+            var selectStatement = this.ReadSelectList(sqlQuery.CommandText);
+            var qualifiedTableName = this.ReadTableName(sqlQuery.CommandText);
             var position = qualifiedTableName.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1;
             var tableName = position > 0 ? qualifiedTableName.Substring(position, qualifiedTableName.Length - position) : qualifiedTableName;
 
-            var whereValue = SqlUtil.ReadWhereClause(sqlQuery.CommandText);
+            var whereValue = this.ReadWhereClause(sqlQuery.CommandText);
             var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
 
-            var orderByValue = SqlUtil.ReadOrderBy(sqlQuery.CommandText);
+            var orderByValue = this.ReadOrderBy(sqlQuery.CommandText);
             var orderByClause = "ORDER BY " + (!string.IsNullOrEmpty(orderByValue) ? orderByValue : "(SELECT NULL)");
 
             var sqlBuilder = new StringBuilder();

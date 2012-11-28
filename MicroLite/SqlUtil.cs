@@ -25,11 +25,7 @@ namespace MicroLite
     /// </summary>
     internal static class SqlUtil
     {
-        private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex selectRegex = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex tableNameRegex = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
 
         /// <summary>
         /// Combines the specified SQL queries into a single SqlQuery.
@@ -125,46 +121,6 @@ namespace MicroLite
         internal static IList<string> GetParameterNames(string commandText)
         {
             return new HashSet<string>(parameterRegex.Matches(commandText).Cast<Match>().Select(x => x.Value)).ToList();
-        }
-
-        /// <summary>
-        /// Reads the order by clause from the specified command text excluding the ORDER BY keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The columns in the order by list.</returns>
-        internal static string ReadOrderBy(string commandText)
-        {
-            return orderByRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-        }
-
-        /// <summary>
-        /// Reads the select clause from the specified command text including the SELECT keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The columns in the select list.</returns>
-        internal static string ReadSelectList(string commandText)
-        {
-            return selectRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-        }
-
-        /// <summary>
-        /// Reads the name of the table the sql query is targeting.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The name of the table the sql query is targeting.</returns>
-        internal static string ReadTableName(string commandText)
-        {
-            return tableNameRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-        }
-
-        /// <summary>
-        /// Reads the where clause from the specified command text excluding the WHERE keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The where clause without the WHERE keyword.</returns>
-        internal static string ReadWhereClause(string commandText)
-        {
-            return whereRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
         }
 
         /// <summary>
