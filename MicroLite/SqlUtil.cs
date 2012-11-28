@@ -108,7 +108,7 @@ namespace MicroLite
         /// <returns>The position of the first parameter in the command text or -1 if no parameters are found.</returns>
         internal static int GetFirstParameterPosition(string commandText)
         {
-            var firstParameterPosition = commandText.IndexOf('@', 0);
+            var firstParameterPosition = commandText.IndexOfAny(new[] { '@', ':', '?' }, 0);
 
             return firstParameterPosition;
         }

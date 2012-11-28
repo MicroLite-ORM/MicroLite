@@ -169,9 +169,17 @@
         }
 
         [Test]
-        public void GetFirstParameterPositionWithMultipleParameters()
+        public void GetFirstParameterPositionWithAtParameters()
         {
             var position = SqlUtil.GetFirstParameterPosition("SELECT * FROM TABLE WHERE Column1 = @p0 AND Column2 = @p1");
+
+            Assert.AreEqual(36, position);
+        }
+
+        [Test]
+        public void GetFirstParameterPositionWithColonParameters()
+        {
+            var position = SqlUtil.GetFirstParameterPosition("SELECT * FROM TABLE WHERE Column1 = :p0 AND Column2 = :p1");
 
             Assert.AreEqual(36, position);
         }
@@ -185,9 +193,9 @@
         }
 
         [Test]
-        public void GetFirstParameterPositionWithSingleParameter()
+        public void GetFirstParameterPositionWithQuestionMarkParameters()
         {
-            var position = SqlUtil.GetFirstParameterPosition("SELECT * FROM TABLE WHERE Column1 = @p0");
+            var position = SqlUtil.GetFirstParameterPosition("SELECT * FROM TABLE WHERE Column1 = ? AND Column2 = ?");
 
             Assert.AreEqual(36, position);
         }
