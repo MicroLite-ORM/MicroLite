@@ -49,28 +49,28 @@
         [Test]
         public void CountQueryWithWhereAndOrderBy()
         {
-            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
+            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ? ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
 
             var mockSqlDialect = new Mock<SqlDialect>();
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
 
-            Assert.AreEqual("SELECT COUNT(*) FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", countQuery.CommandText);
+            Assert.AreEqual("SELECT COUNT(*) FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ?", countQuery.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], countQuery.Arguments[0], "The first argument should be the first argument from the original query");
         }
 
         [Test]
         public void CountQueryWithWhereButNoOrderBy()
         {
-            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", CustomerStatus.Active);
+            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ?", CustomerStatus.Active);
 
             var mockSqlDialect = new Mock<SqlDialect>();
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
 
-            Assert.AreEqual("SELECT COUNT(*) FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", countQuery.CommandText);
+            Assert.AreEqual("SELECT COUNT(*) FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ?", countQuery.CommandText);
             Assert.AreEqual(sqlQuery.Arguments[0], countQuery.Arguments[0], "The first argument should be the first argument from the original query");
         }
 
