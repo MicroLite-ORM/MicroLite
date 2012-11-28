@@ -1,7 +1,6 @@
 ﻿namespace MicroLite.Tests
 {
     using System;
-    using System.Data;
     using NUnit.Framework;
 
     /// <summary>
@@ -107,65 +106,6 @@
             Assert.AreEqual(
                 "SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = ? AND \"Column2\" > ?;\r\nSELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = ? OR ? IS NULL) AND \"Column2\" < ?",
                 sqlQuery.CommandText);
-        }
-
-        [Test]
-        public void GetCommandTextForSqlText()
-        {
-            var commandText = "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value1] = @p1 AND [Table].[Value2] = @p2";
-
-            Assert.AreEqual(commandText, SqlUtil.GetCommandText(commandText));
-        }
-
-        [Test]
-        public void GetCommandTextForStoredProcedureWithoutParameters()
-        {
-            var commandText = "EXEC GetTableContents @identifier, @Cust_Name";
-
-            Assert.AreEqual("GetTableContents", SqlUtil.GetCommandText(commandText));
-        }
-
-        [Test]
-        public void GetCommandTextForStoredProcedureWithParameters()
-        {
-            var commandText = "EXEC GetTableContents";
-
-            Assert.AreEqual("GetTableContents", SqlUtil.GetCommandText(commandText));
-        }
-
-        /// <summary>
-        /// Issue #103 - SqlQuery.GetCommandText should return full command Text for batch queries
-        /// </summary>
-        [Test]
-        public void GetCommandTextReturnsFullTextIfBachedQuery()
-        {
-            var commandTextWithSelectFirst = "SELECT * FROM TABLE;EXEC sp_Proc";
-            Assert.AreEqual(commandTextWithSelectFirst, SqlUtil.GetCommandText(commandTextWithSelectFirst));
-
-            var commandTextWithExecFirst = "EXEC sp_Proc;SELECT * FROM TABLE";
-            Assert.AreEqual(commandTextWithExecFirst, SqlUtil.GetCommandText(commandTextWithExecFirst));
-        }
-
-        [Test]
-        public void GetCommandTypeForExecStatement()
-        {
-            Assert.AreEqual(CommandType.StoredProcedure, SqlUtil.GetCommandType("EXEC sp_Proc"));
-        }
-
-        [Test]
-        public void GetCommandTypeForSelectStatement()
-        {
-            Assert.AreEqual(CommandType.Text, SqlUtil.GetCommandType("SELECT *"));
-        }
-
-        /// <summary>
-        /// Issue #102 - SqlQuery.GetCommandType should return Text for batch queries
-        /// </summary>
-        [Test]
-        public void GetCommandTypeReturnsTextIfBachedQuery()
-        {
-            Assert.AreEqual(CommandType.Text, SqlUtil.GetCommandType("SELECT * FROM TABLE;EXEC sp_Proc"));
-            Assert.AreEqual(CommandType.Text, SqlUtil.GetCommandType("EXEC sp_Proc;SELECT * FROM TABLE"));
         }
 
         [Test]

@@ -14,7 +14,6 @@ namespace MicroLite
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Globalization;
     using System.Linq;
     using System.Text;
@@ -58,47 +57,6 @@ namespace MicroLite
             combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
 
             return combinedQuery;
-        }
-
-        /// <summary>
-        /// Gets the command text to be used in by the IDbCommand.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The command text to be used by the IDbCommand.</returns>
-        internal static string GetCommandText(string commandText)
-        {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(";"))
-            {
-                var firstParameterPosition = GetFirstParameterPosition(commandText);
-
-                if (firstParameterPosition > 4)
-                {
-                    return commandText.Substring(4, firstParameterPosition - 4).Trim();
-                }
-                else
-                {
-                    return commandText.Substring(4, commandText.Length - 4).Trim();
-                }
-            }
-            else
-            {
-                return commandText;
-            }
-        }
-
-        /// <summary>
-        /// Gets the type of the command.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The <see cref="CommandType"/> for the specified command text</returns>
-        internal static CommandType GetCommandType(string commandText)
-        {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(";"))
-            {
-                return CommandType.StoredProcedure;
-            }
-
-            return CommandType.Text;
         }
 
         /// <summary>

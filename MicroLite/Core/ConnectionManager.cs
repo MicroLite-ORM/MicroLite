@@ -71,9 +71,9 @@ namespace MicroLite.Core
             }
 
             var command = this.connection.CreateCommand();
-            command.CommandText = SqlUtil.GetCommandText(sqlQuery.CommandText);
+            command.CommandText = GetCommandText(sqlQuery.CommandText);
             command.CommandTimeout = sqlQuery.Timeout;
-            command.CommandType = SqlUtil.GetCommandType(sqlQuery.CommandText);
+            command.CommandType = GetCommandType(sqlQuery.CommandText);
             AddParameters(command, sqlQuery, parameterNames);
 
             if (this.currentTransaction != null)
@@ -113,6 +113,37 @@ namespace MicroLite.Core
 
                 command.Parameters.Add(parameter);
             }
+        }
+
+        private static string GetCommandText(string commandText)
+        {
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(";"))
+            {
+                var firstParameterPosition = SqlUtil.GetFirstParameterPosition(commandText);
+
+                if (firstParameterPosition > 4)
+                {
+                    return commandText.Substring(4, firstParameterPosition - 4).Trim();
+                }
+                else
+                {
+                    return commandText.Substring(4, commandText.Length - 4).Trim();
+                }
+            }
+            else
+            {
+                return commandText;
+            }
+        }
+
+        private static CommandType GetCommandType(string commandText)
+        {
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(";"))
+            {
+                return CommandType.StoredProcedure;
+            }
+
+            return CommandType.Text;
         }
     }
 }
