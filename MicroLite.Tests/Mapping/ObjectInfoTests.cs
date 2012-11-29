@@ -131,6 +131,44 @@
         }
 
         [Test]
+        public void GetIdentifierValueReturnsPropertyValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var customer = new CustomerWithIntegerIdentifier
+            {
+                Id = 122323
+            };
+
+            var identifierValue = (int)objectInfo.GetIdentifierValue(customer);
+
+            Assert.AreEqual(customer.Id, identifierValue);
+        }
+
+        [Test]
+        public void GetIdentifierValueThrowsArgumentNullExceptionForNullInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetIdentifierValue(null));
+
+            Assert.AreEqual("instance", exception.ParamName);
+        }
+
+        [Test]
+        public void GetIdentifierValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.GetIdentifierValue(new CustomerWithGuidIdentifier()));
+
+            Assert.AreEqual(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Test]
         public void GetPropertyValueForColumnReturnsIntValueIfPropertyIsEnum()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));

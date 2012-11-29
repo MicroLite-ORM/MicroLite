@@ -133,7 +133,7 @@ namespace MicroLite.Dialect
             switch (statementType)
             {
                 case StatementType.Delete:
-                    var identifierValue = objectInfo.GetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn);
+                    var identifierValue = objectInfo.GetIdentifierValue(instance);
 
                     return this.CreateQuery(StatementType.Delete, forType, identifierValue);
 
@@ -200,7 +200,7 @@ namespace MicroLite.Dialect
                         this.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
                         this.FormatParameter(updateValues.Count));
 
-                    updateValues.Add(objectInfo.GetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn));
+                    updateValues.Add(objectInfo.GetIdentifierValue(instance));
 
                     return new SqlQuery(updateSqlBuilder.ToString(), updateValues.ToArray());
 

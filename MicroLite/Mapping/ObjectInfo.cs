@@ -143,6 +143,27 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
+        /// Gets the property value for the object identifier.
+        /// </summary>
+        /// <param name="instance">The instance to retrieve the value from.</param>
+        /// <returns>The value of the identifier property.</returns>
+        public object GetIdentifierValue(object instance)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            if (instance.GetType() != this.ForType)
+            {
+                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
+                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
+            }
+
+            return this.GetPropertyValueForColumn(instance, this.TableInfo.IdentifierColumn);
+        }
+
+        /// <summary>
         /// Gets the property value for the specified column.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
