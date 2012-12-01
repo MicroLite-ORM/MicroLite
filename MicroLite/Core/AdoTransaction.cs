@@ -41,8 +41,6 @@ namespace MicroLite.Core
             this.transaction = transaction;
             this.connection = transaction.Connection;
             this.isolationLevel = transaction.IsolationLevel;
-
-            log.TryLogDebug(Messages.Transaction_Created);
         }
 
         public bool IsActive

@@ -168,8 +168,8 @@
   <data name="SessionFactory_CreatingSession" xml:space="preserve">
     <value>Creating a new session for connection [{0}]</value>
   </data>
-  <data name="Session_ClosingConnection" xml:space="preserve">
-    <value>Session closing database connection</value>
+  <data name="ConnectionManager_ClosingConnection" xml:space="preserve">
+    <value>Closing the database connection</value>
   </data>
   <data name="Session_Created" xml:space="preserve">
     <value>Session created</value>
@@ -177,8 +177,8 @@
   <data name="Session_Disposed" xml:space="preserve">
     <value>Session disposed</value>
   </data>
-  <data name="Session_OpeningConnection" xml:space="preserve">
-    <value>Session opening database connection</value>
+  <data name="ConnectionManager_OpeningConnection" xml:space="preserve">
+    <value>Opening the database connection</value>
   </data>
   <data name="AttributeMappingConvention_IgnoringProperty" xml:space="preserve">
     <value>The property [{0}].[{1}] will not be mapped by MicroLite as it has no ColumnAttribute</value>
@@ -192,8 +192,8 @@
   <data name="Transaction_Committing" xml:space="preserve">
     <value>Transaction committing changes</value>
   </data>
-  <data name="Transaction_Created" xml:space="preserve">
-    <value>Transaction created</value>
+  <data name="ConnectionManager_BeginTransaction" xml:space="preserve">
+    <value>Beginning a new transaction</value>
   </data>
   <data name="Transaction_Disposed" xml:space="preserve">
     <value>Transaction disposed</value>
@@ -272,5 +272,14 @@
   </data>
   <data name="PagingOptions_TakeMustBeZeroOrAbove" xml:space="preserve">
     <value>At least 1 result must be returned</value>
+  </data>
+  <data name="ConnectionManager_BeginTransactionWithIsolationLevel" xml:space="preserve">
+    <value>Beginning a new transaction with IsolationLevel.{0}</value>
+  </data>
+  <data name="ConnectionManager_CreatingCommand" xml:space="preserve">
+    <value>Creating a new IDbCommand for the managed connection</value>
+  </data>
+  <data name="ConnectionManager_EnlistingInTransaction" xml:space="preserve">
+    <value>Enlisting in the current transaction</value>
   </data>
 </root>

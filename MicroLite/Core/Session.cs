@@ -112,14 +112,12 @@ namespace MicroLite.Core
             {
                 try
                 {
-                    using (var command = this.ConnectionManager.BuildCommand(sqlQuery))
+                    using (var command = this.ConnectionManager.CreateCommand())
                     {
-                        this.OpenConnectionIfClosed(command);
-
                         Log.TryLogInfo(sqlQuery.CommandText);
                         var result = command.ExecuteNonQuery();
 
-                        this.CloseConnectionIfNotInTransaction(command);
+                        this.ConnectionManager.CommandCompleted(command);
 
                         return result;
                     }
@@ -145,14 +143,12 @@ namespace MicroLite.Core
             {
                 try
                 {
-                    using (var command = this.ConnectionManager.BuildCommand(sqlQuery))
+                    using (var command = this.ConnectionManager.CreateCommand())
                     {
-                        this.OpenConnectionIfClosed(command);
-
                         Log.TryLogInfo(sqlQuery.CommandText);
                         var result = (T)command.ExecuteScalar();
 
-                        this.CloseConnectionIfNotInTransaction(command);
+                        this.ConnectionManager.CommandCompleted(command);
 
                         return result;
                     }

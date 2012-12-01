@@ -108,12 +108,11 @@
             var reader = mockReader.Object;
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
             mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
@@ -186,12 +185,11 @@
             var reader = mockReader.Object;
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
             mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 mockConnectionManager.Object,
@@ -256,12 +254,12 @@
             var reader = mockReader.Object;
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
             mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.BuildCommand(It.IsAny<SqlQuery>())).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
@@ -325,12 +323,12 @@
             var reader = mockReader.Object;
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
             mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildDynamic(reader)).Returns(new ExpandoObject());
@@ -369,12 +367,12 @@
             var sqlQuery = new SqlQuery("");
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
             mockCommand.Setup(x => x.ExecuteReader()).Throws<InvalidOperationException>();
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 mockConnectionManager.Object,
@@ -416,12 +414,12 @@
             var reader = mockReader.Object;
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
             mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), identifier)).Returns(sqlQuery);
@@ -452,12 +450,12 @@
             var reader = mockReader.Object;
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
             mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
@@ -521,12 +519,12 @@
             var reader = mockReader.Object;
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
             mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             IReadOnlySession session = new ReadOnlySession(
                 mockConnectionManager.Object,
@@ -552,12 +550,12 @@
             var reader = mockReader.Object;
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+
             mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());

@@ -19,7 +19,7 @@ namespace MicroLite.Core
     using MicroLite.Logging;
 
     /// <summary>
-    /// The default implementation of <see cref="IReadOnlySession"/>.
+    /// The default implementation of <see cref="IReadOnlySession" />.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("ReadOnlySession {Id}")]
     internal class ReadOnlySession : IReadOnlySession, IIncludeSession
@@ -247,10 +247,8 @@ namespace MicroLite.Core
             {
                 try
                 {
-                    using (var command = this.ConnectionManager.BuildCommand(sqlQuery))
+                    using (var command = this.ConnectionManager.CreateCommand())
                     {
-                        this.OpenConnectionIfClosed(command);
-
                         Log.TryLogInfo(sqlQuery.CommandText);
 
                         var results = new List<dynamic>();
@@ -265,7 +263,7 @@ namespace MicroLite.Core
                             }
                         }
 
-                        this.CloseConnectionIfNotInTransaction(command);
+                        this.connectionManager.CommandCompleted(command);
 
                         return results;
                     }
@@ -300,15 +298,6 @@ namespace MicroLite.Core
             }
         }
 
-        protected void CloseConnectionIfNotInTransaction(IDbCommand command)
-        {
-            if (command.Transaction == null)
-            {
-                Log.TryLogDebug(Messages.Session_ClosingConnection);
-                command.Connection.Close();
-            }
-        }
-
         protected void Dispose(bool disposing)
         {
             if (disposing && !this.disposed)
@@ -320,15 +309,6 @@ namespace MicroLite.Core
                     Log.TryLogDebug(Messages.Session_Disposed);
                     this.disposed = true;
                 }
-            }
-        }
-
-        protected void OpenConnectionIfClosed(IDbCommand command)
-        {
-            if (command.Connection.State == ConnectionState.Closed)
-            {
-                Log.TryLogDebug(Messages.Session_OpeningConnection);
-                command.Connection.Open();
             }
         }
 
@@ -346,12 +326,10 @@ namespace MicroLite.Core
             {
                 var sqlQuery = this.queries.Count == 1 ? this.queries.Peek() : SqlUtil.Combine(this.queries);
 
-                using (var command = this.ConnectionManager.BuildCommand(sqlQuery))
+                using (var command = this.ConnectionManager.CreateCommand())
                 {
                     try
                     {
-                        this.OpenConnectionIfClosed(command);
-
                         using (var reader = command.ExecuteReader())
                         {
                             do
@@ -364,7 +342,7 @@ namespace MicroLite.Core
                     }
                     finally
                     {
-                        this.CloseConnectionIfNotInTransaction(command);
+                        this.connectionManager.CommandCompleted(command);
                     }
                 }
             }

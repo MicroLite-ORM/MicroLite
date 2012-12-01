@@ -115,6 +115,60 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Beginning a new transaction.
+        /// </summary>
+        internal static string ConnectionManager_BeginTransaction {
+            get {
+                return ResourceManager.GetString("ConnectionManager_BeginTransaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beginning a new transaction with IsolationLevel.{0}.
+        /// </summary>
+        internal static string ConnectionManager_BeginTransactionWithIsolationLevel {
+            get {
+                return ResourceManager.GetString("ConnectionManager_BeginTransactionWithIsolationLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Closing the database connection.
+        /// </summary>
+        internal static string ConnectionManager_ClosingConnection {
+            get {
+                return ResourceManager.GetString("ConnectionManager_ClosingConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating a new IDbCommand for the managed connection.
+        /// </summary>
+        internal static string ConnectionManager_CreatingCommand {
+            get {
+                return ResourceManager.GetString("ConnectionManager_CreatingCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enlisting in the current transaction.
+        /// </summary>
+        internal static string ConnectionManager_EnlistingInTransaction {
+            get {
+                return ResourceManager.GetString("ConnectionManager_EnlistingInTransaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opening the database connection.
+        /// </summary>
+        internal static string ConnectionManager_OpeningConnection {
+            get {
+                return ResourceManager.GetString("ConnectionManager_OpeningConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No connection was found in the app.config with the name [{0}].
         /// </summary>
         internal static string FluentConfiguration_ConnectionNotFound {
@@ -358,15 +412,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session closing database connection.
-        /// </summary>
-        internal static string Session_ClosingConnection {
-            get {
-                return ResourceManager.GetString("Session_ClosingConnection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Session created.
         /// </summary>
         internal static string Session_Created {
@@ -381,15 +426,6 @@ namespace MicroLite {
         internal static string Session_Disposed {
             get {
                 return ResourceManager.GetString("Session_Disposed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Session opening database connection.
-        /// </summary>
-        internal static string Session_OpeningConnection {
-            get {
-                return ResourceManager.GetString("Session_OpeningConnection", resourceCulture);
             }
         }
         
@@ -471,15 +507,6 @@ namespace MicroLite {
         internal static string Transaction_Completed {
             get {
                 return ResourceManager.GetString("Transaction_Completed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Transaction created.
-        /// </summary>
-        internal static string Transaction_Created {
-            get {
-                return ResourceManager.GetString("Transaction_Created", resourceCulture);
             }
         }
         

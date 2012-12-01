@@ -1,10 +1,7 @@
 ﻿namespace MicroLite.Tests.Core
 {
-    using System;
     using System.Data;
-    using System.Data.SqlClient;
     using MicroLite.Core;
-    using MicroLite.FrameworkExtensions;
     using Moq;
     using NUnit.Framework;
 
@@ -91,165 +88,6 @@
         }
 
         [Test]
-        public void BuildCommandEnlistsInActiveTransaction()
-        {
-            var mockCommand = new Mock<IDbCommand>();
-            mockCommand.SetupAllProperties();
-
-            var mockConnection = new Mock<IDbConnection>();
-            var mockTransaction = new Mock<IDbTransaction>();
-
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
-            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
-
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            var sqlQuery = new SqlQuery("EXEC GetTableContents");
-
-            using (var connectionManager = new ConnectionManager(mockConnection.Object))
-            {
-                connectionManager.BeginTransaction();
-
-                var command = connectionManager.BuildCommand(sqlQuery);
-
-                Assert.NotNull(command.Transaction);
-            }
-        }
-
-        [Test]
-        public void BuildCommandForSqlQueryWithSqlText()
-        {
-            var sqlQuery = new SqlQuery(
-                "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value1] = @p1 AND [Table].[Value2] = @p2",
-                new object[] { 100, "hello", null });
-
-            using (var connectionManager = new ConnectionManager(new SqlConnection()))
-            {
-                var command = connectionManager.BuildCommand(sqlQuery);
-
-                Assert.AreEqual(sqlQuery.CommandText, command.CommandText);
-                Assert.AreEqual(CommandType.Text, command.CommandType);
-                Assert.AreEqual(3, command.Parameters.Count);
-
-                var parameter1 = (IDataParameter)command.Parameters[0];
-                Assert.AreEqual(ParameterDirection.Input, parameter1.Direction);
-                Assert.AreEqual("@p0", parameter1.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
-
-                var parameter2 = (IDataParameter)command.Parameters[1];
-                Assert.AreEqual(ParameterDirection.Input, parameter2.Direction);
-                Assert.AreEqual("@p1", parameter2.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
-
-                var parameter3 = (IDataParameter)command.Parameters[2];
-                Assert.AreEqual(ParameterDirection.Input, parameter3.Direction);
-                Assert.AreEqual("@p2", parameter3.ParameterName);
-                Assert.AreEqual(DBNull.Value, parameter3.Value);
-            }
-        }
-
-        /// <summary>
-        /// Issue #6 - The argument count check needs to cater for the same argument being used twice.
-        /// </summary>
-        [Test]
-        public void BuildCommandForSqlQueryWithSqlTextWhichUsesSameParameterTwice()
-        {
-            var sqlQuery = new SqlQuery(
-                "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value1] = @p1 OR @p1 IS NULL",
-                new object[] { 100, "hello" });
-
-            using (var connectionManager = new ConnectionManager(new SqlConnection()))
-            {
-                var command = connectionManager.BuildCommand(sqlQuery);
-
-                Assert.AreEqual(sqlQuery.CommandText, command.CommandText);
-                Assert.AreEqual(CommandType.Text, command.CommandType);
-                Assert.AreEqual(2, command.Parameters.Count);
-
-                var parameter1 = (IDataParameter)command.Parameters[0];
-                Assert.AreEqual(ParameterDirection.Input, parameter1.Direction);
-                Assert.AreEqual("@p0", parameter1.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
-
-                var parameter2 = (IDataParameter)command.Parameters[1];
-                Assert.AreEqual(ParameterDirection.Input, parameter2.Direction);
-                Assert.AreEqual("@p1", parameter2.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
-            }
-        }
-
-        [Test]
-        public void BuildCommandForSqlQueryWithStoredProcedureWithoutParameters()
-        {
-            var sqlQuery = new SqlQuery("EXEC GetTableContents");
-
-            using (var connectionManager = new ConnectionManager(new SqlConnection()))
-            {
-                var command = connectionManager.BuildCommand(sqlQuery);
-
-                // The command text should only contain the stored procedure name.
-                Assert.AreEqual("GetTableContents", command.CommandText);
-                Assert.AreEqual(CommandType.StoredProcedure, command.CommandType);
-                Assert.AreEqual(0, command.Parameters.Count);
-            }
-        }
-
-        [Test]
-        public void BuildCommandForSqlQueryWithStoredProcedureWithParameters()
-        {
-            var sqlQuery = new SqlQuery(
-                "EXEC GetTableContents @identifier, @Cust_Name",
-                new object[] { 100, "hello" });
-
-            using (var connectionManager = new ConnectionManager(new SqlConnection()))
-            {
-                var command = connectionManager.BuildCommand(sqlQuery);
-
-                // The command text should only contain the stored procedure name.
-                Assert.AreEqual("GetTableContents", command.CommandText);
-                Assert.AreEqual(CommandType.StoredProcedure, command.CommandType);
-                Assert.AreEqual(2, command.Parameters.Count);
-
-                var parameter1 = (IDataParameter)command.Parameters[0];
-                Assert.AreEqual("@identifier", parameter1.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
-
-                var parameter2 = (IDataParameter)command.Parameters[1];
-                Assert.AreEqual("@Cust_Name", parameter2.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
-            }
-        }
-
-        [Test]
-        public void BuildCommandSetsDbCommandTimeoutToSqlQueryTime()
-        {
-            var sqlQuery = new SqlQuery("SELECT * FROM [Table]");
-            sqlQuery.Timeout = 42; // Use an oddball time which shouldn't be a default anywhere.
-
-            using (var connectionManager = new ConnectionManager(new SqlConnection()))
-            {
-                var command = connectionManager.BuildCommand(sqlQuery);
-
-                Assert.AreEqual(sqlQuery.Timeout, command.CommandTimeout);
-            }
-        }
-
-        [Test]
-        public void BuildCommandThrowsMicroLiteExceptionForParameterCountMismatch()
-        {
-            var sqlQuery = new SqlQuery(
-                "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value] = @p1",
-                new object[] { 100 });
-
-            var connectionManager = new ConnectionManager(new Mock<IDbConnection>().Object);
-
-            var exception = Assert.Throws<MicroLiteException>(
-                () => connectionManager.BuildCommand(sqlQuery));
-
-            Assert.AreEqual(Messages.ConnectionManager_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
-        }
-
-        [Test]
         public void CurrentTransactionReturnsCurrentTransactionIfActive()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -299,6 +137,82 @@
             }
 
             mockTransaction.VerifyAll();
+        }
+
+        [TestFixture]
+        public class WhenCallingCreateCommandAndATransactionIsActive
+        {
+            private readonly IDbCommand command;
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
+            private readonly IDbTransaction transaction = new Mock<IDbTransaction>().Object;
+
+            public WhenCallingCreateCommandAndATransactionIsActive()
+            {
+                this.mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
+                this.mockConnection.Setup(x => x.BeginTransaction()).Returns(this.transaction);
+
+                var mockTransaction = new Mock<IDbCommand>();
+                mockTransaction.SetupProperty(x => x.Transaction);
+                this.mockConnection.Setup(x => x.CreateCommand()).Returns(mockTransaction.Object);
+
+                var connectionManager = new ConnectionManager(this.mockConnection.Object);
+                connectionManager.BeginTransaction();
+
+                this.command = connectionManager.CreateCommand();
+            }
+
+            [Test]
+            public void TheCommandShouldBeCreated()
+            {
+                this.mockConnection.Verify(x => x.CreateCommand());
+            }
+
+            [Test]
+            public void TheCommandShouldBeReturned()
+            {
+                Assert.NotNull(this.command);
+            }
+
+            [Test]
+            public void TheTransactionShouldBeSetOnTheCommand()
+            {
+                Assert.AreEqual(this.transaction, this.command.Transaction);
+            }
+        }
+
+        [TestFixture]
+        public class WhenCallingCreateCommandAndTheConnectionIsClosed
+        {
+            private readonly IDbCommand command;
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
+
+            public WhenCallingCreateCommandAndTheConnectionIsClosed()
+            {
+                this.mockConnection.Setup(x => x.State).Returns(ConnectionState.Closed);
+                this.mockConnection.Setup(x => x.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
+
+                var connectionManager = new ConnectionManager(this.mockConnection.Object);
+
+                this.command = connectionManager.CreateCommand();
+            }
+
+            [Test]
+            public void TheCommandShouldBeCreated()
+            {
+                this.mockConnection.Verify(x => x.CreateCommand());
+            }
+
+            [Test]
+            public void TheCommandShouldBeReturned()
+            {
+                Assert.NotNull(this.command);
+            }
+
+            [Test]
+            public void TheConnectionShouldBeOpened()
+            {
+                this.mockConnection.Verify(x => x.Open());
+            }
         }
     }
 }
