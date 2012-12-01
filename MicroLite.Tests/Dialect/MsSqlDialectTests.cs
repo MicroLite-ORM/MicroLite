@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using MicroLite.Dialect;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using NUnit.Framework;
 
@@ -16,6 +17,99 @@
         {
             Inactive = 0,
             Active = 1
+        }
+
+        /// <summary>
+        /// Issue #6 - The argument count check needs to cater for the same argument being used twice.
+        /// </summary>
+        [Test]
+        public void BuildCommandForSqlQueryWithSqlTextWhichUsesSameParameterTwice()
+        {
+            var sqlQuery = new SqlQuery(
+                "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value1] = @p1 OR @p1 IS NULL",
+                new object[] { 100, "hello" });
+
+            using (var command = new System.Data.SqlClient.SqlCommand())
+            {
+                var sqlDialect = new MsSqlDialect();
+                sqlDialect.BuildCommand(command, sqlQuery);
+
+                Assert.AreEqual(sqlQuery.CommandText, command.CommandText);
+                Assert.AreEqual(CommandType.Text, command.CommandType);
+                Assert.AreEqual(2, command.Parameters.Count);
+
+                var parameter1 = (IDataParameter)command.Parameters[0];
+                Assert.AreEqual(ParameterDirection.Input, parameter1.Direction);
+                Assert.AreEqual("@p0", parameter1.ParameterName);
+                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
+
+                var parameter2 = (IDataParameter)command.Parameters[1];
+                Assert.AreEqual(ParameterDirection.Input, parameter2.Direction);
+                Assert.AreEqual("@p1", parameter2.ParameterName);
+                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
+            }
+        }
+
+        [Test]
+        public void BuildCommandForSqlQueryWithStoredProcedureWithoutParameters()
+        {
+            var sqlQuery = new SqlQuery("EXEC GetTableContents");
+
+            using (var command = new System.Data.SqlClient.SqlCommand())
+            {
+                var sqlDialect = new MsSqlDialect();
+                sqlDialect.BuildCommand(command, sqlQuery);
+
+                // The command text should only contain the stored procedure name.
+                Assert.AreEqual("GetTableContents", command.CommandText);
+                Assert.AreEqual(CommandType.StoredProcedure, command.CommandType);
+                Assert.AreEqual(0, command.Parameters.Count);
+            }
+        }
+
+        [Test]
+        public void BuildCommandForSqlQueryWithStoredProcedureWithParameters()
+        {
+            var sqlQuery = new SqlQuery(
+                "EXEC GetTableContents @identifier, @Cust_Name",
+                new object[] { 100, "hello" });
+
+            using (var command = new System.Data.SqlClient.SqlCommand())
+            {
+                var sqlDialect = new MsSqlDialect();
+                sqlDialect.BuildCommand(command, sqlQuery);
+
+                // The command text should only contain the stored procedure name.
+                Assert.AreEqual("GetTableContents", command.CommandText);
+                Assert.AreEqual(CommandType.StoredProcedure, command.CommandType);
+                Assert.AreEqual(2, command.Parameters.Count);
+
+                var parameter1 = (IDataParameter)command.Parameters[0];
+                Assert.AreEqual("@identifier", parameter1.ParameterName);
+                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
+
+                var parameter2 = (IDataParameter)command.Parameters[1];
+                Assert.AreEqual("@Cust_Name", parameter2.ParameterName);
+                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
+            }
+        }
+
+        [Test]
+        public void BuildCommandThrowsMicroLiteExceptionForParameterCountMismatch()
+        {
+            var sqlQuery = new SqlQuery(
+                "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value] = @p1",
+                new object[] { 100 });
+
+            using (var command = new System.Data.SqlClient.SqlCommand())
+            {
+                var sqlDialect = new MsSqlDialect();
+
+                var exception = Assert.Throws<MicroLiteException>(
+                    () => sqlDialect.BuildCommand(command, sqlQuery));
+
+                Assert.AreEqual(Messages.ConnectionManager_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
+            }
         }
 
         [Test]

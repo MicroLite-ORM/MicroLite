@@ -21,6 +21,13 @@ namespace MicroLite.Dialect
     internal interface ISqlDialect
     {
         /// <summary>
+        /// Builds the command using the values in the specified SqlQuery.
+        /// </summary>
+        /// <param name="command">The command to build.</param>
+        /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
+        void BuildCommand(IDbCommand command, SqlQuery sqlQuery);
+
+        /// <summary>
         /// Creates an SqlQuery to count the number of records which would be returned by the specified SqlQuery.
         /// </summary>
         /// <param name="sqlQuery">The SQL query.</param>

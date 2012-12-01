@@ -342,10 +342,13 @@
             var mockConnectionManager = new Mock<IConnectionManager>();
             mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
+
             var session = new Session(
                 mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
-                new Mock<ISqlDialect>().Object,
+                mockSqlDialect.Object,
                 new IListener[0]);
 
             Assert.AreEqual(result, session.Execute(sqlQuery));
@@ -367,10 +370,13 @@
             var mockConnectionManager = new Mock<IConnectionManager>();
             mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
+
             var session = new Session(
                 mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
-                new Mock<ISqlDialect>().Object,
+                mockSqlDialect.Object,
                 new IListener[0]);
 
             Assert.AreEqual(result, session.Execute(sqlQuery));
@@ -392,10 +398,13 @@
             var mockConnectionManager = new Mock<IConnectionManager>();
             mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
+
             var session = new Session(
                 mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
-                new Mock<ISqlDialect>().Object,
+                mockSqlDialect.Object,
                 new IListener[0]);
 
             Assert.AreEqual(result, session.ExecuteScalar<object>(sqlQuery));
@@ -422,10 +431,13 @@
             var mockConnectionManager = new Mock<IConnectionManager>();
             mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
+
             var session = new Session(
                 mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
-                new Mock<ISqlDialect>().Object,
+                mockSqlDialect.Object,
                 new IListener[0]);
 
             Assert.AreEqual(result, session.ExecuteScalar<object>(sqlQuery));

@@ -19,6 +19,56 @@
         }
 
         [Test]
+        public void BuildCommandForSqlQueryWithSqlText()
+        {
+            var sqlQuery = new SqlQuery(
+                "SELECT * FROM [Table] WHERE [Table].[Id] = ? AND [Table].[Value1] = ? AND [Table].[Value2] = ?",
+                new object[] { 100, "hello", null });
+
+            using (var command = new System.Data.OleDb.OleDbCommand())
+            {
+                var mockSqlDialect = new Mock<SqlDialect>();
+                mockSqlDialect.CallBase = true;
+                mockSqlDialect.Object.BuildCommand(command, sqlQuery);
+
+                Assert.AreEqual(sqlQuery.CommandText, command.CommandText);
+                Assert.AreEqual(CommandType.Text, command.CommandType);
+                Assert.AreEqual(3, command.Parameters.Count);
+
+                var parameter1 = (IDataParameter)command.Parameters[0];
+                Assert.AreEqual(ParameterDirection.Input, parameter1.Direction);
+                Assert.AreEqual("Parameter0", parameter1.ParameterName);
+                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
+
+                var parameter2 = (IDataParameter)command.Parameters[1];
+                Assert.AreEqual(ParameterDirection.Input, parameter2.Direction);
+                Assert.AreEqual("Parameter1", parameter2.ParameterName);
+                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
+
+                var parameter3 = (IDataParameter)command.Parameters[2];
+                Assert.AreEqual(ParameterDirection.Input, parameter3.Direction);
+                Assert.AreEqual("Parameter2", parameter3.ParameterName);
+                Assert.AreEqual(DBNull.Value, parameter3.Value);
+            }
+        }
+
+        [Test]
+        public void BuildCommandSetsDbCommandTimeoutToSqlQueryTime()
+        {
+            var sqlQuery = new SqlQuery("SELECT * FROM [Table]");
+            sqlQuery.Timeout = 42; // Use an oddball time which shouldn't be a default anywhere.
+
+            using (var command = new System.Data.OleDb.OleDbCommand())
+            {
+                var mockSqlDialect = new Mock<SqlDialect>();
+                mockSqlDialect.CallBase = true;
+                mockSqlDialect.Object.BuildCommand(command, sqlQuery);
+
+                Assert.AreEqual(sqlQuery.Timeout, command.CommandTimeout);
+            }
+        }
+
+        [Test]
         public void CountQueryNoWhereOrOrderBy()
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");

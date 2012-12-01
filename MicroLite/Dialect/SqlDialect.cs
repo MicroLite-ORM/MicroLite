@@ -19,6 +19,7 @@ namespace MicroLite.Dialect
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -114,6 +115,24 @@ namespace MicroLite.Dialect
             {
                 return false;
             }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
+        public virtual void BuildCommand(IDbCommand command, SqlQuery sqlQuery)
+        {
+            var parameterNames = this.SupportsNamedParameters
+                ? SqlUtil.GetParameterNames(sqlQuery.CommandText)
+                : Enumerable.Range(0, sqlQuery.Arguments.Count).Select(c => "Parameter" + c.ToString(CultureInfo.InvariantCulture)).ToArray();
+
+            if (parameterNames.Count != sqlQuery.Arguments.Count)
+            {
+                throw new MicroLiteException(Messages.ConnectionManager_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
+            command.CommandTimeout = sqlQuery.Timeout;
+            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
+            this.AddParameters(command, sqlQuery, parameterNames);
         }
 
         public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
@@ -232,6 +251,21 @@ namespace MicroLite.Dialect
 
         public abstract SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions);
 
+        protected virtual void AddParameters(IDbCommand command, SqlQuery sqlQuery, IList<string> parameterNames)
+        {
+            for (int i = 0; i < parameterNames.Count; i++)
+            {
+                var parameterName = parameterNames[i];
+
+                var parameter = command.CreateParameter();
+                parameter.Direction = ParameterDirection.Input;
+                parameter.ParameterName = parameterName;
+                parameter.Value = sqlQuery.Arguments[i] ?? DBNull.Value;
+
+                command.Parameters.Add(parameter);
+            }
+        }
+
         protected string EscapeSql(string sql)
         {
             return this.OpenQuote + sql + this.CloseQuote;
@@ -247,6 +281,16 @@ namespace MicroLite.Dialect
             {
                 return this.SqlParameter.ToString();
             }
+        }
+
+        protected virtual string GetCommandText(string commandText)
+        {
+            return commandText;
+        }
+
+        protected virtual CommandType GetCommandType(string commandText)
+        {
+            return CommandType.Text;
         }
 
         /// <summary>

@@ -249,6 +249,7 @@ namespace MicroLite.Core
                 {
                     using (var command = this.ConnectionManager.CreateCommand())
                     {
+                        this.SqlDialect.BuildCommand(command, sqlQuery);
                         Log.TryLogInfo(sqlQuery.CommandText);
 
                         var results = new List<dynamic>();
@@ -330,6 +331,8 @@ namespace MicroLite.Core
                 {
                     try
                     {
+                        this.SqlDialect.BuildCommand(command, sqlQuery);
+
                         using (var reader = command.ExecuteReader())
                         {
                             do

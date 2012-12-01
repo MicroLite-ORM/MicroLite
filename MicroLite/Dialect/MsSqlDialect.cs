@@ -14,6 +14,7 @@ namespace MicroLite.Dialect
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Globalization;
     using System.Text;
     using MicroLite.Mapping;
@@ -125,6 +126,35 @@ namespace MicroLite.Dialect
             sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.FormatParameter(arguments.Count - 2), this.FormatParameter(arguments.Count - 1));
 
             return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
+        }
+
+        protected override string GetCommandText(string commandText)
+        {
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SelectSeparator.ToString()))
+            {
+                var firstParameterPosition = SqlUtil.GetFirstParameterPosition(commandText);
+
+                if (firstParameterPosition > 4)
+                {
+                    return commandText.Substring(4, firstParameterPosition - 4).Trim();
+                }
+                else
+                {
+                    return commandText.Substring(4, commandText.Length - 4).Trim();
+                }
+            }
+
+            return base.GetCommandText(commandText);
+        }
+
+        protected override CommandType GetCommandType(string commandText)
+        {
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SelectSeparator.ToString()))
+            {
+                return CommandType.StoredProcedure;
+            }
+
+            return base.GetCommandType(commandText);
         }
     }
 }
