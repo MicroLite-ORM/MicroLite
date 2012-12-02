@@ -29,24 +29,18 @@
             }
 
             [Fact]
-            public void TheConnectionNameShouldBeSetOnTheReturnedSessionFactory()
-            {
-                Assert.Equal("SqlConnection", this.sessionFactory.ConnectionName);
-            }
-
-            [Fact]
             public void TheSessionFactoryShouldBeAddedToTheSessionFactoriesProperty()
             {
                 Assert.Contains(this.sessionFactory, Configure.SessionFactories);
             }
         }
 
-        public class WhenCallingCreateSessionFactoryMultipleTimes : IDisposable
+        public class WhenCallingCreateSessionFactoryMultipleTimesForTheSameConnection : IDisposable
         {
             private readonly ISessionFactory sessionFactory1;
             private readonly ISessionFactory sessionFactory2;
 
-            public WhenCallingCreateSessionFactoryMultipleTimes()
+            public WhenCallingCreateSessionFactoryMultipleTimesForTheSameConnection()
             {
                 Configure.SessionFactories.Clear();
 
