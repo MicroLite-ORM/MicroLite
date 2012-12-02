@@ -39,13 +39,7 @@ namespace MicroLite.Core
 
         public ITransaction BeginTransaction()
         {
-            if (this.currentTransaction == null || !this.currentTransaction.IsActive)
-            {
-                log.TryLogDebug(Messages.ConnectionManager_BeginTransaction);
-                this.currentTransaction = Transaction.Begin(this.connection);
-            }
-
-            return this.currentTransaction;
+            return this.BeginTransaction(IsolationLevel.ReadCommitted);
         }
 
         public ITransaction BeginTransaction(IsolationLevel isolationLevel)

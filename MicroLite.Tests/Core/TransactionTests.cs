@@ -8,39 +8,44 @@
     /// <summary>
     /// Unit Tests for the <see cref="Transaction"/> class.
     /// </summary>
-
     public class TransactionTests
     {
-        [Fact]
-        public void BeginOpensConnectionAndBeginsTransaction()
+        public class WhenCallingBegin
         {
-            var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(new Mock<IDbTransaction>().Object);
-            mockConnection.Setup(x => x.Open());
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
 
-            var transaction = Transaction.Begin(mockConnection.Object);
+            private readonly ITransaction transaction;
 
-            Assert.True(transaction.IsActive);
-            Assert.False(transaction.WasCommitted);
-            Assert.False(transaction.WasRolledBack);
+            public WhenCallingBegin()
+            {
+                this.mockConnection.Setup(x => x.BeginTransaction(IsolationLevel.Chaos)).Returns(new Mock<IDbTransaction>().Object);
 
-            mockConnection.VerifyAll();
-        }
+                this.transaction = Transaction.Begin(mockConnection.Object, IsolationLevel.Chaos);
+            }
 
-        [Fact]
-        public void BeginWithIsolationLevelOpensConnectionAndBeginsTransaction()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.BeginTransaction(IsolationLevel.Chaos)).Returns(new Mock<IDbTransaction>().Object);
-            mockConnection.Setup(x => x.Open());
+            [Fact]
+            public void TheConnectionShouldBeOpened()
+            {
+                this.mockConnection.Verify(x => x.Open(), Times.Once());
+            }
 
-            var transaction = Transaction.Begin(mockConnection.Object, IsolationLevel.Chaos);
+            [Fact]
+            public void TheTransactionShouldBeActive()
+            {
+                Assert.True(transaction.IsActive);
+            }
 
-            Assert.True(transaction.IsActive);
-            Assert.False(transaction.WasCommitted);
-            Assert.False(transaction.WasRolledBack);
+            [Fact]
+            public void TheTransactionShouldNotBeCommitted()
+            {
+                Assert.False(transaction.WasCommitted);
+            }
 
-            mockConnection.VerifyAll();
+            [Fact]
+            public void TheTransactionShouldNotBeRolledBack()
+            {
+                Assert.False(transaction.WasRolledBack);
+            }
         }
     }
 }

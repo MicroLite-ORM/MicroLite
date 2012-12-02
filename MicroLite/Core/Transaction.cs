@@ -19,15 +19,6 @@ namespace MicroLite.Core
     /// </summary>
     internal static class Transaction
     {
-        internal static ITransaction Begin(IDbConnection connection)
-        {
-            connection.Open();
-
-            var dbTransaction = connection.BeginTransaction();
-
-            return new AdoTransaction(dbTransaction);
-        }
-
         internal static ITransaction Begin(IDbConnection connection, IsolationLevel isolationLevel)
         {
             connection.Open();

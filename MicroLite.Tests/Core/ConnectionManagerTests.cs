@@ -8,174 +8,112 @@
     /// <summary>
     /// Unit Tests for the <see cref="ConnectionManager"/> class.
     /// </summary>
-
     public class ConnectionManagerTests
     {
-        [Fact]
-        public void BeginTransactionShouldReturnANewTransactionIfTheCurrentTransactionIsNotActive()
+        public class WhenCallingBeginTransaction
         {
-            var mockConnection = new Mock<IDbConnection>();
-            var mockTransaction = new Mock<IDbTransaction>();
-
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
-
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            var connectionManager = new ConnectionManager(mockConnection.Object);
-
-            var transaction1 = connectionManager.BeginTransaction();
-            transaction1.Commit();
-
-            var transaction2 = connectionManager.BeginTransaction();
-
-            Assert.NotSame(transaction1, transaction2);
-        }
-
-        [Fact]
-        public void BeginTransactionShouldReturnTheSameTransactionEachTimeItIsCalledWhileTheCurrentTransactionIsActive()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            var mockTransaction = new Mock<IDbTransaction>();
-
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
-
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            var connectionManager = new ConnectionManager(mockConnection.Object);
-
-            var transaction1 = connectionManager.BeginTransaction();
-            var transaction2 = connectionManager.BeginTransaction();
-
-            Assert.Same(transaction1, transaction2);
-        }
-
-        [Fact]
-        public void BeginTransactionWithIsolationLevelReturnsNewTransactionIfActive()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            var mockTransaction = new Mock<IDbTransaction>();
-
-            mockConnection.Setup(x => x.BeginTransaction(IsolationLevel.Chaos)).Returns(mockTransaction.Object);
-
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            var connectionManager = new ConnectionManager(mockConnection.Object);
-
-            var transaction1 = connectionManager.BeginTransaction(IsolationLevel.Chaos);
-            transaction1.Commit();
-
-            var transaction2 = connectionManager.BeginTransaction(IsolationLevel.Chaos);
-
-            Assert.NotSame(transaction1, transaction2);
-        }
-
-        [Fact]
-        public void BeginTransactionWithIsolationLevelReturnsSameTransactionIfActive()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            var mockTransaction = new Mock<IDbTransaction>();
-
-            mockConnection.Setup(x => x.BeginTransaction(IsolationLevel.Chaos)).Returns(mockTransaction.Object);
-
-            mockTransaction.Setup(x => x.Connection).Returns(mockConnection.Object);
-
-            var connectionManager = new ConnectionManager(mockConnection.Object);
-
-            var transaction1 = connectionManager.BeginTransaction(IsolationLevel.Chaos);
-            var transaction2 = connectionManager.BeginTransaction(IsolationLevel.Chaos);
-
-            Assert.Same(transaction1, transaction2);
-        }
-
-        [Fact]
-        public void CurrentTransactionReturnsCurrentTransactionIfActive()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(new Mock<IDbTransaction>().Object);
-
-            var connectionManager = new ConnectionManager(mockConnection.Object);
-            var transaction = connectionManager.BeginTransaction();
-
-            Assert.Same(transaction, connectionManager.CurrentTransaction);
-        }
-
-        [Fact]
-        public void CurrentTransactionReturnsNullIfNoTransactionStarted()
-        {
-            var connectionManager = new ConnectionManager(new Mock<IDbConnection>().Object);
-
-            Assert.Null(connectionManager.CurrentTransaction);
-        }
-
-        [Fact]
-        public void DisposeClosesAndDisposesConnection()
-        {
-            var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.Close());
-            mockConnection.Setup(x => x.Dispose());
-
-            using (new ConnectionManager(mockConnection.Object))
-            {
-            }
-
-            mockConnection.VerifyAll();
-        }
-
-        [Fact]
-        public void DisposeDisposesCurrentTransaction()
-        {
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-            mockTransaction.Setup(x => x.Dispose());
-
-            var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.BeginTransaction()).Returns(mockTransaction.Object);
-
-            using (var connectionManager = new ConnectionManager(mockConnection.Object))
-            {
-                connectionManager.BeginTransaction();
-            }
-
-            mockTransaction.VerifyAll();
-        }
-
-        public class WhenCallingCreateCommandAndATransactionIsActive
-        {
-            private readonly IDbCommand command;
             private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
-            private readonly IDbTransaction transaction = new Mock<IDbTransaction>().Object;
+            private readonly ITransaction transaction;
 
-            public WhenCallingCreateCommandAndATransactionIsActive()
+            public WhenCallingBeginTransaction()
             {
-                this.mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
-                this.mockConnection.Setup(x => x.BeginTransaction()).Returns(this.transaction);
-
-                var mockTransaction = new Mock<IDbCommand>();
-                mockTransaction.SetupProperty(x => x.Transaction);
-                this.mockConnection.Setup(x => x.CreateCommand()).Returns(mockTransaction.Object);
+                this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(new Mock<IDbTransaction>().Object);
 
                 var connectionManager = new ConnectionManager(this.mockConnection.Object);
-                connectionManager.BeginTransaction();
-
-                this.command = connectionManager.CreateCommand();
+                this.transaction = connectionManager.BeginTransaction();
             }
 
             [Fact]
-            public void TheCommandShouldBeCreated()
+            public void IsolationLevelReadCommittedIsUsedByDefault()
             {
-                this.mockConnection.Verify(x => x.CreateCommand());
+                this.mockConnection.Verify(x => x.BeginTransaction(IsolationLevel.ReadCommitted), Times.Once());
+            }
+        }
+
+        public class WhenCallingBeginTransactionAndThereIsAnActiveTransaction
+        {
+            private readonly ITransaction transaction1;
+            private readonly ITransaction transaction2;
+
+            public WhenCallingBeginTransactionAndThereIsAnActiveTransaction()
+            {
+                var mockConnection = new Mock<IDbConnection>();
+                mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(new Mock<IDbTransaction>().Object);
+
+                var connectionManager = new ConnectionManager(mockConnection.Object);
+                this.transaction1 = connectionManager.BeginTransaction();
+                this.transaction2 = connectionManager.BeginTransaction();
             }
 
             [Fact]
-            public void TheCommandShouldBeReturned()
+            public void TheActiveTransactionIsReturnedEachTime()
             {
-                Assert.NotNull(this.command);
+                Assert.Same(transaction1, transaction2);
+            }
+        }
+
+        public class WhenCallingBeginTransactionWithAnIsolationLevel
+        {
+            private readonly IsolationLevel isolationLevel = IsolationLevel.Chaos;
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
+            private readonly ITransaction transaction;
+
+            public WhenCallingBeginTransactionWithAnIsolationLevel()
+            {
+                var mockTransaction = new Mock<IDbTransaction>();
+                mockTransaction.Setup(x => x.IsolationLevel).Returns(this.isolationLevel);
+
+                this.mockConnection.Setup(x => x.BeginTransaction(this.isolationLevel)).Returns(mockTransaction.Object);
+
+                var connectionManager = new ConnectionManager(this.mockConnection.Object);
+                this.transaction = connectionManager.BeginTransaction(this.isolationLevel);
             }
 
             [Fact]
-            public void TheTransactionShouldBeSetOnTheCommand()
+            public void TheSpecifiedIsolationLevelIsUsed()
             {
-                Assert.Equal(this.transaction, this.command.Transaction);
+                Assert.Equal(this.isolationLevel, this.transaction.IsolationLevel);
+            }
+        }
+
+        public class WhenCallingCommandCompletedAndThereIsATransaction
+        {
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
+
+            public WhenCallingCommandCompletedAndThereIsATransaction()
+            {
+                var mockCommand = new Mock<IDbCommand>();
+                mockCommand.Setup(x => x.Connection).Returns(mockConnection.Object);
+                mockCommand.Setup(x => x.Transaction).Returns(new Mock<IDbTransaction>().Object);
+
+                var connectionManager = new ConnectionManager(this.mockConnection.Object);
+                connectionManager.CommandCompleted(mockCommand.Object);
+            }
+
+            [Fact]
+            public void TheConnectionShouldNotBeClosed()
+            {
+                this.mockConnection.Verify(x => x.Close(), Times.Never());
+            }
+        }
+
+        public class WhenCallingCommandCompletedAndThereIsNoTransaction
+        {
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
+
+            public WhenCallingCommandCompletedAndThereIsNoTransaction()
+            {
+                var mockCommand = new Mock<IDbCommand>();
+                mockCommand.Setup(x => x.Connection).Returns(mockConnection.Object);
+
+                var connectionManager = new ConnectionManager(this.mockConnection.Object);
+                connectionManager.CommandCompleted(mockCommand.Object);
+            }
+
+            [Fact]
+            public void TheConnectionShouldBeClosed()
+            {
+                this.mockConnection.Verify(x => x.Close(), Times.Once());
             }
         }
 
@@ -197,7 +135,7 @@
             [Fact]
             public void TheCommandShouldBeCreated()
             {
-                this.mockConnection.Verify(x => x.CreateCommand());
+                this.mockConnection.Verify(x => x.CreateCommand(), Times.Once());
             }
 
             [Fact]
@@ -209,7 +147,128 @@
             [Fact]
             public void TheConnectionShouldBeOpened()
             {
-                this.mockConnection.Verify(x => x.Open());
+                this.mockConnection.Verify(x => x.Open(), Times.Once());
+            }
+        }
+
+        public class WhenCallingCreateCommandAndThereIsACurrentTransaction
+        {
+            private readonly IDbCommand command;
+            private readonly Mock<IDbCommand> mockCommand = new Mock<IDbCommand>();
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
+            private readonly IDbTransaction transaction = new Mock<IDbTransaction>().Object;
+
+            public WhenCallingCreateCommandAndThereIsACurrentTransaction()
+            {
+                this.mockCommand.SetupProperty(x => x.Transaction);
+
+                this.mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
+                this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(this.transaction);
+                this.mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+                var connectionManager = new ConnectionManager(this.mockConnection.Object);
+                connectionManager.BeginTransaction();
+
+                this.command = connectionManager.CreateCommand();
+            }
+
+            [Fact]
+            public void TheCommandShouldBeCreated()
+            {
+                this.mockConnection.Verify(x => x.CreateCommand(), Times.Once());
+            }
+
+            [Fact]
+            public void TheCommandShouldBeReturned()
+            {
+                Assert.NotNull(this.command);
+            }
+
+            [Fact]
+            public void TheTransactionShouldBeSetOnTheCommand()
+            {
+                Assert.Equal(this.transaction, this.command.Transaction);
+            }
+        }
+
+        public class WhenCallingCreateCommandAndThereIsNoCurrentTransaction
+        {
+            private readonly IDbCommand command;
+            private readonly Mock<IDbCommand> mockCommand = new Mock<IDbCommand>();
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
+
+            public WhenCallingCreateCommandAndThereIsNoCurrentTransaction()
+            {
+                this.mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
+                this.mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+                var connectionManager = new ConnectionManager(this.mockConnection.Object);
+
+                this.command = connectionManager.CreateCommand();
+            }
+
+            [Fact]
+            public void TheCommandShouldBeCreated()
+            {
+                this.mockConnection.Verify(x => x.CreateCommand(), Times.Once());
+            }
+
+            [Fact]
+            public void TheCommandShouldBeReturned()
+            {
+                Assert.NotNull(this.command);
+            }
+
+            [Fact]
+            public void TheTransactionShouldNotBeSetOnTheCommand()
+            {
+                this.mockCommand.VerifySet(x => x.Transaction = It.IsAny<IDbTransaction>(), Times.Never());
+            }
+        }
+
+        public class WhenConstructed
+        {
+            private readonly ConnectionManager connectionManager = new ConnectionManager(new Mock<IDbConnection>().Object);
+
+            [Fact]
+            public void TheCurrentTransactionShouldBeNull()
+            {
+                Assert.Null(this.connectionManager.CurrentTransaction);
+            }
+        }
+
+        public class WhenDisposed
+        {
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
+            private readonly Mock<IDbTransaction> mockTransaction = new Mock<IDbTransaction>();
+
+            public WhenDisposed()
+            {
+                this.mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+                this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(this.mockTransaction.Object);
+
+                using (var connectionManager = new ConnectionManager(this.mockConnection.Object))
+                {
+                    connectionManager.BeginTransaction();
+                }
+            }
+
+            [Fact]
+            public void TheConnectionShouldBeClosed()
+            {
+                this.mockConnection.Verify(x => x.Close(), Times.Once());
+            }
+
+            [Fact]
+            public void TheConnectionShouldBeDisposed()
+            {
+                this.mockConnection.Verify(x => x.Dispose(), Times.Once());
+            }
+
+            [Fact]
+            public void TheTransactionShouldBeDisposed()
+            {
+                this.mockTransaction.Verify(x => x.Dispose(), Times.Once());
             }
         }
     }
