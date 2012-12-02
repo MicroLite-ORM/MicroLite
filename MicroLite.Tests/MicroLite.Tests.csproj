@@ -87,7 +87,6 @@
     <Compile Include="Core\SessionFactoryTests.cs" />
     <Compile Include="Core\SessionTests.cs" />
     <Compile Include="Dialect\MsSqlDialectTests.cs" />
-    <Compile Include="Core\TransactionTests.cs" />
     <Compile Include="Listeners\ListenerCollectionTests.cs" />
     <Compile Include="Mapping\ColumnInfoTests.cs" />
     <Compile Include="Mapping\IdentifierAttributeTests.cs" />

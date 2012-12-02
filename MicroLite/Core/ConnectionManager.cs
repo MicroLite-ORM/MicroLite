@@ -47,7 +47,12 @@ namespace MicroLite.Core
             if (this.currentTransaction == null || !this.currentTransaction.IsActive)
             {
                 log.TryLogDebug(Messages.ConnectionManager_BeginTransactionWithIsolationLevel, isolationLevel.ToString());
-                this.currentTransaction = Transaction.Begin(this.connection, isolationLevel);
+
+                this.connection.Open();
+
+                var dbTransaction = this.connection.BeginTransaction(isolationLevel);
+
+                this.currentTransaction = new AdoTransaction(dbTransaction);
             }
 
             return this.currentTransaction;

@@ -102,7 +102,6 @@
     <Compile Include="Core\SessionFactory.cs" />
     <Compile Include="Dialect\MsSqlDialect.cs" />
     <Compile Include="FrameworkExtensions\StringExtensions.cs" />
-    <Compile Include="Core\Transaction.cs" />
     <Compile Include="Listeners\ListenerCollection.cs" />
     <Compile Include="IAdvancedSession.cs" />
     <Compile Include="Mapping\ColumnInfo.cs" />
