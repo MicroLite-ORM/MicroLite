@@ -10,26 +10,6 @@
     /// </summary>
     public class ConnectionManagerTests
     {
-        public class WhenCallingBeginTransaction
-        {
-            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
-            private readonly ITransaction transaction;
-
-            public WhenCallingBeginTransaction()
-            {
-                this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(new Mock<IDbTransaction>().Object);
-
-                var connectionManager = new ConnectionManager(this.mockConnection.Object);
-                this.transaction = connectionManager.BeginTransaction();
-            }
-
-            [Fact]
-            public void IsolationLevelReadCommittedIsUsedByDefault()
-            {
-                this.mockConnection.Verify(x => x.BeginTransaction(IsolationLevel.ReadCommitted), Times.Once());
-            }
-        }
-
         public class WhenCallingBeginTransactionAndThereIsAnActiveTransaction
         {
             private readonly ITransaction transaction1;
@@ -41,8 +21,8 @@
                 mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(new Mock<IDbTransaction>().Object);
 
                 var connectionManager = new ConnectionManager(mockConnection.Object);
-                this.transaction1 = connectionManager.BeginTransaction();
-                this.transaction2 = connectionManager.BeginTransaction();
+                this.transaction1 = connectionManager.BeginTransaction(IsolationLevel.ReadCommitted);
+                this.transaction2 = connectionManager.BeginTransaction(IsolationLevel.ReadCommitted);
             }
 
             [Fact]
@@ -167,7 +147,7 @@
                 this.mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
                 var connectionManager = new ConnectionManager(this.mockConnection.Object);
-                connectionManager.BeginTransaction();
+                connectionManager.BeginTransaction(IsolationLevel.ReadCommitted);
 
                 this.command = connectionManager.CreateCommand();
             }
@@ -249,7 +229,7 @@
 
                 using (var connectionManager = new ConnectionManager(this.mockConnection.Object))
                 {
-                    connectionManager.BeginTransaction();
+                    connectionManager.BeginTransaction(IsolationLevel.ReadCommitted);
                 }
             }
 

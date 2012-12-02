@@ -29,12 +29,6 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Begins the transaction with the default isolation level of the connection.
-        /// </summary>
-        /// <returns>An <see cref="ITransaction"/> with the default isolation level of the connection.</returns>
-        ITransaction BeginTransaction();
-
-        /// <summary>
         /// Begins the transaction with the specified isolation level.
         /// </summary>
         /// <param name="isolationLevel">The isolation level to use for the transaction.</param>

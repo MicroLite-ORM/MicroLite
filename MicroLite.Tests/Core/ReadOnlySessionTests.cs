@@ -19,7 +19,7 @@
         public void BeginTransactionCallsConnectionManagerBeginTransaction()
         {
             var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.BeginTransaction());
+            mockConnectionManager.Setup(x => x.BeginTransaction(IsolationLevel.ReadCommitted));
 
             var session = new ReadOnlySession(
                 mockConnectionManager.Object,

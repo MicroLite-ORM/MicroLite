@@ -87,10 +87,7 @@ namespace MicroLite.Core
         {
             this.ThrowIfDisposed();
 
-            using (new SessionLoggingContext(this.Id))
-            {
-                return this.ConnectionManager.BeginTransaction();
-            }
+            return this.BeginTransaction(IsolationLevel.ReadCommitted);
         }
 
         public ITransaction BeginTransaction(IsolationLevel isolationLevel)

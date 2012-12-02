@@ -37,11 +37,6 @@ namespace MicroLite.Core
             }
         }
 
-        public ITransaction BeginTransaction()
-        {
-            return this.BeginTransaction(IsolationLevel.ReadCommitted);
-        }
-
         public ITransaction BeginTransaction(IsolationLevel isolationLevel)
         {
             if (this.currentTransaction == null || !this.currentTransaction.IsActive)
