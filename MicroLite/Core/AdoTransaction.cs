@@ -82,9 +82,9 @@ namespace MicroLite.Core
 
             try
             {
-                log.TryLogInfo(Messages.Transaction_Committing);
+                log.TryLogDebug(Messages.Transaction_Committing);
                 this.transaction.Commit();
-                log.TryLogInfo(Messages.Transaction_Committed);
+                log.TryLogDebug(Messages.Transaction_Committed);
 
                 this.committed = true;
 
@@ -127,7 +127,7 @@ namespace MicroLite.Core
 
             if (this.IsActive)
             {
-                log.TryLogInfo(Messages.Transaction_EnlistingCommand);
+                log.TryLogDebug(Messages.Transaction_EnlistingCommand);
                 command.Transaction = this.transaction;
             }
         }
@@ -139,9 +139,9 @@ namespace MicroLite.Core
 
             try
             {
-                log.TryLogInfo(Messages.Transaction_RollingBack);
+                log.TryLogDebug(Messages.Transaction_RollingBack);
                 this.transaction.Rollback();
-                log.TryLogInfo(Messages.Transaction_RolledBack);
+                log.TryLogDebug(Messages.Transaction_RolledBack);
 
                 this.rolledBack = true;
 

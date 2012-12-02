@@ -148,7 +148,7 @@
     <value>Setting the property value of [{0}].[{1}]</value>
   </data>
   <data name="ObjectInfo_UnknownProperty" xml:space="preserve">
-    <value>The results contain a column with the name [{1}], however the type [{0}] does not have a mapped property with the column name [{1}]</value>
+    <value>Ignoring the [{1}] column value as the mapped type [{0}] does not have a mapped property with the column name [{1}]</value>
   </data>
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
     <value>Creating the ObjectInfo for the type [{0}]</value>
@@ -166,7 +166,7 @@
     <value>The first page which can be requested is page 1</value>
   </data>
   <data name="SessionFactory_CreatingSession" xml:space="preserve">
-    <value>Creating a new session for connection [{0}]</value>
+    <value>Creating a new session for connection [{0}] using [{1}]</value>
   </data>
   <data name="ConnectionManager_ClosingConnection" xml:space="preserve">
     <value>Closing the database connection</value>
@@ -250,7 +250,7 @@
     <value>The object does not have an identifier value set so it cannot be delete</value>
   </data>
   <data name="SessionFactory_CreatingReadOnlySession" xml:space="preserve">
-    <value>Creating a new read only session for connection [{0}]</value>
+    <value>Creating a new read only session for connection [{0}] using [{1}]</value>
   </data>
   <data name="ObjectInfo_GetPropertyValueForColumn" xml:space="preserve">
     <value>Getting the value of [{0}].[{1}] for the [{2}] column</value>

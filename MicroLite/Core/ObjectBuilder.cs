@@ -75,7 +75,7 @@ namespace MicroLite.Core
                 }
                 catch (Exception e)
                 {
-                    log.TryLogFatal(e.Message, e);
+                    log.TryLogError(e.Message, e);
                     throw new MicroLiteException(e.Message, e);
                 }
             }

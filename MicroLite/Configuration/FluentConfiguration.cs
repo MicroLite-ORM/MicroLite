@@ -42,7 +42,7 @@ namespace MicroLite.Configuration
 
             if (sessionFactory == null)
             {
-                this.log.TryLogInfo(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
+                this.log.TryLogDebug(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
                 sessionFactory = new SessionFactory(this.options);
 
                 Configure.SessionFactories.Add(sessionFactory);
@@ -104,7 +104,7 @@ namespace MicroLite.Configuration
             }
             catch (Exception e)
             {
-                this.log.TryLogError(e.Message, e);
+                this.log.TryLogFatal(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }

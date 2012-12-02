@@ -61,7 +61,7 @@ namespace MicroLite.Mapping
 
                 if (columnAttribute == null)
                 {
-                    log.TryLogDebug(Messages.AttributeMappingConvention_IgnoringProperty, forType.FullName, property.Name);
+                    log.TryLogInfo(Messages.AttributeMappingConvention_IgnoringProperty, forType.FullName, property.Name);
                     continue;
                 }
 

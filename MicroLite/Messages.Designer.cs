@@ -358,7 +358,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The results contain a column with the name [{1}], however the type [{0}] does not have a mapped property with the column name [{1}].
+        ///   Looks up a localized string similar to Ignoring the [{1}] column value as the mapped type [{0}] does not have a mapped property with the column name [{1}].
         /// </summary>
         internal static string ObjectInfo_UnknownProperty {
             get {
@@ -421,7 +421,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating a new read only session for connection [{0}].
+        ///   Looks up a localized string similar to Creating a new read only session for connection [{0}] using [{1}].
         /// </summary>
         internal static string SessionFactory_CreatingReadOnlySession {
             get {
@@ -430,7 +430,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creating a new session for connection [{0}].
+        ///   Looks up a localized string similar to Creating a new session for connection [{0}] using [{1}].
         /// </summary>
         internal static string SessionFactory_CreatingSession {
             get {

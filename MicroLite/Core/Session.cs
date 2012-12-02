@@ -115,7 +115,7 @@ namespace MicroLite.Core
                     using (var command = this.ConnectionManager.CreateCommand())
                     {
                         this.SqlDialect.BuildCommand(command, sqlQuery);
-                        Log.TryLogInfo(sqlQuery.CommandText);
+
                         var result = command.ExecuteNonQuery();
 
                         this.ConnectionManager.CommandCompleted(command);
@@ -147,7 +147,7 @@ namespace MicroLite.Core
                     using (var command = this.ConnectionManager.CreateCommand())
                     {
                         this.SqlDialect.BuildCommand(command, sqlQuery);
-                        Log.TryLogInfo(sqlQuery.CommandText);
+
                         var result = (T)command.ExecuteScalar();
 
                         this.ConnectionManager.CommandCompleted(command);
