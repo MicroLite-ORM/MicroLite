@@ -8,7 +8,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="SessionFactory"/> class.
     /// </summary>
-
     public class SessionFactoryTests
     {
         [Fact]
@@ -116,6 +115,19 @@
             var session2 = sessionFactory.OpenSession();
 
             Assert.NotSame(session1, session2);
+        }
+
+        [Fact]
+        public void SqlDialectReturnsSqlDialectFromOptions()
+        {
+            var options = new SessionFactoryOptions
+            {
+                SqlDialect = "MicroLite.Dialect.MsSqlDialect"
+            };
+
+            var sessionFactory = new SessionFactory(options);
+
+            Assert.Equal(options.SqlDialect, sessionFactory.SqlDialect);
         }
     }
 }
