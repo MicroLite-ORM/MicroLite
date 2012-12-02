@@ -5,12 +5,12 @@
     using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="MsSqlDialect"/> class.
     /// </summary>
-    [TestFixture]
+
     public class MsSqlDialectTests
     {
         private enum CustomerStatus
@@ -22,7 +22,7 @@
         /// <summary>
         /// Issue #6 - The argument count check needs to cater for the same argument being used twice.
         /// </summary>
-        [Test]
+        [Fact]
         public void BuildCommandForSqlQueryWithSqlTextWhichUsesSameParameterTwice()
         {
             var sqlQuery = new SqlQuery(
@@ -34,23 +34,23 @@
                 var sqlDialect = new MsSqlDialect();
                 sqlDialect.BuildCommand(command, sqlQuery);
 
-                Assert.AreEqual(sqlQuery.CommandText, command.CommandText);
-                Assert.AreEqual(CommandType.Text, command.CommandType);
-                Assert.AreEqual(2, command.Parameters.Count);
+                Assert.Equal(sqlQuery.CommandText, command.CommandText);
+                Assert.Equal(CommandType.Text, command.CommandType);
+                Assert.Equal(2, command.Parameters.Count);
 
                 var parameter1 = (IDataParameter)command.Parameters[0];
-                Assert.AreEqual(ParameterDirection.Input, parameter1.Direction);
-                Assert.AreEqual("@p0", parameter1.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
+                Assert.Equal(ParameterDirection.Input, parameter1.Direction);
+                Assert.Equal("@p0", parameter1.ParameterName);
+                Assert.Equal(sqlQuery.Arguments[0], parameter1.Value);
 
                 var parameter2 = (IDataParameter)command.Parameters[1];
-                Assert.AreEqual(ParameterDirection.Input, parameter2.Direction);
-                Assert.AreEqual("@p1", parameter2.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
+                Assert.Equal(ParameterDirection.Input, parameter2.Direction);
+                Assert.Equal("@p1", parameter2.ParameterName);
+                Assert.Equal(sqlQuery.Arguments[1], parameter2.Value);
             }
         }
 
-        [Test]
+        [Fact]
         public void BuildCommandForSqlQueryWithStoredProcedureWithoutParameters()
         {
             var sqlQuery = new SqlQuery("EXEC GetTableContents");
@@ -61,13 +61,13 @@
                 sqlDialect.BuildCommand(command, sqlQuery);
 
                 // The command text should only contain the stored procedure name.
-                Assert.AreEqual("GetTableContents", command.CommandText);
-                Assert.AreEqual(CommandType.StoredProcedure, command.CommandType);
-                Assert.AreEqual(0, command.Parameters.Count);
+                Assert.Equal("GetTableContents", command.CommandText);
+                Assert.Equal(CommandType.StoredProcedure, command.CommandType);
+                Assert.Equal(0, command.Parameters.Count);
             }
         }
 
-        [Test]
+        [Fact]
         public void BuildCommandForSqlQueryWithStoredProcedureWithParameters()
         {
             var sqlQuery = new SqlQuery(
@@ -80,21 +80,21 @@
                 sqlDialect.BuildCommand(command, sqlQuery);
 
                 // The command text should only contain the stored procedure name.
-                Assert.AreEqual("GetTableContents", command.CommandText);
-                Assert.AreEqual(CommandType.StoredProcedure, command.CommandType);
-                Assert.AreEqual(2, command.Parameters.Count);
+                Assert.Equal("GetTableContents", command.CommandText);
+                Assert.Equal(CommandType.StoredProcedure, command.CommandType);
+                Assert.Equal(2, command.Parameters.Count);
 
                 var parameter1 = (IDataParameter)command.Parameters[0];
-                Assert.AreEqual("@identifier", parameter1.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
+                Assert.Equal("@identifier", parameter1.ParameterName);
+                Assert.Equal(sqlQuery.Arguments[0], parameter1.Value);
 
                 var parameter2 = (IDataParameter)command.Parameters[1];
-                Assert.AreEqual("@Cust_Name", parameter2.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
+                Assert.Equal("@Cust_Name", parameter2.ParameterName);
+                Assert.Equal(sqlQuery.Arguments[1], parameter2.Value);
             }
         }
 
-        [Test]
+        [Fact]
         public void BuildCommandThrowsMicroLiteExceptionForParameterCountMismatch()
         {
             var sqlQuery = new SqlQuery(
@@ -108,11 +108,11 @@
                 var exception = Assert.Throws<MicroLiteException>(
                     () => sqlDialect.BuildCommand(command, sqlQuery));
 
-                Assert.AreEqual(Messages.ConnectionManager_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
+                Assert.Equal(Messages.ConnectionManager_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
             }
         }
 
-        [Test]
+        [Fact]
         public void InsertQueryForIdentityInstance()
         {
             var customer = new Customer
@@ -127,14 +127,14 @@
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
 
-            Assert.AreEqual("INSERT INTO [Sales].[Customers] ([Created], [DoB], [Name], [StatusId]) VALUES (@p0, @p1, @p2, @p3);SELECT SCOPE_IDENTITY()", sqlQuery.CommandText);
-            Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
-            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
-            Assert.AreEqual(customer.Name, sqlQuery.Arguments[2]);
-            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[3]);
+            Assert.Equal("INSERT INTO [Sales].[Customers] ([Created], [DoB], [Name], [StatusId]) VALUES (@p0, @p1, @p2, @p3);SELECT SCOPE_IDENTITY()", sqlQuery.CommandText);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[2]);
+            Assert.Equal((int)customer.Status, sqlQuery.Arguments[3]);
         }
 
-        [Test]
+        [Fact]
         public void PageNonQualifiedQuery()
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
@@ -142,12 +142,12 @@
             var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.AreEqual("SELECT CustomerId, Name, DoB, StatusId FROM (SELECT CustomerId, Name, DoB, StatusId, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
-            Assert.AreEqual(1, paged.Arguments[0], "The first argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the end row number");
+            Assert.Equal("SELECT CustomerId, Name, DoB, StatusId FROM (SELECT CustomerId, Name, DoB, StatusId, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+            Assert.Equal(1, paged.Arguments[0]);////, "The first argument should be the start row number");
+            Assert.Equal(25, paged.Arguments[1]);////, "The second argument should be the end row number");
         }
 
-        [Test]
+        [Fact]
         public void PageNonQualifiedWildcardQuery()
         {
             var sqlQuery = new SqlQuery("SELECT * FROM Customers");
@@ -155,12 +155,12 @@
             var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.AreEqual("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
-            Assert.AreEqual(1, paged.Arguments[0], "The first argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the end row number");
+            Assert.Equal("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+            Assert.Equal(1, paged.Arguments[0]);////, "The first argument should be the start row number");
+            Assert.Equal(25, paged.Arguments[1]);////, "The second argument should be the end row number");
         }
 
-        [Test]
+        [Fact]
         public void PageWithMultiWhereAndMultiOrderByMultiLine()
         {
             var sqlQuery = new SqlQuery(@"SELECT
@@ -179,14 +179,14 @@
             var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC) AS RowNumber FROM [Sales].[Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
-            Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
-            Assert.AreEqual(sqlQuery.Arguments[1], paged.Arguments[1], "The second argument should be the second argument from the original query");
-            Assert.AreEqual(1, paged.Arguments[2], "The third argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[3], "The fourth argument should be the end row number");
+            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC) AS RowNumber FROM [Sales].[Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
+            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);////, "The first argument should be the first argument from the original query");
+            Assert.Equal(sqlQuery.Arguments[1], paged.Arguments[1]);////, "The second argument should be the second argument from the original query");
+            Assert.Equal(1, paged.Arguments[2]);////, "The third argument should be the start row number");
+            Assert.Equal(25, paged.Arguments[3]);////, "The fourth argument should be the end row number");
         }
 
-        [Test]
+        [Fact]
         public void PageWithNoWhereButOrderBy()
         {
             var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [dbo].[Customers] ORDER BY [CustomerId] ASC");
@@ -194,12 +194,12 @@
             var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.AreEqual("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM (SELECT [CustomerId], [Name], [DoB], [StatusId], ROW_NUMBER() OVER(ORDER BY [CustomerId] ASC) AS RowNumber FROM [dbo].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
-            Assert.AreEqual(1, paged.Arguments[0], "The first argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the end row number");
+            Assert.Equal("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM (SELECT [CustomerId], [Name], [DoB], [StatusId], ROW_NUMBER() OVER(ORDER BY [CustomerId] ASC) AS RowNumber FROM [dbo].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+            Assert.Equal(1, paged.Arguments[0]);////, "The first argument should be the start row number");
+            Assert.Equal(25, paged.Arguments[1]);////, "The second argument should be the end row number");
         }
 
-        [Test]
+        [Fact]
         public void PageWithNoWhereOrOrderByFirstResultsPage()
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]");
@@ -207,12 +207,12 @@
             var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
-            Assert.AreEqual(1, paged.Arguments[0], "The first argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[1], "The second argument should be the end row number");
+            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+            Assert.Equal(1, paged.Arguments[0]);////, "The first argument should be the start row number");
+            Assert.Equal(25, paged.Arguments[1]);////, "The second argument should be the end row number");
         }
 
-        [Test]
+        [Fact]
         public void PageWithNoWhereOrOrderBySecondResultsPage()
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]");
@@ -220,12 +220,12 @@
             var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 25));
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
-            Assert.AreEqual(26, paged.Arguments[0], "The first argument should be the start row number");
-            Assert.AreEqual(50, paged.Arguments[1], "The second argument should be the end row number");
+            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+            Assert.Equal(26, paged.Arguments[0]);////, "The first argument should be the start row number");
+            Assert.Equal(50, paged.Arguments[1]);////, "The second argument should be the end row number");
         }
 
-        [Test]
+        [Fact]
         public void PageWithWhereAndOrderBy()
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
@@ -233,13 +233,13 @@
             var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
-            Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
-            Assert.AreEqual(1, paged.Arguments[1], "The second argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the end row number");
+            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
+            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);////, "The first argument should be the first argument from the original query");
+            Assert.Equal(1, paged.Arguments[1]);////, "The second argument should be the start row number");
+            Assert.Equal(25, paged.Arguments[2]);////, "The third argument should be the end row number");
         }
 
-        [Test]
+        [Fact]
         public void PageWithWhereAndOrderByMultiLine()
         {
             var sqlQuery = new SqlQuery(@"SELECT
@@ -257,13 +257,13 @@
             var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
-            Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
-            Assert.AreEqual(1, paged.Arguments[1], "The second argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the end row number");
+            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
+            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);////, "The first argument should be the first argument from the original query");
+            Assert.Equal(1, paged.Arguments[1]);////, "The second argument should be the start row number");
+            Assert.Equal(25, paged.Arguments[2]);////, "The third argument should be the end row number");
         }
 
-        [Test]
+        [Fact]
         public void PageWithWhereButNoOrderBy()
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", CustomerStatus.Active);
@@ -271,10 +271,10 @@
             var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.AreEqual("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
-            Assert.AreEqual(sqlQuery.Arguments[0], paged.Arguments[0], "The first argument should be the first argument from the original query");
-            Assert.AreEqual(1, paged.Arguments[1], "The second argument should be the start row number");
-            Assert.AreEqual(25, paged.Arguments[2], "The third argument should be the end row number");
+            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
+            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);////, "The first argument should be the first argument from the original query");
+            Assert.Equal(1, paged.Arguments[1]);////, "The second argument should be the start row number");
+            Assert.Equal(25, paged.Arguments[2]);////, "The third argument should be the end row number");
         }
 
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]

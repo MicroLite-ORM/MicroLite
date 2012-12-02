@@ -5,15 +5,32 @@
     using MicroLite.Logging;
     using MicroLite.Mapping;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="ConfigureExtensions"/> class.
     /// </summary>
-    [TestFixture]
-    public class ConfigureExtensionsTests
+    public class ConfigureExtensionsTests : IDisposable
     {
-        [Test]
+        public ConfigureExtensionsTests()
+        {
+            // Ensure that the GetLogger method is cleared before each test.
+            LogManager.GetLogger = null;
+
+            // Ensure that the MappingConvention is cleared before each test.
+            ObjectInfo.MappingConvention = null;
+        }
+
+        public void Dispose()
+        {
+            // Ensure that the GetLogger method is cleared after all tests have been run.
+            LogManager.GetLogger = null;
+
+            // Ensure that the MappingConvention is set to the default after all tests have been run.
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+        }
+
+        [Fact]
         public void SetLogResolverSetsLogManagerGetLogger()
         {
             Func<string, ILog> resolver = (s) =>
@@ -24,10 +41,10 @@
             var configureExtensions = new ConfigureExtensions();
             configureExtensions.SetLogResolver(resolver);
 
-            Assert.AreSame(resolver, LogManager.GetLogger);
+            Assert.Same(resolver, LogManager.GetLogger);
         }
 
-        [Test]
+        [Fact]
         public void SetMappingConventionSetsObjectInfoMappingConvention()
         {
             var mappingConvention = new Mock<IMappingConvention>().Object;
@@ -35,37 +52,17 @@
             var configureExtensions = new ConfigureExtensions();
             configureExtensions.SetMappingConvention(mappingConvention);
 
-            Assert.AreSame(mappingConvention, ObjectInfo.MappingConvention);
+            Assert.Same(mappingConvention, ObjectInfo.MappingConvention);
         }
 
-        [Test]
+        [Fact]
         public void SetMappingConventionThrowsArgumentNullExceptionForNullMappingConvention()
         {
             var configureExtensions = new ConfigureExtensions();
 
             var exception = Assert.Throws<ArgumentNullException>(() => configureExtensions.SetMappingConvention(null));
 
-            Assert.AreEqual("mappingConvention", exception.ParamName);
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            // Ensure that the GetLogger method is cleared before each test.
-            LogManager.GetLogger = null;
-
-            // Ensure that the MappingConvention is cleared before each test.
-            ObjectInfo.MappingConvention = null;
-        }
-
-        [TestFixtureTearDown]
-        public void TearDown()
-        {
-            // Ensure that the GetLogger method is cleared after all tests have been run.
-            LogManager.GetLogger = null;
-
-            // Ensure that the MappingConvention is set to the default after all tests have been run.
-            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+            Assert.Equal("mappingConvention", exception.ParamName);
         }
     }
 }

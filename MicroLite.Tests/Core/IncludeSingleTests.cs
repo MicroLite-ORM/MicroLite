@@ -5,7 +5,7 @@
     using MicroLite.Core;
     using MicroLite.Mapping;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="IncludeSingle&lt;T&gt;"/> class.
@@ -13,7 +13,6 @@
 
     public class IncludeSingleTests
     {
-        [TestFixture]
         public class WhenBuildValueHasBeenCalledAndThereAreNoResults
         {
             private IncludeSingle<Customer> include = new IncludeSingle<Customer>();
@@ -31,19 +30,19 @@
                 this.include.BuildValue(this.mockReader.Object, this.mockObjectBuilder.Object);
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeFalse()
             {
-                Assert.IsFalse(this.include.HasValue);
+                Assert.False(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
             }
 
-            [Test]
+            [Fact]
             public void TheObjectBuilderShouldNotBuildAnyObjects()
             {
                 this.mockObjectBuilder.Verify(
@@ -52,14 +51,13 @@
                     "If the first call to IDataReader.Read() returns false, we should not try and create an object.");
             }
 
-            [Test]
+            [Fact]
             public void ValueShouldBeNull()
             {
-                Assert.IsNull(this.include.Value);
+                Assert.Null(this.include.Value);
             }
         }
 
-        [TestFixture]
         public class WhenBuildValueHasBeenCalledAndThereIsOneResult
         {
             private IncludeSingle<Customer> include = new IncludeSingle<Customer>();
@@ -77,32 +75,31 @@
                 this.include.BuildValue(reader, this.mockObjectBuilder.Object);
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeTrue()
             {
-                Assert.IsTrue(this.include.HasValue);
+                Assert.True(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
             }
 
-            [Test]
+            [Fact]
             public void TheObjectBuilderShouldBeCalled()
             {
                 this.mockObjectBuilder.VerifyAll();
             }
 
-            [Test]
+            [Fact]
             public void ValueShouldNotBeNull()
             {
                 Assert.NotNull(this.include.Value);
             }
         }
 
-        [TestFixture]
         public class WhenBuildValueHasNotBeenCalled
         {
             private IncludeSingle<Customer> include = new IncludeSingle<Customer>();
@@ -111,20 +108,19 @@
             {
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeFalse()
             {
-                Assert.IsFalse(this.include.HasValue);
+                Assert.False(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void ValueShouldBeNull()
             {
-                Assert.IsNull(this.include.Value);
+                Assert.Null(this.include.Value);
             }
         }
 
-        [TestFixture]
         public class WhenTheDataReaderContainsMultipleResults
         {
             private IncludeSingle<Customer> include = new IncludeSingle<Customer>();
@@ -140,13 +136,13 @@
                 this.mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
             }
 
-            [Test]
+            [Fact]
             public void BuildValueShouldThrowAMicroLiteException()
             {
                 var exception = Assert.Throws<MicroLiteException>(
                     () => this.include.BuildValue(this.mockReader.Object, this.mockObjectBuilder.Object));
 
-                Assert.AreEqual(Messages.IncludeSingle_SingleResultExpected, exception.Message);
+                Assert.Equal(Messages.IncludeSingle_SingleResultExpected, exception.Message);
             }
         }
 

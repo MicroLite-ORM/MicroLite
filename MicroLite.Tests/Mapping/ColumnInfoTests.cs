@@ -2,15 +2,15 @@
 {
     using System;
     using MicroLite.Mapping;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="ColumnInfo"/> class.
     /// </summary>
-    [TestFixture]
+
     public class ColumnInfoTests
     {
-        [Test]
+        [Fact]
         public void ConstructorSetsPropertyValues()
         {
             var columnName = "Name";
@@ -21,29 +21,29 @@
 
             var columnInfo = new ColumnInfo(columnName, propertyInfo, isIdentifier, allowInsert, allowUpdate);
 
-            Assert.AreEqual(columnName, columnInfo.ColumnName);
-            Assert.AreEqual(propertyInfo, columnInfo.PropertyInfo);
-            Assert.AreEqual(isIdentifier, columnInfo.IsIdentifier);
-            Assert.AreEqual(allowInsert, columnInfo.AllowInsert);
-            Assert.AreEqual(allowUpdate, columnInfo.AllowUpdate);
+            Assert.Equal(columnName, columnInfo.ColumnName);
+            Assert.Equal(propertyInfo, columnInfo.PropertyInfo);
+            Assert.Equal(isIdentifier, columnInfo.IsIdentifier);
+            Assert.Equal(allowInsert, columnInfo.AllowInsert);
+            Assert.Equal(allowUpdate, columnInfo.AllowUpdate);
         }
 
-        [Test]
+        [Fact]
         public void ConstructorThrowsArgumentNullExceptionForNullColumnName()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => new ColumnInfo(null, null, false, true, true));
 
-            Assert.AreEqual("columnName", exception.ParamName);
+            Assert.Equal("columnName", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void ConstructorThrowsArgumentNullExceptionForNullPropertyInfo()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => new ColumnInfo("Name", null, false, true, true));
 
-            Assert.AreEqual("propertyInfo", exception.ParamName);
+            Assert.Equal("propertyInfo", exception.ParamName);
         }
 
         private class Customer

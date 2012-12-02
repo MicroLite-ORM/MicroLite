@@ -5,14 +5,13 @@
     using MicroLite.Core;
     using MicroLite.Mapping;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="IncludeMany&lt;T&gt;"/> class.
     /// </summary>
     public class IncludeManyTests
     {
-        [TestFixture]
         public class WhenBuildValueHasBeenCalledAndThereAreNoResults
         {
             private IncludeMany<Customer> include = new IncludeMany<Customer>();
@@ -30,19 +29,19 @@
                 this.include.BuildValue(this.mockReader.Object, this.mockObjectBuilder.Object);
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeFalse()
             {
-                Assert.IsFalse(this.include.HasValue);
+                Assert.False(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
             }
 
-            [Test]
+            [Fact]
             public void TheObjectBuilderShouldNotBuildAnyObjects()
             {
                 this.mockObjectBuilder.Verify(
@@ -51,14 +50,13 @@
                     "If the first call to IDataReader.Read() returns false, we should not try and create an object.");
             }
 
-            [Test]
+            [Fact]
             public void ValuesShouldBeEmpty()
             {
-                CollectionAssert.IsEmpty(this.include.Values);
+                Assert.Empty(this.include.Values);
             }
         }
 
-        [TestFixture]
         public class WhenBuildValueHasBeenCalledAndThereAreResults
         {
             private IncludeMany<Customer> include = new IncludeMany<Customer>();
@@ -76,32 +74,31 @@
                 this.include.BuildValue(reader, this.mockObjectBuilder.Object);
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeTrue()
             {
-                Assert.IsTrue(this.include.HasValue);
+                Assert.True(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
             }
 
-            [Test]
+            [Fact]
             public void TheObjectBuilderShouldBeCalled()
             {
                 this.mockObjectBuilder.VerifyAll();
             }
 
-            [Test]
+            [Fact]
             public void ValuesShouldNotBeEmpty()
             {
-                CollectionAssert.IsNotEmpty(this.include.Values);
+                Assert.NotEmpty(this.include.Values);
             }
         }
 
-        [TestFixture]
         public class WhenBuildValueHasNotBeenCalled
         {
             private IncludeMany<Customer> include = new IncludeMany<Customer>();
@@ -110,16 +107,16 @@
             {
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeFalse()
             {
-                Assert.IsFalse(this.include.HasValue);
+                Assert.False(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void ValuesShouldBeEmpty()
             {
-                CollectionAssert.IsEmpty(this.include.Values);
+                Assert.Empty(this.include.Values);
             }
         }
 

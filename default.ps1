@@ -32,7 +32,7 @@ Task Build40 {
 
 Task RunTests -Depends Build {
   Write-Host "Running $projectName.Tests" -ForegroundColor Green
-  Exec {  & $baseDir\packages\NUnit.Runners.2.6.2\tools\nunit-console-x86.exe "$baseDir\$projectName.Tests\bin\Release\$projectName.Tests.dll" /nologo /nodots /noxml }
+  Exec {  & $baseDir\packages\xunit.runners.1.9.1\tools\xunit.console.clr4.exe "$baseDir\$projectName.Tests\bin\Release\$projectName.Tests.dll" }
 }
 
 Task Build -Depends Clean {

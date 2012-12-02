@@ -2,15 +2,15 @@
 {
     using System;
     using MicroLite.Listeners;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="GuidListener"/> class.
     /// </summary>
-    [TestFixture]
+
     public class GuidListenerTests
     {
-        [Test]
+        [Fact]
         public void BeforeDeleteDoesNotThrowIfIdentifierSet()
         {
             var customer = new Customer
@@ -23,17 +23,17 @@
             listener.BeforeDelete(customer);
         }
 
-        [Test]
+        [Fact]
         public void BeforeDeleteThrowsArgumentNullExceptionForNullInstance()
         {
             var listener = new GuidListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeDelete(null));
 
-            Assert.AreEqual("instance", exception.ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void BeforeDeleteThrowsMicroLiteExceptionIfIdentifierNotSet()
         {
             var customer = new Customer
@@ -45,10 +45,10 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeDelete(customer));
 
-            Assert.AreEqual(Messages.IListener_IdentifierNotSetForDelete, exception.Message);
+            Assert.Equal(Messages.IListener_IdentifierNotSetForDelete, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void BeforeInsertSetsIdentifierValueToNewGuidIfIdIsEmptyGuid()
         {
             var customer = new Customer
@@ -60,20 +60,20 @@
 
             listener.BeforeInsert(customer);
 
-            Assert.AreNotEqual(Guid.Empty, customer.Id);
+            Assert.NotEqual(Guid.Empty, customer.Id);
         }
 
-        [Test]
+        [Fact]
         public void BeforeInsertThrowsArgumentNullExceptionForNullInstance()
         {
             var listener = new GuidListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeInsert(null));
 
-            Assert.AreEqual("instance", exception.ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void BeforeInsertThrowsMicroLiteExceptionIfIdentifierSet()
         {
             var customer = new Customer
@@ -85,10 +85,10 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeInsert(customer));
 
-            Assert.AreEqual(Messages.IListener_IdentifierSetForInsert, exception.Message);
+            Assert.Equal(Messages.IListener_IdentifierSetForInsert, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void BeforeUpdateDoesNotThrowIfIdentifierSet()
         {
             var customer = new Customer
@@ -101,17 +101,17 @@
             listener.BeforeUpdate(customer);
         }
 
-        [Test]
+        [Fact]
         public void BeforeUpdateThrowsArgumentNullExceptionForNullInstance()
         {
             var listener = new GuidListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeUpdate(null));
 
-            Assert.AreEqual("instance", exception.ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void BeforeUpdateThrowsMicroLiteExceptionIfIdentifierNotSet()
         {
             var customer = new Customer
@@ -123,7 +123,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeUpdate(customer));
 
-            Assert.AreEqual(Messages.IListener_IdentifierNotSetForUpdate, exception.Message);
+            Assert.Equal(Messages.IListener_IdentifierNotSetForUpdate, exception.Message);
         }
 
         [MicroLite.Mapping.Table("Sales", "Customers")]

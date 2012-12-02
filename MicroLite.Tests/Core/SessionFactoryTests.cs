@@ -3,15 +3,15 @@
     using System.Data.Common;
     using MicroLite.Core;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="SessionFactory"/> class.
     /// </summary>
-    [TestFixture]
+
     public class SessionFactoryTests
     {
-        [Test]
+        [Fact]
         public void ConnectionNameReturnsConnectionNameFromOptions()
         {
             var options = new SessionFactoryOptions
@@ -21,10 +21,10 @@
 
             var sessionFactory = new SessionFactory(options);
 
-            Assert.AreEqual(options.ConnectionName, sessionFactory.ConnectionName);
+            Assert.Equal(options.ConnectionName, sessionFactory.ConnectionName);
         }
 
-        [Test]
+        [Fact]
         public void OpenReadOnlySessionCreatesConnectionAndSetsConnectionString()
         {
             var mockConnection = new Mock<DbConnection>();
@@ -47,7 +47,7 @@
             mockConnection.VerifySet(x => x.ConnectionString = options.ConnectionString);
         }
 
-        [Test]
+        [Fact]
         public void OpenReadOnlySessionReturnsNewInstanceOnEachCall()
         {
             var mockConnection = new Mock<DbConnection>();
@@ -68,10 +68,10 @@
             var session1 = sessionFactory.OpenReadOnlySession();
             var session2 = sessionFactory.OpenReadOnlySession();
 
-            Assert.AreNotSame(session1, session2);
+            Assert.NotSame(session1, session2);
         }
 
-        [Test]
+        [Fact]
         public void OpenSessionCreatesConnectionAndSetsConnectionString()
         {
             var mockConnection = new Mock<DbConnection>();
@@ -94,7 +94,7 @@
             mockConnection.VerifySet(x => x.ConnectionString = options.ConnectionString);
         }
 
-        [Test]
+        [Fact]
         public void OpenSessionReturnsNewInstanceOnEachCall()
         {
             var mockConnection = new Mock<DbConnection>();
@@ -115,7 +115,7 @@
             var session1 = sessionFactory.OpenSession();
             var session2 = sessionFactory.OpenSession();
 
-            Assert.AreNotSame(session1, session2);
+            Assert.NotSame(session1, session2);
         }
     }
 }

@@ -3,15 +3,15 @@
     using System;
     using MicroLite.Logging;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="LogExtensions"/> class.
     /// </summary>
-    [TestFixture]
+
     public class LogExtensionsTests
     {
-        [Test]
+        [Fact]
         public void TryLogDebugWithArgs()
         {
             var message = "Some log message";
@@ -25,7 +25,7 @@
             mockLog.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void TryLogDebugWithoutArgs()
         {
             var message = "Some log message";
@@ -38,7 +38,7 @@
             mockLog.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void TryLogErrorWithArgs()
         {
             var message = "Some log message";
@@ -52,7 +52,7 @@
             mockLog.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void TryLogErrorWithException()
         {
             var message = "Some log message";
@@ -66,7 +66,7 @@
             mockLog.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void TryLogErrorWithoutArgs()
         {
             var message = "Some log message";
@@ -79,7 +79,7 @@
             mockLog.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void TryLogFatalWithArgs()
         {
             var message = "Some log message";
@@ -93,7 +93,7 @@
             mockLog.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void TryLogFatalWithException()
         {
             var message = "Some log message";
@@ -107,7 +107,7 @@
             mockLog.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void TryLogFatalWithoutArgs()
         {
             var message = "Some log message";
@@ -120,7 +120,7 @@
             mockLog.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void TryLogInfoWithArgs()
         {
             var message = "Some log message";
@@ -134,7 +134,7 @@
             mockLog.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void TryLogInfoWithoutArgs()
         {
             var message = "Some log message";
@@ -147,7 +147,7 @@
             mockLog.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void TryLogWarnWithArgs()
         {
             var message = "Some log message";
@@ -161,7 +161,7 @@
             mockLog.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void TryLogWarnWithoutArgs()
         {
             var message = "Some log message";

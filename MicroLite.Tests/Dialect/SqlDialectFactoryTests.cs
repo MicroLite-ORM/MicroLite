@@ -3,79 +3,79 @@
     using System;
     using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="SqlDialectFactory"/> class.
     /// </summary>
-    [TestFixture]
+
     public class SqlDialectFactoryTests
     {
-        [Test]
+        [Fact]
         public void GetDialectReturnsMsSqlDialect()
         {
             var sqlDialect = SqlDialectFactory.GetDialect("MicroLite.Dialect.MsSqlDialect");
 
-            Assert.IsInstanceOf<MsSqlDialect>(sqlDialect);
+            Assert.IsType<MsSqlDialect>(sqlDialect);
         }
 
-        [Test]
+        [Fact]
         public void GetDialectReturnsMySqlDialect()
         {
             var sqlDialect = SqlDialectFactory.GetDialect("MicroLite.Dialect.MySqlDialect");
 
-            Assert.IsInstanceOf<MySqlDialect>(sqlDialect);
+            Assert.IsType<MySqlDialect>(sqlDialect);
         }
 
-        [Test]
+        [Fact]
         public void GetDialectReturnsNewInstanceEachCall()
         {
             var sqlDialect1 = SqlDialectFactory.GetDialect("MicroLite.Dialect.MsSqlDialect");
             var sqlDialect2 = SqlDialectFactory.GetDialect("MicroLite.Dialect.MsSqlDialect");
 
-            Assert.AreNotSame(sqlDialect1, sqlDialect2);
+            Assert.NotSame(sqlDialect1, sqlDialect2);
         }
 
-        [Test]
+        [Fact]
         public void GetDialectReturnsPostgreSqlDialect()
         {
             var sqlDialect = SqlDialectFactory.GetDialect("MicroLite.Dialect.PostgreSqlDialect");
 
-            Assert.IsInstanceOf<PostgreSqlDialect>(sqlDialect);
+            Assert.IsType<PostgreSqlDialect>(sqlDialect);
         }
 
-        [Test]
+        [Fact]
         public void GetDialectReturnsSQLiteDialect()
         {
             var sqlDialect = SqlDialectFactory.GetDialect("MicroLite.Dialect.SQLiteDialect");
 
-            Assert.IsInstanceOf<SQLiteDialect>(sqlDialect);
+            Assert.IsType<SQLiteDialect>(sqlDialect);
         }
 
-        [Test]
+        [Fact]
         public void GetDialectThrowsNotSupportedException()
         {
             var dialectName = "MicroLite.Dialect.DB2";
 
             var exception = Assert.Throws<NotSupportedException>(() => SqlDialectFactory.GetDialect(dialectName));
 
-            Assert.AreEqual(Messages.SqlDialectFactory_DialectNotSupported.FormatWith(dialectName), exception.Message);
+            Assert.Equal(Messages.SqlDialectFactory_DialectNotSupported.FormatWith(dialectName), exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void VerifyDialectDoesNotThrowNotSupportedExceptionForSupportedDialect()
         {
             SqlDialectFactory.VerifyDialect("MicroLite.Dialect.MsSqlDialect");
         }
 
-        [Test]
+        [Fact]
         public void VerifyDialectThrowsNotSupportedException()
         {
             var dialectName = "MicroLite.Dialect.DB2";
 
             var exception = Assert.Throws<NotSupportedException>(() => SqlDialectFactory.VerifyDialect(dialectName));
 
-            Assert.AreEqual(Messages.SqlDialectFactory_DialectNotSupported.FormatWith(dialectName), exception.Message);
+            Assert.Equal(Messages.SqlDialectFactory_DialectNotSupported.FormatWith(dialectName), exception.Message);
         }
     }
 }

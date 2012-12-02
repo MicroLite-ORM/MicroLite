@@ -4,12 +4,12 @@
     using System.Data;
     using MicroLite.Dialect;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="SqlDialect"/> class.
     /// </summary>
-    [TestFixture]
+
     public class SqlDialectTests
     {
         private enum CustomerStatus
@@ -18,7 +18,7 @@
             Active = 1
         }
 
-        [Test]
+        [Fact]
         public void BuildCommandForSqlQueryWithSqlText()
         {
             var sqlQuery = new SqlQuery(
@@ -31,28 +31,28 @@
                 mockSqlDialect.CallBase = true;
                 mockSqlDialect.Object.BuildCommand(command, sqlQuery);
 
-                Assert.AreEqual(sqlQuery.CommandText, command.CommandText);
-                Assert.AreEqual(CommandType.Text, command.CommandType);
-                Assert.AreEqual(3, command.Parameters.Count);
+                Assert.Equal(sqlQuery.CommandText, command.CommandText);
+                Assert.Equal(CommandType.Text, command.CommandType);
+                Assert.Equal(3, command.Parameters.Count);
 
                 var parameter1 = (IDataParameter)command.Parameters[0];
-                Assert.AreEqual(ParameterDirection.Input, parameter1.Direction);
-                Assert.AreEqual("Parameter0", parameter1.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[0], parameter1.Value);
+                Assert.Equal(ParameterDirection.Input, parameter1.Direction);
+                Assert.Equal("Parameter0", parameter1.ParameterName);
+                Assert.Equal(sqlQuery.Arguments[0], parameter1.Value);
 
                 var parameter2 = (IDataParameter)command.Parameters[1];
-                Assert.AreEqual(ParameterDirection.Input, parameter2.Direction);
-                Assert.AreEqual("Parameter1", parameter2.ParameterName);
-                Assert.AreEqual(sqlQuery.Arguments[1], parameter2.Value);
+                Assert.Equal(ParameterDirection.Input, parameter2.Direction);
+                Assert.Equal("Parameter1", parameter2.ParameterName);
+                Assert.Equal(sqlQuery.Arguments[1], parameter2.Value);
 
                 var parameter3 = (IDataParameter)command.Parameters[2];
-                Assert.AreEqual(ParameterDirection.Input, parameter3.Direction);
-                Assert.AreEqual("Parameter2", parameter3.ParameterName);
-                Assert.AreEqual(DBNull.Value, parameter3.Value);
+                Assert.Equal(ParameterDirection.Input, parameter3.Direction);
+                Assert.Equal("Parameter2", parameter3.ParameterName);
+                Assert.Equal(DBNull.Value, parameter3.Value);
             }
         }
 
-        [Test]
+        [Fact]
         public void BuildCommandSetsDbCommandTimeoutToSqlQueryTime()
         {
             var sqlQuery = new SqlQuery("SELECT * FROM [Table]");
@@ -64,11 +64,11 @@
                 mockSqlDialect.CallBase = true;
                 mockSqlDialect.Object.BuildCommand(command, sqlQuery);
 
-                Assert.AreEqual(sqlQuery.Timeout, command.CommandTimeout);
+                Assert.Equal(sqlQuery.Timeout, command.CommandTimeout);
             }
         }
 
-        [Test]
+        [Fact]
         public void CountQueryNoWhereOrOrderBy()
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
@@ -78,11 +78,11 @@
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
 
-            Assert.AreEqual("SELECT COUNT(*) FROM Customers", countQuery.CommandText);
-            Assert.AreEqual(0, countQuery.Arguments.Count);
+            Assert.Equal("SELECT COUNT(*) FROM Customers", countQuery.CommandText);
+            Assert.Equal(0, countQuery.Arguments.Count);
         }
 
-        [Test]
+        [Fact]
         public void CountQueryWithNoWhereButOrderBy()
         {
             var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [dbo].[Customers] ORDER BY [CustomerId] ASC");
@@ -92,11 +92,11 @@
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
 
-            Assert.AreEqual("SELECT COUNT(*) FROM [dbo].[Customers]", countQuery.CommandText);
-            Assert.AreEqual(0, countQuery.Arguments.Count);
+            Assert.Equal("SELECT COUNT(*) FROM [dbo].[Customers]", countQuery.CommandText);
+            Assert.Equal(0, countQuery.Arguments.Count);
         }
 
-        [Test]
+        [Fact]
         public void CountQueryWithWhereAndOrderBy()
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ? ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
@@ -106,11 +106,11 @@
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
 
-            Assert.AreEqual("SELECT COUNT(*) FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ?", countQuery.CommandText);
-            Assert.AreEqual(sqlQuery.Arguments[0], countQuery.Arguments[0], "The first argument should be the first argument from the original query");
+            Assert.Equal("SELECT COUNT(*) FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ?", countQuery.CommandText);
+            Assert.Equal(sqlQuery.Arguments[0], countQuery.Arguments[0]);////, "The first argument should be the first argument from the original query");
         }
 
-        [Test]
+        [Fact]
         public void CountQueryWithWhereButNoOrderBy()
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ?", CustomerStatus.Active);
@@ -120,11 +120,11 @@
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
 
-            Assert.AreEqual("SELECT COUNT(*) FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ?", countQuery.CommandText);
-            Assert.AreEqual(sqlQuery.Arguments[0], countQuery.Arguments[0], "The first argument should be the first argument from the original query");
+            Assert.Equal("SELECT COUNT(*) FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ?", countQuery.CommandText);
+            Assert.Equal(sqlQuery.Arguments[0], countQuery.Arguments[0]);////, "The first argument should be the first argument from the original query");
         }
 
-        [Test]
+        [Fact]
         public void CreateQueryForInstanceThrowsNotSupportedExceptionForStatementTypeBatch()
         {
             var mockSqlDialect = new Mock<SqlDialect>();
@@ -133,10 +133,10 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => mockSqlDialect.Object.CreateQuery(System.Data.StatementType.Batch, new Customer()));
 
-            Assert.AreEqual(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
+            Assert.Equal(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void CreateQueryForInstanceThrowsNotSupportedExceptionForStatementTypeSelect()
         {
             var mockSqlDialect = new Mock<SqlDialect>();
@@ -145,10 +145,10 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => mockSqlDialect.Object.CreateQuery(System.Data.StatementType.Select, new Customer()));
 
-            Assert.AreEqual(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
+            Assert.Equal(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeBatch()
         {
             var mockSqlDialect = new Mock<SqlDialect>();
@@ -157,10 +157,10 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => mockSqlDialect.Object.CreateQuery(System.Data.StatementType.Batch, typeof(Customer), 1223));
 
-            Assert.AreEqual(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
+            Assert.Equal(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeInsert()
         {
             var mockSqlDialect = new Mock<SqlDialect>();
@@ -169,10 +169,10 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => mockSqlDialect.Object.CreateQuery(System.Data.StatementType.Insert, typeof(Customer), 1223));
 
-            Assert.AreEqual(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
+            Assert.Equal(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeUpdate()
         {
             var mockSqlDialect = new Mock<SqlDialect>();
@@ -181,10 +181,10 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => mockSqlDialect.Object.CreateQuery(System.Data.StatementType.Update, typeof(Customer), 1223));
 
-            Assert.AreEqual(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
+            Assert.Equal(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void DeleteQueryForInstance()
         {
             var customer = new Customer
@@ -197,11 +197,11 @@
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Delete, customer);
 
-            Assert.AreEqual("DELETE FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
-            Assert.AreEqual(customer.Id, sqlQuery.Arguments[0]);
+            Assert.Equal("DELETE FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[0]);
         }
 
-        [Test]
+        [Fact]
         public void DeleteQueryForTypeByIdentifier()
         {
             object identifier = 239845763;
@@ -211,14 +211,14 @@
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Delete, typeof(Customer), identifier);
 
-            Assert.AreEqual("DELETE FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
-            Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
+            Assert.Equal("DELETE FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
+            Assert.Equal(identifier, sqlQuery.Arguments[0]);
         }
 
         /// <summary>
         /// Issue #11 - Identifier property value should be included on insert for IdentifierStrategy.Assigned.
         /// </summary>
-        [Test]
+        [Fact]
         public void InsertQuery()
         {
             var customer = new Customer
@@ -235,15 +235,15 @@
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
 
-            Assert.AreEqual("INSERT INTO \"Customers\" (\"Created\", \"DoB\", \"CustomerId\", \"Name\", \"StatusId\") VALUES (?, ?, ?, ?, ?)", sqlQuery.CommandText);
-            Assert.AreEqual(customer.Created, sqlQuery.Arguments[0]);
-            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[1]);
-            Assert.AreEqual(customer.Id, sqlQuery.Arguments[2]);
-            Assert.AreEqual(customer.Name, sqlQuery.Arguments[3]);
-            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[4]);
+            Assert.Equal("INSERT INTO \"Customers\" (\"Created\", \"DoB\", \"CustomerId\", \"Name\", \"StatusId\") VALUES (?, ?, ?, ?, ?)", sqlQuery.CommandText);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
+            Assert.Equal((int)customer.Status, sqlQuery.Arguments[4]);
         }
 
-        [Test]
+        [Fact]
         public void SelectQuery()
         {
             object identifier = 12345421;
@@ -253,11 +253,11 @@
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Select, typeof(Customer), identifier);
 
-            Assert.AreEqual("SELECT \"Created\", \"DoB\", \"CustomerId\", \"Name\", \"StatusId\", \"Updated\" FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
-            Assert.AreEqual(identifier, sqlQuery.Arguments[0]);
+            Assert.Equal("SELECT \"Created\", \"DoB\", \"CustomerId\", \"Name\", \"StatusId\", \"Updated\" FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
+            Assert.Equal(identifier, sqlQuery.Arguments[0]);
         }
 
-        [Test]
+        [Fact]
         public void UpdateQuery()
         {
             var customer = new Customer
@@ -274,12 +274,12 @@
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Update, customer);
 
-            Assert.AreEqual("UPDATE \"Customers\" SET \"DoB\" = ?, \"Name\" = ?, \"StatusId\" = ?, \"Updated\" = ? WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
-            Assert.AreEqual(customer.DateOfBirth, sqlQuery.Arguments[0]);
-            Assert.AreEqual(customer.Name, sqlQuery.Arguments[1]);
-            Assert.AreEqual((int)customer.Status, sqlQuery.Arguments[2]);
-            Assert.AreEqual(customer.Updated, sqlQuery.Arguments[3]);
-            Assert.AreEqual(customer.Id, sqlQuery.Arguments[4]);
+            Assert.Equal("UPDATE \"Customers\" SET \"DoB\" = ?, \"Name\" = ?, \"StatusId\" = ?, \"Updated\" = ? WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[1]);
+            Assert.Equal((int)customer.Status, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Updated, sqlQuery.Arguments[3]);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[4]);
         }
 
         [MicroLite.Mapping.Table("Customers")]

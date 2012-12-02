@@ -8,15 +8,15 @@
     using MicroLite.Dialect;
     using MicroLite.Mapping;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="ReadOnlySession"/> class.
     /// </summary>
-    [TestFixture]
+
     public class ReadOnlySessionTests
     {
-        [Test]
+        [Fact]
         public void BeginTransactionCallsConnectionManagerBeginTransaction()
         {
             var mockConnectionManager = new Mock<IConnectionManager>();
@@ -32,7 +32,7 @@
             mockConnectionManager.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void BeginTransactionThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new ReadOnlySession(
@@ -47,7 +47,7 @@
             Assert.Throws<ObjectDisposedException>(() => session.BeginTransaction());
         }
 
-        [Test]
+        [Fact]
         public void BeginTransactionWithIsolationLevelCallsConnectionManagerBeginTransactionWithIsolationLevel()
         {
             var isolationLevel = IsolationLevel.Chaos;
@@ -65,7 +65,7 @@
             mockConnectionManager.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void BeginTransactionWithIsolationLevelThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new ReadOnlySession(
@@ -80,7 +80,7 @@
             Assert.Throws<ObjectDisposedException>(() => session.BeginTransaction(IsolationLevel.ReadCommitted));
         }
 
-        [Test]
+        [Fact]
         public void DisposeDisposesConnectionManager()
         {
             var mockConnectionManager = new Mock<IConnectionManager>();
@@ -98,7 +98,7 @@
             mockConnectionManager.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void FetchExecutesAndReturnsResults()
         {
             var sqlQuery = new SqlQuery("");
@@ -127,7 +127,7 @@
 
             var customers = session.Fetch<Customer>(sqlQuery);
 
-            Assert.AreEqual(1, customers.Count);
+            Assert.Equal(1, customers.Count);
 
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
@@ -136,7 +136,7 @@
             mockSqlDialect.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void FetchThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new ReadOnlySession(
@@ -146,10 +146,10 @@
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Fetch<Customer>(null));
 
-            Assert.AreEqual("sqlQuery", exception.ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void FetchThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new ReadOnlySession(
@@ -164,7 +164,7 @@
             Assert.Throws<ObjectDisposedException>(() => session.Fetch<Customer>(null));
         }
 
-        [Test]
+        [Fact]
         public void IncludeReturnsSameSessionByDifferentInterface()
         {
             var session = new ReadOnlySession(
@@ -174,10 +174,10 @@
 
             var includeSession = session.Include;
 
-            Assert.AreSame(session, includeSession);
+            Assert.Same(session, includeSession);
         }
 
-        [Test]
+        [Fact]
         public void IncludeScalarSqlQueryExecutesAndReturnsResult()
         {
             var sqlQuery = new SqlQuery("");
@@ -209,7 +209,7 @@
             // TODO: find a better way, we don't really want to make the method non private just for testing though...
             typeof(ReadOnlySession).GetMethod("ExecuteAllQueries", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).Invoke(session, null);
 
-            Assert.AreEqual(10, includeScalar.Value);
+            Assert.Equal(10, includeScalar.Value);
 
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
@@ -217,7 +217,7 @@
             mockSqlDialect.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void IncludeScalarThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new ReadOnlySession(
@@ -229,10 +229,10 @@
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Include.Scalar<int>(sqlQuery));
 
-            Assert.AreEqual("sqlQuery", exception.ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void IncludeScalarThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new ReadOnlySession(
@@ -247,7 +247,7 @@
             Assert.Throws<ObjectDisposedException>(() => session.Include.Scalar<int>(new SqlQuery("")));
         }
 
-        [Test]
+        [Fact]
         public void PagedExecutesAndReturnsResults()
         {
             var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
@@ -283,8 +283,8 @@
 
             var page = session.Paged<Customer>(sqlQuery, 10, 25);
 
-            Assert.AreEqual(10, page.Page);
-            Assert.AreEqual(1, page.Results.Count);
+            Assert.Equal(10, page.Page);
+            Assert.Equal(1, page.Results.Count);
 
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
@@ -293,7 +293,7 @@
             mockSqlDialect.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void PagedThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new ReadOnlySession(
@@ -303,10 +303,10 @@
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Paged<Customer>(null, 1, 25));
 
-            Assert.AreEqual("sqlQuery", exception.ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void PagedThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new ReadOnlySession(
@@ -321,7 +321,7 @@
             Assert.Throws<ObjectDisposedException>(() => session.Paged<Customer>(null, 1, 25));
         }
 
-        [Test]
+        [Fact]
         public void ProjectionExecutesAndReturnsResults()
         {
             var sqlQuery = new SqlQuery("");
@@ -351,7 +351,7 @@
 
             var results = session.Projection(sqlQuery);
 
-            Assert.AreEqual(1, results.Count);
+            Assert.Equal(1, results.Count);
 
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
@@ -360,7 +360,7 @@
             mockSqlDialect.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void ProjectionThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new ReadOnlySession(
@@ -370,10 +370,10 @@
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Projection(null));
 
-            Assert.AreEqual("sqlQuery", exception.ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void ProjectionThrowsMicroLiteExceptionIfExecuteReaderThrowsException()
         {
             var sqlQuery = new SqlQuery("");
@@ -394,13 +394,13 @@
             var exception = Assert.Throws<MicroLiteException>(() => session.Projection(sqlQuery));
 
             Assert.NotNull(exception.InnerException);
-            Assert.AreEqual(exception.InnerException.Message, exception.Message);
+            Assert.Equal(exception.InnerException.Message, exception.Message);
 
             // Command should still be disposed.
             mockCommand.Verify(x => x.Dispose());
         }
 
-        [Test]
+        [Fact]
         public void ProjectionThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new ReadOnlySession(
@@ -415,7 +415,7 @@
             Assert.Throws<ObjectDisposedException>(() => session.Projection(null));
         }
 
-        [Test]
+        [Fact]
         public void SingleIdentifierExecutesAndReturnsNull()
         {
             var identifier = 100;
@@ -444,7 +444,7 @@
 
             var customer = session.Single<Customer>(identifier);
 
-            Assert.IsNull(customer);
+            Assert.Null(customer);
 
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
@@ -452,7 +452,7 @@
             mockSqlDialect.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void SingleIdentifierExecutesAndReturnsResult()
         {
             var identifier = 100;
@@ -493,7 +493,7 @@
             mockSqlDialect.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void SingleIdentifierThrowsArgumentNullExceptionForNullIdentifier()
         {
             IReadOnlySession session = new ReadOnlySession(
@@ -505,10 +505,10 @@
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Single<Customer>(identifier));
 
-            Assert.AreEqual("identifier", exception.ParamName);
+            Assert.Equal("identifier", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void SingleIdentifierThrowsObjectDisposedExceptionIfDisposed()
         {
             IReadOnlySession session = new ReadOnlySession(
@@ -523,7 +523,7 @@
             Assert.Throws<ObjectDisposedException>(() => session.Single<Customer>(1));
         }
 
-        [Test]
+        [Fact]
         public void SingleSqlQueryExecutesAndReturnsNull()
         {
             var sqlQuery = new SqlQuery("");
@@ -550,14 +550,14 @@
 
             var customer = session.Single<Customer>(sqlQuery);
 
-            Assert.IsNull(customer);
+            Assert.Null(customer);
 
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
             mockConnectionManager.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void SingleSqlQueryExecutesAndReturnsResult()
         {
             var sqlQuery = new SqlQuery("");
@@ -595,7 +595,7 @@
             mockObjectBuilder.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void SingleSqlQueryThrowsArgumentNullExceptionForNullSqlQuery()
         {
             IReadOnlySession session = new ReadOnlySession(
@@ -607,10 +607,10 @@
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Single<Customer>(sqlQuery));
 
-            Assert.AreEqual("sqlQuery", exception.ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void SingleSqlQueryThrowsObjectDisposedExceptionIfDisposed()
         {
             IReadOnlySession session = new ReadOnlySession(
@@ -625,7 +625,7 @@
             Assert.Throws<ObjectDisposedException>(() => session.Single<Customer>(new SqlQuery("")));
         }
 
-        [Test]
+        [Fact]
         public void TransactionReturnsConnectionManagerCurrentTransaction()
         {
             var transaction = new Mock<ITransaction>().Object;
@@ -638,7 +638,7 @@
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlDialect>().Object);
 
-            Assert.AreSame(transaction, session.Transaction);
+            Assert.Same(transaction, session.Transaction);
         }
 
         [MicroLite.Mapping.Table("dbo", "Customers")]

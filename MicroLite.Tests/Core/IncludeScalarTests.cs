@@ -4,14 +4,13 @@
     using System.Data;
     using MicroLite.Core;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="IncludeScalar&lt;T&gt;"/> class.
     /// </summary>
     public class IncludeScalarTests
     {
-        [TestFixture]
         public class ForAReferenceTypeWhenBuildValueHasBeenCalledAndThereAreNoResults
         {
             private IncludeScalar<string> include = new IncludeScalar<string>();
@@ -24,26 +23,25 @@
                 this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeFalse()
             {
-                Assert.IsFalse(this.include.HasValue);
+                Assert.False(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
             }
 
-            [Test]
+            [Fact]
             public void ValueShouldBeNull()
             {
-                Assert.IsNull(this.include.Value);
+                Assert.Null(this.include.Value);
             }
         }
 
-        [TestFixture]
         public class ForAReferenceTypeWhenBuildValueHasBeenCalledAndThereIsOneResult
         {
             private IncludeScalar<string> include = new IncludeScalar<string>();
@@ -58,26 +56,25 @@
                 this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeTrue()
             {
-                Assert.IsTrue(this.include.HasValue);
+                Assert.True(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
             }
 
-            [Test]
+            [Fact]
             public void ValueShouldBeSetToTheResult()
             {
-                Assert.AreEqual("Foo", this.include.Value);
+                Assert.Equal("Foo", this.include.Value);
             }
         }
 
-        [TestFixture]
         public class ForAReferenceTypeWhenBuildValueHasNotBeenCalled
         {
             private IncludeScalar<string> include = new IncludeScalar<string>();
@@ -86,20 +83,19 @@
             {
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeFalse()
             {
-                Assert.IsFalse(this.include.HasValue);
+                Assert.False(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void ValueShouldBeNull()
             {
-                Assert.IsNull(this.include.Value);
+                Assert.Null(this.include.Value);
             }
         }
 
-        [TestFixture]
         public class ForAValueTypeWhenBuildValueHasBeenCalledAndThereAreNoResults
         {
             private IncludeScalar<int> include = new IncludeScalar<int>();
@@ -112,26 +108,25 @@
                 this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeFalse()
             {
-                Assert.IsFalse(this.include.HasValue);
+                Assert.False(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
             }
 
-            [Test]
+            [Fact]
             public void ValueShouldBeDefaultValue()
             {
-                Assert.AreEqual(0, this.include.Value);
+                Assert.Equal(0, this.include.Value);
             }
         }
 
-        [TestFixture]
         public class ForAValueTypeWhenBuildValueHasBeenCalledAndThereIsOneResult
         {
             private IncludeScalar<int> include = new IncludeScalar<int>();
@@ -146,26 +141,25 @@
                 this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeTrue()
             {
-                Assert.IsTrue(this.include.HasValue);
+                Assert.True(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
             }
 
-            [Test]
+            [Fact]
             public void ValueShouldBeSetToTheResult()
             {
-                Assert.AreEqual(10, this.include.Value);
+                Assert.Equal(10, this.include.Value);
             }
         }
 
-        [TestFixture]
         public class ForAValueTypeWhenBuildValueHasNotBeenCalled
         {
             private IncludeScalar<int> include = new IncludeScalar<int>();
@@ -174,20 +168,19 @@
             {
             }
 
-            [Test]
+            [Fact]
             public void HasValueShouldBeFalse()
             {
-                Assert.IsFalse(this.include.HasValue);
+                Assert.False(this.include.HasValue);
             }
 
-            [Test]
+            [Fact]
             public void ValueShouldBeDefaultValue()
             {
-                Assert.AreEqual(0, this.include.Value);
+                Assert.Equal(0, this.include.Value);
             }
         }
 
-        [TestFixture]
         public class WhenTheDataReaderContainsMultipleColumns
         {
             private IncludeScalar<int> include = new IncludeScalar<int>();
@@ -199,16 +192,15 @@
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, true }).Dequeue);
             }
 
-            [Test]
+            [Fact]
             public void BuildValueShouldThrowAMicroLiteException()
             {
                 var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object, null));
 
-                Assert.AreEqual(Messages.IncludeScalar_MultipleColumns, exception.Message);
+                Assert.Equal(Messages.IncludeScalar_MultipleColumns, exception.Message);
             }
         }
 
-        [TestFixture]
         public class WhenTheDataReaderContainsMultipleResults
         {
             private IncludeScalar<int> include = new IncludeScalar<int>();
@@ -221,12 +213,12 @@
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, true }).Dequeue);
             }
 
-            [Test]
+            [Fact]
             public void BuildValueShouldThrowAMicroLiteException()
             {
                 var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object, null));
 
-                Assert.AreEqual(Messages.IncludeSingle_SingleResultExpected, exception.Message);
+                Assert.Equal(Messages.IncludeSingle_SingleResultExpected, exception.Message);
             }
         }
     }

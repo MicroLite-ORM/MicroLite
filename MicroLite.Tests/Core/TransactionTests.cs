@@ -3,15 +3,15 @@
     using System.Data;
     using MicroLite.Core;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="Transaction"/> class.
     /// </summary>
-    [TestFixture]
+
     public class TransactionTests
     {
-        [Test]
+        [Fact]
         public void BeginOpensConnectionAndBeginsTransaction()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -20,14 +20,14 @@
 
             var transaction = Transaction.Begin(mockConnection.Object);
 
-            Assert.IsTrue(transaction.IsActive);
-            Assert.IsFalse(transaction.WasCommitted);
-            Assert.IsFalse(transaction.WasRolledBack);
+            Assert.True(transaction.IsActive);
+            Assert.False(transaction.WasCommitted);
+            Assert.False(transaction.WasRolledBack);
 
             mockConnection.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void BeginWithIsolationLevelOpensConnectionAndBeginsTransaction()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -36,9 +36,9 @@
 
             var transaction = Transaction.Begin(mockConnection.Object, IsolationLevel.Chaos);
 
-            Assert.IsTrue(transaction.IsActive);
-            Assert.IsFalse(transaction.WasCommitted);
-            Assert.IsFalse(transaction.WasRolledBack);
+            Assert.True(transaction.IsActive);
+            Assert.False(transaction.WasCommitted);
+            Assert.False(transaction.WasRolledBack);
 
             mockConnection.VerifyAll();
         }

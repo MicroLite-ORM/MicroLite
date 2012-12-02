@@ -3,15 +3,15 @@
     using System.Data;
     using MicroLite.Core;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="ConnectionManager"/> class.
     /// </summary>
-    [TestFixture]
+
     public class ConnectionManagerTests
     {
-        [Test]
+        [Fact]
         public void BeginTransactionShouldReturnANewTransactionIfTheCurrentTransactionIsNotActive()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -28,10 +28,10 @@
 
             var transaction2 = connectionManager.BeginTransaction();
 
-            Assert.AreNotSame(transaction1, transaction2);
+            Assert.NotSame(transaction1, transaction2);
         }
 
-        [Test]
+        [Fact]
         public void BeginTransactionShouldReturnTheSameTransactionEachTimeItIsCalledWhileTheCurrentTransactionIsActive()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -46,10 +46,10 @@
             var transaction1 = connectionManager.BeginTransaction();
             var transaction2 = connectionManager.BeginTransaction();
 
-            Assert.AreSame(transaction1, transaction2);
+            Assert.Same(transaction1, transaction2);
         }
 
-        [Test]
+        [Fact]
         public void BeginTransactionWithIsolationLevelReturnsNewTransactionIfActive()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -66,10 +66,10 @@
 
             var transaction2 = connectionManager.BeginTransaction(IsolationLevel.Chaos);
 
-            Assert.AreNotSame(transaction1, transaction2);
+            Assert.NotSame(transaction1, transaction2);
         }
 
-        [Test]
+        [Fact]
         public void BeginTransactionWithIsolationLevelReturnsSameTransactionIfActive()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -84,10 +84,10 @@
             var transaction1 = connectionManager.BeginTransaction(IsolationLevel.Chaos);
             var transaction2 = connectionManager.BeginTransaction(IsolationLevel.Chaos);
 
-            Assert.AreSame(transaction1, transaction2);
+            Assert.Same(transaction1, transaction2);
         }
 
-        [Test]
+        [Fact]
         public void CurrentTransactionReturnsCurrentTransactionIfActive()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -96,18 +96,18 @@
             var connectionManager = new ConnectionManager(mockConnection.Object);
             var transaction = connectionManager.BeginTransaction();
 
-            Assert.AreSame(transaction, connectionManager.CurrentTransaction);
+            Assert.Same(transaction, connectionManager.CurrentTransaction);
         }
 
-        [Test]
+        [Fact]
         public void CurrentTransactionReturnsNullIfNoTransactionStarted()
         {
             var connectionManager = new ConnectionManager(new Mock<IDbConnection>().Object);
 
-            Assert.IsNull(connectionManager.CurrentTransaction);
+            Assert.Null(connectionManager.CurrentTransaction);
         }
 
-        [Test]
+        [Fact]
         public void DisposeClosesAndDisposesConnection()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -121,7 +121,7 @@
             mockConnection.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void DisposeDisposesCurrentTransaction()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -139,7 +139,6 @@
             mockTransaction.VerifyAll();
         }
 
-        [TestFixture]
         public class WhenCallingCreateCommandAndATransactionIsActive
         {
             private readonly IDbCommand command;
@@ -161,26 +160,25 @@
                 this.command = connectionManager.CreateCommand();
             }
 
-            [Test]
+            [Fact]
             public void TheCommandShouldBeCreated()
             {
                 this.mockConnection.Verify(x => x.CreateCommand());
             }
 
-            [Test]
+            [Fact]
             public void TheCommandShouldBeReturned()
             {
                 Assert.NotNull(this.command);
             }
 
-            [Test]
+            [Fact]
             public void TheTransactionShouldBeSetOnTheCommand()
             {
-                Assert.AreEqual(this.transaction, this.command.Transaction);
+                Assert.Equal(this.transaction, this.command.Transaction);
             }
         }
 
-        [TestFixture]
         public class WhenCallingCreateCommandAndTheConnectionIsClosed
         {
             private readonly IDbCommand command;
@@ -196,19 +194,19 @@
                 this.command = connectionManager.CreateCommand();
             }
 
-            [Test]
+            [Fact]
             public void TheCommandShouldBeCreated()
             {
                 this.mockConnection.Verify(x => x.CreateCommand());
             }
 
-            [Test]
+            [Fact]
             public void TheCommandShouldBeReturned()
             {
                 Assert.NotNull(this.command);
             }
 
-            [Test]
+            [Fact]
             public void TheConnectionShouldBeOpened()
             {
                 this.mockConnection.Verify(x => x.Open());

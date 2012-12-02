@@ -4,18 +4,18 @@
     using System.Data;
     using MicroLite.Core;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="AdoTransaction"/> class.
     /// </summary>
-    [TestFixture]
+
     public class AdoTransactionTests
     {
         /// <summary>
         /// Issue #56 - Calling Commit more than once should throw an InvalidOperationException.
         /// </summary>
-        [Test]
+        [Fact]
         public void CallingCommitTwiceShouldResultInInvalidOperationExceptionBeingThrown()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -28,13 +28,13 @@
             transaction.Commit();
 
             var exception = Assert.Throws<InvalidOperationException>(() => transaction.Commit());
-            Assert.AreEqual(Messages.Transaction_Completed, exception.Message);
+            Assert.Equal(Messages.Transaction_Completed, exception.Message);
         }
 
         /// <summary>
         /// Issue #58 - Calling RollBack if Committed successfully should throw an InvalidOperationException.
         /// </summary>
-        [Test]
+        [Fact]
         public void CallingRollBackIfCommittedShouldResultInInvalidOperationExceptionBeingThrown()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -47,13 +47,13 @@
             transaction.Commit();
 
             var exception = Assert.Throws<InvalidOperationException>(() => transaction.Rollback());
-            Assert.AreEqual(Messages.Transaction_Completed, exception.Message);
+            Assert.Equal(Messages.Transaction_Completed, exception.Message);
         }
 
         /// <summary>
         /// Issue #57 - Calling RollBack more than once should throw an InvalidOperationException.
         /// </summary>
-        [Test]
+        [Fact]
         public void CallingRollBackTwiceShouldResultInInvalidOperationExceptionBeingThrown()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -66,10 +66,10 @@
             transaction.Rollback();
 
             var exception = Assert.Throws<InvalidOperationException>(() => transaction.Rollback());
-            Assert.AreEqual(Messages.Transaction_Completed, exception.Message);
+            Assert.Equal(Messages.Transaction_Completed, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void CommitCallsDbConnectionClose()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -84,7 +84,7 @@
             mockConnection.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void CommitCallsDbTransactionCommit()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -97,7 +97,7 @@
             mockTransaction.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void CommitCallsDbTransactionCommitAndReThrowsExceptionIfCommitFails()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -108,11 +108,11 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => transaction.Commit());
 
-            Assert.IsInstanceOf<InvalidOperationException>(exception.InnerException);
-            Assert.AreEqual(exception.Message, exception.InnerException.Message);
+            Assert.IsType<InvalidOperationException>(exception.InnerException);
+            Assert.Equal(exception.Message, exception.InnerException.Message);
         }
 
-        [Test]
+        [Fact]
         public void CommitSetsIsActiveToFalse()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -121,10 +121,10 @@
             var transaction = new AdoTransaction(mockTransaction.Object);
             transaction.Commit();
 
-            Assert.IsFalse(transaction.IsActive);
+            Assert.False(transaction.IsActive);
         }
 
-        [Test]
+        [Fact]
         public void CommitSetsWasCommittedToTrue()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -133,10 +133,10 @@
             var transaction = new AdoTransaction(mockTransaction.Object);
             transaction.Commit();
 
-            Assert.IsTrue(transaction.WasCommitted);
+            Assert.True(transaction.WasCommitted);
         }
 
-        [Test]
+        [Fact]
         public void CommitThrowsObjectDisposedExceptionIfDisposed()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -157,7 +157,7 @@
         /// <remarks>
         /// This was because dispose also called rollback if the transaction was not committed.
         /// </remarks>
-        [Test]
+        [Fact]
         public void DisposeDoesNotRollbackDbTransactionIfAlreadyRolledback()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -173,7 +173,7 @@
             mockTransaction.Verify(x => x.Rollback(), Times.Once());
         }
 
-        [Test]
+        [Fact]
         public void DisposeDoesNotRollbackDbTransactionIfCommittedAndDisposesDbTransaction()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -194,7 +194,7 @@
         /// Issue #55 - Transaction should not try and rollback if faulted.
         /// </summary>
         /// <remarks>This was because dispose was not checking faulted in addition to committed and rolledback.</remarks>
-        [Test]
+        [Fact]
         public void DisposeDoesNotRollbackDbTransactionIfFaulted()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -210,7 +210,7 @@
             mockTransaction.Verify(x => x.Rollback(), Times.Never());
         }
 
-        [Test]
+        [Fact]
         public void DisposeRollsbackDbTransactionIfNotCommitedAndDisposesDbTransaction()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -226,7 +226,7 @@
             mockTransaction.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void EnlistDoesNotSetTransactionOnDbCommandIfCommitted()
         {
             var mockCommand = new Mock<IDbCommand>();
@@ -241,10 +241,10 @@
             transaction.Commit();
             transaction.Enlist(command);
 
-            Assert.IsNull(command.Transaction);
+            Assert.Null(command.Transaction);
         }
 
-        [Test]
+        [Fact]
         public void EnlistDoesNotSetTransactionOnDbCommandIfRolledBack()
         {
             var mockCommand = new Mock<IDbCommand>();
@@ -259,10 +259,10 @@
             transaction.Rollback();
             transaction.Enlist(command);
 
-            Assert.IsNull(command.Transaction);
+            Assert.Null(command.Transaction);
         }
 
-        [Test]
+        [Fact]
         public void EnlistSetsTransactionOnDbCommandIfNotCommitted()
         {
             var mockCommand = new Mock<IDbCommand>();
@@ -278,10 +278,10 @@
             var transaction = new AdoTransaction(mockTransaction.Object);
             transaction.Enlist(command);
 
-            Assert.AreSame(dbTransaction, command.Transaction);
+            Assert.Same(dbTransaction, command.Transaction);
         }
 
-        [Test]
+        [Fact]
         public void EnlistThrowsArgumentNullExceptionForNullDbCommand()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -291,10 +291,10 @@
 
             var exception = Assert.Throws<ArgumentNullException>(() => transaction.Enlist(null));
 
-            Assert.AreEqual("command", exception.ParamName);
+            Assert.Equal("command", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void IsolationLevelReurnsTransactionIsolationLevel()
         {
             var mockDbTransaction = new Mock<IDbTransaction>();
@@ -304,10 +304,10 @@
 
             var transaction = new AdoTransaction(dbTransaction);
 
-            Assert.AreEqual(dbTransaction.IsolationLevel, transaction.IsolationLevel);
+            Assert.Equal(dbTransaction.IsolationLevel, transaction.IsolationLevel);
         }
 
-        [Test]
+        [Fact]
         public void RollbackCallsDbConnectionClose()
         {
             var mockConnection = new Mock<IDbConnection>();
@@ -322,7 +322,7 @@
             mockConnection.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void RollbackCallsDbTransactionRollback()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -335,7 +335,7 @@
             mockTransaction.VerifyAll();
         }
 
-        [Test]
+        [Fact]
         public void RollbackCallsDbTransactionRollbackAndReThrowsExceptionIfRollbackFails()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -346,11 +346,11 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => transaction.Rollback());
 
-            Assert.IsInstanceOf<InvalidOperationException>(exception.InnerException);
-            Assert.AreEqual(exception.Message, exception.InnerException.Message);
+            Assert.IsType<InvalidOperationException>(exception.InnerException);
+            Assert.Equal(exception.Message, exception.InnerException.Message);
         }
 
-        [Test]
+        [Fact]
         public void RollbackSetsIsActiveToFalse()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -359,10 +359,10 @@
             var transaction = new AdoTransaction(mockTransaction.Object);
             transaction.Rollback();
 
-            Assert.IsFalse(transaction.IsActive);
+            Assert.False(transaction.IsActive);
         }
 
-        [Test]
+        [Fact]
         public void RollbackSetsWasRolledBackToTrue()
         {
             var mockTransaction = new Mock<IDbTransaction>();
@@ -371,10 +371,10 @@
             var transaction = new AdoTransaction(mockTransaction.Object);
             transaction.Rollback();
 
-            Assert.IsTrue(transaction.WasRolledBack);
+            Assert.True(transaction.WasRolledBack);
         }
 
-        [Test]
+        [Fact]
         public void RollbackThrowsObjectDisposedExceptionIfDisposed()
         {
             var mockTransaction = new Mock<IDbTransaction>();

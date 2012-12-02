@@ -2,15 +2,15 @@
 {
     using System;
     using MicroLite.Listeners;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit tests for the <see cref="AutoIncrementListener"/> class.
     /// </summary>
-    [TestFixture]
+
     public class AutoIncrementListenerTests
     {
-        [Test]
+        [Fact]
         public void AfterInsertSetsIdentifierValue()
         {
             var customer = new Customer();
@@ -19,30 +19,30 @@
             var listener = new AutoIncrementListener();
             listener.AfterInsert(customer, scalarResult);
 
-            Assert.AreEqual(Convert.ToInt32(scalarResult), customer.Id);
+            Assert.Equal(Convert.ToInt32(scalarResult), customer.Id);
         }
 
-        [Test]
+        [Fact]
         public void AfterInsertThrowsArgumentNullExceptionForNullExecuteScalarResult()
         {
             var listener = new AutoIncrementListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.AfterInsert(new Customer(), null));
 
-            Assert.AreEqual("executeScalarResult", exception.ParamName);
+            Assert.Equal("executeScalarResult", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void AfterInsertThrowsArgumentNullExceptionForNullInstance()
         {
             var listener = new AutoIncrementListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.AfterInsert(null, 1));
 
-            Assert.AreEqual("instance", exception.ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void BeforeDeleteDoesNotThrowIfIdentifierSet()
         {
             var customer = new Customer
@@ -55,17 +55,17 @@
             listener.BeforeDelete(customer);
         }
 
-        [Test]
+        [Fact]
         public void BeforeDeleteThrowsArgumentNullExceptionForNullInstance()
         {
             var listener = new AutoIncrementListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeDelete(null));
 
-            Assert.AreEqual("instance", exception.ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void BeforeDeleteThrowsMicroLiteExceptionIfIdentifierNotSet()
         {
             var customer = new Customer
@@ -77,10 +77,10 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeDelete(customer));
 
-            Assert.AreEqual(Messages.IListener_IdentifierNotSetForDelete, exception.Message);
+            Assert.Equal(Messages.IListener_IdentifierNotSetForDelete, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void BeforeInsertDoesNotThrowIfIdentifierNotSet()
         {
             var customer = new Customer
@@ -93,17 +93,17 @@
             listener.BeforeInsert(customer);
         }
 
-        [Test]
+        [Fact]
         public void BeforeInsertThrowsArgumentNullExceptionForNullInstance()
         {
             var listener = new AutoIncrementListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeInsert(null));
 
-            Assert.AreEqual("instance", exception.ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void BeforeInsertThrowsMicroLiteExceptionIfIdentifierAlreadySet()
         {
             var customer = new Customer
@@ -115,10 +115,10 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeInsert(customer));
 
-            Assert.AreEqual(Messages.IListener_IdentifierSetForInsert, exception.Message);
+            Assert.Equal(Messages.IListener_IdentifierSetForInsert, exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void BeforeUpdateDoesNotThrowIfIdentifierSet()
         {
             var customer = new Customer
@@ -131,17 +131,17 @@
             listener.BeforeUpdate(customer);
         }
 
-        [Test]
+        [Fact]
         public void BeforeUpdateThrowsArgumentNullExceptionForNullInstance()
         {
             var listener = new AutoIncrementListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeUpdate(null));
 
-            Assert.AreEqual("instance", exception.ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void BeforeUpdateThrowsMicroLiteExceptionIfIdentifierNotSet()
         {
             var customer = new Customer
@@ -153,7 +153,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeUpdate(customer));
 
-            Assert.AreEqual(Messages.IListener_IdentifierNotSetForUpdate, exception.Message);
+            Assert.Equal(Messages.IListener_IdentifierNotSetForUpdate, exception.Message);
         }
 
         [MicroLite.Mapping.Table("Sales", "Customers")]
