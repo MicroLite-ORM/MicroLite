@@ -115,15 +115,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Beginning a new transaction.
-        /// </summary>
-        internal static string ConnectionManager_BeginTransaction {
-            get {
-                return ResourceManager.GetString("ConnectionManager_BeginTransaction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Beginning a new transaction with IsolationLevel.{0}.
         /// </summary>
         internal static string ConnectionManager_BeginTransactionWithIsolationLevel {

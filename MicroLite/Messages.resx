@@ -192,9 +192,6 @@
   <data name="Transaction_Committing" xml:space="preserve">
     <value>Transaction committing changes</value>
   </data>
-  <data name="ConnectionManager_BeginTransaction" xml:space="preserve">
-    <value>Beginning a new transaction</value>
-  </data>
   <data name="Transaction_Disposed" xml:space="preserve">
     <value>Transaction disposed</value>
   </data>
