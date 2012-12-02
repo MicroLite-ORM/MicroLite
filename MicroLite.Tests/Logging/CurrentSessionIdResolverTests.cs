@@ -7,7 +7,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="CurrentSessionIdResolver"/> class.
     /// </summary>
-
     public class CurrentSessionIdResolverTests
     {
         [Fact]

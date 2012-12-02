@@ -9,7 +9,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="MySqlDialect"/> class.
     /// </summary>
-
     public class MySqlDialectTests
     {
         private enum CustomerStatus

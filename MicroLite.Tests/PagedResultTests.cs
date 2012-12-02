@@ -6,7 +6,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="PagedResult"/> class.
     /// </summary>
-
     public class PagedResultTests
     {
         [Fact]

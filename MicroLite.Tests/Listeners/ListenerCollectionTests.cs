@@ -7,7 +7,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="ListenerCollection"/> class.
     /// </summary>
-
     public class ListenerCollectionTests
     {
         [Fact]

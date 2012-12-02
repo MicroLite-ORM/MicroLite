@@ -6,7 +6,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="ColumnAttribute"/> class.
     /// </summary>
-
     public class ColumnAttributeTests
     {
         [Fact]

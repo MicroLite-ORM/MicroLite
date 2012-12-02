@@ -10,7 +10,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="MsSqlDialect"/> class.
     /// </summary>
-
     public class MsSqlDialectTests
     {
         private enum CustomerStatus

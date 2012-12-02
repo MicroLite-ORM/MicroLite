@@ -9,7 +9,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="SQLiteDialect"/> class.
     /// </summary>
-
     public class SQLiteDialectTests
     {
         private enum CustomerStatus

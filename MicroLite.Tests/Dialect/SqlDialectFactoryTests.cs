@@ -8,7 +8,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="SqlDialectFactory"/> class.
     /// </summary>
-
     public class SqlDialectFactoryTests
     {
         [Fact]

@@ -8,7 +8,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="LogExtensions"/> class.
     /// </summary>
-
     public class LogExtensionsTests
     {
         [Fact]

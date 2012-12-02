@@ -8,7 +8,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="ObjectInfo"/> class.
     /// </summary>
-
     public class ObjectInfoTests
     {
         private enum CustomerStatus

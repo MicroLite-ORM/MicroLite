@@ -7,7 +7,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="SqlBuilder"/> class.
     /// </summary>
-
     public class SqlBuilderTests
     {
         [Fact]

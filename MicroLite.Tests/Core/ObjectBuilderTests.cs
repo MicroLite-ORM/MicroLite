@@ -10,7 +10,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="ObjectBuilder"/> class.
     /// </summary>
-
     public class ObjectBuilderTests
     {
         private enum CustomerStatus

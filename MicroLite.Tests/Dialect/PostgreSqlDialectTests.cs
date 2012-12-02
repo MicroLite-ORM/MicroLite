@@ -9,7 +9,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="PostgreSqlDialect"/> class.
     /// </summary>
-
     public class PostgreSqlDialectTests
     {
         private enum CustomerStatus

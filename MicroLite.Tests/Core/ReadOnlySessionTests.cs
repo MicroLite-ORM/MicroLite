@@ -13,7 +13,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="ReadOnlySession"/> class.
     /// </summary>
-
     public class ReadOnlySessionTests
     {
         [Fact]

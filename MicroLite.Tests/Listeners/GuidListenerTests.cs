@@ -7,7 +7,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="GuidListener"/> class.
     /// </summary>
-
     public class GuidListenerTests
     {
         [Fact]

@@ -11,7 +11,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="Session"/> class.
     /// </summary>
-
     public class SessionTests
     {
         [Fact]

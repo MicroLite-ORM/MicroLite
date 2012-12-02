@@ -9,7 +9,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="AttributeMappingConvention"/> class.
     /// </summary>
-
     public class AttributeMappingConventionTests
     {
         private enum CustomerStatus

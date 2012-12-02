@@ -6,7 +6,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="SqlQuery"/> class.
     /// </summary>
-
     public class SqlQueryTests
     {
         [Fact]

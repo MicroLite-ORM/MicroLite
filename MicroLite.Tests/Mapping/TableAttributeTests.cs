@@ -6,7 +6,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="TableAttribute"/> class.
     /// </summary>
-
     public class TableAttributeTests
     {
         [Fact]

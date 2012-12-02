@@ -10,7 +10,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="IncludeSingle&lt;T&gt;"/> class.
     /// </summary>
-
     public class IncludeSingleTests
     {
         public class WhenBuildValueHasBeenCalledAndThereAreNoResults

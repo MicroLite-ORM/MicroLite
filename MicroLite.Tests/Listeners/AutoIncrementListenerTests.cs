@@ -7,7 +7,6 @@
     /// <summary>
     /// Unit tests for the <see cref="AutoIncrementListener"/> class.
     /// </summary>
-
     public class AutoIncrementListenerTests
     {
         [Fact]

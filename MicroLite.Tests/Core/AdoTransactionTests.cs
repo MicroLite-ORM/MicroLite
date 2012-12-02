@@ -9,7 +9,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="AdoTransaction"/> class.
     /// </summary>
-
     public class AdoTransactionTests
     {
         /// <summary>

@@ -7,7 +7,6 @@
     /// <summary>
     /// Unit tests for the <see cref="IdentityListener"/> class.
     /// </summary>
-
     public class IdentityListenerTests
     {
         [Fact]

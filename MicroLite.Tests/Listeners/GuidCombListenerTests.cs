@@ -7,7 +7,6 @@
     /// <summary>
     /// Unit Tests for the <see cref="GuidCombListener"/> class.
     /// </summary>
-
     public class GuidCombListenerTests
     {
         [Fact]
