@@ -6,25 +6,42 @@
     /// <summary>
     /// Unit Tests for the <see cref="Configure"/> class.
     /// </summary>
-
     public class ConfigureTests
     {
-        [Fact]
-        public void ExtensionsReturnsNewInstanceOnEachCall()
+        public class WhenCallingExtensionsMultipleTimes
         {
-            var extensions1 = Configure.Extensions();
-            var extensions2 = Configure.Extensions();
+            private readonly IConfigureExtensions extensions1;
+            private readonly IConfigureExtensions extensions2;
 
-            Assert.NotSame(extensions1, extensions2);
+            public WhenCallingExtensionsMultipleTimes()
+            {
+                this.extensions1 = Configure.Extensions();
+                this.extensions2 = Configure.Extensions();
+            }
+
+            [Fact]
+            public void ANewInstanceShouldBeReturnedEachTime()
+            {
+                Assert.NotSame(this.extensions1, this.extensions2);
+            }
         }
 
-        [Fact]
-        public void FluentlyReturnsNewInstanceOnEachCall()
+        public class WhenCallingFluentlyMultipleTimes
         {
-            var configure1 = Configure.Fluently();
-            var configure2 = Configure.Fluently();
+            private readonly IConfigureConnection configure1;
+            private readonly IConfigureConnection configure2;
 
-            Assert.NotSame(configure1, configure2);
+            public WhenCallingFluentlyMultipleTimes()
+            {
+                this.configure1 = Configure.Fluently();
+                this.configure2 = Configure.Fluently();
+            }
+
+            [Fact]
+            public void ANewInstanceShouldBeReturnedEachTime()
+            {
+                Assert.NotSame(this.configure1, this.configure2);
+            }
         }
     }
 }

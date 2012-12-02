@@ -8,80 +8,116 @@
     /// <summary>
     /// Unit Tests for the <see cref="FluentConfiguration"/> class.
     /// </summary>
-
     public class FluentConfigurationTests
     {
-        [Fact]
-        public void CreateSessionFactoryAddsInstanceToStaticProperty()
+        public class WhenCallingCreateSessionFactory : IDisposable
         {
-            var fluentConfiguration = new FluentConfiguration();
+            private readonly ISessionFactory sessionFactory;
 
-            var sessionFactory = fluentConfiguration.ForConnection("SqlConnection").CreateSessionFactory();
+            public WhenCallingCreateSessionFactory()
+            {
+                Configure.SessionFactories.Clear();
 
-            Assert.Contains(sessionFactory, Configure.SessionFactories);
+                var fluentConfiguration = new FluentConfiguration();
+
+                this.sessionFactory = fluentConfiguration.ForConnection("SqlConnection").CreateSessionFactory();
+            }
+
+            public void Dispose()
+            {
+                Configure.SessionFactories.Clear();
+            }
+
+            [Fact]
+            public void TheConnectionNameShouldBeSetOnTheReturnedSessionFactory()
+            {
+                Assert.Equal("SqlConnection", this.sessionFactory.ConnectionName);
+            }
+
+            [Fact]
+            public void TheSessionFactoryShouldBeAddedToTheSessionFactoriesProperty()
+            {
+                Assert.Contains(this.sessionFactory, Configure.SessionFactories);
+            }
         }
 
-        [Fact]
-        public void CreateSessionFactoryReturnsSameInstanceForSameConnectionName()
+        public class WhenCallingCreateSessionFactoryMultipleTimes : IDisposable
         {
-            var fluentConfiguration = new FluentConfiguration();
+            private readonly ISessionFactory sessionFactory1;
+            private readonly ISessionFactory sessionFactory2;
 
-            var sessionFactory1 = fluentConfiguration.ForConnection("SqlConnection").CreateSessionFactory();
-            var sessionFactory2 = fluentConfiguration.ForConnection("SqlConnection").CreateSessionFactory();
+            public WhenCallingCreateSessionFactoryMultipleTimes()
+            {
+                Configure.SessionFactories.Clear();
 
-            Assert.Same(sessionFactory1, sessionFactory2);
+                var fluentConfiguration = new FluentConfiguration();
+
+                this.sessionFactory1 = fluentConfiguration.ForConnection("SqlConnection").CreateSessionFactory();
+                this.sessionFactory2 = fluentConfiguration.ForConnection("SqlConnection").CreateSessionFactory();
+            }
+
+            public void Dispose()
+            {
+                Configure.SessionFactories.Clear();
+            }
+
+            [Fact]
+            public void TheSameSessionFactoryShouldBeReturned()
+            {
+                Assert.Same(this.sessionFactory1, this.sessionFactory2);
+            }
         }
 
-        [Fact]
-        public void CreateSessionFactoryReturnsSessionFactoryForNamedConnection()
+        public class WhenCallingForConnectionAndTheConnectionNameDoesNotExistInTheAppConfig
         {
-            var fluentConfiguration = new FluentConfiguration();
+            [Fact]
+            public void AMicroLiteExceptionShouldBeThrown()
+            {
+                var fluentConfiguration = new FluentConfiguration();
 
-            var sessionFactory = fluentConfiguration.ForConnection("SqlConnection").CreateSessionFactory();
+                var exception = Assert.Throws<MicroLiteException>(() => fluentConfiguration.ForConnection("TestDB"));
 
-            Assert.Equal("SqlConnection", sessionFactory.ConnectionName);
+                Assert.Equal(Messages.FluentConfiguration_ConnectionNotFound.FormatWith("TestDB"), exception.Message);
+            }
         }
 
-        [Fact]
-        public void ForConnectionThrowsArgumentNullExceptionForNullConnectionName()
+        public class WhenCallingForConnectionAndTheConnectionNameIsNull
         {
-            var fluentConfiguration = new FluentConfiguration();
+            [Fact]
+            public void AnArgumentNullExceptionShouldBeThrown()
+            {
+                var fluentConfiguration = new FluentConfiguration();
 
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => fluentConfiguration.ForConnection(null));
+                var exception = Assert.Throws<ArgumentNullException>(() => fluentConfiguration.ForConnection(null));
 
-            Assert.Equal(exception.ParamName, "connectionName");
+                Assert.Equal(exception.ParamName, "connectionName");
+            }
         }
 
-        [Fact]
-        public void ForConnectionThrowsMicroLiteExceptionIfConnectionNameNotInConfigSection()
+        public class WhenCallingForConnectionAndTheProviderInTheAppConfigIsNotSupported
         {
-            var fluentConfiguration = new FluentConfiguration();
+            [Fact]
+            public void AMicroLiteExceptionShouldBeThrown()
+            {
+                var fluentConfiguration = new FluentConfiguration();
 
-            var exception = Assert.Throws<MicroLiteException>(
-                () => fluentConfiguration.ForConnection("TestDB"));
+                var exception = Assert.Throws<NotSupportedException>(
+                    () => fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.DB2"));
 
-            Assert.Equal(Messages.FluentConfiguration_ConnectionNotFound.FormatWith("TestDB"), exception.Message);
+                Assert.Equal(Messages.SqlDialectFactory_DialectNotSupported.FormatWith("MicroLite.Dialect.DB2"), exception.Message);
+            }
         }
 
-        [Fact]
-        public void ForConnectionThrowsNotSupportedExceptionIfProviderNameNotSupported()
+        public class WhenCallingForConnectionAndTheSqlDialectIsNotSupported
         {
-            var fluentConfiguration = new FluentConfiguration();
+            [Fact]
+            public void AMicroLiteExceptionShouldBeThrown()
+            {
+                var fluentConfiguration = new FluentConfiguration();
 
-            var exception = Assert.Throws<MicroLiteException>(
-                () => fluentConfiguration.ForConnection("ConnectionWithInvalidProviderName"));
-        }
-
-        [Fact]
-        public void ForConnectionThrowsNotSupportedExceptionIfSqlDialectNotSupported()
-        {
-            var fluentConfiguration = new FluentConfiguration();
-
-            var exception = Assert.Throws<NotSupportedException>(
-                () => fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.DB2"));
-
-            Assert.Equal(Messages.SqlDialectFactory_DialectNotSupported.FormatWith("MicroLite.Dialect.DB2"), exception.Message);
+                var exception = Assert.Throws<MicroLiteException>(
+                    () => fluentConfiguration.ForConnection("ConnectionWithInvalidProviderName"));
+            }
         }
     }
 }
