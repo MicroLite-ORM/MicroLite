@@ -21,6 +21,8 @@ namespace MicroLite.Logging
     /// </summary>
     public static class LogExtensions
     {
+        private static readonly bool debuggerAttached = Debugger.IsAttached;
+
         /// <summary>
         /// Writes the message to the log as a debug statement.
         /// </summary>
@@ -62,7 +64,7 @@ namespace MicroLite.Logging
                 }
             }
 
-            if (Debugger.IsAttached)
+            if (debuggerAttached)
             {
                 Trace.TraceError(message, formatArgs);
             }
@@ -81,7 +83,7 @@ namespace MicroLite.Logging
                 log.Error(message, exception);
             }
 
-            if (Debugger.IsAttached)
+            if (debuggerAttached)
             {
                 Trace.TraceError(message);
             }
@@ -107,7 +109,7 @@ namespace MicroLite.Logging
                 }
             }
 
-            if (Debugger.IsAttached)
+            if (debuggerAttached)
             {
                 Trace.TraceError(message, formatArgs);
             }
@@ -126,7 +128,7 @@ namespace MicroLite.Logging
                 log.Fatal(message, exception);
             }
 
-            if (Debugger.IsAttached)
+            if (debuggerAttached)
             {
                 Trace.TraceError(message);
             }
@@ -173,7 +175,7 @@ namespace MicroLite.Logging
                 }
             }
 
-            if (Debugger.IsAttached)
+            if (debuggerAttached)
             {
                 Trace.TraceWarning(message, formatArgs);
             }
