@@ -140,6 +140,7 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
+        [Obsolete("This method has been replaced and will be removed in MicroLite 3.1.0, please call session.Paged(sqlQuery, PagingOptions.ForPage(page, resultsPerPage)) instead of session.Paged(sqlQuery, page, resultsPerPage)")]
         PagedResult<T> Paged<T>(SqlQuery sqlQuery, int page, int resultsPerPage) where T : class, new();
 
         /// <summary>
