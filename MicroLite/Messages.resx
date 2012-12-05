@@ -279,4 +279,7 @@
   <data name="ConnectionManager_EnlistingInTransaction" xml:space="preserve">
     <value>Enlisting in the current transaction</value>
   </data>
+  <data name="Session_PagingOptionsMustNotBeNone" xml:space="preserve">
+    <value>The paging options must contain a count and offset, use the PagingOptions.ForPage or PagingOptions.SkipTake methods to specify the values</value>
+  </data>
 </root>

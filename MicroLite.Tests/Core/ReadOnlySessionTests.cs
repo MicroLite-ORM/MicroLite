@@ -643,6 +643,22 @@
             Assert.Same(transaction, session.Transaction);
         }
 
+        public class WhenCallingPagedUsingPagingOptionsNone
+        {
+            [Fact]
+            public void AMicroLiteExceptionIsThrown()
+            {
+                var session = new ReadOnlySession(
+                    new Mock<IConnectionManager>().Object,
+                    new Mock<IObjectBuilder>().Object,
+                    new Mock<ISqlDialect>().Object);
+
+                var exception = Assert.Throws<MicroLiteException>(() => session.Paged<Customer>(new SqlQuery(""), PagingOptions.None));
+
+                Assert.Equal(Messages.Session_PagingOptionsMustNotBeNone, exception.Message);
+            }
+        }
+
         [MicroLite.Mapping.Table("dbo", "Customers")]
         private class Customer
         {

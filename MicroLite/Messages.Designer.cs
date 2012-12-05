@@ -421,6 +421,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The paging options must contain a count and offset, use the PagingOptions.ForPage or PagingOptions.SkipTake methods to specify the values.
+        /// </summary>
+        internal static string Session_PagingOptionsMustNotBeNone {
+            get {
+                return ResourceManager.GetString("Session_PagingOptionsMustNotBeNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creating a new read only session for connection [{0}] using [{1}].
         /// </summary>
         internal static string SessionFactory_CreatingReadOnlySession {

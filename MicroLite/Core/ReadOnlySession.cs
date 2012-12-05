@@ -213,6 +213,11 @@ namespace MicroLite.Core
 
         public PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions) where T : class, new()
         {
+            if (pagingOptions == PagingOptions.None)
+            {
+                throw new MicroLiteException(Messages.Session_PagingOptionsMustNotBeNone);
+            }
+
             using (new SessionLoggingContext(this.Id))
             {
                 var countSqlQuery = this.SqlDialect.CountQuery(sqlQuery);
