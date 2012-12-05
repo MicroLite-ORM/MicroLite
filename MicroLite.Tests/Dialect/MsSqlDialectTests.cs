@@ -368,6 +368,18 @@
             }
         }
 
+        public class WhenCallingCombineAndTheSourceQueriesIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionShouldBeThrown()
+            {
+                var sqlDialect = new MsSqlDialect();
+                var exception = Assert.Throws<ArgumentNullException>(() => sqlDialect.Combine(null));
+
+                Assert.Equal("sqlQueries", exception.ParamName);
+            }
+        }
+
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
         private class Customer
         {
