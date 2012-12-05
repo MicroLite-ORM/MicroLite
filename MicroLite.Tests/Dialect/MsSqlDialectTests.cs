@@ -276,6 +276,98 @@
             Assert.Equal(25, paged.Arguments[2]);////, "The third argument should be the end row number");
         }
 
+        public class WhenCallingCombine
+        {
+            private readonly SqlQuery combinedQuery;
+            private readonly SqlQuery sqlQuery1;
+            private readonly SqlQuery sqlQuery2;
+
+            public WhenCallingCombine()
+            {
+                this.sqlQuery1 = new SqlQuery("SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1", "Foo", 100);
+                this.sqlQuery1.Timeout = 38;
+
+                this.sqlQuery2 = new SqlQuery("SELECT [Column_1], [Column_2] FROM [dbo].[Table_2] WHERE ([Column_1] = @p0 OR @p0 IS NULL) AND [Column_2] < @p1", "Bar", -1);
+                this.sqlQuery2.Timeout = 42;
+
+                var sqlDialect = new MsSqlDialect();
+
+                this.combinedQuery = sqlDialect.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
+            }
+
+            [Fact]
+            public void TheCombinedArgumentsShouldContainTheFirstArgumentOfTheFirstQuery()
+            {
+                Assert.Equal(this.sqlQuery1.Arguments[0], this.combinedQuery.Arguments[0]);
+            }
+
+            [Fact]
+            public void TheCombinedArgumentsShouldContainTheFirstArgumentOfTheSecondQuery()
+            {
+                Assert.Equal(this.sqlQuery2.Arguments[0], this.combinedQuery.Arguments[2]);
+            }
+
+            [Fact]
+            public void TheCombinedArgumentsShouldContainTheNumberOfArgumentsInTheSourceQueries()
+            {
+                Assert.Equal(this.sqlQuery1.Arguments.Count + this.sqlQuery2.Arguments.Count, this.combinedQuery.Arguments.Count);
+            }
+
+            [Fact]
+            public void TheCombinedArgumentsShouldContainTheSecondArgumentOfTheFirstQuery()
+            {
+                Assert.Equal(this.sqlQuery1.Arguments[1], this.combinedQuery.Arguments[1]);
+            }
+
+            [Fact]
+            public void TheCombinedArgumentsShouldContainTheSecondArgumentOfTheSecondQuery()
+            {
+                Assert.Equal(this.sqlQuery2.Arguments[1], this.combinedQuery.Arguments[3]);
+            }
+
+            [Fact]
+            public void TheCombinedCommandTextShouldBeSeparatedUsingTheSelectSeparator()
+            {
+                Assert.Equal(
+                    "SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1;\r\nSELECT [Column_1], [Column_2] FROM [dbo].[Table_2] WHERE ([Column_1] = @p2 OR @p2 IS NULL) AND [Column_2] < @p3",
+                    this.combinedQuery.CommandText);
+            }
+
+            [Fact]
+            public void TheTimeoutShouldBeSetToTheLongestTimeoutOfTheSourceQueries()
+            {
+                Assert.Equal(this.sqlQuery2.Timeout, this.combinedQuery.Timeout);
+            }
+        }
+
+        /// <summary>
+        /// Issue #90 - Re-Writing parameters should not happen if the query is a stored procedure.
+        /// </summary>
+        public class WhenCallingCombineAndAnSqlQueryIsForAStoredProcedure
+        {
+            private readonly SqlQuery combinedQuery;
+            private readonly SqlQuery sqlQuery1;
+            private readonly SqlQuery sqlQuery2;
+
+            public WhenCallingCombineAndAnSqlQueryIsForAStoredProcedure()
+            {
+                this.sqlQuery1 = new SqlQuery("SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1", "Foo", 100);
+                this.sqlQuery2 = new SqlQuery("EXEC CustomersByStatus @StatusId", 2);
+
+                var sqlDialect = new MsSqlDialect();
+
+                this.combinedQuery = sqlDialect.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
+            }
+
+            [Fact]
+            public void TheParameterNamesForTheStoredProcedureShouldNotBeRenamed()
+            {
+                Assert.Equal(
+                    "SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1;\r\nEXEC CustomersByStatus @StatusId",
+                    this.combinedQuery.CommandText);
+            }
+        }
+
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
         private class Customer
         {

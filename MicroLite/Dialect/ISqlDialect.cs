@@ -13,6 +13,7 @@
 namespace MicroLite.Dialect
 {
     using System;
+    using System.Collections.Generic;
     using System.Data;
 
     /// <summary>
@@ -26,6 +27,13 @@ namespace MicroLite.Dialect
         /// <param name="command">The command to build.</param>
         /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
         void BuildCommand(IDbCommand command, SqlQuery sqlQuery);
+
+        /// <summary>
+        /// Combines the specified SQL queries into a single SqlQuery.
+        /// </summary>
+        /// <param name="sqlQueries">The SQL queries to be combined.</param>
+        /// <returns>The combined <see cref="SqlQuery" />.</returns>
+        SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries);
 
         /// <summary>
         /// Creates an SqlQuery to count the number of records which would be returned by the specified SqlQuery.

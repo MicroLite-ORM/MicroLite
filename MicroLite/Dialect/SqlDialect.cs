@@ -135,6 +135,31 @@ namespace MicroLite.Dialect
             this.AddParameters(command, sqlQuery, parameterNames);
         }
 
+        public virtual SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
+        {
+            if (sqlQueries == null)
+            {
+                throw new ArgumentNullException("sqlQueries");
+            }
+
+            int argumentsCount = 0;
+            var sqlBuilder = new StringBuilder();
+
+            foreach (var sqlQuery in sqlQueries)
+            {
+                argumentsCount += sqlQuery.Arguments.Count;
+
+                var commandText = SqlUtil.ReNumberParameters(sqlQuery.CommandText, argumentsCount);
+
+                sqlBuilder.AppendLine(commandText + ";");
+            }
+
+            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
+            combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
+
+            return combinedQuery;
+        }
+
         public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
         {
             var qualifiedTableName = this.ReadTableName(sqlQuery.CommandText);

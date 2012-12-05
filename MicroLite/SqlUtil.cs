@@ -12,7 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
-    using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
@@ -25,39 +24,6 @@ namespace MicroLite
     internal static class SqlUtil
     {
         private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-
-        /// <summary>
-        /// Combines the specified SQL queries into a single SqlQuery.
-        /// </summary>
-        /// <param name="sqlQueries">The SQL queries to be combined.</param>
-        /// <returns>The combined <see cref="SqlQuery" />.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if sqlQueries is null.</exception>
-        internal static SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
-        {
-            if (sqlQueries == null)
-            {
-                throw new ArgumentNullException("sqlQueries");
-            }
-
-            int argumentsCount = 0;
-            var sqlBuilder = new StringBuilder();
-
-            foreach (var sqlQuery in sqlQueries)
-            {
-                argumentsCount += sqlQuery.Arguments.Count;
-
-                var commandText = sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
-                    ? sqlQuery.CommandText
-                    : ReNumberParameters(sqlQuery.CommandText, argumentsCount);
-
-                sqlBuilder.AppendLine(commandText + ";");
-            }
-
-            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
-            combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
-
-            return combinedQuery;
-        }
 
         /// <summary>
         /// Gets the position of the first parameter in the specified command text.

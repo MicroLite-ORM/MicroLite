@@ -321,7 +321,7 @@ namespace MicroLite.Core
         {
             try
             {
-                var sqlQuery = this.queries.Count == 1 ? this.queries.Peek() : SqlUtil.Combine(this.queries);
+                var sqlQuery = this.queries.Count == 1 ? this.queries.Peek() : this.SqlDialect.Combine(this.queries);
 
                 using (var command = this.ConnectionManager.CreateCommand())
                 {

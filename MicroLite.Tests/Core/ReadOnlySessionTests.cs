@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Dynamic;
+    using System.Linq;
     using MicroLite.Core;
     using MicroLite.Dialect;
     using MicroLite.Mapping;
@@ -252,6 +253,7 @@
             var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
             var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
             var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
+            var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.FieldCount).Returns(1);
@@ -273,7 +275,8 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
             mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(10, 25))).Returns(pagedQuery);
-            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, It.IsAny<SqlQuery>()));
+            mockSqlDialect.Setup(x => x.Combine(It.Is<IEnumerable<SqlQuery>>(c => c.Contains(countQuery) && c.Contains(pagedQuery)))).Returns(combinedQuery);
+            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, combinedQuery));
 
             var session = new ReadOnlySession(
                 mockConnectionManager.Object,

@@ -16,6 +16,7 @@ namespace MicroLite.Dialect
     using System.Collections.Generic;
     using System.Data;
     using System.Globalization;
+    using System.Linq;
     using System.Text;
     using MicroLite.Mapping;
 
@@ -96,6 +97,33 @@ namespace MicroLite.Dialect
             {
                 return true;
             }
+        }
+
+        public override SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
+        {
+            if (sqlQueries == null)
+            {
+                throw new ArgumentNullException("sqlQueries");
+            }
+
+            int argumentsCount = 0;
+            var sqlBuilder = new StringBuilder();
+
+            foreach (var sqlQuery in sqlQueries)
+            {
+                argumentsCount += sqlQuery.Arguments.Count;
+
+                var commandText = sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
+                    ? sqlQuery.CommandText
+                    : SqlUtil.ReNumberParameters(sqlQuery.CommandText, argumentsCount);
+
+                sqlBuilder.AppendLine(commandText + ";");
+            }
+
+            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
+            combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
+
+            return combinedQuery;
         }
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
