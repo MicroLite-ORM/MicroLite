@@ -23,7 +23,7 @@ namespace MicroLite.Query
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{innerSql}")]
-    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereBetweenOrIn
+    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereBetweenOrIn, IHavingOrOrderBy
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder();
@@ -355,9 +355,36 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId
         /// </example>
-        public IOrderBy GroupBy(params string[] columns)
+        public IHavingOrOrderBy GroupBy(params string[] columns)
         {
             this.innerSql.Append(" GROUP BY " + string.Join(", ", columns));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies the having clause for the query.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <param name="value">The argument value.</param>
+        /// <returns>
+        /// The next step in the fluent sql builder.
+        /// </returns>
+        /// <example>
+        /// <code>
+        /// var sqlQuery = SqlBuilder
+        ///     .Select("CustomerId")
+        ///     .Max("Total")
+        ///     .From(typeof(Invoice))
+        ///     .GroupBy("CustomerId")
+        ///     .Having("MAX(Total) > @p0", 10000M)
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId HAVING MAX(Total) > @p0
+        /// </example>
+        public IOrderBy Having(string predicate, object value)
+        {
+            this.AppendPredicate(" HAVING {0}", predicate, value);
 
             return this;
         }

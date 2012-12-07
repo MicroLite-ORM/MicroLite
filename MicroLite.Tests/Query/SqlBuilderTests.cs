@@ -514,6 +514,26 @@
         }
 
         [Fact]
+        public void SelectWhereGroupByHavingOrderBy()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("CustomerId")
+                .Sum("Total")
+                .From("Invoices")
+                .Where("OrderDate > @p0", new DateTime(2000, 1, 1))
+                .GroupBy("Total")
+                .Having("SUM(Total) > @p0", 10000M)
+                .OrderByDescending("OrderDate")
+                .ToSqlQuery();
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+            Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
+            Assert.Equal(10000M, sqlQuery.Arguments[1]);
+
+            Assert.Equal("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (OrderDate > @p0) GROUP BY Total HAVING SUM(Total) > @p1 ORDER BY OrderDate DESC", sqlQuery.CommandText);
+        }
+
+        [Fact]
         public void SelectWhereGroupByOrderBy()
         {
             var sqlQuery = SqlBuilder
@@ -522,12 +542,13 @@
                 .From("Invoices")
                 .Where("OrderDate > @p0", new DateTime(2000, 1, 1))
                 .GroupBy("Total")
+                .OrderByDescending("OrderDate")
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (OrderDate > @p0) GROUP BY Total", sqlQuery.CommandText);
+            Assert.Equal("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (OrderDate > @p0) GROUP BY Total ORDER BY OrderDate DESC", sqlQuery.CommandText);
         }
 
         [Fact]
