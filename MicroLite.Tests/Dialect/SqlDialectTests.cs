@@ -281,20 +281,6 @@
             Assert.Equal(customer.Id, sqlQuery.Arguments[4]);
         }
 
-        public class WhenCallingCombineAndTheSourceQueriesIsNull
-        {
-            [Fact]
-            public void AnArgumentNullExceptionShouldBeThrown()
-            {
-                var mockSqlDialect = new Mock<SqlDialect>();
-                mockSqlDialect.CallBase = true;
-
-                var exception = Assert.Throws<ArgumentNullException>(() => mockSqlDialect.Object.Combine(null));
-
-                Assert.Equal("sqlQueries", exception.ParamName);
-            }
-        }
-
         public class WhenCallingCombine
         {
             private readonly SqlQuery combinedQuery;
@@ -357,6 +343,20 @@
             public void TheTimeoutShouldBeSetToTheLongestTimeoutOfTheSourceQueries()
             {
                 Assert.Equal(this.sqlQuery2.Timeout, this.combinedQuery.Timeout);
+            }
+        }
+
+        public class WhenCallingCombineAndTheSourceQueriesIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionShouldBeThrown()
+            {
+                var mockSqlDialect = new Mock<SqlDialect>();
+                mockSqlDialect.CallBase = true;
+
+                var exception = Assert.Throws<ArgumentNullException>(() => mockSqlDialect.Object.Combine(null));
+
+                Assert.Equal("sqlQueries", exception.ParamName);
             }
         }
 
