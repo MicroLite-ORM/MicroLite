@@ -35,7 +35,7 @@
         public void ConstructorThrowsArgumentNullExceptionForNullColumns()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new TableInfo(columns: null, identifierStrategy: IdentifierStrategy.Identity, name: "Customers", schema: "Sales"));
+                () => new TableInfo(columns: null, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
             Assert.Equal("columns", exception.ParamName);
         }
@@ -44,7 +44,7 @@
         public void ConstructorThrowsArgumentNullExceptionForNullName()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new TableInfo(columns: new ColumnInfo[0], identifierStrategy: IdentifierStrategy.Identity, name: null, schema: "Sales"));
+                () => new TableInfo(columns: new ColumnInfo[0], identifierStrategy: IdentifierStrategy.DbGenerated, name: null, schema: "Sales"));
 
             Assert.Equal("name", exception.ParamName);
         }
@@ -59,7 +59,7 @@
             };
 
             var exception = Assert.Throws<MicroLiteException>(
-                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.Identity, name: "Customers", schema: "Sales"));
+                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
             Assert.Equal(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith("Name"), exception.Message);
         }
@@ -73,7 +73,7 @@
             };
 
             var exception = Assert.Throws<MicroLiteException>(
-                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.Identity, name: "Customers", schema: "Sales"));
+                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
             Assert.Equal(Messages.TableInfo_NoIdentifierColumn.FormatWith("Sales", "Customers"), exception.Message);
         }

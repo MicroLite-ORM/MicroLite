@@ -642,7 +642,7 @@
             }
 
             [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Identity)]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
             public int Id
             {
                 get;
@@ -672,7 +672,7 @@
             }
 
             [MicroLite.Mapping.Column("InvoiceId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Identity)]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
             public int Id
             {
                 get;

@@ -213,7 +213,7 @@
             }
 
             [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.AutoIncrement)]
+            [MicroLite.Mapping.Identifier(IdentifierStrategy.DbGenerated)]
             public int Id
             {
                 get;

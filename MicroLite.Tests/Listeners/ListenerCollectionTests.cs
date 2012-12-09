@@ -32,16 +32,6 @@
         }
 
         [Fact]
-        public void ConstructorRegistersAutoIncrementListener()
-        {
-            var listenerCollection = new ListenerCollection();
-
-            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(AutoIncrementListener));
-
-            Assert.NotNull(listener);
-        }
-
-        [Fact]
         public void ConstructorRegistersGuidCombListener()
         {
             var listenerCollection = new ListenerCollection();
@@ -62,11 +52,11 @@
         }
 
         [Fact]
-        public void ConstructorRegistersIdentityListener()
+        public void ConstructorRegistersDbGeneratedListener()
         {
             var listenerCollection = new ListenerCollection();
 
-            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(IdentityListener));
+            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(DbGeneratedListener));
 
             Assert.NotNull(listener);
         }

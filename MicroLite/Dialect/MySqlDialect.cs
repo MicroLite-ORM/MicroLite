@@ -15,7 +15,6 @@ namespace MicroLite.Dialect
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using MicroLite.Mapping;
 
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for MySql server.
@@ -38,17 +37,6 @@ namespace MicroLite.Dialect
             get
             {
                 return '`';
-            }
-        }
-
-        /// <summary>
-        /// Gets the database generated identifier strategies.
-        /// </summary>
-        protected override IdentifierStrategy[] DatabaseGeneratedStrategies
-        {
-            get
-            {
-                return new[] { IdentifierStrategy.AutoIncrement };
             }
         }
 

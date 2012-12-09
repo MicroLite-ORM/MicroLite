@@ -70,7 +70,6 @@
     <Compile Include="IIncludeMany.cs" />
     <Compile Include="IIncludeSession.cs" />
     <Compile Include="IReadOnlySession.cs" />
-    <Compile Include="Listeners\AutoIncrementListener.cs" />
     <Compile Include="Listeners\GuidCombListener.cs" />
     <Compile Include="Logging\CurrentSessionIdResolver.cs" />
     <Compile Include="Logging\SessionLoggingContext.cs" />
@@ -92,7 +91,7 @@
     </Compile>
     <Compile Include="Core\IConnectionManager.cs" />
     <Compile Include="Listeners\GuidListener.cs" />
-    <Compile Include="Listeners\IdentityListener.cs">
+    <Compile Include="Listeners\DbGeneratedListener.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IObjectBuilder.cs" />

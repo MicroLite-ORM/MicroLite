@@ -44,17 +44,6 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the database generated identifier strategies.
-        /// </summary>
-        protected virtual IdentifierStrategy[] DatabaseGeneratedStrategies
-        {
-            get
-            {
-                return new IdentifierStrategy[0];
-            }
-        }
-
-        /// <summary>
         /// Gets the default table schema.
         /// </summary>
         protected virtual string DefaultTableSchema
@@ -189,7 +178,7 @@ namespace MicroLite.Dialect
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
-                        if (this.DatabaseGeneratedStrategies.Contains(objectInfo.TableInfo.IdentifierStrategy)
+                        if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
                             && column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
                         {
                             continue;
@@ -208,7 +197,7 @@ namespace MicroLite.Dialect
                     insertSqlBuilder.Remove(insertSqlBuilder.Length - 2, 2);
                     insertSqlBuilder.Append(")");
 
-                    if (this.DatabaseGeneratedStrategies.Contains(objectInfo.TableInfo.IdentifierStrategy))
+                    if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
                     {
                         insertSqlBuilder.Append(this.SelectSeparator);
                         insertSqlBuilder.Append(this.SelectIdentityString);
@@ -397,7 +386,7 @@ namespace MicroLite.Dialect
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
-                        if (this.DatabaseGeneratedStrategies.Contains(objectInfo.TableInfo.IdentifierStrategy)
+                        if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
                             && column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
                         {
                             continue;

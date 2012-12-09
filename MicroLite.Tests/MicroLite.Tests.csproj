@@ -75,7 +75,6 @@
     <Compile Include="Dialect\SqlDialectTests.cs" />
     <Compile Include="Dialect\SQLiteDialectTests.cs" />
     <Compile Include="GuidGeneratorTests.cs" />
-    <Compile Include="Listeners\AutoIncrementListenerTests.cs" />
     <Compile Include="Listeners\GuidCombListenerTests.cs" />
     <Compile Include="Logging\CurrentSessionIdResolverTests.cs" />
     <Compile Include="Logging\SessionLoggingContextTests.cs" />
@@ -85,7 +84,7 @@
     <Compile Include="Listeners\AssignedListenerTests.cs" />
     <Compile Include="Core\ConnectionManagerTests.cs" />
     <Compile Include="Listeners\GuidListenerTests.cs" />
-    <Compile Include="Listeners\IdentityListenerTests.cs" />
+    <Compile Include="Listeners\DbGeneratedListenerTests.cs" />
     <Compile Include="Core\ObjectBuilderTests.cs" />
     <Compile Include="Core\SessionFactoryTests.cs" />
     <Compile Include="Core\SessionTests.cs" />

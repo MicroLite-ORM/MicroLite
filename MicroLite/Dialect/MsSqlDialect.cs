@@ -18,7 +18,6 @@ namespace MicroLite.Dialect
     using System.Globalization;
     using System.Linq;
     using System.Text;
-    using MicroLite.Mapping;
 
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for MsSql server.
@@ -41,17 +40,6 @@ namespace MicroLite.Dialect
             get
             {
                 return ']';
-            }
-        }
-
-        /// <summary>
-        /// Gets the database generated identifier strategies.
-        /// </summary>
-        protected override IdentifierStrategy[] DatabaseGeneratedStrategies
-        {
-            get
-            {
-                return new[] { IdentifierStrategy.Identity };
             }
         }
 

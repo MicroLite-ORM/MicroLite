@@ -5,9 +5,9 @@
     using Xunit;
 
     /// <summary>
-    /// Unit tests for the <see cref="AutoIncrementListener"/> class.
+    /// Unit tests for the <see cref="DbGeneratedListener"/> class.
     /// </summary>
-    public class AutoIncrementListenerTests
+    public class DbGeneratedListenerTests
     {
         [Fact]
         public void AfterInsertSetsIdentifierValue()
@@ -15,7 +15,7 @@
             var customer = new Customer();
             decimal scalarResult = 4354;
 
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
             listener.AfterInsert(customer, scalarResult);
 
             Assert.Equal(Convert.ToInt32(scalarResult), customer.Id);
@@ -24,7 +24,7 @@
         [Fact]
         public void AfterInsertThrowsArgumentNullExceptionForNullExecuteScalarResult()
         {
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.AfterInsert(new Customer(), null));
 
@@ -34,7 +34,7 @@
         [Fact]
         public void AfterInsertThrowsArgumentNullExceptionForNullInstance()
         {
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.AfterInsert(null, 1));
 
@@ -49,7 +49,7 @@
                 Id = 1242534
             };
 
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
 
             listener.BeforeDelete(customer);
         }
@@ -57,7 +57,7 @@
         [Fact]
         public void BeforeDeleteThrowsArgumentNullExceptionForNullInstance()
         {
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeDelete(null));
 
@@ -72,7 +72,7 @@
                 Id = 0
             };
 
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeDelete(customer));
 
@@ -87,7 +87,7 @@
                 Id = 0
             };
 
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
 
             listener.BeforeInsert(customer);
         }
@@ -95,7 +95,7 @@
         [Fact]
         public void BeforeInsertThrowsArgumentNullExceptionForNullInstance()
         {
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeInsert(null));
 
@@ -110,7 +110,7 @@
                 Id = 1242534
             };
 
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeInsert(customer));
 
@@ -125,7 +125,7 @@
                 Id = 1242534
             };
 
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
 
             listener.BeforeUpdate(customer);
         }
@@ -133,7 +133,7 @@
         [Fact]
         public void BeforeUpdateThrowsArgumentNullExceptionForNullInstance()
         {
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.BeforeUpdate(null));
 
@@ -148,7 +148,7 @@
                 Id = 0
             };
 
-            var listener = new AutoIncrementListener();
+            var listener = new DbGeneratedListener();
 
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeUpdate(customer));
 
@@ -159,7 +159,7 @@
         private class Customer
         {
             [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.AutoIncrement)]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
             public int Id
             {
                 get;

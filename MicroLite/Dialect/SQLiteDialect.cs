@@ -15,7 +15,6 @@ namespace MicroLite.Dialect
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using MicroLite.Mapping;
 
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for SQLite.
@@ -28,17 +27,6 @@ namespace MicroLite.Dialect
         /// <remarks>Constructor needs to be public so that it can be instantiated by SqlDialectFactory.</remarks>
         public SQLiteDialect()
         {
-        }
-
-        /// <summary>
-        /// Gets the database generated identifier strategies.
-        /// </summary>
-        protected override IdentifierStrategy[] DatabaseGeneratedStrategies
-        {
-            get
-            {
-                return new[] { IdentifierStrategy.AutoIncrement };
-            }
         }
 
         /// <summary>

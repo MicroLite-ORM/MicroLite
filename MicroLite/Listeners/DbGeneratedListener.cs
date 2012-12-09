@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IdentityListener.cs" company="MicroLite">
+// <copyright file="DbGeneratedListener.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ namespace MicroLite.Listeners
     /// The implementation of <see cref="IListener"/> for setting the instance identifier value if
     /// <see cref="IdentifierStrategy"/>.Identity is used.
     /// </summary>
-    public sealed class IdentityListener : Listener
+    public sealed class DbGeneratedListener : Listener
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.IdentityListener");
 
@@ -43,7 +43,7 @@ namespace MicroLite.Listeners
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
                 log.TryLogDebug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
                 objectInfo.SetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn, executeScalarResult);
@@ -64,7 +64,7 @@ namespace MicroLite.Listeners
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
                 if (objectInfo.HasDefaultIdentifierValue(instance))
                 {
@@ -87,7 +87,7 @@ namespace MicroLite.Listeners
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
                 if (!objectInfo.HasDefaultIdentifierValue(instance))
                 {
@@ -110,7 +110,7 @@ namespace MicroLite.Listeners
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Identity)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
                 if (objectInfo.HasDefaultIdentifierValue(instance))
                 {
