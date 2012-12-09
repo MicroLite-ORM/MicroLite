@@ -18,11 +18,11 @@ namespace MicroLite.Listeners
 
     /// <summary>
     /// The implementation of <see cref="IListener"/> for setting the instance identifier value if
-    /// <see cref="IdentifierStrategy"/>.Identity is used.
+    /// <see cref="IdentifierStrategy"/>.DbGenerated is used.
     /// </summary>
     public sealed class DbGeneratedListener : Listener
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.IdentityListener");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.DbGeneratedListener");
 
         /// <summary>
         /// Invoked after the SqlQuery to insert the record for the instance has been executed.
