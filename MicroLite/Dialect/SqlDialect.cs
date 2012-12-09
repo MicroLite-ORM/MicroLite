@@ -312,6 +312,7 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The columns in the order by list.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
         protected string ReadOrderBy(string commandText)
         {
             return orderByRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
@@ -322,6 +323,7 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The columns in the select list.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
         protected string ReadSelectList(string commandText)
         {
             return selectRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
@@ -332,6 +334,7 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The name of the table the sql query is targeting.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
         protected string ReadTableName(string commandText)
         {
             return tableNameRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
@@ -342,6 +345,7 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The where clause without the WHERE keyword.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
         protected string ReadWhereClause(string commandText)
         {
             return whereRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
