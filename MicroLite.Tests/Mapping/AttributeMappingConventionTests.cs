@@ -18,28 +18,6 @@
         }
 
         [Fact]
-        public void CreateObjectInfoThrowsArgumentNullExceptionForNullType()
-        {
-            var mappingConvention = new AttributeMappingConvention();
-
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => mappingConvention.CreateObjectInfo(null));
-
-            Assert.Equal("forType", exception.ParamName);
-        }
-
-        [Fact]
-        public void CreateObjectInfoThrowsMicroLiteExceptionIfNoTableAttribute()
-        {
-            var mappingConvention = new AttributeMappingConvention();
-
-            var exception = Assert.Throws<MicroLiteException>(
-                () => mappingConvention.CreateObjectInfo(typeof(CustomerWithNoTableAttribute)));
-
-            Assert.Equal(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(typeof(CustomerWithNoTableAttribute).FullName), exception.Message);
-        }
-
-        [Fact]
         public void PropertyWithoutColumnAttributeIsIgnored()
         {
             var mappingConvention = new AttributeMappingConvention();
@@ -105,6 +83,34 @@
             Assert.Equal(MicroLite.Mapping.IdentifierStrategy.Assigned, objectInfo.TableInfo.IdentifierStrategy);
             Assert.Equal("Customers", objectInfo.TableInfo.Name);
             Assert.Equal("Sales", objectInfo.TableInfo.Schema);
+        }
+
+        public class WhenCallingCreateObjectInfoAndTheTypeHasNoTableAttribute
+        {
+            [Fact]
+            public void AMicroLiteExceptionIsThrown()
+            {
+                var mappingConvention = new AttributeMappingConvention();
+
+                var exception = Assert.Throws<MicroLiteException>(
+                    () => mappingConvention.CreateObjectInfo(typeof(CustomerWithNoTableAttribute)));
+
+                Assert.Equal(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(typeof(CustomerWithNoTableAttribute).FullName), exception.Message);
+            }
+        }
+
+        public class WhenCallingCreateObjectInfoAndTypeIsNull
+        {
+            [Fact]
+            public void CreateObjectInfoThrowsArgumentNullExceptionForNullType()
+            {
+                var mappingConvention = new AttributeMappingConvention();
+
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => mappingConvention.CreateObjectInfo(null));
+
+                Assert.Equal("forType", exception.ParamName);
+            }
         }
 
         [MicroLite.Mapping.Table("Sales", "Customers")]

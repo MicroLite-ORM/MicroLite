@@ -160,6 +160,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The convention to be used is pluralize names [{0}] and an identifier strategy of [{1}].
+        /// </summary>
+        internal static string ConventionMappingConvention_Configuration {
+            get {
+                return ResourceManager.GetString("ConventionMappingConvention_Configuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No connection was found in the app.config with the name [{0}].
         /// </summary>
         internal static string FluentConfiguration_ConnectionNotFound {

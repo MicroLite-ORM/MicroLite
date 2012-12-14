@@ -282,4 +282,7 @@
   <data name="Session_PagingOptionsMustNotBeNone" xml:space="preserve">
     <value>The paging options must contain a count and offset, use the PagingOptions.ForPage or PagingOptions.SkipTake methods to specify the values</value>
   </data>
+  <data name="ConventionMappingConvention_Configuration" xml:space="preserve">
+    <value>The convention to be used is pluralize names [{0}] and an identifier strategy of [{1}]</value>
+  </data>
 </root>
