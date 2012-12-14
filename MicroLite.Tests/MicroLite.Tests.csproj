@@ -100,6 +100,7 @@
     <Compile Include="Mapping\InflectionServiceTests.cs" />
     <Compile Include="Mapping\ObjectInfoTests.cs" />
     <Compile Include="Mapping\AttributeMappingConventionTests.cs" />
+    <Compile Include="Mapping\PropertyAccessorTests.cs" />
     <Compile Include="Mapping\TableInfoTests.cs" />
     <Compile Include="PagedResultTests.cs" />
     <Compile Include="PagingOptionsTests.cs" />

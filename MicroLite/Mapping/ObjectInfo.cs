@@ -14,7 +14,6 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
@@ -30,6 +29,7 @@ namespace MicroLite.Mapping
         private static IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
 
         private readonly Type forType;
+        private readonly Dictionary<string, PropertyAccessor> propertyAccessors;
         private readonly TableInfo tableInfo;
 
         /// <summary>
@@ -53,10 +53,12 @@ namespace MicroLite.Mapping
             log.TryLogDebug(Messages.ObjectInfo_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             this.forType = forType;
             this.tableInfo = tableInfo;
+            this.propertyAccessors = new Dictionary<string, PropertyAccessor>(this.tableInfo.Columns.Count());
 
             foreach (var columnInfo in this.tableInfo.Columns)
             {
                 log.TryLogDebug(Messages.ObjectInfo_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                this.propertyAccessors.Add(columnInfo.ColumnName, new PropertyAccessor(columnInfo.PropertyInfo));
 
                 if (columnInfo.IsIdentifier && columnInfo.PropertyInfo.PropertyType.IsValueType)
                 {
@@ -191,16 +193,9 @@ namespace MicroLite.Mapping
             }
 
             log.TryLogDebug(Messages.ObjectInfo_GetPropertyValueForColumn, this.ForType.Name, columnInfo.PropertyInfo.Name, columnName);
-            var value = columnInfo.PropertyInfo.GetValue(instance, null);
+            var value = this.propertyAccessors[columnName].GetValue(instance);
 
-            if (columnInfo.PropertyInfo.PropertyType.IsEnum)
-            {
-                return (int)value;
-            }
-            else
-            {
-                return value;
-            }
+            return value;
         }
 
         /// <summary>
@@ -245,34 +240,7 @@ namespace MicroLite.Mapping
             }
 
             log.TryLogDebug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
-            SetPropertyValue(instance, value, columnInfo);
-        }
-
-        private static void SetPropertyValue(object instance, object value, ColumnInfo columnInfo)
-        {
-            if (value == DBNull.Value)
-            {
-                return;
-            }
-
-            if (columnInfo.PropertyInfo.PropertyType.IsEnum)
-            {
-                columnInfo.PropertyInfo.SetValue(instance, Convert.ToInt32(value, CultureInfo.InvariantCulture), null);
-                return;
-            }
-
-            if (columnInfo.PropertyInfo.PropertyType.IsValueType && columnInfo.PropertyInfo.PropertyType.IsGenericType)
-            {
-                // The property is a nullable struct (e.g. int? or DateTime?) so cast the object to a ValueType
-                // otherwise we get an InvalidCastException (Issue #7)
-                ValueType converted = (ValueType)value;
-                columnInfo.PropertyInfo.SetValue(instance, converted, null);
-            }
-            else
-            {
-                var converted = Convert.ChangeType(value, columnInfo.PropertyInfo.PropertyType, CultureInfo.InvariantCulture);
-                columnInfo.PropertyInfo.SetValue(instance, converted, null);
-            }
+            this.propertyAccessors[columnName].SetValue(instance, value);
         }
 
         private static void VerifyType(Type forType)

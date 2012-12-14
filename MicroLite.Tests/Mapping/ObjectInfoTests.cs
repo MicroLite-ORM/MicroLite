@@ -168,66 +168,6 @@
         }
 
         [Fact]
-        public void GetPropertyValueForColumnReturnsIntValueIfPropertyIsEnum()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var customer = new CustomerWithIntegerIdentifier
-            {
-                Status = CustomerStatus.Active
-            };
-
-            var value = (int)objectInfo.GetPropertyValueForColumn(customer, "StatusId");
-
-            Assert.Equal(1, value);
-        }
-
-        [Fact]
-        public void GetPropertyValueForColumnReturnsNullForNullablePropertyValue()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var customer = new CustomerWithIntegerIdentifier
-            {
-                CreditLimit = null
-            };
-
-            var value = (Decimal?)objectInfo.GetPropertyValueForColumn(customer, "CreditLimit");
-
-            Assert.Null(value);
-        }
-
-        [Fact]
-        public void GetPropertyValueForColumnReturnsPropertyValue()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var customer = new CustomerWithIntegerIdentifier
-            {
-                Name = "Trev"
-            };
-
-            var value = (string)objectInfo.GetPropertyValueForColumn(customer, "Name");
-
-            Assert.Equal(customer.Name, value);
-        }
-
-        [Fact]
-        public void GetPropertyValueForColumnReturnsValueForNullablePropertyWithValue()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var customer = new CustomerWithIntegerIdentifier
-            {
-                CreditLimit = 10250M
-            };
-
-            var value = (Decimal)objectInfo.GetPropertyValueForColumn(customer, "CreditLimit");
-
-            Assert.Equal(customer.CreditLimit.Value, value);
-        }
-
-        [Fact]
         public void GetPropertyValueForColumnThrowsArgumentNullExceptionForNullInstance()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
@@ -313,57 +253,6 @@
             var instance = new CustomerWithIntegerIdentifier();
 
             objectInfo.SetPropertyValueForColumn(instance, "UnknownColumn", 1);
-        }
-
-        [Fact]
-        public void SetPropertyValueForColumnSetsEnumValue()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var instance = new CustomerWithIntegerIdentifier();
-
-            objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1);
-
-            Assert.Equal(instance.Status, CustomerStatus.Active);
-        }
-
-        /// <summary>
-        /// SQLite stores all integers as a long (64bit integer), enums are 32bit integers so the value should be down cast.
-        /// </summary>
-        [Fact]
-        public void SetPropertyValueForColumnSetsEnumValueFromLong()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var instance = new CustomerWithIntegerIdentifier();
-
-            objectInfo.SetPropertyValueForColumn(instance, "StatusId", (long)1);
-
-            Assert.Equal(instance.Status, CustomerStatus.Active);
-        }
-
-        [Fact]
-        public void SetPropertyValueForColumnSetsNullablePropertyToNull()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var instance = new CustomerWithIntegerIdentifier();
-
-            objectInfo.SetPropertyValueForColumn(instance, "CreditLimit", DBNull.Value);
-
-            Assert.Null(instance.CreditLimit);
-        }
-
-        [Fact]
-        public void SetPropertyValueForColumnSetsNullablePropertyToValue()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var instance = new CustomerWithIntegerIdentifier();
-
-            objectInfo.SetPropertyValueForColumn(instance, "CreditLimit", 2500M);
-
-            Assert.Equal(2500M, instance.CreditLimit.Value);
         }
 
         [Fact]
