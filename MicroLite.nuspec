@@ -5,7 +5,7 @@
     <version>0.0.0</version>
     <authors>Trevor Pilley</authors>
     <owners>Trevor Pilley</owners>
-    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <licenseUrl>http://microliteorm.wordpress.com/license/</licenseUrl>
     <projectUrl>http://microliteorm.wordpress.com/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>MicroLite ORM is a micro Object Relational Mapper for the .NET framework designed for ease of use, testability and extensibility.</description>
