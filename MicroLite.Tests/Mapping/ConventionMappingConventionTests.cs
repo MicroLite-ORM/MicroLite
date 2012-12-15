@@ -198,31 +198,31 @@
             [Fact]
             public void TheStatusColumnShouldAllowInsert()
             {
-                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "StatusId").AllowInsert);
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").AllowInsert);
             }
 
             [Fact]
             public void TheStatusColumnShouldAllowUpdate()
             {
-                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "StatusId").AllowUpdate);
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").AllowUpdate);
             }
 
             [Fact]
             public void TheStatusColumnShouldBeSet()
             {
-                Assert.Equal(typeof(Customer).GetProperty("Status"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "StatusId").PropertyInfo);
+                Assert.Equal(typeof(Customer).GetProperty("Status"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").PropertyInfo);
             }
 
             [Fact]
             public void TheStatusColumnShouldNotBeIdentifier()
             {
-                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "StatusId").IsIdentifier);
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").IsIdentifier);
             }
 
             [Fact]
             public void TheStatusPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "StatusId"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId"));
             }
 
             [Fact]
@@ -370,31 +370,31 @@
             [Fact]
             public void TheStatusColumnShouldAllowInsert()
             {
-                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "StatusId").AllowInsert);
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").AllowInsert);
             }
 
             [Fact]
             public void TheStatusColumnShouldAllowUpdate()
             {
-                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "StatusId").AllowUpdate);
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").AllowUpdate);
             }
 
             [Fact]
             public void TheStatusColumnShouldBeSet()
             {
-                Assert.Equal(typeof(Customer).GetProperty("Status"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "StatusId").PropertyInfo);
+                Assert.Equal(typeof(Customer).GetProperty("Status"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").PropertyInfo);
             }
 
             [Fact]
             public void TheStatusColumnShouldNotBeIdentifier()
             {
-                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "StatusId").IsIdentifier);
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").IsIdentifier);
             }
 
             [Fact]
             public void TheStatusPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "StatusId"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId"));
             }
 
             [Fact]

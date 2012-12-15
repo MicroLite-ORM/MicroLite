@@ -60,7 +60,7 @@ namespace MicroLite.Mapping
             foreach (var property in properties.Where(p => p.CanRead && p.CanWrite))
             {
                 var columnInfo = new ColumnInfo(
-                       columnName: property.PropertyType.IsEnum ? property.Name + "Id" : property.Name,
+                       columnName: property.PropertyType.IsEnum ? property.PropertyType.Name + "Id" : property.Name,
                        propertyInfo: property,
                        isIdentifier: possibleClassIdentifiers.Contains(property.Name),
                        allowInsert: true,
