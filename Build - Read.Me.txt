@@ -1,6 +1,6 @@
 Requirements:
  
-  - .NET 4.0
+  - .NET 4.5
   - Sandcastle Help File Builder 1.9.5 (http://shfb.codeplex.com/)
   - StyleCop version 4.7.42.0 (http://stylecop.codeplex.com/)
 
