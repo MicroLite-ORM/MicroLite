@@ -9,9 +9,9 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Mapping.ConventionMappingConvention" BaseTypeListCollapsed="true">
-    <Position X="0.5" Y="4.5" Width="6.75" />
+    <Position X="0.5" Y="4.5" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAgAAAAAAAAAAAAAACAgAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAgAAAAAAAAAAAAAACAgAAACAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Mapping\ConventionMappingConvention.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

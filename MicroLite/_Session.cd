@@ -7,6 +7,14 @@
       <FileName>PagedResult.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Struct Name="MicroLite.PagingOptions">
+    <Position X="10.5" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAGAAAAAAAAAAAAAhAAAAAQAAAAAAIgAAAAAAAEAgiA=</HashCode>
+      <FileName>PagingOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
   <Interface Name="MicroLite.ISession">
     <Position X="3.5" Y="4" Width="1.5" />
     <TypeIdentifier>
@@ -38,14 +46,14 @@
   <Interface Name="MicroLite.IInclude&lt;T&gt;">
     <Position X="8.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>IInclude.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.IIncludeMany&lt;T&gt;">
     <Position X="10.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>IIncludeMany.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -59,7 +67,7 @@
   <Interface Name="MicroLite.ISessionFactory">
     <Position X="0.5" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQgAEAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQgAEAAEA=</HashCode>
       <FileName>ISessionFactory.cs</FileName>
     </TypeIdentifier>
   </Interface>
