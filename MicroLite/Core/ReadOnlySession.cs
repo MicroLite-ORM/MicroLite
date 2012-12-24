@@ -228,7 +228,7 @@ namespace MicroLite.Core
 
                 this.ExecuteAllQueries();
 
-                var page = ((pagingOptions.Offset + 1) / pagingOptions.Count) + 1;
+                var page = (pagingOptions.Offset / pagingOptions.Count) + 1;
 
                 return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
             }

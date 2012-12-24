@@ -248,7 +248,7 @@
         }
 
         [Fact]
-        public void PagedExecutesAndReturnsResults()
+        public void PagedExecutesAndReturnsResultsForFirstPageWithOnePerPage()
         {
             var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
             var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
@@ -257,7 +257,103 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.FieldCount).Returns(1);
-            mockReader.Setup(x => x[0]).Returns(100);
+            mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
+            mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
+            var reader = mockReader.Object;
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var mockObjectBuilder = new Mock<IObjectBuilder>();
+            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
+            mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(1, 1))).Returns(pagedQuery);
+            mockSqlDialect.Setup(x => x.Combine(It.Is<IEnumerable<SqlQuery>>(c => c.Contains(countQuery) && c.Contains(pagedQuery)))).Returns(combinedQuery);
+            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, combinedQuery));
+
+            IReadOnlySession session = new ReadOnlySession(
+                mockConnectionManager.Object,
+                mockObjectBuilder.Object,
+                mockSqlDialect.Object);
+
+            var page = session.Paged<Customer>(sqlQuery, 1, 1);
+
+            Assert.Equal(1, page.Page);
+            Assert.Equal(1, page.Results.Count);
+
+            mockReader.VerifyAll();
+            mockCommand.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockObjectBuilder.VerifyAll();
+            mockSqlDialect.VerifyAll();
+        }
+
+        [Fact]
+        public void PagedExecutesAndReturnsResultsForFirstPageWithTwentyFivePerPage()
+        {
+            var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
+            var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
+            var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
+            var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(1);
+            mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
+            mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
+            var reader = mockReader.Object;
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var mockObjectBuilder = new Mock<IObjectBuilder>();
+            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
+            mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(1, 25))).Returns(pagedQuery);
+            mockSqlDialect.Setup(x => x.Combine(It.Is<IEnumerable<SqlQuery>>(c => c.Contains(countQuery) && c.Contains(pagedQuery)))).Returns(combinedQuery);
+            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, combinedQuery));
+
+            IReadOnlySession session = new ReadOnlySession(
+                mockConnectionManager.Object,
+                mockObjectBuilder.Object,
+                mockSqlDialect.Object);
+
+            var page = session.Paged<Customer>(sqlQuery, 1, 25);
+
+            Assert.Equal(1, page.Page);
+            Assert.Equal(1, page.Results.Count);
+
+            mockReader.VerifyAll();
+            mockCommand.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockObjectBuilder.VerifyAll();
+            mockSqlDialect.VerifyAll();
+        }
+
+        [Fact]
+        public void PagedExecutesAndReturnsResultsForTenthPageWithTwentyFivePerPage()
+        {
+            var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
+            var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
+            var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
+            var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(1);
+            mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
             mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
             var reader = mockReader.Object;
@@ -278,7 +374,7 @@
             mockSqlDialect.Setup(x => x.Combine(It.Is<IEnumerable<SqlQuery>>(c => c.Contains(countQuery) && c.Contains(pagedQuery)))).Returns(combinedQuery);
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, combinedQuery));
 
-            var session = new ReadOnlySession(
+            IReadOnlySession session = new ReadOnlySession(
                 mockConnectionManager.Object,
                 mockObjectBuilder.Object,
                 mockSqlDialect.Object);
@@ -298,7 +394,7 @@
         [Fact]
         public void PagedThrowsArgumentNullExceptionForNullSqlQuery()
         {
-            var session = new ReadOnlySession(
+            IReadOnlySession session = new ReadOnlySession(
                 new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlDialect>().Object);
@@ -311,7 +407,7 @@
         [Fact]
         public void PagedThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new ReadOnlySession(
+            IReadOnlySession session = new ReadOnlySession(
                 new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlDialect>().Object);
