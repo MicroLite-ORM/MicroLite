@@ -41,7 +41,7 @@ namespace MicroLite
         {
             get
             {
-                return new PagingOptions();
+                return new PagingOptions(count: 0, offset: 0);
             }
         }
 
