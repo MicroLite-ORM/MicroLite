@@ -16,7 +16,7 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 	$assemblyVersionPattern = 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
 	$fileVersionPattern = 'AssemblyFileVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
 	$infoVersionPattern = 'AssemblyInformationalVersion\("[0-9]+(\.([0-9]+|\*)){1,3}(.*)"\)'
-	$assemblyVersion = 'AssemblyVersion("' + $buildVersion.SubString(0, 3) + '.0")';
+	$assemblyVersion = 'AssemblyVersion("' + $buildVersion.SubString(0, 3) + '.0.0")';
 	$fileVersion = 'AssemblyFileVersion("' + $buildVersion.SubString(0, 5) + '.0")';
 	$infoVersion = 'AssemblyInformationalVersion("' + $buildVersion + '")';
 	
