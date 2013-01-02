@@ -71,6 +71,8 @@
     <Compile Include="IInclude.cs" />
     <Compile Include="IIncludeMany.cs" />
     <Compile Include="IIncludeSession.cs" />
+    <Compile Include="Infrastructure\IHaveReadOnlySession.cs" />
+    <Compile Include="Infrastructure\IHaveSession.cs" />
     <Compile Include="IReadOnlySession.cs" />
     <Compile Include="Listeners\GuidCombListener.cs" />
     <Compile Include="Logging\CurrentSessionIdResolver.cs" />
