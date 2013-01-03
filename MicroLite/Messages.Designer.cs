@@ -563,5 +563,14 @@ namespace MicroLite {
                 return ResourceManager.GetString("Transaction_RollingBack", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction rolling back changes from failed commit.
+        /// </summary>
+        internal static string Transaction_RollingBackFailedCommit {
+            get {
+                return ResourceManager.GetString("Transaction_RollingBackFailedCommit", resourceCulture);
+            }
+        }
     }
 }

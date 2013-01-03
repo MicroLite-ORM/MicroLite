@@ -75,17 +75,8 @@ namespace MicroLite
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
-        ///         try
-        ///         {
-        ///             session.Insert(customer);
-        ///
-        ///             transaction.Commit();
-        ///         }
-        ///         catch
-        ///         {
-        ///             transaction.Rollback();
-        ///             // Log or throw the exception.
-        ///         }
+        ///         session.Insert(customer);
+        ///         transaction.Commit();
         ///     }
         /// }
         /// </code>
@@ -105,17 +96,8 @@ namespace MicroLite
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
-        ///         try
-        ///         {
-        ///             session.InsertOrUpdate(customer);
-        ///
-        ///             transaction.Commit();
-        ///         }
-        ///         catch
-        ///         {
-        ///             transaction.Rollback();
-        ///             // Log or throw the exception.
-        ///         }
+        ///         session.InsertOrUpdate(customer);
+        ///         transaction.Commit();
         ///     }
         /// }
         /// </code>
@@ -135,17 +117,8 @@ namespace MicroLite
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
-        ///         try
-        ///         {
-        ///             session.Update(customer);
-        ///
-        ///             transaction.Commit();
-        ///         }
-        ///         catch
-        ///         {
-        ///             transaction.Rollback();
-        ///             // Log or throw the exception.
-        ///         }
+        ///         session.Update(customer);
+        ///         transaction.Commit();
         ///     }
         /// }
         /// </code>

@@ -108,6 +108,11 @@ namespace MicroLite.Core
                     log.TryLogWarn(Messages.Transaction_DisposedUncommitted);
                     this.Rollback();
                 }
+                else if (this.failed && !this.rolledBack)
+                {
+                    log.TryLogWarn(Messages.Transaction_RollingBackFailedCommit);
+                    this.Rollback();
+                }
 
                 this.transaction.Dispose();
                 this.transaction = null;

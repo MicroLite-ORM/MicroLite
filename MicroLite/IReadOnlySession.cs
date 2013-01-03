@@ -51,15 +51,7 @@ namespace MicroLite
         ///         // perform actions against ISession.
         ///         // ...
         ///
-        ///         try
-        ///         {
-        ///             transaction.Commit();
-        ///         }
-        ///         catch (Exception exception)
-        ///         {
-        ///             transaction.Rollback();
-        ///             // Log or throw the exception.
-        ///         }
+        ///         transaction.Commit();
         ///     }
         /// }
         /// </code>

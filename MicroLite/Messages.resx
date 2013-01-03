@@ -285,4 +285,7 @@
   <data name="ConventionMappingConvention_Configuration" xml:space="preserve">
     <value>The convention to be used is pluralize names [{0}] and an identifier strategy of [{1}]</value>
   </data>
+  <data name="Transaction_RollingBackFailedCommit" xml:space="preserve">
+    <value>Transaction rolling back changes from failed commit</value>
+  </data>
 </root>

@@ -189,26 +189,6 @@
             mockTransaction.Verify(x => x.Rollback(), Times.Never());
         }
 
-        /// <summary>
-        /// Issue #55 - Transaction should not try and rollback if faulted.
-        /// </summary>
-        /// <remarks>This was because dispose was not checking faulted in addition to committed and rolledback.</remarks>
-        [Fact]
-        public void DisposeDoesNotRollbackDbTransactionIfFaulted()
-        {
-            var mockTransaction = new Mock<IDbTransaction>();
-            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
-            mockTransaction.Setup(x => x.Commit()).Throws<InvalidOperationException>();
-
-            using (var transaction = new AdoTransaction(mockTransaction.Object))
-            {
-                // Commit the transaction so that it faults.
-                Assert.Throws<MicroLiteException>(() => transaction.Commit());
-            }
-
-            mockTransaction.Verify(x => x.Rollback(), Times.Never());
-        }
-
         [Fact]
         public void DisposeRollsbackDbTransactionIfNotCommitedAndDisposesDbTransaction()
         {
@@ -223,6 +203,25 @@
             }
 
             mockTransaction.VerifyAll();
+        }
+
+        /// <summary>
+        /// This reverts the behaviour of #55 but without breaking the logic that caused #55 initially.
+        /// </summary>
+        [Fact]
+        public void DisposeRollsbackDbTransactionIfNotCommitedFaulted()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Connection).Returns(new Mock<IDbConnection>().Object);
+            mockTransaction.Setup(x => x.Commit()).Throws<InvalidOperationException>();
+
+            using (var transaction = new AdoTransaction(mockTransaction.Object))
+            {
+                // Commit the transaction so that it faults.
+                Assert.Throws<MicroLiteException>(() => transaction.Commit());
+            }
+
+            mockTransaction.Verify(x => x.Rollback(), Times.Once());
         }
 
         [Fact]
