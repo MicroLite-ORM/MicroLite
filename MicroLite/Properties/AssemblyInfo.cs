@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MicroLite.dll")]
-[assembly: AssemblyDescription("MicroLite ORM Framework")]
+[assembly: AssemblyDescription("MicroLite ORM Framework - http://microliteorm.wordpress.com")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MicroLite")]
 [assembly: AssemblyProduct("MicroLite")]
