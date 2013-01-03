@@ -20,6 +20,7 @@ namespace MicroLite.Core
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The default implementation of <see cref="ISession"/>.
@@ -183,6 +184,25 @@ namespace MicroLite.Core
                 var identifier = this.ExecuteScalar<object>(sqlQuery);
 
                 this.listeners.Reverse().Each(l => l.AfterInsert(instance, identifier));
+            }
+        }
+
+        public void InsertOrUpdate(object instance)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            var objectInfo = ObjectInfo.For(instance.GetType());
+
+            if (objectInfo.HasDefaultIdentifierValue(instance))
+            {
+                this.Insert(instance);
+            }
+            else
+            {
+                this.Update(instance);
             }
         }
 

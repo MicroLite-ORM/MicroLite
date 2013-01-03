@@ -580,6 +580,76 @@
         }
 
         [Fact]
+        public void InsertOrUpdateInsertsInstanceIfIdentifierIsNotSet()
+        {
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.CreateQuery(It.IsAny<StatementType>(), It.IsAny<object>())).Returns(new SqlQuery(""));
+
+            var mockListener = new Mock<IListener>();
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockSqlDialect.Object,
+                new[] { mockListener.Object });
+
+            var customer = new Customer
+            {
+                Id = 0
+            };
+
+            session.InsertOrUpdate(customer);
+
+            mockListener.Verify(x => x.BeforeInsert(customer), Times.Once());
+            mockListener.Verify(x => x.BeforeUpdate(customer), Times.Never());
+        }
+
+        [Fact]
+        public void InsertOrUpdateThrowsArgumentNullExceptionForNullInstance()
+        {
+            var session = new Session(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlDialect>().Object,
+                new IListener[0]);
+
+            var exception = Assert.Throws<ArgumentNullException>(() => session.InsertOrUpdate(null));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void InsertOrUpdateUpdatesInstanceIfIdentifierIsNotSet()
+        {
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.CreateQuery(It.IsAny<StatementType>(), It.IsAny<object>())).Returns(new SqlQuery(""));
+
+            var mockListener = new Mock<IListener>();
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockSqlDialect.Object,
+                new[] { mockListener.Object });
+
+            var customer = new Customer
+            {
+                Id = 1242
+            };
+
+            session.InsertOrUpdate(customer);
+
+            mockListener.Verify(x => x.BeforeInsert(customer), Times.Never());
+            mockListener.Verify(x => x.BeforeUpdate(customer), Times.Once());
+        }
+
+        [Fact]
         public void InsertThrowsArgumentNullExceptionForNullInstance()
         {
             var session = new Session(

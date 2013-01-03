@@ -93,6 +93,36 @@ namespace MicroLite
         void Insert(object instance);
 
         /// <summary>
+        /// Performs an insert or update in the database depending on whether the object is considered new (e.g. it has no identifier set).
+        /// </summary>
+        /// <param name="instance">The instance to persist the values for.</param>
+        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the specified instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if there is an error executing the update command.</exception>
+        /// <example>
+        /// <code>
+        /// using (var session = sessionFactory.OpenSession())
+        /// {
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         try
+        ///         {
+        ///             session.InsertOrUpdate(customer);
+        ///
+        ///             transaction.Commit();
+        ///         }
+        ///         catch
+        ///         {
+        ///             transaction.Rollback();
+        ///             // Log or throw the exception.
+        ///         }
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        void InsertOrUpdate(object instance);
+
+        /// <summary>
         /// Updates the database record for the specified instance with the current property values.
         /// </summary>
         /// <param name="instance">The instance to persist the values for.</param>
