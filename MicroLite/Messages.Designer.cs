@@ -430,15 +430,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to InsertOrUpdate can only be used for classes mapped with IdentifierStrategy.DbGenerated.
-        /// </summary>
-        internal static string Session_InsertOrUpdateNotDbGenerated {
-            get {
-                return ResourceManager.GetString("Session_InsertOrUpdateNotDbGenerated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The paging options must contain a count and offset, use the PagingOptions.ForPage or PagingOptions.SkipTake methods to specify the values.
         /// </summary>
         internal static string Session_PagingOptionsMustNotBeNone {

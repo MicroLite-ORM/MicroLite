@@ -86,7 +86,6 @@ namespace MicroLite
         /// <summary>
         /// Performs an insert or update in the database depending on whether the object is considered new (e.g. it has no identifier set).
         /// </summary>
-        /// <remarks>This method can only be used if the class is mapped using IdentifierStrategy.DbGenerated.</remarks>
         /// <param name="instance">The instance to persist the values for.</param>
         /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
         /// <exception cref="ArgumentNullException">Thrown if the specified instance is null.</exception>

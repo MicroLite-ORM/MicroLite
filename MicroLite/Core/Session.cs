@@ -196,11 +196,6 @@ namespace MicroLite.Core
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.DbGenerated)
-            {
-                throw new MicroLiteException(Messages.Session_InsertOrUpdateNotDbGenerated);
-            }
-
             if (objectInfo.HasDefaultIdentifierValue(instance))
             {
                 this.Insert(instance);

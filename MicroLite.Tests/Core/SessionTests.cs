@@ -622,20 +622,6 @@
         }
 
         [Fact]
-        public void InsertOrUpdateThrowsMicroLiteExceptionIfIdentifierStrategyIsAssigned()
-        {
-            var session = new Session(
-                new Mock<IConnectionManager>().Object,
-                new Mock<IObjectBuilder>().Object,
-                new Mock<ISqlDialect>().Object,
-                new IListener[0]);
-
-            var exception = Assert.Throws<MicroLiteException>(() => session.InsertOrUpdate(new CustomerNotDbGenerated()));
-
-            Assert.Equal(Messages.Session_InsertOrUpdateNotDbGenerated, exception.Message);
-        }
-
-        [Fact]
         public void InsertOrUpdateUpdatesInstanceIfIdentifierIsNotSet()
         {
             var mockConnectionManager = new Mock<IConnectionManager>();
@@ -863,18 +849,6 @@
         {
             [MicroLite.Mapping.Column("CustomerId")]
             [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
-            public int Id
-            {
-                get;
-                set;
-            }
-        }
-
-        [MicroLite.Mapping.Table("dbo", "Customers")]
-        private class CustomerNotDbGenerated
-        {
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Assigned)]
             public int Id
             {
                 get;

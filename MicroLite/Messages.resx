@@ -288,7 +288,4 @@
   <data name="Transaction_RollingBackFailedCommit" xml:space="preserve">
     <value>Transaction rolling back changes from failed commit</value>
   </data>
-  <data name="Session_InsertOrUpdateNotDbGenerated" xml:space="preserve">
-    <value>InsertOrUpdate can only be used for classes mapped with IdentifierStrategy.DbGenerated</value>
-  </data>
 </root>
