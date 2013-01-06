@@ -1,15 +1,14 @@
 ﻿namespace MicroLite.Tests
 {
     using System.Collections.Generic;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="PagedResult"/> class.
     /// </summary>
-    [TestFixture]
     public class PagedResultTests
     {
-        [Test]
+        [Fact]
         public void ConstructorSetsProperties()
         {
             var page = 1;
@@ -19,13 +18,13 @@
 
             var pagedResults = new PagedResult<Customer>(page, results, resultsPerPage, totalResults);
 
-            Assert.AreEqual(page, pagedResults.Page);
-            CollectionAssert.AreEqual(results, pagedResults.Results);
-            Assert.AreEqual(resultsPerPage, pagedResults.ResultsPerPage);
-            Assert.AreEqual(totalResults, pagedResults.TotalResults);
+            Assert.Equal(page, pagedResults.Page);
+            Assert.Equal(results, pagedResults.Results);
+            Assert.Equal(resultsPerPage, pagedResults.ResultsPerPage);
+            Assert.Equal(totalResults, pagedResults.TotalResults);
         }
 
-        [Test]
+        [Fact]
         public void MoreResultsAvailableReturnsFalseIfNoMoreResults()
         {
             var page = 10;
@@ -35,10 +34,10 @@
 
             var pagedResults = new PagedResult<Customer>(page, results, resultsPerPage, totalResults);
 
-            Assert.IsFalse(pagedResults.MoreResultsAvailable);
+            Assert.False(pagedResults.MoreResultsAvailable);
         }
 
-        [Test]
+        [Fact]
         public void MoreResultsAvailableReturnsTrueIfMoreResults()
         {
             var page = 1;
@@ -48,10 +47,10 @@
 
             var pagedResults = new PagedResult<Customer>(page, results, resultsPerPage, totalResults);
 
-            Assert.IsTrue(pagedResults.MoreResultsAvailable);
+            Assert.True(pagedResults.MoreResultsAvailable);
         }
 
-        [Test]
+        [Fact]
         public void TotalPages()
         {
             var resultsPerPage = 10;
@@ -59,13 +58,13 @@
 
             var pagedResults = new PagedResult<Customer>(1, null, resultsPerPage, totalResults);
 
-            Assert.AreEqual(10, pagedResults.TotalPages);
+            Assert.Equal(10, pagedResults.TotalPages);
         }
 
         /// <summary>
         /// Issue #130 - PagedResults shows incorrect Total Pages.
         /// </summary>
-        [Test]
+        [Fact]
         public void TotalPagesReturns1IfTotalResultsLessThanResultsPerPage()
         {
             var resultsPerPage = 10;
@@ -73,7 +72,7 @@
 
             var pagedResults = new PagedResult<Customer>(1, null, resultsPerPage, totalResults);
 
-            Assert.AreEqual(1, pagedResults.TotalPages);
+            Assert.Equal(1, pagedResults.TotalPages);
         }
 
         private class Customer

@@ -2,15 +2,14 @@
 {
     using System.Linq;
     using MicroLite.Listeners;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="ListenerCollection"/> class.
     /// </summary>
-    [TestFixture]
     public class ListenerCollectionTests
     {
-        [Test]
+        [Fact]
         public void AddOnlyAddsTypeOnce()
         {
             var listenerCollection = new ListenerCollection();
@@ -19,10 +18,10 @@
             listenerCollection.Add<TestListener>();
             listenerCollection.Add<TestListener>();
 
-            Assert.AreEqual(1, listenerCollection.Count());
+            Assert.Equal(1, listenerCollection.Count());
         }
 
-        [Test]
+        [Fact]
         public void ConstructorRegistersAssignedListener()
         {
             var listenerCollection = new ListenerCollection();
@@ -32,17 +31,17 @@
             Assert.NotNull(listener);
         }
 
-        [Test]
-        public void ConstructorRegistersAutoIncrementListener()
+        [Fact]
+        public void ConstructorRegistersDbGeneratedListener()
         {
             var listenerCollection = new ListenerCollection();
 
-            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(AutoIncrementListener));
+            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(DbGeneratedListener));
 
             Assert.NotNull(listener);
         }
 
-        [Test]
+        [Fact]
         public void ConstructorRegistersGuidCombListener()
         {
             var listenerCollection = new ListenerCollection();
@@ -52,7 +51,7 @@
             Assert.NotNull(listener);
         }
 
-        [Test]
+        [Fact]
         public void ConstructorRegistersGuidListener()
         {
             var listenerCollection = new ListenerCollection();
@@ -62,17 +61,7 @@
             Assert.NotNull(listener);
         }
 
-        [Test]
-        public void ConstructorRegistersIdentityListener()
-        {
-            var listenerCollection = new ListenerCollection();
-
-            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(IdentityListener));
-
-            Assert.NotNull(listener);
-        }
-
-        [Test]
+        [Fact]
         public void EnumerationReturnsNewInstanceOfEachTypeOnEachCall()
         {
             var listenerCollection = new ListenerCollection();
@@ -83,7 +72,7 @@
             var listener1 = listenerCollection.Single();
             var listener2 = listenerCollection.Single();
 
-            Assert.AreNotSame(listener1, listener2);
+            Assert.NotSame(listener1, listener2);
         }
 
         private class TestListener : Listener

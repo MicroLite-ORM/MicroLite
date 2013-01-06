@@ -21,11 +21,20 @@ namespace MicroLite
     public interface IIncludeMany<T> where T : class, new()
     {
         /// <summary>
+        /// Gets a value indicating whether this include has a value.
+        /// </summary>
+        bool HasValue
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets the included values.
         /// </summary>
         /// <value>
-        /// If the overall query has not been executed the value will be null.
-        /// If the query yielded no results, it will be an empty collection, otherwise it will be the result of the query.
+        /// Values will be in one of the following states:
+        ///  - If the overall query has not been executed the value will be an empty collection.
+        ///  - If the query yielded no results, it will be an empty collection; otherwise it will contain the results of the query.
         /// </value>
         IList<T> Values
         {

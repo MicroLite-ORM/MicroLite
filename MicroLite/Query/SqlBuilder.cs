@@ -22,7 +22,8 @@ namespace MicroLite.Query
     /// <summary>
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
-    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereBetweenOrIn
+    [System.Diagnostics.DebuggerDisplay("{innerSql}")]
+    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereBetweenOrIn, IHavingOrOrderBy
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder();
@@ -354,9 +355,36 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId
         /// </example>
-        public IOrderBy GroupBy(params string[] columns)
+        public IHavingOrOrderBy GroupBy(params string[] columns)
         {
             this.innerSql.Append(" GROUP BY " + string.Join(", ", columns));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies the having clause for the query.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <param name="value">The argument value.</param>
+        /// <returns>
+        /// The next step in the fluent sql builder.
+        /// </returns>
+        /// <example>
+        /// <code>
+        /// var sqlQuery = SqlBuilder
+        ///     .Select("CustomerId")
+        ///     .Max("Total")
+        ///     .From(typeof(Invoice))
+        ///     .GroupBy("CustomerId")
+        ///     .Having("MAX(Total) > @p0", 10000M)
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId HAVING MAX(Total) > @p0
+        /// </example>
+        public IOrderBy Having(string predicate, object value)
+        {
+            this.AppendPredicate(" HAVING {0}", predicate, value);
 
             return this;
         }
@@ -396,9 +424,11 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            // HACK: We need to use the old string.Join(string separator, params string[] value) method while we are also building in .net 3.5
+#if NET_3_5
             var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)).ToArray());
-
+#else
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)));
+#endif
             this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", predicate, args);
 
             return this;

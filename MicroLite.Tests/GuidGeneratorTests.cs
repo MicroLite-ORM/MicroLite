@@ -1,38 +1,57 @@
 ﻿namespace MicroLite.Tests
 {
     using System;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="GuidGenerator"/> class.
     /// </summary>
-    [TestFixture]
     public class GuidGeneratorTests
     {
-        [Test]
-        public void CreateCombDifferentGuidEachTime()
+        public class WhenCallingCreateComb
         {
-            var guid1 = GuidGenerator.CreateComb();
-            var guid2 = GuidGenerator.CreateComb();
+            private readonly Guid guid1 = GuidGenerator.CreateComb();
+            private readonly Guid guid2 = GuidGenerator.CreateComb();
 
-            Assert.AreNotEqual(guid1, guid2);
+            [Fact]
+            public void EachGuidReturnedShouldBeUnique()
+            {
+                Assert.NotEqual(this.guid1, this.guid2);
+            }
+
+            [Fact]
+            public void TheGuidShouldNotBeAnEmptyGuid()
+            {
+                Assert.NotEqual(Guid.Empty, this.guid1);
+                Assert.NotEqual(Guid.Empty, this.guid2);
+            }
         }
 
-        [Test]
-        public void CreateCombDifferentGuidsEachTimeEvenIfSameDateTimeSeedIsUsed()
+        public class WhenCallingCreateCombUsingTheSameSeed
         {
-            var dateTime = DateTime.Now;
+            private readonly Guid guid1;
+            private readonly Guid guid2;
 
-            var guid1 = GuidGenerator.CreateComb(dateTime);
-            var guid2 = GuidGenerator.CreateComb(dateTime);
+            public WhenCallingCreateCombUsingTheSameSeed()
+            {
+                var dateTime = DateTime.Now;
 
-            Assert.AreNotEqual(guid1, guid2);
-        }
+                this.guid1 = GuidGenerator.CreateComb(dateTime);
+                this.guid2 = GuidGenerator.CreateComb(dateTime);
+            }
 
-        [Test]
-        public void CreateCombDoesNotCreateEmptyGuid()
-        {
-            Assert.AreNotEqual(Guid.Empty, GuidGenerator.CreateComb());
+            [Fact]
+            public void EachGuidReturnedShouldBeUnique()
+            {
+                Assert.NotEqual(this.guid1, this.guid2);
+            }
+
+            [Fact]
+            public void TheGuidShouldNotBeAnEmptyGuid()
+            {
+                Assert.NotEqual(Guid.Empty, this.guid1);
+                Assert.NotEqual(Guid.Empty, this.guid2);
+            }
         }
     }
 }

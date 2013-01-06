@@ -28,11 +28,10 @@ namespace MicroLite.Listeners
         /// </summary>
         public ListenerCollection()
         {
-            this.Add<IdentityListener>();
+            this.Add<DbGeneratedListener>();
             this.Add<AssignedListener>();
             this.Add<GuidListener>();
             this.Add<GuidCombListener>();
-            this.Add<AutoIncrementListener>();
         }
 
         /// <summary>
@@ -47,7 +46,7 @@ namespace MicroLite.Listeners
 
             if (!this.listenerTypes.Contains(listenerType))
             {
-                this.Add(() =>
+                this.listenerFactories.Add(() =>
                 {
                     return new T();
                 });
@@ -88,16 +87,6 @@ namespace MicroLite.Listeners
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Adds the specified listener factory.
-        /// </summary>
-        /// <param name="listenerFactory">The listener factory.</param>
-        /// <remarks>This method exists so that we can unit test with Mock IListeners, it should remain internal.</remarks>
-        internal void Add(Func<IListener> listenerFactory)
-        {
-            this.listenerFactories.Add(listenerFactory);
         }
     }
 }

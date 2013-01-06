@@ -4,25 +4,25 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MicroLite.Logging;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="SessionLoggingContext"/> class.
     /// </summary>
     public class SessionLoggingContextTests
     {
-        [Test]
+        [Fact]
         public void ConstructorSetsCurrentSessionId()
         {
             var sessionId = Guid.NewGuid().ToString();
 
             using (new SessionLoggingContext(sessionId))
             {
-                Assert.AreEqual(sessionId, SessionLoggingContext.CurrentSessionId, "The static CurrentSessionId should match the session id passed to the constructor.");
+                Assert.Equal(sessionId, SessionLoggingContext.CurrentSessionId);
             }
         }
 
-        [Test]
+        [Fact]
         public void CurrentSessionIdIsUniquePerThread()
         {
             Parallel.For(1, 20, (x) =>
@@ -31,14 +31,14 @@
 
                 using (new SessionLoggingContext(sessionId))
                 {
-                    Assert.AreEqual(sessionId, SessionLoggingContext.CurrentSessionId);
+                    Assert.Equal(sessionId, SessionLoggingContext.CurrentSessionId);
 
                     Thread.Sleep(50);
                 }
             });
         }
 
-        [Test]
+        [Fact]
         public void DisposeClearsCurrentSessionId()
         {
             var sessionId = Guid.NewGuid().ToString();
@@ -47,27 +47,27 @@
             {
             }
 
-            Assert.IsNull(SessionLoggingContext.CurrentSessionId);
+            Assert.Null(SessionLoggingContext.CurrentSessionId);
         }
 
-        [Test]
+        [Fact]
         public void SessionLoggingContextCanBeNestedWithoutLoosingTheSessionId()
         {
             var sessionId = Guid.NewGuid().ToString();
 
             using (new SessionLoggingContext(sessionId))
             {
-                Assert.AreEqual(sessionId, SessionLoggingContext.CurrentSessionId, "The outer context should set the session id");
+                Assert.Equal(sessionId, SessionLoggingContext.CurrentSessionId);////, "The outer context should set the session id");
 
                 using (new SessionLoggingContext(sessionId))
                 {
-                    Assert.AreEqual(sessionId, SessionLoggingContext.CurrentSessionId, "The context using should use the same session id");
+                    Assert.Equal(sessionId, SessionLoggingContext.CurrentSessionId);////, "The context using should use the same session id");
                 }
 
-                Assert.AreEqual(sessionId, SessionLoggingContext.CurrentSessionId, "Disposing the inner context shouldn't clear the session id from the outer context");
+                Assert.Equal(sessionId, SessionLoggingContext.CurrentSessionId);////, "Disposing the inner context shouldn't clear the session id from the outer context");
             }
 
-            Assert.IsNull(SessionLoggingContext.CurrentSessionId, "Disposing the outer context should clear the session id");
+            Assert.Null(SessionLoggingContext.CurrentSessionId);////, "Disposing the outer context should clear the session id");
         }
     }
 }

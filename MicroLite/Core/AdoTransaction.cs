@@ -19,7 +19,7 @@ namespace MicroLite.Core
     /// <summary>
     /// The an implementation of <see cref="ITransaction"/> which manages an ADO transaction.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Transaction {id} - Active:{IsActive}, Committed:{WasCommitted}, RolledBack:{WasRolledBack}")]
+    [System.Diagnostics.DebuggerDisplay("Transaction - Active:{IsActive}, Committed:{WasCommitted}, RolledBack:{WasRolledBack}")]
     internal sealed class AdoTransaction : ITransaction
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.AdoTransaction");
@@ -41,8 +41,6 @@ namespace MicroLite.Core
             this.transaction = transaction;
             this.connection = transaction.Connection;
             this.isolationLevel = transaction.IsolationLevel;
-
-            log.TryLogDebug(Messages.Transaction_Created);
         }
 
         public bool IsActive
@@ -84,9 +82,9 @@ namespace MicroLite.Core
 
             try
             {
-                log.TryLogInfo(Messages.Transaction_Committing);
+                log.TryLogDebug(Messages.Transaction_Committing);
                 this.transaction.Commit();
-                log.TryLogInfo(Messages.Transaction_Committed);
+                log.TryLogDebug(Messages.Transaction_Committed);
 
                 this.committed = true;
 
@@ -110,6 +108,11 @@ namespace MicroLite.Core
                     log.TryLogWarn(Messages.Transaction_DisposedUncommitted);
                     this.Rollback();
                 }
+                else if (this.failed && !this.rolledBack)
+                {
+                    log.TryLogWarn(Messages.Transaction_RollingBackFailedCommit);
+                    this.Rollback();
+                }
 
                 this.transaction.Dispose();
                 this.transaction = null;
@@ -129,7 +132,7 @@ namespace MicroLite.Core
 
             if (this.IsActive)
             {
-                log.TryLogInfo(Messages.Transaction_EnlistingCommand);
+                log.TryLogDebug(Messages.Transaction_EnlistingCommand);
                 command.Transaction = this.transaction;
             }
         }
@@ -141,9 +144,9 @@ namespace MicroLite.Core
 
             try
             {
-                log.TryLogInfo(Messages.Transaction_RollingBack);
+                log.TryLogDebug(Messages.Transaction_RollingBack);
                 this.transaction.Rollback();
-                log.TryLogInfo(Messages.Transaction_RolledBack);
+                log.TryLogDebug(Messages.Transaction_RolledBack);
 
                 this.rolledBack = true;
 

@@ -22,10 +22,10 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("Page {Page} of {TotalPages} showing {ResultsPerPage} results per page with a total of {TotalResults} results")]
     public sealed class PagedResult<T>
     {
-        private readonly long page;
+        private readonly int page;
         private readonly IList<T> results;
-        private readonly long resultsPerPage;
-        private readonly long totalResults;
+        private readonly int resultsPerPage;
+        private readonly int totalResults;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="PagedResult&lt;T&gt;"/> class.
@@ -34,7 +34,7 @@ namespace MicroLite
         /// <param name="results">The results in the page.</param>
         /// <param name="resultsPerPage">The number of results per page.</param>
         /// <param name="totalResults">The total number of results for the query.</param>
-        public PagedResult(long page, IList<T> results, long resultsPerPage, long totalResults)
+        public PagedResult(int page, IList<T> results, int resultsPerPage, int totalResults)
         {
             this.page = page;
             this.results = results;
@@ -56,7 +56,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the page number for the results.
         /// </summary>
-        public long Page
+        public int Page
         {
             get
             {
@@ -78,7 +78,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the number of results per page.
         /// </summary>
-        public long ResultsPerPage
+        public int ResultsPerPage
         {
             get
             {
@@ -89,7 +89,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the total number of pages for the query.
         /// </summary>
-        public long TotalPages
+        public int TotalPages
         {
             get
             {
@@ -100,7 +100,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the total number of results for the query.
         /// </summary>
-        public long TotalResults
+        public int TotalResults
         {
             get
             {

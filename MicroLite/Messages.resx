@@ -138,7 +138,7 @@
   <data name="IListener_SettingIdentifierValue" xml:space="preserve">
     <value>Setting the identifier value for an instance of the type [{0}] to [{1}]</value>
   </data>
-  <data name="Session_MustHaveAtLeast1Result" xml:space="preserve">
+  <data name="PagingOptions_ResultsPerPageMustBeAtLeast1" xml:space="preserve">
     <value>There must be at least 1 result per page</value>
   </data>
   <data name="ObjectBuilder_CreatingInstance" xml:space="preserve">
@@ -147,8 +147,8 @@
   <data name="ObjectBuilder_SettingPropertyValue" xml:space="preserve">
     <value>Setting the property value of [{0}].[{1}]</value>
   </data>
-  <data name="ObjectBuilder_UnknownProperty" xml:space="preserve">
-    <value>The results contain a column with the name [{1}], however the type [{0}] does not have a mapped property with the column name [{1}]</value>
+  <data name="ObjectInfo_UnknownProperty" xml:space="preserve">
+    <value>Ignoring the [{1}] column value as the mapped type [{0}] does not have a mapped property with the column name [{1}]</value>
   </data>
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
     <value>Creating the ObjectInfo for the type [{0}]</value>
@@ -162,14 +162,14 @@
   <data name="ObjectInfo_RetrievingObjectInfo" xml:space="preserve">
     <value>Retrieving the ObjectInfo for [{0}]</value>
   </data>
-  <data name="Session_PagesStartAtOne" xml:space="preserve">
+  <data name="PagingOptions_PagesMustBeAtleastOne" xml:space="preserve">
     <value>The first page which can be requested is page 1</value>
   </data>
   <data name="SessionFactory_CreatingSession" xml:space="preserve">
-    <value>Creating a new session for connection [{0}]</value>
+    <value>Creating a new session for connection [{0}] using [{1}]</value>
   </data>
-  <data name="Session_ClosingConnection" xml:space="preserve">
-    <value>Session closing database connection</value>
+  <data name="ConnectionManager_ClosingConnection" xml:space="preserve">
+    <value>Closing the database connection</value>
   </data>
   <data name="Session_Created" xml:space="preserve">
     <value>Session created</value>
@@ -177,8 +177,8 @@
   <data name="Session_Disposed" xml:space="preserve">
     <value>Session disposed</value>
   </data>
-  <data name="Session_OpeningConnection" xml:space="preserve">
-    <value>Session opening database connection</value>
+  <data name="ConnectionManager_OpeningConnection" xml:space="preserve">
+    <value>Opening the database connection</value>
   </data>
   <data name="AttributeMappingConvention_IgnoringProperty" xml:space="preserve">
     <value>The property [{0}].[{1}] will not be mapped by MicroLite as it has no ColumnAttribute</value>
@@ -191,9 +191,6 @@
   </data>
   <data name="Transaction_Committing" xml:space="preserve">
     <value>Transaction committing changes</value>
-  </data>
-  <data name="Transaction_Created" xml:space="preserve">
-    <value>Transaction created</value>
   </data>
   <data name="Transaction_Disposed" xml:space="preserve">
     <value>Transaction disposed</value>
@@ -251,5 +248,44 @@
   </data>
   <data name="IListener_IdentifierNotSetForDelete" xml:space="preserve">
     <value>The object does not have an identifier value set so it cannot be delete</value>
+  </data>
+  <data name="SessionFactory_CreatingReadOnlySession" xml:space="preserve">
+    <value>Creating a new read only session for connection [{0}] using [{1}]</value>
+  </data>
+  <data name="ObjectInfo_GetPropertyValueForColumn" xml:space="preserve">
+    <value>Getting the value of [{0}].[{1}] for the [{2}] column</value>
+  </data>
+  <data name="ObjectInfo_SettingPropertyValue" xml:space="preserve">
+    <value>Setting the property value of [{0}].[{1}]</value>
+  </data>
+  <data name="ObjectInfo_ColumnNotMapped" xml:space="preserve">
+    <value>The column {0} is not mapped to a property on the {1} class</value>
+  </data>
+  <data name="ObjectInfo_TypeMismatch" xml:space="preserve">
+    <value>The type of the object {0} does not match the type for the ObjectInfo {1}</value>
+  </data>
+  <data name="PagingOptions_SkipMustBeZeroOrAbove" xml:space="preserve">
+    <value>It is not possible to skip less than 0 results</value>
+  </data>
+  <data name="PagingOptions_TakeMustBeZeroOrAbove" xml:space="preserve">
+    <value>At least 1 result must be returned</value>
+  </data>
+  <data name="ConnectionManager_BeginTransactionWithIsolationLevel" xml:space="preserve">
+    <value>Beginning a new transaction with IsolationLevel.{0}</value>
+  </data>
+  <data name="ConnectionManager_CreatingCommand" xml:space="preserve">
+    <value>Creating a new IDbCommand for the managed connection</value>
+  </data>
+  <data name="ConnectionManager_EnlistingInTransaction" xml:space="preserve">
+    <value>Enlisting in the current transaction</value>
+  </data>
+  <data name="Session_PagingOptionsMustNotBeNone" xml:space="preserve">
+    <value>The paging options must contain a count and offset, use the PagingOptions.ForPage or PagingOptions.SkipTake methods to specify the values</value>
+  </data>
+  <data name="ConventionMappingConvention_Configuration" xml:space="preserve">
+    <value>The convention to be used is pluralize names [{0}] and an identifier strategy of [{1}]</value>
+  </data>
+  <data name="Transaction_RollingBackFailedCommit" xml:space="preserve">
+    <value>Transaction rolling back changes from failed commit</value>
   </data>
 </root>

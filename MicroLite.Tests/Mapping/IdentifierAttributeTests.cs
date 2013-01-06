@@ -1,22 +1,21 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
     using MicroLite.Mapping;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="IdentifierAttribute"/> class.
     /// </summary>
-    [TestFixture]
     public class IdentifierAttributeTests
     {
-        [Test]
+        [Fact]
         public void ConstructorSetsIdentifierStrategy()
         {
             var identifierStrategy = IdentifierStrategy.Assigned;
 
             var identifierAttribute = new IdentifierAttribute(identifierStrategy);
 
-            Assert.AreEqual(identifierStrategy, identifierAttribute.IdentifierStrategy);
+            Assert.Equal(identifierStrategy, identifierAttribute.IdentifierStrategy);
         }
     }
 }

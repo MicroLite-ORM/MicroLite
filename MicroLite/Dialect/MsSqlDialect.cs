@@ -14,10 +14,10 @@ namespace MicroLite.Dialect
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Globalization;
+    using System.Linq;
     using System.Text;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Mapping;
 
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for MsSql server.
@@ -32,25 +32,107 @@ namespace MicroLite.Dialect
         {
         }
 
-        public override SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
+        /// <summary>
+        /// Gets the close quote character.
+        /// </summary>
+        protected override char CloseQuote
         {
-            long fromRowNumber = ((page - 1) * resultsPerPage) + 1;
-            long toRowNumber = (fromRowNumber - 1) + resultsPerPage;
+            get
+            {
+                return ']';
+            }
+        }
+
+        /// <summary>
+        /// Gets the open quote character.
+        /// </summary>
+        protected override char OpenQuote
+        {
+            get
+            {
+                return '[';
+            }
+        }
+
+        /// <summary>
+        /// Gets the select identity string.
+        /// </summary>
+        protected override string SelectIdentityString
+        {
+            get
+            {
+                return "SELECT SCOPE_IDENTITY()";
+            }
+        }
+
+        /// <summary>
+        /// Gets the SQL parameter.
+        /// </summary>
+        protected override char SqlParameter
+        {
+            get
+            {
+                return '@';
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether SQL parameters are named.
+        /// </summary>
+        protected override bool SupportsNamedParameters
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
+        {
+            if (sqlQueries == null)
+            {
+                throw new ArgumentNullException("sqlQueries");
+            }
+
+            int argumentsCount = 0;
+            var sqlBuilder = new StringBuilder();
+
+            foreach (var sqlQuery in sqlQueries)
+            {
+                argumentsCount += sqlQuery.Arguments.Count;
+
+                var commandText = sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
+                    ? sqlQuery.CommandText
+                    : SqlUtil.ReNumberParameters(sqlQuery.CommandText, argumentsCount);
+
+                sqlBuilder.AppendLine(commandText + this.SelectSeparator);
+            }
+
+            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
+            combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
+
+            return combinedQuery;
+        }
+
+        public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
+        {
+            int fromRowNumber = pagingOptions.Offset + 1;
+            int toRowNumber = pagingOptions.Offset + pagingOptions.Count;
 
             List<object> arguments = new List<object>();
             arguments.AddRange(sqlQuery.Arguments);
             arguments.Add(fromRowNumber);
             arguments.Add(toRowNumber);
 
-            var selectStatement = SqlUtil.ReadSelectList(sqlQuery.CommandText);
-            var qualifiedTableName = SqlUtil.ReadTableName(sqlQuery.CommandText);
+            var selectStatement = this.ReadSelectList(sqlQuery.CommandText);
+            var qualifiedTableName = this.ReadTableName(sqlQuery.CommandText);
             var position = qualifiedTableName.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1;
             var tableName = position > 0 ? qualifiedTableName.Substring(position, qualifiedTableName.Length - position) : qualifiedTableName;
 
-            var whereValue = SqlUtil.ReadWhereClause(sqlQuery.CommandText);
+            var whereValue = this.ReadWhereClause(sqlQuery.CommandText);
             var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
 
-            var orderByValue = SqlUtil.ReadOrderBy(sqlQuery.CommandText);
+            var orderByValue = this.ReadOrderBy(sqlQuery.CommandText);
             var orderByClause = "ORDER BY " + (!string.IsNullOrEmpty(orderByValue) ? orderByValue : "(SELECT NULL)");
 
             var sqlBuilder = new StringBuilder();
@@ -62,19 +144,33 @@ namespace MicroLite.Dialect
             return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
         }
 
-        protected override string EscapeSql(string sql)
+        protected override string GetCommandText(string commandText)
         {
-            return "[" + sql + "]";
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SelectSeparator.ToString()))
+            {
+                var firstParameterPosition = SqlUtil.GetFirstParameterPosition(commandText);
+
+                if (firstParameterPosition > 4)
+                {
+                    return commandText.Substring(4, firstParameterPosition - 4).Trim();
+                }
+                else
+                {
+                    return commandText.Substring(4, commandText.Length - 4).Trim();
+                }
+            }
+
+            return base.GetCommandText(commandText);
         }
 
-        protected override string FormatParameter(int parameterPosition)
+        protected override CommandType GetCommandType(string commandText)
         {
-            return "@p" + parameterPosition.ToString(CultureInfo.InvariantCulture);
-        }
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SelectSeparator.ToString()))
+            {
+                return CommandType.StoredProcedure;
+            }
 
-        protected override string ResolveTableName(ObjectInfo objectInfo)
-        {
-            return "[{0}].[{1}]".FormatWith(string.IsNullOrEmpty(objectInfo.TableInfo.Schema) ? "dbo" : objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name);
+            return base.GetCommandType(commandText);
         }
     }
 }

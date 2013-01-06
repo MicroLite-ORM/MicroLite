@@ -5,18 +5,20 @@
     <version>0.0.0</version>
     <authors>Trevor Pilley</authors>
     <owners>Trevor Pilley</owners>
-    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <licenseUrl>http://microliteorm.wordpress.com/license/</licenseUrl>
     <projectUrl>http://microliteorm.wordpress.com/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Micro ORM Framework</description>
+    <description>MicroLite ORM is a micro Object Relational Mapper for the .NET framework designed for ease of use, testability and extensibility.</description>
     <releaseNotes>See http://microliteorm.wordpress.com/release-notes/ for a summary of changes made in this release of the package.</releaseNotes>
     <copyright>Copyright 2012</copyright>
-    <tags>Micro ORM Framework POCO Database SQL Builder</tags>
+    <tags>Micro ORM Framework POCO Database SQL Builder MsSQL MySQL SQLite Postgre</tags>
   </metadata>
   <files>
     <file src="..\build\3.5\MicroLite.dll" target="lib\net35-client" />
     <file src="..\build\3.5\MicroLite.xml" target="lib\net35-client" />
     <file src="..\build\4.0\MicroLite.dll" target="lib\net40-client" />
     <file src="..\build\4.0\MicroLite.xml" target="lib\net40-client" />
+    <file src="..\build\4.5\MicroLite.dll" target="lib\net45" />
+    <file src="..\build\4.5\MicroLite.xml" target="lib\net45" />
   </files>
 </package>

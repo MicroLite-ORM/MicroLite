@@ -22,8 +22,6 @@ namespace MicroLite.Core
 
 #endif
 
-    using System.Globalization;
-    using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
     using MicroLite.Mapping;
 
@@ -48,7 +46,7 @@ namespace MicroLite.Core
                 var columnName = reader.GetName(i);
 
                 log.TryLogDebug(Messages.ObjectBuilder_SettingPropertyValue, "dynamic", columnName);
-                dictionary.Add(columnName, reader[i] == DBNull.Value ? null : reader[i]);
+                dictionary.Add(columnName, reader.IsDBNull(i) ? null : reader[i]);
             }
 
             return expando;
@@ -70,29 +68,14 @@ namespace MicroLite.Core
                 }
 
                 var columnName = reader.GetName(i);
-                var propertyInfo = objectInfo.GetPropertyInfoForColumn(columnName);
-
-                if (propertyInfo == null)
-                {
-                    log.TryLogWarn(Messages.ObjectBuilder_UnknownProperty, objectInfo.ForType.Name, columnName);
-                    continue;
-                }
 
                 try
                 {
-                    log.TryLogDebug(Messages.ObjectBuilder_SettingPropertyValue, objectInfo.ForType.Name, columnName);
-                    if (propertyInfo.PropertyType.IsEnum)
-                    {
-                        propertyInfo.SetValue(instance, Convert.ChangeType(reader[i], typeof(int), CultureInfo.InvariantCulture));
-                    }
-                    else
-                    {
-                        propertyInfo.SetValue(instance, reader[i]);
-                    }
+                    objectInfo.SetPropertyValueForColumn(instance, columnName, reader[i]);
                 }
                 catch (Exception e)
                 {
-                    log.TryLogFatal(e.Message, e);
+                    log.TryLogError(e.Message, e);
                     throw new MicroLiteException(e.Message, e);
                 }
             }

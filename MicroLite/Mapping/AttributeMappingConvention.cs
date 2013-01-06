@@ -42,7 +42,7 @@ namespace MicroLite.Mapping
                 throw new MicroLiteException(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName));
             }
 
-            var identifierStrategy = MicroLite.Mapping.IdentifierStrategy.Identity;
+            var identifierStrategy = MicroLite.Mapping.IdentifierStrategy.DbGenerated;
             var columns = CreateColumnInfos(forType, ref identifierStrategy);
 
             var tableInfo = new TableInfo(columns, identifierStrategy, tableAttribute.Name, tableAttribute.Schema);
@@ -61,7 +61,7 @@ namespace MicroLite.Mapping
 
                 if (columnAttribute == null)
                 {
-                    log.TryLogDebug(Messages.AttributeMappingConvention_IgnoringProperty, forType.FullName, property.Name);
+                    log.TryLogInfo(Messages.AttributeMappingConvention_IgnoringProperty, forType.FullName, property.Name);
                     continue;
                 }
 

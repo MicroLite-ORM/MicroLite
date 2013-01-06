@@ -21,7 +21,7 @@ namespace MicroLite.Mapping
     /// <example>
     /// <code>
     /// [Column("CustomerId")]
-    /// [Identifier(IdentifierStrategy.Identity)]
+    /// [Identifier(IdentifierStrategy.DbGenerated)]
     /// public int Id
     /// {
     ///     get;

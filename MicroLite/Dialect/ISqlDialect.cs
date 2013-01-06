@@ -13,6 +13,7 @@
 namespace MicroLite.Dialect
 {
     using System;
+    using System.Collections.Generic;
     using System.Data;
 
     /// <summary>
@@ -20,6 +21,20 @@ namespace MicroLite.Dialect
     /// </summary>
     internal interface ISqlDialect
     {
+        /// <summary>
+        /// Builds the command using the values in the specified SqlQuery.
+        /// </summary>
+        /// <param name="command">The command to build.</param>
+        /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
+        void BuildCommand(IDbCommand command, SqlQuery sqlQuery);
+
+        /// <summary>
+        /// Combines the specified SQL queries into a single SqlQuery.
+        /// </summary>
+        /// <param name="sqlQueries">The SQL queries to be combined.</param>
+        /// <returns>The combined <see cref="SqlQuery" />.</returns>
+        SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries);
+
         /// <summary>
         /// Creates an SqlQuery to count the number of records which would be returned by the specified SqlQuery.
         /// </summary>
@@ -47,12 +62,13 @@ namespace MicroLite.Dialect
         SqlQuery CreateQuery(StatementType statementType, Type forType, object identifier);
 
         /// <summary>
-        /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the page number and number of results per page.
+        /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the paging options.
         /// </summary>
         /// <param name="sqlQuery">The SQL query.</param>
-        /// <param name="page">The page number to get the results for.</param>
-        /// <param name="resultsPerPage">The number of results to be shown per page.</param>
-        /// <returns>A <see cref="SqlQuery"/> to return the paged results of the specified query.</returns>
-        SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage);
+        /// <param name="pagingOptions">The paging options.</param>
+        /// <returns>
+        /// A <see cref="SqlQuery" /> to return the paged results of the specified query.
+        /// </returns>
+        SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions);
     }
 }
