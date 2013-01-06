@@ -26,6 +26,7 @@ namespace MicroLite.Configuration
     /// </summary>
     internal sealed class FluentConfiguration : IConfigureConnection, ICreateSessionFactory
     {
+        private static readonly object locker = new object();
         private readonly ILog log = LogManager.GetLog("MicroLite.Configuration");
         private readonly SessionFactoryOptions options = new SessionFactoryOptions();
 
@@ -37,18 +38,21 @@ namespace MicroLite.Configuration
         /// </returns>
         public ISessionFactory CreateSessionFactory()
         {
-            var sessionFactory =
-                Configure.SessionFactories.SingleOrDefault(s => s.ConnectionName == this.options.ConnectionName);
-
-            if (sessionFactory == null)
+            lock (locker)
             {
-                this.log.TryLogInfo(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
-                sessionFactory = new SessionFactory(this.options);
+                var sessionFactory =
+                    Configure.SessionFactories.SingleOrDefault(s => s.ConnectionName == this.options.ConnectionName);
 
-                Configure.SessionFactories.Add(sessionFactory);
+                if (sessionFactory == null)
+                {
+                    this.log.TryLogDebug(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
+                    sessionFactory = new SessionFactory(this.options);
+
+                    Configure.SessionFactories.Add(sessionFactory);
+                }
+
+                return sessionFactory;
             }
-
-            return sessionFactory;
         }
 
         /// <summary>
@@ -104,7 +108,7 @@ namespace MicroLite.Configuration
             }
             catch (Exception e)
             {
-                this.log.TryLogError(e.Message, e);
+                this.log.TryLogFatal(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }

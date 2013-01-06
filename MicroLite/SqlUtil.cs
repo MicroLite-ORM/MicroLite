@@ -12,9 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
-    using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Globalization;
     using System.Linq;
     using System.Text;
@@ -25,85 +23,7 @@ namespace MicroLite
     /// </summary>
     internal static class SqlUtil
     {
-        private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex parameterRegex = new Regex(@"(@[\w]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex selectRegex = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex tableNameRegex = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-
-        /// <summary>
-        /// Combines the specified SQL queries into a single SqlQuery.
-        /// </summary>
-        /// <param name="sqlQueries">The SQL queries to be combined.</param>
-        /// <returns>The combined <see cref="SqlQuery" />.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if sqlQueries is null.</exception>
-        internal static SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
-        {
-            if (sqlQueries == null)
-            {
-                throw new ArgumentNullException("sqlQueries");
-            }
-
-            int argumentsCount = 0;
-            var sqlBuilder = new StringBuilder();
-
-            foreach (var sqlQuery in sqlQueries)
-            {
-                argumentsCount += sqlQuery.Arguments.Count;
-
-                var commandText = sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
-                    ? sqlQuery.CommandText
-                    : ReNumberParameters(sqlQuery.CommandText, argumentsCount);
-
-                sqlBuilder.AppendLine(commandText + ";");
-            }
-
-            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
-            combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
-
-            return combinedQuery;
-        }
-
-        /// <summary>
-        /// Gets the command text to be used in by the IDbCommand.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The command text to be used by the IDbCommand.</returns>
-        internal static string GetCommandText(string commandText)
-        {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(";"))
-            {
-                var firstParameterPosition = GetFirstParameterPosition(commandText);
-
-                if (firstParameterPosition > 4)
-                {
-                    return commandText.Substring(4, firstParameterPosition - 4).Trim();
-                }
-                else
-                {
-                    return commandText.Substring(4, commandText.Length - 4).Trim();
-                }
-            }
-            else
-            {
-                return commandText;
-            }
-        }
-
-        /// <summary>
-        /// Gets the type of the command.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The <see cref="CommandType"/> for the specified command text</returns>
-        internal static CommandType GetCommandType(string commandText)
-        {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(";"))
-            {
-                return CommandType.StoredProcedure;
-            }
-
-            return CommandType.Text;
-        }
+        private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
 
         /// <summary>
         /// Gets the position of the first parameter in the specified command text.
@@ -112,7 +32,7 @@ namespace MicroLite
         /// <returns>The position of the first parameter in the command text or -1 if no parameters are found.</returns>
         internal static int GetFirstParameterPosition(string commandText)
         {
-            var firstParameterPosition = commandText.IndexOf('@', 0);
+            var firstParameterPosition = commandText.IndexOfAny(new[] { '@', ':', '?' }, 0);
 
             return firstParameterPosition;
         }
@@ -125,46 +45,6 @@ namespace MicroLite
         internal static IList<string> GetParameterNames(string commandText)
         {
             return new HashSet<string>(parameterRegex.Matches(commandText).Cast<Match>().Select(x => x.Value)).ToList();
-        }
-
-        /// <summary>
-        /// Reads the order by clause from the specified command text excluding the ORDER BY keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The columns in the order by list.</returns>
-        internal static string ReadOrderBy(string commandText)
-        {
-            return orderByRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-        }
-
-        /// <summary>
-        /// Reads the select clause from the specified command text including the SELECT keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The columns in the select list.</returns>
-        internal static string ReadSelectList(string commandText)
-        {
-            return selectRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-        }
-
-        /// <summary>
-        /// Reads the name of the table the sql query is targeting.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The name of the table the sql query is targeting.</returns>
-        internal static string ReadTableName(string commandText)
-        {
-            return tableNameRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-        }
-
-        /// <summary>
-        /// Reads the where clause from the specified command text excluding the WHERE keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The where clause without the WHERE keyword.</returns>
-        internal static string ReadWhereClause(string commandText)
-        {
-            return whereRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
         }
 
         /// <summary>

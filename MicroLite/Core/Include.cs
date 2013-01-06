@@ -20,6 +20,15 @@ namespace MicroLite.Core
     internal abstract class Include
     {
         /// <summary>
+        /// Gets or sets a value indicating whether this include has a value.
+        /// </summary>
+        public bool HasValue
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
         /// Builds the included value from the results in the data reader using the supplied object builder.
         /// </summary>
         /// <param name="reader">The <see cref="IDataReader"/> containing the results.</param>

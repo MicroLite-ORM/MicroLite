@@ -17,6 +17,7 @@ namespace MicroLite
     /// <summary>
     /// A class which represents a parameterised SQL query.
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("{CommandText}")]
     public sealed class SqlQuery
     {
         private readonly List<object> arguments = new List<object>();

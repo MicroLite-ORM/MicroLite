@@ -14,9 +14,7 @@ namespace MicroLite.Dialect
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Text;
-    using MicroLite.Mapping;
 
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for SQLite.
@@ -31,37 +29,54 @@ namespace MicroLite.Dialect
         {
         }
 
-        public override SqlQuery PageQuery(SqlQuery sqlQuery, long page, long resultsPerPage)
+        /// <summary>
+        /// Gets the select identity string.
+        /// </summary>
+        protected override string SelectIdentityString
         {
-            long skip = (page - 1) * resultsPerPage;
+            get
+            {
+                return "SELECT last_insert_rowid()";
+            }
+        }
 
+        /// <summary>
+        /// Gets the SQL parameter.
+        /// </summary>
+        protected override char SqlParameter
+        {
+            get
+            {
+                return '@';
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether SQL parameters are named.
+        /// </summary>
+        protected override bool SupportsNamedParameters
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
+        {
             List<object> arguments = new List<object>();
             arguments.AddRange(sqlQuery.Arguments);
-            arguments.Add(skip);
-            arguments.Add(resultsPerPage);
+            arguments.Add(pagingOptions.Offset);
+            arguments.Add(pagingOptions.Count);
 
             var sqlBuilder = new StringBuilder(sqlQuery.CommandText);
             sqlBuilder.Replace(Environment.NewLine, string.Empty);
-            sqlBuilder.Append(SqlUtil.ReNumberParameters(" LIMIT @p0,@p1", arguments.Count));
+            sqlBuilder.Append(" LIMIT ");
+            sqlBuilder.Append(this.FormatParameter(arguments.Count - 2));
+            sqlBuilder.Append(',');
+            sqlBuilder.Append(this.FormatParameter(arguments.Count - 1));
 
             return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
-        }
-
-        protected override string EscapeSql(string sql)
-        {
-            return "\"" + sql + "\"";
-        }
-
-        protected override string FormatParameter(int parameterPosition)
-        {
-            return "@p" + parameterPosition.ToString(CultureInfo.InvariantCulture);
-        }
-
-        protected override string ResolveTableName(ObjectInfo objectInfo)
-        {
-            return string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
-                ? "\"" + objectInfo.TableInfo.Name + "\""
-                : "\"" + objectInfo.TableInfo.Schema + "\".\"" + objectInfo.TableInfo.Name + "\"";
         }
     }
 }

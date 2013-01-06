@@ -5,86 +5,151 @@
     using MicroLite.Core;
     using MicroLite.Mapping;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="IncludeSingle&lt;T&gt;"/> class.
     /// </summary>
-    [TestFixture]
     public class IncludeSingleTests
     {
-        [Test]
-        public void BuildValueThrowsMicroLiteExceptionIfMoreThanOneResult()
+        public class WhenBuildValueHasBeenCalledAndThereAreNoResults
         {
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, true }).Dequeue);
+            private IncludeSingle<Customer> include = new IncludeSingle<Customer>();
+            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
-            var reader = mockReader.Object;
+            public WhenBuildValueHasBeenCalledAndThereAreNoResults()
+            {
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-            var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+                var reader = this.mockReader.Object;
 
-            var include = new IncludeSingle<Customer>();
+                this.mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader));
 
-            var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object, mockObjectBuilder.Object));
+                this.include.BuildValue(this.mockReader.Object, this.mockObjectBuilder.Object);
+            }
 
-            Assert.AreEqual(Messages.IncludeSingle_SingleResultExpected, exception.Message);
+            [Fact]
+            public void HasValueShouldBeFalse()
+            {
+                Assert.False(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void TheObjectBuilderShouldNotBuildAnyObjects()
+            {
+                this.mockObjectBuilder.Verify(
+                    x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), It.IsAny<IDataReader>()),
+                    Times.Never(),
+                    "If the first call to IDataReader.Read() returns false, we should not try and create an object.");
+            }
+
+            [Fact]
+            public void ValueShouldBeNull()
+            {
+                Assert.Null(this.include.Value);
+            }
         }
 
-        [Test]
-        public void ValueReturnsNullIfNoResultsInReader()
+        public class WhenBuildValueHasBeenCalledAndThereIsOneResult
         {
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.Read()).Returns(false);
+            private IncludeSingle<Customer> include = new IncludeSingle<Customer>();
+            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
-            var reader = mockReader.Object;
+            public WhenBuildValueHasBeenCalledAndThereIsOneResult()
+            {
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-            var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader));
+                var reader = this.mockReader.Object;
 
-            var include = new IncludeSingle<Customer>();
+                this.mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
-            include.BuildValue(reader, mockObjectBuilder.Object);
+                this.include.BuildValue(reader, this.mockObjectBuilder.Object);
+            }
 
-            mockObjectBuilder.Verify(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader), Times.Never(), "If the first call to IDataReader.Read() returns false, we should not try and create an object.");
+            [Fact]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.True(this.include.HasValue);
+            }
 
-            Assert.IsNull(include.Value);
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void TheObjectBuilderShouldBeCalled()
+            {
+                this.mockObjectBuilder.VerifyAll();
+            }
+
+            [Fact]
+            public void ValueShouldNotBeNull()
+            {
+                Assert.NotNull(this.include.Value);
+            }
         }
 
-        [Test]
-        public void ValueReturnsNullIfBuildValueNotCalled()
+        public class WhenBuildValueHasNotBeenCalled
         {
-            var include = new IncludeSingle<Customer>();
+            private IncludeSingle<Customer> include = new IncludeSingle<Customer>();
 
-            Assert.IsNull(include.Value);
+            public WhenBuildValueHasNotBeenCalled()
+            {
+            }
+
+            [Fact]
+            public void HasValueShouldBeFalse()
+            {
+                Assert.False(this.include.HasValue);
+            }
+
+            [Fact]
+            public void ValueShouldBeNull()
+            {
+                Assert.Null(this.include.Value);
+            }
         }
 
-        [Test]
-        public void ValueReturnsResults()
+        public class WhenTheDataReaderContainsMultipleResults
         {
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+            private IncludeSingle<Customer> include = new IncludeSingle<Customer>();
+            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
-            var reader = mockReader.Object;
+            public WhenTheDataReaderContainsMultipleResults()
+            {
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, true }).Dequeue);
 
-            var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+                var reader = this.mockReader.Object;
 
-            var include = new IncludeSingle<Customer>();
+                this.mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+            }
 
-            include.BuildValue(mockReader.Object, mockObjectBuilder.Object);
+            [Fact]
+            public void BuildValueShouldThrowAMicroLiteException()
+            {
+                var exception = Assert.Throws<MicroLiteException>(
+                    () => this.include.BuildValue(this.mockReader.Object, this.mockObjectBuilder.Object));
 
-            mockReader.VerifyAll();
-            mockObjectBuilder.VerifyAll();
-
-            Assert.NotNull(include.Value);
+                Assert.Equal(Messages.IncludeSingle_SingleResultExpected, exception.Message);
+            }
         }
 
-        [MicroLite.Mapping.Table("dbo", "Customers")]
+        [MicroLite.Mapping.Table("Customers")]
         private class Customer
         {
             [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Identity)]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
             public int Id
             {
                 get;

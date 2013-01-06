@@ -3,15 +3,14 @@
     using System;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="TableInfo"/> class.
     /// </summary>
-    [TestFixture]
     public class TableInfoTests
     {
-        [Test]
+        [Fact]
         public void ConstructorSetsPropertyValues()
         {
             var columns = new[]
@@ -25,32 +24,32 @@
 
             var tableInfo = new TableInfo(columns, identifierStrategy, name, schema);
 
-            CollectionAssert.AreEqual(columns, tableInfo.Columns);
-            Assert.AreEqual(columns[1].ColumnName, tableInfo.IdentifierColumn);
-            Assert.AreEqual(identifierStrategy, tableInfo.IdentifierStrategy);
-            Assert.AreEqual(name, tableInfo.Name);
-            Assert.AreEqual(schema, tableInfo.Schema);
+            Assert.Equal(columns, tableInfo.Columns);
+            Assert.Equal(columns[1].ColumnName, tableInfo.IdentifierColumn);
+            Assert.Equal(identifierStrategy, tableInfo.IdentifierStrategy);
+            Assert.Equal(name, tableInfo.Name);
+            Assert.Equal(schema, tableInfo.Schema);
         }
 
-        [Test]
+        [Fact]
         public void ConstructorThrowsArgumentNullExceptionForNullColumns()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new TableInfo(columns: null, identifierStrategy: IdentifierStrategy.Identity, name: "Customers", schema: "Sales"));
+                () => new TableInfo(columns: null, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
-            Assert.AreEqual("columns", exception.ParamName);
+            Assert.Equal("columns", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void ConstructorThrowsArgumentNullExceptionForNullName()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new TableInfo(columns: new ColumnInfo[0], identifierStrategy: IdentifierStrategy.Identity, name: null, schema: "Sales"));
+                () => new TableInfo(columns: new ColumnInfo[0], identifierStrategy: IdentifierStrategy.DbGenerated, name: null, schema: "Sales"));
 
-            Assert.AreEqual("name", exception.ParamName);
+            Assert.Equal("name", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void ConstructorThrowsMicroLiteExceptionIfMultipleColumnsWithSameName()
         {
             var columns = new[]
@@ -60,12 +59,12 @@
             };
 
             var exception = Assert.Throws<MicroLiteException>(
-                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.Identity, name: "Customers", schema: "Sales"));
+                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
-            Assert.AreEqual(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith("Name"), exception.Message);
+            Assert.Equal(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith("Name"), exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void ConstructorThrowsMicroLiteExceptionIfNoColumnsAreIdentifierColumn()
         {
             var columns = new[]
@@ -74,9 +73,9 @@
             };
 
             var exception = Assert.Throws<MicroLiteException>(
-                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.Identity, name: "Customers", schema: "Sales"));
+                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
-            Assert.AreEqual(Messages.TableInfo_NoIdentifierColumn.FormatWith("Sales", "Customers"), exception.Message);
+            Assert.Equal(Messages.TableInfo_NoIdentifierColumn.FormatWith("Sales", "Customers"), exception.Message);
         }
 
         private class Customer

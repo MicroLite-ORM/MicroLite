@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="AutoIncrementListener.cs" company="MicroLite">
+// <copyright file="DbGeneratedListener.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,17 +13,16 @@
 namespace MicroLite.Listeners
 {
     using System;
-    using System.Globalization;
     using MicroLite.Logging;
     using MicroLite.Mapping;
 
     /// <summary>
     /// The implementation of <see cref="IListener"/> for setting the instance identifier value if
-    /// <see cref="IdentifierStrategy"/>.AutoIncrement is used.
+    /// <see cref="IdentifierStrategy"/>.DbGenerated is used.
     /// </summary>
-    public sealed class AutoIncrementListener : Listener
+    public sealed class DbGeneratedListener : Listener
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.AutoIncrementListener");
+        private static readonly ILog log = LogManager.GetLog("MicroLite.DbGeneratedListener");
 
         /// <summary>
         /// Invoked after the SqlQuery to insert the record for the instance has been executed.
@@ -44,14 +43,10 @@ namespace MicroLite.Listeners
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.AutoIncrement)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
-                var propertyInfo = objectInfo.GetPropertyInfoForColumn(objectInfo.TableInfo.IdentifierColumn);
-
-                var identifierValue = Convert.ChangeType(executeScalarResult, propertyInfo.PropertyType, CultureInfo.InvariantCulture);
-
-                log.TryLogDebug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
-                propertyInfo.SetValue(instance, identifierValue, null);
+                log.TryLogDebug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
+                objectInfo.SetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn, executeScalarResult);
             }
         }
 
@@ -69,7 +64,7 @@ namespace MicroLite.Listeners
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.AutoIncrement)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
                 if (objectInfo.HasDefaultIdentifierValue(instance))
                 {
@@ -92,37 +87,12 @@ namespace MicroLite.Listeners
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.AutoIncrement)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
                 if (!objectInfo.HasDefaultIdentifierValue(instance))
                 {
                     throw new MicroLiteException(Messages.IListener_IdentifierSetForInsert);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Invoked before the SqlQuery to insert the record into the database is executed.
-        /// </summary>
-        /// <param name="instance">The instance to be inserted.</param>
-        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
-        public override void BeforeInsert(object instance, SqlQuery sqlQuery)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            var objectInfo = ObjectInfo.For(instance.GetType());
-
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.AutoIncrement)
-            {
-                sqlQuery.CommandText += ";SELECT last_insert_rowid()";
             }
         }
 
@@ -140,7 +110,7 @@ namespace MicroLite.Listeners
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.AutoIncrement)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
                 if (objectInfo.HasDefaultIdentifierValue(instance))
                 {

@@ -22,13 +22,15 @@ namespace MicroLite.Dialect
     /// </summary>
     internal static class SqlDialectFactory
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.SqlDialectFactory");
-
         private static readonly IDictionary<string, Type> dialects = new Dictionary<string, Type>
         {
             { "MicroLite.Dialect.MsSqlDialect", typeof(MsSqlDialect) },
-            { "MicroLite.Dialect.SQLiteDialect", typeof(SQLiteDialect) }
+            { "MicroLite.Dialect.SQLiteDialect", typeof(SQLiteDialect) },
+            { "MicroLite.Dialect.PostgreSqlDialect", typeof(PostgreSqlDialect) },
+            { "MicroLite.Dialect.MySqlDialect", typeof(MySqlDialect) }
         };
+
+        private static readonly ILog log = LogManager.GetLog("MicroLite.SqlDialectFactory");
 
         /// <summary>
         /// Gets the dialect with the specified name.

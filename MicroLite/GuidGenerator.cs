@@ -21,7 +21,7 @@ namespace MicroLite
     /// A class for generating guids using our comb implementation.
     /// </summary>
     /// <remarks>
-    /// Loosely based upon Mark J. Miller's implementation
+    /// Loosely based upon Mark J. Miller's implementation <![CDATA[http://www.developmentalmadness.com/archive/2010/10/13/sequential-guid-algorithm-ndash-improving-the-algorithm.aspx]]>
     /// </remarks>
     internal static class GuidGenerator
     {
@@ -55,7 +55,6 @@ namespace MicroLite
         /// <returns>A new Guid</returns>
         internal static Guid CreateComb(DateTime dateTime)
         {
-            // Based upon http://www.developmentalmadness.com/archive/2010/10/13/sequential-guid-algorithm-ndash-improving-the-algorithm.aspx
             var increment = Interlocked.Increment(ref sequentialCounter);
 
             byte[] tickBytes = BitConverter.GetBytes(dateTime.Ticks + increment);

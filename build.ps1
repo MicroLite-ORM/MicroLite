@@ -15,8 +15,10 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 {
 	$assemblyVersionPattern = 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
 	$fileVersionPattern = 'AssemblyFileVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
-	$assemblyVersion = 'AssemblyVersion("' + $buildVersion.SubString(0, 3) + '.0")';
+	$infoVersionPattern = 'AssemblyInformationalVersion\("[0-9]+(\.([0-9]+|\*)){1,3}(.*)"\)'
+	$assemblyVersion = 'AssemblyVersion("' + $buildVersion.SubString(0, 3) + '.0.0")';
 	$fileVersion = 'AssemblyFileVersion("' + $buildVersion.SubString(0, 5) + '.0")';
+	$infoVersion = 'AssemblyInformationalVersion("' + $buildVersion + '")';
 	
 	Get-ChildItem $scriptPath -r -filter AssemblyInfo.cs | ForEach-Object {
 		$filename = $_.Directory.ToString() + '\' + $_.Name
@@ -24,7 +26,8 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 			
 		(Get-Content $filename) | ForEach-Object {
 			% {$_ -replace $assemblyVersionPattern, $assemblyVersion } |
-			% {$_ -replace $fileVersionPattern, $fileVersion }
+			% {$_ -replace $fileVersionPattern, $fileVersion } |
+			% {$_ -replace $infoVersionPattern, $infoVersion }
 		} | Set-Content $filename -Encoding UTF8
 	}
 }

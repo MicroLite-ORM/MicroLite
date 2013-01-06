@@ -1,38 +1,37 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
     using MicroLite.Mapping;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="ColumnAttribute"/> class.
     /// </summary>
-    [TestFixture]
     public class ColumnAttributeTests
     {
-        [Test]
+        [Fact]
         public void ConstructorSetsAllowInsert()
         {
             var columnAttribute = new ColumnAttribute("Foo", allowInsert: true, allowUpdate: false);
 
-            Assert.IsTrue(columnAttribute.AllowInsert);
+            Assert.True(columnAttribute.AllowInsert);
         }
 
-        [Test]
+        [Fact]
         public void ConstructorSetsAllowUpdate()
         {
             var columnAttribute = new ColumnAttribute("Foo", allowInsert: false, allowUpdate: true);
 
-            Assert.IsTrue(columnAttribute.AllowUpdate);
+            Assert.True(columnAttribute.AllowUpdate);
         }
 
-        [Test]
+        [Fact]
         public void ConstructorSetsName()
         {
             var columnName = "ObjectID";
 
             var columnAttribute = new ColumnAttribute(columnName);
 
-            Assert.AreEqual(columnName, columnAttribute.Name);
+            Assert.Equal(columnName, columnAttribute.Name);
         }
     }
 }

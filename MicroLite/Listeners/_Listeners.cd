@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="MicroLite.Listeners.Listener">
-    <Position X="5.75" Y="0.5" Width="2.25" />
+    <Position X="4" Y="0.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAgAAAAQAAAAAAAAEAAAAAAAAAACACAAAUAAAABAAA=</HashCode>
       <FileName>Listeners\Listener.cs</FileName>
@@ -15,36 +15,29 @@
       <FileName>Listeners\AssignedListener.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MicroLite.Listeners.AutoIncrementListener">
-    <Position X="5.75" Y="4.25" Width="2.25" />
+  <Class Name="MicroLite.Listeners.DbGeneratedListener">
+    <Position X="2.75" Y="4.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAAAAACAAAAAAACAAAAAUAAAAAAAA=</HashCode>
-      <FileName>Listeners\AutoIncrementListener.cs</FileName>
+      <FileName>Listeners\DbGeneratedListener.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Listeners.GuidCombListener">
-    <Position X="8.75" Y="4.25" Width="1.5" />
+    <Position X="5.25" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAAAAACAAAAAAAAAAAAAUAAAAAAAA=</HashCode>
       <FileName>Listeners\GuidCombListener.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Listeners.GuidListener">
-    <Position X="11" Y="4.25" Width="1.5" />
+    <Position X="7.5" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAAAAACAAAAAAAAAAAAAUAAAAAAAA=</HashCode>
       <FileName>Listeners\GuidListener.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MicroLite.Listeners.IdentityListener">
-    <Position X="2.75" Y="4.25" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAAAAAAAAACAAAAAAACAAAAAUAAAAAAAA=</HashCode>
-      <FileName>Listeners\IdentityListener.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="MicroLite.Listeners.ListenerCollection">
-    <Position X="9.5" Y="0.5" Width="3.25" />
+    <Position X="7.5" Y="0.5" Width="3.25" />
     <TypeIdentifier>
       <HashCode>ACKAAAAAAAAAABAAAAABAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
       <FileName>Listeners\ListenerCollection.cs</FileName>

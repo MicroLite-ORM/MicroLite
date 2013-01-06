@@ -22,6 +22,6 @@ namespace MicroLite.Query
         /// </summary>
         /// <param name="columns">The columns to group by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IOrderBy GroupBy(params string[] columns);
+        IHavingOrOrderBy GroupBy(params string[] columns);
     }
 }

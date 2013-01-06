@@ -3,12 +3,11 @@
     using System;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="ObjectInfo"/> class.
     /// </summary>
-    [TestFixture]
     public class ObjectInfoTests
     {
         private enum CustomerStatus
@@ -17,129 +16,194 @@
             Active = 1
         }
 
-        [Test]
+        [Fact]
         public void ConstructorThrowsArgumentNullExceptionForNullForTableInfo()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => new ObjectInfo(typeof(CustomerWithIntegerIdentifier), null));
 
-            Assert.AreEqual("tableInfo", exception.ParamName);
+            Assert.Equal("tableInfo", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void ConstructorThrowsArgumentNullExceptionForNullForType()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => new ObjectInfo(null, null));
 
-            Assert.AreEqual("forType", exception.ParamName);
+            Assert.Equal("forType", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void DefaultIdentifierValueIsSetCorrectlyForGuid()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
 
-            Assert.AreEqual(Guid.Empty, objectInfo.DefaultIdentifierValue);
+            Assert.Equal(Guid.Empty, objectInfo.DefaultIdentifierValue);
         }
 
-        [Test]
+        [Fact]
         public void DefaultIdentifierValueIsSetCorrectlyForInteger()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            Assert.AreEqual(0, objectInfo.DefaultIdentifierValue);
+            Assert.Equal(0, objectInfo.DefaultIdentifierValue);
         }
 
-        [Test]
+        [Fact]
         public void DefaultIdentifierValueIsSetCorrectlyForString()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
 
-            Assert.IsNull(objectInfo.DefaultIdentifierValue);
+            Assert.Null(objectInfo.DefaultIdentifierValue);
         }
 
-        [Test]
+        [Fact]
         public void ForReturnsSameInstanceOnEachCall()
         {
             var objectInfo1 = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
             var objectInfo2 = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            Assert.AreSame(objectInfo1, objectInfo2);
+            Assert.Same(objectInfo1, objectInfo2);
         }
 
-        [Test]
+        [Fact]
+        public void ForReturnsSameObjectInfoForSameType()
+        {
+            var forType = typeof(CustomerWithIntegerIdentifier);
+
+            var objectInfo1 = ObjectInfo.For(forType);
+            var objectInfo2 = ObjectInfo.For(forType);
+
+            Assert.Same(objectInfo1, objectInfo2);
+        }
+
+        [Fact]
         public void ForThrowsArgumentNullExceptonForNullForType()
         {
             var exception = Assert.Throws<ArgumentNullException>(() => ObjectInfo.For(null));
 
-            Assert.AreEqual("forType", exception.ParamName);
+            Assert.Equal("forType", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
         public void ForThrowsMicroLiteExceptionIfAbstractClass()
         {
             var exception = Assert.Throws<MicroLiteException>(
                 () => ObjectInfo.For(typeof(AbstractCustomer)));
 
-            Assert.AreEqual(
+            Assert.Equal(
                 Messages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(typeof(AbstractCustomer).Name),
                 exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void ForThrowsMicroLiteExceptionIfNoDefaultConstructor()
         {
             var exception = Assert.Throws<MicroLiteException>(
                 () => ObjectInfo.For(typeof(CustomerWithNoDefaultConstructor)));
 
-            Assert.AreEqual(
+            Assert.Equal(
                 Messages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(typeof(CustomerWithNoDefaultConstructor).Name),
                 exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void ForThrowsMicroLiteExceptionIfNotClass()
         {
             var exception = Assert.Throws<MicroLiteException>(
                 () => ObjectInfo.For(typeof(CustomerStruct)));
 
-            Assert.AreEqual(
+            Assert.Equal(
                 Messages.ObjectInfo_TypeMustBeClass.FormatWith(typeof(CustomerStruct).Name),
                 exception.Message);
         }
 
-        [Test]
+        [Fact]
         public void ForTypeReturnsTypePassedToConstructor()
         {
             var forType = typeof(CustomerWithIntegerIdentifier);
 
             var objectInfo = ObjectInfo.For(forType);
 
-            Assert.AreEqual(forType, objectInfo.ForType);
+            Assert.Equal(forType, objectInfo.ForType);
         }
 
-        [Test]
-        public void GetPropertyInfoForColumnReturnsCorrectPropertyInfo()
+        [Fact]
+        public void GetIdentifierValueReturnsPropertyValue()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            Assert.AreEqual("Id", objectInfo.GetPropertyInfoForColumn("CustomerId").Name);
-            Assert.AreEqual("Name", objectInfo.GetPropertyInfoForColumn("Name").Name);
-            Assert.AreEqual("DateOfBirth", objectInfo.GetPropertyInfoForColumn("DoB").Name);
-            Assert.AreEqual("Status", objectInfo.GetPropertyInfoForColumn("StatusId").Name);
+            var customer = new CustomerWithIntegerIdentifier
+            {
+                Id = 122323
+            };
+
+            var identifierValue = (int)objectInfo.GetIdentifierValue(customer);
+
+            Assert.Equal(customer.Id, identifierValue);
         }
 
-        [Test]
-        public void GetPropertyInfoForColumnReturnsNullForUnmappedColumns()
+        [Fact]
+        public void GetIdentifierValueThrowsArgumentNullExceptionForNullInstance()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            Assert.IsNull(objectInfo.GetPropertyInfoForColumn("AgeInYears"));
-            Assert.IsNull(objectInfo.GetPropertyInfoForColumn("TempraryNotes"));
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetIdentifierValue(null));
+
+            Assert.Equal("instance", exception.ParamName);
         }
 
-        [Test]
+        [Fact]
+        public void GetIdentifierValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.GetIdentifierValue(new CustomerWithGuidIdentifier()));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void GetPropertyValueForColumnThrowsArgumentNullExceptionForNullInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetPropertyValueForColumn(null, "Name"));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void GetPropertyValueForColumnThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.GetPropertyValueForColumn(new CustomerWithGuidIdentifier(), "Name"));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void GetPropertyValueForColumnThrowsMicroLiteExceptionIfInvalidColumnName()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.GetPropertyValueForColumn(new CustomerWithIntegerIdentifier(), "UnknownColumn"));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_ColumnNotMapped, "UnknownColumn", objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
         public void HasDefaultGuidValue()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
@@ -147,13 +211,13 @@
             var customer = new CustomerWithGuidIdentifier();
 
             customer.Id = Guid.Empty;
-            Assert.IsTrue(objectInfo.HasDefaultIdentifierValue(customer));
+            Assert.True(objectInfo.HasDefaultIdentifierValue(customer));
 
             customer.Id = Guid.NewGuid();
-            Assert.IsFalse(objectInfo.HasDefaultIdentifierValue(customer));
+            Assert.False(objectInfo.HasDefaultIdentifierValue(customer));
         }
 
-        [Test]
+        [Fact]
         public void HasDefaultIntegerValue()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
@@ -161,13 +225,13 @@
             var customer = new CustomerWithIntegerIdentifier();
 
             customer.Id = 0;
-            Assert.IsTrue(objectInfo.HasDefaultIdentifierValue(customer));
+            Assert.True(objectInfo.HasDefaultIdentifierValue(customer));
 
             customer.Id = 123;
-            Assert.IsFalse(objectInfo.HasDefaultIdentifierValue(customer));
+            Assert.False(objectInfo.HasDefaultIdentifierValue(customer));
         }
 
-        [Test]
+        [Fact]
         public void HasDefaultStringValue()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
@@ -175,10 +239,57 @@
             var customer = new CustomerWithStringIdentifier();
 
             customer.Id = null;
-            Assert.IsTrue(objectInfo.HasDefaultIdentifierValue(customer));
+            Assert.True(objectInfo.HasDefaultIdentifierValue(customer));
 
             customer.Id = "AFIK";
-            Assert.IsFalse(objectInfo.HasDefaultIdentifierValue(customer));
+            Assert.False(objectInfo.HasDefaultIdentifierValue(customer));
+        }
+
+        [Fact]
+        public void SetPropertyValueForColumnIgnoresUnmappedPropertyWithoutThrowingAnException()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            objectInfo.SetPropertyValueForColumn(instance, "UnknownColumn", 1);
+        }
+
+        [Fact]
+        public void SetPropertyValueForColumnSetsPropertyValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            objectInfo.SetPropertyValueForColumn(instance, "Name", "Trev");
+
+            Assert.Equal("Trev", instance.Name);
+        }
+
+        [Fact]
+        public void SetPropertyValueForColumnThrowsArgumentNullExceptionForNullInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.SetPropertyValueForColumn(null, "StatusId", 1));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void SetPropertyValueForColumnThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithGuidIdentifier();
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
         }
 
         private struct CustomerStruct
@@ -214,6 +325,13 @@
                 {
                     return DateTime.Today.Year - this.DateOfBirth.Year;
                 }
+            }
+
+            [MicroLite.Mapping.Column("CreditLimit")]
+            public Decimal? CreditLimit
+            {
+                get;
+                set;
             }
 
             [MicroLite.Mapping.Column("DoB")]

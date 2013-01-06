@@ -26,6 +26,20 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets the type of SQL dialect used by the session factory.
+        /// </summary>
+        string SqlDialect
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Opens a new read only session to the database.
+        /// </summary>
+        /// <returns>A new read only session instance.</returns>
+        IReadOnlySession OpenReadOnlySession();
+
+        /// <summary>
         /// Opens a new session to the database.
         /// </summary>
         /// <returns>A new session instance.</returns>

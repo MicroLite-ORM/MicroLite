@@ -12,17 +12,15 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
-    using System;
-    using System.Collections.Generic;
     using System.Data;
-    using System.Globalization;
-    using MicroLite.FrameworkExtensions;
+    using MicroLite.Logging;
 
     /// <summary>
     /// The default implementation of <see cref="IConnectionManager"/>.
     /// </summary>
     internal sealed class ConnectionManager : IConnectionManager
     {
+        private static readonly ILog log = LogManager.GetLog("MicroLite.ConnectionManager");
         private IDbConnection connection;
         private ITransaction currentTransaction;
 
@@ -39,45 +37,45 @@ namespace MicroLite.Core
             }
         }
 
-        public ITransaction BeginTransaction()
-        {
-            if (this.currentTransaction == null || !this.currentTransaction.IsActive)
-            {
-                this.currentTransaction = Transaction.Begin(this.connection);
-            }
-
-            return this.currentTransaction;
-        }
-
         public ITransaction BeginTransaction(IsolationLevel isolationLevel)
         {
             if (this.currentTransaction == null || !this.currentTransaction.IsActive)
             {
-                this.currentTransaction = Transaction.Begin(this.connection, isolationLevel);
+                log.TryLogDebug(Messages.ConnectionManager_BeginTransactionWithIsolationLevel, isolationLevel.ToString());
+
+                this.connection.Open();
+
+                var dbTransaction = this.connection.BeginTransaction(isolationLevel);
+
+                this.currentTransaction = new AdoTransaction(dbTransaction);
             }
 
             return this.currentTransaction;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The purpose of this method is to build a command and return it.")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
-        public IDbCommand BuildCommand(SqlQuery sqlQuery)
+        public void CommandCompleted(IDbCommand command)
         {
-            var parameterNames = SqlUtil.GetParameterNames(sqlQuery.CommandText);
-
-            if (parameterNames.Count != sqlQuery.Arguments.Count)
+            if (command.Transaction == null)
             {
-                throw new MicroLiteException(Messages.ConnectionManager_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
+                log.TryLogDebug(Messages.ConnectionManager_ClosingConnection);
+                command.Connection.Close();
+            }
+        }
+
+        public IDbCommand CreateCommand()
+        {
+            if (this.connection.State == ConnectionState.Closed)
+            {
+                log.TryLogDebug(Messages.ConnectionManager_OpeningConnection);
+                this.connection.Open();
             }
 
+            log.TryLogDebug(Messages.ConnectionManager_CreatingCommand);
             var command = this.connection.CreateCommand();
-            command.CommandText = SqlUtil.GetCommandText(sqlQuery.CommandText);
-            command.CommandTimeout = sqlQuery.Timeout;
-            command.CommandType = SqlUtil.GetCommandType(sqlQuery.CommandText);
-            AddParameters(command, sqlQuery, parameterNames);
 
             if (this.currentTransaction != null)
             {
+                log.TryLogDebug(Messages.ConnectionManager_EnlistingInTransaction);
                 this.currentTransaction.Enlist(command);
             }
 
@@ -97,21 +95,6 @@ namespace MicroLite.Core
             {
                 this.currentTransaction.Dispose();
                 this.currentTransaction = null;
-            }
-        }
-
-        private static void AddParameters(IDbCommand command, SqlQuery sqlQuery, IList<string> parameterNames)
-        {
-            for (int i = 0; i < parameterNames.Count; i++)
-            {
-                var parameterName = parameterNames[i];
-
-                var parameter = command.CreateParameter();
-                parameter.Direction = ParameterDirection.Input;
-                parameter.ParameterName = parameterName;
-                parameter.Value = sqlQuery.Arguments[i] ?? DBNull.Value;
-
-                command.Parameters.Add(parameter);
             }
         }
     }

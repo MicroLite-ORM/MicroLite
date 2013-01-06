@@ -5,12 +5,11 @@
     using MicroLite.Core;
     using MicroLite.Mapping;
     using Moq;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="ObjectBuilder"/> class.
     /// </summary>
-    [TestFixture]
     public class ObjectBuilderTests
     {
         private enum CustomerStatus
@@ -19,7 +18,7 @@
             Active = 1
         }
 
-        [Test]
+        [Fact]
         public void BuildDynamicPropertyValuesAreSetCorrectly()
         {
             var mockDataReader = new Mock<IDataReader>();
@@ -39,13 +38,13 @@
 
             var customer = objectBuilder.BuildDynamic(mockDataReader.Object);
 
-            Assert.AreEqual(new DateTime(1982, 11, 27), customer.DateOfBirth);
-            Assert.AreEqual(123242, customer.Id);
-            Assert.AreEqual("Trevor Pilley", customer.Name);
-            Assert.AreEqual(CustomerStatus.Active, (CustomerStatus)customer.Status);
+            Assert.Equal(new DateTime(1982, 11, 27), customer.DateOfBirth);
+            Assert.Equal(123242, customer.Id);
+            Assert.Equal("Trevor Pilley", customer.Name);
+            Assert.Equal(CustomerStatus.Active, (CustomerStatus)customer.Status);
         }
 
-        [Test]
+        [Fact]
         public void BuildInstanceIgnoresUnknownColumnWithoutThrowingException()
         {
             var mockDataReader = new Mock<IDataReader>();
@@ -60,7 +59,7 @@
         /// <summary>
         /// Issue #8 - ObjectBuilder throws exception converting DBNull to nullable ValueType.
         /// </summary>
-        [Test]
+        [Fact]
         public void BuildInstancePropertyValueIsSetToNullForNullableInt()
         {
             var mockDataReader = new Mock<IDataReader>();
@@ -74,13 +73,13 @@
 
             var customer = objectBuilder.BuildInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object);
 
-            Assert.IsNull(customer.ReferredById);
+            Assert.Null(customer.ReferredById);
         }
 
         /// <summary>
         /// Issue #19 - Null strings in a column result in empty strings in the property
         /// </summary>
-        [Test]
+        [Fact]
         public void BuildInstancePropertyValueIsSetToNullIdReaderValueIsDBNull()
         {
             var mockDataReader = new Mock<IDataReader>();
@@ -94,13 +93,13 @@
 
             var customer = objectBuilder.BuildInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object);
 
-            Assert.IsNull(customer.Name);
+            Assert.Null(customer.Name);
         }
 
         /// <summary>
         /// Issue #7 - ObjectBuilder throws exception converting int to nullable int.
         /// </summary>
-        [Test]
+        [Fact]
         public void BuildInstancePropertyValueIsSetToValueForNullableInt()
         {
             var mockDataReader = new Mock<IDataReader>();
@@ -114,10 +113,10 @@
 
             var customer = objectBuilder.BuildInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object);
 
-            Assert.AreEqual(1235, customer.ReferredById);
+            Assert.Equal(1235, customer.ReferredById);
         }
 
-        [Test]
+        [Fact]
         public void BuildInstancePropertyValuesAreSetCorrectly()
         {
             var mockDataReader = new Mock<IDataReader>();
@@ -137,13 +136,13 @@
 
             var customer = objectBuilder.BuildInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object);
 
-            Assert.AreEqual(new DateTime(1982, 11, 27), customer.DateOfBirth);
-            Assert.AreEqual(123242, customer.Id);
-            Assert.AreEqual("Trevor Pilley", customer.Name);
-            Assert.AreEqual(CustomerStatus.Active, customer.Status);
+            Assert.Equal(new DateTime(1982, 11, 27), customer.DateOfBirth);
+            Assert.Equal(123242, customer.Id);
+            Assert.Equal("Trevor Pilley", customer.Name);
+            Assert.Equal(CustomerStatus.Active, customer.Status);
         }
 
-        [Test]
+        [Fact]
         public void BuildInstanceThrowsMicroLiteExceptionIfUnableToSetProperty()
         {
             var mockDataReader = new Mock<IDataReader>();
@@ -159,7 +158,7 @@
                 () => objectBuilder.BuildInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object));
 
             Assert.NotNull(exception.InnerException);
-            Assert.AreEqual(exception.InnerException.Message, exception.Message);
+            Assert.Equal(exception.InnerException.Message, exception.Message);
         }
 
         [MicroLite.Mapping.Table("Sales", "Customers")]
@@ -177,7 +176,7 @@
             }
 
             [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Identity)]
+            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
             public int Id
             {
                 get;

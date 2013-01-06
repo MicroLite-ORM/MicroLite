@@ -2,15 +2,14 @@
 {
     using System;
     using MicroLite.Logging;
-    using NUnit.Framework;
+    using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="CurrentSessionIdResolver"/> class.
     /// </summary>
-    [TestFixture]
     public class CurrentSessionIdResolverTests
     {
-        [Test]
+        [Fact]
         public void ToStringReturnsCurrentSessionIdIfContextActive()
         {
             var sessionId = Guid.NewGuid().ToString();
@@ -19,16 +18,16 @@
             {
                 var resolver = new CurrentSessionIdResolver();
 
-                Assert.AreEqual(sessionId, resolver.ToString());
+                Assert.Equal(sessionId, resolver.ToString());
             }
         }
 
-        [Test]
+        [Fact]
         public void ToStringReturnsNullIfNoContextActive()
         {
             var resolver = new CurrentSessionIdResolver();
 
-            Assert.IsNull(resolver.ToString());
+            Assert.Null(resolver.ToString());
         }
     }
 }
