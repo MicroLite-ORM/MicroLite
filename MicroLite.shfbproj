@@ -34,12 +34,12 @@
       <NamespaceSummaryItem name="MicroLite" isDocumented="True">The root namespace, contains the main interfaces and classes required to use MicroLite ORM.
 
 For further information, see the MicroLite blog at http://microliteorm.wordpress.com/</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="MicroLite.Configuration" isDocumented="True">Contains the classes and interfaces used to configure MicroLite ORM.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="MicroLite.Listeners" isDocumented="True">Contains the classes and interfaces which are allow custom code to be called throughout the session requests.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="MicroLite.Logging" isDocumented="True">Contains the interface used abstract the logging functionality.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="MicroLite.Mapping" isDocumented="True">Contains the classes, interfaces and attributes required to map classes to tables.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="MicroLite.Query" isDocumented="True">Contains the SqlBuilder and interfaces used for it's fluent interface.</NamespaceSummaryItem>
-    </NamespaceSummaries>
+<NamespaceSummaryItem name="MicroLite.Configuration" isDocumented="True">Contains the classes and interfaces used to configure MicroLite ORM.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="MicroLite.Listeners" isDocumented="True">Contains the classes and interfaces which are allow custom code to be called throughout the session requests.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="MicroLite.Logging" isDocumented="True">Contains the interface used abstract the logging functionality.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="MicroLite.Mapping" isDocumented="True">Contains the classes and interfaces required to map classes to tables.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="MicroLite.Query" isDocumented="True">Contains the SqlBuilder and interfaces used for it's fluent interface.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="MicroLite.Infrastructure" isDocumented="True">Contains the classes and interfaces to be used by extensions to MicroLite ORM.</NamespaceSummaryItem></NamespaceSummaries>
     <BuildAssemblerVerbosity>AllMessages</BuildAssemblerVerbosity>
     <MissingTags>Summary, Parameter, Returns, Namespace, TypeParameter</MissingTags>
     <NamingMethod>MemberName</NamingMethod>
