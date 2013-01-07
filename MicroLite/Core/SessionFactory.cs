@@ -26,6 +26,7 @@ namespace MicroLite.Core
     {
         private static readonly ILog log = LogManager.GetLog("MicroLite.SessionFactory");
         private readonly object locker = new object();
+        private readonly IObjectBuilder objectBuilder = new ObjectBuilder();
         private readonly SessionFactoryOptions sessionFactoryOptions;
 
         internal SessionFactory(SessionFactoryOptions sessionFactoryOptions)
@@ -57,7 +58,7 @@ namespace MicroLite.Core
             log.TryLogDebug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.SqlDialect);
             return new ReadOnlySession(
                 new ConnectionManager(connection),
-                new ObjectBuilder(),
+                this.objectBuilder,
                 SqlDialectFactory.GetDialect(this.sessionFactoryOptions.SqlDialect));
         }
 
@@ -69,7 +70,7 @@ namespace MicroLite.Core
             log.TryLogDebug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.SqlDialect);
             return new Session(
                 new ConnectionManager(connection),
-                new ObjectBuilder(),
+                this.objectBuilder,
                 SqlDialectFactory.GetDialect(this.sessionFactoryOptions.SqlDialect),
                 Listener.Listeners.ToArray());
         }
