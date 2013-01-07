@@ -26,6 +26,7 @@ namespace MicroLite.Configuration
         /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
         /// <exception cref="System.NotSupportedException">Thrown if the provider name is not supported.</exception>
+        [System.Obsolete("This method has been replaced and will be removed in MicroLite 3.1.0, please call Configure.Fluently().ForConnection(connectionName, \"MicroLite.Dialect.MsSqlDialect\") instead.", error: false)]
         ICreateSessionFactory ForConnection(string connectionName);
 
         /// <summary>
