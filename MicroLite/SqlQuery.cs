@@ -13,6 +13,7 @@
 namespace MicroLite
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// A class which represents a parameterised SQL query.
@@ -30,7 +31,7 @@ namespace MicroLite
         public SqlQuery(string commandText, params object[] arguments)
         {
             this.CommandText = commandText;
-            this.arguments.AddRange(arguments ?? new object[0]);
+            this.arguments.AddRange(arguments ?? Enumerable.Empty<object>());
             this.Timeout = 30;
         }
 
