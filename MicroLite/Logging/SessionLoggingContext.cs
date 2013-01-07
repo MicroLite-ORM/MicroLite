@@ -21,7 +21,7 @@ namespace MicroLite.Logging
     /// ThreadStatic should be ok since MicroLite does not perform any async operations and SessionLoggingContext is internal
     /// so thread switching in ASP.NET or WCF shouldn't result in this being invalid at any point during logging.
     /// </remarks>
-    internal sealed class SessionLoggingContext : IDisposable
+    internal struct SessionLoggingContext : IDisposable
     {
         [ThreadStatic]
         private static string currentSessionId;
@@ -29,7 +29,7 @@ namespace MicroLite.Logging
         private readonly string previousSessionId;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="SessionLoggingContext" /> class.
+        /// Initialises a new instance of the <see cref="SessionLoggingContext" /> struct.
         /// </summary>
         /// <param name="sessionId">The session id of the current session.</param>
         internal SessionLoggingContext(string sessionId)
