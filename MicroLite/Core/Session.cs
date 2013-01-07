@@ -13,9 +13,7 @@
 namespace MicroLite.Core
 {
     using System;
-    using System.Collections.Generic;
     using System.Data;
-    using System.Linq;
     using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
