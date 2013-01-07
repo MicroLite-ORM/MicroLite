@@ -13,7 +13,6 @@
 namespace MicroLite.Mapping
 {
     using System;
-    using System.Globalization;
     using System.Linq.Expressions;
     using System.Reflection;
 
@@ -61,27 +60,11 @@ namespace MicroLite.Mapping
                 return;
             }
 
-            if (this.propertyInfo.PropertyType.IsEnum)
-            {
-                var converted = Convert.ToInt32(value, CultureInfo.InvariantCulture);
-                this.setter.DynamicInvoke(instance, converted);
+            var typeConverter = TypeConverter.ForType(this.propertyInfo.PropertyType);
 
-                return;
-            }
+            var converted = typeConverter.Convert(value, this.propertyInfo.PropertyType);
 
-            if (this.propertyInfo.PropertyType.IsValueType && this.propertyInfo.PropertyType.IsGenericType)
-            {
-                // The property is a nullable struct (e.g. int? or DateTime?) so cast the object to a ValueType
-                // otherwise we get an InvalidCastException (Issue #7)
-                ValueType converted = (ValueType)value;
-                this.setter.DynamicInvoke(instance, converted);
-            }
-            else
-            {
-                var converted = Convert.ChangeType(value, this.propertyInfo.PropertyType, CultureInfo.InvariantCulture);
-
-                this.setter.DynamicInvoke(instance, converted);
-            }
+            this.setter.DynamicInvoke(instance, converted);
         }
     }
 }
