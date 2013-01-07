@@ -41,7 +41,7 @@ namespace MicroLite.Core
 
             var dictionary = (IDictionary<string, object>)expando;
 
-            for (int i = 0; i < reader.FieldCount; i++)
+            for (int i = reader.FieldCount - 1; i >= 0; i--)
             {
                 var columnName = reader.GetName(i);
 
@@ -60,7 +60,7 @@ namespace MicroLite.Core
             log.TryLogDebug(Messages.ObjectBuilder_CreatingInstance, objectInfo.ForType.FullName);
             var instance = new T();
 
-            for (int i = 0; i < reader.FieldCount; i++)
+            for (int i = reader.FieldCount - 1; i >= 0; i--)
             {
                 if (reader.IsDBNull(i))
                 {
