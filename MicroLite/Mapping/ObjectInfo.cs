@@ -29,7 +29,7 @@ namespace MicroLite.Mapping
         private static IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
 
         private readonly Type forType;
-        private readonly Dictionary<string, PropertyAccessor> propertyAccessors;
+        private readonly Dictionary<string, IPropertyAccessor> propertyAccessors;
         private readonly TableInfo tableInfo;
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace MicroLite.Mapping
             log.TryLogDebug(Messages.ObjectInfo_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             this.forType = forType;
             this.tableInfo = tableInfo;
-            this.propertyAccessors = new Dictionary<string, PropertyAccessor>(this.tableInfo.Columns.Count());
+            this.propertyAccessors = new Dictionary<string, IPropertyAccessor>(this.tableInfo.Columns.Count());
 
             foreach (var columnInfo in this.tableInfo.Columns)
             {

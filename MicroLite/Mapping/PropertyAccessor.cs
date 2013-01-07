@@ -13,58 +13,72 @@
 namespace MicroLite.Mapping
 {
     using System;
-    using System.Linq.Expressions;
     using System.Reflection;
 
     [System.Diagnostics.DebuggerDisplay("PropertyAccessor for {propertyName}")]
-    internal sealed class PropertyAccessor
+    internal sealed class PropertyAccessor : IPropertyAccessor
     {
-        private readonly Delegate getter;
-        private readonly PropertyInfo propertyInfo;
-        private readonly Delegate setter;
+        private readonly IPropertyAccessor propertyAccessor;
 
         internal PropertyAccessor(PropertyInfo propertyInfo)
         {
-            this.propertyInfo = propertyInfo;
-
-            var instanceParameter = Expression.Parameter(propertyInfo.DeclaringType, "i");
-            var propertyParameter = Expression.Property(instanceParameter, propertyInfo);
-            var convert = Expression.TypeAs(propertyParameter, typeof(object));
-
-            this.getter = Expression.Lambda(convert, instanceParameter).Compile();
-
-            var argument = Expression.Parameter(typeof(object), "a");
-            var setterCall = Expression.Call(instanceParameter, propertyInfo.GetSetMethod(), Expression.Convert(argument, propertyInfo.PropertyType));
-
-            this.setter = Expression.Lambda(setterCall, instanceParameter, argument).Compile();
+            this.propertyAccessor = (IPropertyAccessor)Activator.CreateInstance(
+                typeof(PropertyAccessorImpl<,>).MakeGenericType(propertyInfo.DeclaringType, propertyInfo.PropertyType),
+                propertyInfo);
         }
 
-        internal object GetValue(object instance)
+        public object GetValue(object instance)
         {
-            var value = this.getter.DynamicInvoke(instance);
-
-            if (this.propertyInfo.PropertyType.IsEnum)
-            {
-                return (int)value;
-            }
-            else
-            {
-                return value;
-            }
+            return this.propertyAccessor.GetValue(instance);
         }
 
-        internal void SetValue(object instance, object value)
+        public void SetValue(object instance, object value)
         {
             if (value == DBNull.Value)
             {
                 return;
             }
 
-            var typeConverter = TypeConverter.ForType(this.propertyInfo.PropertyType);
+            this.propertyAccessor.SetValue(instance, value);
+        }
 
-            var converted = typeConverter.Convert(value, this.propertyInfo.PropertyType);
+        private class PropertyAccessorImpl<TObject, TValue> : IPropertyAccessor
+        {
+            private readonly Func<TObject, TValue> getMethod;
+            private readonly PropertyInfo propertyInfo;
+            private readonly Action<TObject, TValue> setMethod;
 
-            this.setter.DynamicInvoke(instance, converted);
+            public PropertyAccessorImpl(PropertyInfo propertyInfo)
+            {
+                this.propertyInfo = propertyInfo;
+
+                MethodInfo getMethodInfo = propertyInfo.GetGetMethod(nonPublic: true);
+                MethodInfo setMethodInfo = propertyInfo.GetSetMethod(nonPublic: true);
+
+                this.getMethod = (Func<TObject, TValue>)Delegate.CreateDelegate(typeof(Func<TObject, TValue>), getMethodInfo);
+                this.setMethod = (Action<TObject, TValue>)Delegate.CreateDelegate(typeof(Action<TObject, TValue>), setMethodInfo);
+            }
+
+            public object GetValue(object instance)
+            {
+                object value = this.getMethod((TObject)instance);
+
+                if (this.propertyInfo.PropertyType.IsEnum)
+                {
+                    return (int)value;
+                }
+
+                return value;
+            }
+
+            public void SetValue(object instance, object value)
+            {
+                var typeConverter = TypeConverter.ForType(this.propertyInfo.PropertyType);
+
+                var converted = typeConverter.Convert(value, this.propertyInfo.PropertyType);
+
+                this.setMethod((TObject)instance, (TValue)converted);
+            }
         }
     }
 }

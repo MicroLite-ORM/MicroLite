@@ -117,6 +117,7 @@
     <Compile Include="Mapping\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
     <Compile Include="Mapping\InflectionService.cs" />
+    <Compile Include="Mapping\IPropertyAccessor.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
     <Compile Include="Mapping\AttributeMappingConvention.cs" />
     <Compile Include="Mapping\PropertyAccessor.cs" />
