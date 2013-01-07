@@ -149,11 +149,15 @@ namespace MicroLite.Core
                     {
                         this.SqlDialect.BuildCommand(command, sqlQuery);
 
-                        var result = (T)command.ExecuteScalar();
+                        var result = command.ExecuteScalar();
 
                         this.ConnectionManager.CommandCompleted(command);
 
-                        return result;
+                        var resultType = typeof(T);
+                        var typeConverter = TypeConverter.ForType(resultType);
+                        var converted = (T)typeConverter.Convert(result, resultType);
+
+                        return converted;
                     }
                 }
                 catch (Exception e)
