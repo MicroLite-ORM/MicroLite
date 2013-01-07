@@ -76,8 +76,6 @@
     <Compile Include="Infrastructure\IHaveSession.cs" />
     <Compile Include="IReadOnlySession.cs" />
     <Compile Include="Listeners\GuidCombListener.cs" />
-    <Compile Include="Logging\CurrentSessionIdResolver.cs" />
-    <Compile Include="Logging\SessionLoggingContext.cs" />
     <Compile Include="Mapping\ColumnAttribute.cs" />
     <Compile Include="Configuration\Configure.cs" />
     <Compile Include="Configuration\ConfigureExtensions.cs" />
