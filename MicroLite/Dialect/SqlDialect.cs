@@ -280,6 +280,25 @@ namespace MicroLite.Dialect
             }
         }
 
+        protected void AppendTableName(ObjectInfo objectInfo, StringBuilder sqlBuilder)
+        {
+            var schema = !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
+                ? objectInfo.TableInfo.Schema
+                : this.DefaultTableSchema;
+
+            if (!string.IsNullOrEmpty(schema))
+            {
+                sqlBuilder.Append(this.OpenQuote);
+                sqlBuilder.Append(schema);
+                sqlBuilder.Append(this.CloseQuote);
+                sqlBuilder.Append('.');
+            }
+
+            sqlBuilder.Append(this.OpenQuote);
+            sqlBuilder.Append(objectInfo.TableInfo.Name);
+            sqlBuilder.Append(this.CloseQuote);
+        }
+
         protected string EscapeSql(string sql)
         {
             return this.OpenQuote + sql + this.CloseQuote;
@@ -351,29 +370,6 @@ namespace MicroLite.Dialect
             return whereRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
         }
 
-        protected string ResolveTableName(ObjectInfo objectInfo)
-        {
-            var schema = !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
-                ? objectInfo.TableInfo.Schema
-                : this.DefaultTableSchema;
-
-            var tableNameBuilder = new StringBuilder();
-
-            if (!string.IsNullOrEmpty(schema))
-            {
-                tableNameBuilder.Append(this.OpenQuote);
-                tableNameBuilder.Append(schema);
-                tableNameBuilder.Append(this.CloseQuote);
-                tableNameBuilder.Append('.');
-            }
-
-            tableNameBuilder.Append(this.OpenQuote);
-            tableNameBuilder.Append(objectInfo.TableInfo.Name);
-            tableNameBuilder.Append(this.CloseQuote);
-
-            return tableNameBuilder.ToString();
-        }
-
         private StringBuilder CreateSql(StatementType statementType, ObjectInfo objectInfo)
         {
             var sqlBuilder = new StringBuilder(capacity: 120);
@@ -381,12 +377,15 @@ namespace MicroLite.Dialect
             switch (statementType)
             {
                 case StatementType.Delete:
-                    sqlBuilder.Append("DELETE FROM " + this.ResolveTableName(objectInfo));
+                    sqlBuilder.Append("DELETE FROM ");
+                    this.AppendTableName(objectInfo, sqlBuilder);
 
                     break;
 
                 case StatementType.Insert:
-                    sqlBuilder.Append("INSERT INTO " + this.ResolveTableName(objectInfo) + " (");
+                    sqlBuilder.Append("INSERT INTO ");
+                    this.AppendTableName(objectInfo, sqlBuilder);
+                    sqlBuilder.Append(" (");
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
@@ -415,12 +414,15 @@ namespace MicroLite.Dialect
 #else
                     sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.EscapeSql(x.ColumnName))));
 #endif
-                    sqlBuilder.Append(" FROM " + this.ResolveTableName(objectInfo));
+                    sqlBuilder.Append(" FROM ");
+                    this.AppendTableName(objectInfo, sqlBuilder);
 
                     break;
 
                 case StatementType.Update:
-                    sqlBuilder.Append("UPDATE " + this.ResolveTableName(objectInfo) + " SET");
+                    sqlBuilder.Append("UPDATE ");
+                    this.AppendTableName(objectInfo, sqlBuilder);
+                    sqlBuilder.Append(" SET");
 
                     break;
             }
