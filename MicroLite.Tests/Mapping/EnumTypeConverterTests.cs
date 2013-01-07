@@ -42,12 +42,12 @@ namespace MicroLite.Tests.Mapping
             }
         }
 
-        public class WhenCallingConvertForANullableIntWithANonNullValue
+        public class WhenCallingConvertForANullableEnumWithANonNullValue
         {
             private object result;
             private ITypeConverter typeConverter = new EnumTypeConverter();
 
-            public WhenCallingConvertForANullableIntWithANonNullValue()
+            public WhenCallingConvertForANullableEnumWithANonNullValue()
             {
                 this.result = typeConverter.Convert(1, typeof(Status?));
             }
@@ -59,12 +59,12 @@ namespace MicroLite.Tests.Mapping
             }
         }
 
-        public class WhenCallingConvertForANullableIntWithANullableValue
+        public class WhenCallingConvertForANullableEnumWithANullableValue
         {
             private object result;
             private ITypeConverter typeConverter = new EnumTypeConverter();
 
-            public WhenCallingConvertForANullableIntWithANullableValue()
+            public WhenCallingConvertForANullableEnumWithANullableValue()
             {
                 this.result = typeConverter.Convert(DBNull.Value, typeof(Status?));
             }
