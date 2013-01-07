@@ -86,7 +86,7 @@ namespace MicroLite.Dialect
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
-            List<object> arguments = new List<object>();
+            List<object> arguments = new List<object>(sqlQuery.Arguments.Count + 2);
             arguments.AddRange(sqlQuery.Arguments);
             arguments.Add(pagingOptions.Offset);
             arguments.Add(pagingOptions.Count);

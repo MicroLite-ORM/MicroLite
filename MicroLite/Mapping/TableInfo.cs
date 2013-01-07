@@ -42,7 +42,7 @@ namespace MicroLite.Mapping
         /// <exception cref="ArgumentNullException">Thrown if columns, name or schema are null.</exception>
         /// <exception cref="MicroLiteException">Thrown if no identifier column is specified.</exception>
         public TableInfo(
-            IEnumerable<ColumnInfo> columns,
+            IList<ColumnInfo> columns,
             IdentifierStrategy identifierStrategy,
             string name,
             string schema)
@@ -63,14 +63,14 @@ namespace MicroLite.Mapping
 
             this.ValidateColumns(columns);
 
-            this.columns = new List<ColumnInfo>(columns);
+            this.columns = new System.Collections.ObjectModel.ReadOnlyCollection<ColumnInfo>(columns);
             this.identifierColumn = columns.Single(c => c.IsIdentifier).ColumnName;
         }
 
         /// <summary>
         /// Gets the columns that are mapped for the table.
         /// </summary>
-        public IEnumerable<ColumnInfo> Columns
+        public ICollection<ColumnInfo> Columns
         {
             get
             {

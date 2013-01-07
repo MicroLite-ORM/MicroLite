@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
     using System;
+    using System.Collections.ObjectModel;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using Xunit;
@@ -13,11 +14,11 @@
         [Fact]
         public void ConstructorSetsPropertyValues()
         {
-            var columns = new[]
+            var columns = new ReadOnlyCollection<ColumnInfo>(new[]
             {
                 new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true),
                 new ColumnInfo("Id", typeof(Customer).GetProperty("Id"), true, true, true)
-            };
+            });
             var identifierStrategy = IdentifierStrategy.Guid;
             var name = "Customers";
             var schema = "Sales";

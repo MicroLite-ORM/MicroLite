@@ -132,7 +132,7 @@ namespace MicroLite.Dialect
             }
 
             int argumentsCount = 0;
-            var sqlBuilder = new StringBuilder();
+            var sqlBuilder = new StringBuilder(sqlQueries.Sum(s => s.CommandText.Length));
 
             foreach (var sqlQuery in sqlQueries)
             {
@@ -171,7 +171,7 @@ namespace MicroLite.Dialect
                     return this.CreateQuery(StatementType.Delete, forType, identifierValue);
 
                 case StatementType.Insert:
-                    var insertValues = new List<object>();
+                    var insertValues = new List<object>(objectInfo.TableInfo.Columns.Count);
 
                     var insertSqlBuilder = this.CreateSql(statementType, objectInfo);
                     insertSqlBuilder.Append(" VALUES (");
@@ -206,7 +206,7 @@ namespace MicroLite.Dialect
                     return new SqlQuery(insertSqlBuilder.ToString(), insertValues.ToArray());
 
                 case StatementType.Update:
-                    var updateValues = new List<object>();
+                    var updateValues = new List<object>(objectInfo.TableInfo.Columns.Count);
 
                     var updateSqlBuilder = this.CreateSql(StatementType.Update, objectInfo);
 
@@ -376,7 +376,7 @@ namespace MicroLite.Dialect
 
         private StringBuilder CreateSql(StatementType statementType, ObjectInfo objectInfo)
         {
-            var sqlBuilder = new StringBuilder();
+            var sqlBuilder = new StringBuilder(capacity: 120);
 
             switch (statementType)
             {

@@ -26,7 +26,7 @@ namespace MicroLite.Query
     public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereBetweenOrIn, IHavingOrOrderBy
     {
         private readonly List<object> arguments = new List<object>();
-        private readonly StringBuilder innerSql = new StringBuilder();
+        private readonly StringBuilder innerSql = new StringBuilder(capacity: 120);
         private bool addedOrder = false;
         private bool addedWhere = false;
         private string operand;
