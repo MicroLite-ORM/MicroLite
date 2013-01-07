@@ -61,6 +61,7 @@
     <Compile Include="Core\IncludeScalar.cs" />
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
+    <Compile Include="Core\Reversed.cs" />
     <Compile Include="Dialect\MySqlDialect.cs" />
     <Compile Include="Dialect\PostgreSqlDialect.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />

@@ -28,13 +28,13 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("Session {Id}")]
     internal sealed class Session : ReadOnlySession, ISession, IAdvancedSession
     {
-        private readonly IEnumerable<IListener> listeners;
+        private readonly IListener[] listeners;
 
         internal Session(
             IConnectionManager connectionManager,
             IObjectBuilder objectBuilder,
             ISqlDialect sqlDialect,
-            IEnumerable<IListener> listeners)
+            IListener[] listeners)
             : base(connectionManager, objectBuilder, sqlDialect)
         {
             this.listeners = listeners;
@@ -72,7 +72,10 @@ namespace MicroLite.Core
 
                 var rowsAffected = this.Execute(sqlQuery);
 
-                this.listeners.Reverse().Each(l => l.AfterDelete(instance, rowsAffected));
+                using (new Reversed<IListener>(this.listeners))
+                {
+                    this.listeners.Each(l => l.AfterDelete(instance, rowsAffected));
+                }
 
                 return rowsAffected == 1;
             }
@@ -187,7 +190,10 @@ namespace MicroLite.Core
 
                 var identifier = this.ExecuteScalar<object>(sqlQuery);
 
-                this.listeners.Reverse().Each(l => l.AfterInsert(instance, identifier));
+                using (new Reversed<IListener>(this.listeners))
+                {
+                    this.listeners.Each(l => l.AfterInsert(instance, identifier));
+                }
             }
         }
 
@@ -229,7 +235,10 @@ namespace MicroLite.Core
 
                 var rowsAffected = this.Execute(sqlQuery);
 
-                this.listeners.Reverse().Each(l => l.AfterUpdate(instance, rowsAffected));
+                using (new Reversed<IListener>(this.listeners))
+                {
+                    this.listeners.Each(l => l.AfterUpdate(instance, rowsAffected));
+                }
             }
         }
     }
