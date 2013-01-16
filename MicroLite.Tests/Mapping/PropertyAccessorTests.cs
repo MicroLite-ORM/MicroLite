@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
-    using System;
     using MicroLite.Mapping;
     using Xunit;
 
@@ -110,113 +109,6 @@
             public void ThePropertyShouldBeSet()
             {
                 Assert.Equal("Fred Blogs", this.customer.Name);
-            }
-        }
-
-        public class WhenCallingSetValueAndThePropertyIsAnEnum
-        {
-            private readonly Customer customer = new Customer();
-
-            public WhenCallingSetValueAndThePropertyIsAnEnum()
-            {
-                var propertyInfo = typeof(Customer).GetProperty("Status");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
-
-                propertyAccessor.SetValue(this.customer, 1);
-            }
-
-            [Fact]
-            public void ThePropertyShouldBeSetToTheEnumWithTheIntegerValue()
-            {
-                Assert.Equal(CustomerStatus.Disabled, this.customer.Status);
-            }
-        }
-
-        /// <summary>
-        /// Issue #7 - An InvalidCastException is thrown when converting int to nullable int.
-        /// </summary>
-        public class WhenCallingSetValueAndThePropertyIsANullableInt
-        {
-            private readonly Customer customer = new Customer();
-
-            public WhenCallingSetValueAndThePropertyIsANullableInt()
-            {
-                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
-
-                propertyAccessor.SetValue(this.customer, (int?)1235);
-            }
-
-            [Fact]
-            public void ThePropertyValueShouldBeSet()
-            {
-                Assert.Equal(1235, this.customer.LastInvoice);
-            }
-        }
-
-        /// <summary>
-        /// SQLite stores all integers as a long (64bit integer), enums are 32bit integers so the value should be down cast.
-        /// </summary>
-        public class WhenCallingSetValueForAnEnumPropertyAndTheValueIsALong
-        {
-            private readonly Customer customer = new Customer();
-
-            public WhenCallingSetValueForAnEnumPropertyAndTheValueIsALong()
-            {
-                var propertyInfo = typeof(Customer).GetProperty("Status");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
-
-                propertyAccessor.SetValue(this.customer, (long)2);
-            }
-
-            [Fact]
-            public void ThePropertyValueShouldBeSet()
-            {
-                Assert.Equal(CustomerStatus.Suspended, this.customer.Status);
-            }
-        }
-
-        /// <summary>
-        /// Issue #19 - Null strings in a column result in empty strings in the property
-        /// </summary>
-        public class WhenCallingSetValueForAPropertyWhichIsAReferenceTypeAndTheValueIsDbNull
-        {
-            private readonly Customer customer = new Customer();
-
-            public WhenCallingSetValueForAPropertyWhichIsAReferenceTypeAndTheValueIsDbNull()
-            {
-                var propertyInfo = typeof(Customer).GetProperty("Name");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
-
-                propertyAccessor.SetValue(this.customer, DBNull.Value);
-            }
-
-            [Fact]
-            public void ThePropertyShouldNotBeSet()
-            {
-                Assert.False(this.customer.NameSet);
-            }
-        }
-
-        /// <summary>
-        /// Issue #8 - An InvalidCastException is thrown when converting DBNull to nullable ValueType.
-        /// </summary>
-        public class WhenCallingSetValueForAPropertyWhichIsAValueTypeAndTheValueIsDbNull
-        {
-            private readonly Customer customer = new Customer();
-
-            public WhenCallingSetValueForAPropertyWhichIsAValueTypeAndTheValueIsDbNull()
-            {
-                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
-
-                propertyAccessor.SetValue(this.customer, DBNull.Value);
-            }
-
-            [Fact]
-            public void ThePropertyShouldNotBeSet()
-            {
-                Assert.Null(this.customer.LastInvoice);
             }
         }
 

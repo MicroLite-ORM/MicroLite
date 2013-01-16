@@ -13,6 +13,12 @@
     /// </summary>
     public class SessionTests
     {
+        private enum CustomerStatus
+        {
+            Inactive = 0,
+            Active = 1
+        }
+
         [Fact]
         public void AdvancedReturnsSameSessionByDifferentInterface()
         {
@@ -476,6 +482,34 @@
             }
 
             Assert.Throws<ObjectDisposedException>(() => session.ExecuteScalar<int>(new SqlQuery("SELECT")));
+        }
+
+        [Fact]
+        public void ExecuteScalarUsesTypeConvertersToResolveResultType()
+        {
+            var sqlQuery = new SqlQuery("");
+            var result = (byte)1;
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteScalar()).Returns(result);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockSqlDialect.Object,
+                new IListener[0]);
+
+            Assert.Equal((CustomerStatus)result, session.ExecuteScalar<CustomerStatus>(sqlQuery));
+
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
         }
 
         [Fact]

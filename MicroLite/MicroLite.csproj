@@ -113,6 +113,7 @@
     <Compile Include="Mapping\ColumnInfo.cs" />
     <Compile Include="Mapping\ConventionMappingSettings.cs" />
     <Compile Include="Mapping\ConventionMappingConvention.cs" />
+    <Compile Include="Mapping\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
     <Compile Include="Mapping\InflectionService.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Mapping\TableInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Mapping\TypeConverter.cs" />
     <Compile Include="Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -155,6 +157,8 @@
     <Compile Include="SqlQuery.cs" />
     <Compile Include="Mapping\TableAttribute.cs" />
     <Compile Include="SqlUtil.cs" />
+    <Compile Include="Mapping\ITypeConverter.cs" />
+    <Compile Include="Mapping\ObjectTypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\MicroLite.snk">
@@ -169,6 +173,7 @@
     <None Include="Mapping\_MappingAttributes.cd" />
     <None Include="Mapping\_MappingConvention.cd" />
     <None Include="Mapping\_ObjectInfo.cd" />
+    <None Include="Mapping\_TypeConverters.cd" />
     <None Include="Query\_SqlBuilder.cd" />
     <None Include="_Session.cd" />
   </ItemGroup>
