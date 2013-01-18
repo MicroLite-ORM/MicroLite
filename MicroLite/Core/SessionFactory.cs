@@ -24,7 +24,7 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("SessionFactory for {ConnectionName} using {SqlDialect}")]
     internal sealed class SessionFactory : ISessionFactory
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.SessionFactory");
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly object locker = new object();
         private readonly IObjectBuilder objectBuilder = new ObjectBuilder();
         private readonly SessionFactoryOptions sessionFactoryOptions;

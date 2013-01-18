@@ -24,7 +24,7 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     public sealed class ObjectInfo
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.ObjectInfo");
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
         private static IMappingConvention mappingConvention = new AttributeMappingConvention();
         private static IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
 

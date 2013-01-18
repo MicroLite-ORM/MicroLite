@@ -22,7 +22,7 @@ namespace MicroLite.Listeners
     /// </summary>
     public sealed class GuidListener : Listener
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.GuidListener");
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
 
         /// <summary>
         /// Invoked before the SqlQuery to delete the record from the database is created.

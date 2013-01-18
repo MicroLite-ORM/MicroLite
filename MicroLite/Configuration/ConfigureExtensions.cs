@@ -27,7 +27,7 @@ namespace MicroLite.Configuration
         {
             LogManager.GetLogger = logResolver;
 
-            this.log = LogManager.GetLog("MicroLite.Configuration");
+            this.log = LogManager.GetCurrentClassLog();
             this.log.TryLogInfo(Messages.ConfigureExtensions_UsingLogger, logResolver != null && logResolver.Method != null ? logResolver.Method.ToString() : string.Empty);
         }
 

@@ -24,7 +24,7 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("ReadOnlySession {Id}")]
     internal class ReadOnlySession : IReadOnlySession, IIncludeSession
     {
-        protected static readonly ILog Log = LogManager.GetLog("MicroLite.Session");
+        protected static readonly ILog Log = LogManager.GetCurrentClassLog();
         private readonly IConnectionManager connectionManager;
         private readonly string id = GuidGenerator.CreateComb().ToString();
         private readonly Queue<Include> includes = new Queue<Include>();

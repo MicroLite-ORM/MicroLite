@@ -24,7 +24,7 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("{Schema}.{Name}")]
     public sealed class TableInfo
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.TableInfo");
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
 
         private readonly ICollection<ColumnInfo> columns;
         private readonly string identifierColumn;

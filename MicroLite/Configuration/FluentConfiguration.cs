@@ -27,7 +27,7 @@ namespace MicroLite.Configuration
     internal sealed class FluentConfiguration : IConfigureConnection, ICreateSessionFactory
     {
         private static readonly object locker = new object();
-        private readonly ILog log = LogManager.GetLog("MicroLite.Configuration");
+        private readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly SessionFactoryOptions options = new SessionFactoryOptions();
 
         /// <summary>

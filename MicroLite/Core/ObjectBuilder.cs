@@ -30,7 +30,7 @@ namespace MicroLite.Core
     /// </summary>
     internal sealed class ObjectBuilder : IObjectBuilder
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.ObjectBuilder");
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
 
 #if !NET_3_5
 

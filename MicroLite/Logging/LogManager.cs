@@ -36,30 +36,13 @@ namespace MicroLite.Logging
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "The method will return a different ILog depending on the caller, it shouldn't be a property.")]
         public static ILog GetCurrentClassLog()
         {
-            if (GetLogger != null)
-            {
-                var stackFrame = new StackFrame(skipFrames: 1);
-
-                return GetLog(stackFrame.GetMethod().DeclaringType.FullName);
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the log instance with the specified name.
-        /// </summary>
-        /// <param name="name">The name of the log to get.</param>
-        /// <returns>
-        /// The <see cref="ILog"/> for the specified log name or null if LogManager.GetLogger has not been set.
-        /// </returns>
-        internal static ILog GetLog(string name)
-        {
             var getLogger = GetLogger;
 
             if (getLogger != null)
             {
-                return getLogger(name);
+                var stackFrame = new StackFrame(skipFrames: 1);
+
+                return getLogger(stackFrame.GetMethod().DeclaringType.FullName);
             }
 
             return null;
