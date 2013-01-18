@@ -39,7 +39,7 @@ namespace MicroLite.Mapping
         /// <param name="identifierStrategy">The identifier strategy used by the table.</param>
         /// <param name="name">The name of the table.</param>
         /// <param name="schema">The name of the schema the table exists within.</param>
-        /// <exception cref="ArgumentNullException">Thrown if columns, name or schema are null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if columns or name are null.</exception>
         /// <exception cref="MicroLiteException">Thrown if no identifier column is specified.</exception>
         public TableInfo(
             IList<ColumnInfo> columns,
