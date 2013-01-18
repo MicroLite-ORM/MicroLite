@@ -23,7 +23,6 @@ namespace MicroLite.Core
     /// <summary>
     /// The default implementation of <see cref="ISession"/>.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Session {Id}")]
     internal sealed class Session : ReadOnlySession, ISession, IAdvancedSession
     {
         private readonly IListener[] listeners;

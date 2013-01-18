@@ -21,12 +21,10 @@ namespace MicroLite.Core
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("ReadOnlySession {Id}")]
     internal class ReadOnlySession : IReadOnlySession, IIncludeSession
     {
         protected static readonly ILog Log = LogManager.GetCurrentClassLog();
         private readonly IConnectionManager connectionManager;
-        private readonly string id = GuidGenerator.CreateComb().ToString();
         private readonly Queue<Include> includes = new Queue<Include>();
         private readonly IObjectBuilder objectBuilder;
         private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
@@ -64,14 +62,6 @@ namespace MicroLite.Core
             get
             {
                 return this.connectionManager;
-            }
-        }
-
-        protected string Id
-        {
-            get
-            {
-                return this.id;
             }
         }
 
