@@ -19,7 +19,7 @@ namespace MicroLite.Mapping
     {
         public override bool CanConvert(Type type)
         {
-            var actualType = type.IsGenericType ? type.GetGenericArguments()[0] : type;
+            var actualType = this.ResolveActualType(type);
 
             return actualType.IsEnum;
         }
@@ -31,7 +31,7 @@ namespace MicroLite.Mapping
                 return null;
             }
 
-            var enumType = type.IsGenericType ? type.GetGenericArguments()[0] : type;
+            var enumType = this.ResolveActualType(type);
 
             var enumStorageType = Enum.GetUnderlyingType(enumType);
 

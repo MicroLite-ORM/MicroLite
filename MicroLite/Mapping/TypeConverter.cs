@@ -55,5 +55,15 @@ namespace MicroLite.Mapping
         {
             return converters.First(c => c.CanConvert(type));
         }
+
+        /// <summary>
+        /// Resolves the actual type. If the type is generic (as it would be for a nullable struct) it returns the inner type.
+        /// </summary>
+        /// <param name="type">The type to resolve.</param>
+        /// <returns>The actual type.</returns>
+        protected Type ResolveActualType(Type type)
+        {
+            return type.IsGenericType ? type.GetGenericArguments()[0] : type;
+        }
     }
 }
