@@ -12,9 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
-    using System;
     using System.Data;
-    using System.Globalization;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The default implementation of <see cref="IInclude&lt;T&gt;"/> for scalar results.
@@ -41,7 +40,9 @@ namespace MicroLite.Core
                     throw new MicroLiteException(Messages.IncludeScalar_MultipleColumns);
                 }
 
-                this.value = (T)Convert.ChangeType(reader[0], typeof(T), CultureInfo.InvariantCulture);
+                var resultType = typeof(T);
+                var typeConverter = TypeConverter.ForType(resultType);
+                this.value = (T)typeConverter.Convert(reader[0], resultType);
                 this.HasValue = true;
 
                 if (reader.Read())
