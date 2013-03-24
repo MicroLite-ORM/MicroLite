@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>MicroLite ORM is a micro Object Relational Mapper for the .NET framework designed for ease of use, testability and extensibility.</description>
     <releaseNotes>See http://microliteorm.wordpress.com/release-notes/ for a summary of changes made in this release of the package.</releaseNotes>
-    <copyright>Copyright 2012</copyright>
+    <copyright>Copyright 2012-2013</copyright>
     <tags>Micro ORM Framework POCO Database SQL Builder MsSQL MySQL SQLite Postgre</tags>
   </metadata>
   <files>
