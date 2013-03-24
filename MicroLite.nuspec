@@ -16,12 +16,10 @@
   <files>
     <file src="..\build\3.5\MicroLite.dll" target="lib\net35-client" />
     <file src="..\build\3.5\MicroLite.xml" target="lib\net35-client" />
-    <file src="..\build\help\MicroLite.chm" target="lib\net35-client" />
     <file src="..\build\4.0\MicroLite.dll" target="lib\net40-client" />
     <file src="..\build\4.0\MicroLite.xml" target="lib\net40-client" />
-    <file src="..\build\help\MicroLite.chm" target="lib\net40-client" />
     <file src="..\build\4.5\MicroLite.dll" target="lib\net45" />
     <file src="..\build\4.5\MicroLite.xml" target="lib\net45" />
-    <file src="..\build\help\MicroLite.chm" target="lib\net45" />
+    <file src="..\build\help\MicroLite.chm" target="" />
   </files>
 </package>
