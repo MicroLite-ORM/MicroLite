@@ -12,6 +12,8 @@ $nuSpec = "$scriptPath\$projectName.nuspec"
 $nuGetPackage = "$buildDir\$projectName.$version.nupkg"
 $date = Get-Date
 $copyrightContributors = 'Trevor Pilley'
+$gitDir = $scriptPath + "\.git"
+$commit = git --git-dir $gitDir log -1 --pretty=format:%h
 
 function UpdateAssemblyInfoFiles ([string] $buildVersion)
 {
@@ -21,7 +23,7 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 	$copyrightPattern = 'AssemblyCopyright\(".+"\)'
 	$assemblyVersion = 'AssemblyVersion("' + $buildVersion.SubString(0, 3) + '.0.0")';
 	$fileVersion = 'AssemblyFileVersion("' + $buildVersion.SubString(0, 5) + '.0")';
-	$infoVersion = 'AssemblyInformationalVersion("' + $buildVersion + '")';
+	$infoVersion = 'AssemblyInformationalVersion("' + $buildVersion + ' (' + $commit + ')")';
 	$copyright = 'AssemblyCopyright("Copyright 2012-' + $date.Year + ' ' + $copyrightContributors + ' all rights reserved.")';
 	
 	Get-ChildItem $scriptPath -r -filter AssemblyInfo.cs | ForEach-Object {
