@@ -70,7 +70,6 @@
     <Compile Include="Core\IncludeScalarTests.cs" />
     <Compile Include="Core\IncludeSingleTests.cs" />
     <Compile Include="Core\ReadOnlySessionTests.cs" />
-    <Compile Include="Core\ReversedTests.cs" />
     <Compile Include="Dialect\MySqlDialectTests.cs" />
     <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
     <Compile Include="Dialect\SqlDialectFactoryTests.cs" />

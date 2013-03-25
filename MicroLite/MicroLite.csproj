@@ -61,7 +61,6 @@
     <Compile Include="Core\IncludeScalar.cs" />
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
-    <Compile Include="Core\Reversed.cs" />
     <Compile Include="Dialect\MySqlDialect.cs" />
     <Compile Include="Dialect\PostgreSqlDialect.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />
@@ -89,7 +88,7 @@
     <Compile Include="Core\SessionFactoryOptions.cs" />
     <Compile Include="Listeners\AssignedListener.cs" />
     <Compile Include="Core\ConnectionManager.cs" />
-    <Compile Include="FrameworkExtensions\EnumerableExtensions.cs">
+    <Compile Include="FrameworkExtensions\CollectionExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IConnectionManager.cs" />

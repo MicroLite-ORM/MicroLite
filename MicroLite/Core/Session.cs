@@ -64,10 +64,7 @@ namespace MicroLite.Core
 
             var rowsAffected = this.Execute(sqlQuery);
 
-            using (new Reversed<IListener>(this.listeners))
-            {
-                this.listeners.Each(l => l.AfterDelete(instance, rowsAffected));
-            }
+            this.listeners.Reverse().Each(l => l.AfterDelete(instance, rowsAffected));
 
             return rowsAffected == 1;
         }
@@ -170,10 +167,7 @@ namespace MicroLite.Core
 
             var identifier = this.ExecuteScalar<object>(sqlQuery);
 
-            using (new Reversed<IListener>(this.listeners))
-            {
-                this.listeners.Each(l => l.AfterInsert(instance, identifier));
-            }
+            this.listeners.Reverse().Each(l => l.AfterInsert(instance, identifier));
         }
 
         public void InsertOrUpdate(object instance)
@@ -212,10 +206,7 @@ namespace MicroLite.Core
 
             var rowsAffected = this.Execute(sqlQuery);
 
-            using (new Reversed<IListener>(this.listeners))
-            {
-                this.listeners.Each(l => l.AfterUpdate(instance, rowsAffected));
-            }
+            this.listeners.Reverse().Each(l => l.AfterUpdate(instance, rowsAffected));
         }
     }
 }

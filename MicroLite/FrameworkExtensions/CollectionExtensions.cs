@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="EnumerableExtensions.cs" company="MicroLite">
+// <copyright file="CollectionExtensions.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +15,21 @@ namespace MicroLite.FrameworkExtensions
     using System;
     using System.Collections.Generic;
 
-    internal static class EnumerableExtensions
+    internal static class CollectionExtensions
     {
         internal static void Each<T>(this IEnumerable<T> source, Action<T> action)
         {
             foreach (var item in source)
             {
                 action(item);
+            }
+        }
+
+        internal static IEnumerable<T> Reverse<T>(this IList<T> source)
+        {
+            for (int i = source.Count - 1; i >= 0; i--)
+            {
+                yield return source[i];
             }
         }
     }
