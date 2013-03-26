@@ -102,6 +102,7 @@
     <Compile Include="TypeConverters\ObjectTypeConverterTests.cs" />
     <Compile Include="Mapping\PropertyAccessorTests.cs" />
     <Compile Include="Mapping\TableInfoTests.cs" />
+    <Compile Include="TypeConverters\TypeConverterCollectionTests.cs" />
     <Compile Include="TypeConverters\TypeConverterTests.cs" />
     <Compile Include="PagedResultTests.cs" />
     <Compile Include="PagingOptionsTests.cs" />

@@ -158,6 +158,7 @@
     <Compile Include="SqlUtil.cs" />
     <Compile Include="TypeConverters\ITypeConverter.cs" />
     <Compile Include="TypeConverters\ObjectTypeConverter.cs" />
+    <Compile Include="TypeConverters\TypeConverterCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\MicroLite.snk">
