@@ -14,6 +14,7 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Reflection;
+    using MicroLite.TypeConverters;
 
     [System.Diagnostics.DebuggerDisplay("PropertyAccessor for {propertyName}")]
     internal sealed class PropertyAccessor : IPropertyAccessor

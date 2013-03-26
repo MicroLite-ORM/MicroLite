@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ObjectTypeConverter.cs" company="MicroLite">
+// <copyright file="EnumTypeConverter.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,18 +10,18 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Mapping
+namespace MicroLite.TypeConverters
 {
     using System;
     using System.Globalization;
 
-    internal sealed class ObjectTypeConverter : TypeConverter
+    internal sealed class EnumTypeConverter : TypeConverter
     {
         public override bool CanConvert(Type type)
         {
             var actualType = this.ResolveActualType(type);
 
-            return !actualType.IsEnum;
+            return actualType.IsEnum;
         }
 
         public override object Convert(object value, Type type)
@@ -31,18 +31,15 @@ namespace MicroLite.Mapping
                 return null;
             }
 
-            if (type.IsValueType && type.IsGenericType)
-            {
-                ValueType converted = (ValueType)value;
+            var enumType = this.ResolveActualType(type);
 
-                return converted;
-            }
-            else
-            {
-                var converted = System.Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+            var enumStorageType = Enum.GetUnderlyingType(enumType);
 
-                return converted;
-            }
+            var underlyingValue = System.Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
+
+            var enumValue = Enum.ToObject(enumType, underlyingValue);
+
+            return enumValue;
         }
     }
 }

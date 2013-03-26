@@ -14,6 +14,7 @@ namespace MicroLite.Core
 {
     using System.Data;
     using MicroLite.Mapping;
+    using MicroLite.TypeConverters;
 
     /// <summary>
     /// The default implementation of <see cref="IInclude&lt;T&gt;"/> for scalar results.

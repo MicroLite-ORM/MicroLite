@@ -1,7 +1,7 @@
-﻿using MicroLite.Mapping;
+﻿using MicroLite.TypeConverters;
 using Xunit;
 
-namespace MicroLite.Tests.Mapping
+namespace MicroLite.Tests.TypeConverters
 {
     public class TypeConverterTests
     {

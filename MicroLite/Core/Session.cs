@@ -19,6 +19,7 @@ namespace MicroLite.Core
     using MicroLite.Listeners;
     using MicroLite.Logging;
     using MicroLite.Mapping;
+    using MicroLite.TypeConverters;
 
     /// <summary>
     /// The default implementation of <see cref="ISession"/>.
