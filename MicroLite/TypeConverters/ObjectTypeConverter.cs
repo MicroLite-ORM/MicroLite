@@ -19,9 +19,7 @@ namespace MicroLite.TypeConverters
     {
         public override bool CanConvert(Type type)
         {
-            var actualType = this.ResolveActualType(type);
-
-            return !actualType.IsEnum;
+            return true;
         }
 
         public override object ConvertFromDbValue(object value, Type type)

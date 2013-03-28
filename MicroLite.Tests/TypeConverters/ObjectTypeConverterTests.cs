@@ -15,10 +15,12 @@ namespace MicroLite.Tests.TypeConverters
         public class WhenCallingCanConvertWithATypeWhichIsAnEnum
         {
             [Fact]
-            public void FalseShouldBeReturned()
+            public void TrueShouldBeReturned()
             {
+                // Although an exlicit type converter exists for enums, ObjectTypeConverter should not discriminate against any type.
+                // This is so we don't have to modify it to ignore types for which there is a specific converter.
                 var typeConverter = new ObjectTypeConverter();
-                Assert.False(typeConverter.CanConvert(typeof(Status)));
+                Assert.True(typeConverter.CanConvert(typeof(Status)));
             }
         }
 
