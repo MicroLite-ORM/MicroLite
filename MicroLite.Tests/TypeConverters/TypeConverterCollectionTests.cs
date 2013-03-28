@@ -28,5 +28,15 @@
 
             Assert.NotNull(typeConverter);
         }
+
+        [Fact]
+        public void ConstructorRegistersXDocumentTypeConverter()
+        {
+            var collection = new TypeConverterCollection();
+
+            var typeConverter = collection.OfType<XDocumentTypeConverter>().SingleOrDefault();
+
+            Assert.NotNull(typeConverter);
+        }
     }
 }

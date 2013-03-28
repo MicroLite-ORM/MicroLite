@@ -51,6 +51,8 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ConfigurationExtensions.cs" />
@@ -159,6 +161,7 @@
     <Compile Include="TypeConverters\ITypeConverter.cs" />
     <Compile Include="TypeConverters\ObjectTypeConverter.cs" />
     <Compile Include="TypeConverters\TypeConverterCollection.cs" />
+    <Compile Include="TypeConverters\XDocumentTypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\MicroLite.snk">

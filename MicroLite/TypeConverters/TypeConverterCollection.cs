@@ -26,6 +26,7 @@ namespace MicroLite.TypeConverters
         /// </summary>
         internal TypeConverterCollection()
         {
+            this.converters.Add(new XDocumentTypeConverter());
             this.converters.Add(new EnumTypeConverter());
             this.converters.Add(new ObjectTypeConverter());
         }
