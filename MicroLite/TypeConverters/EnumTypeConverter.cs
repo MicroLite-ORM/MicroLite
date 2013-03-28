@@ -17,21 +17,21 @@ namespace MicroLite.TypeConverters
 
     internal sealed class EnumTypeConverter : TypeConverter
     {
-        public override bool CanConvert(Type type)
+        public override bool CanConvert(Type propertyType)
         {
-            var actualType = this.ResolveActualType(type);
+            var actualType = this.ResolveActualType(propertyType);
 
             return actualType.IsEnum;
         }
 
-        public override object ConvertFromDbValue(object value, Type type)
+        public override object ConvertFromDbValue(object value, Type propertyType)
         {
             if (value == DBNull.Value)
             {
                 return null;
             }
 
-            var enumType = this.ResolveActualType(type);
+            var enumType = this.ResolveActualType(propertyType);
 
             var enumStorageType = Enum.GetUnderlyingType(enumType);
 

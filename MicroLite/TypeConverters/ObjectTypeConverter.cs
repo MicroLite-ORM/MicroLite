@@ -17,19 +17,19 @@ namespace MicroLite.TypeConverters
 
     internal sealed class ObjectTypeConverter : TypeConverter
     {
-        public override bool CanConvert(Type type)
+        public override bool CanConvert(Type propertyType)
         {
             return true;
         }
 
-        public override object ConvertFromDbValue(object value, Type type)
+        public override object ConvertFromDbValue(object value, Type propertyType)
         {
             if (value == DBNull.Value)
             {
                 return null;
             }
 
-            if (type.IsValueType && type.IsGenericType)
+            if (propertyType.IsValueType && propertyType.IsGenericType)
             {
                 ValueType converted = (ValueType)value;
 
@@ -37,7 +37,7 @@ namespace MicroLite.TypeConverters
             }
             else
             {
-                var converted = System.Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+                var converted = System.Convert.ChangeType(value, propertyType, CultureInfo.InvariantCulture);
 
                 return converted;
             }

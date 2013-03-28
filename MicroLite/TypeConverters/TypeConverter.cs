@@ -34,23 +34,23 @@ namespace MicroLite.TypeConverters
         }
 
         /// <summary>
-        /// Determines whether this instance can convert the specified type.
+        /// Determines whether this type converter can convert values for the specified property type.
         /// </summary>
-        /// <param name="type">The type to check.</param>
+        /// <param name="propertyType">The type of the property value to be converted.</param>
         /// <returns>
-        ///   <c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance can convert the specified property type; otherwise, <c>false</c>.
         /// </returns>
-        public abstract bool CanConvert(Type type);
+        public abstract bool CanConvert(Type propertyType);
 
         /// <summary>
-        /// Converts the specified value into an instance of the specified type.
+        /// Converts the specified database value into an instance of the property type.
         /// </summary>
-        /// <param name="value">The value to be converted.</param>
-        /// <param name="type">The type to convert to.</param>
+        /// <param name="value">The database value to be converted.</param>
+        /// <param name="propertyType">The property type to convert to.</param>
         /// <returns>
-        /// An instance of the specified type containing the specified value.
+        /// An instance of the specified property type containing the specified value.
         /// </returns>
-        public abstract object ConvertFromDbValue(object value, Type type);
+        public abstract object ConvertFromDbValue(object value, Type propertyType);
 
         /// <summary>
         /// Gets the <see cref="ITypeConverter"/> for the specified type.
