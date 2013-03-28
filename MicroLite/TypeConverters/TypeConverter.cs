@@ -50,7 +50,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         /// An instance of the specified type containing the specified value.
         /// </returns>
-        public abstract object Convert(object value, Type type);
+        public abstract object ConvertFromDbValue(object value, Type type);
 
         /// <summary>
         /// Gets the <see cref="ITypeConverter"/> for the specified type.

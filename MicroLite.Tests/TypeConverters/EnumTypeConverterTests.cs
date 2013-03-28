@@ -42,14 +42,14 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingConvertForANullableEnumWithANonNullValue
+        public class WhenCallingConvertFromDbValueForANullableEnumWithANonNullValue
         {
             private object result;
             private ITypeConverter typeConverter = new EnumTypeConverter();
 
-            public WhenCallingConvertForANullableEnumWithANonNullValue()
+            public WhenCallingConvertFromDbValueForANullableEnumWithANonNullValue()
             {
-                this.result = typeConverter.Convert(1, typeof(Status?));
+                this.result = typeConverter.ConvertFromDbValue(1, typeof(Status?));
             }
 
             [Fact]
@@ -59,14 +59,14 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingConvertForANullableEnumWithANullableValue
+        public class WhenCallingConvertFromDbValueForANullableEnumWithANullableValue
         {
             private object result;
             private ITypeConverter typeConverter = new EnumTypeConverter();
 
-            public WhenCallingConvertForANullableEnumWithANullableValue()
+            public WhenCallingConvertFromDbValueForANullableEnumWithANullableValue()
             {
-                this.result = typeConverter.Convert(DBNull.Value, typeof(Status?));
+                this.result = typeConverter.ConvertFromDbValue(DBNull.Value, typeof(Status?));
             }
 
             [Fact]
@@ -76,14 +76,14 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingConvertWithAByte
+        public class WhenCallingConvertFromDbValueWithAByte
         {
             private object result;
             private ITypeConverter typeConverter = new EnumTypeConverter();
 
-            public WhenCallingConvertWithAByte()
+            public WhenCallingConvertFromDbValueWithAByte()
             {
-                this.result = typeConverter.Convert((byte)1, typeof(Status));
+                this.result = typeConverter.ConvertFromDbValue((byte)1, typeof(Status));
             }
 
             [Fact]
@@ -93,14 +93,14 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingConvertWithALong
+        public class WhenCallingConvertFromDbValueWithALong
         {
             private object result;
             private ITypeConverter typeConverter = new EnumTypeConverter();
 
-            public WhenCallingConvertWithALong()
+            public WhenCallingConvertFromDbValueWithALong()
             {
-                this.result = typeConverter.Convert((long)1, typeof(Status));
+                this.result = typeConverter.ConvertFromDbValue((long)1, typeof(Status));
             }
 
             [Fact]
@@ -110,14 +110,14 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingConvertWithAnInt
+        public class WhenCallingConvertFromDbValueWithAnInt
         {
             private object result;
             private ITypeConverter typeConverter = new EnumTypeConverter();
 
-            public WhenCallingConvertWithAnInt()
+            public WhenCallingConvertFromDbValueWithAnInt()
             {
-                this.result = typeConverter.Convert((int)1, typeof(Status));
+                this.result = typeConverter.ConvertFromDbValue((int)1, typeof(Status));
             }
 
             [Fact]

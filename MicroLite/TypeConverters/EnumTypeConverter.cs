@@ -24,7 +24,7 @@ namespace MicroLite.TypeConverters
             return actualType.IsEnum;
         }
 
-        public override object Convert(object value, Type type)
+        public override object ConvertFromDbValue(object value, Type type)
         {
             if (value == DBNull.Value)
             {

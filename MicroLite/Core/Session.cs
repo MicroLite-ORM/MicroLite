@@ -139,7 +139,7 @@ namespace MicroLite.Core
 
                     var resultType = typeof(T);
                     var typeConverter = TypeConverter.For(resultType);
-                    var converted = (T)typeConverter.Convert(result, resultType);
+                    var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
 
                     return converted;
                 }

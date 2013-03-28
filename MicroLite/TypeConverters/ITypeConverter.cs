@@ -29,11 +29,11 @@ namespace MicroLite.TypeConverters
         bool CanConvert(Type type);
 
         /// <summary>
-        /// Converts the specified value into an instance of the specified type.
+        /// Converts the specified database value into an instance of the specified type.
         /// </summary>
-        /// <param name="value">The value to be converted.</param>
+        /// <param name="value">The database value to be converted.</param>
         /// <param name="type">The type to convert to.</param>
         /// <returns>An instance of the specified type containing the specified value.</returns>
-        object Convert(object value, Type type);
+        object ConvertFromDbValue(object value, Type type);
     }
 }

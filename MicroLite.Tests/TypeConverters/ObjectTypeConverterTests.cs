@@ -42,14 +42,14 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingConvertForANullableIntWithANonNullValue
+        public class WhenCallingConvertFromDbValueForANullableIntWithANonNullValue
         {
             private object result;
             private ITypeConverter typeConverter = new ObjectTypeConverter();
 
-            public WhenCallingConvertForANullableIntWithANonNullValue()
+            public WhenCallingConvertFromDbValueForANullableIntWithANonNullValue()
             {
-                this.result = typeConverter.Convert(1, typeof(int?));
+                this.result = typeConverter.ConvertFromDbValue(1, typeof(int?));
             }
 
             [Fact]
@@ -59,14 +59,14 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingConvertForANullableIntWithANullValue
+        public class WhenCallingConvertFromDbValueForANullableIntWithANullValue
         {
             private object result;
             private ITypeConverter typeConverter = new ObjectTypeConverter();
 
-            public WhenCallingConvertForANullableIntWithANullValue()
+            public WhenCallingConvertFromDbValueForANullableIntWithANullValue()
             {
-                this.result = typeConverter.Convert(DBNull.Value, typeof(int?));
+                this.result = typeConverter.ConvertFromDbValue(DBNull.Value, typeof(int?));
             }
 
             [Fact]
@@ -76,14 +76,14 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingConvertWithAByteAndATypeOfInt
+        public class WhenCallingConvertFromDbValueWithAByteAndATypeOfInt
         {
             private object result;
             private ITypeConverter typeConverter = new ObjectTypeConverter();
 
-            public WhenCallingConvertWithAByteAndATypeOfInt()
+            public WhenCallingConvertFromDbValueWithAByteAndATypeOfInt()
             {
-                this.result = typeConverter.Convert((byte)1, typeof(int));
+                this.result = typeConverter.ConvertFromDbValue((byte)1, typeof(int));
             }
 
             [Fact]
@@ -99,14 +99,14 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingConvertWithALongAndATypeOfInt
+        public class WhenCallingConvertFromDbValueWithALongAndATypeOfInt
         {
             private object result;
             private ITypeConverter typeConverter = new ObjectTypeConverter();
 
-            public WhenCallingConvertWithALongAndATypeOfInt()
+            public WhenCallingConvertFromDbValueWithALongAndATypeOfInt()
             {
-                this.result = typeConverter.Convert((long)1, typeof(int));
+                this.result = typeConverter.ConvertFromDbValue((long)1, typeof(int));
             }
 
             [Fact]

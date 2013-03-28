@@ -76,7 +76,7 @@ namespace MicroLite.Mapping
             {
                 var typeConverter = TypeConverter.For(this.propertyInfo.PropertyType);
 
-                var converted = typeConverter.Convert(value, this.propertyInfo.PropertyType);
+                var converted = typeConverter.ConvertFromDbValue(value, this.propertyInfo.PropertyType);
 
                 this.setMethod((TObject)instance, (TValue)converted);
             }
