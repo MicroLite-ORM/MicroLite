@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -19,7 +20,7 @@ namespace MicroLite
     /// A class which represents a parameterised SQL query.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{CommandText}")]
-    public sealed class SqlQuery
+    public sealed class SqlQuery : IEquatable<SqlQuery>
     {
         private readonly List<object> arguments = new List<object>();
 
@@ -75,20 +76,32 @@ namespace MicroLite
         {
             var sqlQuery = obj as SqlQuery;
 
-            if (sqlQuery == null)
+            return this.Equals(sqlQuery);
+        }
+
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+        /// </returns>
+        public bool Equals(SqlQuery other)
+        {
+            if (other == null)
             {
                 return false;
             }
 
-            if (sqlQuery.Arguments.Count != this.Arguments.Count
-                || sqlQuery.CommandText != this.CommandText)
+            if (other.Arguments.Count != this.Arguments.Count
+                || other.CommandText != this.CommandText)
             {
                 return false;
             }
 
             for (int i = 0; i < this.Arguments.Count; i++)
             {
-                if (!object.Equals(sqlQuery.Arguments[i], this.Arguments[i]))
+                if (!object.Equals(other.Arguments[i], this.Arguments[i]))
                 {
                     return false;
                 }
