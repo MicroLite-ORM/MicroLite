@@ -77,7 +77,7 @@ namespace MicroLite.TypeConverters
         /// </summary>
         /// <param name="type">The type to resolve.</param>
         /// <returns>The actual type.</returns>
-        protected Type ResolveActualType(Type type)
+        protected static Type ResolveActualType(Type type)
         {
             return type.IsGenericType ? type.GetGenericArguments()[0] : type;
         }

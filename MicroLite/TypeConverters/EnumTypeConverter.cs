@@ -19,7 +19,7 @@ namespace MicroLite.TypeConverters
     {
         public override bool CanConvert(Type propertyType)
         {
-            var actualType = this.ResolveActualType(propertyType);
+            var actualType = TypeConverter.ResolveActualType(propertyType);
 
             return actualType.IsEnum;
         }
@@ -31,7 +31,7 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            var enumType = this.ResolveActualType(propertyType);
+            var enumType = TypeConverter.ResolveActualType(propertyType);
 
             var enumStorageType = Enum.GetUnderlyingType(enumType);
 
@@ -49,7 +49,7 @@ namespace MicroLite.TypeConverters
                 return value;
             }
 
-            var enumType = this.ResolveActualType(propertyType);
+            var enumType = TypeConverter.ResolveActualType(propertyType);
 
             var enumStorageType = Enum.GetUnderlyingType(enumType);
 
