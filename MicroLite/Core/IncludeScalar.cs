@@ -13,7 +13,6 @@
 namespace MicroLite.Core
 {
     using System.Data;
-    using MicroLite.Mapping;
     using MicroLite.TypeConverters;
 
     /// <summary>
