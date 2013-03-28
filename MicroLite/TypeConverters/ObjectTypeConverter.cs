@@ -42,5 +42,10 @@ namespace MicroLite.TypeConverters
                 return converted;
             }
         }
+
+        public override object ConvertToDbValue(object value, Type propertyType)
+        {
+            return value;
+        }
     }
 }

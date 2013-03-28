@@ -41,5 +41,21 @@ namespace MicroLite.TypeConverters
 
             return enumValue;
         }
+
+        public override object ConvertToDbValue(object value, Type propertyType)
+        {
+            if (value == null)
+            {
+                return value;
+            }
+
+            var enumType = this.ResolveActualType(propertyType);
+
+            var enumStorageType = Enum.GetUnderlyingType(enumType);
+
+            var underlyingValue = System.Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
+
+            return underlyingValue;
+        }
     }
 }

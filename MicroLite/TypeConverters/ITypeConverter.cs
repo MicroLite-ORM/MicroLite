@@ -35,5 +35,13 @@ namespace MicroLite.TypeConverters
         /// <param name="propertyType">The property type to convert to.</param>
         /// <returns>An instance of the specified property type containing the specified value.</returns>
         object ConvertFromDbValue(object value, Type propertyType);
+
+        /// <summary>
+        /// Converts the specified property value into an instance of the database value.
+        /// </summary>
+        /// <param name="value">The property value to be converted.</param>
+        /// <param name="propertyType">The property type to convert from.</param>
+        /// <returns>An instance of the corresponding database type for the property type containing the property value.</returns>
+        object ConvertToDbValue(object value, Type propertyType);
     }
 }

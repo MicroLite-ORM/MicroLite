@@ -123,5 +123,23 @@ namespace MicroLite.Tests.TypeConverters
                 Assert.IsType<int>(this.result);
             }
         }
+
+        public class WhenCallingConvertToDbValue
+        {
+            private object result;
+            private ITypeConverter typeConverter = new ObjectTypeConverter();
+            private string value = "Foo";
+
+            public WhenCallingConvertToDbValue()
+            {
+                this.result = this.typeConverter.ConvertToDbValue(value, typeof(string));
+            }
+
+            [Fact]
+            public void TheSameValueShouldBeReturned()
+            {
+                Assert.Same(this.value, this.result);
+            }
+        }
     }
 }

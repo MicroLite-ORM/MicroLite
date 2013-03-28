@@ -64,12 +64,11 @@ namespace MicroLite.Mapping
             {
                 object value = this.getMethod((TObject)instance);
 
-                if (this.propertyInfo.PropertyType.IsEnum)
-                {
-                    return (int)value;
-                }
+                var typeConverter = TypeConverter.For(this.propertyInfo.PropertyType);
 
-                return value;
+                var converted = typeConverter.ConvertToDbValue(value, this.propertyInfo.PropertyType);
+
+                return converted;
             }
 
             public void SetValue(object instance, object value)
