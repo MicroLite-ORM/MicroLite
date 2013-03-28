@@ -74,7 +74,7 @@ namespace MicroLite.Mapping
 
             public void SetValue(object instance, object value)
             {
-                var typeConverter = TypeConverter.ForType(this.propertyInfo.PropertyType);
+                var typeConverter = TypeConverter.For(this.propertyInfo.PropertyType);
 
                 var converted = typeConverter.Convert(value, this.propertyInfo.PropertyType);
 

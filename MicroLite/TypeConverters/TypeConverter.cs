@@ -57,7 +57,7 @@ namespace MicroLite.TypeConverters
         /// </summary>
         /// <param name="type">The type to get the converter for.</param>
         /// <returns>The <see cref="ITypeConverter"/> for the specified type.</returns>
-        internal static ITypeConverter ForType(Type type)
+        internal static ITypeConverter For(Type type)
         {
             return Converters.First(c => c.CanConvert(type));
         }

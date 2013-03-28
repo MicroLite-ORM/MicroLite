@@ -138,7 +138,7 @@ namespace MicroLite.Core
                     this.ConnectionManager.CommandCompleted(command);
 
                     var resultType = typeof(T);
-                    var typeConverter = TypeConverter.ForType(resultType);
+                    var typeConverter = TypeConverter.For(resultType);
                     var converted = (T)typeConverter.Convert(result, resultType);
 
                     return converted;

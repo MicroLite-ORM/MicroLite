@@ -42,7 +42,7 @@ namespace MicroLite.Core
                 }
 
                 var resultType = typeof(T);
-                var typeConverter = TypeConverter.ForType(resultType);
+                var typeConverter = TypeConverter.For(resultType);
                 this.value = (T)typeConverter.Convert(reader[0], resultType);
                 this.HasValue = true;
 
