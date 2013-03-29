@@ -25,6 +25,32 @@
         }
 
         [Fact]
+        public void HasResultsReturnsFalseIfNoResults()
+        {
+            var page = 1;
+            var results = new List<Customer>();
+            var resultsPerPage = 10;
+            var totalResults = 100;
+
+            var pagedResults = new PagedResult<Customer>(page, results, resultsPerPage, totalResults);
+
+            Assert.False(pagedResults.HasResults);
+        }
+
+        [Fact]
+        public void HasResultsReturnsTrueIfContainsResults()
+        {
+            var page = 1;
+            var results = new List<Customer> { new Customer() };
+            var resultsPerPage = 10;
+            var totalResults = 100;
+
+            var pagedResults = new PagedResult<Customer>(page, results, resultsPerPage, totalResults);
+
+            Assert.True(pagedResults.HasResults);
+        }
+
+        [Fact]
         public void MoreResultsAvailableReturnsFalseIfNoMoreResults()
         {
             var page = 10;

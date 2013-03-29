@@ -43,6 +43,17 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets a value indicating whether this page contains any results.
+        /// </summary>
+        public bool HasResults
+        {
+            get
+            {
+                return this.results.Count > 0;
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether there are more results available.
         /// </summary>
         public bool MoreResultsAvailable
