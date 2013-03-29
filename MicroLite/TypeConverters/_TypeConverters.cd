@@ -1,39 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="MicroLite.TypeConverters.EnumTypeConverter">
-    <Position X="1.75" Y="3.75" Width="1.75" />
+    <Position X="1.75" Y="4" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <HashCode>AAAAAAAACAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>TypeConverters\EnumTypeConverter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.TypeConverters.ObjectTypeConverter">
-    <Position X="4.25" Y="3.75" Width="1.75" />
+    <Position X="4.25" Y="4" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <HashCode>AAAAAAAACAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>TypeConverters\ObjectTypeConverter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.TypeConverters.TypeConverter">
-    <Position X="3" Y="0.5" Width="1.75" />
+    <Position X="4.25" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AICAQAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <HashCode>AACAQAAACAAAAAAAAEEAAAAAIAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>TypeConverters\TypeConverter.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.TypeConverters.TypeConverterCollection">
-    <Position X="6" Y="0.5" Width="3.25" />
+    <Position X="7.25" Y="0.5" Width="3.25" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
       <FileName>TypeConverters\TypeConverterCollection.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="MicroLite.TypeConverters.XDocumentTypeConverter">
+    <Position X="6.75" Y="4" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>TypeConverters\XDocumentTypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="MicroLite.TypeConverters.ITypeConverter">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <HashCode>AAAAAAAACAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>TypeConverters\ITypeConverter.cs</FileName>
     </TypeIdentifier>
   </Interface>
