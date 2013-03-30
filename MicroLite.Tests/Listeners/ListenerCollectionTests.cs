@@ -24,9 +24,9 @@
         [Fact]
         public void ConstructorRegistersAssignedListener()
         {
-            var listenerCollection = new ListenerCollection();
+            var collection = new ListenerCollection();
 
-            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(AssignedListener));
+            var listener = collection.OfType<AssignedListener>().SingleOrDefault();
 
             Assert.NotNull(listener);
         }
@@ -34,9 +34,9 @@
         [Fact]
         public void ConstructorRegistersDbGeneratedListener()
         {
-            var listenerCollection = new ListenerCollection();
+            var collection = new ListenerCollection();
 
-            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(DbGeneratedListener));
+            var listener = collection.OfType<DbGeneratedListener>().SingleOrDefault();
 
             Assert.NotNull(listener);
         }
@@ -44,9 +44,9 @@
         [Fact]
         public void ConstructorRegistersGuidCombListener()
         {
-            var listenerCollection = new ListenerCollection();
+            var collection = new ListenerCollection();
 
-            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(GuidCombListener));
+            var listener = collection.OfType<GuidCombListener>().SingleOrDefault();
 
             Assert.NotNull(listener);
         }
@@ -54,9 +54,9 @@
         [Fact]
         public void ConstructorRegistersGuidListener()
         {
-            var listenerCollection = new ListenerCollection();
+            var collection = new ListenerCollection();
 
-            var listener = listenerCollection.SingleOrDefault(x => x.GetType() == typeof(GuidListener));
+            var listener = collection.OfType<GuidListener>().SingleOrDefault();
 
             Assert.NotNull(listener);
         }
@@ -64,13 +64,13 @@
         [Fact]
         public void EnumerationReturnsNewInstanceOfEachTypeOnEachCall()
         {
-            var listenerCollection = new ListenerCollection();
-            listenerCollection.Clear();
+            var collection = new ListenerCollection();
+            collection.Clear();
 
-            listenerCollection.Add<TestListener>();
+            collection.Add<TestListener>();
 
-            var listener1 = listenerCollection.Single();
-            var listener2 = listenerCollection.Single();
+            var listener1 = collection.Single();
+            var listener2 = collection.Single();
 
             Assert.NotSame(listener1, listener2);
         }

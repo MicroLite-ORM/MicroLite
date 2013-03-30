@@ -10,28 +10,28 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Mapping
+namespace MicroLite.TypeConverters
 {
     using System;
     using System.Globalization;
 
     internal sealed class EnumTypeConverter : TypeConverter
     {
-        public override bool CanConvert(Type type)
+        public override bool CanConvert(Type propertyType)
         {
-            var actualType = type.IsGenericType ? type.GetGenericArguments()[0] : type;
+            var actualType = TypeConverter.ResolveActualType(propertyType);
 
             return actualType.IsEnum;
         }
 
-        public override object Convert(object value, Type type)
+        public override object ConvertFromDbValue(object value, Type propertyType)
         {
             if (value == DBNull.Value)
             {
                 return null;
             }
 
-            var enumType = type.IsGenericType ? type.GetGenericArguments()[0] : type;
+            var enumType = TypeConverter.ResolveActualType(propertyType);
 
             var enumStorageType = Enum.GetUnderlyingType(enumType);
 
@@ -40,6 +40,22 @@ namespace MicroLite.Mapping
             var enumValue = Enum.ToObject(enumType, underlyingValue);
 
             return enumValue;
+        }
+
+        public override object ConvertToDbValue(object value, Type propertyType)
+        {
+            if (value == null)
+            {
+                return value;
+            }
+
+            var enumType = TypeConverter.ResolveActualType(propertyType);
+
+            var enumStorageType = Enum.GetUnderlyingType(enumType);
+
+            var underlyingValue = System.Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
+
+            return underlyingValue;
         }
     }
 }

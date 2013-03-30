@@ -25,7 +25,7 @@ namespace MicroLite.Mapping
     /// </summary>
     internal sealed class AttributeMappingConvention : IMappingConvention
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.AttributeMappingConvention");
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
 
         public ObjectInfo CreateObjectInfo(Type forType)
         {

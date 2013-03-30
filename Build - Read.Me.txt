@@ -1,8 +1,9 @@
 Requirements:
  
   - .NET 4.5
-  - Sandcastle Help File Builder 1.9.5 (http://shfb.codeplex.com/)
-  - StyleCop version 4.7.42.0 (http://stylecop.codeplex.com/)
+  - Sandcastle Help File Builder 1.9.6 (http://shfb.codeplex.com/)
+  - StyleCop version 4.7.44.0 (http://stylecop.codeplex.com/)
+  - Git (http://git-scm.com/download/win)
 
 If running on a 64 bit machine, run the PowerShell (x86) executable otherwise the StyleCop.targets won't be found.
 

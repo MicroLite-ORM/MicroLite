@@ -24,6 +24,7 @@ namespace MicroLite
     internal static class SqlUtil
     {
         private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static char[] parameterIdentifiers = new[] { '@', ':', '?' };
 
         /// <summary>
         /// Gets the position of the first parameter in the specified command text.
@@ -32,7 +33,7 @@ namespace MicroLite
         /// <returns>The position of the first parameter in the command text or -1 if no parameters are found.</returns>
         internal static int GetFirstParameterPosition(string commandText)
         {
-            var firstParameterPosition = commandText.IndexOfAny(new[] { '@', ':', '?' }, 0);
+            var firstParameterPosition = commandText.IndexOfAny(parameterIdentifiers, 0);
 
             return firstParameterPosition;
         }

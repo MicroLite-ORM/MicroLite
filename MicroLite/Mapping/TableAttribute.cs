@@ -20,7 +20,16 @@ namespace MicroLite.Mapping
     /// </summary>
     /// <example>
     /// <code>
+    /// // Option 1 - Specify schema and table name.
     /// [Table("dbo", "Customers")]
+    /// public class Customer
+    /// {
+    ///    ...
+    /// }
+    /// </code>
+    /// <code>
+    /// // Option 2 - Specify table name only.
+    /// [Table("Customers")]
     /// public class Customer
     /// {
     ///    ...

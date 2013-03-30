@@ -22,7 +22,7 @@ namespace MicroLite.Listeners
     /// </summary>
     public sealed class DbGeneratedListener : Listener
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.DbGeneratedListener");
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
 
         /// <summary>
         /// Invoked after the SqlQuery to insert the record for the instance has been executed.

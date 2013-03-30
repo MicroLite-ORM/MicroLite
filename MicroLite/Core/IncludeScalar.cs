@@ -13,7 +13,7 @@
 namespace MicroLite.Core
 {
     using System.Data;
-    using MicroLite.Mapping;
+    using MicroLite.TypeConverters;
 
     /// <summary>
     /// The default implementation of <see cref="IInclude&lt;T&gt;"/> for scalar results.
@@ -41,8 +41,8 @@ namespace MicroLite.Core
                 }
 
                 var resultType = typeof(T);
-                var typeConverter = TypeConverter.ForType(resultType);
-                this.value = (T)typeConverter.Convert(reader[0], resultType);
+                var typeConverter = TypeConverter.For(resultType);
+                this.value = (T)typeConverter.ConvertFromDbValue(reader[0], resultType);
                 this.HasValue = true;
 
                 if (reader.Read())
