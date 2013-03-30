@@ -30,7 +30,7 @@ namespace MicroLite.Dialect
             { "MicroLite.Dialect.MySqlDialect", typeof(MySqlDialect) }
         };
 
-        private static readonly ILog log = LogManager.GetLog("MicroLite.SqlDialectFactory");
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
 
         /// <summary>
         /// Gets the dialect with the specified name.

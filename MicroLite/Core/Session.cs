@@ -13,36 +13,31 @@
 namespace MicroLite.Core
 {
     using System;
-    using System.Collections.Generic;
     using System.Data;
-    using System.Linq;
     using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Logging;
     using MicroLite.Mapping;
+    using MicroLite.TypeConverters;
 
     /// <summary>
     /// The default implementation of <see cref="ISession"/>.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Session {Id}")]
     internal sealed class Session : ReadOnlySession, ISession, IAdvancedSession
     {
-        private readonly IEnumerable<IListener> listeners;
+        private readonly IListener[] listeners;
 
         internal Session(
             IConnectionManager connectionManager,
             IObjectBuilder objectBuilder,
             ISqlDialect sqlDialect,
-            IEnumerable<IListener> listeners)
+            IListener[] listeners)
             : base(connectionManager, objectBuilder, sqlDialect)
         {
             this.listeners = listeners;
 
-            using (new SessionLoggingContext(this.Id))
-            {
-                Log.TryLogDebug(Messages.Session_Created);
-            }
+            Log.TryLogDebug(Messages.Session_Created);
         }
 
         public IAdvancedSession Advanced
@@ -62,20 +57,17 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            using (new SessionLoggingContext(this.Id))
-            {
-                this.listeners.Each(l => l.BeforeDelete(instance));
+            this.listeners.Each(l => l.BeforeDelete(instance));
 
-                var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, instance);
+            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, instance);
 
-                this.listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
+            this.listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
 
-                var rowsAffected = this.Execute(sqlQuery);
+            var rowsAffected = this.Execute(sqlQuery);
 
-                this.listeners.Reverse().Each(l => l.AfterDelete(instance, rowsAffected));
+            this.listeners.Reverse().Each(l => l.AfterDelete(instance, rowsAffected));
 
-                return rowsAffected == 1;
-            }
+            return rowsAffected == 1;
         }
 
         public bool Delete(Type type, object identifier)
@@ -92,12 +84,9 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("identifier");
             }
 
-            using (new SessionLoggingContext(this.Id))
-            {
-                var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, type, identifier);
+            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, type, identifier);
 
-                return this.Execute(sqlQuery) == 1;
-            }
+            return this.Execute(sqlQuery) == 1;
         }
 
         public int Execute(SqlQuery sqlQuery)
@@ -109,26 +98,23 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            using (new SessionLoggingContext(this.Id))
+            try
             {
-                try
+                using (var command = this.ConnectionManager.CreateCommand())
                 {
-                    using (var command = this.ConnectionManager.CreateCommand())
-                    {
-                        this.SqlDialect.BuildCommand(command, sqlQuery);
+                    this.SqlDialect.BuildCommand(command, sqlQuery);
 
-                        var result = command.ExecuteNonQuery();
+                    var result = command.ExecuteNonQuery();
 
-                        this.ConnectionManager.CommandCompleted(command);
+                    this.ConnectionManager.CommandCompleted(command);
 
-                        return result;
-                    }
+                    return result;
                 }
-                catch (Exception e)
-                {
-                    Log.TryLogError(e.Message, e);
-                    throw new MicroLiteException(e.Message, e);
-                }
+            }
+            catch (Exception e)
+            {
+                Log.TryLogError(e.Message, e);
+                throw new MicroLiteException(e.Message, e);
             }
         }
 
@@ -141,30 +127,27 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            using (new SessionLoggingContext(this.Id))
+            try
             {
-                try
+                using (var command = this.ConnectionManager.CreateCommand())
                 {
-                    using (var command = this.ConnectionManager.CreateCommand())
-                    {
-                        this.SqlDialect.BuildCommand(command, sqlQuery);
+                    this.SqlDialect.BuildCommand(command, sqlQuery);
 
-                        var result = command.ExecuteScalar();
+                    var result = command.ExecuteScalar();
 
-                        this.ConnectionManager.CommandCompleted(command);
+                    this.ConnectionManager.CommandCompleted(command);
 
-                        var resultType = typeof(T);
-                        var typeConverter = TypeConverter.ForType(resultType);
-                        var converted = (T)typeConverter.Convert(result, resultType);
+                    var resultType = typeof(T);
+                    var typeConverter = TypeConverter.For(resultType);
+                    var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
 
-                        return converted;
-                    }
+                    return converted;
                 }
-                catch (Exception e)
-                {
-                    Log.TryLogError(e.Message, e);
-                    throw new MicroLiteException(e.Message, e);
-                }
+            }
+            catch (Exception e)
+            {
+                Log.TryLogError(e.Message, e);
+                throw new MicroLiteException(e.Message, e);
             }
         }
 
@@ -177,18 +160,15 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            using (new SessionLoggingContext(this.Id))
-            {
-                this.listeners.Each(l => l.BeforeInsert(instance));
+            this.listeners.Each(l => l.BeforeInsert(instance));
 
-                var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Insert, instance);
+            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Insert, instance);
 
-                this.listeners.Each(l => l.BeforeInsert(instance, sqlQuery));
+            this.listeners.Each(l => l.BeforeInsert(instance, sqlQuery));
 
-                var identifier = this.ExecuteScalar<object>(sqlQuery);
+            var identifier = this.ExecuteScalar<object>(sqlQuery);
 
-                this.listeners.Reverse().Each(l => l.AfterInsert(instance, identifier));
-            }
+            this.listeners.Reverse().Each(l => l.AfterInsert(instance, identifier));
         }
 
         public void InsertOrUpdate(object instance)
@@ -219,18 +199,15 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            using (new SessionLoggingContext(this.Id))
-            {
-                this.listeners.Each(l => l.BeforeUpdate(instance));
+            this.listeners.Each(l => l.BeforeUpdate(instance));
 
-                var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Update, instance);
+            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Update, instance);
 
-                this.listeners.Each(l => l.BeforeUpdate(instance, sqlQuery));
+            this.listeners.Each(l => l.BeforeUpdate(instance, sqlQuery));
 
-                var rowsAffected = this.Execute(sqlQuery);
+            var rowsAffected = this.Execute(sqlQuery);
 
-                this.listeners.Reverse().Each(l => l.AfterUpdate(instance, rowsAffected));
-            }
+            this.listeners.Reverse().Each(l => l.AfterUpdate(instance, rowsAffected));
         }
     }
 }

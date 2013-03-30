@@ -22,7 +22,7 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("Transaction - Active:{IsActive}, Committed:{WasCommitted}, RolledBack:{WasRolledBack}")]
     internal sealed class AdoTransaction : ITransaction
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.AdoTransaction");
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly IsolationLevel isolationLevel;
         private bool committed;
         private IDbConnection connection;

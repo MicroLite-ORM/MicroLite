@@ -1,7 +1,7 @@
-﻿using MicroLite.Mapping;
+﻿using MicroLite.TypeConverters;
 using Xunit;
 
-namespace MicroLite.Tests.Mapping
+namespace MicroLite.Tests.TypeConverters
 {
     public class TypeConverterTests
     {
@@ -11,22 +11,22 @@ namespace MicroLite.Tests.Mapping
             New = 1
         }
 
-        public class WhenCallingForTypeWithATypeOfEnum
+        public class WhenCallingForWithATypeOfEnum
         {
             [Fact]
             public void TheEnumTypeConverterIsReturned()
             {
-                var typeConverter = TypeConverter.ForType(typeof(Status));
+                var typeConverter = TypeConverter.For(typeof(Status));
                 Assert.IsType<EnumTypeConverter>(typeConverter);
             }
         }
 
-        public class WhenCallingForTypeWithATypeOfInt
+        public class WhenCallingForWithATypeOfInt
         {
             [Fact]
             public void TheObjectTypeConverterIsReturned()
             {
-                var typeConverter = TypeConverter.ForType(typeof(int));
+                var typeConverter = TypeConverter.For(typeof(int));
                 Assert.IsType<ObjectTypeConverter>(typeConverter);
             }
         }

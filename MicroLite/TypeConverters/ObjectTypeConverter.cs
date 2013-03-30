@@ -10,28 +10,26 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Mapping
+namespace MicroLite.TypeConverters
 {
     using System;
     using System.Globalization;
 
     internal sealed class ObjectTypeConverter : TypeConverter
     {
-        public override bool CanConvert(Type type)
+        public override bool CanConvert(Type propertyType)
         {
-            var actualType = type.IsGenericType ? type.GetGenericArguments()[0] : type;
-
-            return !actualType.IsEnum;
+            return true;
         }
 
-        public override object Convert(object value, Type type)
+        public override object ConvertFromDbValue(object value, Type propertyType)
         {
             if (value == DBNull.Value)
             {
                 return null;
             }
 
-            if (type.IsValueType && type.IsGenericType)
+            if (propertyType.IsValueType && propertyType.IsGenericType)
             {
                 ValueType converted = (ValueType)value;
 
@@ -39,10 +37,15 @@ namespace MicroLite.Mapping
             }
             else
             {
-                var converted = System.Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+                var converted = System.Convert.ChangeType(value, propertyType, CultureInfo.InvariantCulture);
 
                 return converted;
             }
+        }
+
+        public override object ConvertToDbValue(object value, Type propertyType)
+        {
+            return value;
         }
     }
 }

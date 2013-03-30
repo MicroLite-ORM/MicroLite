@@ -24,7 +24,7 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("{Schema}.{Name}")]
     public sealed class TableInfo
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.TableInfo");
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
 
         private readonly ICollection<ColumnInfo> columns;
         private readonly string identifierColumn;
@@ -39,10 +39,10 @@ namespace MicroLite.Mapping
         /// <param name="identifierStrategy">The identifier strategy used by the table.</param>
         /// <param name="name">The name of the table.</param>
         /// <param name="schema">The name of the schema the table exists within.</param>
-        /// <exception cref="ArgumentNullException">Thrown if columns, name or schema are null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if columns or name are null.</exception>
         /// <exception cref="MicroLiteException">Thrown if no identifier column is specified.</exception>
         public TableInfo(
-            IEnumerable<ColumnInfo> columns,
+            IList<ColumnInfo> columns,
             IdentifierStrategy identifierStrategy,
             string name,
             string schema)
@@ -63,14 +63,14 @@ namespace MicroLite.Mapping
 
             this.ValidateColumns(columns);
 
-            this.columns = new List<ColumnInfo>(columns);
+            this.columns = new System.Collections.ObjectModel.ReadOnlyCollection<ColumnInfo>(columns);
             this.identifierColumn = columns.Single(c => c.IsIdentifier).ColumnName;
         }
 
         /// <summary>
         /// Gets the columns that are mapped for the table.
         /// </summary>
-        public IEnumerable<ColumnInfo> Columns
+        public ICollection<ColumnInfo> Columns
         {
             get
             {

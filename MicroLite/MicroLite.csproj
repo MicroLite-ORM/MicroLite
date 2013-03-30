@@ -51,6 +51,8 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ConfigurationExtensions.cs" />
@@ -75,8 +77,6 @@
     <Compile Include="Infrastructure\IHaveSession.cs" />
     <Compile Include="IReadOnlySession.cs" />
     <Compile Include="Listeners\GuidCombListener.cs" />
-    <Compile Include="Logging\CurrentSessionIdResolver.cs" />
-    <Compile Include="Logging\SessionLoggingContext.cs" />
     <Compile Include="Mapping\ColumnAttribute.cs" />
     <Compile Include="Configuration\Configure.cs" />
     <Compile Include="Configuration\ConfigureExtensions.cs" />
@@ -90,7 +90,7 @@
     <Compile Include="Core\SessionFactoryOptions.cs" />
     <Compile Include="Listeners\AssignedListener.cs" />
     <Compile Include="Core\ConnectionManager.cs" />
-    <Compile Include="FrameworkExtensions\EnumerableExtensions.cs">
+    <Compile Include="FrameworkExtensions\CollectionExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\IConnectionManager.cs" />
@@ -113,16 +113,17 @@
     <Compile Include="Mapping\ColumnInfo.cs" />
     <Compile Include="Mapping\ConventionMappingSettings.cs" />
     <Compile Include="Mapping\ConventionMappingConvention.cs" />
-    <Compile Include="Mapping\EnumTypeConverter.cs" />
+    <Compile Include="TypeConverters\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
     <Compile Include="Mapping\InflectionService.cs" />
+    <Compile Include="Mapping\IPropertyAccessor.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
     <Compile Include="Mapping\AttributeMappingConvention.cs" />
     <Compile Include="Mapping\PropertyAccessor.cs" />
     <Compile Include="Mapping\TableInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Mapping\TypeConverter.cs" />
+    <Compile Include="TypeConverters\TypeConverter.cs" />
     <Compile Include="Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -157,8 +158,10 @@
     <Compile Include="SqlQuery.cs" />
     <Compile Include="Mapping\TableAttribute.cs" />
     <Compile Include="SqlUtil.cs" />
-    <Compile Include="Mapping\ITypeConverter.cs" />
-    <Compile Include="Mapping\ObjectTypeConverter.cs" />
+    <Compile Include="TypeConverters\ITypeConverter.cs" />
+    <Compile Include="TypeConverters\ObjectTypeConverter.cs" />
+    <Compile Include="TypeConverters\TypeConverterCollection.cs" />
+    <Compile Include="TypeConverters\XDocumentTypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\MicroLite.snk">
@@ -173,7 +176,7 @@
     <None Include="Mapping\_MappingAttributes.cd" />
     <None Include="Mapping\_MappingConvention.cd" />
     <None Include="Mapping\_ObjectInfo.cd" />
-    <None Include="Mapping\_TypeConverters.cd" />
+    <None Include="TypeConverters\_TypeConverters.cd" />
     <None Include="Query\_SqlBuilder.cd" />
     <None Include="_Session.cd" />
   </ItemGroup>

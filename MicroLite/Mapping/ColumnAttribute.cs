@@ -21,7 +21,7 @@ namespace MicroLite.Mapping
     /// <code>
     /// // Option 1 - Column and property name match.
     /// [Column("FirstName")]
-    /// public int FirstName
+    /// public string FirstName
     /// {
     ///     get;
     ///     set;
@@ -30,7 +30,7 @@ namespace MicroLite.Mapping
     /// <code>
     /// // Option 2 - Column and property name differ.
     /// [Column("FName")]
-    /// public int FirstName
+    /// public string FirstName
     /// {
     ///     get;
     ///     set;

@@ -29,7 +29,7 @@
 
             LogManager.GetLogger = (string name) =>
             {
-                // This fails when using the console runner...
+                // TODO: Figure out why this fails when using the console runner...
                 ////Assert.Equal(typeof(LogManagerTests).FullName, name);
 
                 return log;
@@ -44,29 +44,6 @@
         public void GetCurrentClassLogReturnsNullIfGetLoggerNotSet()
         {
             Assert.Null(LogManager.GetCurrentClassLog());
-        }
-
-        [Fact]
-        public void GetLogByNameReturnsLogIfGetLoggerSet()
-        {
-            var log = new Mock<ILog>().Object;
-
-            LogManager.GetLogger = (string name) =>
-            {
-                Assert.Equal("LogManagerTests", name);
-
-                return log;
-            };
-
-            var logInstance = LogManager.GetLog("LogManagerTests");
-
-            Assert.Same(log, logInstance);
-        }
-
-        [Fact]
-        public void GetLogByNameReturnsNullIfGetLoggerNotSet()
-        {
-            Assert.Null(LogManager.GetLog("LogManagerTests"));
         }
     }
 }

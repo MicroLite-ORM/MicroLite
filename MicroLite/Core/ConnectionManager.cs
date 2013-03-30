@@ -20,7 +20,7 @@ namespace MicroLite.Core
     /// </summary>
     internal sealed class ConnectionManager : IConnectionManager
     {
-        private static readonly ILog log = LogManager.GetLog("MicroLite.ConnectionManager");
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
         private IDbConnection connection;
         private ITransaction currentTransaction;
 

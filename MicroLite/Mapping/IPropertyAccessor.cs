@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="EnumerableExtensions.cs" company="MicroLite">
+// <copyright file="IPropertyAccessor.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,19 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.FrameworkExtensions
+namespace MicroLite.Mapping
 {
-    using System;
-    using System.Collections.Generic;
-
-    internal static class EnumerableExtensions
+    internal interface IPropertyAccessor
     {
-        internal static void Each<T>(this IEnumerable<T> source, Action<T> action)
-        {
-            foreach (var item in source)
-            {
-                action(item);
-            }
-        }
+        object GetValue(object instance);
+
+        void SetValue(object instance, object value);
     }
 }

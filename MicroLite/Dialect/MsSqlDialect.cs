@@ -95,7 +95,7 @@ namespace MicroLite.Dialect
             }
 
             int argumentsCount = 0;
-            var sqlBuilder = new StringBuilder();
+            var sqlBuilder = new StringBuilder(sqlQueries.Sum(s => s.CommandText.Length));
 
             foreach (var sqlQuery in sqlQueries)
             {
@@ -119,7 +119,7 @@ namespace MicroLite.Dialect
             int fromRowNumber = pagingOptions.Offset + 1;
             int toRowNumber = pagingOptions.Offset + pagingOptions.Count;
 
-            List<object> arguments = new List<object>();
+            List<object> arguments = new List<object>(sqlQuery.Arguments.Count + 2);
             arguments.AddRange(sqlQuery.Arguments);
             arguments.Add(fromRowNumber);
             arguments.Add(toRowNumber);
@@ -135,7 +135,7 @@ namespace MicroLite.Dialect
             var orderByValue = this.ReadOrderBy(sqlQuery.CommandText);
             var orderByClause = "ORDER BY " + (!string.IsNullOrEmpty(orderByValue) ? orderByValue : "(SELECT NULL)");
 
-            var sqlBuilder = new StringBuilder();
+            var sqlBuilder = new StringBuilder(sqlQuery.CommandText.Length * 2);
             sqlBuilder.Append(selectStatement);
             sqlBuilder.Append(" FROM");
             sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " ({0}, ROW_NUMBER() OVER({1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName);
