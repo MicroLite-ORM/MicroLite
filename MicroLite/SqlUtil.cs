@@ -23,8 +23,8 @@ namespace MicroLite
     /// </summary>
     internal static class SqlUtil
     {
+        private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
         private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static char[] parameterIdentifiers = new[] { '@', ':', '?' };
 
         /// <summary>
         /// Gets the position of the first parameter in the specified command text.
