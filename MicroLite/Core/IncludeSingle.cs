@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
+    using System;
     using System.Data;
     using MicroLite.Mapping;
 
@@ -21,6 +22,7 @@ namespace MicroLite.Core
     /// <typeparam name="T">The type of object to be included.</typeparam>
     internal sealed class IncludeSingle<T> : Include, IInclude<T> where T : class, new()
     {
+        private static readonly Type resultType = typeof(T);
         private T value;
 
         public T Value
@@ -35,7 +37,7 @@ namespace MicroLite.Core
         {
             if (reader.Read())
             {
-                var objectInfo = ObjectInfo.For(typeof(T));
+                var objectInfo = ObjectInfo.For(resultType);
 
                 this.value = objectBuilder.BuildInstance<T>(objectInfo, reader);
                 this.HasValue = true;

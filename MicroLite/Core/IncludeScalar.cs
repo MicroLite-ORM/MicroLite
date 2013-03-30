@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
+    using System;
     using System.Data;
     using MicroLite.TypeConverters;
 
@@ -21,6 +22,7 @@ namespace MicroLite.Core
     /// <typeparam name="T">The type of object to be included.</typeparam>
     internal sealed class IncludeScalar<T> : Include, IInclude<T>
     {
+        private static readonly Type resultType = typeof(T);
         private T value;
 
         public T Value
@@ -40,7 +42,6 @@ namespace MicroLite.Core
                     throw new MicroLiteException(Messages.IncludeScalar_MultipleColumns);
                 }
 
-                var resultType = typeof(T);
                 var typeConverter = TypeConverter.For(resultType);
                 this.value = (T)typeConverter.ConvertFromDbValue(reader[0], resultType);
                 this.HasValue = true;
