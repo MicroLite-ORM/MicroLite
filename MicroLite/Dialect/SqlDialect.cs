@@ -256,7 +256,7 @@ namespace MicroLite.Dialect
                         this.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
                         this.FormatParameter(0));
 
-                    return new SqlQuery(sqlBuilder.ToString(), new[] { identifier });
+                    return new SqlQuery(sqlBuilder.ToString(), identifier);
 
                 default:
                     throw new NotSupportedException(Messages.SqlDialect_StatementTypeNotSupported);
