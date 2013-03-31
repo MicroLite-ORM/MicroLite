@@ -23,11 +23,12 @@ namespace MicroLite.Mapping
         public ConventionMappingSettings()
         {
             this.IdentifierStrategy = Mapping.IdentifierStrategy.DbGenerated;
+            this.TableSchema = null;
             this.UsePluralClassNameForTableName = true;
         }
 
         /// <summary>
-        /// Gets or sets the identifier strategy.
+        /// Gets or sets the identifier strategy (defaults to DbGenerated).
         /// </summary>
         public IdentifierStrategy IdentifierStrategy
         {
@@ -36,7 +37,16 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to use the plural class name for the table name.
+        /// Gets or sets the table schema (defaults to null).
+        /// </summary>
+        public string TableSchema
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use the plural class name for the table name (defaults to true).
         /// </summary>
         public bool UsePluralClassNameForTableName
         {
