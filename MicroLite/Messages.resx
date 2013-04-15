@@ -288,4 +288,13 @@
   <data name="Transaction_RollingBackFailedCommit" xml:space="preserve">
     <value>Transaction rolling back changes from failed commit</value>
   </data>
+  <data name="ConfigurationSymmetricAlgorithmProvider_MissingAlgorithm" xml:space="preserve">
+    <value>The Encryption algorithm is missing, please add the following value to app.settings: &lt;add key="MicroLite.DbEncryptedString.SymmetricAlgorithm" value="AesManaged" /&gt; (see http://msdn.microsoft.com/en-us/library/System.Security.Cryptography.SymmetricAlgorithm(v=vs.110).aspx for the fully supported list of values)</value>
+  </data>
+  <data name="ConfigurationSymmetricAlgorithmProvider_MissingKey" xml:space="preserve">
+    <value>The Encryption key is missing, please add the following value to app.settings: &lt;add key="MicroLite.DbEncryptedString.EncryptionKey" value="replace-with-your-encryption-key" /&gt;</value>
+  </data>
+  <data name="DbEncryptedStringTypeConverter_CipherTextInvalid" xml:space="preserve">
+    <value>The cipher text is invalid, it should contain 2 parts separated by an '@'</value>
+  </data>
 </root>

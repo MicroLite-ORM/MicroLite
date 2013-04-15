@@ -63,6 +63,8 @@
     <Compile Include="Core\IncludeScalar.cs" />
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
+    <Compile Include="Infrastructure\AppSettingSymmetricAlgorithmProvider.cs" />
+    <Compile Include="DbEncryptedString.cs" />
     <Compile Include="Dialect\MySqlDialect.cs" />
     <Compile Include="Dialect\PostgreSqlDialect.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Mapping\ColumnInfo.cs" />
     <Compile Include="Mapping\ConventionMappingSettings.cs" />
     <Compile Include="Mapping\ConventionMappingConvention.cs" />
+    <Compile Include="TypeConverters\DbEncryptedStringTypeConverter.cs" />
     <Compile Include="TypeConverters\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
     <Compile Include="Mapping\InflectionService.cs" />
@@ -123,6 +126,7 @@
     <Compile Include="Mapping\TableInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Infrastructure\ISymmetricAlgorithmProvider.cs" />
     <Compile Include="TypeConverters\TypeConverter.cs" />
     <Compile Include="Messages.Designer.cs">
       <AutoGen>True</AutoGen>
