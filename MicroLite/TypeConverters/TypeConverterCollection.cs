@@ -37,7 +37,7 @@ namespace MicroLite.TypeConverters
         /// <param name="typeConverter">The type converter to be added.</param>
         public void Add(ITypeConverter typeConverter)
         {
-            this.converters.Add(typeConverter);
+            this.converters.Insert(0, typeConverter);
         }
 
         /// <summary>
