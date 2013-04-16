@@ -12,12 +12,14 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
+    using System;
+
     /// <summary>
     /// A class which represents a string which is encrypted before being written to the database
     /// and decrypted after being read from the database.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{value}")]
-    public sealed class DbEncryptedString
+    public sealed class DbEncryptedString : IEquatable<DbEncryptedString>
     {
         private readonly string value;
 
@@ -44,6 +46,48 @@ namespace MicroLite
         public static implicit operator string(DbEncryptedString dbEncryptedString)
         {
             return dbEncryptedString == null ? null : dbEncryptedString.value;
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            var dbEncryptedString = obj as DbEncryptedString;
+
+            return this.Equals(dbEncryptedString);
+        }
+
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+        /// </returns>
+        public bool Equals(DbEncryptedString other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return this.value == other.value;
+        }
+
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return this.value.GetHashCode();
         }
 
         /// <summary>
