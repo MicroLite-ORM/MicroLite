@@ -4,6 +4,19 @@
 
     public class DbEncryptedStringTests
     {
+        public class WhenCallingEqualsWithAnotherDbEncryptedStringAsAnObjectContainingTheSameValue
+        {
+            [Fact]
+            public void TrueShouldBeReturned()
+            {
+                var value = "12334552233";
+                var dbEncryptedString = (DbEncryptedString)value;
+                var other = (object)(DbEncryptedString)value;
+
+                Assert.True(dbEncryptedString.Equals(other));
+            }
+        }
+
         public class WhenCallingEqualsWithAnotherDbEncryptedStringContainingADifferentValue
         {
             [Fact]
@@ -53,6 +66,31 @@
                 var other = (DbEncryptedString)value;
 
                 Assert.True(dbEncryptedString.Equals(other));
+            }
+        }
+
+        public class WhenCallingEqualsWithANullDbEncryptedString
+        {
+            [Fact]
+            public void FalseShouldBeReturned()
+            {
+                var value = "12334552233";
+                var dbEncryptedString = (DbEncryptedString)value;
+                DbEncryptedString other = null;
+
+                Assert.False(dbEncryptedString.Equals(other));
+            }
+        }
+
+        public class WhenCallingGetHashCode
+        {
+            [Fact]
+            public void TheHashCodeOfTheInnerStringShouldBeReturned()
+            {
+                var value = "12334552233";
+                var dbEncryptedString = (DbEncryptedString)value;
+
+                Assert.Equal(value.GetHashCode(), dbEncryptedString.GetHashCode());
             }
         }
 

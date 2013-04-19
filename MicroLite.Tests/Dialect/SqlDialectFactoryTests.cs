@@ -45,6 +45,7 @@
 
             Assert.Equal(Messages.SqlDialectFactory_DialectMustImplementISqlDialect.FormatWith("String"), exception.Message);
         }
+
         [Fact]
         public void GetDialectReturnsMsSqlDialect()
         {
