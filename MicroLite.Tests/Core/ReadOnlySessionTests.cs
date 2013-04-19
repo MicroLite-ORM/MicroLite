@@ -284,7 +284,7 @@
                 mockObjectBuilder.Object,
                 mockSqlDialect.Object);
 
-            var page = session.Paged<Customer>(sqlQuery, 1, 1);
+            var page = session.Paged<Customer>(sqlQuery, PagingOptions.ForPage(1, 1));
 
             Assert.Equal(1, page.Page);
             Assert.Equal(1, page.Results.Count);
@@ -333,7 +333,7 @@
                 mockObjectBuilder.Object,
                 mockSqlDialect.Object);
 
-            var page = session.Paged<Customer>(sqlQuery, 1, 25);
+            var page = session.Paged<Customer>(sqlQuery, PagingOptions.ForPage(1, 25));
 
             Assert.Equal(1, page.Page);
             Assert.Equal(1, page.Results.Count);
@@ -382,7 +382,7 @@
                 mockObjectBuilder.Object,
                 mockSqlDialect.Object);
 
-            var page = session.Paged<Customer>(sqlQuery, 10, 25);
+            var page = session.Paged<Customer>(sqlQuery, PagingOptions.ForPage(10, 25));
 
             Assert.Equal(10, page.Page);
             Assert.Equal(1, page.Results.Count);
@@ -402,7 +402,7 @@
                 new Mock<IObjectBuilder>().Object,
                 new Mock<ISqlDialect>().Object);
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Paged<Customer>(null, 1, 25));
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Paged<Customer>(null, PagingOptions.ForPage(1, 25)));
 
             Assert.Equal("sqlQuery", exception.ParamName);
         }
@@ -419,7 +419,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(() => session.Paged<Customer>(null, 1, 25));
+            Assert.Throws<ObjectDisposedException>(() => session.Paged<Customer>(null, PagingOptions.ForPage(1, 25)));
         }
 
         [Fact]
