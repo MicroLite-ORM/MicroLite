@@ -19,7 +19,7 @@ namespace MicroLite.Dialect
     /// <summary>
     /// The interface for a class which builds an <see cref="SqlQuery"/> for a object instance.
     /// </summary>
-    internal interface ISqlDialect
+    public interface ISqlDialect
     {
         /// <summary>
         /// Gets a value indicating whether this SqlDialect supports batched queries.

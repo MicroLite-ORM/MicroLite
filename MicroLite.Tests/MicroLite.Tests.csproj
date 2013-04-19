@@ -114,7 +114,7 @@
     <Compile Include="Query\SqlBuilderTests.cs" />
     <Compile Include="SqlQueryTests.cs" />
     <Compile Include="Mapping\TableAttributeTests.cs" />
-    <Compile Include="SqlUtilTests.cs" />
+    <Compile Include="SqlUtilityTests.cs" />
     <Compile Include="TypeConverters\XDocumentTypeConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>

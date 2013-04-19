@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SqlUtil.cs" company="MicroLite">
+// <copyright file="SqlUtility.cs" company="MicroLite">
 // Copyright 2012 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ namespace MicroLite
     /// <summary>
     /// A utility class containing useful methods for manipulating Sql.
     /// </summary>
-    internal static class SqlUtil
+    public static class SqlUtility
     {
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
         private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
@@ -31,7 +31,7 @@ namespace MicroLite
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The position of the first parameter in the command text or -1 if no parameters are found.</returns>
-        internal static int GetFirstParameterPosition(string commandText)
+        public static int GetFirstParameterPosition(string commandText)
         {
             var firstParameterPosition = commandText.IndexOfAny(parameterIdentifiers, 0);
 
@@ -43,7 +43,7 @@ namespace MicroLite
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The parameter names in the command text.</returns>
-        internal static IList<string> GetParameterNames(string commandText)
+        public static IList<string> GetParameterNames(string commandText)
         {
             return new HashSet<string>(parameterRegex.Matches(commandText).Cast<Match>().Select(x => x.Value)).ToList();
         }
@@ -54,7 +54,7 @@ namespace MicroLite
         /// <param name="sql">The SQL.</param>
         /// <param name="totalArgumentCount">The total number of arguments.</param>
         /// <returns>The re-numbered SQL</returns>
-        internal static string ReNumberParameters(string sql, int totalArgumentCount)
+        public static string RenumberParameters(string sql, int totalArgumentCount)
         {
             var parameterNames = GetParameterNames(sql);
 

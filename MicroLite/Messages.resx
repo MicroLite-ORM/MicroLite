@@ -297,4 +297,10 @@
   <data name="DbEncryptedStringTypeConverter_CipherTextInvalid" xml:space="preserve">
     <value>The cipher text is invalid, it should contain 2 parts separated by an '@'</value>
   </data>
+  <data name="SqlDialectFactory_DialectMustImplementISqlDialect" xml:space="preserve">
+    <value>The dialect type being added '{0}' does not implement ISqlDialect</value>
+  </data>
+  <data name="SqlDialectFactory_DialectNameAlreadyUsed" xml:space="preserve">
+    <value>The dialect name '{0}' has already been added.</value>
+  </data>
 </root>

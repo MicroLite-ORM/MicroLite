@@ -11,6 +11,41 @@
     public class SqlDialectFactoryTests
     {
         [Fact]
+        public void AddAddsDialect()
+        {
+            SqlDialectFactory.Add("MyDialect", typeof(EmptySqlDialect));
+
+            Assert.NotNull(SqlDialectFactory.GetDialect("MyDialect"));
+        }
+
+        [Fact]
+        public void AddThrowsArgumentNullExceptionForNullDialectName()
+        {
+            Assert.Throws<ArgumentNullException>(() => SqlDialectFactory.Add(null, typeof(ISqlDialect)));
+        }
+
+        [Fact]
+        public void AddThrowsArgumentNullExceptionForNullDialectType()
+        {
+            Assert.Throws<ArgumentNullException>(() => SqlDialectFactory.Add("MyDialect", null));
+        }
+
+        [Fact]
+        public void AddThrowsMicroLiteExceptionIfDialectNameAlreadyUsed()
+        {
+            var exception = Assert.Throws<MicroLiteException>(() => SqlDialectFactory.Add("MicroLite.Dialect.MsSqlDialect", typeof(ISqlDialect)));
+
+            Assert.Equal(Messages.SqlDialectFactory_DialectNameAlreadyUsed.FormatWith("MicroLite.Dialect.MsSqlDialect"), exception.Message);
+        }
+
+        [Fact]
+        public void AddThrowsMicroLiteExceptionIfDialectTypeIsNotISqlDialect()
+        {
+            var exception = Assert.Throws<MicroLiteException>(() => SqlDialectFactory.Add("MyDialect", typeof(string)));
+
+            Assert.Equal(Messages.SqlDialectFactory_DialectMustImplementISqlDialect.FormatWith("String"), exception.Message);
+        }
+        [Fact]
         public void GetDialectReturnsMsSqlDialect()
         {
             var sqlDialect = SqlDialectFactory.GetDialect("MicroLite.Dialect.MsSqlDialect");
@@ -75,6 +110,47 @@
             var exception = Assert.Throws<NotSupportedException>(() => SqlDialectFactory.VerifyDialect(dialectName));
 
             Assert.Equal(Messages.SqlDialectFactory_DialectNotSupported.FormatWith(dialectName), exception.Message);
+        }
+
+        private class EmptySqlDialect : ISqlDialect
+        {
+            public bool SupportsBatchedQueries
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public void BuildCommand(System.Data.IDbCommand command, SqlQuery sqlQuery)
+            {
+                throw new NotImplementedException();
+            }
+
+            public SqlQuery Combine(System.Collections.Generic.IEnumerable<SqlQuery> sqlQueries)
+            {
+                throw new NotImplementedException();
+            }
+
+            public SqlQuery CountQuery(SqlQuery sqlQuery)
+            {
+                throw new NotImplementedException();
+            }
+
+            public SqlQuery CreateQuery(System.Data.StatementType statementType, object instance)
+            {
+                throw new NotImplementedException();
+            }
+
+            public SqlQuery CreateQuery(System.Data.StatementType statementType, Type forType, object identifier)
+            {
+                throw new NotImplementedException();
+            }
+
+            public SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
