@@ -22,6 +22,14 @@ namespace MicroLite.Dialect
     internal interface ISqlDialect
     {
         /// <summary>
+        /// Gets a value indicating whether this SqlDialect supports batched queries.
+        /// </summary>
+        bool SupportsBatchedQueries
+        {
+            get;
+        }
+
+        /// <summary>
         /// Builds the command using the values in the specified SqlQuery.
         /// </summary>
         /// <param name="command">The command to build.</param>

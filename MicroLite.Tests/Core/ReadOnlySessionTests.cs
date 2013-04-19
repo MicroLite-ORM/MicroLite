@@ -273,6 +273,7 @@
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
             mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(1, 1))).Returns(pagedQuery);
             mockSqlDialect.Setup(x => x.Combine(It.Is<IEnumerable<SqlQuery>>(c => c.Contains(countQuery) && c.Contains(pagedQuery)))).Returns(combinedQuery);
@@ -321,6 +322,7 @@
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
             mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(1, 25))).Returns(pagedQuery);
             mockSqlDialect.Setup(x => x.Combine(It.Is<IEnumerable<SqlQuery>>(c => c.Contains(countQuery) && c.Contains(pagedQuery)))).Returns(combinedQuery);
@@ -369,6 +371,7 @@
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
             mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(10, 25))).Returns(pagedQuery);
             mockSqlDialect.Setup(x => x.Combine(It.Is<IEnumerable<SqlQuery>>(c => c.Contains(countQuery) && c.Contains(pagedQuery)))).Returns(combinedQuery);
@@ -752,6 +755,102 @@
                 var exception = Assert.Throws<MicroLiteException>(() => session.Paged<Customer>(new SqlQuery(""), PagingOptions.None));
 
                 Assert.Equal(Messages.Session_PagingOptionsMustNotBeNone, exception.Message);
+            }
+        }
+
+        public class WhenExecutingMultipleQueriesAndTheSqlDialectUsedDoesNotSupportBatching
+        {
+            private Mock<ISqlDialect> mockSqlDialect = new Mock<ISqlDialect>();
+
+            public WhenExecutingMultipleQueriesAndTheSqlDialectUsedDoesNotSupportBatching()
+            {
+                var mockConnectionManager = new Mock<IConnectionManager>();
+                mockConnectionManager.Setup(x => x.CreateCommand()).Returns(() =>
+                {
+                    var mockCommand = new Mock<IDbCommand>();
+                    mockCommand.Setup(x => x.ExecuteReader()).Returns(() =>
+                    {
+                        var mockReader = new Mock<IDataReader>();
+                        mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                        return mockReader.Object;
+                    });
+
+                    return mockCommand.Object;
+                });
+
+                var mockObjectBuilder = new Mock<IObjectBuilder>();
+                mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), It.IsAny<IDataReader>())).Returns(new Customer());
+
+                mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(false);
+                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), 1)).Returns(new SqlQuery(""));
+                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), 2)).Returns(new SqlQuery(""));
+                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
+
+                IReadOnlySession session = new ReadOnlySession(
+                    mockConnectionManager.Object,
+                    mockObjectBuilder.Object,
+                    mockSqlDialect.Object);
+
+                var includeCustomer = session.Include.Single<Customer>(2);
+                var customer = session.Single<Customer>(1);
+            }
+
+            [Fact]
+            public void TheSqlDialectShouldBuildTwoIDbCommands()
+            {
+                this.mockSqlDialect.Verify(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()), Times.Exactly(2));
+            }
+
+            [Fact]
+            public void TheSqlDialectShouldNotCombineTheQueries()
+            {
+                this.mockSqlDialect.Verify(x => x.Combine(It.IsAny<IEnumerable<SqlQuery>>()), Times.Never());
+            }
+        }
+
+        public class WhenExecutingMultipleQueriesAndTheSqlDialectUsedSupportsBatching
+        {
+            private Mock<ISqlDialect> mockSqlDialect = new Mock<ISqlDialect>();
+
+            public WhenExecutingMultipleQueriesAndTheSqlDialectUsedSupportsBatching()
+            {
+                var mockReader = new Mock<IDataReader>();
+                mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                var mockCommand = new Mock<IDbCommand>();
+                mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+
+                var mockConnectionManager = new Mock<IConnectionManager>();
+                mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+                var mockObjectBuilder = new Mock<IObjectBuilder>();
+                mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), It.IsAny<IDataReader>())).Returns(new Customer());
+
+                mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(true);
+                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), 1)).Returns(new SqlQuery(""));
+                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), 2)).Returns(new SqlQuery(""));
+                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
+
+                IReadOnlySession session = new ReadOnlySession(
+                    mockConnectionManager.Object,
+                    mockObjectBuilder.Object,
+                    mockSqlDialect.Object);
+
+                var includeCustomer = session.Include.Single<Customer>(2);
+                var customer = session.Single<Customer>(1);
+            }
+
+            [Fact]
+            public void TheSqlDialectShouldBuildOneIDbCommand()
+            {
+                this.mockSqlDialect.Verify(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()), Times.Once());
+            }
+
+            [Fact]
+            public void TheSqlDialectShouldCombineTheQueries()
+            {
+                this.mockSqlDialect.Verify(x => x.Combine(It.IsAny<IEnumerable<SqlQuery>>()), Times.Once());
             }
         }
 

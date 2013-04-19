@@ -33,6 +33,17 @@ namespace MicroLite.Dialect
         private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
 
         /// <summary>
+        /// Gets a value indicating whether this SqlDialect supports batched queries.
+        /// </summary>
+        public virtual bool SupportsBatchedQueries
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Gets the close quote character.
         /// </summary>
         protected virtual char CloseQuote
