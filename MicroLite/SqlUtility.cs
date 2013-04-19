@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
+    using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
@@ -33,6 +34,11 @@ namespace MicroLite
         /// <returns>The position of the first parameter in the command text or -1 if no parameters are found.</returns>
         public static int GetFirstParameterPosition(string commandText)
         {
+            if (commandText == null)
+            {
+                throw new ArgumentNullException("commandText");
+            }
+
             var firstParameterPosition = commandText.IndexOfAny(parameterIdentifiers, 0);
 
             return firstParameterPosition;
@@ -45,6 +51,11 @@ namespace MicroLite
         /// <returns>The parameter names in the command text.</returns>
         public static IList<string> GetParameterNames(string commandText)
         {
+            if (commandText == null)
+            {
+                throw new ArgumentNullException("commandText");
+            }
+
             return new HashSet<string>(parameterRegex.Matches(commandText).Cast<Match>().Select(x => x.Value)).ToList();
         }
 

@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests
 {
+    using System;
     using System.Collections.Generic;
     using Xunit;
 
@@ -8,6 +9,12 @@
     /// </summary>
     public class SqlUtilityTests
     {
+        [Fact]
+        public void GetFirstParameterPositionThrowsArgumentNullExceptionForNullCommandText()
+        {
+            Assert.Throws<ArgumentNullException>(() => SqlUtility.GetFirstParameterPosition(null));
+        }
+
         [Fact]
         public void GetFirstParameterPositionWithAtParameters()
         {
@@ -38,6 +45,12 @@
             var position = SqlUtility.GetFirstParameterPosition("SELECT * FROM TABLE WHERE Column1 = ? AND Column2 = ?");
 
             Assert.Equal(36, position);
+        }
+
+        [Fact]
+        public void GetParameterNamesThrowsArgumentNullExceptionForNullCommandText()
+        {
+            Assert.Throws<ArgumentNullException>(() => SqlUtility.GetParameterNames(null));
         }
 
         [Fact]
