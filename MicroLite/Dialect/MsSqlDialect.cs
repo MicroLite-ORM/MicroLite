@@ -103,7 +103,7 @@ namespace MicroLite.Dialect
 
                 var commandText = sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
                     ? sqlQuery.CommandText
-                    : SqlUtil.ReNumberParameters(sqlQuery.CommandText, argumentsCount);
+                    : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
                 sqlBuilder.AppendLine(commandText + this.SelectSeparator);
             }
@@ -148,7 +148,7 @@ namespace MicroLite.Dialect
         {
             if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SelectSeparator.ToString()))
             {
-                var firstParameterPosition = SqlUtil.GetFirstParameterPosition(commandText);
+                var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
 
                 if (firstParameterPosition > 4)
                 {

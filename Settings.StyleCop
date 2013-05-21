@@ -85,6 +85,7 @@
         <CollectionProperty Name="Hungarian">
           <Value>db</Value>
           <Value>is</Value>
+          <Value>iv</Value>
           <Value>to</Value>
         </CollectionProperty>
       </AnalyzerSettings>

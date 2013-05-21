@@ -26,7 +26,7 @@ namespace MicroLite.TypeConverters
 
         public override object ConvertFromDbValue(object value, Type propertyType)
         {
-            if (value == DBNull.Value)
+            if (value == null || value == DBNull.Value)
             {
                 return null;
             }

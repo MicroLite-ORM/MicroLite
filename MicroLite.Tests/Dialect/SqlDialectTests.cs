@@ -257,6 +257,15 @@
         }
 
         [Fact]
+        public void SupportsBatchedQueriesReturnsTrueByDefault()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>();
+            mockSqlDialect.CallBase = true;
+
+            Assert.True(mockSqlDialect.Object.SupportsBatchedQueries);
+        }
+
+        [Fact]
         public void UpdateQuery()
         {
             var customer = new Customer

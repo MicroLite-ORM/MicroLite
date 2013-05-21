@@ -29,7 +29,12 @@ namespace MicroLite.Mapping
 
         internal ConventionMappingConvention(ConventionMappingSettings settings)
         {
-            this.log.TryLogInfo(Messages.ConventionMappingConvention_Configuration, settings.UsePluralClassNameForTableName.ToString(), settings.IdentifierStrategy.ToString());
+            this.log.TryLogInfo(
+                Messages.ConventionMappingConvention_Configuration,
+                settings.UsePluralClassNameForTableName.ToString(),
+                settings.TableSchema ?? "null",
+                settings.IdentifierStrategy.ToString());
+
             this.settings = settings;
         }
 
@@ -46,7 +51,7 @@ namespace MicroLite.Mapping
                 columns,
                 this.settings.IdentifierStrategy,
                 this.settings.UsePluralClassNameForTableName ? InflectionService.ToPlural(forType.Name) : forType.Name,
-                null);
+                this.settings.TableSchema);
 
             return new ObjectInfo(forType, tableInfo);
         }

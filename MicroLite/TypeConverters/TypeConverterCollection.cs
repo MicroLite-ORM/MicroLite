@@ -17,18 +17,28 @@ namespace MicroLite.TypeConverters
     /// <summary>
     /// The class which contains the ITypeConverters used by the MicroLite ORM framework.
     /// </summary>
-    internal sealed class TypeConverterCollection : IEnumerable<ITypeConverter>
+    /// <remarks>The collection acts in the same way as a stack, the last converter added is the first used if it handles the type.</remarks>
+    public sealed class TypeConverterCollection : IEnumerable<ITypeConverter>
     {
-        private readonly IList<ITypeConverter> converters = new List<ITypeConverter>();
+        private readonly Stack<ITypeConverter> converters = new Stack<ITypeConverter>();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="TypeConverterCollection"/> class.
         /// </summary>
-        internal TypeConverterCollection()
+        public TypeConverterCollection()
         {
-            this.converters.Add(new XDocumentTypeConverter());
-            this.converters.Add(new EnumTypeConverter());
-            this.converters.Add(new ObjectTypeConverter());
+            this.converters.Push(new ObjectTypeConverter());
+            this.converters.Push(new EnumTypeConverter());
+            this.converters.Push(new XDocumentTypeConverter());
+        }
+
+        /// <summary>
+        /// Adds the specified type converter to the collection of type converters which can be used by MicroLite.
+        /// </summary>
+        /// <param name="typeConverter">The type converter to be added.</param>
+        public void Add(ITypeConverter typeConverter)
+        {
+            this.converters.Push(typeConverter);
         }
 
         /// <summary>
