@@ -283,28 +283,13 @@ namespace MicroLite.Core
         {
             try
             {
-                var sqlQuery = this.queries.Count == 1 ? this.queries.Peek() : this.SqlDialect.Combine(this.queries);
-
-                using (var command = this.ConnectionManager.CreateCommand())
+                if (this.sqlDialect.SupportsBatchedQueries)
                 {
-                    try
-                    {
-                        this.SqlDialect.BuildCommand(command, sqlQuery);
-
-                        using (var reader = command.ExecuteReader())
-                        {
-                            do
-                            {
-                                var include = this.includes.Dequeue();
-                                include.BuildValue(reader, this.objectBuilder);
-                            }
-                            while (reader.NextResult());
-                        }
-                    }
-                    finally
-                    {
-                        this.connectionManager.CommandCompleted(command);
-                    }
+                    this.ExecuteQueriesCombined();
+                }
+                else
+                {
+                    this.ExecuteQueriesIndividually();
                 }
             }
             catch (MicroLiteException)
@@ -322,6 +307,59 @@ namespace MicroLite.Core
                 this.includes.Clear();
                 this.queries.Clear();
             }
+        }
+
+        private void ExecuteQueriesCombined()
+        {
+            var sqlQuery = this.queries.Count == 1 ? this.queries.Peek() : this.SqlDialect.Combine(this.queries);
+
+            using (var command = this.ConnectionManager.CreateCommand())
+            {
+                try
+                {
+                    this.SqlDialect.BuildCommand(command, sqlQuery);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        do
+                        {
+                            var include = this.includes.Dequeue();
+                            include.BuildValue(reader, this.objectBuilder);
+                        }
+                        while (reader.NextResult());
+                    }
+                }
+                finally
+                {
+                    this.connectionManager.CommandCompleted(command);
+                }
+            }
+        }
+
+        private void ExecuteQueriesIndividually()
+        {
+            do
+            {
+                using (var command = this.ConnectionManager.CreateCommand())
+                {
+                    try
+                    {
+                        var sqlQuery = this.queries.Dequeue();
+                        this.SqlDialect.BuildCommand(command, sqlQuery);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            var include = this.includes.Dequeue();
+                            include.BuildValue(reader, this.objectBuilder);
+                        }
+                    }
+                    finally
+                    {
+                        this.connectionManager.CommandCompleted(command);
+                    }
+                }
+            }
+            while (this.queries.Count > 0);
         }
     }
 }

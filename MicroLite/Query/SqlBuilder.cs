@@ -848,7 +848,7 @@ namespace MicroLite.Query
         {
             this.arguments.AddRange(args);
 
-            var renumberedPredicate = SqlUtil.ReNumberParameters(predicate, this.arguments.Count);
+            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.arguments.Count);
 
             this.innerSql.AppendFormat(appendFormat, renumberedPredicate);
         }

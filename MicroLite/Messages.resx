@@ -283,9 +283,24 @@
     <value>The paging options must contain a count and offset, use the PagingOptions.ForPage or PagingOptions.SkipTake methods to specify the values</value>
   </data>
   <data name="ConventionMappingConvention_Configuration" xml:space="preserve">
-    <value>The convention to be used is pluralize names [{0}] and an identifier strategy of [{1}]</value>
+    <value>The convention to be used is pluralize names [{0}], the table schema [{1}] and an identifier strategy of [{2}]</value>
   </data>
   <data name="Transaction_RollingBackFailedCommit" xml:space="preserve">
     <value>Transaction rolling back changes from failed commit</value>
+  </data>
+  <data name="ConfigurationSymmetricAlgorithmProvider_MissingAlgorithm" xml:space="preserve">
+    <value>The Encryption algorithm is missing, please add the following value to app.settings: &lt;add key="MicroLite.DbEncryptedString.SymmetricAlgorithm" value="AesManaged" /&gt; (see http://msdn.microsoft.com/en-us/library/System.Security.Cryptography.SymmetricAlgorithm(v=vs.110).aspx for the fully supported list of values)</value>
+  </data>
+  <data name="ConfigurationSymmetricAlgorithmProvider_MissingKey" xml:space="preserve">
+    <value>The Encryption key is missing, please add the following value to app.settings: &lt;add key="MicroLite.DbEncryptedString.EncryptionKey" value="replace-with-your-encryption-key" /&gt;</value>
+  </data>
+  <data name="DbEncryptedStringTypeConverter_CipherTextInvalid" xml:space="preserve">
+    <value>The cipher text is invalid, it should contain 2 parts separated by an '@'</value>
+  </data>
+  <data name="SqlDialectFactory_DialectMustImplementISqlDialect" xml:space="preserve">
+    <value>The dialect type being added '{0}' does not implement ISqlDialect</value>
+  </data>
+  <data name="SqlDialectFactory_DialectNameAlreadyUsed" xml:space="preserve">
+    <value>The dialect name '{0}' has already been added.</value>
   </data>
 </root>

@@ -9,34 +9,70 @@
     /// </summary>
     public class TypeConverterCollectionTests
     {
-        [Fact]
-        public void ConstructorRegistersEnumTypeConverter()
+        public class WhenCallingAdd
         {
-            var collection = new TypeConverterCollection();
+            private readonly TypeConverterCollection collection = new TypeConverterCollection();
+            private readonly FakeTypeConverter typeConverter = new FakeTypeConverter();
 
-            var typeConverter = collection.OfType<EnumTypeConverter>().SingleOrDefault();
+            public WhenCallingAdd()
+            {
+                this.collection.Add(this.typeConverter);
+            }
 
-            Assert.NotNull(typeConverter);
+            [Fact]
+            public void TheCollectionShouldContainTheAddedInstance()
+            {
+                var typeConverter = this.collection.SingleOrDefault(t => t == this.typeConverter);
+
+                Assert.NotNull(typeConverter);
+            }
+
+            private class FakeTypeConverter : ITypeConverter
+            {
+                public bool CanConvert(System.Type propertyType)
+                {
+                    throw new System.NotImplementedException();
+                }
+
+                public object ConvertFromDbValue(object value, System.Type propertyType)
+                {
+                    throw new System.NotImplementedException();
+                }
+
+                public object ConvertToDbValue(object value, System.Type propertyType)
+                {
+                    throw new System.NotImplementedException();
+                }
+            }
         }
 
-        [Fact]
-        public void ConstructorRegistersObjectTypeConverter()
+        public class WhenCallingTheConstructor
         {
-            var collection = new TypeConverterCollection();
+            private readonly TypeConverterCollection collection = new TypeConverterCollection();
 
-            var typeConverter = collection.OfType<ObjectTypeConverter>().SingleOrDefault();
+            [Fact]
+            public void ConstructorRegistersEnumTypeConverter()
+            {
+                var typeConverter = this.collection.OfType<EnumTypeConverter>().SingleOrDefault();
 
-            Assert.NotNull(typeConverter);
-        }
+                Assert.NotNull(typeConverter);
+            }
 
-        [Fact]
-        public void ConstructorRegistersXDocumentTypeConverter()
-        {
-            var collection = new TypeConverterCollection();
+            [Fact]
+            public void ConstructorRegistersObjectTypeConverter()
+            {
+                var typeConverter = this.collection.OfType<ObjectTypeConverter>().SingleOrDefault();
 
-            var typeConverter = collection.OfType<XDocumentTypeConverter>().SingleOrDefault();
+                Assert.NotNull(typeConverter);
+            }
 
-            Assert.NotNull(typeConverter);
+            [Fact]
+            public void ConstructorRegistersXDocumentTypeConverter()
+            {
+                var typeConverter = this.collection.OfType<XDocumentTypeConverter>().SingleOrDefault();
+
+                Assert.NotNull(typeConverter);
+            }
         }
     }
 }
