@@ -64,5 +64,16 @@
                 Assert.Equal("configureExtensions", exception.ParamName);
             }
         }
+
+        public class WhenCallingWithConventionBasedMappingAndTheSettingsAreNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionIsThrown()
+            {
+                var exception = Assert.Throws<ArgumentNullException>(() => ConfigurationExtensions.WithConventionBasedMapping(new Mock<IConfigureExtensions>().Object, null));
+
+                Assert.Equal("settings", exception.ParamName);
+            }
+        }
     }
 }

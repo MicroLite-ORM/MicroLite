@@ -19,6 +19,12 @@
             }
 
             [Fact]
+            public void TheTableSchemIsSetToNull()
+            {
+                Assert.Null(this.settings.TableSchema);
+            }
+
+            [Fact]
             public void UsePluralClassNameForTableNameIsSetToTrue()
             {
                 Assert.True(this.settings.UsePluralClassNameForTableName);

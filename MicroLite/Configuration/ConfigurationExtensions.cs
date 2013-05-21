@@ -54,6 +54,11 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("configureExtensions");
             }
 
+            if (settings == null)
+            {
+                throw new ArgumentNullException("settings");
+            }
+
             configureExtensions.SetMappingConvention(new ConventionMappingConvention(settings));
 
             return configureExtensions;

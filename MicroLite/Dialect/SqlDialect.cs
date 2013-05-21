@@ -25,12 +25,23 @@ namespace MicroLite.Dialect
     /// <summary>
     /// The base class for implementations of <see cref="ISqlDialect" />.
     /// </summary>
-    internal abstract class SqlDialect : ISqlDialect
+    public abstract class SqlDialect : ISqlDialect
     {
         private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly Regex selectRegex = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly Regex tableNameRegex = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+
+        /// <summary>
+        /// Gets a value indicating whether this SqlDialect supports batched queries.
+        /// </summary>
+        public virtual bool SupportsBatchedQueries
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         /// <summary>
         /// Gets the close quote character.
@@ -106,11 +117,17 @@ namespace MicroLite.Dialect
             }
         }
 
+        /// <summary>
+        /// Builds the command using the values in the specified SqlQuery.
+        /// </summary>
+        /// <param name="command">The command to build.</param>
+        /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
+        /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
         public virtual void BuildCommand(IDbCommand command, SqlQuery sqlQuery)
         {
             var parameterNames = this.SupportsNamedParameters
-                ? SqlUtil.GetParameterNames(sqlQuery.CommandText)
+                ? SqlUtility.GetParameterNames(sqlQuery.CommandText)
                 : Enumerable.Range(0, sqlQuery.Arguments.Count).Select(c => "Parameter" + c.ToString(CultureInfo.InvariantCulture)).ToArray();
 
             if (parameterNames.Count != sqlQuery.Arguments.Count)
@@ -124,6 +141,14 @@ namespace MicroLite.Dialect
             this.AddParameters(command, sqlQuery, parameterNames);
         }
 
+        /// <summary>
+        /// Combines the specified SQL queries into a single SqlQuery.
+        /// </summary>
+        /// <param name="sqlQueries">The SQL queries to be combined.</param>
+        /// <returns>
+        /// The combined <see cref="SqlQuery" />.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if sqlQueries is null.</exception>
         public virtual SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
         {
             if (sqlQueries == null)
@@ -138,7 +163,7 @@ namespace MicroLite.Dialect
             {
                 argumentsCount += sqlQuery.Arguments.Count;
 
-                var commandText = SqlUtil.ReNumberParameters(sqlQuery.CommandText, argumentsCount);
+                var commandText = SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
                 sqlBuilder.AppendLine(commandText + this.SelectSeparator);
             }
@@ -149,6 +174,13 @@ namespace MicroLite.Dialect
             return combinedQuery;
         }
 
+        /// <summary>
+        /// Creates an SqlQuery to count the number of records which would be returned by the specified SqlQuery.
+        /// </summary>
+        /// <param name="sqlQuery">The SQL query.</param>
+        /// <returns>
+        /// An <see cref="SqlQuery" /> to count the number of records which would be returned by the specified SqlQuery.
+        /// </returns>
         public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
         {
             var qualifiedTableName = this.ReadTableName(sqlQuery.CommandText);
@@ -158,6 +190,15 @@ namespace MicroLite.Dialect
             return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, sqlQuery.Arguments.ToArray());
         }
 
+        /// <summary>
+        /// Creates an SqlQuery with the specified statement type for the specified instance.
+        /// </summary>
+        /// <param name="statementType">Type of the statement.</param>
+        /// <param name="instance">The instance to generate the SqlQuery for.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        /// <exception cref="System.NotSupportedException">Thrown if the StatementType is not supported.</exception>
         public virtual SqlQuery CreateQuery(StatementType statementType, object instance)
         {
             var forType = instance.GetType();
@@ -242,6 +283,16 @@ namespace MicroLite.Dialect
             }
         }
 
+        /// <summary>
+        /// Creates an SqlQuery with the specified statement type for the specified type and identifier.
+        /// </summary>
+        /// <param name="statementType">Type of the statement.</param>
+        /// <param name="forType">The type of object to create the query for.</param>
+        /// <param name="identifier">The identifier of the instance to create the query for.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        /// <exception cref="System.NotSupportedException">Thrown if the StatementType is not supported.</exception>
         public virtual SqlQuery CreateQuery(StatementType statementType, Type forType, object identifier)
         {
             switch (statementType)
@@ -256,15 +307,29 @@ namespace MicroLite.Dialect
                         this.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
                         this.FormatParameter(0));
 
-                    return new SqlQuery(sqlBuilder.ToString(), new[] { identifier });
+                    return new SqlQuery(sqlBuilder.ToString(), identifier);
 
                 default:
                     throw new NotSupportedException(Messages.SqlDialect_StatementTypeNotSupported);
             }
         }
 
+        /// <summary>
+        /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the paging options.
+        /// </summary>
+        /// <param name="sqlQuery">The SQL query.</param>
+        /// <param name="pagingOptions">The paging options.</param>
+        /// <returns>
+        /// A <see cref="SqlQuery" /> to return the paged results of the specified query.
+        /// </returns>
         public abstract SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions);
 
+        /// <summary>
+        /// Adds the parameters.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <param name="sqlQuery">The SQL query.</param>
+        /// <param name="parameterNames">The parameter names.</param>
         protected virtual void AddParameters(IDbCommand command, SqlQuery sqlQuery, IList<string> parameterNames)
         {
             for (int i = 0; i < parameterNames.Count; i++)
@@ -280,6 +345,11 @@ namespace MicroLite.Dialect
             }
         }
 
+        /// <summary>
+        /// Appends the name of the table.
+        /// </summary>
+        /// <param name="objectInfo">The object info.</param>
+        /// <param name="sqlBuilder">The SQL builder.</param>
         protected void AppendTableName(ObjectInfo objectInfo, StringBuilder sqlBuilder)
         {
             var schema = !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
@@ -299,11 +369,21 @@ namespace MicroLite.Dialect
             sqlBuilder.Append(this.CloseQuote);
         }
 
+        /// <summary>
+        /// Escapes the SQL.
+        /// </summary>
+        /// <param name="sql">The SQL.</param>
+        /// <returns>The escaped SQL.</returns>
         protected string EscapeSql(string sql)
         {
             return this.OpenQuote + sql + this.CloseQuote;
         }
 
+        /// <summary>
+        /// Formats the parameter.
+        /// </summary>
+        /// <param name="parameterPosition">The parameter position.</param>
+        /// <returns>The formatted parameter.</returns>
         protected string FormatParameter(int parameterPosition)
         {
             if (this.SupportsNamedParameters)
@@ -316,11 +396,21 @@ namespace MicroLite.Dialect
             }
         }
 
+        /// <summary>
+        /// Gets the command text.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The actual command text.</returns>
         protected virtual string GetCommandText(string commandText)
         {
             return commandText;
         }
 
+        /// <summary>
+        /// Gets the type of the command.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The CommandType for the specified command text.</returns>
         protected virtual CommandType GetCommandType(string commandText)
         {
             return CommandType.Text;

@@ -7,7 +7,7 @@ It currently supports Microsoft SQL Server, SQLite, PostgreSQL and MySql and off
 
 * It only references the .NET base class libraries (no dependencies outside the .NET framework itself).
 * It is built for .NET 3.5 client profile, .NET 4.0 client profile and .NET 4.5.
-* It provides extension points for Logging frameworks, Mapping Conventions and Session Listeners.
+* It provides extension points for Logging frameworks, Mapping Conventions, Session Listeners, Type Converters and SQL Dialects.
 * It is easily managed by IOC containers.
 * It is easy to test code which uses it.
 
