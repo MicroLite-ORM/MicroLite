@@ -3,14 +3,21 @@
     using System;
     using System.Data;
     using MicroLite.Dialect;
+    using MicroLite.Mapping;
     using Moq;
     using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="SqlDialect"/> class.
     /// </summary>
-    public class SqlDialectTests
+    public class SqlDialectTests : IDisposable
     {
+        public SqlDialectTests()
+        {
+            // The tests in this suite all use attribute mapping for the test.
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+        }
+
         private enum CustomerStatus
         {
             Inactive = 0,
@@ -212,6 +219,12 @@
 
             Assert.Equal("DELETE FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
             Assert.Equal(identifier, sqlQuery.Arguments[0]);
+        }
+
+        public void Dispose()
+        {
+            // Reset the mapping convention after tests have run.
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
         }
 
         /// <summary>

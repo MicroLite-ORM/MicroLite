@@ -28,6 +28,17 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
+        /// Gets an instance of the settings with the default options set.
+        /// </summary>
+        public static ConventionMappingSettings Default
+        {
+            get
+            {
+                return new ConventionMappingSettings();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the identifier strategy (defaults to DbGenerated).
         /// </summary>
         public IdentifierStrategy IdentifierStrategy

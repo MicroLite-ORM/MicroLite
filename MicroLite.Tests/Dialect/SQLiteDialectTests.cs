@@ -9,16 +9,28 @@
     /// <summary>
     /// Unit Tests for the <see cref="SQLiteDialect"/> class.
     /// </summary>
-    public class SQLiteDialectTests
+    public class SQLiteDialectTests : IDisposable
     {
+        public SQLiteDialectTests()
+        {
+            // The tests in this suite all use attribute mapping for the test.
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+        }
+
         private enum CustomerStatus
         {
             Inactive = 0,
             Active = 1
         }
 
+        public void Dispose()
+        {
+            // Reset the mapping convention after tests have run.
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+        }
+
         [Fact]
-        public void InsertQueryForAutoIncrementInstance()
+        public void InsertQueryForDbGeneratedInstance()
         {
             var customer = new Customer
             {
