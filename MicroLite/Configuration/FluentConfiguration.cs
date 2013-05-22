@@ -56,21 +56,6 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// Specifies the named connection string in the app config to be used with the default MsSqlDialect.
-        /// </summary>
-        /// <param name="connectionName">The name of the connection string in the app config.</param>
-        /// <returns>
-        /// The next step in the fluent configuration.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">Thrown if connectionName is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
-        /// <exception cref="NotSupportedException">Thrown if the provider name is not supported.</exception>
-        public ICreateSessionFactory ForConnection(string connectionName)
-        {
-            return this.ForConnection(connectionName, "MicroLite.Dialect.MsSqlDialect");
-        }
-
-        /// <summary>
         /// Specifies the name of the connection string in the app config and the sql dialect to be used.
         /// </summary>
         /// <param name="connectionName">The name of the connection string in the app config.</param>

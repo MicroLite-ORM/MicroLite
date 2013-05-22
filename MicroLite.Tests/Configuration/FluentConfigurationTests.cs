@@ -20,7 +20,7 @@
 
                 var fluentConfiguration = new FluentConfiguration();
 
-                this.sessionFactory = fluentConfiguration.ForConnection("SqlConnection").CreateSessionFactory();
+                this.sessionFactory = fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.MsSqlDialect").CreateSessionFactory();
             }
 
             public void Dispose()
@@ -46,8 +46,8 @@
 
                 var fluentConfiguration = new FluentConfiguration();
 
-                this.sessionFactory1 = fluentConfiguration.ForConnection("SqlConnection").CreateSessionFactory();
-                this.sessionFactory2 = fluentConfiguration.ForConnection("SqlConnection").CreateSessionFactory();
+                this.sessionFactory1 = fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.MsSqlDialect").CreateSessionFactory();
+                this.sessionFactory2 = fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.MsSqlDialect").CreateSessionFactory();
             }
 
             public void Dispose()
@@ -69,7 +69,7 @@
             {
                 var fluentConfiguration = new FluentConfiguration();
 
-                var exception = Assert.Throws<MicroLiteException>(() => fluentConfiguration.ForConnection("TestDB"));
+                var exception = Assert.Throws<MicroLiteException>(() => fluentConfiguration.ForConnection("TestDB", "MicroLite.Dialect.MsSqlDialect"));
 
                 Assert.Equal(Messages.FluentConfiguration_ConnectionNotFound.FormatWith("TestDB"), exception.Message);
             }
@@ -82,7 +82,7 @@
             {
                 var fluentConfiguration = new FluentConfiguration();
 
-                var exception = Assert.Throws<ArgumentNullException>(() => fluentConfiguration.ForConnection(null));
+                var exception = Assert.Throws<ArgumentNullException>(() => fluentConfiguration.ForConnection(null, "MicroLite.Dialect.MsSqlDialect"));
 
                 Assert.Equal(exception.ParamName, "connectionName");
             }
@@ -110,7 +110,7 @@
                 var fluentConfiguration = new FluentConfiguration();
 
                 var exception = Assert.Throws<MicroLiteException>(
-                    () => fluentConfiguration.ForConnection("ConnectionWithInvalidProviderName"));
+                    () => fluentConfiguration.ForConnection("ConnectionWithInvalidProviderName", "MicroLite.Dialect.MsSqlDialect"));
             }
         }
     }

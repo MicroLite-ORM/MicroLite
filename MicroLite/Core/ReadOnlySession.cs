@@ -168,18 +168,6 @@ namespace MicroLite.Core
             return include;
         }
 
-        public PagedResult<T> Paged<T>(SqlQuery sqlQuery, int page, int resultsPerPage) where T : class, new()
-        {
-            this.ThrowIfDisposed();
-
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            return this.Paged<T>(sqlQuery, PagingOptions.ForPage(page, resultsPerPage));
-        }
-
         public PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions) where T : class, new()
         {
             if (pagingOptions == PagingOptions.None)
