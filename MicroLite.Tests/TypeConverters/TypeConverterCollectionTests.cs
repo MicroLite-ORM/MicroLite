@@ -46,6 +46,40 @@
             }
         }
 
+        public class WhenCallingClear
+        {
+            private readonly TypeConverterCollection collection = new TypeConverterCollection();
+
+            public WhenCallingClear()
+            {
+                this.collection.Clear();
+            }
+
+            [Fact]
+            public void TheCollectionShouldBeEmpty()
+            {
+                Assert.Equal(0, this.collection.Count);
+            }
+        }
+
+        public class WhenCallingRemove
+        {
+            private readonly TypeConverterCollection collection = new TypeConverterCollection();
+            private ITypeConverter typeConverterToRemove;
+
+            public WhenCallingRemove()
+            {
+                typeConverterToRemove = this.collection.OfType<ObjectTypeConverter>().Single();
+                this.collection.Remove(typeConverterToRemove);
+            }
+
+            [Fact]
+            public void TheTypeConverterShouldBeRemoved()
+            {
+                Assert.False(this.collection.Contains(typeConverterToRemove));
+            }
+        }
+
         public class WhenCallingTheConstructor
         {
             private readonly TypeConverterCollection collection = new TypeConverterCollection();
@@ -72,6 +106,18 @@
                 var typeConverter = this.collection.OfType<XDocumentTypeConverter>().SingleOrDefault();
 
                 Assert.NotNull(typeConverter);
+            }
+
+            [Fact]
+            public void TheCollectionShouldNotBeReadOnly()
+            {
+                Assert.False(this.collection.IsReadOnly);
+            }
+
+            [Fact]
+            public void ThereShouldBe3RegisteredTypeConverters()
+            {
+                Assert.Equal(3, this.collection.Count);
             }
         }
     }

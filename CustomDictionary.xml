@@ -5,6 +5,7 @@
       <Word></Word>
     </Unrecognized>
     <Recognized>
+      <Word>Enum</Word>
       <Word>Lite</Word>
       <Word>Nullable</Word>
       <Word>Postgre</Word>

@@ -44,21 +44,6 @@ namespace MicroLite.TypeConverters
         }
 
         /// <summary>
-        /// Resolves the actual type. If the type is generic (as it would be for a nullable struct) it returns the inner type.
-        /// </summary>
-        /// <param name="type">The type to resolve.</param>
-        /// <returns>The actual type.</returns>
-        public static Type ResolveActualType(Type type)
-        {
-            if (type == null)
-            {
-                throw new ArgumentNullException("type");
-            }
-
-            return type.IsGenericType ? type.GetGenericArguments()[0] : type;
-        }
-
-        /// <summary>
         /// Determines whether this type converter can convert values for the specified property type.
         /// </summary>
         /// <param name="propertyType">The type of the property value to be converted.</param>
@@ -86,5 +71,20 @@ namespace MicroLite.TypeConverters
         /// An instance of the corresponding database type for the property type containing the property value.
         /// </returns>
         public abstract object ConvertToDbValue(object value, Type propertyType);
+
+        /// <summary>
+        /// Resolves the actual type. If the type is generic (as it would be for a nullable struct) it returns the inner type.
+        /// </summary>
+        /// <param name="type">The type to resolve.</param>
+        /// <returns>The actual type.</returns>
+        protected static Type ResolveActualType(Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            return type.IsGenericType ? type.GetGenericArguments()[0] : type;
+        }
     }
 }
