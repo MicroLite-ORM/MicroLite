@@ -12,6 +12,9 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Mapping
 {
+    using System;
+    using System.Reflection;
+
     /// <summary>
     /// A class containing the configurable settings.
     /// </summary>
@@ -22,6 +25,14 @@ namespace MicroLite.Mapping
         /// </summary>
         public ConventionMappingSettings()
         {
+            this.AllowInsert = (PropertyInfo propertyInfo) =>
+            {
+                return true;
+            };
+            this.AllowUpdate = (PropertyInfo propertyInfo) =>
+            {
+                return true;
+            };
             this.IdentifierStrategy = Mapping.IdentifierStrategy.DbGenerated;
             this.TableSchema = null;
             this.UsePluralClassNameForTableName = true;
@@ -36,6 +47,24 @@ namespace MicroLite.Mapping
             {
                 return new ConventionMappingSettings();
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the function which specifies whether a property can be inserted.
+        /// </summary>
+        public Func<PropertyInfo, bool> AllowInsert
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the function which specifies whether a property can be updated.
+        /// </summary>
+        public Func<PropertyInfo, bool> AllowUpdate
+        {
+            get;
+            set;
         }
 
         /// <summary>

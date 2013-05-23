@@ -13,6 +13,18 @@
             private readonly ConventionMappingSettings settings = new ConventionMappingSettings();
 
             [Fact]
+            public void TheAllowInsertFunctionShouldBeSet()
+            {
+                Assert.NotNull(this.settings.AllowInsert);
+            }
+
+            [Fact]
+            public void TheAllowUpdateFunctionShouldBeSet()
+            {
+                Assert.NotNull(this.settings.AllowUpdate);
+            }
+
+            [Fact]
             public void TheIdentifierStrategyIsSetToDbGenerated()
             {
                 Assert.Equal(IdentifierStrategy.DbGenerated, this.settings.IdentifierStrategy);

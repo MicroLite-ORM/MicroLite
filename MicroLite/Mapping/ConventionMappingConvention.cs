@@ -45,7 +45,7 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("forType");
             }
 
-            var columns = CreateColumnInfos(forType);
+            var columns = this.CreateColumnInfos(forType);
 
             var tableInfo = new TableInfo(
                 columns,
@@ -56,7 +56,7 @@ namespace MicroLite.Mapping
             return new ObjectInfo(forType, tableInfo);
         }
 
-        private static List<ColumnInfo> CreateColumnInfos(Type forType)
+        private List<ColumnInfo> CreateColumnInfos(Type forType)
         {
             var possibleClassIdentifiers = new[] { "Id", forType.Name + "Id" };
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
@@ -68,8 +68,8 @@ namespace MicroLite.Mapping
                        columnName: property.PropertyType.IsEnum ? property.PropertyType.Name + "Id" : property.Name,
                        propertyInfo: property,
                        isIdentifier: possibleClassIdentifiers.Contains(property.Name),
-                       allowInsert: true,
-                       allowUpdate: true);
+                       allowInsert: this.settings.AllowInsert(property),
+                       allowUpdate: this.settings.AllowUpdate(property));
 
                 columns.Add(columnInfo);
             }
