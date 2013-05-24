@@ -116,10 +116,12 @@
     <Compile Include="Mapping\ColumnInfo.cs" />
     <Compile Include="Mapping\ConventionMappingSettings.cs" />
     <Compile Include="Mapping\ConventionMappingConvention.cs" />
+    <Compile Include="Mapping\Inflection\EnglishInflectionService.cs" />
+    <Compile Include="Mapping\Inflection\IInflectionService.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverter.cs" />
     <Compile Include="TypeConverters\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
-    <Compile Include="Mapping\InflectionService.cs" />
+    <Compile Include="Mapping\Inflection\InflectionService.cs" />
     <Compile Include="Mapping\IPropertyAccessor.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
     <Compile Include="Mapping\AttributeMappingConvention.cs" />

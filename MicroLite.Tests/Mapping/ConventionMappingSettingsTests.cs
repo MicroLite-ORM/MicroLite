@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
     using MicroLite.Mapping;
+    using MicroLite.Mapping.Inflection;
     using Xunit;
 
     /// <summary>
@@ -28,6 +29,12 @@
             public void TheIdentifierStrategyIsSetToDbGenerated()
             {
                 Assert.Equal(IdentifierStrategy.DbGenerated, this.settings.IdentifierStrategy);
+            }
+
+            [Fact]
+            public void TheInflectionServiceShoulBeDefaultToTheEnglishInflectionService()
+            {
+                Assert.IsType<EnglishInflectionService>(this.settings.InflectionService);
             }
 
             [Fact]

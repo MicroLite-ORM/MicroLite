@@ -100,7 +100,7 @@
     <Compile Include="Mapping\IdentifierAttributeTests.cs" />
     <Compile Include="Logging\LogExtensionsTests.cs" />
     <Compile Include="Logging\LogManagerTests.cs" />
-    <Compile Include="Mapping\InflectionServiceTests.cs" />
+    <Compile Include="Mapping\Inflection\EnglishInflectionServiceTests.cs" />
     <Compile Include="Mapping\ObjectInfoTests.cs" />
     <Compile Include="Mapping\AttributeMappingConventionTests.cs" />
     <Compile Include="TypeConverters\ObjectTypeConverterTests.cs" />

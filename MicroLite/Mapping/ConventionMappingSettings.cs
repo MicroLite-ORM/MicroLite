@@ -14,6 +14,7 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Reflection;
+    using MicroLite.Mapping.Inflection;
 
     /// <summary>
     /// A class containing the configurable settings.
@@ -34,6 +35,7 @@ namespace MicroLite.Mapping
                 return true;
             };
             this.IdentifierStrategy = Mapping.IdentifierStrategy.DbGenerated;
+            this.InflectionService = Inflection.InflectionService.English;
             this.TableSchema = null;
             this.UsePluralClassNameForTableName = true;
         }
@@ -71,6 +73,15 @@ namespace MicroLite.Mapping
         /// Gets or sets the identifier strategy (defaults to DbGenerated).
         /// </summary>
         public IdentifierStrategy IdentifierStrategy
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the inflection service.
+        /// </summary>
+        public IInflectionService InflectionService
         {
             get;
             set;
