@@ -55,10 +55,10 @@ namespace MicroLite.Core
 #endif
 
         public T BuildInstance<T>(ObjectInfo objectInfo, IDataReader reader)
-            where T : class, new()
+             where T : class
         {
             log.TryLogDebug(Messages.ObjectBuilder_CreatingInstance, objectInfo.ForType.FullName);
-            var instance = new T();
+            var instance = (T)objectInfo.CreateInstance();
 
             for (int i = reader.FieldCount - 1; i >= 0; i--)
             {

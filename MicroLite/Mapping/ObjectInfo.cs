@@ -145,6 +145,15 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
+        /// Creates a new instance of the type.
+        /// </summary>
+        /// <returns>A new instance of the type.</returns>
+        public object CreateInstance()
+        {
+            return Activator.CreateInstance(this.forType);
+        }
+
+        /// <summary>
         /// Gets the property value for the object identifier.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
