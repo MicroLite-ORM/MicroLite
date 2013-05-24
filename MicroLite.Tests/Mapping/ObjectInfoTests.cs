@@ -35,6 +35,16 @@
         }
 
         [Fact]
+        public void CreateInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = objectInfo.CreateInstance();
+
+            Assert.IsType<CustomerWithIntegerIdentifier>(instance);
+        }
+
+        [Fact]
         public void DefaultIdentifierValueIsSetCorrectlyForGuid()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
