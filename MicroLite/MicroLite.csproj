@@ -151,7 +151,7 @@
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="Query\IToSqlQuery.cs" />
     <Compile Include="ITransaction.cs" />
-    <Compile Include="Query\IWhereBetweenOrIn.cs" />
+    <Compile Include="Query\IWhereSingleColumn.cs" />
     <Compile Include="Query\IWhereOrOrderBy.cs" />
     <Compile Include="Listeners\Listener.cs" />
     <Compile Include="Query\IWithParameter.cs" />

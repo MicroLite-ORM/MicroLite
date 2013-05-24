@@ -514,6 +514,36 @@
         }
 
         [Fact]
+        public void SelectWhereColumnIsNotNull()
+        {
+            var sqlQuery = SqlBuilder
+                   .Select("Column1")
+                   .From("Table")
+                   .Where("Column1")
+                   .IsNotNull()
+                   .ToSqlQuery();
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NOT NULL)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsNull()
+        {
+            var sqlQuery = SqlBuilder
+                   .Select("Column1")
+                   .From("Table")
+                   .Where("Column1")
+                   .IsNull()
+                   .ToSqlQuery();
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NULL)", sqlQuery.CommandText);
+        }
+
+        [Fact]
         public void SelectWhereGroupByHavingOrderBy()
         {
             var sqlQuery = SqlBuilder

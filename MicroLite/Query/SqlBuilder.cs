@@ -23,7 +23,7 @@ namespace MicroLite.Query
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{innerSql}")]
-    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereBetweenOrIn, IHavingOrOrderBy
+    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereSingleColumn, IHavingOrOrderBy
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder(capacity: 120);
@@ -114,7 +114,7 @@ namespace MicroLite.Query
         ///     ...
         /// </code>
         /// </example>
-        public IWhereBetweenOrIn AndWhere(string columnName)
+        public IWhereSingleColumn AndWhere(string columnName)
         {
             this.operand = " AND";
             this.whereColumnName = columnName;
@@ -481,6 +481,44 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Specifies that the specified column contains a value which is not null.
+        /// </summary>
+        /// <returns>
+        /// The next step in the fluent sql builder.
+        /// </returns>
+        public IAndOrOrderBy IsNotNull()
+        {
+            if (!this.addedWhere)
+            {
+                this.innerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
+
+            this.AppendPredicate(" (" + this.whereColumnName + " {0})", "IS NOT NULL");
+
+            return this;
+        }
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is null.
+        /// </summary>
+        /// <returns>
+        /// The next step in the fluent sql builder.
+        /// </returns>
+        public IAndOrOrderBy IsNull()
+        {
+            if (!this.addedWhere)
+            {
+                this.innerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
+
+            this.AppendPredicate(" (" + this.whereColumnName + " {0})", "IS NULL");
+
+            return this;
+        }
+
+        /// <summary>
         /// Selects the maximum value in the specified column.
         /// </summary>
         /// <param name="columnName">The column to query.</param>
@@ -633,7 +671,7 @@ namespace MicroLite.Query
         /// </summary>
         /// <param name="columnName">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        public IWhereBetweenOrIn OrWhere(string columnName)
+        public IWhereSingleColumn OrWhere(string columnName)
         {
             this.operand = " OR";
             this.whereColumnName = columnName;
@@ -758,7 +796,7 @@ namespace MicroLite.Query
         ///     ...
         /// </code>
         /// </example>
-        public IWhereBetweenOrIn Where(string columnName)
+        public IWhereSingleColumn Where(string columnName)
         {
             this.whereColumnName = columnName;
 

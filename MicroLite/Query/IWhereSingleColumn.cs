@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IWhereBetweenOrIn.cs" company="MicroLite">
+// <copyright file="IWhereSingleColumn.cs" company="MicroLite">
 // Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@ namespace MicroLite.Query
     /// The interface which specifies the where in method in the fluent sql builder syntax.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "OrIn", Justification = "In this case we mean OR/IN.")]
-    public interface IWhereBetweenOrIn : IHideObjectMethods
+    public interface IWhereSingleColumn : IHideObjectMethods
     {
         /// <summary>
         /// Uses the specified arguments to filter the column.
@@ -41,5 +41,17 @@ namespace MicroLite.Query
         /// <returns>The next step in the fluent sql builder.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
         IAndOrOrderBy In(SqlQuery subQuery);
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is not null.
+        /// </summary>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsNotNull();
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is null.
+        /// </summary>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsNull();
     }
 }
