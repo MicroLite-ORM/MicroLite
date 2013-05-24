@@ -17,6 +17,7 @@ namespace MicroLite.Mapping
     using System.Linq;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
+    using MicroLite.TypeConverters;
 
     /// <summary>
     /// The class which describes a type and the table it is mapped to.
@@ -204,7 +205,11 @@ namespace MicroLite.Mapping
             log.TryLogDebug(Messages.ObjectInfo_GetPropertyValueForColumn, this.ForType.Name, columnInfo.PropertyInfo.Name, columnName);
             var value = this.propertyAccessors[columnName].GetValue(instance);
 
-            return value;
+            var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
+
+            var converted = typeConverter.ConvertToDbValue(value, columnInfo.PropertyInfo.PropertyType);
+
+            return converted;
         }
 
         /// <summary>
@@ -248,8 +253,12 @@ namespace MicroLite.Mapping
                 return;
             }
 
+            var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
+
+            var converted = typeConverter.ConvertFromDbValue(value, columnInfo.PropertyInfo.PropertyType);
+
             log.TryLogDebug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
-            this.propertyAccessors[columnName].SetValue(instance, value);
+            this.propertyAccessors[columnName].SetValue(instance, converted);
         }
 
         private static void VerifyType(Type forType)

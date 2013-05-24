@@ -1,14 +1,25 @@
 ﻿namespace MicroLite.Tests.Query
 {
     using System;
+    using MicroLite.Mapping;
     using MicroLite.Query;
     using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="SqlBuilder"/> class.
     /// </summary>
-    public class SqlBuilderTests
+    public class SqlBuilderTests : IDisposable
     {
+        public SqlBuilderTests()
+        {
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+        }
+
+        public void Dispose()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+        }
+
         [Fact]
         public void Execute()
         {

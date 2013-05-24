@@ -14,7 +14,6 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Reflection;
-    using MicroLite.TypeConverters;
 
     [System.Diagnostics.DebuggerDisplay("PropertyAccessor for {propertyName}")]
     internal sealed class PropertyAccessor : IPropertyAccessor
@@ -64,20 +63,12 @@ namespace MicroLite.Mapping
             {
                 object value = this.getMethod((TObject)instance);
 
-                var typeConverter = TypeConverter.For(this.propertyInfo.PropertyType);
-
-                var converted = typeConverter.ConvertToDbValue(value, this.propertyInfo.PropertyType);
-
-                return converted;
+                return value;
             }
 
             public void SetValue(object instance, object value)
             {
-                var typeConverter = TypeConverter.For(this.propertyInfo.PropertyType);
-
-                var converted = typeConverter.ConvertFromDbValue(value, this.propertyInfo.PropertyType);
-
-                this.setMethod((TObject)instance, (TValue)converted);
+                this.setMethod((TObject)instance, (TValue)value);
             }
         }
     }

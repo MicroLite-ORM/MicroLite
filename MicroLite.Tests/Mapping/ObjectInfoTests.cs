@@ -8,8 +8,13 @@
     /// <summary>
     /// Unit Tests for the <see cref="ObjectInfo"/> class.
     /// </summary>
-    public class ObjectInfoTests
+    public class ObjectInfoTests : IDisposable
     {
+        public ObjectInfoTests()
+        {
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+        }
+
         private enum CustomerStatus
         {
             Inactive = 0,
@@ -66,6 +71,11 @@
             var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
 
             Assert.Null(objectInfo.DefaultIdentifierValue);
+        }
+
+        public void Dispose()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
         }
 
         [Fact]
@@ -178,6 +188,21 @@
         }
 
         [Fact]
+        public void GetPropertyValueForColumnConvertsEnumToInteger()
+        {
+            var instance = new CustomerWithIntegerIdentifier
+            {
+                Status = CustomerStatus.Active
+            };
+
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var value = objectInfo.GetPropertyValueForColumn(instance, "StatusId");
+
+            Assert.Equal(1, value);
+        }
+
+        [Fact]
         public void GetPropertyValueForColumnThrowsArgumentNullExceptionForNullInstance()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
@@ -272,9 +297,9 @@
 
             var instance = new CustomerWithIntegerIdentifier();
 
-            objectInfo.SetPropertyValueForColumn(instance, "Name", "Trev");
+            objectInfo.SetPropertyValueForColumn(instance, "StatusId", CustomerStatus.Active);
 
-            Assert.Equal("Trev", instance.Name);
+            Assert.Equal(CustomerStatus.Active, instance.Status);
         }
 
         [Fact]

@@ -15,31 +15,7 @@
             Suspended = 2
         }
 
-        public class WhenCallingGetValue
-        {
-            private readonly Customer customer = new Customer
-            {
-                Name = "Fred Bloggs"
-            };
-
-            private readonly object value;
-
-            public WhenCallingGetValue()
-            {
-                var propertyInfo = typeof(Customer).GetProperty("Name");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
-
-                this.value = propertyAccessor.GetValue(this.customer);
-            }
-
-            [Fact]
-            public void TheValueShouldBeReturned()
-            {
-                Assert.Equal(this.customer.Name, this.value);
-            }
-        }
-
-        public class WhenCallingGetValueAndThePropertyIsAnEnum
+        public class WhenCallingGetValueForAnEnum
         {
             private readonly Customer customer = new Customer
             {
@@ -48,7 +24,7 @@
 
             private readonly object value;
 
-            public WhenCallingGetValueAndThePropertyIsAnEnum()
+            public WhenCallingGetValueForAnEnum()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Status");
                 var propertyAccessor = new PropertyAccessor(propertyInfo);
@@ -57,15 +33,39 @@
             }
 
             [Fact]
-            public void TheValueShouldBeAnInteger()
+            public void TheValueShouldBeAnEnum()
             {
-                Assert.IsType<int>(this.value);
+                Assert.IsType<CustomerStatus>(this.value);
             }
 
             [Fact]
             public void TheValueShouldBeReturned()
             {
-                Assert.Equal((int)this.customer.Status, this.value);
+                Assert.Equal(this.customer.Status, this.value);
+            }
+        }
+
+        public class WhenCallingGetValueForANullableValueTypeWithANonNullValue
+        {
+            private readonly Customer customer = new Customer
+            {
+                LastInvoice = 100
+            };
+
+            private readonly object value;
+
+            public WhenCallingGetValueForANullableValueTypeWithANonNullValue()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
+                var propertyAccessor = new PropertyAccessor(propertyInfo);
+
+                this.value = propertyAccessor.GetValue(this.customer);
+            }
+
+            [Fact]
+            public void TheValueShouldBeReturned()
+            {
+                Assert.Equal(100, this.customer.LastInvoice);
             }
         }
 
@@ -93,11 +93,95 @@
             }
         }
 
-        public class WhenCallingSetValue
+        public class WhenCallingGetValueForAReferenceType
+        {
+            private readonly Customer customer = new Customer
+            {
+                Name = "Fred Bloggs"
+            };
+
+            private readonly object value;
+
+            public WhenCallingGetValueForAReferenceType()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Name");
+                var propertyAccessor = new PropertyAccessor(propertyInfo);
+
+                this.value = propertyAccessor.GetValue(this.customer);
+            }
+
+            [Fact]
+            public void TheValueShouldBeReturned()
+            {
+                Assert.Equal(this.customer.Name, this.value);
+            }
+        }
+
+        public class WhenCallingSetValueForAnEnum
         {
             private readonly Customer customer = new Customer();
 
-            public WhenCallingSetValue()
+            public WhenCallingSetValueForAnEnum()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Status");
+                var propertyAccessor = new PropertyAccessor(propertyInfo);
+
+                propertyAccessor.SetValue(this.customer, CustomerStatus.Suspended);
+            }
+
+            [Fact]
+            public void ThePropertyShouldBeSet()
+            {
+                Assert.Equal(CustomerStatus.Suspended, this.customer.Status);
+            }
+        }
+
+        public class WhenCallingSetValueForANullableStructWithNonNull
+        {
+            private readonly Customer customer = new Customer();
+
+            public WhenCallingSetValueForANullableStructWithNonNull()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
+                var propertyAccessor = new PropertyAccessor(propertyInfo);
+
+                propertyAccessor.SetValue(this.customer, 100);
+            }
+
+            [Fact]
+            public void ThePropertyShouldBeSet()
+            {
+                Assert.Equal(100, this.customer.LastInvoice);
+            }
+        }
+
+        public class WhenCallingSetValueForANullableStructWithNull
+        {
+            private readonly Customer customer = new Customer
+            {
+                LastInvoice = 100
+            };
+
+            public WhenCallingSetValueForANullableStructWithNull()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
+                var propertyAccessor = new PropertyAccessor(propertyInfo);
+
+                propertyAccessor.SetValue(this.customer, null);
+            }
+
+            [Fact]
+            public void ThePropertyShouldBeSet()
+            {
+                Assert.Null(this.customer.LastInvoice);
+            }
+        }
+
+        public class WhenCallingSetValueForAReferenceType
+        {
+            private readonly Customer customer = new Customer();
+
+            public WhenCallingSetValueForAReferenceType()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Name");
                 var propertyAccessor = new PropertyAccessor(propertyInfo);
