@@ -18,20 +18,42 @@ namespace MicroLite.Listeners
     /// <summary>
     /// The class which contains the IListeners used by the MicroLite ORM framework.
     /// </summary>
-    public sealed class ListenerCollection : IEnumerable<IListener>
+    public sealed class ListenerCollection : ICollection<IListener>
     {
-        private readonly IList<Func<IListener>> listenerFactories = new List<Func<IListener>>();
-        private readonly IList<Type> listenerTypes = new List<Type>();
+        private readonly Stack<IListener> listeners = new Stack<IListener>();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ListenerCollection"/> class.
         /// </summary>
         public ListenerCollection()
         {
-            this.Add<DbGeneratedListener>();
-            this.Add<AssignedListener>();
-            this.Add<GuidListener>();
-            this.Add<GuidCombListener>();
+            this.listeners.Push(new DbGeneratedListener());
+            this.listeners.Push(new AssignedListener());
+            this.listeners.Push(new GuidListener());
+            this.listeners.Push(new GuidCombListener());
+        }
+
+        /// <summary>
+        /// Gets the number of listeners contained in the collection.
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                return this.listeners.Count;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the collection is read-only.
+        /// </summary>
+        /// <returns>true if the collection is read-only; otherwise, false.</returns>
+        public bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -39,29 +61,52 @@ namespace MicroLite.Listeners
         /// </summary>
         /// <typeparam name="T">The type of <see cref="IListener"/> to add.</typeparam>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification = "The syntax is accepted practice for registering types.")]
+        [Obsolete("This method has been replaced by Add(IListener).", error: false)]
         public void Add<T>()
             where T : IListener, new()
         {
-            var listenerType = typeof(T);
+            var listener = new T();
 
-            if (!this.listenerTypes.Contains(listenerType))
-            {
-                this.listenerFactories.Add(() =>
-                {
-                    return new T();
-                });
-
-                this.listenerTypes.Add(listenerType);
-            }
+            this.Add(listener);
         }
 
         /// <summary>
-        /// Clears all IListeners registered.
+        /// Adds the specified listener to the collection of listeners which can be used by MicroLite.
+        /// </summary>
+        /// <param name="item">The listener to be added.</param>
+        public void Add(IListener item)
+        {
+            this.listeners.Push(item);
+        }
+
+        /// <summary>
+        /// Removes all items from the collection.
         /// </summary>
         public void Clear()
         {
-            this.listenerFactories.Clear();
-            this.listenerTypes.Clear();
+            this.listeners.Clear();
+        }
+
+        /// <summary>
+        /// Determines whether the collection contains the specified listener.
+        /// </summary>
+        /// <param name="item">The object to locate in the collection.</param>
+        /// <returns>
+        /// true if the item exists in the collection; otherwise, false.
+        /// </returns>
+        public bool Contains(IListener item)
+        {
+            return this.listeners.Contains(item);
+        }
+
+        /// <summary>
+        /// Copies the items in the collection to the specified one dimension array at the specified index.
+        /// </summary>
+        /// <param name="array">The array.</param>
+        /// <param name="arrayIndex">Index of the array.</param>
+        public void CopyTo(IListener[] array, int arrayIndex)
+        {
+            this.listeners.CopyTo(array, arrayIndex);
         }
 
         /// <summary>
@@ -72,10 +117,36 @@ namespace MicroLite.Listeners
         /// </returns>
         public IEnumerator<IListener> GetEnumerator()
         {
-            foreach (var listenerFactory in this.listenerFactories)
+            return this.listeners.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Removes the specified listener from the collection.
+        /// </summary>
+        /// <param name="item">The listener to be removed.</param>
+        /// <returns>
+        /// true if <paramref name="item" /> was successfully removed from the collection; otherwise, false. This method also returns false if <paramref name="item" /> is not found in the original collection.
+        /// </returns>
+        public bool Remove(IListener item)
+        {
+            var existing = this.listeners.ToArray();
+            this.listeners.Clear();
+
+            bool removed = false;
+
+            foreach (var listener in existing)
             {
-                yield return listenerFactory();
+                if (listener == item)
+                {
+                    removed = true;
+                }
+                else
+                {
+                    this.listeners.Push(listener);
+                }
             }
+
+            return removed;
         }
 
         /// <summary>

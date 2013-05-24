@@ -10,18 +10,6 @@
     public class ListenerCollectionTests
     {
         [Fact]
-        public void AddOnlyAddsTypeOnce()
-        {
-            var listenerCollection = new ListenerCollection();
-            listenerCollection.Clear();
-
-            listenerCollection.Add<TestListener>();
-            listenerCollection.Add<TestListener>();
-
-            Assert.Equal(1, listenerCollection.Count());
-        }
-
-        [Fact]
         public void ConstructorRegistersAssignedListener()
         {
             var collection = new ListenerCollection();
@@ -62,17 +50,17 @@
         }
 
         [Fact]
-        public void EnumerationReturnsNewInstanceOfEachTypeOnEachCall()
+        public void EnumerationReturnsSameInstanceOfEachTypeOnEachCall()
         {
             var collection = new ListenerCollection();
             collection.Clear();
 
-            collection.Add<TestListener>();
+            collection.Add(new TestListener());
 
             var listener1 = collection.Single();
             var listener2 = collection.Single();
 
-            Assert.NotSame(listener1, listener2);
+            Assert.Same(listener1, listener2);
         }
 
         private class TestListener : Listener
