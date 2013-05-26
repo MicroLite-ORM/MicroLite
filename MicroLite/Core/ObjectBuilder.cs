@@ -13,12 +13,9 @@
 namespace MicroLite.Core
 {
     using System;
-    using System.Collections.Generic;
     using System.Data;
 
 #if !NET_3_5
-
-    using System.Dynamic;
 
 #endif
 
@@ -32,29 +29,7 @@ namespace MicroLite.Core
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
 
-#if !NET_3_5
-
-        public dynamic BuildDynamic(IDataReader reader)
-        {
-            log.TryLogDebug(Messages.ObjectBuilder_CreatingInstance, "dynamic");
-            dynamic expando = new ExpandoObject();
-
-            var dictionary = (IDictionary<string, object>)expando;
-
-            for (int i = reader.FieldCount - 1; i >= 0; i--)
-            {
-                var columnName = reader.GetName(i);
-
-                log.TryLogDebug(Messages.ObjectBuilder_SettingPropertyValue, "dynamic", columnName);
-                dictionary.Add(columnName, reader.IsDBNull(i) ? null : reader[i]);
-            }
-
-            return expando;
-        }
-
-#endif
-
-        public T BuildInstance<T>(ObjectInfo objectInfo, IDataReader reader)
+        public T BuildInstance<T>(IObjectInfo objectInfo, IDataReader reader)
              where T : class
         {
             log.TryLogDebug(Messages.ObjectBuilder_CreatingInstance, objectInfo.ForType.FullName);
@@ -62,11 +37,6 @@ namespace MicroLite.Core
 
             for (int i = reader.FieldCount - 1; i >= 0; i--)
             {
-                if (reader.IsDBNull(i))
-                {
-                    continue;
-                }
-
                 var columnName = reader.GetName(i);
 
                 try

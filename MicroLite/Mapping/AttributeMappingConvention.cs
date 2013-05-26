@@ -27,7 +27,7 @@ namespace MicroLite.Mapping
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
 
-        public ObjectInfo CreateObjectInfo(Type forType)
+        public IObjectInfo CreateObjectInfo(Type forType)
         {
             if (forType == null)
             {

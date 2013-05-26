@@ -303,4 +303,7 @@
   <data name="SqlDialectFactory_DialectNameAlreadyUsed" xml:space="preserve">
     <value>The dialect name '{0}' has already been added.</value>
   </data>
+  <data name="ExpandoObjectInfo_NotSupportedReason" xml:space="preserve">
+    <value>The 'dynamic' type can only be used for queries where an SqlQuery is supplied, it cannot be used for select by identifier, insert, update or delete.</value>
+  </data>
 </root>

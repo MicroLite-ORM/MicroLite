@@ -350,7 +350,7 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <param name="objectInfo">The object info.</param>
         /// <param name="sqlBuilder">The SQL builder.</param>
-        protected void AppendTableName(ObjectInfo objectInfo, StringBuilder sqlBuilder)
+        protected void AppendTableName(IObjectInfo objectInfo, StringBuilder sqlBuilder)
         {
             var schema = !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
                 ? objectInfo.TableInfo.Schema
@@ -460,7 +460,7 @@ namespace MicroLite.Dialect
             return whereRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
         }
 
-        private StringBuilder CreateSql(StatementType statementType, ObjectInfo objectInfo)
+        private StringBuilder CreateSql(StatementType statementType, IObjectInfo objectInfo)
         {
             var sqlBuilder = new StringBuilder(capacity: 120);
 

@@ -38,7 +38,7 @@ namespace MicroLite.Mapping
             this.settings = settings;
         }
 
-        public ObjectInfo CreateObjectInfo(Type forType)
+        public IObjectInfo CreateObjectInfo(Type forType)
         {
             if (forType == null)
             {

@@ -14,6 +14,13 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
+
+#if !NET_3_5
+
+    using System.Dynamic;
+
+#endif
+
     using System.Linq;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
@@ -23,11 +30,18 @@ namespace MicroLite.Mapping
     /// The class which describes a type and the table it is mapped to.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
-    public sealed class ObjectInfo
+    public sealed class ObjectInfo : IObjectInfo
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
         private static IMappingConvention mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
-        private static IDictionary<Type, ObjectInfo> objectInfos = new Dictionary<Type, ObjectInfo>();
+
+        private static IDictionary<Type, IObjectInfo> objectInfos = new Dictionary<Type, IObjectInfo>
+        {
+#if !NET_3_5
+            { typeof(ExpandoObject), new ExpandoObjectInfo() },
+            { typeof(object), new ExpandoObjectInfo() } // If the generic argument <dynamic> is used (in ISession.Fetch for example), typeof(T) will return object.
+#endif
+        };
 
         private readonly Type forType;
         private readonly Dictionary<string, IPropertyAccessor> propertyAccessors;
@@ -69,7 +83,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the default identifier value.
+        /// Gets an object containing the default value for the type of identifier used by the type.
         /// </summary>
         public object DefaultIdentifierValue
         {
@@ -78,7 +92,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets type the object info deals with.
+        /// Gets type the object info relates to.
         /// </summary>
         public Type ForType
         {
@@ -89,7 +103,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the table info.
+        /// Gets the table info for the type the object info relates to, or null if it is not a mapped type.
         /// </summary>
         public TableInfo TableInfo
         {
@@ -119,23 +133,23 @@ namespace MicroLite.Mapping
         /// <returns>The <see cref="ObjectInfo"/> for the specified <see cref="Type"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown if forType is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the specified type cannot be used with MicroLite.</exception>
-        public static ObjectInfo For(Type forType)
+        public static IObjectInfo For(Type forType)
         {
             if (forType == null)
             {
                 throw new ArgumentNullException("forType");
             }
 
-            ObjectInfo objectInfo;
+            IObjectInfo objectInfo;
 
             if (!objectInfos.TryGetValue(forType, out objectInfo))
             {
                 VerifyType(forType);
 
                 log.TryLogDebug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
-                objectInfo = MappingConvention.CreateObjectInfo(forType);
+                objectInfo = ObjectInfo.MappingConvention.CreateObjectInfo(forType);
 
-                var newObjectInfos = new Dictionary<Type, ObjectInfo>(objectInfos);
+                var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos);
                 newObjectInfos[forType] = objectInfo;
 
                 objectInfos = newObjectInfos;

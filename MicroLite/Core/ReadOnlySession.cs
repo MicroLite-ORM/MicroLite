@@ -15,8 +15,16 @@ namespace MicroLite.Core
     using System;
     using System.Collections.Generic;
     using System.Data;
+
+#if !NET_3_5
+
+    using System.Dynamic;
+
+#endif
+
     using MicroLite.Dialect;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.
@@ -207,11 +215,13 @@ namespace MicroLite.Core
 
                     var results = new List<dynamic>();
 
+                    var objectInfo = ObjectInfo.For(typeof(ExpandoObject));
+
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            var expando = this.objectBuilder.BuildDynamic(reader);
+                            var expando = this.objectBuilder.BuildInstance<ExpandoObject>(objectInfo, reader);
 
                             results.Add(expando);
                         }

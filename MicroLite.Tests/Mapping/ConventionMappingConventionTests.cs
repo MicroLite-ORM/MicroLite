@@ -33,7 +33,7 @@
 
         public class WhenNotUsingDefaultSettings
         {
-            private readonly ObjectInfo objectInfo;
+            private readonly IObjectInfo objectInfo;
 
             public WhenNotUsingDefaultSettings()
             {
@@ -250,7 +250,7 @@
 
         public class WhenTheClassIdentifierIsPrefixedWithTheClassName
         {
-            private readonly ObjectInfo objectInfo;
+            private readonly IObjectInfo objectInfo;
 
             public WhenTheClassIdentifierIsPrefixedWithTheClassName()
             {
@@ -284,7 +284,7 @@
 
         public class WhenUsingDefaultSettings
         {
-            private readonly ObjectInfo objectInfo;
+            private readonly IObjectInfo objectInfo;
 
             public WhenUsingDefaultSettings()
             {

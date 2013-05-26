@@ -24,6 +24,6 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="forType">The type to create the object info for.</param>
         /// <returns>The <see cref="ObjectInfo"/> for the specified type.</returns>
-        ObjectInfo CreateObjectInfo(Type forType);
+        IObjectInfo CreateObjectInfo(Type forType);
     }
 }

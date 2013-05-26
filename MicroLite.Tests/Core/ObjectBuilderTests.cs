@@ -19,32 +19,6 @@
         }
 
         [Fact]
-        public void BuildDynamicPropertyValuesAreSetCorrectly()
-        {
-            var mockDataReader = new Mock<IDataReader>();
-            mockDataReader.Setup(x => x.FieldCount).Returns(4);
-
-            mockDataReader.Setup(x => x.GetName(0)).Returns("Id");
-            mockDataReader.Setup(x => x.GetName(1)).Returns("Name");
-            mockDataReader.Setup(x => x.GetName(2)).Returns("DateOfBirth");
-            mockDataReader.Setup(x => x.GetName(3)).Returns("Status");
-
-            mockDataReader.Setup(x => x[0]).Returns(123242);
-            mockDataReader.Setup(x => x[1]).Returns("Trevor Pilley");
-            mockDataReader.Setup(x => x[2]).Returns(new DateTime(1982, 11, 27));
-            mockDataReader.Setup(x => x[3]).Returns(1);
-
-            var objectBuilder = new ObjectBuilder();
-
-            var customer = objectBuilder.BuildDynamic(mockDataReader.Object);
-
-            Assert.Equal(new DateTime(1982, 11, 27), customer.DateOfBirth);
-            Assert.Equal(123242, customer.Id);
-            Assert.Equal("Trevor Pilley", customer.Name);
-            Assert.Equal(CustomerStatus.Active, (CustomerStatus)customer.Status);
-        }
-
-        [Fact]
         public void BuildInstanceIgnoresUnknownColumnWithoutThrowingException()
         {
             var mockDataReader = new Mock<IDataReader>();
@@ -128,17 +102,17 @@
             mockDataReader.Setup(x => x.GetName(3)).Returns("StatusId");
 
             mockDataReader.Setup(x => x[0]).Returns(123242);
-            mockDataReader.Setup(x => x[1]).Returns("Trevor Pilley");
-            mockDataReader.Setup(x => x[2]).Returns(new DateTime(1982, 11, 27));
+            mockDataReader.Setup(x => x[1]).Returns("Joe Bloggs");
+            mockDataReader.Setup(x => x[2]).Returns(new DateTime(1980, 7, 13));
             mockDataReader.Setup(x => x[3]).Returns(1);
 
             var objectBuilder = new ObjectBuilder();
 
             var customer = objectBuilder.BuildInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object);
 
-            Assert.Equal(new DateTime(1982, 11, 27), customer.DateOfBirth);
+            Assert.Equal(new DateTime(1980, 7, 13), customer.DateOfBirth);
             Assert.Equal(123242, customer.Id);
-            Assert.Equal("Trevor Pilley", customer.Name);
+            Assert.Equal("Joe Bloggs", customer.Name);
             Assert.Equal(CustomerStatus.Active, customer.Status);
         }
 

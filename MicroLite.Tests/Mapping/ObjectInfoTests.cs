@@ -79,12 +79,11 @@
         }
 
         [Fact]
-        public void ForReturnsSameInstanceOnEachCall()
+        public void ForReturnsExpandoObjectInfoForTypeOfDynamic()
         {
-            var objectInfo1 = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-            var objectInfo2 = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfoHelper<dynamic>();
 
-            Assert.Same(objectInfo1, objectInfo2);
+            Assert.IsType<ExpandoObjectInfo>(objectInfo);
         }
 
         [Fact]
@@ -325,6 +324,16 @@
             Assert.Equal(
                 string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
                 exception.Message);
+        }
+
+        /// <summary>
+        /// A helper method required because you can't do typeof(dynamic).
+        /// </summary>
+        private static IObjectInfo ObjectInfoHelper<T>()
+        {
+            var objectInfo = ObjectInfo.For(typeof(T));
+
+            return objectInfo;
         }
 
         private struct CustomerStruct

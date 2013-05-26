@@ -440,7 +440,7 @@
             mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildDynamic(reader)).Returns(new ExpandoObject());
+            mockObjectBuilder.Setup(x => x.BuildInstance<ExpandoObject>(It.IsAny<IObjectInfo>(), reader)).Returns(new ExpandoObject());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
