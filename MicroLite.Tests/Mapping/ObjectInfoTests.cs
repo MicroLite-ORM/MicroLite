@@ -187,7 +187,7 @@
         }
 
         [Fact]
-        public void GetPropertyValueForColumnConvertsEnumToInteger()
+        public void GetPropertyValueForColumnConvertsPropertyValueToDbValue()
         {
             var instance = new CustomerWithIntegerIdentifier
             {
@@ -238,6 +238,57 @@
         }
 
         [Fact]
+        public void GetPropertyValueReturnsPropertyValue()
+        {
+            var instance = new CustomerWithIntegerIdentifier
+            {
+                Status = CustomerStatus.Active
+            };
+
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var value = objectInfo.GetPropertyValue(instance, "Status");
+
+            Assert.Equal(CustomerStatus.Active, value);
+        }
+
+        [Fact]
+        public void GetPropertyValueThrowsArgumentNullExceptionForNullInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetPropertyValue(null, "Name"));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void GetPropertyValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.GetPropertyValue(new CustomerWithGuidIdentifier(), "Name"));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void GetPropertyValueThrowsMicroLiteExceptionIfInvalidPropertyName()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.GetPropertyValue(new CustomerWithIntegerIdentifier(), "UnknownProperty"));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_UnknownProperty, objectInfo.ForType.Name, "UnknownProperty"),
+                exception.Message);
+        }
+
+        [Fact]
         public void HasDefaultGuidValue()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
@@ -280,25 +331,29 @@
         }
 
         [Fact]
-        public void SetPropertyValueForColumnIgnoresUnmappedPropertyWithoutThrowingAnException()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var instance = new CustomerWithIntegerIdentifier();
-
-            objectInfo.SetPropertyValueForColumn(instance, "UnknownColumn", 1);
-        }
-
-        [Fact]
         public void SetPropertyValueForColumnSetsPropertyValue()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
             var instance = new CustomerWithIntegerIdentifier();
 
-            objectInfo.SetPropertyValueForColumn(instance, "StatusId", CustomerStatus.Active);
+            objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1);
 
             Assert.Equal(CustomerStatus.Active, instance.Status);
+        }
+
+        [Fact]
+        public void SetPropertyValueForColumnThrowsAnExceptionForUnknownColumn()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetPropertyValueForColumn(instance, "UnknownColumn", 1));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_UnknownColumn, objectInfo.ForType.Name, "UnknownColumn"),
+                exception.Message);
         }
 
         [Fact]
@@ -320,6 +375,57 @@
 
             var exception = Assert.Throws<MicroLiteException>(
                 () => objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void SetPropertyValueSetsPropertyValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            objectInfo.SetPropertyValue(instance, "Status", CustomerStatus.Active);
+
+            Assert.Equal(CustomerStatus.Active, instance.Status);
+        }
+
+        [Fact]
+        public void SetPropertyValueThrowsAnExceptionForUnknownProperty()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetPropertyValue(instance, "UnknownProperty", CustomerStatus.Active));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_UnknownProperty, objectInfo.ForType.Name, "UnknownProperty"),
+                exception.Message);
+        }
+
+        [Fact]
+        public void SetPropertyValueThrowsArgumentNullExceptionForNullInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.SetPropertyValue(null, "Status", CustomerStatus.Active));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void SetPropertyValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithGuidIdentifier();
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.SetPropertyValue(instance, "Status", CustomerStatus.Active));
 
             Assert.Equal(
                 string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),

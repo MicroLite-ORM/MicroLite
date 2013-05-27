@@ -44,7 +44,7 @@ namespace MicroLite.Mapping
         };
 
         private readonly Type forType;
-        private readonly Dictionary<string, IPropertyAccessor> propertyAccessors;
+        private readonly Dictionary<string, IPropertyAccessor> propertyAccessors; // key is property name.
         private readonly TableInfo tableInfo;
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace MicroLite.Mapping
             foreach (var columnInfo in this.tableInfo.Columns)
             {
                 log.TryLogDebug(Messages.ObjectInfo_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
-                this.propertyAccessors.Add(columnInfo.ColumnName, new PropertyAccessor(columnInfo.PropertyInfo));
+                this.propertyAccessors.Add(columnInfo.PropertyInfo.Name, new PropertyAccessor(columnInfo.PropertyInfo));
 
                 if (columnInfo.IsIdentifier && columnInfo.PropertyInfo.PropertyType.IsValueType)
                 {
@@ -103,7 +103,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the table info for the type the object info relates to, or null if it is not a mapped type.
+        /// Gets the table info for the type the object info relates to.
         /// </summary>
         public TableInfo TableInfo
         {
@@ -173,6 +173,8 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
         /// <returns>The value of the identifier property.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public object GetIdentifierValue(object instance)
         {
             if (instance == null)
@@ -190,11 +192,46 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the property value for the specified column.
+        /// Gets the property value for the specified property on the specified instance.
+        /// </summary>
+        /// <param name="instance">The instance to retrieve the value from.</param>
+        /// <param name="propertyName">Name of the property to get the value for.</param>
+        /// <returns>The value of the property.</returns>
+        public object GetPropertyValue(object instance, string propertyName)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            if (instance.GetType() != this.ForType)
+            {
+                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
+                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
+            }
+
+            IPropertyAccessor propertyAccessor;
+
+            if (!this.propertyAccessors.TryGetValue(propertyName, out propertyAccessor))
+            {
+                log.TryLogError(Messages.ObjectInfo_UnknownProperty, this.ForType.Name, propertyName);
+                throw new MicroLiteException(Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName));
+            }
+
+            log.TryLogDebug(Messages.ObjectInfo_GettingPropertyValue, this.ForType.Name, propertyName);
+            var value = propertyAccessor.GetValue(instance);
+
+            return value;
+        }
+
+        /// <summary>
+        /// Gets the property value from the specified instance and converts it to the correct type for the specified column.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
         /// <param name="columnName">Name of the column to get the value for.</param>
-        /// <returns>The value of the property.</returns>
+        /// <returns>The column value of the property.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public object GetPropertyValueForColumn(object instance, string columnName)
         {
             if (instance == null)
@@ -216,8 +253,8 @@ namespace MicroLite.Mapping
                 throw new MicroLiteException(Messages.ObjectInfo_ColumnNotMapped.FormatWith(columnName, this.ForType.Name));
             }
 
-            log.TryLogDebug(Messages.ObjectInfo_GetPropertyValueForColumn, this.ForType.Name, columnInfo.PropertyInfo.Name, columnName);
-            var value = this.propertyAccessors[columnName].GetValue(instance);
+            log.TryLogDebug(Messages.ObjectInfo_GettingPropertyValueForColumn, this.ForType.Name, columnInfo.PropertyInfo.Name, columnName);
+            var value = this.propertyAccessors[columnInfo.PropertyInfo.Name].GetValue(instance);
 
             var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
 
@@ -241,11 +278,46 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Sets the property value mapped to the specified column on the instance.
+        /// Sets the property value for the specified property on the specified instance to the specified value.
+        /// </summary>
+        /// <param name="instance">The instance to set the property value on.</param>
+        /// <param name="propertyName">Name of the property to set the value for.</param>
+        /// <param name="value">The value to be set.</param>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
+        public void SetPropertyValue(object instance, string propertyName, object value)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            if (instance.GetType() != this.ForType)
+            {
+                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
+                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
+            }
+
+            IPropertyAccessor propertyAccessor;
+
+            if (!this.propertyAccessors.TryGetValue(propertyName, out propertyAccessor))
+            {
+                log.TryLogError(Messages.ObjectInfo_UnknownProperty, this.ForType.Name, propertyName);
+                throw new MicroLiteException(Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName));
+            }
+
+            log.TryLogDebug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, propertyName);
+            propertyAccessor.SetValue(instance, value);
+        }
+
+        /// <summary>
+        /// Sets the property value of the property mapped to the specified column after converting it to the correct type for the property.
         /// </summary>
         /// <param name="instance">The instance to set the property value on.</param>
         /// <param name="columnName">The name of the column the property is mapped to.</param>
-        /// <param name="value">The value to set the property to.</param>
+        /// <param name="value">The value from the database column to set the property to.</param>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public void SetPropertyValueForColumn(object instance, string columnName, object value)
         {
             if (instance == null)
@@ -263,8 +335,8 @@ namespace MicroLite.Mapping
 
             if (columnInfo == null)
             {
-                log.TryLogWarn(Messages.ObjectInfo_UnknownProperty, this.ForType.Name, columnName);
-                return;
+                log.TryLogError(Messages.ObjectInfo_UnknownColumn, this.ForType.Name, columnName);
+                throw new MicroLiteException(Messages.ObjectInfo_UnknownColumn.FormatWith(this.ForType.Name, columnName));
             }
 
             var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
@@ -272,7 +344,7 @@ namespace MicroLite.Mapping
             var converted = typeConverter.ConvertFromDbValue(value, columnInfo.PropertyInfo.PropertyType);
 
             log.TryLogDebug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
-            this.propertyAccessors[columnName].SetValue(instance, converted);
+            this.propertyAccessors[columnInfo.PropertyInfo.Name].SetValue(instance, converted);
         }
 
         private static void VerifyType(Type forType)

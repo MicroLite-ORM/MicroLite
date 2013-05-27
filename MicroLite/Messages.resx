@@ -147,7 +147,7 @@
   <data name="ObjectBuilder_SettingPropertyValue" xml:space="preserve">
     <value>Setting the property value of [{0}].[{1}]</value>
   </data>
-  <data name="ObjectInfo_UnknownProperty" xml:space="preserve">
+  <data name="ObjectInfo_UnknownColumn" xml:space="preserve">
     <value>Ignoring the [{1}] column value as the mapped type [{0}] does not have a mapped property with the column name [{1}]</value>
   </data>
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
@@ -252,7 +252,7 @@
   <data name="SessionFactory_CreatingReadOnlySession" xml:space="preserve">
     <value>Creating a new read only session for connection [{0}] using [{1}]</value>
   </data>
-  <data name="ObjectInfo_GetPropertyValueForColumn" xml:space="preserve">
+  <data name="ObjectInfo_GettingPropertyValueForColumn" xml:space="preserve">
     <value>Getting the value of [{0}].[{1}] for the [{2}] column</value>
   </data>
   <data name="ObjectInfo_SettingPropertyValue" xml:space="preserve">
@@ -305,5 +305,11 @@
   </data>
   <data name="ExpandoObjectInfo_NotSupportedReason" xml:space="preserve">
     <value>The 'dynamic' type can only be used for queries where an SqlQuery is supplied, it cannot be used for select by identifier, insert, update or delete.</value>
+  </data>
+  <data name="ObjectInfo_GettingPropertyValue" xml:space="preserve">
+    <value>Getting the value of [{0}].[{1}]</value>
+  </data>
+  <data name="ObjectInfo_UnknownProperty" xml:space="preserve">
+    <value>The type [{0}] does not have a property with the name [{1}]</value>
   </data>
 </root>

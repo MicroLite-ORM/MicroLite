@@ -322,11 +322,20 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Getting the value of [{0}].[{1}].
+        /// </summary>
+        internal static string ObjectInfo_GettingPropertyValue {
+            get {
+                return ResourceManager.GetString("ObjectInfo_GettingPropertyValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Getting the value of [{0}].[{1}] for the [{2}] column.
         /// </summary>
-        internal static string ObjectInfo_GetPropertyValueForColumn {
+        internal static string ObjectInfo_GettingPropertyValueForColumn {
             get {
-                return ResourceManager.GetString("ObjectInfo_GetPropertyValueForColumn", resourceCulture);
+                return ResourceManager.GetString("ObjectInfo_GettingPropertyValueForColumn", resourceCulture);
             }
         }
         
@@ -404,6 +413,15 @@ namespace MicroLite {
         
         /// <summary>
         ///   Looks up a localized string similar to Ignoring the [{1}] column value as the mapped type [{0}] does not have a mapped property with the column name [{1}].
+        /// </summary>
+        internal static string ObjectInfo_UnknownColumn {
+            get {
+                return ResourceManager.GetString("ObjectInfo_UnknownColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type [{0}] does not have a property with the name [{1}].
         /// </summary>
         internal static string ObjectInfo_UnknownProperty {
             get {

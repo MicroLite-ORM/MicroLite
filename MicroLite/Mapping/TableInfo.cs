@@ -28,6 +28,7 @@ namespace MicroLite.Mapping
 
         private readonly ICollection<ColumnInfo> columns;
         private readonly string identifierColumn;
+        private readonly string identifierProperty;
         private readonly IdentifierStrategy identifierStrategy;
         private readonly string name;
         private readonly string schema;
@@ -64,7 +65,11 @@ namespace MicroLite.Mapping
             this.ValidateColumns(columns);
 
             this.columns = new System.Collections.ObjectModel.ReadOnlyCollection<ColumnInfo>(columns);
-            this.identifierColumn = columns.Single(c => c.IsIdentifier).ColumnName;
+
+            var identifierColumnInfo = columns.Single(c => c.IsIdentifier);
+
+            this.identifierColumn = identifierColumnInfo.ColumnName;
+            this.identifierProperty = identifierColumnInfo.PropertyInfo.Name;
         }
 
         /// <summary>
@@ -86,6 +91,17 @@ namespace MicroLite.Mapping
             get
             {
                 return this.identifierColumn;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the property that is the object identifier property mapped to the table identifier column.
+        /// </summary>
+        public string IdentifierProperty
+        {
+            get
+            {
+                return this.identifierProperty;
             }
         }
 

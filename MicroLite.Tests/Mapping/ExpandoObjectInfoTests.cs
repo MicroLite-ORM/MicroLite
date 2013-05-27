@@ -56,6 +56,16 @@
         }
 
         [Fact]
+        public void GetPropertyValueThrowsNotSupportedException()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.GetPropertyValue(new ExpandoObject(), "foo"));
+
+            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+        }
+
+        [Fact]
         public void HasDefaultIdentifierValueThrowsNotSupportedException()
         {
             var objectInfo = new ExpandoObjectInfo();
@@ -89,6 +99,16 @@
             objectInfo.SetPropertyValueForColumn(instance, "Name", DBNull.Value);
 
             Assert.Null(instance.Name);
+        }
+
+        [Fact]
+        public void SetPropertyValueThrowsNotSupportedException()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.SetPropertyValue(new ExpandoObject(), "Name", "foo"));
+
+            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]

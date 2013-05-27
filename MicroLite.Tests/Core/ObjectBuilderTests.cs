@@ -18,18 +18,6 @@
             Active = 1
         }
 
-        [Fact]
-        public void BuildInstanceIgnoresUnknownColumnWithoutThrowingException()
-        {
-            var mockDataReader = new Mock<IDataReader>();
-            mockDataReader.Setup(x => x.FieldCount).Returns(1);
-
-            mockDataReader.Setup(x => x.GetName(0)).Returns("FooBarInvalid");
-
-            var objectBuilder = new ObjectBuilder();
-            objectBuilder.BuildInstance<Customer>(ObjectInfo.For(typeof(Customer)), mockDataReader.Object);
-        }
-
         /// <summary>
         /// Issue #8 - ObjectBuilder throws exception converting DBNull to nullable ValueType.
         /// </summary>

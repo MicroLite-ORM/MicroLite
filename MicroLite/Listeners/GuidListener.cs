@@ -70,7 +70,7 @@ namespace MicroLite.Listeners
                 var identifierValue = Guid.NewGuid();
 
                 log.TryLogDebug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
-                objectInfo.SetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn, identifierValue);
+                objectInfo.SetPropertyValue(instance, objectInfo.TableInfo.IdentifierProperty, identifierValue);
             }
         }
 
