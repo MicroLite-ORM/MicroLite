@@ -181,6 +181,7 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
+        [Obsolete("MicroLite 4.0 introduced the ability to use dynamic with .Fetch(SqlQuery), .Single(SqlQuery) and .Paged(SqlQuery, PagingOptions). Any calls previously made to .Projection(SqlQuery) should be changed to call .Fetch(SqlQuery) instead to achieve the same result", error: false)]
         IList<dynamic> Projection(SqlQuery sqlQuery);
 
 #endif

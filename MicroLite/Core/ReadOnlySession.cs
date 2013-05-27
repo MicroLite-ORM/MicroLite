@@ -202,41 +202,7 @@ namespace MicroLite.Core
         {
             this.ThrowIfDisposed();
 
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            try
-            {
-                using (var command = this.ConnectionManager.CreateCommand())
-                {
-                    this.SqlDialect.BuildCommand(command, sqlQuery);
-
-                    var results = new List<dynamic>();
-
-                    var objectInfo = ObjectInfo.For(typeof(ExpandoObject));
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var expando = this.objectBuilder.BuildInstance<ExpandoObject>(objectInfo, reader);
-
-                            results.Add(expando);
-                        }
-                    }
-
-                    this.connectionManager.CommandCompleted(command);
-
-                    return results;
-                }
-            }
-            catch (Exception e)
-            {
-                Log.TryLogError(e.Message, e);
-                throw new MicroLiteException(e.Message, e);
-            }
+            return this.Fetch<dynamic>(sqlQuery);
         }
 
 #endif
