@@ -11,41 +11,47 @@
         [Fact]
         public void ChangesWordEndingLfToEndVes()
         {
-            Assert.Equal("Elves", InflectionService.English.ToPlural("Elf"));
+            var inflectionService = new EnglishInflectionService();
+            Assert.Equal("Elves", inflectionService.ToPlural("Elf"));
         }
 
         [Fact]
         public void ChangesWordEndingManToEndMen()
         {
-            Assert.Equal("Women", InflectionService.English.ToPlural("Woman"));
+            var inflectionService = new EnglishInflectionService();
+            Assert.Equal("Women", inflectionService.ToPlural("Woman"));
         }
 
         [Fact]
         public void CorrectlyChangesSpecialCases()
         {
-            Assert.Equal("People", InflectionService.English.ToPlural("Person"));
-            Assert.Equal("Children", InflectionService.English.ToPlural("Child"));
-            Assert.Equal("Mice", InflectionService.English.ToPlural("Mouse"));
-            Assert.Equal("Slices", InflectionService.English.ToPlural("Slice"));
-            Assert.Equal("Viri", InflectionService.English.ToPlural("Virus"));
+            var inflectionService = new EnglishInflectionService();
+            Assert.Equal("People", inflectionService.ToPlural("Person"));
+            Assert.Equal("Children", inflectionService.ToPlural("Child"));
+            Assert.Equal("Mice", inflectionService.ToPlural("Mouse"));
+            Assert.Equal("Slices", inflectionService.ToPlural("Slice"));
+            Assert.Equal("Viri", inflectionService.ToPlural("Virus"));
         }
 
         [Fact]
         public void CorrectlyChangesStandardWordsByAppendingAnS()
         {
-            Assert.Equal("Customers", InflectionService.English.ToPlural("Customer"));
-            Assert.Equal("Invoices", InflectionService.English.ToPlural("Invoice"));
+            var inflectionService = new EnglishInflectionService();
+            Assert.Equal("Customers", inflectionService.ToPlural("Customer"));
+            Assert.Equal("Invoices", inflectionService.ToPlural("Invoice"));
         }
 
         [Fact]
         public void CorrectlyChangesWordsEndingYToEndIes()
         {
-            Assert.Equal("Stories", InflectionService.English.ToPlural("Story"));
+            var inflectionService = new EnglishInflectionService();
+            Assert.Equal("Stories", inflectionService.ToPlural("Story"));
         }
 
         [Fact]
         public void DoesNotTryToPluralizeWordsWithNoPluralVersion()
         {
+            var inflectionService = new EnglishInflectionService();
             var unpluralizableWords = new[]
             {
                 "Equipment",
@@ -57,14 +63,33 @@
 
             foreach (var word in unpluralizableWords)
             {
-                Assert.Equal(word, InflectionService.English.ToPlural(word));
+                Assert.Equal(word, inflectionService.ToPlural(word));
             }
         }
 
         [Fact]
         public void EmptyStringIsNotModified()
         {
-            Assert.Equal(string.Empty, InflectionService.English.ToPlural(string.Empty));
+            var inflectionService = new EnglishInflectionService();
+            Assert.Equal(string.Empty, inflectionService.ToPlural(string.Empty));
+        }
+
+        [Fact]
+        public void WordsAddedUsingAddInvariantWordAreNotPluralized()
+        {
+            var inflectionService = new EnglishInflectionService();
+            inflectionService.AddInvariantWord("Test");
+
+            Assert.Equal("Test", inflectionService.ToPlural("Test"));
+        }
+
+        [Fact]
+        public void WordsCoveredByAddedRulesArePluralizedAccordingToThoseRules()
+        {
+            var inflectionService = new EnglishInflectionService();
+            inflectionService.AddRule("(.+)", @"$1zzz");
+
+            Assert.Equal("Customerzzz", inflectionService.ToPlural("Customer"));
         }
     }
 }

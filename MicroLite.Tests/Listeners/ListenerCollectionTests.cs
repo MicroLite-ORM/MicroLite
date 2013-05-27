@@ -9,58 +9,150 @@
     /// </summary>
     public class ListenerCollectionTests
     {
-        [Fact]
-        public void ConstructorRegistersAssignedListener()
+        public class WhenCallingAdd
         {
-            var collection = new ListenerCollection();
+            private readonly ListenerCollection collection = new ListenerCollection();
+            private readonly TestListener listener = new TestListener();
 
-            var listener = collection.OfType<AssignedListener>().SingleOrDefault();
+            public WhenCallingAdd()
+            {
+                this.collection.Add(this.listener);
+            }
 
-            Assert.NotNull(listener);
+            [Fact]
+            public void TheCollectionShouldContainTheAddedInstance()
+            {
+                var typeConverter = this.collection.SingleOrDefault(t => t == this.listener);
+
+                Assert.NotNull(typeConverter);
+            }
         }
 
-        [Fact]
-        public void ConstructorRegistersDbGeneratedListener()
+        public class WhenCallingClear
         {
-            var collection = new ListenerCollection();
+            private readonly ListenerCollection collection = new ListenerCollection();
 
-            var listener = collection.OfType<DbGeneratedListener>().SingleOrDefault();
+            public WhenCallingClear()
+            {
+                this.collection.Clear();
+            }
 
-            Assert.NotNull(listener);
+            [Fact]
+            public void TheCollectionShouldBeEmpty()
+            {
+                Assert.Equal(0, this.collection.Count);
+            }
         }
 
-        [Fact]
-        public void ConstructorRegistersGuidCombListener()
+        public class WhenCallingCopyTo
         {
-            var collection = new ListenerCollection();
+            private readonly IListener[] array;
+            private readonly ListenerCollection collection = new ListenerCollection();
 
-            var listener = collection.OfType<GuidCombListener>().SingleOrDefault();
+            public WhenCallingCopyTo()
+            {
+                this.array = new IListener[collection.Count];
+                collection.CopyTo(this.array, 0);
+            }
 
-            Assert.NotNull(listener);
+            [Fact]
+            public void TheItemsInTheArrayShouldMatchTheItemsInTheCollection()
+            {
+                for (int i = 0; i < collection.Count; i++)
+                {
+                    Assert.Same(this.array[i], this.collection.Skip(i).First());
+                }
+            }
         }
 
-        [Fact]
-        public void ConstructorRegistersGuidListener()
+        public class WhenCallingRemove
         {
-            var collection = new ListenerCollection();
+            private readonly ListenerCollection collection = new ListenerCollection();
+            private IListener listenerToRemove;
 
-            var listener = collection.OfType<GuidListener>().SingleOrDefault();
+            public WhenCallingRemove()
+            {
+                listenerToRemove = this.collection.OfType<DbGeneratedListener>().Single();
+                this.collection.Remove(listenerToRemove);
+            }
 
-            Assert.NotNull(listener);
+            [Fact]
+            public void TheListenerShouldBeRemoved()
+            {
+                Assert.False(this.collection.Contains(listenerToRemove));
+            }
         }
 
-        [Fact]
-        public void EnumerationReturnsSameInstanceOfEachTypeOnEachCall()
+        public class WhenCallingTheConstructor
         {
-            var collection = new ListenerCollection();
-            collection.Clear();
+            private readonly ListenerCollection collection = new ListenerCollection();
 
-            collection.Add(new TestListener());
+            [Fact]
+            public void ConstructorRegistersAssignedListener()
+            {
+                var listener = this.collection.OfType<AssignedListener>().SingleOrDefault();
 
-            var listener1 = collection.Single();
-            var listener2 = collection.Single();
+                Assert.NotNull(listener);
+            }
 
-            Assert.Same(listener1, listener2);
+            [Fact]
+            public void ConstructorRegistersDbGeneratedListener()
+            {
+                var listener = this.collection.OfType<DbGeneratedListener>().SingleOrDefault();
+
+                Assert.NotNull(listener);
+            }
+
+            [Fact]
+            public void ConstructorRegistersGuidCombListener()
+            {
+                var listener = this.collection.OfType<GuidCombListener>().SingleOrDefault();
+
+                Assert.NotNull(listener);
+            }
+
+            [Fact]
+            public void ConstructorRegistersGuidListener()
+            {
+                var listener = this.collection.OfType<GuidListener>().SingleOrDefault();
+
+                Assert.NotNull(listener);
+            }
+
+            [Fact]
+            public void TheCollectionShouldNotBeReadOnly()
+            {
+                Assert.False(this.collection.IsReadOnly);
+            }
+
+            [Fact]
+            public void ThereShouldBe4RegisteredListeners()
+            {
+                Assert.Equal(4, this.collection.Count);
+            }
+        }
+
+        public class WhenEnumerating
+        {
+            private readonly ListenerCollection collection = new ListenerCollection();
+            private readonly IListener listener1 = new TestListener();
+            private readonly IListener listener2 = new TestListener();
+
+            public WhenEnumerating()
+            {
+                collection.Clear();
+
+                collection.Add(new TestListener());
+
+                listener1 = collection.Single();
+                listener2 = collection.Single();
+            }
+
+            [Fact]
+            public void TheSameInstanceShouldBeReturned()
+            {
+                Assert.Same(listener1, listener2);
+            }
         }
 
         private class TestListener : Listener
