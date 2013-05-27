@@ -8,6 +8,7 @@
     using MicroLite.Core;
     using MicroLite.Dialect;
     using MicroLite.Mapping;
+    using MicroLite.Query;
     using Moq;
     using Xunit;
 
@@ -16,6 +17,46 @@
     /// </summary>
     public class ReadOnlySessionTests
     {
+        [Fact]
+        public void AllCreatesASelectAllQueryExecutesAndReturnsResults()
+        {
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+            var reader = mockReader.Object;
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var mockObjectBuilder = new Mock<IObjectBuilder>();
+            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, SqlBuilder.Select("*").From(typeof(Customer)).ToSqlQuery()));
+
+            var session = new ReadOnlySession(
+                mockConnectionManager.Object,
+                mockObjectBuilder.Object,
+                mockSqlDialect.Object);
+
+            var customers = session.All<Customer>();
+
+            // HACK: to force session to execute the query.
+            // TODO: find a better way, we don't really want to make the method non private just for testing though...
+            typeof(ReadOnlySession).GetMethod("ExecuteAllQueries", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).Invoke(session, null);
+
+            Assert.Equal(1, customers.Values.Count);
+
+            mockReader.VerifyAll();
+            mockCommand.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockObjectBuilder.VerifyAll();
+            mockSqlDialect.VerifyAll();
+        }
+
         [Fact]
         public void BeginTransactionCallsConnectionManagerBeginTransaction()
         {

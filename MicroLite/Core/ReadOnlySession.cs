@@ -25,6 +25,7 @@ namespace MicroLite.Core
     using MicroLite.Dialect;
     using MicroLite.Logging;
     using MicroLite.Mapping;
+    using MicroLite.Query;
 
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.
@@ -79,6 +80,20 @@ namespace MicroLite.Core
             {
                 return this.sqlDialect;
             }
+        }
+
+        public IIncludeMany<T> All<T>() where T : class, new()
+        {
+            this.ThrowIfDisposed();
+
+            var sqlQuery = SqlBuilder.Select("*").From(typeof(T)).ToSqlQuery();
+
+            var include = new IncludeMany<T>();
+
+            this.includes.Enqueue(include);
+            this.queries.Enqueue(sqlQuery);
+
+            return include;
         }
 
         public ITransaction BeginTransaction()
