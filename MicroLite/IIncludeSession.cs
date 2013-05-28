@@ -90,7 +90,7 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        IIncludeMany<T> Many<T>(SqlQuery sqlQuery) where T : class, new();
+        IIncludeMany<T> Many<T>(SqlQuery sqlQuery);
 
         /// <summary>
         /// Includes a single value based upon the specified SQL query.

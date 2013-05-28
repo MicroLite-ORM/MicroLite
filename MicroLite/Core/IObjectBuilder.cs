@@ -28,6 +28,6 @@ namespace MicroLite.Core
         /// <param name="reader">The <see cref="IDataReader"/> containing the values to populate the object with.</param>
         /// <returns>The new instance populated with the values from the <see cref="IDataReader"/>.</returns>
         /// <exception cref="MicroLiteException">Thrown if there is an exception setting a property value.</exception>
-        T BuildInstance<T>(IObjectInfo objectInfo, IDataReader reader) where T : class;
+        T BuildInstance<T>(IObjectInfo objectInfo, IDataReader reader);
     }
 }

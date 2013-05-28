@@ -30,7 +30,6 @@ namespace MicroLite.Core
         private static readonly ILog log = LogManager.GetCurrentClassLog();
 
         public T BuildInstance<T>(IObjectInfo objectInfo, IDataReader reader)
-             where T : class
         {
             log.TryLogDebug(Messages.ObjectBuilder_CreatingInstance, objectInfo.ForType.FullName);
             var instance = (T)objectInfo.CreateInstance();

@@ -108,7 +108,7 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        IList<T> Fetch<T>(SqlQuery sqlQuery) where T : class, new();
+        IList<T> Fetch<T>(SqlQuery sqlQuery);
 
         /// <summary>
         /// Pages the specified SQL query and returns an <see cref="PagedResult&lt;T&gt;"/> containing the desired results.
@@ -130,7 +130,7 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions) where T : class, new();
+        PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions);
 
 #if !NET_3_5
 

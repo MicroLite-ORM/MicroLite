@@ -15,16 +15,8 @@ namespace MicroLite.Core
     using System;
     using System.Collections.Generic;
     using System.Data;
-
-#if !NET_3_5
-
-    using System.Dynamic;
-
-#endif
-
     using MicroLite.Dialect;
     using MicroLite.Logging;
-    using MicroLite.Mapping;
     using MicroLite.Query;
 
     /// <summary>
@@ -116,7 +108,7 @@ namespace MicroLite.Core
             GC.SuppressFinalize(this);
         }
 
-        public IList<T> Fetch<T>(SqlQuery sqlQuery) where T : class, new()
+        public IList<T> Fetch<T>(SqlQuery sqlQuery)
         {
             var include = this.Include.Many<T>(sqlQuery);
 
@@ -174,7 +166,7 @@ namespace MicroLite.Core
             return include.Value;
         }
 
-        public IIncludeMany<T> Many<T>(SqlQuery sqlQuery) where T : class, new()
+        public IIncludeMany<T> Many<T>(SqlQuery sqlQuery)
         {
             this.ThrowIfDisposed();
 
@@ -191,7 +183,7 @@ namespace MicroLite.Core
             return include;
         }
 
-        public PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions) where T : class, new()
+        public PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
             if (pagingOptions == PagingOptions.None)
             {

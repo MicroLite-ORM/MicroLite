@@ -18,7 +18,7 @@ namespace MicroLite
     /// The interface for including a multiple results.
     /// </summary>
     /// <typeparam name="T">The type of object to be included.</typeparam>
-    public interface IIncludeMany<T> where T : class, new()
+    public interface IIncludeMany<T>
     {
         /// <summary>
         /// Gets a value indicating whether this include has a value.
