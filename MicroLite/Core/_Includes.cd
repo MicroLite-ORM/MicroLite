@@ -10,7 +10,7 @@
   <Class Name="MicroLite.Core.IncludeSingle&lt;T&gt;">
     <Position X="2.75" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAACAAAAAgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAACAAAAAgAAAAABA=</HashCode>
       <FileName>Core\IncludeSingle.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -18,7 +18,7 @@
   <Class Name="MicroLite.Core.IncludeMany&lt;T&gt;">
     <Position X="0.5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAACAAAAAgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAACAAAAAgAAAAABA=</HashCode>
       <FileName>Core\IncludeMany.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -26,7 +26,7 @@
   <Class Name="MicroLite.Core.IncludeScalar&lt;T&gt;">
     <Position X="5" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAACAAAAAgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAACAAAAAgAAAAABA=</HashCode>
       <FileName>Core\IncludeScalar.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

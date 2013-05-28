@@ -183,6 +183,7 @@
     <None Include="Dialect\_Dialect.cd" />
     <None Include="Listeners\_Listeners.cd" />
     <None Include="Logging\_Logging.cd" />
+    <None Include="Mapping\Inflection\_Inflection.cd" />
     <None Include="Mapping\_MappingAttributes.cd" />
     <None Include="Mapping\_MappingConvention.cd" />
     <None Include="Mapping\_ObjectInfo.cd" />
