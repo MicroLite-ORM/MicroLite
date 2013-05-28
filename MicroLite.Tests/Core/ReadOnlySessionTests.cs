@@ -58,7 +58,7 @@
         }
 
         [Fact]
-        public void BeginTransactionCallsConnectionManagerBeginTransaction()
+        public void BeginTransactionCallsConnectionManagerBeginTransactionWithReadCommitted()
         {
             var mockConnectionManager = new Mock<IConnectionManager>();
             mockConnectionManager.Setup(x => x.BeginTransaction(IsolationLevel.ReadCommitted));
@@ -71,21 +71,6 @@
             session.BeginTransaction();
 
             mockConnectionManager.VerifyAll();
-        }
-
-        [Fact]
-        public void BeginTransactionThrowsObjectDisposedExceptionIfDisposed()
-        {
-            var session = new ReadOnlySession(
-                new Mock<IConnectionManager>().Object,
-                new Mock<IObjectBuilder>().Object,
-                new Mock<ISqlDialect>().Object);
-
-            using (session)
-            {
-            }
-
-            Assert.Throws<ObjectDisposedException>(() => session.BeginTransaction());
         }
 
         [Fact]

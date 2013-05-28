@@ -76,22 +76,15 @@ namespace MicroLite.Core
 
         public IIncludeMany<T> All<T>() where T : class, new()
         {
-            this.ThrowIfDisposed();
-
             var sqlQuery = SqlBuilder.Select("*").From(typeof(T)).ToSqlQuery();
 
-            var include = new IncludeMany<T>();
-
-            this.includes.Enqueue(include);
-            this.queries.Enqueue(sqlQuery);
+            var include = this.Include.Many<T>(sqlQuery);
 
             return include;
         }
 
         public ITransaction BeginTransaction()
         {
-            this.ThrowIfDisposed();
-
             return this.BeginTransaction(IsolationLevel.ReadCommitted);
         }
 
@@ -128,7 +121,9 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Select, typeof(T), identifier);
 
-            return this.Include.Single<T>(sqlQuery);
+            var include = this.Include.Single<T>(sqlQuery);
+
+            return include;
         }
 
         IInclude<T> IIncludeSession.Single<T>(SqlQuery sqlQuery)
@@ -185,6 +180,8 @@ namespace MicroLite.Core
 
         public PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
+            this.ThrowIfDisposed();
+
             if (pagingOptions == PagingOptions.None)
             {
                 throw new MicroLiteException(Messages.Session_PagingOptionsMustNotBeNone);
@@ -207,8 +204,6 @@ namespace MicroLite.Core
 
         public IList<dynamic> Projection(SqlQuery sqlQuery)
         {
-            this.ThrowIfDisposed();
-
             return this.Fetch<dynamic>(sqlQuery);
         }
 
