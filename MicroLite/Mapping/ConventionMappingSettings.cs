@@ -34,7 +34,7 @@ namespace MicroLite.Mapping
             {
                 return true;
             };
-            this.IdentifierStrategy = Mapping.IdentifierStrategy.DbGenerated;
+            this.IdentifierStrategy = IdentifierStrategy.DbGenerated;
             this.InflectionService = Inflection.InflectionService.English;
             this.TableSchema = null;
             this.UsePluralClassNameForTableName = true;
