@@ -236,9 +236,9 @@
             var customer = new Customer
             {
                 Created = DateTime.Now,
-                DateOfBirth = new System.DateTime(1982, 11, 27),
+                DateOfBirth = new System.DateTime(1975, 9, 18),
                 Id = 134875,
-                Name = "Trevor Pilley",
+                Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
             };
 
@@ -283,9 +283,9 @@
         {
             var customer = new Customer
             {
-                DateOfBirth = new System.DateTime(1982, 11, 27),
+                DateOfBirth = new System.DateTime(1975, 9, 18),
                 Id = 134875,
-                Name = "Trevor Pilley",
+                Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
                 Updated = DateTime.Now
             };

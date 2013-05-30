@@ -35,8 +35,8 @@
             var customer = new Customer
             {
                 Created = DateTime.Now,
-                DateOfBirth = new System.DateTime(1982, 11, 27),
-                Name = "Trevor Pilley",
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Name = "Joe Bloggs",
                 Status = CustomerStatus.Active
             };
 
