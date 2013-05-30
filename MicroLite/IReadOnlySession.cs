@@ -228,6 +228,6 @@ namespace MicroLite
         /// </code>
         /// </example>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Single", Justification = "It's used in loads of places by the linq extension methods as a method name.")]
-        T Single<T>(SqlQuery sqlQuery) where T : class, new();
+        T Single<T>(SqlQuery sqlQuery);
     }
 }

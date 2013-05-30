@@ -1,7 +1,9 @@
 ﻿namespace MicroLite.Tests.Core
 {
+    using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Xml.Linq;
     using MicroLite.Core;
     using MicroLite.Mapping;
     using Moq;
@@ -12,6 +14,12 @@
     /// </summary>
     public class IncludeSingleTests
     {
+        private enum CustomerStatus
+        {
+            Disabled = 0,
+            Active = 1
+        }
+
         public class WhenBuildValueHasBeenCalledAndThereAreNoResults
         {
             private IncludeSingle<Customer> include = new IncludeSingle<Customer>();
@@ -142,6 +150,194 @@
                     () => this.include.BuildValue(this.mockReader.Object, this.mockObjectBuilder.Object));
 
                 Assert.Equal(Messages.IncludeSingle_SingleResultExpected, exception.Message);
+            }
+        }
+
+        public class WhenTheTypeIsAGuid
+        {
+            private IncludeSingle<Guid> include = new IncludeSingle<Guid>();
+            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public WhenTheTypeIsAGuid()
+            {
+                this.mockReader.Setup(x => x[0]).Returns(new Guid("97FE0200-8F79-4C3B-8CD4-BE97705868EC"));
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                var reader = this.mockReader.Object;
+
+                this.include.BuildValue(reader, this.mockObjectBuilder.Object);
+            }
+
+            [Fact]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.True(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void TheObjectBuilderShouldNotBeUsed()
+            {
+                this.mockObjectBuilder.Verify(x => x.BuildInstance<Guid>(It.IsAny<IObjectInfo>(), It.IsAny<IDataReader>()), Times.Never());
+            }
+
+            [Fact]
+            public void ValueShouldNotBeNull()
+            {
+                Assert.NotNull(this.include.Value);
+            }
+
+            [Fact]
+            public void ValuesShouldContainTheResultOfTheTypeConversion()
+            {
+                Assert.Equal(Guid.Parse("97FE0200-8F79-4C3B-8CD4-BE97705868EC"), this.include.Value);
+            }
+        }
+
+        public class WhenTheTypeIsAnEnum
+        {
+            private IncludeSingle<CustomerStatus> include = new IncludeSingle<CustomerStatus>();
+            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public WhenTheTypeIsAnEnum()
+            {
+                this.mockReader.Setup(x => x[0]).Returns(1);
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                var reader = this.mockReader.Object;
+
+                this.include.BuildValue(reader, this.mockObjectBuilder.Object);
+            }
+
+            [Fact]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.True(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void TheObjectBuilderShouldNotBeUsed()
+            {
+                this.mockObjectBuilder.Verify(x => x.BuildInstance<CustomerStatus>(It.IsAny<IObjectInfo>(), It.IsAny<IDataReader>()), Times.Never());
+            }
+
+            [Fact]
+            public void ValueShouldNotBeNull()
+            {
+                Assert.NotNull(this.include.Value);
+            }
+
+            [Fact]
+            public void ValuesShouldContainTheResultOfTheTypeConversion()
+            {
+                Assert.Equal(CustomerStatus.Active, this.include.Value);
+            }
+        }
+
+        public class WhenTheTypeIsAnXDocument
+        {
+            private IncludeSingle<XDocument> include = new IncludeSingle<XDocument>();
+            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public WhenTheTypeIsAnXDocument()
+            {
+                this.mockReader.Setup(x => x[0]).Returns("<xml><element>text</element></xml>");
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                var reader = this.mockReader.Object;
+
+                this.include.BuildValue(reader, this.mockObjectBuilder.Object);
+            }
+
+            [Fact]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.True(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void TheObjectBuilderShouldNotBeUsed()
+            {
+                this.mockObjectBuilder.Verify(x => x.BuildInstance<XDocument>(It.IsAny<IObjectInfo>(), It.IsAny<IDataReader>()), Times.Never());
+            }
+
+            [Fact]
+            public void ValueShouldNotBeNull()
+            {
+                Assert.NotNull(this.include.Value);
+            }
+
+            [Fact]
+            public void ValuesShouldContainTheResultOfTheTypeConversion()
+            {
+                Assert.Equal(XDocument.Parse("<xml><element>text</element></xml>").ToString(SaveOptions.DisableFormatting), this.include.Value.ToString(SaveOptions.DisableFormatting));
+            }
+        }
+
+        public class WhenTheTypeIsAString
+        {
+            private IncludeSingle<string> include = new IncludeSingle<string>();
+            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public WhenTheTypeIsAString()
+            {
+                this.mockReader.Setup(x => x[0]).Returns("Foo");
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                var reader = this.mockReader.Object;
+
+                this.include.BuildValue(reader, this.mockObjectBuilder.Object);
+            }
+
+            [Fact]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.True(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void TheObjectBuilderShouldNotBeUsed()
+            {
+                this.mockObjectBuilder.Verify(x => x.BuildInstance<string>(It.IsAny<IObjectInfo>(), It.IsAny<IDataReader>()), Times.Never());
+            }
+
+            [Fact]
+            public void ValueShouldNotBeNull()
+            {
+                Assert.NotNull(this.include.Value);
+            }
+
+            [Fact]
+            public void ValuesShouldContainTheResultOfTheTypeConversion()
+            {
+                Assert.Equal("Foo", this.include.Value);
             }
         }
 

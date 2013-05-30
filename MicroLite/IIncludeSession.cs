@@ -173,6 +173,6 @@ namespace MicroLite
         /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Single", Justification = "It's used in loads of places by the linq extension methods as a method name.")]
-        IInclude<T> Single<T>(SqlQuery sqlQuery) where T : class, new();
+        IInclude<T> Single<T>(SqlQuery sqlQuery);
     }
 }
