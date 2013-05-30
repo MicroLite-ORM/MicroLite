@@ -48,6 +48,10 @@
                         return propertyInfo.Name != "Created";
                     },
                     IdentifierStrategy = IdentifierStrategy.Assigned,
+                    Ignore = (PropertyInfo propertyInfo) =>
+                    {
+                        return propertyInfo.Name == "NonPersistedValue";
+                    },
                     TableSchema = "Sales",
                     UsePluralClassNameForTableName = false
                 });
@@ -76,7 +80,7 @@
             [Fact]
             public void TheCreatedPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Created"));
             }
 
             [Fact]
@@ -106,7 +110,7 @@
             [Fact]
             public void TheDateOfBirthPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "DateOfBirth"));
             }
 
             [Fact]
@@ -142,7 +146,7 @@
             [Fact]
             public void TheIdPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Id"));
             }
 
             [Fact]
@@ -178,7 +182,13 @@
             [Fact]
             public void TheNamePropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Name"));
+            }
+
+            [Fact]
+            public void TheNonPersistedValuePropertyShouldNotBeMapped()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "NonPersistedValue"));
             }
 
             [Fact]
@@ -220,7 +230,7 @@
             [Fact]
             public void TheStatusPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "CustomerStatusId"));
             }
 
             [Fact]
@@ -244,7 +254,7 @@
             [Fact]
             public void TheUpdatedPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Updated"));
             }
         }
 
@@ -272,7 +282,7 @@
             [Fact]
             public void TheInvoiceIdPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "InvoiceId"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "InvoiceId"));
             }
 
             [Fact]
@@ -314,7 +324,7 @@
             [Fact]
             public void TheCreatedPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Created"));
             }
 
             [Fact]
@@ -344,7 +354,7 @@
             [Fact]
             public void TheDateOfBirthPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "DateOfBirth"));
             }
 
             [Fact]
@@ -380,7 +390,7 @@
             [Fact]
             public void TheIdPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Id"));
             }
 
             [Fact]
@@ -416,13 +426,19 @@
             [Fact]
             public void TheNamePropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Name"));
             }
 
             [Fact]
-            public void ThereShouldBe4Columns()
+            public void TheNonPersistedValuePropertyShouldBeMapped()
             {
-                Assert.Equal(6, this.objectInfo.TableInfo.Columns.Count());
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "NonPersistedValue"));
+            }
+
+            [Fact]
+            public void ThereShouldBe7Columns()
+            {
+                Assert.Equal(7, this.objectInfo.TableInfo.Columns.Count());
             }
 
             [Fact]
@@ -458,7 +474,7 @@
             [Fact]
             public void TheStatusPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "CustomerStatusId"));
             }
 
             [Fact]
@@ -482,7 +498,7 @@
             [Fact]
             public void TheUpdatedPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Updated"));
             }
         }
 
@@ -519,6 +535,12 @@
             }
 
             public string Name
+            {
+                get;
+                set;
+            }
+
+            public string NonPersistedValue
             {
                 get;
                 set;

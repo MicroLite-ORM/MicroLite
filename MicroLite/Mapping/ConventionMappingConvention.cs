@@ -62,7 +62,7 @@ namespace MicroLite.Mapping
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var columns = new List<ColumnInfo>(properties.Length);
 
-            foreach (var property in properties.Where(p => p.CanRead && p.CanWrite))
+            foreach (var property in properties.Where(p => p.CanRead && p.CanWrite && !this.settings.Ignore(p)))
             {
                 var columnInfo = new ColumnInfo(
                        columnName: property.PropertyType.IsEnum ? property.PropertyType.Name + "Id" : property.Name,

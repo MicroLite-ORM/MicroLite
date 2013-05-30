@@ -32,6 +32,12 @@
             }
 
             [Fact]
+            public void TheIgnoreFunctionShouldBeSet()
+            {
+                Assert.NotNull(this.settings.Ignore);
+            }
+
+            [Fact]
             public void TheInflectionServiceShoulBeDefaultToTheEnglishInflectionService()
             {
                 Assert.IsType<EnglishInflectionService>(this.settings.InflectionService);

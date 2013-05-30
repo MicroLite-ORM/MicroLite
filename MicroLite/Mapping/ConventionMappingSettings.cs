@@ -35,6 +35,10 @@ namespace MicroLite.Mapping
                 return true;
             };
             this.IdentifierStrategy = IdentifierStrategy.DbGenerated;
+            this.Ignore = (PropertyInfo propertyInfo) =>
+            {
+                return false;
+            };
             this.InflectionService = Inflection.InflectionService.English;
             this.TableSchema = null;
             this.UsePluralClassNameForTableName = true;
@@ -73,6 +77,15 @@ namespace MicroLite.Mapping
         /// Gets or sets the identifier strategy (defaults to DbGenerated).
         /// </summary>
         public IdentifierStrategy IdentifierStrategy
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the function which specifies whether a property should be ignored from the mapping.
+        /// </summary>
+        public Func<PropertyInfo, bool> Ignore
         {
             get;
             set;
