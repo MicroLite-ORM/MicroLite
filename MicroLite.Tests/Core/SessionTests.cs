@@ -817,6 +817,66 @@
         }
 
         [Fact]
+        public void UpdateReturnsFalseIfNoRecordsUpdated()
+        {
+            var customer = new Customer();
+            var sqlQuery = new SqlQuery("");
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Update, customer)).Returns(sqlQuery);
+
+            var mockCommand = new Mock<IDbCommand>();
+
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockSqlDialect.Object,
+                new IListener[0]);
+
+            Assert.False(session.Update(customer));
+
+            mockSqlDialect.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Fact]
+        public void UpdateReturnsTrueIfRecordUpdated()
+        {
+            var customer = new Customer();
+            var sqlQuery = new SqlQuery("");
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Update, customer)).Returns(sqlQuery);
+
+            var mockCommand = new Mock<IDbCommand>();
+
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                mockSqlDialect.Object,
+                new IListener[0]);
+
+            Assert.True(session.Update(customer));
+
+            mockSqlDialect.VerifyAll();
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Fact]
         public void UpdateThrowsArgumentNullExceptionForNullInstance()
         {
             var session = new Session(

@@ -108,6 +108,7 @@ namespace MicroLite
         /// Updates the database record for the specified instance with the current property values.
         /// </summary>
         /// <param name="instance">The instance to persist the values for.</param>
+        /// <returns>true if the object was updated successfully; otherwise false.</returns>
         /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
         /// <exception cref="ArgumentNullException">Thrown if the specified instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the update command.</exception>
@@ -123,6 +124,6 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        void Update(object instance);
+        bool Update(object instance);
     }
 }

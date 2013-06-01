@@ -86,7 +86,9 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, type, identifier);
 
-            return this.Execute(sqlQuery) == 1;
+            var rowsAffected = this.Execute(sqlQuery);
+
+            return rowsAffected == 1;
         }
 
         public int Execute(SqlQuery sqlQuery)
@@ -190,7 +192,7 @@ namespace MicroLite.Core
             }
         }
 
-        public void Update(object instance)
+        public bool Update(object instance)
         {
             this.ThrowIfDisposed();
 
@@ -208,6 +210,8 @@ namespace MicroLite.Core
             var rowsAffected = this.Execute(sqlQuery);
 
             this.listeners.Reverse().Each(l => l.AfterUpdate(instance, rowsAffected));
+
+            return rowsAffected == 1;
         }
     }
 }
