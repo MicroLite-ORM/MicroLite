@@ -58,7 +58,6 @@ namespace MicroLite.Mapping
 
         private List<ColumnInfo> CreateColumnInfos(Type forType)
         {
-            var possibleClassIdentifiers = new[] { "Id", forType.Name + "Id" };
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var columns = new List<ColumnInfo>(properties.Length);
 
@@ -67,7 +66,7 @@ namespace MicroLite.Mapping
                 var columnInfo = new ColumnInfo(
                        columnName: property.PropertyType.IsEnum ? property.PropertyType.Name + "Id" : property.Name,
                        propertyInfo: property,
-                       isIdentifier: possibleClassIdentifiers.Contains(property.Name),
+                       isIdentifier: this.settings.IsIdentifier(property),
                        allowInsert: this.settings.AllowInsert(property),
                        allowUpdate: this.settings.AllowUpdate(property));
 

@@ -40,6 +40,10 @@ namespace MicroLite.Mapping
                 return false;
             };
             this.InflectionService = Inflection.InflectionService.English;
+            this.IsIdentifier = (PropertyInfo propertyInfo) =>
+            {
+                return propertyInfo.Name == "Id" || propertyInfo.Name == propertyInfo.DeclaringType.Name + "Id";
+            };
             this.TableSchema = null;
             this.UsePluralClassNameForTableName = true;
         }
@@ -95,6 +99,15 @@ namespace MicroLite.Mapping
         /// Gets or sets the inflection service (defaults to InflectionService.English).
         /// </summary>
         public IInflectionService InflectionService
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the function which determines whether a property is the identifier property (default returns true if the property name is 'Id' or {ClassName} + 'Id').
+        /// </summary>
+        public Func<PropertyInfo, bool> IsIdentifier
         {
             get;
             set;

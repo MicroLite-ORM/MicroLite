@@ -44,6 +44,12 @@
             }
 
             [Fact]
+            public void TheIsIdentifierFunctionShouldBeSet()
+            {
+                Assert.NotNull(this.settings.IsIdentifier);
+            }
+
+            [Fact]
             public void TheTableSchemIsSetToNull()
             {
                 Assert.Null(this.settings.TableSchema);
