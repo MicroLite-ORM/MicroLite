@@ -56,7 +56,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the function which specifies whether a property can be inserted.
+        /// Gets or sets the function which specifies whether a property can be inserted (returns true by default).
         /// </summary>
         public Func<PropertyInfo, bool> AllowInsert
         {
@@ -65,7 +65,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the function which specifies whether a property can be updated.
+        /// Gets or sets the function which specifies whether a property can be updated (returns true by default).
         /// </summary>
         public Func<PropertyInfo, bool> AllowUpdate
         {
@@ -83,7 +83,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the function which specifies whether a property should be ignored from the mapping.
+        /// Gets or sets the function which specifies whether a property should be ignored from the mapping (returns false by default).
         /// </summary>
         public Func<PropertyInfo, bool> Ignore
         {
@@ -92,7 +92,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the inflection service.
+        /// Gets or sets the inflection service (defaults to InflectionService.English).
         /// </summary>
         public IInflectionService InflectionService
         {
