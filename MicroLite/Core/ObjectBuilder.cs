@@ -14,11 +14,6 @@ namespace MicroLite.Core
 {
     using System;
     using System.Data;
-
-#if !NET_3_5
-
-#endif
-
     using MicroLite.Logging;
     using MicroLite.Mapping;
 
