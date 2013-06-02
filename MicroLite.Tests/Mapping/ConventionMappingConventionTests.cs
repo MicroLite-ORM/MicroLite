@@ -120,21 +120,27 @@
             }
 
             [Fact]
-            public void TheIdColumnShouldAllowUpdate()
-            {
-                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowUpdate);
-            }
-
-            [Fact]
             public void TheIdColumnShouldBeSet()
             {
                 Assert.Equal(typeof(Customer).GetProperty("Id"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").PropertyInfo);
             }
 
             [Fact]
+            public void TheIdColumnShouldNotAllowUpdate()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowUpdate);
+            }
+
+            [Fact]
             public void TheIdentifierColumnShouldBeSet()
             {
                 Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn);
+            }
+
+            [Fact]
+            public void TheIdentifierPropertyShouldBeSet()
+            {
+                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
             }
 
             [Fact]
@@ -280,6 +286,12 @@
             }
 
             [Fact]
+            public void TheIdentifierPropertyShouldBeSet()
+            {
+                Assert.Equal("InvoiceId", this.objectInfo.TableInfo.IdentifierProperty);
+            }
+
+            [Fact]
             public void TheInvoiceIdPropertyShouldBeMapped()
             {
                 Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "InvoiceId"));
@@ -289,6 +301,50 @@
             public void TheInvoiceIdShouldBeIdentifier()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "InvoiceId").IsIdentifier);
+            }
+        }
+
+        public class WhenTheResolveIdentifierColumnNameFunctionIsOverridden
+        {
+            private readonly IObjectInfo objectInfo;
+
+            public WhenTheResolveIdentifierColumnNameFunctionIsOverridden()
+            {
+                var mappingConvention = new ConventionMappingConvention(new ConventionMappingSettings
+                {
+                    IdentifierStrategy = IdentifierStrategy.Assigned,
+                    ResolveIdentifierColumnName = (PropertyInfo propertyInfo) =>
+                    {
+                        return propertyInfo.DeclaringType.Name + "Id";
+                    },
+                    UsePluralClassNameForTableName = false
+                });
+
+                this.objectInfo = mappingConvention.CreateObjectInfo(typeof(Customer));
+            }
+
+            [Fact]
+            public void TheIdentifierColumnShouldBeSet()
+            {
+                Assert.Equal("CustomerId", this.objectInfo.TableInfo.IdentifierColumn);
+            }
+
+            [Fact]
+            public void TheIdentifierPropertyShouldBeSet()
+            {
+                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
+            }
+
+            [Fact]
+            public void TheIdPropertyShouldBeMapped()
+            {
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "CustomerId"));
+            }
+
+            [Fact]
+            public void TheIdShouldBeIdentifier()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerId").IsIdentifier);
             }
         }
 
@@ -364,21 +420,27 @@
             }
 
             [Fact]
-            public void TheIdColumnShouldAllowUpdate()
-            {
-                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowUpdate);
-            }
-
-            [Fact]
             public void TheIdColumnShouldBeSet()
             {
                 Assert.Equal(typeof(Customer).GetProperty("Id"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").PropertyInfo);
             }
 
             [Fact]
+            public void TheIdColumnShouldNotAllowUpdate()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowUpdate);
+            }
+
+            [Fact]
             public void TheIdentifierColumnShouldBeSet()
             {
                 Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn);
+            }
+
+            [Fact]
+            public void TheIdentifierPropertyShouldBeSet()
+            {
+                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
             }
 
             [Fact]

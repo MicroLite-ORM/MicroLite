@@ -50,6 +50,18 @@
             }
 
             [Fact]
+            public void TheResolveColumnNameFunctionShouldBeSet()
+            {
+                Assert.NotNull(this.settings.ResolveColumnName);
+            }
+
+            [Fact]
+            public void TheResolveIdentifierColumnNameFunctionShouldBeSet()
+            {
+                Assert.NotNull(this.settings.ResolveIdentifierColumnName);
+            }
+
+            [Fact]
             public void TheTableSchemIsSetToNull()
             {
                 Assert.Null(this.settings.TableSchema);

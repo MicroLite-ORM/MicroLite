@@ -63,12 +63,14 @@ namespace MicroLite.Mapping
 
             foreach (var property in properties.Where(p => p.CanRead && p.CanWrite && !this.settings.Ignore(p)))
             {
+                var isIdentifier = this.settings.IsIdentifier(property);
+
                 var columnInfo = new ColumnInfo(
-                       columnName: property.PropertyType.IsEnum ? property.PropertyType.Name + "Id" : property.Name,
+                       columnName: isIdentifier ? this.settings.ResolveIdentifierColumnName(property) : this.settings.ResolveColumnName(property),
                        propertyInfo: property,
-                       isIdentifier: this.settings.IsIdentifier(property),
-                       allowInsert: this.settings.AllowInsert(property),
-                       allowUpdate: this.settings.AllowUpdate(property));
+                       isIdentifier: isIdentifier,
+                       allowInsert: isIdentifier ? true : this.settings.AllowInsert(property),
+                       allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property));
 
                 columns.Add(columnInfo);
             }

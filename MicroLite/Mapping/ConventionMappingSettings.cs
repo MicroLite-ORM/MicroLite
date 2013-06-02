@@ -44,6 +44,19 @@ namespace MicroLite.Mapping
             {
                 return propertyInfo.Name == "Id" || propertyInfo.Name == propertyInfo.DeclaringType.Name + "Id";
             };
+            this.ResolveColumnName = (PropertyInfo propertyInfo) =>
+            {
+                if (propertyInfo.PropertyType.IsEnum)
+                {
+                    return propertyInfo.PropertyType.Name + "Id";
+                }
+
+                return propertyInfo.Name;
+            };
+            this.ResolveIdentifierColumnName = (PropertyInfo propertyInfo) =>
+            {
+                return propertyInfo.Name;
+            };
             this.TableSchema = null;
             this.UsePluralClassNameForTableName = true;
         }
@@ -108,6 +121,24 @@ namespace MicroLite.Mapping
         /// Gets or sets the function which determines whether a property is the identifier property (default returns true if the property name is 'Id' or {ClassName} + 'Id').
         /// </summary>
         public Func<PropertyInfo, bool> IsIdentifier
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the function which determines the name of the column the property is mapped to (default returns the property name unless the property type is an enum in which case it returns {EnumName} + 'Id').
+        /// </summary>
+        public Func<PropertyInfo, string> ResolveColumnName
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the function which determines the name of the identifier column for the table (default returns the property name).
+        /// </summary>
+        public Func<PropertyInfo, string> ResolveIdentifierColumnName
         {
             get;
             set;
