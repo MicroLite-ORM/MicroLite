@@ -61,6 +61,24 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Encryption algorithm is missing, please add the following value to app.settings: &lt;add key=&quot;MicroLite.DbEncryptedString.SymmetricAlgorithm&quot; value=&quot;AesManaged&quot; /&gt; (see http://msdn.microsoft.com/en-us/library/System.Security.Cryptography.SymmetricAlgorithm(v=vs.110).aspx for the fully supported list of values).
+        /// </summary>
+        internal static string AppSettingSymmetricAlgorithmProvider_MissingAlgorithm {
+            get {
+                return ResourceManager.GetString("AppSettingSymmetricAlgorithmProvider_MissingAlgorithm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Encryption key is missing, please add the following value to app.settings: &lt;add key=&quot;MicroLite.DbEncryptedString.EncryptionKey&quot; value=&quot;replace-with-your-encryption-key&quot; /&gt;.
+        /// </summary>
+        internal static string AppSettingSymmetricAlgorithmProvider_MissingKey {
+            get {
+                return ResourceManager.GetString("AppSettingSymmetricAlgorithmProvider_MissingKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted..
         /// </summary>
         internal static string AssignedListener_IdentifierNotSetForInsert {
@@ -88,24 +106,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Encryption algorithm is missing, please add the following value to app.settings: &lt;add key=&quot;MicroLite.DbEncryptedString.SymmetricAlgorithm&quot; value=&quot;AesManaged&quot; /&gt; (see http://msdn.microsoft.com/en-us/library/System.Security.Cryptography.SymmetricAlgorithm(v=vs.110).aspx for the fully supported list of values).
-        /// </summary>
-        internal static string ConfigurationSymmetricAlgorithmProvider_MissingAlgorithm {
-            get {
-                return ResourceManager.GetString("ConfigurationSymmetricAlgorithmProvider_MissingAlgorithm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The Encryption key is missing, please add the following value to app.settings: &lt;add key=&quot;MicroLite.DbEncryptedString.EncryptionKey&quot; value=&quot;replace-with-your-encryption-key&quot; /&gt;.
-        /// </summary>
-        internal static string ConfigurationSymmetricAlgorithmProvider_MissingKey {
-            get {
-                return ResourceManager.GetString("ConfigurationSymmetricAlgorithmProvider_MissingKey", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Using logger [{0}].
         /// </summary>
         internal static string ConfigureExtensions_UsingLogger {
@@ -120,15 +120,6 @@ namespace MicroLite {
         internal static string ConfigureExtensions_UsingMappingConvention {
             get {
                 return ResourceManager.GetString("ConfigureExtensions_UsingMappingConvention", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The number of parameters in the SQL statement and the number of specified parameter arguments should match. However [{0}] parameters used in the SQL statement and [{1}] parameter arguments were specified..
-        /// </summary>
-        internal static string ConnectionManager_ArgumentsCountMismatch {
-            get {
-                return ResourceManager.GetString("ConnectionManager_ArgumentsCountMismatch", resourceCulture);
             }
         }
         
@@ -286,6 +277,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Setting the property value of [{0}].[{1}].
+        /// </summary>
+        internal static string IObjectInfo_SettingPropertyValue {
+            get {
+                return ResourceManager.GetString("IObjectInfo_SettingPropertyValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creating a new instance of [{0}].
         /// </summary>
         internal static string ObjectBuilder_CreatingInstance {
@@ -363,15 +363,6 @@ namespace MicroLite {
         internal static string ObjectInfo_RetrievingObjectInfo {
             get {
                 return ResourceManager.GetString("ObjectInfo_RetrievingObjectInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Setting the property value of [{0}].[{1}].
-        /// </summary>
-        internal static string ObjectInfo_SettingPropertyValue {
-            get {
-                return ResourceManager.GetString("ObjectInfo_SettingPropertyValue", resourceCulture);
             }
         }
         
@@ -507,6 +498,15 @@ namespace MicroLite {
         internal static string SessionFactory_CreatingSession {
             get {
                 return ResourceManager.GetString("SessionFactory_CreatingSession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of parameters in the SQL statement and the number of specified parameter arguments should match. However [{0}] parameters used in the SQL statement and [{1}] parameter arguments were specified..
+        /// </summary>
+        internal static string SqlDialect_ArgumentsCountMismatch {
+            get {
+                return ResourceManager.GetString("SqlDialect_ArgumentsCountMismatch", resourceCulture);
             }
         }
         

@@ -83,7 +83,7 @@ namespace MicroLite.Mapping
         {
             var dictionary = (IDictionary<string, object>)instance;
 
-            log.TryLogDebug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnName);
+            log.TryLogDebug(Messages.IObjectInfo_SettingPropertyValue, this.ForType.Name, columnName);
             dictionary.Add(columnName, value == DBNull.Value ? null : value);
         }
     }

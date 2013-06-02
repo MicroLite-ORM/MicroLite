@@ -306,7 +306,7 @@ namespace MicroLite.Mapping
                 throw new MicroLiteException(Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName));
             }
 
-            log.TryLogDebug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, propertyName);
+            log.TryLogDebug(Messages.IObjectInfo_SettingPropertyValue, this.ForType.Name, propertyName);
             propertyAccessor.SetValue(instance, value);
         }
 
@@ -343,7 +343,7 @@ namespace MicroLite.Mapping
 
             var converted = typeConverter.ConvertFromDbValue(value, columnInfo.PropertyInfo.PropertyType);
 
-            log.TryLogDebug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
+            log.TryLogDebug(Messages.IObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
             this.propertyAccessors[columnInfo.PropertyInfo.Name].SetValue(instance, converted);
         }
 

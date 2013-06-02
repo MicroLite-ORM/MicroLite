@@ -107,7 +107,7 @@
                 var exception = Assert.Throws<MicroLiteException>(
                     () => sqlDialect.BuildCommand(command, sqlQuery));
 
-                Assert.Equal(Messages.ConnectionManager_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
+                Assert.Equal(Messages.SqlDialect_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
             }
         }
 
