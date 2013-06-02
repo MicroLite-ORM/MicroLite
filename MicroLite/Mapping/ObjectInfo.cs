@@ -73,7 +73,7 @@ namespace MicroLite.Mapping
             foreach (var columnInfo in this.tableInfo.Columns)
             {
                 log.TryLogDebug(Messages.ObjectInfo_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
-                this.propertyAccessors.Add(columnInfo.PropertyInfo.Name, new PropertyAccessor(columnInfo.PropertyInfo));
+                this.propertyAccessors.Add(columnInfo.PropertyInfo.Name, PropertyAccessor.Create(columnInfo.PropertyInfo));
 
                 if (columnInfo.IsIdentifier && columnInfo.PropertyInfo.PropertyType.IsValueType)
                 {

@@ -27,7 +27,7 @@
             public WhenCallingGetValueForAnEnum()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Status");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
+                var propertyAccessor = PropertyAccessor.Create(propertyInfo);
 
                 this.value = propertyAccessor.GetValue(this.customer);
             }
@@ -57,7 +57,7 @@
             public WhenCallingGetValueForANullableValueTypeWithANonNullValue()
             {
                 var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
+                var propertyAccessor = PropertyAccessor.Create(propertyInfo);
 
                 this.value = propertyAccessor.GetValue(this.customer);
             }
@@ -81,7 +81,7 @@
             public WhenCallingGetValueForANullableValueTypeWithANullValue()
             {
                 var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
+                var propertyAccessor = PropertyAccessor.Create(propertyInfo);
 
                 this.value = propertyAccessor.GetValue(this.customer);
             }
@@ -105,7 +105,7 @@
             public WhenCallingGetValueForAReferenceType()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Name");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
+                var propertyAccessor = PropertyAccessor.Create(propertyInfo);
 
                 this.value = propertyAccessor.GetValue(this.customer);
             }
@@ -124,7 +124,7 @@
             public WhenCallingSetValueForAnEnum()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Status");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
+                var propertyAccessor = PropertyAccessor.Create(propertyInfo);
 
                 propertyAccessor.SetValue(this.customer, CustomerStatus.Suspended);
             }
@@ -143,7 +143,7 @@
             public WhenCallingSetValueForANullableStructWithNonNull()
             {
                 var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
+                var propertyAccessor = PropertyAccessor.Create(propertyInfo);
 
                 propertyAccessor.SetValue(this.customer, 100);
             }
@@ -165,7 +165,7 @@
             public WhenCallingSetValueForANullableStructWithNull()
             {
                 var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
+                var propertyAccessor = PropertyAccessor.Create(propertyInfo);
 
                 propertyAccessor.SetValue(this.customer, null);
             }
@@ -184,7 +184,7 @@
             public WhenCallingSetValueForAReferenceType()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Name");
-                var propertyAccessor = new PropertyAccessor(propertyInfo);
+                var propertyAccessor = PropertyAccessor.Create(propertyInfo);
 
                 propertyAccessor.SetValue(this.customer, "Fred Blogs");
             }
