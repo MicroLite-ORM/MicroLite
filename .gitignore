@@ -11,3 +11,4 @@ TestResults
 *.suo
 *.user
 *.sln.docstates
+*.shfbproj_*
