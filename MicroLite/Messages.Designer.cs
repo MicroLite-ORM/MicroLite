@@ -178,6 +178,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The property [{0}].[{1}] will not be mapped by MicroLite as the convention settings have specified it is ignored.
+        /// </summary>
+        internal static string ConventionMappingConvention_IgnoringProperty {
+            get {
+                return ResourceManager.GetString("ConventionMappingConvention_IgnoringProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The cipher text is invalid, it should contain 2 parts separated by an &apos;@&apos;.
         /// </summary>
         internal static string DbEncryptedStringTypeConverter_CipherTextInvalid {
@@ -282,6 +291,15 @@ namespace MicroLite {
         internal static string IObjectInfo_SettingPropertyValue {
             get {
                 return ResourceManager.GetString("IObjectInfo_SettingPropertyValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The property [{0}].[{1}] will not be mapped by MicroLite as it does not have a public getter and setter..
+        /// </summary>
+        internal static string MappingConvention_PropertyNotGetAndSet {
+            get {
+                return ResourceManager.GetString("MappingConvention_PropertyNotGetAndSet", resourceCulture);
             }
         }
         

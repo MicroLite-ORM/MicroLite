@@ -312,4 +312,10 @@
   <data name="ObjectInfo_UnknownProperty" xml:space="preserve">
     <value>The type [{0}] does not have a property with the name [{1}]</value>
   </data>
+  <data name="ConventionMappingConvention_IgnoringProperty" xml:space="preserve">
+    <value>The property [{0}].[{1}] will not be mapped by MicroLite as the convention settings have specified it is ignored</value>
+  </data>
+  <data name="MappingConvention_PropertyNotGetAndSet" xml:space="preserve">
+    <value>The property [{0}].[{1}] will not be mapped by MicroLite as it does not have a public getter and setter.</value>
+  </data>
 </root>

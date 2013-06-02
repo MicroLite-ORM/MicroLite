@@ -14,7 +14,6 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
@@ -55,8 +54,14 @@ namespace MicroLite.Mapping
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var columns = new List<ColumnInfo>(properties.Length);
 
-            foreach (var property in properties.Where(p => p.CanRead && p.CanWrite))
+            foreach (var property in properties)
             {
+                if (!property.CanRead || !property.CanWrite)
+                {
+                    log.TryLogDebug(Messages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                    continue;
+                }
+
                 var columnAttribute = property.GetAttribute<ColumnAttribute>(inherit: true);
 
                 if (columnAttribute == null)
