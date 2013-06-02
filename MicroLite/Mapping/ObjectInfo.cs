@@ -177,16 +177,7 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public object GetIdentifierValue(object instance)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            if (instance.GetType() != this.ForType)
-            {
-                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
-                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
-            }
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
             return this.GetPropertyValueForColumn(instance, this.TableInfo.IdentifierColumn);
         }
@@ -199,16 +190,7 @@ namespace MicroLite.Mapping
         /// <returns>The value of the property.</returns>
         public object GetPropertyValue(object instance, string propertyName)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            if (instance.GetType() != this.ForType)
-            {
-                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
-                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
-            }
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
             IPropertyAccessor propertyAccessor;
 
@@ -234,16 +216,7 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public object GetPropertyValueForColumn(object instance, string columnName)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            if (instance.GetType() != this.ForType)
-            {
-                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
-                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
-            }
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
             var columnInfo = this.TableInfo.Columns.SingleOrDefault(c => c.ColumnName == columnName);
 
@@ -272,7 +245,9 @@ namespace MicroLite.Mapping
         /// </returns>
         public bool HasDefaultIdentifierValue(object instance)
         {
-            var identifierValue = this.GetPropertyValueForColumn(instance, this.TableInfo.IdentifierColumn);
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+
+            var identifierValue = this.GetPropertyValue(instance, this.TableInfo.IdentifierProperty);
 
             return object.Equals(identifierValue, this.DefaultIdentifierValue);
         }
@@ -287,16 +262,7 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public void SetPropertyValue(object instance, string propertyName, object value)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            if (instance.GetType() != this.ForType)
-            {
-                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
-                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
-            }
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
             IPropertyAccessor propertyAccessor;
 
@@ -320,16 +286,7 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public void SetPropertyValueForColumn(object instance, string columnName, object value)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            if (instance.GetType() != this.ForType)
-            {
-                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
-                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
-            }
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
             var columnInfo = this.TableInfo.Columns.SingleOrDefault(c => c.ColumnName == columnName);
 
@@ -368,6 +325,20 @@ namespace MicroLite.Mapping
             {
                 log.TryLogFatal(message);
                 throw new MicroLiteException(message);
+            }
+        }
+
+        private void VerifyInstanceIsCorrectTypeForThisObjectInfo(object instance)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
+            if (instance.GetType() != this.ForType)
+            {
+                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
+                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
             }
         }
     }

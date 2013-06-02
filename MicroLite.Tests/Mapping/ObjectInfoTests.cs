@@ -289,7 +289,32 @@
         }
 
         [Fact]
-        public void HasDefaultGuidValue()
+        public void HasDefaultIdentifierValueThrowsArgumentNullExceptionForNullInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.HasDefaultIdentifierValue(null));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void HasDefaultIdentifierValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithGuidIdentifier();
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.HasDefaultIdentifierValue(instance));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void HasDefaultIdentifierValueWhenIdentifierIsGuid()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
 
@@ -303,7 +328,7 @@
         }
 
         [Fact]
-        public void HasDefaultIntegerValue()
+        public void HasDefaultIdentifierValueWhenIdentifierIsInteger()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
@@ -317,7 +342,7 @@
         }
 
         [Fact]
-        public void HasDefaultStringValue()
+        public void HasDefaultIdentifierValueWhenIdentifierIsString()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
 
