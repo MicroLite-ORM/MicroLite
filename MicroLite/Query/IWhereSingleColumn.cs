@@ -53,5 +53,54 @@ namespace MicroLite.Query
         /// </summary>
         /// <returns>The next step in the fluent sql builder.</returns>
         IAndOrOrderBy IsNull();
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is equal to the specified comparisonValue.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsEqualTo(object comparisonValue);
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is not equal to the specified comparisonValue.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsNotEqualTo(object comparisonValue);
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is greater than the specified comparisonValue.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsGreaterThan(object comparisonValue);
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is greater than or equal to the specified comparisonValue.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsGreaterThanOrEqualTo(object comparisonValue);
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is less than the specified comparisonValue.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsLessThan(object comparisonValue);
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is less than or equal to the specified comparisonValue.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsLessThanOrEqualTo(object comparisonValue);
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is like the specified comparisonValue.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsLike(object comparisonValue);
     }
 }
