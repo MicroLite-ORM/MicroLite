@@ -246,6 +246,36 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Uses the specified argument to filter the column.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being equal to the specified comparisonValue.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     .IsEqualTo(new DateTime(2000, 1, 1))
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered = @p0)
+        /// </example>
+        public IAndOrOrderBy IsEqualTo(object comparisonValue)
+        {
+            if (!this.addedWhere)
+            {
+                this.innerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
+
+            this.AppendPredicate(" (" + this.whereColumnName + " = {0})", "@p0", comparisonValue);
+
+            return this;
+        }
+
+        /// <summary>
         /// Selects the number of records which match the specified filter.
         /// </summary>
         /// <param name="columnName">The column to query.</param>

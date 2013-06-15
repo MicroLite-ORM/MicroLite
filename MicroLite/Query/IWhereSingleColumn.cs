@@ -53,5 +53,12 @@ namespace MicroLite.Query
         /// </summary>
         /// <returns>The next step in the fluent sql builder.</returns>
         IAndOrOrderBy IsNull();
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is equal to the specified comparisonValue.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsEqualTo(object comparisonValue);
     }
 }

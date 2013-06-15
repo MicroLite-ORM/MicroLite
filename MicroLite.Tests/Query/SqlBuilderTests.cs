@@ -555,6 +555,22 @@
         }
 
         [Fact]
+        public void SelectWhereColumnIsEqualTo()
+        {
+            var sqlQuery = SqlBuilder
+                   .Select("Column1")
+                   .From("Table")
+                   .Where("Column1")
+                   .IsEqualTo("FOO")
+                   .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = @p0)", sqlQuery.CommandText);
+        }
+
+        [Fact]
         public void SelectWhereGroupByHavingOrderBy()
         {
             var sqlQuery = SqlBuilder
