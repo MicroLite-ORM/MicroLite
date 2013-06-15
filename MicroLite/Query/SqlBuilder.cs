@@ -281,6 +281,36 @@ namespace MicroLite.Query
         /// <param name="comparisonValue">The value to compare with.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <example>
+        /// This method allows us to specify that a column is filtered with the results not being equal to the specified comparisonValue.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     .IsNotEqualTo(new DateTime(2000, 1, 1))
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<>--> @p0)
+        /// </example>
+        public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
+        {
+            if (!this.addedWhere)
+            {
+                this.innerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
+
+            this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", "@p0", comparisonValue);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified argument to filter the column.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
         /// This method allows us to specify that a column is filtered with the results being greater than the specified comparisonValue.
         /// <code>
         /// var query = SqlBuilder
