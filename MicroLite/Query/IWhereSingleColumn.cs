@@ -74,5 +74,12 @@ namespace MicroLite.Query
         /// <param name="comparisonValue">The value to compare with.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         IAndOrOrderBy IsGreaterThanOrEqualTo(object comparisonValue);
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is less than the specified comparisonValue.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsLessThan(object comparisonValue);
     }
 }
