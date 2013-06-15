@@ -60,5 +60,12 @@ namespace MicroLite.Query
         /// <param name="comparisonValue">The value to compare with.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         IAndOrOrderBy IsEqualTo(object comparisonValue);
+
+        /// <summary>
+        /// Specifies that the specified column contains a value which is greater than the specified comparisonValue.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IAndOrOrderBy IsGreaterThan(object comparisonValue);
     }
 }
