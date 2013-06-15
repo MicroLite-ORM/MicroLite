@@ -18,6 +18,19 @@
     public class ReadOnlySessionTests
     {
         [Fact]
+        public void AdvancedReturnsSameSessionByDifferentInterface()
+        {
+            var session = new ReadOnlySession(
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new Mock<ISqlDialect>().Object);
+
+            var advancedSession = session.Advanced;
+
+            Assert.Same(session, advancedSession);
+        }
+
+        [Fact]
         public void AllCreatesASelectAllQueryExecutesAndReturnsResults()
         {
             var mockReader = new Mock<IDataReader>();
@@ -44,9 +57,7 @@
 
             var customers = session.All<Customer>();
 
-            // HACK: to force session to execute the query.
-            // TODO: find a better way, we don't really want to make the method non private just for testing though...
-            typeof(ReadOnlySession).GetMethod("ExecuteAllQueries", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).Invoke(session, null);
+            session.ExecutePendingQueries();
 
             Assert.Equal(1, customers.Values.Count);
 
@@ -231,9 +242,7 @@
 
             var includeScalar = session.Include.Scalar<int>(sqlQuery);
 
-            // HACK: to force session to execute the query.
-            // TODO: find a better way, we don't really want to make the method non private just for testing though...
-            typeof(ReadOnlySession).GetMethod("ExecuteAllQueries", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).Invoke(session, null);
+            session.ExecutePendingQueries();
 
             Assert.Equal(10, includeScalar.Value);
 

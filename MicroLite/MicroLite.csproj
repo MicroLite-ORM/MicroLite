@@ -65,6 +65,7 @@
     <Compile Include="Core\ReadOnlySession.cs" />
     <Compile Include="Dialect\SqlCharacters.cs" />
     <Compile Include="FrameworkExtensions\TypeExtensions.cs" />
+    <Compile Include="IAdvancedReadOnlySession.cs" />
     <Compile Include="Infrastructure\AppSettingSymmetricAlgorithmProvider.cs" />
     <Compile Include="DbEncryptedString.cs" />
     <Compile Include="Dialect\MySqlDialect.cs" />

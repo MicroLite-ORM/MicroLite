@@ -40,7 +40,7 @@ namespace MicroLite.Core
             Log.TryLogDebug(Messages.Session_Created);
         }
 
-        public IAdvancedSession Advanced
+        public new IAdvancedSession Advanced
         {
             get
             {

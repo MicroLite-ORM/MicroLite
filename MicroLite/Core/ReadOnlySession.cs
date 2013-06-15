@@ -22,7 +22,7 @@ namespace MicroLite.Core
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.
     /// </summary>
-    internal class ReadOnlySession : IReadOnlySession, IIncludeSession
+    internal class ReadOnlySession : IReadOnlySession, IIncludeSession, IAdvancedReadOnlySession
     {
         protected static readonly ILog Log = LogManager.GetCurrentClassLog();
         private readonly IConnectionManager connectionManager;
@@ -40,6 +40,14 @@ namespace MicroLite.Core
             this.connectionManager = connectionManager;
             this.objectBuilder = objectBuilder;
             this.sqlDialect = sqlDialect;
+        }
+
+        public IAdvancedReadOnlySession Advanced
+        {
+            get
+            {
+                return this;
+            }
         }
 
         public IIncludeSession Include
@@ -101,11 +109,41 @@ namespace MicroLite.Core
             GC.SuppressFinalize(this);
         }
 
+        public void ExecutePendingQueries()
+        {
+            try
+            {
+                if (this.sqlDialect.SupportsBatchedQueries)
+                {
+                    this.ExecuteQueriesCombined();
+                }
+                else
+                {
+                    this.ExecuteQueriesIndividually();
+                }
+            }
+            catch (MicroLiteException)
+            {
+                // Don't re-wrap MicroLite exceptions
+                throw;
+            }
+            catch (Exception e)
+            {
+                Log.TryLogError(e.Message, e);
+                throw new MicroLiteException(e.Message, e);
+            }
+            finally
+            {
+                this.includes.Clear();
+                this.queries.Clear();
+            }
+        }
+
         public IList<T> Fetch<T>(SqlQuery sqlQuery)
         {
             var include = this.Include.Many<T>(sqlQuery);
 
-            this.ExecuteAllQueries();
+            this.ExecutePendingQueries();
 
             return include.Values;
         }
@@ -147,7 +185,7 @@ namespace MicroLite.Core
         {
             var include = this.Include.Single<T>(identifier);
 
-            this.ExecuteAllQueries();
+            this.ExecutePendingQueries();
 
             return include.Value;
         }
@@ -156,7 +194,7 @@ namespace MicroLite.Core
         {
             var include = this.Include.Single<T>(sqlQuery);
 
-            this.ExecuteAllQueries();
+            this.ExecutePendingQueries();
 
             return include.Value;
         }
@@ -193,7 +231,7 @@ namespace MicroLite.Core
             var includeCount = this.Include.Scalar<int>(countSqlQuery);
             var includeMany = this.Include.Many<T>(pagedSqlQuery);
 
-            this.ExecuteAllQueries();
+            this.ExecutePendingQueries();
 
             var page = (pagingOptions.Offset / pagingOptions.Count) + 1;
 
@@ -242,36 +280,6 @@ namespace MicroLite.Core
             if (this.disposed)
             {
                 throw new ObjectDisposedException(this.GetType().Name);
-            }
-        }
-
-        private void ExecuteAllQueries()
-        {
-            try
-            {
-                if (this.sqlDialect.SupportsBatchedQueries)
-                {
-                    this.ExecuteQueriesCombined();
-                }
-                else
-                {
-                    this.ExecuteQueriesIndividually();
-                }
-            }
-            catch (MicroLiteException)
-            {
-                // Don't re-wrap MicroLite exceptions
-                throw;
-            }
-            catch (Exception e)
-            {
-                Log.TryLogError(e.Message, e);
-                throw new MicroLiteException(e.Message, e);
-            }
-            finally
-            {
-                this.includes.Clear();
-                this.queries.Clear();
             }
         }
 
