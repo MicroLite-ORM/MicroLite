@@ -115,6 +115,14 @@
 
         private class EmptySqlDialect : ISqlDialect
         {
+            public SqlCharacters SqlCharacters
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
             public bool SupportsBatchedQueries
             {
                 get

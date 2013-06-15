@@ -32,6 +32,17 @@ namespace MicroLite.Dialect
         private static readonly Regex tableNameRegex = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
 
+        private readonly SqlCharacters sqlCharacters;
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SqlDialect"/> class.
+        /// </summary>
+        /// <param name="sqlCharacters">The SQL characters.</param>
+        protected SqlDialect(SqlCharacters sqlCharacters)
+        {
+            this.sqlCharacters = sqlCharacters;
+        }
+
         /// <summary>
         /// Gets a value indicating whether this SqlDialect supports batched queries.
         /// </summary>
@@ -40,17 +51,6 @@ namespace MicroLite.Dialect
             get
             {
                 return true;
-            }
-        }
-
-        /// <summary>
-        /// Gets the close quote character.
-        /// </summary>
-        protected virtual char CloseQuote
-        {
-            get
-            {
-                return '"';
             }
         }
 
@@ -66,17 +66,6 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the open quote character.
-        /// </summary>
-        protected virtual char OpenQuote
-        {
-            get
-            {
-                return '"';
-            }
-        }
-
-        /// <summary>
         /// Gets the select identity string.
         /// </summary>
         protected abstract string SelectIdentityString
@@ -85,35 +74,13 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the select separator.
+        /// Gets the SQL characters for the SQL dialect.
         /// </summary>
-        protected virtual char SelectSeparator
+        protected SqlCharacters SqlCharacters
         {
             get
             {
-                return ';';
-            }
-        }
-
-        /// <summary>
-        /// Gets the SQL parameter.
-        /// </summary>
-        protected virtual char SqlParameter
-        {
-            get
-            {
-                return '?';
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether SQL parameters are named.
-        /// </summary>
-        protected virtual bool SupportsNamedParameters
-        {
-            get
-            {
-                return false;
+                return this.sqlCharacters;
             }
         }
 
@@ -126,7 +93,7 @@ namespace MicroLite.Dialect
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
         public virtual void BuildCommand(IDbCommand command, SqlQuery sqlQuery)
         {
-            var parameterNames = this.SupportsNamedParameters
+            var parameterNames = this.sqlCharacters.SupportsNamedParameters
                 ? SqlUtility.GetParameterNames(sqlQuery.CommandText)
                 : Enumerable.Range(0, sqlQuery.Arguments.Count).Select(c => "Parameter" + c.ToString(CultureInfo.InvariantCulture)).ToArray();
 
@@ -165,7 +132,7 @@ namespace MicroLite.Dialect
 
                 var commandText = SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                sqlBuilder.AppendLine(commandText + this.SelectSeparator);
+                sqlBuilder.AppendLine(commandText + this.sqlCharacters.StatementSeparator);
             }
 
             var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
@@ -227,7 +194,7 @@ namespace MicroLite.Dialect
 
                         if (column.AllowInsert)
                         {
-                            insertSqlBuilder.Append(this.FormatParameter(insertValues.Count) + ", ");
+                            insertSqlBuilder.Append(this.sqlCharacters.GetParameterName(insertValues.Count) + ", ");
 
                             var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
 
@@ -240,7 +207,7 @@ namespace MicroLite.Dialect
 
                     if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
                     {
-                        insertSqlBuilder.Append(this.SelectSeparator);
+                        insertSqlBuilder.Append(this.sqlCharacters.StatementSeparator);
                         insertSqlBuilder.Append(this.SelectIdentityString);
                     }
 
@@ -258,8 +225,8 @@ namespace MicroLite.Dialect
                         {
                             updateSqlBuilder.AppendFormat(
                                         " {0} = {1},",
-                                        this.EscapeSql(column.ColumnName),
-                                        this.FormatParameter(updateValues.Count));
+                                        this.sqlCharacters.EscapeSql(column.ColumnName),
+                                        this.sqlCharacters.GetParameterName(updateValues.Count));
 
                             var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
 
@@ -271,8 +238,8 @@ namespace MicroLite.Dialect
 
                     updateSqlBuilder.AppendFormat(
                         " WHERE {0} = {1}",
-                        this.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
-                        this.FormatParameter(updateValues.Count));
+                        this.sqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
+                        this.sqlCharacters.GetParameterName(updateValues.Count));
 
                     updateValues.Add(objectInfo.GetIdentifierValue(instance));
 
@@ -304,8 +271,8 @@ namespace MicroLite.Dialect
                     var sqlBuilder = this.CreateSql(statementType, objectInfo);
                     sqlBuilder.AppendFormat(
                         " WHERE {0} = {1}",
-                        this.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
-                        this.FormatParameter(0));
+                        this.sqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
+                        this.sqlCharacters.GetParameterName(0));
 
                     return new SqlQuery(sqlBuilder.ToString(), identifier);
 
@@ -358,42 +325,15 @@ namespace MicroLite.Dialect
 
             if (!string.IsNullOrEmpty(schema))
             {
-                sqlBuilder.Append(this.OpenQuote);
+                sqlBuilder.Append(this.sqlCharacters.LeftDelimiter);
                 sqlBuilder.Append(schema);
-                sqlBuilder.Append(this.CloseQuote);
+                sqlBuilder.Append(this.sqlCharacters.RightDelimiter);
                 sqlBuilder.Append('.');
             }
 
-            sqlBuilder.Append(this.OpenQuote);
+            sqlBuilder.Append(this.sqlCharacters.LeftDelimiter);
             sqlBuilder.Append(objectInfo.TableInfo.Name);
-            sqlBuilder.Append(this.CloseQuote);
-        }
-
-        /// <summary>
-        /// Escapes the SQL.
-        /// </summary>
-        /// <param name="sql">The SQL.</param>
-        /// <returns>The escaped SQL.</returns>
-        protected string EscapeSql(string sql)
-        {
-            return this.OpenQuote + sql + this.CloseQuote;
-        }
-
-        /// <summary>
-        /// Formats the parameter.
-        /// </summary>
-        /// <param name="parameterPosition">The parameter position.</param>
-        /// <returns>The formatted parameter.</returns>
-        protected string FormatParameter(int parameterPosition)
-        {
-            if (this.SupportsNamedParameters)
-            {
-                return this.SqlParameter + ('p' + parameterPosition.ToString(CultureInfo.InvariantCulture));
-            }
-            else
-            {
-                return this.SqlParameter.ToString();
-            }
+            sqlBuilder.Append(this.sqlCharacters.RightDelimiter);
         }
 
         /// <summary>
@@ -487,7 +427,7 @@ namespace MicroLite.Dialect
 
                         if (column.AllowInsert)
                         {
-                            sqlBuilder.Append(this.EscapeSql(column.ColumnName) + ", ");
+                            sqlBuilder.Append(this.sqlCharacters.EscapeSql(column.ColumnName) + ", ");
                         }
                     }
 
@@ -500,9 +440,9 @@ namespace MicroLite.Dialect
                     sqlBuilder.Append("SELECT ");
 
 #if NET_3_5
-                    sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.EscapeSql(x.ColumnName)).ToArray()));
+                    sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.sqlCharacters.EscapeSql(x.ColumnName)).ToArray()));
 #else
-                    sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.EscapeSql(x.ColumnName))));
+                    sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.sqlCharacters.EscapeSql(x.ColumnName))));
 #endif
                     sqlBuilder.Append(" FROM ");
                     this.AppendTableName(objectInfo, sqlBuilder);

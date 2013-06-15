@@ -86,6 +86,8 @@
           <Value>db</Value>
           <Value>is</Value>
           <Value>iv</Value>
+          <Value>ms</Value>
+          <Value>my</Value>
           <Value>to</Value>
         </CollectionProperty>
       </AnalyzerSettings>
