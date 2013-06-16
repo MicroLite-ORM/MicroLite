@@ -128,7 +128,7 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <param name="sql">The SQL to be escaped.</param>
         /// <returns>The escaped SQL.</returns>
-        public string EscapeSql(string sql)
+        public virtual string EscapeSql(string sql)
         {
             return this.LeftDelimiter + sql + this.RightDelimiter;
         }
