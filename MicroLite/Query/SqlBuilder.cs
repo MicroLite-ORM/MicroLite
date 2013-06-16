@@ -209,7 +209,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" AVG(" + columnName + ") AS " + columnAlias);
+            this.innerSql.AppendFormat(" AVG({0}) AS {1}", columnName, columnAlias);
 
             return this;
         }
@@ -290,7 +290,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" COUNT(" + columnName + ") AS " + columnAlias);
+            this.innerSql.AppendFormat(" COUNT({0}) AS {1}", columnName, columnAlias);
 
             return this;
         }
@@ -357,7 +357,8 @@ namespace MicroLite.Query
         /// </example>
         public IHavingOrOrderBy GroupBy(params string[] columns)
         {
-            this.innerSql.Append(" GROUP BY " + string.Join(", ", columns));
+            this.innerSql.Append(" GROUP BY ");
+            this.innerSql.Append(string.Join(", ", columns));
 
             return this;
         }
@@ -704,7 +705,7 @@ namespace MicroLite.Query
                 this.addedWhere = true;
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " {0})", "IS NOT NULL");
+            this.innerSql.AppendFormat(" ({0} IS NOT NULL)", this.whereColumnName);
 
             return this;
         }
@@ -723,7 +724,7 @@ namespace MicroLite.Query
                 this.addedWhere = true;
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " {0})", "IS NULL");
+            this.innerSql.AppendFormat(" ({0} IS NULL)", this.whereColumnName);
 
             return this;
         }
@@ -775,7 +776,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" MAX(" + columnName + ") AS " + columnAlias);
+            this.innerSql.AppendFormat(" MAX({0}) AS {1}", columnName, columnAlias);
 
             return this;
         }
@@ -827,7 +828,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" MIN(" + columnName + ") AS " + columnAlias);
+            this.innerSql.AppendFormat(" MIN({0}) AS {1}", columnName, columnAlias);
 
             return this;
         }
@@ -976,7 +977,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" SUM(" + columnName + ") AS " + columnAlias);
+            this.innerSql.AppendFormat(" SUM({0}) AS {1}", columnName, columnAlias);
 
             return this;
         }
@@ -1074,22 +1075,18 @@ namespace MicroLite.Query
             }
 
             this.arguments.Add(arg);
-            this.innerSql.Append(" " + parameter);
+            this.innerSql.Append(" ");
+            this.innerSql.Append(parameter);
 
             return this;
         }
 
         private void AddOrder(string[] columns, string direction)
         {
-            if (!this.addedOrder)
-            {
-                this.innerSql.Append(" ORDER BY " + string.Join(", ", columns) + direction);
-                this.addedOrder = true;
-            }
-            else
-            {
-                this.innerSql.Append(", " + string.Join(", ", columns) + direction);
-            }
+            this.innerSql.Append(!this.addedOrder ? " ORDER BY " : ", ");
+            this.innerSql.Append(string.Join(", ", columns));
+            this.innerSql.Append(direction);
+            this.addedOrder = true;
         }
 
         private void AppendPredicate(string appendFormat, string predicate, params object[] args)
