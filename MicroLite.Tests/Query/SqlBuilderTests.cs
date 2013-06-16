@@ -525,36 +525,6 @@
         }
 
         [Fact]
-        public void SelectWhereColumnIsNotNull()
-        {
-            var sqlQuery = SqlBuilder
-                   .Select("Column1")
-                   .From("Table")
-                   .Where("Column1")
-                   .IsNotNull()
-                   .ToSqlQuery();
-
-            Assert.Equal(0, sqlQuery.Arguments.Count);
-
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NOT NULL)", sqlQuery.CommandText);
-        }
-
-        [Fact]
-        public void SelectWhereColumnIsNull()
-        {
-            var sqlQuery = SqlBuilder
-                   .Select("Column1")
-                   .From("Table")
-                   .Where("Column1")
-                   .IsNull()
-                   .ToSqlQuery();
-
-            Assert.Equal(0, sqlQuery.Arguments.Count);
-
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NULL)", sqlQuery.CommandText);
-        }
-
-        [Fact]
         public void SelectWhereColumnIsEqualTo()
         {
             var sqlQuery = SqlBuilder
@@ -568,22 +538,6 @@
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = @p0)", sqlQuery.CommandText);
-        }
-
-        [Fact]
-        public void SelectWhereColumnIsNotEqualTo()
-        {
-            var sqlQuery = SqlBuilder
-                   .Select("Column1")
-                   .From("Table")
-                   .Where("Column1")
-                   .IsNotEqualTo("FOO")
-                   .ToSqlQuery();
-
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -664,6 +618,52 @@
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 LIKE @p0)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsNotEqualTo()
+        {
+            var sqlQuery = SqlBuilder
+                   .Select("Column1")
+                   .From("Table")
+                   .Where("Column1")
+                   .IsNotEqualTo("FOO")
+                   .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> @p0)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsNotNull()
+        {
+            var sqlQuery = SqlBuilder
+                   .Select("Column1")
+                   .From("Table")
+                   .Where("Column1")
+                   .IsNotNull()
+                   .ToSqlQuery();
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NOT NULL)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsNull()
+        {
+            var sqlQuery = SqlBuilder
+                   .Select("Column1")
+                   .From("Table")
+                   .Where("Column1")
+                   .IsNull()
+                   .ToSqlQuery();
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NULL)", sqlQuery.CommandText);
         }
 
         [Fact]
