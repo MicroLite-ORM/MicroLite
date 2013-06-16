@@ -95,10 +95,22 @@
             {
                 var fluentConfiguration = new FluentConfiguration();
 
-                var exception = Assert.Throws<NotSupportedException>(
-                    () => fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.DB2"));
+                Assert.Throws<MicroLiteException>(
+                    () => fluentConfiguration.ForConnection("ConnectionWithInvalidProviderName", "MicroLite.Dialect.MsSqlDialect"));
+            }
+        }
 
-                Assert.Equal(Messages.SqlDialectFactory_DialectNotSupported.FormatWith("MicroLite.Dialect.DB2"), exception.Message);
+        public class WhenCallingForConnectionAndTheSqlDialectDoesNotImplementISqlDialect
+        {
+            [Fact]
+            public void AMicroLiteExceptionShouldBeThrown()
+            {
+                var fluentConfiguration = new FluentConfiguration();
+
+                var exception = Assert.Throws<NotSupportedException>(
+                    () => fluentConfiguration.ForConnection("SqlConnection", "MicroLite.SqlQuery"));
+
+                Assert.Equal(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith("MicroLite.SqlQuery"), exception.Message);
             }
         }
 
@@ -109,8 +121,10 @@
             {
                 var fluentConfiguration = new FluentConfiguration();
 
-                var exception = Assert.Throws<MicroLiteException>(
-                    () => fluentConfiguration.ForConnection("ConnectionWithInvalidProviderName", "MicroLite.Dialect.MsSqlDialect"));
+                var exception = Assert.Throws<NotSupportedException>(
+                    () => fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.DB2"));
+
+                Assert.Equal(Messages.FluentConfiguration_DialectNotSupported.FormatWith("MicroLite.Dialect.DB2"), exception.Message);
             }
         }
     }

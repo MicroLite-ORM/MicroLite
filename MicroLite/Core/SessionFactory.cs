@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
+    using System;
     using System.Data;
     using System.Linq;
     using MicroLite.Dialect;
@@ -28,10 +29,12 @@ namespace MicroLite.Core
         private readonly object locker = new object();
         private readonly IObjectBuilder objectBuilder = new ObjectBuilder();
         private readonly SessionFactoryOptions sessionFactoryOptions;
+        private readonly ISqlDialect sqlDialect;
 
         internal SessionFactory(SessionFactoryOptions sessionFactoryOptions)
         {
             this.sessionFactoryOptions = sessionFactoryOptions;
+            this.sqlDialect = (ISqlDialect)Activator.CreateInstance(sessionFactoryOptions.SqlDialectType);
         }
 
         public string ConnectionName
@@ -46,7 +49,7 @@ namespace MicroLite.Core
         {
             get
             {
-                return this.sessionFactoryOptions.SqlDialect;
+                return this.sessionFactoryOptions.SqlDialectType.Name;
             }
         }
 
@@ -59,7 +62,7 @@ namespace MicroLite.Core
             return new ReadOnlySession(
                 new ConnectionManager(connection),
                 this.objectBuilder,
-                SqlDialectFactory.GetDialect(this.sessionFactoryOptions.SqlDialect));
+                this.sqlDialect);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This method is provided to create and return an ISession for the caller to use, it should not dispose of it, that is the responsibility of the caller.")]
@@ -71,7 +74,7 @@ namespace MicroLite.Core
             return new Session(
                 new ConnectionManager(connection),
                 this.objectBuilder,
-                SqlDialectFactory.GetDialect(this.sessionFactoryOptions.SqlDialect),
+                this.sqlDialect,
                 Listener.Listeners.ToArray());
         }
 

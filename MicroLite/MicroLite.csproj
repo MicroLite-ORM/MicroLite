@@ -71,7 +71,6 @@
     <Compile Include="Dialect\MySqlDialect.cs" />
     <Compile Include="Dialect\PostgreSqlDialect.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />
-    <Compile Include="Dialect\SqlDialectFactory.cs" />
     <Compile Include="Dialect\SQLiteDialect.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="GuidGenerator.cs" />

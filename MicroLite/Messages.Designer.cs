@@ -223,6 +223,24 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The dialect type being added &apos;{0}&apos; does not implement ISqlDialect.
+        /// </summary>
+        internal static string FluentConfiguration_DialectMustImplementISqlDialect {
+            get {
+                return ResourceManager.GetString("FluentConfiguration_DialectMustImplementISqlDialect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The sql dialect [{0}] is currently not supported by the MicroLite ORM framework.
+        /// </summary>
+        internal static string FluentConfiguration_DialectNotSupported {
+            get {
+                return ResourceManager.GetString("FluentConfiguration_DialectNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reading connection named [{0}] from app.config.
         /// </summary>
         internal static string FluentConfiguration_ReadingConnection {
@@ -534,33 +552,6 @@ namespace MicroLite {
         internal static string SqlDialect_StatementTypeNotSupported {
             get {
                 return ResourceManager.GetString("SqlDialect_StatementTypeNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The dialect type being added &apos;{0}&apos; does not implement ISqlDialect.
-        /// </summary>
-        internal static string SqlDialectFactory_DialectMustImplementISqlDialect {
-            get {
-                return ResourceManager.GetString("SqlDialectFactory_DialectMustImplementISqlDialect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The dialect name &apos;{0}&apos; has already been added..
-        /// </summary>
-        internal static string SqlDialectFactory_DialectNameAlreadyUsed {
-            get {
-                return ResourceManager.GetString("SqlDialectFactory_DialectNameAlreadyUsed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The sql dialect [{0}] is currently not supported by the MicroLite ORM framework.
-        /// </summary>
-        internal static string SqlDialectFactory_DialectNotSupported {
-            get {
-                return ResourceManager.GetString("SqlDialectFactory_DialectNotSupported", resourceCulture);
             }
         }
         

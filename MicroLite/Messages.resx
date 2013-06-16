@@ -234,7 +234,7 @@
   <data name="IncludeSingle_SingleResultExpected" xml:space="preserve">
     <value>There are multiple records returned in the results list, the single query should return a single row only</value>
   </data>
-  <data name="SqlDialectFactory_DialectNotSupported" xml:space="preserve">
+  <data name="FluentConfiguration_DialectNotSupported" xml:space="preserve">
     <value>The sql dialect [{0}] is currently not supported by the MicroLite ORM framework</value>
   </data>
   <data name="IncludeScalar_MultipleColumns" xml:space="preserve">
@@ -297,11 +297,8 @@
   <data name="DbEncryptedStringTypeConverter_CipherTextInvalid" xml:space="preserve">
     <value>The cipher text is invalid, it should contain 2 parts separated by an '@'</value>
   </data>
-  <data name="SqlDialectFactory_DialectMustImplementISqlDialect" xml:space="preserve">
+  <data name="FluentConfiguration_DialectMustImplementISqlDialect" xml:space="preserve">
     <value>The dialect type being added '{0}' does not implement ISqlDialect</value>
-  </data>
-  <data name="SqlDialectFactory_DialectNameAlreadyUsed" xml:space="preserve">
-    <value>The dialect name '{0}' has already been added.</value>
   </data>
   <data name="ExpandoObjectInfo_NotSupportedReason" xml:space="preserve">
     <value>The 'dynamic' type can only be used for queries where an SqlQuery is supplied, it cannot be used for select by identifier, insert, update or delete.</value>

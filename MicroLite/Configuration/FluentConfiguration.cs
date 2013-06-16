@@ -80,14 +80,14 @@ namespace MicroLite.Configuration
                 throw new MicroLiteException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
 
-            SqlDialectFactory.VerifyDialect(sqlDialect);
+            var sqlDialectType = this.GetSqlDialectType(sqlDialect);
 
             try
             {
                 this.options.ConnectionName = configSection.Name;
                 this.options.ConnectionString = configSection.ConnectionString;
                 this.options.ProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
-                this.options.SqlDialect = sqlDialect;
+                this.options.SqlDialectType = sqlDialectType;
 
                 return this;
             }
@@ -96,6 +96,25 @@ namespace MicroLite.Configuration
                 this.log.TryLogFatal(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
+        }
+
+        private Type GetSqlDialectType(string sqlDialect)
+        {
+            var sqlDialectType = Type.GetType(sqlDialect, throwOnError: false);
+
+            if (sqlDialectType == null)
+            {
+                this.log.TryLogFatal(Messages.FluentConfiguration_DialectNotSupported.FormatWith(sqlDialect));
+                throw new NotSupportedException(Messages.FluentConfiguration_DialectNotSupported.FormatWith(sqlDialect));
+            }
+
+            if (!typeof(ISqlDialect).IsAssignableFrom(sqlDialectType))
+            {
+                this.log.TryLogFatal(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith(sqlDialect));
+                throw new NotSupportedException(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith(sqlDialect));
+            }
+
+            return sqlDialectType;
         }
     }
 }

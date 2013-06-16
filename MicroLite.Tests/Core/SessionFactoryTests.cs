@@ -26,7 +26,7 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialect = "MicroLite.Dialect.MsSqlDialect"
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
                 var sessionFactory = new SessionFactory(this.options);
@@ -62,7 +62,7 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialect = "MicroLite.Dialect.MsSqlDialect"
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
                 var sessionFactory = new SessionFactory(this.options);
@@ -100,7 +100,7 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialect = "MicroLite.Dialect.MsSqlDialect"
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
                 var sessionFactory = new SessionFactory(this.options);
@@ -134,7 +134,7 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialect = "MicroLite.Dialect.MsSqlDialect"
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
                 var sessionFactory = new SessionFactory(this.options);
@@ -155,7 +155,7 @@
             private readonly SessionFactoryOptions options = new SessionFactoryOptions
             {
                 ConnectionName = "Northwind",
-                SqlDialect = "MicroLite.Dialect.SqlDialect"
+                SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
             };
 
             private readonly SessionFactory sessionFactory;
@@ -174,7 +174,7 @@
             [Fact]
             public void SqlDialectReturnsSqlDialectFromOptions()
             {
-                Assert.Equal(options.SqlDialect, sessionFactory.SqlDialect);
+                Assert.Equal(options.SqlDialectType.Name, sessionFactory.SqlDialect);
             }
         }
     }
