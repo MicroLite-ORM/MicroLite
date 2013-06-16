@@ -234,12 +234,6 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy Between(object lower, object upper)
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             this.AppendPredicate(" (" + this.whereColumnName + " BETWEEN {0})", "@p0 AND @p1", new[] { lower, upper });
 
             return this;
@@ -414,12 +408,6 @@ namespace MicroLite.Query
                 throw new ArgumentNullException("args");
             }
 
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             if (!string.IsNullOrEmpty(this.operand))
             {
                 this.innerSql.Append(this.operand);
@@ -465,12 +453,6 @@ namespace MicroLite.Query
                 throw new ArgumentNullException("subQuery");
             }
 
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             if (!string.IsNullOrEmpty(this.operand))
             {
                 this.innerSql.Append(this.operand);
@@ -500,12 +482,6 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsEqualTo(object comparisonValue)
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             this.AppendPredicate(" (" + this.whereColumnName + " = {0})", "@p0", comparisonValue);
 
             return this;
@@ -530,12 +506,6 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsGreaterThan(object comparisonValue)
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             this.AppendPredicate(" (" + this.whereColumnName + " > {0})", "@p0", comparisonValue);
 
             return this;
@@ -560,12 +530,6 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsGreaterThanOrEqualTo(object comparisonValue)
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             this.AppendPredicate(" (" + this.whereColumnName + " >= {0})", "@p0", comparisonValue);
 
             return this;
@@ -590,12 +554,6 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsLessThan(object comparisonValue)
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             this.AppendPredicate(" (" + this.whereColumnName + " < {0})", "@p0", comparisonValue);
 
             return this;
@@ -620,12 +578,6 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsLessThanOrEqualTo(object comparisonValue)
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             this.AppendPredicate(" (" + this.whereColumnName + " <= {0})", "@p0", comparisonValue);
 
             return this;
@@ -650,12 +602,6 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsLike(object comparisonValue)
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             this.AppendPredicate(" (" + this.whereColumnName + " LIKE {0})", "@p0", comparisonValue);
 
             return this;
@@ -680,12 +626,6 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", "@p0", comparisonValue);
 
             return this;
@@ -699,12 +639,6 @@ namespace MicroLite.Query
         /// </returns>
         public IAndOrOrderBy IsNotNull()
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             this.innerSql.AppendFormat(" ({0} IS NOT NULL)", this.whereColumnName);
 
             return this;
@@ -718,12 +652,6 @@ namespace MicroLite.Query
         /// </returns>
         public IAndOrOrderBy IsNull()
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             this.innerSql.AppendFormat(" ({0} IS NULL)", this.whereColumnName);
 
             return this;
@@ -1010,6 +938,12 @@ namespace MicroLite.Query
         public IWhereSingleColumn Where(string columnName)
         {
             this.whereColumnName = columnName;
+
+            if (!this.addedWhere)
+            {
+                this.innerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
 
             return this;
         }
