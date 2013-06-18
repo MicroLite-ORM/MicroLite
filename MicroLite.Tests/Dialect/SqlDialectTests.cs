@@ -315,6 +315,15 @@
         }
 
         [Fact]
+        public void SqlCharactersPassedToConstructorAreExposed()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.MsSql);
+            mockSqlDialect.CallBase = true;
+
+            Assert.Same(SqlCharacters.MsSql, mockSqlDialect.Object.SqlCharacters);
+        }
+
+        [Fact]
         public void SupportsBatchedQueriesReturnsTrueByDefault()
         {
             var mockSqlCharacters = new Mock<SqlCharacters>();

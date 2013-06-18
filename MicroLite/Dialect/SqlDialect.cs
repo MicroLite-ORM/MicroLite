@@ -44,6 +44,17 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
+        /// Gets the SQL characters for the SQL dialect.
+        /// </summary>
+        public SqlCharacters SqlCharacters
+        {
+            get
+            {
+                return this.sqlCharacters;
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether this SqlDialect supports batched queries.
         /// </summary>
         public virtual bool SupportsBatchedQueries
@@ -71,17 +82,6 @@ namespace MicroLite.Dialect
         protected abstract string SelectIdentityString
         {
             get;
-        }
-
-        /// <summary>
-        /// Gets the SQL characters for the SQL dialect.
-        /// </summary>
-        protected SqlCharacters SqlCharacters
-        {
-            get
-            {
-                return this.sqlCharacters;
-            }
         }
 
         /// <summary>
