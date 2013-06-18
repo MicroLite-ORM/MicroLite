@@ -124,6 +124,7 @@
     <Compile Include="Mapping\Inflection\EnglishInflectionService.cs" />
     <Compile Include="Mapping\Inflection\IInflectionService.cs" />
     <Compile Include="Mapping\IObjectInfo.cs" />
+    <Compile Include="Query\RawWhereBuilder.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverter.cs" />
     <Compile Include="TypeConverters\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
