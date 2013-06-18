@@ -182,7 +182,7 @@
             [Fact]
             public void SqlDialectReturnsSqlDialectFromOptions()
             {
-                Assert.Equal(options.SqlDialectType.Name, sessionFactory.SqlDialect);
+                Assert.IsType(options.SqlDialectType, sessionFactory.SqlDialect);
             }
         }
     }

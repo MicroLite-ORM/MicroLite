@@ -22,7 +22,7 @@ namespace MicroLite.Core
     /// <summary>
     /// The default implementation of <see cref="ISessionFactory"/>.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("SessionFactory for {ConnectionName} using {SqlDialect}")]
+    [System.Diagnostics.DebuggerDisplay("SessionFactory for {ConnectionName} using {sessionFactoryOptions.SqlDialectType.Name}")]
     internal sealed class SessionFactory : ISessionFactory
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
@@ -45,11 +45,11 @@ namespace MicroLite.Core
             }
         }
 
-        public string SqlDialect
+        public ISqlDialect SqlDialect
         {
             get
             {
-                return this.sessionFactoryOptions.SqlDialectType.Name;
+                return this.sqlDialect;
             }
         }
 
@@ -58,7 +58,7 @@ namespace MicroLite.Core
         {
             var connection = this.GetNewConnectionWithConnectionString();
 
-            log.TryLogDebug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.SqlDialect);
+            log.TryLogDebug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
             return new ReadOnlySession(
                 this,
                 new ConnectionManager(connection),
@@ -71,7 +71,7 @@ namespace MicroLite.Core
         {
             var connection = this.GetNewConnectionWithConnectionString();
 
-            log.TryLogDebug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.SqlDialect);
+            log.TryLogDebug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
             return new Session(
                 this,
                 new ConnectionManager(connection),
