@@ -62,8 +62,7 @@ namespace MicroLite.Core
             return new ReadOnlySession(
                 this,
                 new ConnectionManager(connection),
-                this.objectBuilder,
-                this.sqlDialect);
+                this.objectBuilder);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This method is provided to create and return an ISession for the caller to use, it should not dispose of it, that is the responsibility of the caller.")]
@@ -76,7 +75,6 @@ namespace MicroLite.Core
                 this,
                 new ConnectionManager(connection),
                 this.objectBuilder,
-                this.sqlDialect,
                 Listener.Listeners.ToArray());
         }
 

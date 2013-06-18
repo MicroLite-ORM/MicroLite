@@ -30,19 +30,16 @@ namespace MicroLite.Core
         private readonly IObjectBuilder objectBuilder;
         private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
         private readonly ISessionFactory sessionFactory;
-        private readonly ISqlDialect sqlDialect;
         private bool disposed;
 
         internal ReadOnlySession(
             ISessionFactory sessionFactory,
             IConnectionManager connectionManager,
-            IObjectBuilder objectBuilder,
-            ISqlDialect sqlDialect)
+            IObjectBuilder objectBuilder)
         {
             this.sessionFactory = sessionFactory;
             this.connectionManager = connectionManager;
             this.objectBuilder = objectBuilder;
-            this.sqlDialect = sqlDialect;
         }
 
         public IAdvancedReadOnlySession Advanced
@@ -89,7 +86,7 @@ namespace MicroLite.Core
         {
             get
             {
-                return this.sqlDialect;
+                return this.sessionFactory.SqlDialect;
             }
         }
 
@@ -124,7 +121,7 @@ namespace MicroLite.Core
         {
             try
             {
-                if (this.sqlDialect.SupportsBatchedQueries)
+                if (this.SqlDialect.SupportsBatchedQueries)
                 {
                     this.ExecuteQueriesCombined();
                 }
@@ -230,6 +227,11 @@ namespace MicroLite.Core
         public PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
             this.ThrowIfDisposed();
+
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
 
             if (pagingOptions == PagingOptions.None)
             {

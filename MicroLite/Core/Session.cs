@@ -14,7 +14,6 @@ namespace MicroLite.Core
 {
     using System;
     using System.Data;
-    using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Logging;
@@ -32,9 +31,8 @@ namespace MicroLite.Core
             ISessionFactory sessionFactory,
             IConnectionManager connectionManager,
             IObjectBuilder objectBuilder,
-            ISqlDialect sqlDialect,
             IListener[] listeners)
-            : base(sessionFactory, connectionManager, objectBuilder, sqlDialect)
+            : base(sessionFactory, connectionManager, objectBuilder)
         {
             this.listeners = listeners;
 
