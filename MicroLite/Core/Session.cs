@@ -29,11 +29,12 @@ namespace MicroLite.Core
         private readonly IListener[] listeners;
 
         internal Session(
+            ISessionFactory sessionFactory,
             IConnectionManager connectionManager,
             IObjectBuilder objectBuilder,
             ISqlDialect sqlDialect,
             IListener[] listeners)
-            : base(connectionManager, objectBuilder, sqlDialect)
+            : base(sessionFactory, connectionManager, objectBuilder, sqlDialect)
         {
             this.listeners = listeners;
 

@@ -15,6 +15,8 @@
             private readonly Mock<DbConnection> mockConnection = new Mock<DbConnection>();
             private readonly Mock<DbProviderFactory> mockFactory = new Mock<DbProviderFactory>();
             private readonly SessionFactoryOptions options;
+            private readonly IReadOnlySession readOnlySession;
+            private readonly SessionFactory sessionFactory;
 
             public WhenCallingOpenReadOnlySession()
             {
@@ -29,8 +31,8 @@
                     SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
-                var sessionFactory = new SessionFactory(this.options);
-                sessionFactory.OpenReadOnlySession();
+                this.sessionFactory = new SessionFactory(this.options);
+                this.readOnlySession = this.sessionFactory.OpenReadOnlySession();
             }
 
             [Fact]
@@ -43,6 +45,12 @@
             public void TheConnectionStringShouldBeSetOnTheConnection()
             {
                 this.mockConnection.VerifySet(x => x.ConnectionString = this.options.ConnectionString, Times.Once());
+            }
+
+            [Fact]
+            public void TheSessionFactoryShouldBePassed()
+            {
+                Assert.Same(this.sessionFactory, this.readOnlySession.Advanced.SessionFactory);
             }
         }
 

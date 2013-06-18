@@ -60,6 +60,7 @@ namespace MicroLite.Core
 
             log.TryLogDebug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.SqlDialect);
             return new ReadOnlySession(
+                this,
                 new ConnectionManager(connection),
                 this.objectBuilder,
                 this.sqlDialect);
@@ -72,6 +73,7 @@ namespace MicroLite.Core
 
             log.TryLogDebug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.SqlDialect);
             return new Session(
+                this,
                 new ConnectionManager(connection),
                 this.objectBuilder,
                 this.sqlDialect,
