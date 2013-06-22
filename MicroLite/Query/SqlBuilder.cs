@@ -17,6 +17,7 @@ namespace MicroLite.Query
     using System.Globalization;
     using System.Linq;
     using System.Text;
+    using MicroLite.Dialect;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -26,15 +27,27 @@ namespace MicroLite.Query
     public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereSingleColumn, IHavingOrOrderBy
     {
         private readonly List<object> arguments = new List<object>();
-        private readonly StringBuilder innerSql = new StringBuilder(capacity: 120);
+        private readonly StringBuilder innerSql;
+        private readonly SqlCharacters sqlCharacters;
         private bool addedOrder = false;
         private bool addedWhere = false;
         private string operand;
         private string whereColumnName;
 
-        private SqlBuilder(string startingSql)
+        private SqlBuilder(StringBuilder startingSql, SqlCharacters sqlCharacters)
         {
-            this.innerSql.Append(startingSql);
+            this.sqlCharacters = sqlCharacters;
+            this.innerSql = startingSql;
+        }
+
+        /// <summary>
+        /// Gets or sets the SQL characters.
+        /// </summary>
+        /// <remarks>If no specific SqlCharacters are specified, SqlCharacters.Empty will be used.</remarks>
+        public static SqlCharacters SqlCharacters
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -50,7 +63,13 @@ namespace MicroLite.Query
         /// </example>
         public static IWithParameter Execute(string procedure)
         {
-            return new SqlBuilder("EXEC " + procedure);
+            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
+
+            var startingSql = new StringBuilder(capacity: 120);
+            startingSql.Append("EXEC ");
+            startingSql.Append(procedure);
+
+            return new SqlBuilder(startingSql, sqlCharacters);
         }
 
         /// <summary>
@@ -90,12 +109,34 @@ namespace MicroLite.Query
         /// </example>
         public static IFunctionOrFrom Select(params string[] columns)
         {
-            if (columns == null || columns.Length == 0)
+            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
+
+            var startingSql = new StringBuilder(capacity: 120);
+            startingSql.Append("SELECT");
+
+            if (columns != null && columns.Length > 0)
             {
-                return new SqlBuilder("SELECT");
+                startingSql.Append(" ");
+
+                for (int i = 0; i < columns.Length; i++)
+                {
+                    if (columns[i] == "*")
+                    {
+                        startingSql.Append("*");
+                    }
+                    else
+                    {
+                        if (i > 0)
+                        {
+                            startingSql.Append(", ");
+                        }
+
+                        startingSql.Append(sqlCharacters.EscapeSql(columns[i]));
+                    }
+                }
             }
 
-            return new SqlBuilder("SELECT " + string.Join(", ", columns));
+            return new SqlBuilder(startingSql, sqlCharacters);
         }
 
         /// <summary>
@@ -209,7 +250,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.AppendFormat(" AVG({0}) AS {1}", columnName, columnAlias);
+            this.innerSql.AppendFormat(" AVG({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -284,7 +325,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.AppendFormat(" COUNT({0}) AS {1}", columnName, columnAlias);
+            this.innerSql.AppendFormat(" COUNT({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -301,7 +342,8 @@ namespace MicroLite.Query
         /// </example>
         public IWhereOrOrderBy From(string table)
         {
-            this.innerSql.Append(" FROM " + table);
+            this.innerSql.Append(" FROM ");
+            this.innerSql.Append(this.sqlCharacters.EscapeSql(table));
 
             return this;
         }
@@ -352,7 +394,16 @@ namespace MicroLite.Query
         public IHavingOrOrderBy GroupBy(params string[] columns)
         {
             this.innerSql.Append(" GROUP BY ");
-            this.innerSql.Append(string.Join(", ", columns));
+
+            for (int i = 0; i < columns.Length; i++)
+            {
+                if (i > 0)
+                {
+                    this.innerSql.Append(", ");
+                }
+
+                this.innerSql.Append(this.sqlCharacters.EscapeSql(columns[i]));
+            }
 
             return this;
         }
@@ -704,7 +755,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.AppendFormat(" MAX({0}) AS {1}", columnName, columnAlias);
+            this.innerSql.AppendFormat(" MAX({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -756,7 +807,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.AppendFormat(" MIN({0}) AS {1}", columnName, columnAlias);
+            this.innerSql.AppendFormat(" MIN({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -905,7 +956,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.AppendFormat(" SUM({0}) AS {1}", columnName, columnAlias);
+            this.innerSql.AppendFormat(" SUM({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -937,7 +988,7 @@ namespace MicroLite.Query
         /// </example>
         public IWhereSingleColumn Where(string columnName)
         {
-            this.whereColumnName = columnName;
+            this.whereColumnName = this.sqlCharacters.EscapeSql(columnName);
 
             if (!this.addedWhere)
             {
@@ -1018,7 +1069,17 @@ namespace MicroLite.Query
         private void AddOrder(string[] columns, string direction)
         {
             this.innerSql.Append(!this.addedOrder ? " ORDER BY " : ", ");
-            this.innerSql.Append(string.Join(", ", columns));
+
+            for (int i = 0; i < columns.Length; i++)
+            {
+                if (i > 0)
+                {
+                    this.innerSql.Append(", ");
+                }
+
+                this.innerSql.Append(this.sqlCharacters.EscapeSql(columns[i]));
+            }
+
             this.innerSql.Append(direction);
             this.addedOrder = true;
         }

@@ -12,17 +12,31 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Dialect
 {
+    using System;
     using System.Globalization;
+    using System.Linq;
 
     /// <summary>
     /// A class containing the SQL characters for an SQL Dialect.
     /// </summary>
     public abstract class SqlCharacters
     {
+        private static SqlCharacters empty;
         private static SqlCharacters msSql;
         private static SqlCharacters mySql;
         private static SqlCharacters postgreSql;
         private static SqlCharacters sqlite;
+
+        /// <summary>
+        /// Gets an Empty set of SqlCharacters.
+        /// </summary>
+        public static SqlCharacters Empty
+        {
+            get
+            {
+                return empty ?? (empty = new EmptySqlCharacters());
+            }
+        }
 
         /// <summary>
         /// Gets the SqlCharacters for MS SQL.
@@ -71,22 +85,22 @@ namespace MicroLite.Dialect
         /// <summary>
         /// Gets the left delimiter character.
         /// </summary>
-        public virtual char LeftDelimiter
+        public virtual string LeftDelimiter
         {
             get
             {
-                return '"';
+                return "\"";
             }
         }
 
         /// <summary>
         /// Gets the right delimiter character.
         /// </summary>
-        public virtual char RightDelimiter
+        public virtual string RightDelimiter
         {
             get
             {
-                return '"';
+                return "\"";
             }
         }
 
@@ -128,9 +142,16 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <param name="sql">The SQL to be escaped.</param>
         /// <returns>The escaped SQL.</returns>
-        public virtual string EscapeSql(string sql)
+        public string EscapeSql(string sql)
         {
-            return this.LeftDelimiter + sql + this.RightDelimiter;
+            if (this.IsEscaped(sql))
+            {
+                return sql;
+            }
+
+            var sqlPieces = sql.Split('.');
+
+            return string.Join(".", sqlPieces.Select(s => this.LeftDelimiter + s + this.RightDelimiter).ToArray());
         }
 
         /// <summary>
@@ -150,21 +171,57 @@ namespace MicroLite.Dialect
             }
         }
 
-        private sealed class MsSqlCharacters : SqlCharacters
+        /// <summary>
+        /// Determines whether the specified SQL is escaped.
+        /// </summary>
+        /// <param name="sql">The SQL to check.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified SQL is escaped; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsEscaped(string sql)
         {
-            public override char LeftDelimiter
+            if (string.IsNullOrEmpty(sql))
+            {
+                return false;
+            }
+
+            return sql.StartsWith(this.LeftDelimiter, StringComparison.Ordinal) && sql.EndsWith(this.RightDelimiter, StringComparison.Ordinal);
+        }
+
+        private sealed class EmptySqlCharacters : SqlCharacters
+        {
+            public override string LeftDelimiter
             {
                 get
                 {
-                    return '[';
+                    return string.Empty;
                 }
             }
 
-            public override char RightDelimiter
+            public override string RightDelimiter
             {
                 get
                 {
-                    return ']';
+                    return string.Empty;
+                }
+            }
+        }
+
+        private sealed class MsSqlCharacters : SqlCharacters
+        {
+            public override string LeftDelimiter
+            {
+                get
+                {
+                    return "[";
+                }
+            }
+
+            public override string RightDelimiter
+            {
+                get
+                {
+                    return "]";
                 }
             }
 
@@ -187,19 +244,19 @@ namespace MicroLite.Dialect
 
         private sealed class MySqlCharacters : SqlCharacters
         {
-            public override char LeftDelimiter
+            public override string LeftDelimiter
             {
                 get
                 {
-                    return '`';
+                    return "`";
                 }
             }
 
-            public override char RightDelimiter
+            public override string RightDelimiter
             {
                 get
                 {
-                    return '`';
+                    return "`";
                 }
             }
 

@@ -47,6 +47,7 @@ namespace MicroLite.Configuration
                 {
                     this.log.TryLogDebug(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
                     sessionFactory = new SessionFactory(this.options);
+                    MicroLite.Query.SqlBuilder.SqlCharacters = sessionFactory.SqlDialect.SqlCharacters;
 
                     Configure.SessionFactories.Add(sessionFactory);
                 }

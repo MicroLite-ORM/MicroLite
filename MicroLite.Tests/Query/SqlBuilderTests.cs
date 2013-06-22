@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests.Query
 {
     using System;
+    using MicroLite.Dialect;
     using MicroLite.Mapping;
     using MicroLite.Query;
     using Xunit;
@@ -104,6 +105,31 @@
         }
 
         [Fact]
+        public void SelectAverageWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select()
+                    .Average("Total")
+                    .From(typeof(Invoice))
+                    .Where("CustomerId = @p0", 1022)
+                    .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal(1022, sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT AVG([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
         public void SelectCount()
         {
             var sqlQuery = SqlBuilder
@@ -144,6 +170,28 @@
         }
 
         [Fact]
+        public void SelectCountWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select()
+                    .Count("CustomerId")
+                    .From(typeof(Customer))
+                    .ToSqlQuery();
+
+                Assert.Empty(sqlQuery.Arguments);
+                Assert.Equal("SELECT COUNT([CustomerId]) AS CustomerId FROM [Sales].[Customers]", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
         public void SelectFromOrderByAscending()
         {
             var sqlQuery = SqlBuilder
@@ -171,6 +219,28 @@
 
             Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT Column1, Column2 FROM Table ORDER BY Column1 ASC, Column2 DESC", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectFromOrderByAscendingWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select("Column1", "Column2")
+                    .From("Table")
+                    .OrderByAscending("Column1", "Column2")
+                    .ToSqlQuery();
+
+                Assert.Empty(sqlQuery.Arguments);
+                Assert.Equal("SELECT [Column1], [Column2] FROM [Table] ORDER BY [Column1], [Column2] ASC", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
         }
 
         [Fact]
@@ -204,6 +274,28 @@
         }
 
         [Fact]
+        public void SelectFromOrderByDescendingWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select("Column1", "Column2")
+                    .From("Table")
+                    .OrderByDescending("Column1", "Column2")
+                    .ToSqlQuery();
+
+                Assert.Empty(sqlQuery.Arguments);
+                Assert.Equal("SELECT [Column1], [Column2] FROM [Table] ORDER BY [Column1], [Column2] DESC", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
         public void SelectFromSpecifyingColumnsAndTableName()
         {
             var sqlQuery = SqlBuilder
@@ -213,6 +305,27 @@
 
             Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT Column1, Column2 FROM Table", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectFromSpecifyingColumnsAndTableNameWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select("Column1", "Column2")
+                    .From("Table")
+                    .ToSqlQuery();
+
+                Assert.Empty(sqlQuery.Arguments);
+                Assert.Equal("SELECT [Column1], [Column2] FROM [Table]", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
         }
 
         [Fact]
@@ -228,6 +341,27 @@
         }
 
         [Fact]
+        public void SelectFromSpecifyingColumnsAndTypeWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select("Name", "DoB")
+                    .From(typeof(Customer))
+                    .ToSqlQuery();
+
+                Assert.Empty(sqlQuery.Arguments);
+                Assert.Equal("SELECT [Name], [DoB] FROM [Sales].[Customers]", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
         public void SelectFromSpecifyingWildcardAndTableName()
         {
             var sqlQuery = SqlBuilder
@@ -240,6 +374,27 @@
         }
 
         [Fact]
+        public void SelectFromSpecifyingWildcardAndTableNameWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select("*")
+                    .From("Table")
+                    .ToSqlQuery();
+
+                Assert.Empty(sqlQuery.Arguments);
+                Assert.Equal("SELECT * FROM [Table]", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
         public void SelectFromSpecifyingWildcardAndType()
         {
             var sqlQuery = SqlBuilder
@@ -249,6 +404,27 @@
 
             Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT DoB, CustomerId, Name FROM Sales.Customers", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectFromSpecifyingWildcardAndTypeWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select("*")
+                    .From(typeof(Customer))
+                    .ToSqlQuery();
+
+                Assert.Empty(sqlQuery.Arguments);
+                Assert.Equal("SELECT [DoB], [CustomerId], [Name] FROM [Sales].[Customers]", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
         }
 
         [Fact]
@@ -372,6 +548,31 @@
         }
 
         [Fact]
+        public void SelectMaxWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select()
+                    .Max("Total")
+                    .From(typeof(Invoice))
+                    .Where("CustomerId = @p0", 1022)
+                    .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal(1022, sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT MAX([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
         public void SelectMin()
         {
             var sqlQuery = SqlBuilder
@@ -420,6 +621,31 @@
         }
 
         [Fact]
+        public void SelectMinWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select()
+                    .Min("Total")
+                    .From(typeof(Invoice))
+                    .Where("CustomerId = @p0", 1022)
+                    .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal(1022, sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT MIN([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
         public void SelectSum()
         {
             var sqlQuery = SqlBuilder
@@ -465,6 +691,31 @@
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectSumWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select()
+                    .Sum("Total")
+                    .From(typeof(Invoice))
+                    .Where("CustomerId = @p0", 1022)
+                    .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal(1022, sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT SUM([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
         }
 
         [Fact]
@@ -541,6 +792,31 @@
         }
 
         [Fact]
+        public void SelectWhereColumnIsEqualToWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                       .Select("Column1")
+                       .From("Table")
+                       .Where("Column1")
+                       .IsEqualTo("FOO")
+                       .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] = @p0)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
         public void SelectWhereColumnIsGreaterThan()
         {
             var sqlQuery = SqlBuilder
@@ -570,6 +846,56 @@
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 >= @p0)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsGreaterThanOrEqualToWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                       .Select("Column1")
+                       .From("Table")
+                       .Where("Column1")
+                       .IsGreaterThanOrEqualTo("FOO")
+                       .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] >= @p0)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsGreaterThanWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                       .Select("Column1")
+                       .From("Table")
+                       .Where("Column1")
+                       .IsGreaterThan("FOO")
+                       .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] > @p0)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
         }
 
         [Fact]
@@ -605,6 +931,56 @@
         }
 
         [Fact]
+        public void SelectWhereColumnIsLessThanOrEqualToWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                       .Select("Column1")
+                       .From("Table")
+                       .Where("Column1")
+                       .IsLessThanOrEqualTo("FOO")
+                       .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <= @p0)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsLessThanWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                       .Select("Column1")
+                       .From("Table")
+                       .Where("Column1")
+                       .IsLessThan("FOO")
+                       .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] < @p0)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
         public void SelectWhereColumnIsLike()
         {
             var sqlQuery = SqlBuilder
@@ -618,6 +994,31 @@
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 LIKE @p0)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsLikeWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                       .Select("Column1")
+                       .From("Table")
+                       .Where("Column1")
+                       .IsLike("FOO")
+                       .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] LIKE @p0)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
         }
 
         [Fact]
@@ -637,6 +1038,31 @@
         }
 
         [Fact]
+        public void SelectWhereColumnIsNotEqualToWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                       .Select("Column1")
+                       .From("Table")
+                       .Where("Column1")
+                       .IsNotEqualTo("FOO")
+                       .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <> @p0)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
         public void SelectWhereColumnIsNotNull()
         {
             var sqlQuery = SqlBuilder
@@ -652,6 +1078,30 @@
         }
 
         [Fact]
+        public void SelectWhereColumnIsNotNullWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                       .Select("Column1")
+                       .From("Table")
+                       .Where("Column1")
+                       .IsNotNull()
+                       .ToSqlQuery();
+
+                Assert.Equal(0, sqlQuery.Arguments.Count);
+
+                Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] IS NOT NULL)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
+        }
+
+        [Fact]
         public void SelectWhereColumnIsNull()
         {
             var sqlQuery = SqlBuilder
@@ -664,6 +1114,30 @@
             Assert.Equal(0, sqlQuery.Arguments.Count);
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NULL)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsNullWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                       .Select("Column1")
+                       .From("Table")
+                       .Where("Column1")
+                       .IsNull()
+                       .ToSqlQuery();
+
+                Assert.Equal(0, sqlQuery.Arguments.Count);
+
+                Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] IS NULL)", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
         }
 
         [Fact]
@@ -702,6 +1176,33 @@
             Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (OrderDate > @p0) GROUP BY Total ORDER BY OrderDate DESC", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereGroupByOrderByWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            try
+            {
+                var sqlQuery = SqlBuilder
+                    .Select("CustomerId")
+                    .Sum("Total")
+                    .From("Invoices")
+                    .Where("OrderDate > @p0", new DateTime(2000, 1, 1))
+                    .GroupBy("Total")
+                    .OrderByDescending("OrderDate")
+                    .ToSqlQuery();
+
+                Assert.Equal(1, sqlQuery.Arguments.Count);
+                Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
+
+                Assert.Equal("SELECT [CustomerId], SUM([Total]) AS Total FROM [Invoices] WHERE (OrderDate > @p0) GROUP BY [Total] ORDER BY [OrderDate] DESC", sqlQuery.CommandText);
+            }
+            finally
+            {
+                SqlBuilder.SqlCharacters = null;
+            }
         }
 
         [Fact]

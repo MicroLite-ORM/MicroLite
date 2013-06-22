@@ -3,6 +3,7 @@
     using System;
     using MicroLite.Configuration;
     using MicroLite.FrameworkExtensions;
+    using MicroLite.Query;
     using Xunit;
 
     /// <summary>
@@ -16,7 +17,7 @@
 
             public WhenCallingCreateSessionFactory()
             {
-                Configure.SessionFactories.Clear();
+                this.ResetExternalDependencies();
 
                 var fluentConfiguration = new FluentConfiguration();
 
@@ -25,13 +26,25 @@
 
             public void Dispose()
             {
-                Configure.SessionFactories.Clear();
+                this.ResetExternalDependencies();
             }
 
             [Fact]
             public void TheSessionFactoryShouldBeAddedToTheSessionFactoriesProperty()
             {
                 Assert.Contains(this.sessionFactory, Configure.SessionFactories);
+            }
+
+            [Fact]
+            public void TheSqlCharactersPropertyOnSqlBuilderShouldBeSet()
+            {
+                Assert.Equal(this.sessionFactory.SqlDialect.SqlCharacters, SqlBuilder.SqlCharacters);
+            }
+
+            private void ResetExternalDependencies()
+            {
+                Configure.SessionFactories.Clear();
+                SqlBuilder.SqlCharacters = null;
             }
         }
 
