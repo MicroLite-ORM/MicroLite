@@ -26,7 +26,7 @@ namespace MicroLite.Mapping
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
 
-        private readonly ICollection<ColumnInfo> columns;
+        private readonly IList<ColumnInfo> columns;
         private readonly string identifierColumn;
         private readonly string identifierProperty;
         private readonly IdentifierStrategy identifierStrategy;
@@ -75,7 +75,7 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Gets the columns that are mapped for the table.
         /// </summary>
-        public ICollection<ColumnInfo> Columns
+        public IList<ColumnInfo> Columns
         {
             get
             {

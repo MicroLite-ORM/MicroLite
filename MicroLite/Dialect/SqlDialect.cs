@@ -439,11 +439,16 @@ namespace MicroLite.Dialect
                 case StatementType.Select:
                     sqlBuilder.Append("SELECT ");
 
-#if NET_3_5
-                    sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.sqlCharacters.EscapeSql(x.ColumnName)).ToArray()));
-#else
-                    sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.sqlCharacters.EscapeSql(x.ColumnName))));
-#endif
+                    for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
+                    {
+                        if (i > 0)
+                        {
+                            sqlBuilder.Append(", ");
+                        }
+
+                        sqlBuilder.Append(this.sqlCharacters.EscapeSql(objectInfo.TableInfo.Columns[i].ColumnName));
+                    }
+
                     sqlBuilder.Append(" FROM ");
                     this.AppendTableName(objectInfo, sqlBuilder);
 
