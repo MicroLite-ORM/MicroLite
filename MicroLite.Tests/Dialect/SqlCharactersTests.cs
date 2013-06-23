@@ -1,10 +1,28 @@
 ﻿namespace MicroLite.Tests.Dialect
 {
     using MicroLite.Dialect;
+    using Moq;
     using Xunit;
 
     public class SqlCharactersTests
     {
+        [Fact]
+        public void DefaultPropertyValues()
+        {
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var sqlCharacters = mockSqlCharacters.Object;
+
+            Assert.Equal("\"", sqlCharacters.LeftDelimiter);
+            Assert.Equal('%', sqlCharacters.LikeWildcard);
+            Assert.Equal("\"", sqlCharacters.RightDelimiter);
+            Assert.Equal('*', sqlCharacters.SelectWildcard);
+            Assert.Equal('?', sqlCharacters.SqlParameter);
+            Assert.Equal(';', sqlCharacters.StatementSeparator);
+            Assert.Equal(false, sqlCharacters.SupportsNamedParameters);
+        }
+
         [Fact]
         public void EmptyDoesNotExcapeValue()
         {

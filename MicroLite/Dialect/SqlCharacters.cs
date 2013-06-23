@@ -94,6 +94,17 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
+        /// Gets the wildcard for use in like statements.
+        /// </summary>
+        public virtual char LikeWildcard
+        {
+            get
+            {
+                return '%';
+            }
+        }
+
+        /// <summary>
         /// Gets the right delimiter character.
         /// </summary>
         public virtual string RightDelimiter
@@ -101,6 +112,17 @@ namespace MicroLite.Dialect
             get
             {
                 return "\"";
+            }
+        }
+
+        /// <summary>
+        /// Gets the wildcard for use in select statements.
+        /// </summary>
+        public virtual char SelectWildcard
+        {
+            get
+            {
+                return '*';
             }
         }
 
