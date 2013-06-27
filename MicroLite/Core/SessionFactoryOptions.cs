@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
+    using System;
     using System.Data.Common;
 
     /// <summary>
@@ -47,9 +48,9 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Gets or sets the sql dialect for the connection.
+        /// Gets or sets the type of SqlDialect for the connection.
         /// </summary>
-        internal string SqlDialect
+        internal Type SqlDialectType
         {
             get;
             set;

@@ -15,6 +15,8 @@
             private readonly Mock<DbConnection> mockConnection = new Mock<DbConnection>();
             private readonly Mock<DbProviderFactory> mockFactory = new Mock<DbProviderFactory>();
             private readonly SessionFactoryOptions options;
+            private readonly IReadOnlySession readOnlySession;
+            private readonly SessionFactory sessionFactory;
 
             public WhenCallingOpenReadOnlySession()
             {
@@ -26,11 +28,11 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialect = "MicroLite.Dialect.MsSqlDialect"
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
-                var sessionFactory = new SessionFactory(this.options);
-                sessionFactory.OpenReadOnlySession();
+                this.sessionFactory = new SessionFactory(this.options);
+                this.readOnlySession = this.sessionFactory.OpenReadOnlySession();
             }
 
             [Fact]
@@ -43,6 +45,12 @@
             public void TheConnectionStringShouldBeSetOnTheConnection()
             {
                 this.mockConnection.VerifySet(x => x.ConnectionString = this.options.ConnectionString, Times.Once());
+            }
+
+            [Fact]
+            public void TheSessionFactoryShouldBePassed()
+            {
+                Assert.Same(this.sessionFactory, this.readOnlySession.Advanced.SessionFactory);
             }
         }
 
@@ -62,7 +70,7 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialect = "MicroLite.Dialect.MsSqlDialect"
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
                 var sessionFactory = new SessionFactory(this.options);
@@ -100,7 +108,7 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialect = "MicroLite.Dialect.MsSqlDialect"
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
                 var sessionFactory = new SessionFactory(this.options);
@@ -134,7 +142,7 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialect = "MicroLite.Dialect.MsSqlDialect"
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
                 var sessionFactory = new SessionFactory(this.options);
@@ -155,7 +163,7 @@
             private readonly SessionFactoryOptions options = new SessionFactoryOptions
             {
                 ConnectionName = "Northwind",
-                SqlDialect = "MicroLite.Dialect.SqlDialect"
+                SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
             };
 
             private readonly SessionFactory sessionFactory;
@@ -174,7 +182,7 @@
             [Fact]
             public void SqlDialectReturnsSqlDialectFromOptions()
             {
-                Assert.Equal(options.SqlDialect, sessionFactory.SqlDialect);
+                Assert.IsType(options.SqlDialectType, sessionFactory.SqlDialect);
             }
         }
     }

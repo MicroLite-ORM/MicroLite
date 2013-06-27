@@ -3,7 +3,7 @@
   <Class Name="MicroLite.PagedResult&lt;T&gt;">
     <Position X="8" Y="4.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AIAAAgAAAAAQAAAAEAAAAAAACAAIAAhAAAAAQACAAAA=</HashCode>
+      <HashCode>AIAAAgAAAAQQAAAAEAAAAAAACAAIAAhAAAAAQACAAAA=</HashCode>
       <FileName>PagedResult.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -18,12 +18,12 @@
   <Interface Name="MicroLite.ISession">
     <Position X="3.5" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAACAAA=</HashCode>
+      <HashCode>AAQAAEAQAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAACAAA=</HashCode>
       <FileName>ISession.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.IAdvancedSession">
-    <Position X="6" Y="0.5" Width="1.75" />
+    <Position X="8.75" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAEAAAABAAAAAAAAAAA=</HashCode>
       <FileName>IAdvancedSession.cs</FileName>
@@ -32,7 +32,7 @@
   <Interface Name="MicroLite.IIncludeSession">
     <Position X="6" Y="2.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>CAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAIAAACAAAAA=</HashCode>
       <FileName>IIncludeSession.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -60,7 +60,7 @@
   <Interface Name="MicroLite.IReadOnlySession">
     <Position X="3" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AACAAAABAAAAAAAAAAEACACAAQAAAAAAAAAAAAAQAAA=</HashCode>
+      <HashCode>AACAAAABAAAAAAAAAAEACACAAQAAAAAAAAAAAAASAAA=</HashCode>
       <FileName>IReadOnlySession.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -69,6 +69,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQgAEAAEA=</HashCode>
       <FileName>ISessionFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.IAdvancedReadOnlySession">
+    <Position X="6" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>IAdvancedReadOnlySession.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

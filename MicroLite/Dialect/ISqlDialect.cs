@@ -22,6 +22,14 @@ namespace MicroLite.Dialect
     public interface ISqlDialect
     {
         /// <summary>
+        /// Gets the SQL characters for the SQL dialect.
+        /// </summary>
+        SqlCharacters SqlCharacters
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets a value indicating whether this SqlDialect supports batched queries.
         /// </summary>
         bool SupportsBatchedQueries

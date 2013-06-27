@@ -17,6 +17,7 @@ namespace MicroLite.Query
     using System.Globalization;
     using System.Linq;
     using System.Text;
+    using MicroLite.Dialect;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -26,15 +27,27 @@ namespace MicroLite.Query
     public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereSingleColumn, IHavingOrOrderBy
     {
         private readonly List<object> arguments = new List<object>();
-        private readonly StringBuilder innerSql = new StringBuilder(capacity: 120);
+        private readonly StringBuilder innerSql;
+        private readonly SqlCharacters sqlCharacters;
         private bool addedOrder = false;
         private bool addedWhere = false;
         private string operand;
         private string whereColumnName;
 
-        private SqlBuilder(string startingSql)
+        private SqlBuilder(StringBuilder startingSql, SqlCharacters sqlCharacters)
         {
-            this.innerSql.Append(startingSql);
+            this.sqlCharacters = sqlCharacters;
+            this.innerSql = startingSql;
+        }
+
+        /// <summary>
+        /// Gets or sets the SQL characters.
+        /// </summary>
+        /// <remarks>If no specific SqlCharacters are specified, SqlCharacters.Empty will be used.</remarks>
+        public static SqlCharacters SqlCharacters
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -50,7 +63,13 @@ namespace MicroLite.Query
         /// </example>
         public static IWithParameter Execute(string procedure)
         {
-            return new SqlBuilder("EXEC " + procedure);
+            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
+
+            var startingSql = new StringBuilder(capacity: 120);
+            startingSql.Append("EXEC ");
+            startingSql.Append(procedure);
+
+            return new SqlBuilder(startingSql, sqlCharacters);
         }
 
         /// <summary>
@@ -90,12 +109,34 @@ namespace MicroLite.Query
         /// </example>
         public static IFunctionOrFrom Select(params string[] columns)
         {
-            if (columns == null || columns.Length == 0)
+            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
+
+            var startingSql = new StringBuilder(capacity: 120);
+            startingSql.Append("SELECT");
+
+            if (columns != null && columns.Length > 0)
             {
-                return new SqlBuilder("SELECT");
+                startingSql.Append(" ");
+
+                for (int i = 0; i < columns.Length; i++)
+                {
+                    if (columns[i] == "*")
+                    {
+                        startingSql.Append("*");
+                    }
+                    else
+                    {
+                        if (i > 0)
+                        {
+                            startingSql.Append(", ");
+                        }
+
+                        startingSql.Append(sqlCharacters.EscapeSql(columns[i]));
+                    }
+                }
             }
 
-            return new SqlBuilder("SELECT " + string.Join(", ", columns));
+            return new SqlBuilder(startingSql, sqlCharacters);
         }
 
         /// <summary>
@@ -209,7 +250,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" AVG(" + columnName + ") AS " + columnAlias);
+            this.innerSql.AppendFormat(" AVG({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -234,223 +275,7 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy Between(object lower, object upper)
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             this.AppendPredicate(" (" + this.whereColumnName + " BETWEEN {0})", "@p0 AND @p1", new[] { lower, upper });
-
-            return this;
-        }
-
-        /// <summary>
-        /// Uses the specified argument to filter the column.
-        /// </summary>
-        /// <param name="comparisonValue">The value to compare with.</param>
-        /// <returns>The next step in the fluent sql builder.</returns>
-        /// <example>
-        /// This method allows us to specify that a column is filtered with the results being equal to the specified comparisonValue.
-        /// <code>
-        /// var query = SqlBuilder
-        ///     .Select("*")
-        ///     .From(typeof(Customer))
-        ///     .Where("DateRegistered")
-        ///     .IsEqualTo(new DateTime(2000, 1, 1))
-        ///     .ToSqlQuery();
-        /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered = @p0)
-        /// </example>
-        public IAndOrOrderBy IsEqualTo(object comparisonValue)
-        {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
-            this.AppendPredicate(" (" + this.whereColumnName + " = {0})", "@p0", comparisonValue);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Uses the specified argument to filter the column.
-        /// </summary>
-        /// <param name="comparisonValue">The value to compare with.</param>
-        /// <returns>The next step in the fluent sql builder.</returns>
-        /// <example>
-        /// This method allows us to specify that a column is filtered with the results not being equal to the specified comparisonValue.
-        /// <code>
-        /// var query = SqlBuilder
-        ///     .Select("*")
-        ///     .From(typeof(Customer))
-        ///     .Where("DateRegistered")
-        ///     .IsNotEqualTo(new DateTime(2000, 1, 1))
-        ///     .ToSqlQuery();
-        /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<>--> @p0)
-        /// </example>
-        public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
-        {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
-            this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", "@p0", comparisonValue);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Uses the specified argument to filter the column.
-        /// </summary>
-        /// <param name="comparisonValue">The value to compare with.</param>
-        /// <returns>The next step in the fluent sql builder.</returns>
-        /// <example>
-        /// This method allows us to specify that a column is filtered with the results being greater than the specified comparisonValue.
-        /// <code>
-        /// var query = SqlBuilder
-        ///     .Select("*")
-        ///     .From(typeof(Customer))
-        ///     .Where("DateRegistered")
-        ///     .IsGreaterThan(new DateTime(2000, 1, 1))
-        ///     .ToSqlQuery();
-        /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered > @p0)
-        /// </example>
-        public IAndOrOrderBy IsGreaterThan(object comparisonValue)
-        {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
-            this.AppendPredicate(" (" + this.whereColumnName + " > {0})", "@p0", comparisonValue);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Uses the specified argument to filter the column.
-        /// </summary>
-        /// <param name="comparisonValue">The value to compare with.</param>
-        /// <returns>The next step in the fluent sql builder.</returns>
-        /// <example>
-        /// This method allows us to specify that a column is filtered with the results being greater than or equal to the specified comparisonValue.
-        /// <code>
-        /// var query = SqlBuilder
-        ///     .Select("*")
-        ///     .From(typeof(Customer))
-        ///     .Where("DateRegistered")
-        ///     .IsGreaterThanOrEqualTo(new DateTime(2000, 1, 1))
-        ///     .ToSqlQuery();
-        /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered >= @p0)
-        /// </example>
-        public IAndOrOrderBy IsGreaterThanOrEqualTo(object comparisonValue)
-        {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
-            this.AppendPredicate(" (" + this.whereColumnName + " >= {0})", "@p0", comparisonValue);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Uses the specified argument to filter the column.
-        /// </summary>
-        /// <param name="comparisonValue">The value to compare with.</param>
-        /// <returns>The next step in the fluent sql builder.</returns>
-        /// <example>
-        /// This method allows us to specify that a column is filtered with the results being less than the specified comparisonValue.
-        /// <code>
-        /// var query = SqlBuilder
-        ///     .Select("*")
-        ///     .From(typeof(Customer))
-        ///     .Where("DateRegistered")
-        ///     .IsLessThan(new DateTime(2000, 1, 1))
-        ///     .ToSqlQuery();
-        /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<--> @p0)
-        /// </example>
-        public IAndOrOrderBy IsLessThan(object comparisonValue)
-        {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
-            this.AppendPredicate(" (" + this.whereColumnName + " < {0})", "@p0", comparisonValue);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Uses the specified argument to filter the column.
-        /// </summary>
-        /// <param name="comparisonValue">The value to compare with.</param>
-        /// <returns>The next step in the fluent sql builder.</returns>
-        /// <example>
-        /// This method allows us to specify that a column is filtered with the results being less than or equal to the specified comparisonValue.
-        /// <code>
-        /// var query = SqlBuilder
-        ///     .Select("*")
-        ///     .From(typeof(Customer))
-        ///     .Where("DateRegistered")
-        ///     .IsLessThanOrEqualTo(new DateTime(2000, 1, 1))
-        ///     .ToSqlQuery();
-        /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<-->= @p0)
-        /// </example>
-        public IAndOrOrderBy IsLessThanOrEqualTo(object comparisonValue)
-        {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
-            this.AppendPredicate(" (" + this.whereColumnName + " <= {0})", "@p0", comparisonValue);
-
-            return this;
-        }
-
-        /// <summary>
-        /// Uses the specified argument to filter the column.
-        /// </summary>
-        /// <param name="comparisonValue">The value to compare with.</param>
-        /// <returns>The next step in the fluent sql builder.</returns>
-        /// <example>
-        /// This method allows us to specify that a column is filtered with the results being like the specified comparisonValue.
-        /// <code>
-        /// var query = SqlBuilder
-        ///     .Select("*")
-        ///     .From(typeof(Customer))
-        ///     .Where("DateRegistered")
-        ///     .IsLike(new DateTime(2000, 1, 1))
-        ///     .ToSqlQuery();
-        /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered LIKE @p0)
-        /// </example>
-        public IAndOrOrderBy IsLike(object comparisonValue)
-        {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
-            this.AppendPredicate(" (" + this.whereColumnName + " LIKE {0})", "@p0", comparisonValue);
 
             return this;
         }
@@ -500,7 +325,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" COUNT(" + columnName + ") AS " + columnAlias);
+            this.innerSql.AppendFormat(" COUNT({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -517,7 +342,8 @@ namespace MicroLite.Query
         /// </example>
         public IWhereOrOrderBy From(string table)
         {
-            this.innerSql.Append(" FROM " + table);
+            this.innerSql.Append(" FROM ");
+            this.innerSql.Append(this.sqlCharacters.EscapeSql(table));
 
             return this;
         }
@@ -567,7 +393,17 @@ namespace MicroLite.Query
         /// </example>
         public IHavingOrOrderBy GroupBy(params string[] columns)
         {
-            this.innerSql.Append(" GROUP BY " + string.Join(", ", columns));
+            this.innerSql.Append(" GROUP BY ");
+
+            for (int i = 0; i < columns.Length; i++)
+            {
+                if (i > 0)
+                {
+                    this.innerSql.Append(", ");
+                }
+
+                this.innerSql.Append(this.sqlCharacters.EscapeSql(columns[i]));
+            }
 
             return this;
         }
@@ -623,12 +459,6 @@ namespace MicroLite.Query
                 throw new ArgumentNullException("args");
             }
 
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             if (!string.IsNullOrEmpty(this.operand))
             {
                 this.innerSql.Append(this.operand);
@@ -674,18 +504,180 @@ namespace MicroLite.Query
                 throw new ArgumentNullException("subQuery");
             }
 
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
             if (!string.IsNullOrEmpty(this.operand))
             {
                 this.innerSql.Append(this.operand);
             }
 
             this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", subQuery.CommandText, subQuery.Arguments.ToArray());
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified argument to filter the column.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being equal to the specified comparisonValue.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     .IsEqualTo(new DateTime(2000, 1, 1))
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered = @p0)
+        /// </example>
+        public IAndOrOrderBy IsEqualTo(object comparisonValue)
+        {
+            this.AppendPredicate(" (" + this.whereColumnName + " = {0})", "@p0", comparisonValue);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified argument to filter the column.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being greater than the specified comparisonValue.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     .IsGreaterThan(new DateTime(2000, 1, 1))
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered > @p0)
+        /// </example>
+        public IAndOrOrderBy IsGreaterThan(object comparisonValue)
+        {
+            this.AppendPredicate(" (" + this.whereColumnName + " > {0})", "@p0", comparisonValue);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified argument to filter the column.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being greater than or equal to the specified comparisonValue.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     .IsGreaterThanOrEqualTo(new DateTime(2000, 1, 1))
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered >= @p0)
+        /// </example>
+        public IAndOrOrderBy IsGreaterThanOrEqualTo(object comparisonValue)
+        {
+            this.AppendPredicate(" (" + this.whereColumnName + " >= {0})", "@p0", comparisonValue);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified argument to filter the column.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being less than the specified comparisonValue.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     .IsLessThan(new DateTime(2000, 1, 1))
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<--> @p0)
+        /// </example>
+        public IAndOrOrderBy IsLessThan(object comparisonValue)
+        {
+            this.AppendPredicate(" (" + this.whereColumnName + " < {0})", "@p0", comparisonValue);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified argument to filter the column.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being less than or equal to the specified comparisonValue.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     .IsLessThanOrEqualTo(new DateTime(2000, 1, 1))
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<-->= @p0)
+        /// </example>
+        public IAndOrOrderBy IsLessThanOrEqualTo(object comparisonValue)
+        {
+            this.AppendPredicate(" (" + this.whereColumnName + " <= {0})", "@p0", comparisonValue);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified argument to filter the column.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being like the specified comparisonValue.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     .IsLike(new DateTime(2000, 1, 1))
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered LIKE @p0)
+        /// </example>
+        public IAndOrOrderBy IsLike(object comparisonValue)
+        {
+            this.AppendPredicate(" (" + this.whereColumnName + " LIKE {0})", "@p0", comparisonValue);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified argument to filter the column.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results not being equal to the specified comparisonValue.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     .IsNotEqualTo(new DateTime(2000, 1, 1))
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<>--> @p0)
+        /// </example>
+        public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
+        {
+            this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", "@p0", comparisonValue);
 
             return this;
         }
@@ -698,13 +690,7 @@ namespace MicroLite.Query
         /// </returns>
         public IAndOrOrderBy IsNotNull()
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
-            this.AppendPredicate(" (" + this.whereColumnName + " {0})", "IS NOT NULL");
+            this.innerSql.AppendFormat(" ({0} IS NOT NULL)", this.whereColumnName);
 
             return this;
         }
@@ -717,13 +703,7 @@ namespace MicroLite.Query
         /// </returns>
         public IAndOrOrderBy IsNull()
         {
-            if (!this.addedWhere)
-            {
-                this.innerSql.Append(" WHERE");
-                this.addedWhere = true;
-            }
-
-            this.AppendPredicate(" (" + this.whereColumnName + " {0})", "IS NULL");
+            this.innerSql.AppendFormat(" ({0} IS NULL)", this.whereColumnName);
 
             return this;
         }
@@ -775,7 +755,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" MAX(" + columnName + ") AS " + columnAlias);
+            this.innerSql.AppendFormat(" MAX({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -827,7 +807,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" MIN(" + columnName + ") AS " + columnAlias);
+            this.innerSql.AppendFormat(" MIN({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -976,7 +956,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(",");
             }
 
-            this.innerSql.Append(" SUM(" + columnName + ") AS " + columnAlias);
+            this.innerSql.AppendFormat(" SUM({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -1008,7 +988,13 @@ namespace MicroLite.Query
         /// </example>
         public IWhereSingleColumn Where(string columnName)
         {
-            this.whereColumnName = columnName;
+            this.whereColumnName = this.sqlCharacters.EscapeSql(columnName);
+
+            if (!this.addedWhere)
+            {
+                this.innerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
 
             return this;
         }
@@ -1074,22 +1060,28 @@ namespace MicroLite.Query
             }
 
             this.arguments.Add(arg);
-            this.innerSql.Append(" " + parameter);
+            this.innerSql.Append(" ");
+            this.innerSql.Append(parameter);
 
             return this;
         }
 
         private void AddOrder(string[] columns, string direction)
         {
-            if (!this.addedOrder)
+            this.innerSql.Append(!this.addedOrder ? " ORDER BY " : ", ");
+
+            for (int i = 0; i < columns.Length; i++)
             {
-                this.innerSql.Append(" ORDER BY " + string.Join(", ", columns) + direction);
-                this.addedOrder = true;
+                if (i > 0)
+                {
+                    this.innerSql.Append(", ");
+                }
+
+                this.innerSql.Append(this.sqlCharacters.EscapeSql(columns[i]));
             }
-            else
-            {
-                this.innerSql.Append(", " + string.Join(", ", columns) + direction);
-            }
+
+            this.innerSql.Append(direction);
+            this.addedOrder = true;
         }
 
         private void AppendPredicate(string appendFormat, string predicate, params object[] args)

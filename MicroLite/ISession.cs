@@ -22,7 +22,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the advanced session operations.
         /// </summary>
-        IAdvancedSession Advanced
+        new IAdvancedSession Advanced
         {
             get;
         }

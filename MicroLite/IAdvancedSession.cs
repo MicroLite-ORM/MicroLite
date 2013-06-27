@@ -21,7 +21,7 @@ namespace MicroLite
     /// These operations allow for more advanced use and have been moved to a separate interface to avoid
     /// cluttering the ISession API.
     /// </remarks>
-    public interface IAdvancedSession : IHideObjectMethods
+    public interface IAdvancedSession : IHideObjectMethods, IAdvancedReadOnlySession
     {
         /// <summary>
         /// Deletes the database record with the specified identifier for the specified type.

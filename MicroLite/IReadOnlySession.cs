@@ -22,6 +22,14 @@ namespace MicroLite
     public interface IReadOnlySession : IHideObjectMethods, IDisposable
     {
         /// <summary>
+        /// Gets the advanced session operations.
+        /// </summary>
+        IAdvancedReadOnlySession Advanced
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets the operations which allow additional objects to be queried in a single database call.
         /// </summary>
         IIncludeSession Include

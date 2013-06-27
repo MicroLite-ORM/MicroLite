@@ -75,7 +75,7 @@
     <Compile Include="DbEncryptedStringTests.cs" />
     <Compile Include="Dialect\MySqlDialectTests.cs" />
     <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
-    <Compile Include="Dialect\SqlDialectFactoryTests.cs" />
+    <Compile Include="Dialect\SqlCharactersTests.cs" />
     <Compile Include="Dialect\SqlDialectTests.cs" />
     <Compile Include="Dialect\SQLiteDialectTests.cs" />
     <Compile Include="GuidGeneratorTests.cs" />
@@ -98,6 +98,7 @@
     <Compile Include="Mapping\ConventionMappingConventionTests.cs" />
     <Compile Include="Mapping\ConventionMappingSettingsTests.cs" />
     <Compile Include="Mapping\ExpandoObjectInfoTests.cs" />
+    <Compile Include="Query\RawWhereBuilderTests.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverterTests.cs" />
     <Compile Include="TypeConverters\EnumTypeConverterTests.cs" />
     <Compile Include="Mapping\IdentifierAttributeTests.cs" />

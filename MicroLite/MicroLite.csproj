@@ -63,13 +63,14 @@
     <Compile Include="Core\IncludeScalar.cs" />
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
+    <Compile Include="Dialect\SqlCharacters.cs" />
     <Compile Include="FrameworkExtensions\TypeExtensions.cs" />
+    <Compile Include="IAdvancedReadOnlySession.cs" />
     <Compile Include="Infrastructure\AppSettingSymmetricAlgorithmProvider.cs" />
     <Compile Include="DbEncryptedString.cs" />
     <Compile Include="Dialect\MySqlDialect.cs" />
     <Compile Include="Dialect\PostgreSqlDialect.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />
-    <Compile Include="Dialect\SqlDialectFactory.cs" />
     <Compile Include="Dialect\SQLiteDialect.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="GuidGenerator.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Mapping\Inflection\EnglishInflectionService.cs" />
     <Compile Include="Mapping\Inflection\IInflectionService.cs" />
     <Compile Include="Mapping\IObjectInfo.cs" />
+    <Compile Include="Query\RawWhereBuilder.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverter.cs" />
     <Compile Include="TypeConverters\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
