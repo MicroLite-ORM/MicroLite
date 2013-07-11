@@ -102,5 +102,21 @@ namespace MicroLite.Query
         /// </summary>
         /// <returns>The next step in the fluent sql builder.</returns>
         IAndOrOrderBy IsNull();
+
+        /// <summary>
+        /// Uses the specified arguments to filter the column.
+        /// </summary>
+        /// <param name="args">The arguments to filter the column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
+        IAndOrOrderBy NotIn(params object[] args);
+
+        /// <summary>
+        /// Uses the specified SqlQuery as a sub query to filter the column.
+        /// </summary>
+        /// <param name="subQuery">The sub query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
+        IAndOrOrderBy NotIn(SqlQuery subQuery);
     }
 }

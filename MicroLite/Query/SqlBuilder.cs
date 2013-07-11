@@ -863,6 +863,85 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Uses the specified arguments to filter the column.
+        /// </summary>
+        /// <param name="args">The arguments to filter the column.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being in the specified values.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("Column1")
+        ///     .NotIn("X", "Y", "Z")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 NOT IN (@p0, @p1, @p2))
+        /// </example>
+        public IAndOrOrderBy NotIn(params object[] args)
+        {
+            if (args == null)
+            {
+                throw new ArgumentNullException("args");
+            }
+
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
+#if NET_3_5
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)).ToArray());
+#else
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)));
+#endif
+            this.AppendPredicate(" (" + this.whereColumnName + " NOT IN ({0}))", predicate, args);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Uses the specified SqlQuery as a sub query to filter the column.
+        /// </summary>
+        /// <param name="subQuery">The sub query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being in the specified values.
+        /// <code>
+        /// var customerQuery = SqlBuilder
+        ///     .Select("CustomerId")
+        ///     .From(typeof(Customer))
+        ///     .Where("Age > @p0", 40)
+        ///     .ToSqlQuery();
+        ///
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Invoice))
+        ///     .Where("CustomerId")
+        ///     .NotIn(customerQuery)
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Invoices WHERE (CustomerId NOT IN (SELECT CustomerId FROM Customers WHERE Age > @p0))
+        /// </example>
+        public IAndOrOrderBy NotIn(SqlQuery subQuery)
+        {
+            if (subQuery == null)
+            {
+                throw new ArgumentNullException("subQuery");
+            }
+
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
+            this.AppendPredicate(" (" + this.whereColumnName + " NOT IN ({0}))", subQuery.CommandText, subQuery.Arguments.ToArray());
+
+            return this;
+        }
+
+        /// <summary>
         /// Orders the results of the query by the specified columns in ascending order.
         /// </summary>
         /// <param name="columns">The columns to order by.</param>

@@ -1135,6 +1135,42 @@
         }
 
         [Fact]
+        public void SelectWhereNotInArgs()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("Column1")
+                .From("Table")
+                .Where("Column1")
+                .NotIn(1, 2, 3)
+                .ToSqlQuery();
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+            Assert.Equal(1, sqlQuery.Arguments[0]);
+            Assert.Equal(2, sqlQuery.Arguments[1]);
+            Assert.Equal(3, sqlQuery.Arguments[2]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (@p0, @p1, @p2))", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereNotInSqlQuery()
+        {
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = @p0", 1024);
+
+            var sqlQuery = SqlBuilder
+                .Select("Column1")
+                .From("Table")
+                .Where("Column1")
+                .NotIn(subQuery)
+                .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(1024, sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (SELECT Id FROM Table WHERE Column = @p0))", sqlQuery.CommandText);
+        }
+
+        [Fact]
         public void SelectWhereOrWhereInArgs()
         {
             var sqlQuery = SqlBuilder
@@ -1197,6 +1233,7 @@
 
             Assert.Equal(@"SELECT Column1 FROM Table WHERE (Column2 IN (@p0, @p1)) AND (Column3 = @p2) AND (Column4 > @p3) AND (Column5 >= @p4) AND (Column6 < @p5) AND (Column7 <= @p6) AND (Column8 LIKE @p7) AND (Column9 <> @p8) AND (Column10 IS NOT NULL) AND (Column11 IS NULL)", sqlQuery.CommandText);
         }
+
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
         private class Customer
         {
