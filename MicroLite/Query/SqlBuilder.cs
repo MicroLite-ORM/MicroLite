@@ -538,6 +538,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsEqualTo(object comparisonValue)
         {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
             this.AppendPredicate(" (" + this.whereColumnName + " = {0})", "@p0", comparisonValue);
 
             return this;
@@ -562,6 +567,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsGreaterThan(object comparisonValue)
         {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
             this.AppendPredicate(" (" + this.whereColumnName + " > {0})", "@p0", comparisonValue);
 
             return this;
@@ -586,6 +596,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsGreaterThanOrEqualTo(object comparisonValue)
         {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
             this.AppendPredicate(" (" + this.whereColumnName + " >= {0})", "@p0", comparisonValue);
 
             return this;
@@ -610,6 +625,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsLessThan(object comparisonValue)
         {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
             this.AppendPredicate(" (" + this.whereColumnName + " < {0})", "@p0", comparisonValue);
 
             return this;
@@ -634,6 +654,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsLessThanOrEqualTo(object comparisonValue)
         {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
             this.AppendPredicate(" (" + this.whereColumnName + " <= {0})", "@p0", comparisonValue);
 
             return this;
@@ -658,6 +683,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsLike(object comparisonValue)
         {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
             this.AppendPredicate(" (" + this.whereColumnName + " LIKE {0})", "@p0", comparisonValue);
 
             return this;
@@ -682,6 +712,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
         {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
             this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", "@p0", comparisonValue);
 
             return this;
@@ -695,6 +730,11 @@ namespace MicroLite.Query
         /// </returns>
         public IAndOrOrderBy IsNotNull()
         {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
             this.innerSql.AppendFormat(" ({0} IS NOT NULL)", this.whereColumnName);
 
             return this;
@@ -708,6 +748,11 @@ namespace MicroLite.Query
         /// </returns>
         public IAndOrOrderBy IsNull()
         {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
             this.innerSql.AppendFormat(" ({0} IS NULL)", this.whereColumnName);
 
             return this;

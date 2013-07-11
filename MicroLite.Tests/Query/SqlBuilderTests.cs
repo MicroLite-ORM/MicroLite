@@ -1174,6 +1174,29 @@
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) OR (Column1 IN (SELECT Id FROM Table WHERE Column = @p1))", sqlQuery.CommandText);
         }
 
+        /// <summary>
+        /// Issue #224 - SqlBuilder SingleColumn predicates not appending AND or OR
+        /// </summary>
+        [Fact]
+        public void SingleColumnPredicatesShouldAppendOperand()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("Column1")
+                .From("Table")
+                .Where("Column2").In("Opt1", "Opt2")
+                .AndWhere("Column3").IsEqualTo(1)
+                .AndWhere("Column4").IsGreaterThan(2)
+                .AndWhere("Column5").IsGreaterThanOrEqualTo(3)
+                .AndWhere("Column6").IsLessThan(4)
+                .AndWhere("Column7").IsLessThanOrEqualTo(5)
+                .AndWhere("Column8").IsLike("%J")
+                .AndWhere("Column9").IsNotEqualTo(6)
+                .AndWhere("Column10").IsNotNull()
+                .AndWhere("Column11").IsNull()
+                .ToSqlQuery();
+
+            Assert.Equal(@"SELECT Column1 FROM Table WHERE (Column2 IN (@p0, @p1)) AND (Column3 = @p2) AND (Column4 > @p3) AND (Column5 >= @p4) AND (Column6 < @p5) AND (Column7 <= @p6) AND (Column8 LIKE @p7) AND (Column9 <> @p8) AND (Column10 IS NOT NULL) AND (Column11 IS NULL)", sqlQuery.CommandText);
+        }
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
         private class Customer
         {
