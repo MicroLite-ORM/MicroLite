@@ -17,6 +17,27 @@
             SqlBuilder.SqlCharacters = null;
         }
 
+        /// <summary>
+        /// Issue #223 - SqlBuilder Between is not appending AND or OR
+        /// </summary>
+        [Fact]
+        public void BetweenShouldAppendOperandIfItIsAnAdditionalPredicate()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("Column1")
+                .From("Table")
+                .Where("Column2").In("Opt1", "Opt2")
+                .AndWhere("Column3").Between(1, 10)
+                .ToSqlQuery();
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 IN (@p0, @p1)) AND (Column3 BETWEEN @p2 AND @p3)", sqlQuery.CommandText);
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+            Assert.Equal("Opt1", sqlQuery.Arguments[0]);
+            Assert.Equal("Opt2", sqlQuery.Arguments[1]);
+            Assert.Equal(1, sqlQuery.Arguments[2]);
+            Assert.Equal(10, sqlQuery.Arguments[3]);
+        }
+
         public void Dispose()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
@@ -166,6 +187,7 @@
             Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT COUNT(CustomerId) AS CustomerCount FROM Sales.Customers", sqlQuery.CommandText);
         }
+
         [Fact]
         public void SelectCountWithOtherColumn()
         {

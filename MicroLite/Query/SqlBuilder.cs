@@ -275,6 +275,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy Between(object lower, object upper)
         {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.innerSql.Append(this.operand);
+            }
+
             this.AppendPredicate(" (" + this.whereColumnName + " BETWEEN {0})", "@p0 AND @p1", new[] { lower, upper });
 
             return this;
