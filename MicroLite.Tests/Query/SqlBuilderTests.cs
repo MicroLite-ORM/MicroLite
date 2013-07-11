@@ -124,6 +124,23 @@
             Assert.Equal("SELECT AVG([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
+        /// <summary>
+        /// Issue #221 - SqlBuilder does not allow chaining multiple function calls.
+        /// </summary>
+        [Fact]
+        public void SelectChainingMultipleFunctions()
+        {
+            var sqlQuery = SqlBuilder
+                .Select("Column1")
+                .Count("Column2", "Col2")
+                .Max("Column3", "Col3")
+                .From("Table")
+                .ToSqlQuery();
+
+            Assert.Empty(sqlQuery.Arguments);
+            Assert.Equal("SELECT Column1, COUNT(Column2) AS Col2, MAX(Column3) AS Col3 FROM Table", sqlQuery.CommandText);
+        }
+
         [Fact]
         public void SelectCount()
         {
@@ -149,7 +166,6 @@
             Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT COUNT(CustomerId) AS CustomerCount FROM Sales.Customers", sqlQuery.CommandText);
         }
-
         [Fact]
         public void SelectCountWithOtherColumn()
         {

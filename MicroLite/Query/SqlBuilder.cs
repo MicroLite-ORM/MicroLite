@@ -220,7 +220,7 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
-        public IFrom Average(string columnName)
+        public IFunctionOrFrom Average(string columnName)
         {
             return this.Average(columnName, columnName);
         }
@@ -243,7 +243,7 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT AVG(Total) AS AverageTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
-        public IFrom Average(string columnName, string columnAlias)
+        public IFunctionOrFrom Average(string columnName, string columnAlias)
         {
             if (this.innerSql.Length > 6)
             {
@@ -296,7 +296,7 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT COUNT(CustomerId) AS CustomerId FROM Customers
         /// </example>
-        public IFrom Count(string columnName)
+        public IFunctionOrFrom Count(string columnName)
         {
             return this.Count(columnName, columnName);
         }
@@ -318,7 +318,7 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT COUNT(CustomerId) AS CustomerCount FROM Customers
         /// </example>
-        public IFrom Count(string columnName, string columnAlias)
+        public IFunctionOrFrom Count(string columnName, string columnAlias)
         {
             if (this.innerSql.Length > 6)
             {
@@ -725,7 +725,7 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
-        public IFrom Max(string columnName)
+        public IFunctionOrFrom Max(string columnName)
         {
             return this.Max(columnName, columnName);
         }
@@ -748,7 +748,7 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT MAX(Total) AS MaxTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
-        public IFrom Max(string columnName, string columnAlias)
+        public IFunctionOrFrom Max(string columnName, string columnAlias)
         {
             if (this.innerSql.Length > 6)
             {
@@ -777,7 +777,7 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
-        public IFrom Min(string columnName)
+        public IFunctionOrFrom Min(string columnName)
         {
             return this.Min(columnName, columnName);
         }
@@ -800,7 +800,7 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT MIN(Total) AS MinTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
-        public IFrom Min(string columnName, string columnAlias)
+        public IFunctionOrFrom Min(string columnName, string columnAlias)
         {
             if (this.innerSql.Length > 6)
             {
@@ -926,7 +926,7 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
-        public IFrom Sum(string columnName)
+        public IFunctionOrFrom Sum(string columnName)
         {
             return this.Sum(columnName, columnName);
         }
@@ -949,7 +949,7 @@ namespace MicroLite.Query
         /// </code>
         /// Will generate SELECT SUM(Total) AS SumTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
-        public IFrom Sum(string columnName, string columnAlias)
+        public IFunctionOrFrom Sum(string columnName, string columnAlias)
         {
             if (this.innerSql.Length > 6)
             {
