@@ -315,9 +315,9 @@ namespace MicroLite.Dialect
         /// <summary>
         /// Appends the name of the table.
         /// </summary>
-        /// <param name="objectInfo">The object info.</param>
         /// <param name="sqlBuilder">The SQL builder.</param>
-        protected void AppendTableName(IObjectInfo objectInfo, StringBuilder sqlBuilder)
+        /// <param name="objectInfo">The object info.</param>
+        protected void AppendTableName(StringBuilder sqlBuilder, IObjectInfo objectInfo)
         {
             var schema = !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
                 ? objectInfo.TableInfo.Schema
@@ -408,13 +408,13 @@ namespace MicroLite.Dialect
             {
                 case StatementType.Delete:
                     sqlBuilder.Append("DELETE FROM ");
-                    this.AppendTableName(objectInfo, sqlBuilder);
+                    this.AppendTableName(sqlBuilder, objectInfo);
 
                     break;
 
                 case StatementType.Insert:
                     sqlBuilder.Append("INSERT INTO ");
-                    this.AppendTableName(objectInfo, sqlBuilder);
+                    this.AppendTableName(sqlBuilder, objectInfo);
                     sqlBuilder.Append(" (");
 
                     foreach (var column in objectInfo.TableInfo.Columns)
@@ -450,13 +450,13 @@ namespace MicroLite.Dialect
                     }
 
                     sqlBuilder.Append(" FROM ");
-                    this.AppendTableName(objectInfo, sqlBuilder);
+                    this.AppendTableName(sqlBuilder, objectInfo);
 
                     break;
 
                 case StatementType.Update:
                     sqlBuilder.Append("UPDATE ");
-                    this.AppendTableName(objectInfo, sqlBuilder);
+                    this.AppendTableName(sqlBuilder, objectInfo);
                     sqlBuilder.Append(" SET");
 
                     break;
