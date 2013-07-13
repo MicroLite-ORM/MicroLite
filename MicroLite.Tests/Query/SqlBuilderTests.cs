@@ -70,6 +70,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -86,6 +87,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT AVG(Total) AS AverageTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -103,6 +105,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT CustomerId, AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0) GROUP BY CustomerId", sqlQuery.CommandText);
         }
 
@@ -121,6 +124,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT AVG([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -385,6 +389,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1, Column2 FROM Table WHERE (Column1 = @p0)", sqlQuery.CommandText);
         }
 
@@ -402,6 +407,7 @@
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
             Assert.Equal("Bar", sqlQuery.Arguments[1]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1, Column2 FROM Table WHERE (Column1 = @p0) AND (Column2 = @p1)", sqlQuery.CommandText);
         }
 
@@ -425,6 +431,7 @@
             Assert.Equal(3, sqlQuery.Arguments[5]);
             Assert.Equal(4, sqlQuery.Arguments[6]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1, Column2, Column3 FROM Table WHERE (Column1 = @p0 OR @p0 IS NULL) AND (Column2 BETWEEN @p1 AND @p2) OR (Column3 IN (@p3, @p4, @p5, @p6))", sqlQuery.CommandText);
         }
 
@@ -442,6 +449,7 @@
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
             Assert.Equal("Bar", sqlQuery.Arguments[1]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1, Column2 FROM Table WHERE (Column1 = @p0) OR (Column2 = @p1)", sqlQuery.CommandText);
         }
 
@@ -458,6 +466,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -474,6 +483,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT MAX(Total) AS MaxTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -490,6 +500,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT CustomerId, MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -508,6 +519,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT MAX([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -524,6 +536,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -540,6 +553,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT MIN(Total) AS MinTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -556,6 +570,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT CustomerId, MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -574,6 +589,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT MIN([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -590,6 +606,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -606,6 +623,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT SUM(Total) AS SumTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -622,6 +640,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -640,6 +659,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1022, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT SUM([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
         }
 
@@ -660,6 +680,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) AND (Column1 IN (@p1, @p2, @p3))", sqlQuery.CommandText);
         }
 
@@ -680,6 +701,7 @@
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
             Assert.Equal(1024, sqlQuery.Arguments[1]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) AND (Column1 IN (SELECT Id FROM Table WHERE Column = @p1))", sqlQuery.CommandText);
         }
 
@@ -697,6 +719,7 @@
             Assert.Equal(1, sqlQuery.Arguments[0]);
             Assert.Equal(10, sqlQuery.Arguments[1]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
         }
 
@@ -713,6 +736,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = @p0)", sqlQuery.CommandText);
         }
 
@@ -731,6 +755,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] = @p0)", sqlQuery.CommandText);
         }
 
@@ -747,6 +772,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 > @p0)", sqlQuery.CommandText);
         }
 
@@ -763,6 +789,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 >= @p0)", sqlQuery.CommandText);
         }
 
@@ -781,6 +808,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] >= @p0)", sqlQuery.CommandText);
         }
 
@@ -799,6 +827,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] > @p0)", sqlQuery.CommandText);
         }
 
@@ -815,6 +844,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 < @p0)", sqlQuery.CommandText);
         }
 
@@ -831,6 +861,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <= @p0)", sqlQuery.CommandText);
         }
 
@@ -849,6 +880,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <= @p0)", sqlQuery.CommandText);
         }
 
@@ -867,6 +899,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] < @p0)", sqlQuery.CommandText);
         }
 
@@ -883,6 +916,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 LIKE @p0)", sqlQuery.CommandText);
         }
 
@@ -901,6 +935,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] LIKE @p0)", sqlQuery.CommandText);
         }
 
@@ -917,6 +952,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> @p0)", sqlQuery.CommandText);
         }
 
@@ -935,6 +971,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <> @p0)", sqlQuery.CommandText);
         }
 
@@ -1019,6 +1056,7 @@
             Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
             Assert.Equal(10000M, sqlQuery.Arguments[1]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (OrderDate > @p0) GROUP BY Total HAVING SUM(Total) > @p1 ORDER BY OrderDate DESC", sqlQuery.CommandText);
         }
 
@@ -1037,6 +1075,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (OrderDate > @p0) GROUP BY Total ORDER BY OrderDate DESC", sqlQuery.CommandText);
         }
 
@@ -1057,6 +1096,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT [CustomerId], SUM([Total]) AS Total FROM [Invoices] WHERE (OrderDate > @p0) GROUP BY [Total] ORDER BY [OrderDate] DESC", sqlQuery.CommandText);
         }
 
@@ -1075,6 +1115,7 @@
             Assert.Equal(2, sqlQuery.Arguments[1]);
             Assert.Equal(3, sqlQuery.Arguments[2]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (@p0, @p1, @p2))", sqlQuery.CommandText);
         }
 
@@ -1093,6 +1134,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1024, sqlQuery.Arguments[0]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (SELECT Id FROM Table WHERE Column = @p0))", sqlQuery.CommandText);
         }
 
@@ -1113,6 +1155,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) OR (Column1 IN (@p1, @p2, @p3))", sqlQuery.CommandText);
         }
 
@@ -1133,6 +1176,7 @@
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
             Assert.Equal(1024, sqlQuery.Arguments[1]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) OR (Column1 IN (SELECT Id FROM Table WHERE Column = @p1))", sqlQuery.CommandText);
         }
 

@@ -179,7 +179,7 @@ namespace MicroLite.Query
         ///     .AndWhere("LastName = @p0", "Smith") // Each time, the parameter number relates to the individual method call.
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT {Columns} FROM Customers WHERE (FirstName = @p0) AND (LastName = @p1)
+        /// For MsSqlCharacters, would generate SELECT {Columns} FROM Customers WHERE (FirstName = @p0) AND (LastName = @p1)
         /// @p0 would be John
         /// @p1 would be Smith
         /// </example>
@@ -192,7 +192,7 @@ namespace MicroLite.Query
         ///     .Where("FirstName = @p0 AND LastName = @p1", "John", "Smith")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT {Columns} FROM Customers WHERE (FirstName = @p0 AND LastName = @p1)
+        /// For MsSqlCharacters, would generate SELECT {Columns} FROM Customers WHERE (FirstName = @p0 AND LastName = @p1)
         /// @p0 would be John
         /// @p1 would be Smith
         /// </example>
@@ -218,7 +218,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
+        /// For MsSqlCharacters, will generate SELECT AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Average(string columnName)
         {
@@ -241,7 +241,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT AVG(Total) AS AverageTotal FROM Invoices WHERE (CustomerId = @p0)
+        /// For MsSqlCharacters, will generate SELECT AVG(Total) AS AverageTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Average(string columnName, string columnAlias)
         {
@@ -271,11 +271,11 @@ namespace MicroLite.Query
         ///     .Between(new DateTime(2000, 1, 1), new DateTime(2009, 12, 31))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered BETWEEN @p0 AND @p1)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered BETWEEN @p0 AND @p1)
         /// </example>
         public IAndOrOrderBy Between(object lower, object upper)
         {
-            this.AppendPredicate(" (" + this.whereColumnName + " BETWEEN {0})", "@p0 AND @p1", new[] { lower, upper });
+            this.AppendPredicate(" (" + this.whereColumnName + " BETWEEN {0})", this.sqlCharacters.GetParameterName(0) + " AND " + this.sqlCharacters.GetParameterName(1), new[] { lower, upper });
 
             return this;
         }
@@ -426,7 +426,7 @@ namespace MicroLite.Query
         ///     .Having("MAX(Total) > @p0", 10000M)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId HAVING MAX(Total) > @p0
+        /// For MsSqlCharacters, will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId HAVING MAX(Total) > @p0
         /// </example>
         public IOrderBy Having(string predicate, object value)
         {
@@ -450,7 +450,7 @@ namespace MicroLite.Query
         ///     .In("X", "Y", "Z")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 IN (@p0, @p1, @p2))
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (Column1 IN (@p0, @p1, @p2))
         /// </example>
         public IAndOrOrderBy In(params object[] args)
         {
@@ -465,10 +465,13 @@ namespace MicroLite.Query
             }
 
 #if NET_3_5
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)).ToArray());
+            //var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)).ToArray());
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.sqlCharacters.GetParameterName(i)).ToArray());
 #else
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)));
+            //var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)));
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.sqlCharacters.GetParameterName(i)));
 #endif
+
             this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", predicate, args);
 
             return this;
@@ -495,7 +498,7 @@ namespace MicroLite.Query
         ///     .In(customerQuery)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Invoices WHERE (CustomerId IN (SELECT CustomerId FROM Customers WHERE Age > @p0))
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Invoices WHERE (CustomerId IN (SELECT CustomerId FROM Customers WHERE Age > @p0))
         /// </example>
         public IAndOrOrderBy In(SqlQuery subQuery)
         {
@@ -510,7 +513,7 @@ namespace MicroLite.Query
             }
 
             this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", subQuery.CommandText, subQuery.Arguments.ToArray());
-
+            
             return this;
         }
 
@@ -529,11 +532,11 @@ namespace MicroLite.Query
         ///     .IsEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered = @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered = @p0)
         /// </example>
         public IAndOrOrderBy IsEqualTo(object comparisonValue)
         {
-            this.AppendPredicate(" (" + this.whereColumnName + " = {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " = {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -553,11 +556,11 @@ namespace MicroLite.Query
         ///     .IsGreaterThan(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered > @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered > @p0)
         /// </example>
         public IAndOrOrderBy IsGreaterThan(object comparisonValue)
         {
-            this.AppendPredicate(" (" + this.whereColumnName + " > {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " > {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -577,11 +580,11 @@ namespace MicroLite.Query
         ///     .IsGreaterThanOrEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered >= @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered >= @p0)
         /// </example>
         public IAndOrOrderBy IsGreaterThanOrEqualTo(object comparisonValue)
         {
-            this.AppendPredicate(" (" + this.whereColumnName + " >= {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " >= {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -601,11 +604,11 @@ namespace MicroLite.Query
         ///     .IsLessThan(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<--> @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<--> @p0)
         /// </example>
         public IAndOrOrderBy IsLessThan(object comparisonValue)
         {
-            this.AppendPredicate(" (" + this.whereColumnName + " < {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " < {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -625,11 +628,11 @@ namespace MicroLite.Query
         ///     .IsLessThanOrEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<-->= @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<-->= @p0)
         /// </example>
         public IAndOrOrderBy IsLessThanOrEqualTo(object comparisonValue)
         {
-            this.AppendPredicate(" (" + this.whereColumnName + " <= {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " <= {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -649,11 +652,11 @@ namespace MicroLite.Query
         ///     .IsLike(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered LIKE @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered LIKE @p0)
         /// </example>
         public IAndOrOrderBy IsLike(object comparisonValue)
         {
-            this.AppendPredicate(" (" + this.whereColumnName + " LIKE {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " LIKE {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -673,11 +676,11 @@ namespace MicroLite.Query
         ///     .IsNotEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<>--> @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<>--> @p0)
         /// </example>
         public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
         {
-            this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -723,7 +726,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
+        /// For MsSqlCharacters, will generate SELECT MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Max(string columnName)
         {
@@ -746,7 +749,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MAX(Total) AS MaxTotal FROM Invoices WHERE (CustomerId = @p0)
+        /// For MsSqlCharacters, will generate SELECT MAX(Total) AS MaxTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Max(string columnName, string columnAlias)
         {
@@ -775,7 +778,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
+        /// For MsSqlCharacters, will generate SELECT MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Min(string columnName)
         {
@@ -798,7 +801,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MIN(Total) AS MinTotal FROM Invoices WHERE (CustomerId = @p0)
+        /// For MsSqlCharacters, will generate SELECT MIN(Total) AS MinTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Min(string columnName, string columnAlias)
         {
@@ -885,7 +888,7 @@ namespace MicroLite.Query
         ///     .OrWhere("LastName = @p0", "Smithson") // Each time, the parameter number relates to the individual method call.
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0) OR (LastName = @p1)
+        /// For MsSqlCharacters, would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0) OR (LastName = @p1)
         /// @p0 would be Smith
         /// @p1 would be Smithson
         /// </example>
@@ -898,7 +901,7 @@ namespace MicroLite.Query
         ///     .Where("LastName = @p0 OR LastName = @p1", "Smith", "Smithson")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR LastName = @p1)
+        /// For MsSqlCharacters, would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR LastName = @p1)
         /// @p0 would be Smith
         /// @p1 would be Smithson
         /// </example>
@@ -924,7 +927,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
+        /// For MsSqlCharacters, will generate SELECT SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Sum(string columnName)
         {
@@ -947,7 +950,7 @@ namespace MicroLite.Query
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT SUM(Total) AS SumTotal FROM Invoices WHERE (CustomerId = @p0)
+        /// For MsSqlCharacters, will generate SELECT SUM(Total) AS SumTotal FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
         public IFrom Sum(string columnName, string columnAlias)
         {
@@ -1014,7 +1017,7 @@ namespace MicroLite.Query
         ///     .Where("LastName = @p0", "Smith")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0)
+        /// For MsSqlCharacters, would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0)
         /// </example>
         /// <example>
         /// You can refer to the same parameter multiple times
@@ -1025,7 +1028,7 @@ namespace MicroLite.Query
         ///     .Where("LastName = @p0 OR @p0 IS NULL", lastName)
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR @p0 IS NULL)
+        /// For MsSqlCharacters, would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR @p0 IS NULL)
         /// </example>
         public IAndOrOrderBy Where(string predicate, params object[] args)
         {
