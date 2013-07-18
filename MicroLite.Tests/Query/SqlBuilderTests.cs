@@ -698,6 +698,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) AND (Column1 IN (@p1, @p2, @p3))", sqlQuery.CommandText);
         }
 
@@ -735,6 +736,7 @@
             Assert.Equal(1, sqlQuery.Arguments[0]);
             Assert.Equal(10, sqlQuery.Arguments[1]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
         }
 
@@ -1113,6 +1115,7 @@
             Assert.Equal(2, sqlQuery.Arguments[1]);
             Assert.Equal(3, sqlQuery.Arguments[2]);
 
+            // For MsSqlCharacters... 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (@p0, @p1, @p2))", sqlQuery.CommandText);
         }
 

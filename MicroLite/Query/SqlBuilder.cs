@@ -271,7 +271,7 @@ namespace MicroLite.Query
         ///     .Between(new DateTime(2000, 1, 1), new DateTime(2009, 12, 31))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered BETWEEN @p0 AND @p1)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered BETWEEN @p0 AND @p1)
         /// </example>
         public IAndOrOrderBy Between(object lower, object upper)
         {
@@ -280,7 +280,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " BETWEEN {0})", "@p0 AND @p1", new[] { lower, upper });
+            this.AppendPredicate(" (" + this.whereColumnName + " BETWEEN {0})", this.sqlCharacters.GetParameterName(0) + " AND " + this.sqlCharacters.GetParameterName(1), new[] { lower, upper });
 
             return this;
         }
@@ -455,7 +455,7 @@ namespace MicroLite.Query
         ///     .In("X", "Y", "Z")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 IN (@p0, @p1, @p2))
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (Column1 IN (@p0, @p1, @p2))
         /// </example>
         public IAndOrOrderBy In(params object[] args)
         {
@@ -470,9 +470,9 @@ namespace MicroLite.Query
             }
 
 #if NET_3_5
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)).ToArray());
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.sqlCharacters.GetParameterName(i)).ToArray());
 #else
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)));
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.sqlCharacters.GetParameterName(i)));
 #endif
             this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", predicate, args);
 
@@ -534,7 +534,7 @@ namespace MicroLite.Query
         ///     .IsEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered = @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered = @p0)
         /// </example>
         public IAndOrOrderBy IsEqualTo(object comparisonValue)
         {
@@ -543,7 +543,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " = {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " = {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -563,7 +563,7 @@ namespace MicroLite.Query
         ///     .IsGreaterThan(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered > @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered > @p0)
         /// </example>
         public IAndOrOrderBy IsGreaterThan(object comparisonValue)
         {
@@ -572,7 +572,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " > {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " > {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -592,7 +592,7 @@ namespace MicroLite.Query
         ///     .IsGreaterThanOrEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered >= @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered >= @p0)
         /// </example>
         public IAndOrOrderBy IsGreaterThanOrEqualTo(object comparisonValue)
         {
@@ -601,7 +601,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " >= {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " >= {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -621,7 +621,7 @@ namespace MicroLite.Query
         ///     .IsLessThan(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<--> @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<--> @p0)
         /// </example>
         public IAndOrOrderBy IsLessThan(object comparisonValue)
         {
@@ -630,7 +630,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " < {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " < {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -650,7 +650,7 @@ namespace MicroLite.Query
         ///     .IsLessThanOrEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<-->= @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<-->= @p0)
         /// </example>
         public IAndOrOrderBy IsLessThanOrEqualTo(object comparisonValue)
         {
@@ -659,7 +659,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " <= {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " <= {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -679,7 +679,7 @@ namespace MicroLite.Query
         ///     .IsLike(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered LIKE @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered LIKE @p0)
         /// </example>
         public IAndOrOrderBy IsLike(object comparisonValue)
         {
@@ -688,7 +688,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " LIKE {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " LIKE {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -708,7 +708,7 @@ namespace MicroLite.Query
         ///     .IsNotEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<>--> @p0)
+        /// For MsSqlCharacters, will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<>--> @p0)
         /// </example>
         public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
         {
@@ -717,7 +717,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
