@@ -30,7 +30,7 @@
                 .AndWhere("Column3").Between(1, 10)
                 .ToSqlQuery();
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 IN (@p0, @p1)) AND (Column3 BETWEEN @p2 AND @p3)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 IN (?, ?)) AND (Column3 BETWEEN ? AND ?)", sqlQuery.CommandText);
             Assert.Equal(4, sqlQuery.Arguments.Count);
             Assert.Equal("Opt1", sqlQuery.Arguments[0]);
             Assert.Equal("Opt2", sqlQuery.Arguments[1]);
@@ -699,7 +699,7 @@
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
             // For MsSqlCharacters... 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) AND (Column1 IN (@p1, @p2, @p3))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) AND (Column1 IN (?, ?, ?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -737,7 +737,7 @@
             Assert.Equal(10, sqlQuery.Arguments[1]);
 
             // For MsSqlCharacters... 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 BETWEEN ? AND ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -753,7 +753,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -787,7 +787,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 > @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 > ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -803,7 +803,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 >= @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 >= ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -855,7 +855,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 < @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 < ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -871,7 +871,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <= @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <= ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -923,7 +923,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 LIKE @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 LIKE ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -957,7 +957,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1116,7 +1116,7 @@
             Assert.Equal(3, sqlQuery.Arguments[2]);
 
             // For MsSqlCharacters... 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (@p0, @p1, @p2))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (?, ?, ?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1190,7 +1190,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) OR (Column1 IN (@p1, @p2, @p3))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) OR (Column1 IN (?, ?, ?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1234,7 +1234,7 @@
                 .AndWhere("Column11").IsNull()
                 .ToSqlQuery();
 
-            Assert.Equal(@"SELECT Column1 FROM Table WHERE (Column2 IN (@p0, @p1)) AND (Column3 = @p2) AND (Column4 > @p3) AND (Column5 >= @p4) AND (Column6 < @p5) AND (Column7 <= @p6) AND (Column8 LIKE @p7) AND (Column9 <> @p8) AND (Column10 IS NOT NULL) AND (Column11 IS NULL)", sqlQuery.CommandText);
+            Assert.Equal(@"SELECT Column1 FROM Table WHERE (Column2 IN (?, ?)) AND (Column3 = ?) AND (Column4 > ?) AND (Column5 >= ?) AND (Column6 < ?) AND (Column7 <= ?) AND (Column8 LIKE ?) AND (Column9 <> ?) AND (Column10 IS NOT NULL) AND (Column11 IS NULL)", sqlQuery.CommandText);
         }
 
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
