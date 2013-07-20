@@ -104,7 +104,10 @@ namespace MicroLite
         {
             get
             {
-                return Math.Max(this.TotalResults, this.ResultsPerPage) / this.ResultsPerPage;
+                // return Math.Max(this.TotalResults, this.ResultsPerPage) / this.ResultsPerPage;
+                return (this.TotalResults == 0)
+                            ? 0
+                            : (((this.TotalResults - 1) / this.ResultsPerPage) + 1);
             }
         }
 
