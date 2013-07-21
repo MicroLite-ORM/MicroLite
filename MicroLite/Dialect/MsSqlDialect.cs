@@ -103,7 +103,7 @@ namespace MicroLite.Dialect
 
         protected override string GetCommandText(string commandText)
         {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SqlCharacters.StatementSeparator.ToString()))
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SqlCharacters.StatementSeparator))
             {
                 var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
 
@@ -122,7 +122,7 @@ namespace MicroLite.Dialect
 
         protected override CommandType GetCommandType(string commandText)
         {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SqlCharacters.StatementSeparator.ToString()))
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SqlCharacters.StatementSeparator))
             {
                 return CommandType.StoredProcedure;
             }

@@ -96,11 +96,11 @@ namespace MicroLite.Dialect
         /// <summary>
         /// Gets the wildcard for use in like statements.
         /// </summary>
-        public virtual char LikeWildcard
+        public virtual string LikeWildcard
         {
             get
             {
-                return '%';
+                return "%";
             }
         }
 
@@ -118,33 +118,33 @@ namespace MicroLite.Dialect
         /// <summary>
         /// Gets the wildcard for use in select statements.
         /// </summary>
-        public virtual char SelectWildcard
+        public virtual string SelectWildcard
         {
             get
             {
-                return '*';
+                return "*";
             }
         }
 
         /// <summary>
         /// Gets the SQL parameter.
         /// </summary>
-        public virtual char SqlParameter
+        public virtual string SqlParameter
         {
             get
             {
-                return '?';
+                return "?";
             }
         }
 
         /// <summary>
         /// Gets the character used to separate SQL statements.
         /// </summary>
-        public virtual char StatementSeparator
+        public virtual string StatementSeparator
         {
             get
             {
-                return ';';
+                return ";";
             }
         }
 
@@ -185,11 +185,11 @@ namespace MicroLite.Dialect
         {
             if (this.SupportsNamedParameters)
             {
-                return this.SqlParameter + ('p' + position.ToString(CultureInfo.InvariantCulture));
+                return this.SqlParameter + "p" + position.ToString(CultureInfo.InvariantCulture);
             }
             else
             {
-                return this.SqlParameter.ToString();
+                return this.SqlParameter;
             }
         }
 
@@ -247,11 +247,11 @@ namespace MicroLite.Dialect
                 }
             }
 
-            public override char SqlParameter
+            public override string SqlParameter
             {
                 get
                 {
-                    return '@';
+                    return "@";
                 }
             }
 
@@ -282,11 +282,11 @@ namespace MicroLite.Dialect
                 }
             }
 
-            public override char SqlParameter
+            public override string SqlParameter
             {
                 get
                 {
-                    return '@';
+                    return "@";
                 }
             }
 
@@ -301,11 +301,11 @@ namespace MicroLite.Dialect
 
         private sealed class PostgreSqlCharacters : SqlCharacters
         {
-            public override char SqlParameter
+            public override string SqlParameter
             {
                 get
                 {
-                    return ':';
+                    return ":";
                 }
             }
 
@@ -320,11 +320,11 @@ namespace MicroLite.Dialect
 
         private sealed class SQLiteCharacters : SqlCharacters
         {
-            public override char SqlParameter
+            public override string SqlParameter
             {
                 get
                 {
-                    return '@';
+                    return "@";
                 }
             }
 
