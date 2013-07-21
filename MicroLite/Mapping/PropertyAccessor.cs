@@ -30,13 +30,10 @@ namespace MicroLite.Mapping
         private sealed class PropertyAccessorImpl<TObject, TValue> : IPropertyAccessor
         {
             private readonly Func<TObject, TValue> getMethod;
-            private readonly PropertyInfo propertyInfo;
             private readonly Action<TObject, TValue> setMethod;
 
             public PropertyAccessorImpl(PropertyInfo propertyInfo)
             {
-                this.propertyInfo = propertyInfo;
-
                 MethodInfo getMethodInfo = propertyInfo.GetGetMethod(nonPublic: true);
                 MethodInfo setMethodInfo = propertyInfo.GetSetMethod(nonPublic: true);
 
