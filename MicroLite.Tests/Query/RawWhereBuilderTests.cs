@@ -8,7 +8,7 @@
     public class RawWhereBuilderTests
     {
         [Fact]
-        public void ParametersAreRenumberedAndAllArgumentsAreAppended()
+        public void ApplyToEnsuresParametersAreRenumberedAndAllArgumentsAreAppended()
         {
             var rawWhereBuilder = new RawWhereBuilder();
             rawWhereBuilder.Append("ForeName = @p0 AND Surname = @p1", "Fred", "Flintstone");
@@ -21,6 +21,16 @@
             mockSqlBuilder.Verify(
                 x => x.Where("ForeName = @p0 AND Surname = @p1 AND Created > @p2", "Fred", "Flintstone", DateTime.Today),
                 Times.Once());
+        }
+
+        [Fact]
+        public void ApplyToThrowsArgumentNullExceptionForNullSqlBuilder()
+        {
+            var rawWhereBuilder = new RawWhereBuilder();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => rawWhereBuilder.ApplyTo(null));
+
+            Assert.Equal("selectFrom", exception.ParamName);
         }
     }
 }

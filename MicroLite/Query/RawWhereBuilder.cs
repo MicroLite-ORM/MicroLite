@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Query
 {
+    using System;
     using System.Collections.Generic;
     using System.Text;
 
@@ -52,6 +53,11 @@ namespace MicroLite.Query
         /// <returns>The <see cref="IAndOrOrderBy"/> which is returned by the SqlBuilder after applying the Where clause.</returns>
         public IAndOrOrderBy ApplyTo(IWhereOrOrderBy selectFrom)
         {
+            if (selectFrom == null)
+            {
+                throw new ArgumentNullException("selectFrom");
+            }
+
             var where = selectFrom.Where(this.builder.ToString(), this.arguments.ToArray());
 
             return where;
