@@ -12,7 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -104,7 +103,7 @@ namespace MicroLite
         {
             get
             {
-                return Math.Max(this.TotalResults, this.ResultsPerPage) / this.ResultsPerPage;
+                return ((this.TotalResults - 1) / this.ResultsPerPage) + 1;
             }
         }
 
