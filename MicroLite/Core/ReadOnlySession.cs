@@ -227,7 +227,7 @@ namespace MicroLite.Core
         public PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
             this.ThrowIfDisposed();
-
+            
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");

@@ -128,7 +128,7 @@
 
             var session = new ReadOnlySession(
                 new Mock<ISessionFactory>().Object,
-            mockConnectionManager.Object,
+                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object);
 
             using (session)
@@ -446,7 +446,7 @@
             mockObjectBuilder.VerifyAll();
             mockSqlDialect.VerifyAll();
         }
-
+        
         [Fact]
         public void PagedThrowsArgumentNullExceptionForNullSqlQuery()
         {

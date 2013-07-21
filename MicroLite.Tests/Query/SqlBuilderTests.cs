@@ -30,7 +30,7 @@
                 .AndWhere("Column3").Between(1, 10)
                 .ToSqlQuery();
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 IN (@p0, @p1)) AND (Column3 BETWEEN @p2 AND @p3)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 IN (?, ?)) AND (Column3 BETWEEN ? AND ?)", sqlQuery.CommandText);
             Assert.Equal(4, sqlQuery.Arguments.Count);
             Assert.Equal("Opt1", sqlQuery.Arguments[0]);
             Assert.Equal("Opt2", sqlQuery.Arguments[1]);
@@ -698,7 +698,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) AND (Column1 IN (@p1, @p2, @p3))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) AND (Column1 IN (?, ?, ?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -735,7 +735,7 @@
             Assert.Equal(1, sqlQuery.Arguments[0]);
             Assert.Equal(10, sqlQuery.Arguments[1]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 BETWEEN ? AND ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -751,7 +751,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -785,7 +785,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 > @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 > ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -801,7 +801,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 >= @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 >= ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -853,7 +853,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 < @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 < ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -869,7 +869,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <= @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <= ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -921,7 +921,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 LIKE @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 LIKE ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -955,7 +955,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1113,7 +1113,7 @@
             Assert.Equal(2, sqlQuery.Arguments[1]);
             Assert.Equal(3, sqlQuery.Arguments[2]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (@p0, @p1, @p2))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (?, ?, ?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1149,7 +1149,7 @@
             Assert.Equal(2, sqlQuery.Arguments[1]);
             Assert.Equal(3, sqlQuery.Arguments[2]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (@p0, @p1, @p2))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (?, ?, ?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1187,7 +1187,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) OR (Column1 IN (@p1, @p2, @p3))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) OR (Column1 IN (?, ?, ?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1231,7 +1231,54 @@
                 .AndWhere("Column11").IsNull()
                 .ToSqlQuery();
 
-            Assert.Equal(@"SELECT Column1 FROM Table WHERE (Column2 IN (@p0, @p1)) AND (Column3 = @p2) AND (Column4 > @p3) AND (Column5 >= @p4) AND (Column6 < @p5) AND (Column7 <= @p6) AND (Column8 LIKE @p7) AND (Column9 <> @p8) AND (Column10 IS NOT NULL) AND (Column11 IS NULL)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 IN (?, ?)) AND (Column3 = ?) AND (Column4 > ?) AND (Column5 >= ?) AND (Column6 < ?) AND (Column7 <= ?) AND (Column8 LIKE ?) AND (Column9 <> ?) AND (Column10 IS NOT NULL) AND (Column11 IS NULL)", sqlQuery.CommandText);
+        }
+
+        /// <summary>
+        /// Issue #206 - Session.Paged errors if the query includes a sub query
+        /// </summary>
+        [Fact]
+        public void PagedQueryWithoutSubQuery()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            var sqlQuerySingleLevel = SqlBuilder
+                                        .Select("*").From(typeof(Customer))
+                                        .Where("Name LIKE @p0", "Fred%")
+                                        .ToSqlQuery();
+
+            MsSqlDialect msSqlDialect = new MsSqlDialect();
+
+            SqlQuery pageQuerySingleLevel = msSqlDialect.PageQuery(sqlQuerySingleLevel, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
+            Assert.Equal(pageQuerySingleLevel.CommandText, "SELECT [DoB], [CustomerId], [Name] FROM (SELECT [DoB], [CustomerId], [Name], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0)) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)");
+            Assert.Equal(pageQuerySingleLevel.Arguments[0], "Fred%");
+            Assert.Equal(pageQuerySingleLevel.Arguments[1], 11);
+            Assert.Equal(pageQuerySingleLevel.Arguments[2], 20);
+        }
+
+        /// <summary>
+        /// Issue #206 - Session.Paged errors if the query includes a sub query
+        /// </summary>
+        [Fact]
+        public void PagedQueryWithSubQuery()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            var sqlQuerySubQuery = SqlBuilder
+                                        .Select("*")
+                                        .From(typeof(Customer))
+                                        .Where("Name LIKE @p0", "Fred%")
+                                        .AndWhere("SourceId").In(new SqlQuery("SELECT SourceId FROM Source WHERE Status = @p0", 1))
+                                        .ToSqlQuery();
+
+            MsSqlDialect msSqlDialect = new MsSqlDialect();
+
+            SqlQuery pageQuerySubQuery = msSqlDialect.PageQuery(sqlQuerySubQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
+            Assert.Equal(pageQuerySubQuery.CommandText, "SELECT [DoB], [CustomerId], [Name] FROM (SELECT [DoB], [CustomerId], [Name], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0) AND (SourceId IN (SELECT SourceId FROM Source WHERE Status = @p1))) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)");
+            Assert.Equal(pageQuerySubQuery.Arguments[0], "Fred%");
+            Assert.Equal(pageQuerySubQuery.Arguments[1], 1);
+            Assert.Equal(pageQuerySubQuery.Arguments[2], 11);
+            Assert.Equal(pageQuerySubQuery.Arguments[3], 20);
         }
 
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]

@@ -84,19 +84,36 @@ namespace MicroLite.Dialect
             var selectStatement = this.ReadSelectList(sqlQuery.CommandText);
             var qualifiedTableName = this.ReadTableName(sqlQuery.CommandText);
             var position = qualifiedTableName.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1;
-            var tableName = position > 0 ? qualifiedTableName.Substring(position, qualifiedTableName.Length - position) : qualifiedTableName;
+            var tableName = position > 0
+                          ? qualifiedTableName.Substring(position, qualifiedTableName.Length - position)
+                          : qualifiedTableName;
 
             var whereValue = this.ReadWhereClause(sqlQuery.CommandText);
-            var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
+            var whereClause = !string.IsNullOrEmpty(whereValue)
+                            ? " WHERE " + whereValue
+                            : string.Empty;
 
             var orderByValue = this.ReadOrderBy(sqlQuery.CommandText);
-            var orderByClause = "ORDER BY " + (!string.IsNullOrEmpty(orderByValue) ? orderByValue : "(SELECT NULL)");
+            var orderByClause = "ORDER BY " + (!string.IsNullOrEmpty(orderByValue)
+                                            ? orderByValue
+                                            : "(SELECT NULL)");
 
             var sqlBuilder = new StringBuilder(sqlQuery.CommandText.Length * 2);
             sqlBuilder.Append(selectStatement);
             sqlBuilder.Append(" FROM");
-            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " ({0}, ROW_NUMBER() OVER({1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName);
-            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Count - 2), this.SqlCharacters.GetParameterName(arguments.Count - 1));
+            sqlBuilder.AppendFormat(
+                 CultureInfo.InvariantCulture,
+                 " ({0}, ROW_NUMBER() OVER({1}) AS RowNumber FROM {2}{3}) AS {4}",
+                 selectStatement,
+                 orderByClause,
+                 qualifiedTableName,
+                 whereClause,
+                 tableName);
+            sqlBuilder.AppendFormat(
+                 CultureInfo.InvariantCulture,
+                 " WHERE (RowNumber >= {0} AND RowNumber <= {1})",
+                 this.SqlCharacters.GetParameterName(arguments.Count - 2),
+                 this.SqlCharacters.GetParameterName(arguments.Count - 1));
 
             return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
         }
