@@ -191,10 +191,8 @@ namespace MicroLite.Dialect
             {
                 return this.SqlParameter + "p" + position.ToString(CultureInfo.InvariantCulture);
             }
-            else
-            {
-                return this.SqlParameter;
-            }
+
+            return this.SqlParameter;
         }
 
         /// <summary>
