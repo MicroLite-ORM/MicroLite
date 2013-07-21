@@ -173,7 +173,11 @@ namespace MicroLite.Dialect
 
             var sqlPieces = sql.Split('.');
 
+#if NET_3_5
             return string.Join(".", sqlPieces.Select(s => this.LeftDelimiter + s + this.RightDelimiter).ToArray());
+#else
+            return string.Join(".", sqlPieces.Select(s => this.LeftDelimiter + s + this.RightDelimiter));
+#endif
         }
 
         /// <summary>
