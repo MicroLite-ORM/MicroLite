@@ -101,8 +101,6 @@ namespace MicroLite.Core
 
             try
             {
-                this.ExecutePendingQueries();
-
                 using (var command = this.ConnectionManager.CreateCommand())
                 {
                     this.SqlDialect.BuildCommand(command, sqlQuery);
@@ -132,8 +130,6 @@ namespace MicroLite.Core
 
             try
             {
-                this.ExecutePendingQueries();
-
                 using (var command = this.ConnectionManager.CreateCommand())
                 {
                     this.SqlDialect.BuildCommand(command, sqlQuery);
