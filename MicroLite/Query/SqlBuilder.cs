@@ -892,7 +892,7 @@ namespace MicroLite.Query
             }
 
 #if NET_3_5
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)).ToArray());
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.sqlCharacters.GetParameterName(i).ToArray()));
 #else
             var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.sqlCharacters.GetParameterName(i)));
 #endif
