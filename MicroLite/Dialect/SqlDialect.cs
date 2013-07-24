@@ -194,7 +194,8 @@ namespace MicroLite.Dialect
 
                         if (column.AllowInsert)
                         {
-                            insertSqlBuilder.Append(this.sqlCharacters.GetParameterName(insertValues.Count) + ", ");
+                            insertSqlBuilder.Append(this.sqlCharacters.GetParameterName(insertValues.Count));
+                            insertSqlBuilder.Append(", ");
 
                             var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
 
@@ -427,7 +428,8 @@ namespace MicroLite.Dialect
 
                         if (column.AllowInsert)
                         {
-                            sqlBuilder.Append(this.sqlCharacters.EscapeSql(column.ColumnName) + ", ");
+                            sqlBuilder.Append(this.sqlCharacters.EscapeSql(column.ColumnName));
+                            sqlBuilder.Append(", ");
                         }
                     }
 
