@@ -719,7 +719,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
-            Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) AND (Column1 IN (@p1, @p2, @p3))", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) AND ([Column1] IN (@p1, @p2, @p3))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -739,6 +739,27 @@
             Assert.Equal(1024, sqlQuery.Arguments[1]);
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) AND (Column1 IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereAndWhereInSqlQueryWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = @p0", 1024);
+
+            var sqlQuery = SqlBuilder
+                .Select("Column1")
+                .From("Table")
+                .Where("Column2 = @p0", "FOO")
+                .AndWhere("Column1").In(subQuery)
+                .ToSqlQuery();
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+            Assert.Equal(1024, sqlQuery.Arguments[1]);
+
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) AND ([Column1] IN (SELECT Id FROM Table WHERE Column = @p1))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1268,8 +1289,51 @@
         }
 
         [Fact]
+        public void SelectWhereOrWhereInArgsWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            var sqlQuery = SqlBuilder
+                .Select("Column1")
+                .From("Table")
+                .Where("Column2 = @p0", "FOO")
+                .OrWhere("Column1").In(1, 2, 3)
+                .ToSqlQuery();
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+            Assert.Equal(1, sqlQuery.Arguments[1]);
+            Assert.Equal(2, sqlQuery.Arguments[2]);
+            Assert.Equal(3, sqlQuery.Arguments[3]);
+
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) OR ([Column1] IN (@p1, @p2, @p3))", sqlQuery.CommandText);
+        }
+
+        [Fact]
         public void SelectWhereOrWhereInSqlQuery()
         {
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+
+            var sqlQuery = SqlBuilder
+                .Select("Column1")
+                .From("Table")
+                .Where("Column2 = ?", "FOO")
+                .OrWhere("Column1")
+                .In(subQuery)
+                .ToSqlQuery();
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+            Assert.Equal(1024, sqlQuery.Arguments[1]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) OR (Column1 IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereOrWhereInSqlQueryWithSqlCharacters()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
             var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = @p0", 1024);
 
             var sqlQuery = SqlBuilder
@@ -1284,7 +1348,7 @@
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
             Assert.Equal(1024, sqlQuery.Arguments[1]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = @p0) OR (Column1 IN (SELECT Id FROM Table WHERE Column = @p1))", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) OR ([Column1] IN (SELECT Id FROM Table WHERE Column = @p1))", sqlQuery.CommandText);
         }
 
         /// <summary>

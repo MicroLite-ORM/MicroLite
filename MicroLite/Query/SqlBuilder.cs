@@ -157,7 +157,7 @@ namespace MicroLite.Query
         public IWhereSingleColumn AndWhere(string columnName)
         {
             this.operand = " AND";
-            this.whereColumnName = columnName;
+            this.whereColumnName = this.sqlCharacters.EscapeSql(columnName);
 
             return this;
         }
@@ -995,7 +995,7 @@ namespace MicroLite.Query
         public IWhereSingleColumn OrWhere(string columnName)
         {
             this.operand = " OR";
-            this.whereColumnName = columnName;
+            this.whereColumnName = this.sqlCharacters.EscapeSql(columnName);
 
             return this;
         }
