@@ -14,7 +14,6 @@ namespace MicroLite.Query
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using System.Text;
     using MicroLite.Dialect;
@@ -280,7 +279,10 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " BETWEEN {0})", "@p0 AND @p1", new[] { lower, upper });
+            this.AppendPredicate(
+                " (" + this.whereColumnName + " BETWEEN {0})",
+                this.sqlCharacters.GetParameterName(0) + " AND " + this.sqlCharacters.GetParameterName(1),
+                new[] { lower, upper });
 
             return this;
         }
@@ -470,9 +472,9 @@ namespace MicroLite.Query
             }
 
 #if NET_3_5
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)).ToArray());
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.sqlCharacters.GetParameterName(i).ToArray());
 #else
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)));
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.sqlCharacters.GetParameterName(i)));
 #endif
             this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", predicate, args);
 
@@ -543,7 +545,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " = {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " = {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -572,7 +574,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " > {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " > {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -601,7 +603,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " >= {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " >= {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -630,7 +632,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " < {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " < {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -659,7 +661,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " <= {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " <= {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -688,7 +690,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " LIKE {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " LIKE {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -717,7 +719,7 @@ namespace MicroLite.Query
                 this.innerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", "@p0", comparisonValue);
+            this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", this.sqlCharacters.GetParameterName(0), comparisonValue);
 
             return this;
         }
@@ -892,9 +894,9 @@ namespace MicroLite.Query
             }
 
 #if NET_3_5
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)).ToArray());
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.sqlCharacters.GetParameterName(i).ToArray());
 #else
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => "@p" + i.ToString(CultureInfo.InvariantCulture)));
+            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.sqlCharacters.GetParameterName(i)));
 #endif
             this.AppendPredicate(" (" + this.whereColumnName + " NOT IN ({0}))", predicate, args);
 
