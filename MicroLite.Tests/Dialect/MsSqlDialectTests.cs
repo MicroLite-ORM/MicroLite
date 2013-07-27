@@ -10,8 +10,14 @@
     /// <summary>
     /// Unit Tests for the <see cref="MsSqlDialect"/> class.
     /// </summary>
-    public class MsSqlDialectTests
+    public class MsSqlDialectTests : IDisposable
     {
+        public MsSqlDialectTests()
+        {
+            // The tests in this suite all use attribute mapping for the test.
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+        }
+
         private enum CustomerStatus
         {
             Inactive = 0,
@@ -109,6 +115,12 @@
 
                 Assert.Equal(Messages.SqlDialect_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
             }
+        }
+
+        public void Dispose()
+        {
+            // Reset the mapping convention after tests have run.
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
         }
 
         [Fact]

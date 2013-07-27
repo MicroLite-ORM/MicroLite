@@ -10,8 +10,14 @@
     /// <summary>
     /// Unit Tests for the <see cref="ObjectBuilder"/> class.
     /// </summary>
-    public class ObjectBuilderTests
+    public class ObjectBuilderTests : IDisposable
     {
+        public ObjectBuilderTests()
+        {
+            // The tests in this suite all use attribute mapping for the test.
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+        }
+
         private enum CustomerStatus
         {
             Inactive = 0,
@@ -121,6 +127,12 @@
 
             Assert.NotNull(exception.InnerException);
             Assert.Equal(exception.InnerException.Message, exception.Message);
+        }
+
+        public void Dispose()
+        {
+            // Reset the mapping convention after tests have run.
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
         }
 
         [MicroLite.Mapping.Table("Sales", "Customers")]
