@@ -28,8 +28,10 @@ namespace MicroLite.Dialect
     public abstract class SqlDialect : ISqlDialect
     {
         private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex selectRegex = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex tableNameRegex = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex selectRegexGreedy = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex selectRegexLazy = new Regex("SELECT(.+?)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex tableNameRegexGreedy = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex tableNameRegexLazy = new Regex("(?<=FROM)(.+?)(?=WHERE)|(?<=FROM)(.+?)(?=ORDER BY)|(?<=FROM)(.+?)(?=WHERE)?|(?<=FROM)(.+?)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
 
         private readonly SqlCharacters sqlCharacters;
@@ -376,7 +378,15 @@ namespace MicroLite.Dialect
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
         protected string ReadSelectList(string commandText)
         {
-            return selectRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            string selectList;
+
+            selectList = selectRegexLazy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            if (selectList.Length == 0)
+            {
+                selectList = selectRegexGreedy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            }
+
+            return selectList;
         }
 
         /// <summary>
@@ -387,7 +397,15 @@ namespace MicroLite.Dialect
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
         protected string ReadTableName(string commandText)
         {
-            return tableNameRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            string tableName;
+
+            tableName = tableNameRegexLazy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            if (tableName.Length == 0)
+            {
+                tableName = tableNameRegexGreedy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            }
+
+            return tableName;
         }
 
         /// <summary>
