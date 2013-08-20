@@ -23,7 +23,7 @@ namespace MicroLite.Query
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{innerSql}")]
-    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWithParameter, IWhereSingleColumn, IHavingOrOrderBy
+    public sealed class SqlBuilder : IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IToSqlQuery, IWhereSingleColumn, IHavingOrOrderBy
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql;
@@ -62,13 +62,7 @@ namespace MicroLite.Query
         /// </example>
         public static IWithParameter Execute(string procedure)
         {
-            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
-
-            var startingSql = new StringBuilder(capacity: 120);
-            startingSql.Append("EXEC ");
-            startingSql.Append(procedure);
-
-            return new SqlBuilder(startingSql, sqlCharacters);
+            return new StoredProcedureSqlBuilder(procedure);
         }
 
         /// <summary>
@@ -1162,37 +1156,6 @@ namespace MicroLite.Query
         {
             this.AppendPredicate(" WHERE ({0})", predicate, args);
             this.addedWhere = true;
-
-            return this;
-        }
-
-        /// <summary>
-        /// Specifies that the stored procedure should be executed the specified parameter and argument.
-        /// </summary>
-        /// <param name="parameter">The parameter to be added.</param>
-        /// <param name="arg">The argument value for the parameter.</param>
-        /// <returns>The next step in the fluent sql builder.</returns>
-        /// <example>
-        /// Add each parameter separately, specifying the parameter name and value.
-        /// <code>
-        /// var sqlQuery = SqlBuilder
-        ///     .Execute("GetCustomerInvoices")
-        ///     .WithParameter("@CustomerId", 7633245)
-        ///     .WithParameter("@StartDate", DateTime.Today.AddMonths(-3))
-        ///     .WithParameter("@EndDate", DateTime.Today)
-        ///     .ToSqlQuery();
-        /// </code>
-        /// </example>
-        public IWithParameter WithParameter(string parameter, object arg)
-        {
-            if (this.arguments.Count > 0)
-            {
-                this.innerSql.Append(",");
-            }
-
-            this.arguments.Add(arg);
-            this.innerSql.Append(" ");
-            this.innerSql.Append(parameter);
 
             return this;
         }
