@@ -988,16 +988,6 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Creates a <see cref="SqlQuery"/> from the values specified.
-        /// </summary>
-        /// <returns>The created <see cref="SqlQuery"/>.</returns>
-        /// <remarks>This method is called to return an SqlQuery once query has been defined.</remarks>
-        public SqlQuery ToSqlQuery()
-        {
-            return new SqlQuery(this.InnerSql.ToString(), this.Arguments.ToArray());
-        }
-
-        /// <summary>
         /// Specifies the where clause for the query.
         /// </summary>
         /// <param name="columnName">The column name to use in the where clause.</param>
