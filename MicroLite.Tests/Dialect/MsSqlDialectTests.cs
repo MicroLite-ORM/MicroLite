@@ -5,6 +5,7 @@
     using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
+    using MicroLite.Query;
     using Xunit;
 
     /// <summary>
@@ -16,6 +17,7 @@
         {
             // The tests in this suite all use attribute mapping for the test.
             ObjectInfo.MappingConvention = new AttributeMappingConvention();
+            SqlBuilder.SqlCharacters = null;
         }
 
         private enum CustomerStatus
@@ -121,6 +123,7 @@
         {
             // Reset the mapping convention after tests have run.
             ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+            SqlBuilder.SqlCharacters = null;
         }
 
         [Fact]
@@ -143,6 +146,53 @@
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
             Assert.Equal(customer.Name, sqlQuery.Arguments[2]);
             Assert.Equal((int)customer.Status, sqlQuery.Arguments[3]);
+        }
+
+        /// <summary>
+        /// Issue #206 - Session.Paged errors if the query includes a sub query
+        /// </summary>
+        [Fact]
+        public void PagedQueryWithoutSubQuery()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            var sqlQuerySingleLevel = SqlBuilder
+                                        .Select("*").From(typeof(Customer))
+                                        .Where("Name LIKE @p0", "Fred%")
+                                        .ToSqlQuery();
+
+            MsSqlDialect msSqlDialect = new MsSqlDialect();
+
+            SqlQuery pageQuerySingleLevel = msSqlDialect.PageQuery(sqlQuerySingleLevel, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
+            Assert.Equal("SELECT [DoB], [CustomerId], [Name] FROM (SELECT [DoB], [CustomerId], [Name], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0)) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", pageQuerySingleLevel.CommandText);
+            Assert.Equal("Fred%", pageQuerySingleLevel.Arguments[0]);
+            Assert.Equal(11, pageQuerySingleLevel.Arguments[1]);
+            Assert.Equal(20, pageQuerySingleLevel.Arguments[2]);
+        }
+
+        /// <summary>
+        /// Issue #206 - Session.Paged errors if the query includes a sub query
+        /// </summary>
+        [Fact]
+        public void PagedQueryWithSubQuery()
+        {
+            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+
+            var sqlQuerySubQuery = SqlBuilder
+                                        .Select("*")
+                                        .From(typeof(Customer))
+                                        .Where("Name LIKE @p0", "Fred%")
+                                        .AndWhere("SourceId").In(new SqlQuery("SELECT SourceId FROM Source WHERE Status = @p0", 1))
+                                        .ToSqlQuery();
+
+            MsSqlDialect msSqlDialect = new MsSqlDialect();
+
+            SqlQuery pageQuerySubQuery = msSqlDialect.PageQuery(sqlQuerySubQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
+            Assert.Equal("SELECT [DoB], [CustomerId], [Name] FROM (SELECT [DoB], [CustomerId], [Name], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0) AND ([SourceId] IN (SELECT SourceId FROM Source WHERE Status = @p1))) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", pageQuerySubQuery.CommandText);
+            Assert.Equal("Fred%", pageQuerySubQuery.Arguments[0]);
+            Assert.Equal(1, pageQuerySubQuery.Arguments[1]);
+            Assert.Equal(11, pageQuerySubQuery.Arguments[2]);
+            Assert.Equal(20, pageQuerySubQuery.Arguments[3]);
         }
 
         [Fact]
