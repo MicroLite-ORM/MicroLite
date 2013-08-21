@@ -1059,15 +1059,15 @@ namespace MicroLite.Query
         {
             this.InnerSql.Append("SELECT ");
 
-            if (columns != null && columns.Length > 0)
+            if (columns != null)
             {
-                for (int i = 0; i < columns.Length; i++)
+                if (columns.Length == 1 && columns[0] == "*")
                 {
-                    if (columns[i] == "*")
-                    {
-                        this.InnerSql.Append("*");
-                    }
-                    else
+                    this.InnerSql.Append("*");
+                }
+                else
+                {
+                    for (int i = 0; i < columns.Length; i++)
                     {
                         if (i > 0)
                         {
