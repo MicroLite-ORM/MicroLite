@@ -99,6 +99,7 @@
     <Compile Include="Mapping\ConventionMappingSettingsTests.cs" />
     <Compile Include="Mapping\ExpandoObjectInfoTests.cs" />
     <Compile Include="Query\RawWhereBuilderTests.cs" />
+    <Compile Include="Query\SelectSqlBuilderTests.cs" />
     <Compile Include="Query\StoredProcedureSqlBuilderTests.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverterTests.cs" />
     <Compile Include="TypeConverters\EnumTypeConverterTests.cs" />
