@@ -164,7 +164,7 @@
             MsSqlDialect msSqlDialect = new MsSqlDialect();
 
             SqlQuery pageQuerySingleLevel = msSqlDialect.PageQuery(sqlQuerySingleLevel, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
-            Assert.Equal("SELECT [DoB], [CustomerId], [Name] FROM (SELECT [DoB], [CustomerId], [Name], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0)) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", pageQuerySingleLevel.CommandText);
+            Assert.Equal("SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated] FROM (SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0)) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", pageQuerySingleLevel.CommandText);
             Assert.Equal("Fred%", pageQuerySingleLevel.Arguments[0]);
             Assert.Equal(11, pageQuerySingleLevel.Arguments[1]);
             Assert.Equal(20, pageQuerySingleLevel.Arguments[2]);
@@ -188,7 +188,7 @@
             MsSqlDialect msSqlDialect = new MsSqlDialect();
 
             SqlQuery pageQuerySubQuery = msSqlDialect.PageQuery(sqlQuerySubQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
-            Assert.Equal("SELECT [DoB], [CustomerId], [Name] FROM (SELECT [DoB], [CustomerId], [Name], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0) AND ([SourceId] IN (SELECT SourceId FROM Source WHERE Status = @p1))) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", pageQuerySubQuery.CommandText);
+            Assert.Equal("SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated] FROM (SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0) AND ([SourceId] IN (SELECT SourceId FROM Source WHERE Status = @p1))) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", pageQuerySubQuery.CommandText);
             Assert.Equal("Fred%", pageQuerySubQuery.Arguments[0]);
             Assert.Equal(1, pageQuerySubQuery.Arguments[1]);
             Assert.Equal(11, pageQuerySubQuery.Arguments[2]);
