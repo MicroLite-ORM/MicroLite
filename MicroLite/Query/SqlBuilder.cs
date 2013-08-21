@@ -105,12 +105,10 @@ namespace MicroLite.Query
             var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
 
             var startingSql = new StringBuilder(capacity: 120);
-            startingSql.Append("SELECT");
+            startingSql.Append("SELECT ");
 
             if (columns != null && columns.Length > 0)
             {
-                startingSql.Append(" ");
-
                 for (int i = 0; i < columns.Length; i++)
                 {
                     if (columns[i] == "*")
@@ -238,12 +236,12 @@ namespace MicroLite.Query
         /// </example>
         public IFunctionOrFrom Average(string columnName, string columnAlias)
         {
-            if (this.innerSql.Length > 6)
+            if (this.innerSql.Length > 7)
             {
-                this.innerSql.Append(",");
+                this.innerSql.Append(", ");
             }
 
-            this.innerSql.AppendFormat(" AVG({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
+            this.innerSql.AppendFormat("AVG({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -321,12 +319,12 @@ namespace MicroLite.Query
         /// </example>
         public IFunctionOrFrom Count(string columnName, string columnAlias)
         {
-            if (this.innerSql.Length > 6)
+            if (this.innerSql.Length > 7)
             {
-                this.innerSql.Append(",");
+                this.innerSql.Append(", ");
             }
 
-            this.innerSql.AppendFormat(" COUNT({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
+            this.innerSql.AppendFormat("COUNT({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -796,12 +794,12 @@ namespace MicroLite.Query
         /// </example>
         public IFunctionOrFrom Max(string columnName, string columnAlias)
         {
-            if (this.innerSql.Length > 6)
+            if (this.innerSql.Length > 7)
             {
-                this.innerSql.Append(",");
+                this.innerSql.Append(", ");
             }
 
-            this.innerSql.AppendFormat(" MAX({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
+            this.innerSql.AppendFormat("MAX({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -848,12 +846,12 @@ namespace MicroLite.Query
         /// </example>
         public IFunctionOrFrom Min(string columnName, string columnAlias)
         {
-            if (this.innerSql.Length > 6)
+            if (this.innerSql.Length > 7)
             {
-                this.innerSql.Append(",");
+                this.innerSql.Append(", ");
             }
 
-            this.innerSql.AppendFormat(" MIN({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
+            this.innerSql.AppendFormat("MIN({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
@@ -1076,12 +1074,12 @@ namespace MicroLite.Query
         /// </example>
         public IFunctionOrFrom Sum(string columnName, string columnAlias)
         {
-            if (this.innerSql.Length > 6)
+            if (this.innerSql.Length > 7)
             {
-                this.innerSql.Append(",");
+                this.innerSql.Append(", ");
             }
 
-            this.innerSql.AppendFormat(" SUM({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
+            this.innerSql.AppendFormat("SUM({0}) AS {1}", this.sqlCharacters.EscapeSql(columnName), columnAlias);
 
             return this;
         }
