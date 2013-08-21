@@ -268,7 +268,11 @@ namespace MicroLite.Query
 
             if (this.InnerSql.Length > 7 && this.InnerSql[7].CompareTo('*') == 0)
             {
+#if NET_3_5
+                this.InnerSql.Length = 0;
+#else
                 this.InnerSql.Clear();
+#endif
                 this.AddColumns(objectInfo.TableInfo.Columns.Select(c => c.ColumnName).ToArray());
             }
 
