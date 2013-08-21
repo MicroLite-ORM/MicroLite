@@ -17,7 +17,7 @@ namespace MicroLite.Mapping.Inflection
     /// </summary>
     public static class InflectionService
     {
-        private static IInflectionService english = new EnglishInflectionService();
+        private static readonly IInflectionService english = new EnglishInflectionService();
 
         /// <summary>
         /// Gets the IInflection service for English (en-GB).
