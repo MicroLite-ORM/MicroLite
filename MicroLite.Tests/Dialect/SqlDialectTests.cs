@@ -298,23 +298,6 @@
         }
 
         [Fact]
-        public void SelectQuery()
-        {
-            object identifier = 12345421;
-
-            var mockSqlCharacters = new Mock<SqlCharacters>();
-            mockSqlCharacters.CallBase = true;
-
-            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
-            mockSqlDialect.CallBase = true;
-
-            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Select, typeof(Customer), identifier);
-
-            Assert.Equal("SELECT \"Created\", \"DoB\", \"CustomerId\", \"Name\", \"StatusId\", \"Updated\" FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
-            Assert.Equal(identifier, sqlQuery.Arguments[0]);
-        }
-
-        [Fact]
         public void SqlCharactersPassedToConstructorAreExposed()
         {
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.MsSql);

@@ -68,17 +68,6 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the default table schema.
-        /// </summary>
-        protected virtual string DefaultTableSchema
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
         /// Gets the select identity string.
         /// </summary>
         protected abstract string SelectIdentityString
@@ -268,7 +257,6 @@ namespace MicroLite.Dialect
             switch (statementType)
             {
                 case StatementType.Delete:
-                case StatementType.Select:
                     var objectInfo = ObjectInfo.For(forType);
 
                     var sqlBuilder = this.CreateSql(statementType, objectInfo);
@@ -324,7 +312,7 @@ namespace MicroLite.Dialect
         {
             var schema = !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
                 ? objectInfo.TableInfo.Schema
-                : this.DefaultTableSchema;
+                : string.Empty;
 
             if (!string.IsNullOrEmpty(schema))
             {
@@ -453,24 +441,6 @@ namespace MicroLite.Dialect
 
                     sqlBuilder.Remove(sqlBuilder.Length - 2, 2);
                     sqlBuilder.Append(")");
-
-                    break;
-
-                case StatementType.Select:
-                    sqlBuilder.Append("SELECT ");
-
-                    for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
-                    {
-                        if (i > 0)
-                        {
-                            sqlBuilder.Append(", ");
-                        }
-
-                        sqlBuilder.Append(this.sqlCharacters.EscapeSql(objectInfo.TableInfo.Columns[i].ColumnName));
-                    }
-
-                    sqlBuilder.Append(" FROM ");
-                    this.AppendTableName(sqlBuilder, objectInfo);
 
                     break;
 

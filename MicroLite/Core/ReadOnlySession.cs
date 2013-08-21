@@ -17,6 +17,7 @@ namespace MicroLite.Core
     using System.Data;
     using MicroLite.Dialect;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
     using MicroLite.Query;
 
     /// <summary>
@@ -92,7 +93,9 @@ namespace MicroLite.Core
 
         public IIncludeMany<T> All<T>() where T : class, new()
         {
-            var sqlQuery = SqlBuilder.Select("*").From(typeof(T)).ToSqlQuery();
+            var sqlQuery = (new SelectSqlBuilder(this.SqlDialect.SqlCharacters, "*"))
+                .From(typeof(T))
+                .ToSqlQuery();
 
             var include = this.Include.Many<T>(sqlQuery);
 
@@ -165,7 +168,12 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("identifier");
             }
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Select, typeof(T), identifier);
+            var objectInfo = ObjectInfo.For(typeof(T));
+
+            var sqlQuery = (new SelectSqlBuilder(this.SqlDialect.SqlCharacters, "*"))
+                .From(objectInfo.ForType)
+                .Where(objectInfo.TableInfo.IdentifierColumn).IsEqualTo(identifier)
+                .ToSqlQuery();
 
             var include = this.Include.Single<T>(sqlQuery);
 

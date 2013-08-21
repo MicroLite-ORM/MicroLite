@@ -15,8 +15,13 @@
     /// <summary>
     /// Unit Tests for the <see cref="ReadOnlySession"/> class.
     /// </summary>
-    public class ReadOnlySessionTests
+    public class ReadOnlySessionTests : IDisposable
     {
+        public ReadOnlySessionTests()
+        {
+            SqlBuilder.SqlCharacters = null;
+        }
+
         [Fact]
         public void AdvancedReturnsSameSessionByDifferentInterface()
         {
@@ -48,6 +53,7 @@
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, SqlBuilder.Select("*").From(typeof(Customer)).ToSqlQuery()));
 
             var mockSessionFactory = new Mock<ISessionFactory>();
@@ -118,6 +124,11 @@
             }
 
             Assert.Throws<ObjectDisposedException>(() => session.BeginTransaction(IsolationLevel.ReadCommitted));
+        }
+
+        public void Dispose()
+        {
+            SqlBuilder.SqlCharacters = null;
         }
 
         [Fact]
@@ -591,8 +602,7 @@
         [Fact]
         public void SingleIdentifierExecutesAndReturnsNull()
         {
-            var identifier = 100;
-            var sqlQuery = new SqlQuery("");
+            object identifier = 100;
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(false);
@@ -606,8 +616,8 @@
             mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), identifier)).Returns(sqlQuery);
-            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, It.Is<SqlQuery>(s => s.Arguments[0] == identifier)));
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -630,8 +640,7 @@
         [Fact]
         public void SingleIdentifierExecutesAndReturnsResult()
         {
-            var identifier = 100;
-            var sqlQuery = new SqlQuery("");
+            object identifier = 100;
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
@@ -648,8 +657,8 @@
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), identifier)).Returns(sqlQuery);
-            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, It.Is<SqlQuery>(s => s.Arguments[0] == identifier)));
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -863,9 +872,9 @@
                 mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), It.IsAny<IDataReader>())).Returns(new Customer());
 
                 mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(false);
-                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), 1)).Returns(new SqlQuery(""));
-                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), 2)).Returns(new SqlQuery(""));
-                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.Is<SqlQuery>(s => s.Arguments[0] == (object)1)));
+                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.Is<SqlQuery>(s => s.Arguments[0] == (object)2)));
 
                 var mockSessionFactory = new Mock<ISessionFactory>();
                 mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -911,9 +920,9 @@
                 mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), It.IsAny<IDataReader>())).Returns(new Customer());
 
                 mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(true);
-                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), 1)).Returns(new SqlQuery(""));
-                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), 2)).Returns(new SqlQuery(""));
-                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.Is<SqlQuery>(s => s.Arguments[0] == (object)2 && s.Arguments[1] == (object)1)));
+                mockSqlDialect.Setup(x => x.Combine(It.IsAny<IEnumerable<SqlQuery>>())).Returns(new SqlQuery("", 2, 1));
 
                 var mockSessionFactory = new Mock<ISessionFactory>();
                 mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
