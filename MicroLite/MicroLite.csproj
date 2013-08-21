@@ -193,6 +193,7 @@
     <None Include="Mapping\_MappingAttributes.cd" />
     <None Include="Mapping\_MappingConvention.cd" />
     <None Include="Mapping\_ObjectInfo.cd" />
+    <None Include="Query\_SqlBuilders.cd" />
     <None Include="TypeConverters\_TypeConverters.cd" />
     <None Include="Query\_SqlBuilder.cd" />
     <None Include="_Session.cd" />
