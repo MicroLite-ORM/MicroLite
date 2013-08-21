@@ -15,6 +15,7 @@ namespace MicroLite.Query
     using System.Collections.Generic;
     using System.Text;
 
+    [System.Diagnostics.DebuggerDisplay("{innerSql}")]
     internal sealed class StoredProcedureSqlBuilder : IWithParameter
     {
         private readonly List<object> arguments = new List<object>();
