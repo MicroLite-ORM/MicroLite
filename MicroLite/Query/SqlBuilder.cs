@@ -12,13 +12,19 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Query
 {
+    using System.Collections.Generic;
+    using System.Text;
     using MicroLite.Dialect;
 
     /// <summary>
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
-    public static class SqlBuilder
+    [System.Diagnostics.DebuggerDisplay("{innerSql}")]
+    public abstract class SqlBuilder : IToSqlQuery
     {
+        private readonly List<object> arguments = new List<object>();
+        private readonly StringBuilder innerSql = new StringBuilder(capacity: 120);
+
         /// <summary>
         /// Gets or sets the SQL characters.
         /// </summary>
@@ -27,6 +33,29 @@ namespace MicroLite.Query
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// Gets the arguments currently added to the sql builder.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Allowd in this instance, we want to make use of AddRange.")]
+        protected List<object> Arguments
+        {
+            get
+            {
+                return this.arguments;
+            }
+        }
+
+        /// <summary>
+        /// Gets the inner sql the sql builder.
+        /// </summary>
+        protected StringBuilder InnerSql
+        {
+            get
+            {
+                return this.innerSql;
+            }
         }
 
         /// <summary>
@@ -85,6 +114,16 @@ namespace MicroLite.Query
             var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
 
             return new SelectSqlBuilder(sqlCharacters, columns);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="SqlQuery"/> from the values specified.
+        /// </summary>
+        /// <returns>The created <see cref="SqlQuery"/>.</returns>
+        /// <remarks>This method is called to return an SqlQuery once query has been defined.</remarks>
+        public SqlQuery ToSqlQuery()
+        {
+            return new SqlQuery(this.innerSql.ToString(), this.arguments.ToArray());
         }
     }
 }

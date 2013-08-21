@@ -12,29 +12,13 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Query
 {
-    using System.Collections.Generic;
-    using System.Text;
-
-    [System.Diagnostics.DebuggerDisplay("{innerSql}")]
-    internal sealed class StoredProcedureSqlBuilder : IWithParameter
+    [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
+    internal sealed class StoredProcedureSqlBuilder : SqlBuilder, IWithParameter
     {
-        private readonly List<object> arguments = new List<object>();
-        private readonly StringBuilder innerSql = new StringBuilder(capacity: 60);
-
         internal StoredProcedureSqlBuilder(string procedureName)
         {
-            this.innerSql.Append("EXEC ");
-            this.innerSql.Append(procedureName);
-        }
-
-        /// <summary>
-        /// Creates a <see cref="SqlQuery"/> from the values specified.
-        /// </summary>
-        /// <returns>The created <see cref="SqlQuery"/>.</returns>
-        /// <remarks>This method is called to return an SqlQuery once query has been defined.</remarks>
-        public SqlQuery ToSqlQuery()
-        {
-            return new SqlQuery(this.innerSql.ToString(), this.arguments.ToArray());
+            this.InnerSql.Append("EXEC ");
+            this.InnerSql.Append(procedureName);
         }
 
         /// <summary>
@@ -56,14 +40,14 @@ namespace MicroLite.Query
         /// </example>
         public IWithParameter WithParameter(string parameter, object arg)
         {
-            if (this.arguments.Count > 0)
+            if (this.Arguments.Count > 0)
             {
-                this.innerSql.Append(",");
+                this.InnerSql.Append(",");
             }
 
-            this.arguments.Add(arg);
-            this.innerSql.Append(" ");
-            this.innerSql.Append(parameter);
+            this.Arguments.Add(arg);
+            this.InnerSql.Append(" ");
+            this.InnerSql.Append(parameter);
 
             return this;
         }
