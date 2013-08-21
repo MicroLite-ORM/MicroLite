@@ -75,7 +75,7 @@
     <Compile Include="DbEncryptedStringTests.cs" />
     <Compile Include="Dialect\MySqlDialectTests.cs" />
     <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
-    <Compile Include="Dialect\SqlCharactersTests.cs" />
+    <Compile Include="SqlCharactersTests.cs" />
     <Compile Include="Dialect\SqlDialectTests.cs" />
     <Compile Include="Dialect\SQLiteDialectTests.cs" />
     <Compile Include="GuidGeneratorTests.cs" />

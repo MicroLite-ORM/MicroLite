@@ -1,6 +1,5 @@
-﻿namespace MicroLite.Tests.Dialect
+﻿namespace MicroLite.Tests
 {
-    using MicroLite.Dialect;
     using Moq;
     using Xunit;
 

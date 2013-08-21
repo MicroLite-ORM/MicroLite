@@ -10,7 +10,7 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Dialect
+namespace MicroLite
 {
     using System;
     using System.Globalization;

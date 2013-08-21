@@ -63,7 +63,7 @@
     <Compile Include="Core\IncludeScalar.cs" />
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
-    <Compile Include="Dialect\SqlCharacters.cs" />
+    <Compile Include="SqlCharacters.cs" />
     <Compile Include="FrameworkExtensions\TypeExtensions.cs" />
     <Compile Include="IAdvancedReadOnlySession.cs" />
     <Compile Include="Infrastructure\AppSettingSymmetricAlgorithmProvider.cs" />
