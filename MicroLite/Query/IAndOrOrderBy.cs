@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IAndOrOrderBy.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ namespace MicroLite.Query
         /// </summary>
         /// <param name="columnName">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IWhereBetweenOrIn AndWhere(string columnName);
+        IWhereSingleColumn AndWhere(string columnName);
 
         /// <summary>
         /// Adds a predicate as an AND to the where clause of the query.
@@ -37,7 +37,7 @@ namespace MicroLite.Query
         /// </summary>
         /// <param name="columnName">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IWhereBetweenOrIn OrWhere(string columnName);
+        IWhereSingleColumn OrWhere(string columnName);
 
         /// <summary>
         /// Adds a predicate as an OR to the where clause of the query.

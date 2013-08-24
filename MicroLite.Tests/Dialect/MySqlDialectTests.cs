@@ -9,22 +9,34 @@
     /// <summary>
     /// Unit Tests for the <see cref="MySqlDialect"/> class.
     /// </summary>
-    public class MySqlDialectTests
+    public class MySqlDialectTests : IDisposable
     {
+        public MySqlDialectTests()
+        {
+            // The tests in this suite all use attribute mapping for the test.
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+        }
+
         private enum CustomerStatus
         {
             Inactive = 0,
             Active = 1
         }
 
+        public void Dispose()
+        {
+            // Reset the mapping convention after tests have run.
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+        }
+
         [Fact]
-        public void InsertQueryForAutoIncrementInstance()
+        public void InsertQueryForDbGeneratedInstance()
         {
             var customer = new Customer
             {
                 Created = DateTime.Now,
-                DateOfBirth = new System.DateTime(1982, 11, 27),
-                Name = "Trevor Pilley",
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Name = "Joe Bloggs",
                 Status = CustomerStatus.Active
             };
 

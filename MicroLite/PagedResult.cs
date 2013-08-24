@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="PagedResult.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -104,7 +103,7 @@ namespace MicroLite
         {
             get
             {
-                return Math.Max(this.TotalResults, this.ResultsPerPage) / this.ResultsPerPage;
+                return ((this.TotalResults - 1) / this.ResultsPerPage) + 1;
             }
         }
 

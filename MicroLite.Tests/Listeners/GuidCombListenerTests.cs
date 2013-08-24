@@ -2,13 +2,20 @@
 {
     using System;
     using MicroLite.Listeners;
+    using MicroLite.Mapping;
     using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="GuidCombListener"/> class.
     /// </summary>
-    public class GuidCombListenerTests
+    public class GuidCombListenerTests : IDisposable
     {
+        public GuidCombListenerTests()
+        {
+            // The tests in this suite all use attribute mapping for the test.
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+        }
+
         [Fact]
         public void BeforeDeleteDoesNotThrowIfIdentifierSet()
         {
@@ -123,6 +130,12 @@
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeUpdate(customer));
 
             Assert.Equal(Messages.IListener_IdentifierNotSetForUpdate, exception.Message);
+        }
+
+        public void Dispose()
+        {
+            // Reset the mapping convention after tests have run.
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
         }
 
         [MicroLite.Mapping.Table("Sales", "Customers")]

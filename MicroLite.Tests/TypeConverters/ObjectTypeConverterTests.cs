@@ -44,6 +44,18 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
+        public class WhenCallingConvertFromDbValueAndPropertyTypeIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionShouldBeThrown()
+            {
+                var typeConverter = new ObjectTypeConverter();
+                var exception = Assert.Throws<ArgumentNullException>(() => typeConverter.ConvertFromDbValue(1, null));
+
+                Assert.Equal("propertyType", exception.ParamName);
+            }
+        }
+
         public class WhenCallingConvertFromDbValueForANullableIntWithANonNullValue
         {
             private object result;

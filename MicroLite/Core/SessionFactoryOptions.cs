@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SessionFactoryOptions.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
+    using System;
     using System.Data.Common;
 
     /// <summary>
@@ -47,9 +48,9 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Gets or sets the sql dialect for the connection.
+        /// Gets or sets the type of SqlDialect for the connection.
         /// </summary>
-        internal string SqlDialect
+        internal Type SqlDialectType
         {
             get;
             set;

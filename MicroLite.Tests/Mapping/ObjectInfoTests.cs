@@ -8,8 +8,13 @@
     /// <summary>
     /// Unit Tests for the <see cref="ObjectInfo"/> class.
     /// </summary>
-    public class ObjectInfoTests
+    public class ObjectInfoTests : IDisposable
     {
+        public ObjectInfoTests()
+        {
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+        }
+
         private enum CustomerStatus
         {
             Inactive = 0,
@@ -32,6 +37,16 @@
                 () => new ObjectInfo(null, null));
 
             Assert.Equal("forType", exception.ParamName);
+        }
+
+        [Fact]
+        public void CreateInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = objectInfo.CreateInstance();
+
+            Assert.IsType<CustomerWithIntegerIdentifier>(instance);
         }
 
         [Fact]
@@ -58,13 +73,17 @@
             Assert.Null(objectInfo.DefaultIdentifierValue);
         }
 
-        [Fact]
-        public void ForReturnsSameInstanceOnEachCall()
+        public void Dispose()
         {
-            var objectInfo1 = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-            var objectInfo2 = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+        }
 
-            Assert.Same(objectInfo1, objectInfo2);
+        [Fact]
+        public void ForReturnsExpandoObjectInfoForTypeOfDynamic()
+        {
+            var objectInfo = ObjectInfoHelper<dynamic>();
+
+            Assert.IsType<ExpandoObjectInfo>(objectInfo);
         }
 
         [Fact]
@@ -168,6 +187,21 @@
         }
 
         [Fact]
+        public void GetPropertyValueForColumnConvertsPropertyValueToDbValue()
+        {
+            var instance = new CustomerWithIntegerIdentifier
+            {
+                Status = CustomerStatus.Active
+            };
+
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var value = objectInfo.GetPropertyValueForColumn(instance, "StatusId");
+
+            Assert.Equal(1, value);
+        }
+
+        [Fact]
         public void GetPropertyValueForColumnThrowsArgumentNullExceptionForNullInstance()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
@@ -204,7 +238,83 @@
         }
 
         [Fact]
-        public void HasDefaultGuidValue()
+        public void GetPropertyValueReturnsPropertyValue()
+        {
+            var instance = new CustomerWithIntegerIdentifier
+            {
+                Status = CustomerStatus.Active
+            };
+
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var value = objectInfo.GetPropertyValue(instance, "Status");
+
+            Assert.Equal(CustomerStatus.Active, value);
+        }
+
+        [Fact]
+        public void GetPropertyValueThrowsArgumentNullExceptionForNullInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetPropertyValue(null, "Name"));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void GetPropertyValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.GetPropertyValue(new CustomerWithGuidIdentifier(), "Name"));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void GetPropertyValueThrowsMicroLiteExceptionIfInvalidPropertyName()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.GetPropertyValue(new CustomerWithIntegerIdentifier(), "UnknownProperty"));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_UnknownProperty, objectInfo.ForType.Name, "UnknownProperty"),
+                exception.Message);
+        }
+
+        [Fact]
+        public void HasDefaultIdentifierValueThrowsArgumentNullExceptionForNullInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.HasDefaultIdentifierValue(null));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void HasDefaultIdentifierValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithGuidIdentifier();
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.HasDefaultIdentifierValue(instance));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void HasDefaultIdentifierValueWhenIdentifierIsGuid()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
 
@@ -218,7 +328,7 @@
         }
 
         [Fact]
-        public void HasDefaultIntegerValue()
+        public void HasDefaultIdentifierValueWhenIdentifierIsInteger()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
@@ -232,7 +342,7 @@
         }
 
         [Fact]
-        public void HasDefaultStringValue()
+        public void HasDefaultIdentifierValueWhenIdentifierIsString()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
 
@@ -246,25 +356,29 @@
         }
 
         [Fact]
-        public void SetPropertyValueForColumnIgnoresUnmappedPropertyWithoutThrowingAnException()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var instance = new CustomerWithIntegerIdentifier();
-
-            objectInfo.SetPropertyValueForColumn(instance, "UnknownColumn", 1);
-        }
-
-        [Fact]
         public void SetPropertyValueForColumnSetsPropertyValue()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
             var instance = new CustomerWithIntegerIdentifier();
 
-            objectInfo.SetPropertyValueForColumn(instance, "Name", "Trev");
+            objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1);
 
-            Assert.Equal("Trev", instance.Name);
+            Assert.Equal(CustomerStatus.Active, instance.Status);
+        }
+
+        [Fact]
+        public void SetPropertyValueForColumnThrowsAnExceptionForUnknownColumn()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetPropertyValueForColumn(instance, "UnknownColumn", 1));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_UnknownColumn, objectInfo.ForType.Name, "UnknownColumn"),
+                exception.Message);
         }
 
         [Fact]
@@ -290,6 +404,67 @@
             Assert.Equal(
                 string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
                 exception.Message);
+        }
+
+        [Fact]
+        public void SetPropertyValueSetsPropertyValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            objectInfo.SetPropertyValue(instance, "Status", CustomerStatus.Active);
+
+            Assert.Equal(CustomerStatus.Active, instance.Status);
+        }
+
+        [Fact]
+        public void SetPropertyValueThrowsAnExceptionForUnknownProperty()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithIntegerIdentifier();
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetPropertyValue(instance, "UnknownProperty", CustomerStatus.Active));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_UnknownProperty, objectInfo.ForType.Name, "UnknownProperty"),
+                exception.Message);
+        }
+
+        [Fact]
+        public void SetPropertyValueThrowsArgumentNullExceptionForNullInstance()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.SetPropertyValue(null, "Status", CustomerStatus.Active));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void SetPropertyValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var instance = new CustomerWithGuidIdentifier();
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => objectInfo.SetPropertyValue(instance, "Status", CustomerStatus.Active));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        /// <summary>
+        /// A helper method required because you can't do typeof(dynamic).
+        /// </summary>
+        private static IObjectInfo ObjectInfoHelper<T>()
+        {
+            var objectInfo = ObjectInfo.For(typeof(T));
+
+            return objectInfo;
         }
 
         private struct CustomerStruct

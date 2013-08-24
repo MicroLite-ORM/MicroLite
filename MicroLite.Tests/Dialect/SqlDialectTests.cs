@@ -3,14 +3,21 @@
     using System;
     using System.Data;
     using MicroLite.Dialect;
+    using MicroLite.Mapping;
     using Moq;
     using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="SqlDialect"/> class.
     /// </summary>
-    public class SqlDialectTests
+    public class SqlDialectTests : IDisposable
     {
+        public SqlDialectTests()
+        {
+            // The tests in this suite all use attribute mapping for the test.
+            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+        }
+
         private enum CustomerStatus
         {
             Inactive = 0,
@@ -26,7 +33,10 @@
 
             using (var command = new System.Data.OleDb.OleDbCommand())
             {
-                var mockSqlDialect = new Mock<SqlDialect>();
+                var mockSqlCharacters = new Mock<SqlCharacters>();
+                mockSqlCharacters.CallBase = true;
+
+                var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
                 mockSqlDialect.CallBase = true;
                 mockSqlDialect.Object.BuildCommand(command, sqlQuery);
 
@@ -59,7 +69,10 @@
 
             using (var command = new System.Data.OleDb.OleDbCommand())
             {
-                var mockSqlDialect = new Mock<SqlDialect>();
+                var mockSqlCharacters = new Mock<SqlCharacters>();
+                mockSqlCharacters.CallBase = true;
+
+                var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
                 mockSqlDialect.CallBase = true;
                 mockSqlDialect.Object.BuildCommand(command, sqlQuery);
 
@@ -72,7 +85,10 @@
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
 
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -86,7 +102,10 @@
         {
             var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [dbo].[Customers] ORDER BY [CustomerId] ASC");
 
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -100,7 +119,10 @@
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ? ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
 
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -114,7 +136,10 @@
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ?", CustomerStatus.Active);
 
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -126,7 +151,10 @@
         [Fact]
         public void CreateQueryForInstanceThrowsNotSupportedExceptionForStatementTypeBatch()
         {
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var exception = Assert.Throws<NotSupportedException>(
@@ -138,7 +166,10 @@
         [Fact]
         public void CreateQueryForInstanceThrowsNotSupportedExceptionForStatementTypeSelect()
         {
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var exception = Assert.Throws<NotSupportedException>(
@@ -150,7 +181,10 @@
         [Fact]
         public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeBatch()
         {
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var exception = Assert.Throws<NotSupportedException>(
@@ -162,7 +196,10 @@
         [Fact]
         public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeInsert()
         {
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var exception = Assert.Throws<NotSupportedException>(
@@ -174,7 +211,10 @@
         [Fact]
         public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeUpdate()
         {
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var exception = Assert.Throws<NotSupportedException>(
@@ -191,7 +231,10 @@
                 Id = 122672
             };
 
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Delete, customer);
@@ -205,13 +248,22 @@
         {
             object identifier = 239845763;
 
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Delete, typeof(Customer), identifier);
 
             Assert.Equal("DELETE FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
             Assert.Equal(identifier, sqlQuery.Arguments[0]);
+        }
+
+        public void Dispose()
+        {
+            // Reset the mapping convention after tests have run.
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
         }
 
         /// <summary>
@@ -223,13 +275,16 @@
             var customer = new Customer
             {
                 Created = DateTime.Now,
-                DateOfBirth = new System.DateTime(1982, 11, 27),
+                DateOfBirth = new System.DateTime(1975, 9, 18),
                 Id = 134875,
-                Name = "Trevor Pilley",
+                Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
             };
 
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
@@ -243,23 +298,21 @@
         }
 
         [Fact]
-        public void SelectQuery()
+        public void SqlCharactersPassedToConstructorAreExposed()
         {
-            object identifier = 12345421;
-
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.MsSql);
             mockSqlDialect.CallBase = true;
 
-            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Select, typeof(Customer), identifier);
-
-            Assert.Equal("SELECT \"Created\", \"DoB\", \"CustomerId\", \"Name\", \"StatusId\", \"Updated\" FROM \"Customers\" WHERE \"CustomerId\" = ?", sqlQuery.CommandText);
-            Assert.Equal(identifier, sqlQuery.Arguments[0]);
+            Assert.Same(SqlCharacters.MsSql, mockSqlDialect.Object.SqlCharacters);
         }
 
         [Fact]
         public void SupportsBatchedQueriesReturnsTrueByDefault()
         {
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             Assert.True(mockSqlDialect.Object.SupportsBatchedQueries);
@@ -270,14 +323,17 @@
         {
             var customer = new Customer
             {
-                DateOfBirth = new System.DateTime(1982, 11, 27),
+                DateOfBirth = new System.DateTime(1975, 9, 18),
                 Id = 134875,
-                Name = "Trevor Pilley",
+                Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
                 Updated = DateTime.Now
             };
 
-            var mockSqlDialect = new Mock<SqlDialect>();
+            var mockSqlCharacters = new Mock<SqlCharacters>();
+            mockSqlCharacters.CallBase = true;
+
+            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
             mockSqlDialect.CallBase = true;
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Update, customer);
@@ -304,7 +360,10 @@
                 this.sqlQuery2 = new SqlQuery("SELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = ? OR ? IS NULL) AND \"Column2\" < ?", "Bar", -1);
                 this.sqlQuery2.Timeout = 42;
 
-                var mockSqlDialect = new Mock<SqlDialect>();
+                var mockSqlCharacters = new Mock<SqlCharacters>();
+                mockSqlCharacters.CallBase = true;
+
+                var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
                 mockSqlDialect.CallBase = true;
 
                 this.combinedQuery = mockSqlDialect.Object.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
@@ -360,7 +419,10 @@
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
-                var mockSqlDialect = new Mock<SqlDialect>();
+                var mockSqlCharacters = new Mock<SqlCharacters>();
+                mockSqlCharacters.CallBase = true;
+
+                var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
                 mockSqlDialect.CallBase = true;
 
                 var exception = Assert.Throws<ArgumentNullException>(() => mockSqlDialect.Object.Combine(null));

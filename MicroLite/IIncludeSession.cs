@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IIncludeSession.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,6 +23,39 @@ namespace MicroLite
     /// </remarks>
     public interface IIncludeSession : IHideObjectMethods
     {
+        /// <summary>
+        /// Includes all instances of the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type of object.</typeparam>
+        /// <returns>A pointer to the included instances of the specified type.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
+        /// <example>
+        /// <code>
+        /// using (var session = sessionFactory.OpenSession())
+        /// {
+        ///     // Tell the session to include all countries.
+        ///     var countries = session.Include.All&lt;Country&gt;();
+        ///
+        ///     // At this point, countries will point to an IIncludeMany&lt;Country&gt; which will have no values.
+        ///     // You can call include for multiple things, they will all be loaded in a single database call once
+        ///     // either ISession.Single, ISession.Fetch or ISession.Paged is called.
+        ///
+        ///     // Load the customer.
+        ///     var customer = session.Single&lt;Customer&gt;(1792);
+        ///
+        ///     // We can now acces the countries.
+        ///     this.View.CountryOptions = countries.Values;
+        /// }
+        /// </code>
+        /// </example>
+        /// <remarks>
+        /// This will return an object for every row in the table,
+        /// it should be used to retrieve un-filtered lookup lists (for example the list of countries on a shipping form).
+        /// </remarks>
+        IIncludeMany<T> All<T>() where T : class, new();
+
         /// <summary>
         /// Includes many instances based upon the specified SQL query.
         /// </summary>
@@ -57,7 +90,7 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        IIncludeMany<T> Many<T>(SqlQuery sqlQuery) where T : class, new();
+        IIncludeMany<T> Many<T>(SqlQuery sqlQuery);
 
         /// <summary>
         /// Includes a single value based upon the specified SQL query.
@@ -140,6 +173,6 @@ namespace MicroLite
         /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Single", Justification = "It's used in loads of places by the linq extension methods as a method name.")]
-        IInclude<T> Single<T>(SqlQuery sqlQuery) where T : class, new();
+        IInclude<T> Single<T>(SqlQuery sqlQuery);
     }
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Session.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@ namespace MicroLite.Core
 {
     using System;
     using System.Data;
-    using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Logging;
@@ -29,18 +28,18 @@ namespace MicroLite.Core
         private readonly IListener[] listeners;
 
         internal Session(
+            ISessionFactory sessionFactory,
             IConnectionManager connectionManager,
             IObjectBuilder objectBuilder,
-            ISqlDialect sqlDialect,
             IListener[] listeners)
-            : base(connectionManager, objectBuilder, sqlDialect)
+            : base(sessionFactory, connectionManager, objectBuilder)
         {
             this.listeners = listeners;
 
             Log.TryLogDebug(Messages.Session_Created);
         }
 
-        public IAdvancedSession Advanced
+        public new IAdvancedSession Advanced
         {
             get
             {
@@ -86,7 +85,9 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, type, identifier);
 
-            return this.Execute(sqlQuery) == 1;
+            var rowsAffected = this.Execute(sqlQuery);
+
+            return rowsAffected == 1;
         }
 
         public int Execute(SqlQuery sqlQuery)
@@ -190,7 +191,7 @@ namespace MicroLite.Core
             }
         }
 
-        public void Update(object instance)
+        public bool Update(object instance)
         {
             this.ThrowIfDisposed();
 
@@ -208,6 +209,8 @@ namespace MicroLite.Core
             var rowsAffected = this.Execute(sqlQuery);
 
             this.listeners.Reverse().Each(l => l.AfterUpdate(instance, rowsAffected));
+
+            return rowsAffected == 1;
         }
     }
 }

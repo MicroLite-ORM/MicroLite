@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="FluentConfiguration.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,27 +47,13 @@ namespace MicroLite.Configuration
                 {
                     this.log.TryLogDebug(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
                     sessionFactory = new SessionFactory(this.options);
+                    MicroLite.Query.SqlBuilder.SqlCharacters = sessionFactory.SqlDialect.SqlCharacters;
 
                     Configure.SessionFactories.Add(sessionFactory);
                 }
 
                 return sessionFactory;
             }
-        }
-
-        /// <summary>
-        /// Specifies the named connection string in the app config to be used with the default MsSqlDialect.
-        /// </summary>
-        /// <param name="connectionName">The name of the connection string in the app config.</param>
-        /// <returns>
-        /// The next step in the fluent configuration.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">Thrown if connectionName is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
-        /// <exception cref="NotSupportedException">Thrown if the provider name is not supported.</exception>
-        public ICreateSessionFactory ForConnection(string connectionName)
-        {
-            return this.ForConnection(connectionName, "MicroLite.Dialect.MsSqlDialect");
         }
 
         /// <summary>
@@ -95,14 +81,14 @@ namespace MicroLite.Configuration
                 throw new MicroLiteException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
 
-            SqlDialectFactory.VerifyDialect(sqlDialect);
+            var sqlDialectType = this.GetSqlDialectType(sqlDialect);
 
             try
             {
                 this.options.ConnectionName = configSection.Name;
                 this.options.ConnectionString = configSection.ConnectionString;
                 this.options.ProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
-                this.options.SqlDialect = sqlDialect;
+                this.options.SqlDialectType = sqlDialectType;
 
                 return this;
             }
@@ -111,6 +97,25 @@ namespace MicroLite.Configuration
                 this.log.TryLogFatal(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
+        }
+
+        private Type GetSqlDialectType(string sqlDialect)
+        {
+            var sqlDialectType = Type.GetType(sqlDialect, throwOnError: false);
+
+            if (sqlDialectType == null)
+            {
+                this.log.TryLogFatal(Messages.FluentConfiguration_DialectNotSupported.FormatWith(sqlDialect));
+                throw new NotSupportedException(Messages.FluentConfiguration_DialectNotSupported.FormatWith(sqlDialect));
+            }
+
+            if (!typeof(ISqlDialect).IsAssignableFrom(sqlDialectType))
+            {
+                this.log.TryLogFatal(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith(sqlDialect));
+                throw new NotSupportedException(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith(sqlDialect));
+            }
+
+            return sqlDialectType;
         }
     }
 }

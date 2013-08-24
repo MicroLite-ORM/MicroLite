@@ -101,6 +101,53 @@
             Assert.Equal(1, pagedResults.TotalPages);
         }
 
+        [Fact]
+        public void TotalPagesReturnsOneIfNoResults()
+        {
+            var resultsPerPage = 10;
+            var totalResults = 0;
+
+            var pagedResults = new PagedResult<Customer>(1, null, resultsPerPage, totalResults);
+
+            Assert.Equal(1, pagedResults.TotalPages);
+        }
+
+        [Fact]
+        public void TotalPagesReturnsOneIfTotalResultsEqualsThanResultsPerPage()
+        {
+            var resultsPerPage = 10;
+            var totalResults = 10;
+
+            var pagedResults = new PagedResult<Customer>(1, null, resultsPerPage, totalResults);
+
+            Assert.Equal(1, pagedResults.TotalPages);
+        }
+
+        [Fact]
+        public void TotalPagesReturnsOneIfTotalResultsLessThanResultsPerPage()
+        {
+            var resultsPerPage = 10;
+            var totalResults = 7;
+
+            var pagedResults = new PagedResult<Customer>(1, null, resultsPerPage, totalResults);
+
+            Assert.Equal(1, pagedResults.TotalPages);
+        }
+
+        /// <summary>
+        /// Issue #227 - PagedResults.TotalPages returns incorrect value.
+        /// </summary>
+        [Fact]
+        public void TotalPagesReturnsTwoIfTotalResultsLessThanDoubleResultsPerPage()
+        {
+            var resultsPerPage = 10;
+            var totalResults = 14;
+
+            var pagedResults = new PagedResult<Customer>(1, null, resultsPerPage, totalResults);
+
+            Assert.Equal(2, pagedResults.TotalPages);
+        }
+
         private class Customer
         {
         }

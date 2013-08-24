@@ -1,0 +1,25 @@
+﻿// -----------------------------------------------------------------------
+// <copyright file="TypeExtensions.cs" company="MicroLite">
+// Copyright 2012 - 2013 Trevor Pilley
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// </copyright>
+// -----------------------------------------------------------------------
+namespace MicroLite.FrameworkExtensions
+{
+    using System;
+    using System.Xml.Linq;
+
+    internal static class TypeExtensions
+    {
+        internal static bool IsNotEntityAndConvertible(this Type type)
+        {
+            return type.IsPrimitive || type.IsEnum || type.IsValueType || type == typeof(string) || type == typeof(XDocument);
+        }
+    }
+}

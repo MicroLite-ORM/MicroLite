@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IAdvancedSession.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ namespace MicroLite
     /// These operations allow for more advanced use and have been moved to a separate interface to avoid
     /// cluttering the ISession API.
     /// </remarks>
-    public interface IAdvancedSession : IHideObjectMethods
+    public interface IAdvancedSession : IHideObjectMethods, IAdvancedReadOnlySession
     {
         /// <summary>
         /// Deletes the database record with the specified identifier for the specified type.

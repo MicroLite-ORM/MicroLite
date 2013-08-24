@@ -39,7 +39,7 @@
   <Class Name="MicroLite.Listeners.ListenerCollection">
     <Position X="7.5" Y="0.5" Width="3.25" />
     <TypeIdentifier>
-      <HashCode>ACKAAAAAAAAAABAAAAABAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <HashCode>ACIAAAAAAAAAABAQAAAABAQAAIAAAAAAAAAAAABQIAA=</HashCode>
       <FileName>Listeners\ListenerCollection.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

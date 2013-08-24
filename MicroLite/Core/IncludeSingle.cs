@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IncludeSingle.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,13 +14,15 @@ namespace MicroLite.Core
 {
     using System;
     using System.Data;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
+    using MicroLite.TypeConverters;
 
     /// <summary>
     /// The default implementation of <see cref="IInclude&lt;T&gt;"/> for mapped objects.
     /// </summary>
     /// <typeparam name="T">The type of object to be included.</typeparam>
-    internal sealed class IncludeSingle<T> : Include, IInclude<T> where T : class, new()
+    internal sealed class IncludeSingle<T> : Include, IInclude<T>
     {
         private static readonly Type resultType = typeof(T);
         private T value;
@@ -37,10 +39,20 @@ namespace MicroLite.Core
         {
             if (reader.Read())
             {
-                var objectInfo = ObjectInfo.For(resultType);
+                if (resultType.IsNotEntityAndConvertible())
+                {
+                    var typeConverter = TypeConverter.For(resultType);
 
-                this.value = objectBuilder.BuildInstance<T>(objectInfo, reader);
-                this.HasValue = true;
+                    this.value = (T)typeConverter.ConvertFromDbValue(reader[0], resultType);
+                    this.HasValue = true;
+                }
+                else
+                {
+                    var objectInfo = ObjectInfo.For(resultType);
+
+                    this.value = objectBuilder.BuildInstance<T>(objectInfo, reader);
+                    this.HasValue = true;
+                }
 
                 if (reader.Read())
                 {

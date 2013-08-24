@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ISqlDialect.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,6 +21,14 @@ namespace MicroLite.Dialect
     /// </summary>
     public interface ISqlDialect
     {
+        /// <summary>
+        /// Gets the SQL characters for the SQL dialect.
+        /// </summary>
+        SqlCharacters SqlCharacters
+        {
+            get;
+        }
+
         /// <summary>
         /// Gets a value indicating whether this SqlDialect supports batched queries.
         /// </summary>

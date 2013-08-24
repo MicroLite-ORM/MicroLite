@@ -8,7 +8,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Configuration.ConfigureExtensions" BaseTypeListCollapsed="true">
-    <Position X="5.75" Y="2.5" Width="2" />
+    <Position X="5.25" Y="2.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAAAAAAAACAAAAABAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Configuration\ConfigureExtensions.cs</FileName>
@@ -16,15 +16,15 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Configuration.FluentConfiguration" BaseTypeListCollapsed="true">
-    <Position X="2.75" Y="4" Width="2.25" />
+    <Position X="2.75" Y="4" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAAAAAAAAAAAiAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AEAAAAAAAAAAIAAAAAAAiAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Configuration\FluentConfiguration.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Configuration.ConfigurationExtensions">
-    <Position X="5.75" Y="4.75" Width="2.5" />
+    <Position X="5.25" Y="4.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAEAAACAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Configuration\ConfigurationExtensions.cs</FileName>
@@ -38,14 +38,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.Configuration.IConfigureConnection">
-    <Position X="2.75" Y="0.5" Width="2.25" />
+    <Position X="2.75" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Configuration\IConfigureConnection.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.Configuration.IConfigureExtensions">
-    <Position X="5.75" Y="0.5" Width="2" />
+    <Position X="5.25" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Configuration\IConfigureExtensions.cs</FileName>

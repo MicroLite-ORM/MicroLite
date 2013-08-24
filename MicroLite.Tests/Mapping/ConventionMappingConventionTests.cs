@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Reflection;
     using MicroLite.Mapping;
     using Xunit;
 
@@ -32,13 +33,25 @@
 
         public class WhenNotUsingDefaultSettings
         {
-            private readonly ObjectInfo objectInfo;
+            private readonly IObjectInfo objectInfo;
 
             public WhenNotUsingDefaultSettings()
             {
                 var mappingConvention = new ConventionMappingConvention(new ConventionMappingSettings
                 {
+                    AllowInsert = (PropertyInfo propertyInfo) =>
+                    {
+                        return propertyInfo.Name != "Updated";
+                    },
+                    AllowUpdate = (PropertyInfo propertyInfo) =>
+                    {
+                        return propertyInfo.Name != "Created";
+                    },
                     IdentifierStrategy = IdentifierStrategy.Assigned,
+                    Ignore = (PropertyInfo propertyInfo) =>
+                    {
+                        return propertyInfo.Name == "NonPersistedValue";
+                    },
                     TableSchema = "Sales",
                     UsePluralClassNameForTableName = false
                 });
@@ -50,6 +63,24 @@
             public void AgeInYearsShouldNotBeMapped()
             {
                 Assert.False(this.objectInfo.TableInfo.Columns.Any(x => x.ColumnName == "AgeInYears"));
+            }
+
+            [Fact]
+            public void TheCreatedColumnShouldAllowInsert()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").AllowInsert);
+            }
+
+            [Fact]
+            public void TheCreatedColumnShouldNotAllowUpdate()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").AllowUpdate);
+            }
+
+            [Fact]
+            public void TheCreatedPropertyShouldBeMapped()
+            {
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Created"));
             }
 
             [Fact]
@@ -79,7 +110,7 @@
             [Fact]
             public void TheDateOfBirthPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "DateOfBirth"));
             }
 
             [Fact]
@@ -89,21 +120,27 @@
             }
 
             [Fact]
-            public void TheIdColumnShouldAllowUpdate()
-            {
-                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowUpdate);
-            }
-
-            [Fact]
             public void TheIdColumnShouldBeSet()
             {
                 Assert.Equal(typeof(Customer).GetProperty("Id"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").PropertyInfo);
             }
 
             [Fact]
+            public void TheIdColumnShouldNotAllowUpdate()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowUpdate);
+            }
+
+            [Fact]
             public void TheIdentifierColumnShouldBeSet()
             {
                 Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn);
+            }
+
+            [Fact]
+            public void TheIdentifierPropertyShouldBeSet()
+            {
+                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
             }
 
             [Fact]
@@ -115,7 +152,7 @@
             [Fact]
             public void TheIdPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Id"));
             }
 
             [Fact]
@@ -151,13 +188,19 @@
             [Fact]
             public void TheNamePropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Name"));
             }
 
             [Fact]
-            public void ThereShouldBe4Columns()
+            public void TheNonPersistedValuePropertyShouldNotBeMapped()
             {
-                Assert.Equal(4, this.objectInfo.TableInfo.Columns.Count());
+                Assert.Null(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "NonPersistedValue"));
+            }
+
+            [Fact]
+            public void ThereShouldBe6Columns()
+            {
+                Assert.Equal(6, this.objectInfo.TableInfo.Columns.Count());
             }
 
             [Fact]
@@ -193,7 +236,7 @@
             [Fact]
             public void TheStatusPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "CustomerStatusId"));
             }
 
             [Fact]
@@ -201,11 +244,29 @@
             {
                 Assert.Equal("Customer", this.objectInfo.TableInfo.Name);
             }
+
+            [Fact]
+            public void TheUpdatedColumnShouldAllowUpdate()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").AllowUpdate);
+            }
+
+            [Fact]
+            public void TheUpdatedColumnShouldNotAllowInsert()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").AllowInsert);
+            }
+
+            [Fact]
+            public void TheUpdatedPropertyShouldBeMapped()
+            {
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Updated"));
+            }
         }
 
         public class WhenTheClassIdentifierIsPrefixedWithTheClassName
         {
-            private readonly ObjectInfo objectInfo;
+            private readonly IObjectInfo objectInfo;
 
             public WhenTheClassIdentifierIsPrefixedWithTheClassName()
             {
@@ -225,9 +286,15 @@
             }
 
             [Fact]
+            public void TheIdentifierPropertyShouldBeSet()
+            {
+                Assert.Equal("InvoiceId", this.objectInfo.TableInfo.IdentifierProperty);
+            }
+
+            [Fact]
             public void TheInvoiceIdPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "InvoiceId"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "InvoiceId"));
             }
 
             [Fact]
@@ -237,13 +304,57 @@
             }
         }
 
+        public class WhenTheResolveIdentifierColumnNameFunctionIsOverridden
+        {
+            private readonly IObjectInfo objectInfo;
+
+            public WhenTheResolveIdentifierColumnNameFunctionIsOverridden()
+            {
+                var mappingConvention = new ConventionMappingConvention(new ConventionMappingSettings
+                {
+                    IdentifierStrategy = IdentifierStrategy.Assigned,
+                    ResolveIdentifierColumnName = (PropertyInfo propertyInfo) =>
+                    {
+                        return propertyInfo.DeclaringType.Name + "Id";
+                    },
+                    UsePluralClassNameForTableName = false
+                });
+
+                this.objectInfo = mappingConvention.CreateObjectInfo(typeof(Customer));
+            }
+
+            [Fact]
+            public void TheIdentifierColumnShouldBeSet()
+            {
+                Assert.Equal("CustomerId", this.objectInfo.TableInfo.IdentifierColumn);
+            }
+
+            [Fact]
+            public void TheIdentifierPropertyShouldBeSet()
+            {
+                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
+            }
+
+            [Fact]
+            public void TheIdPropertyShouldBeMapped()
+            {
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "CustomerId"));
+            }
+
+            [Fact]
+            public void TheIdShouldBeIdentifier()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerId").IsIdentifier);
+            }
+        }
+
         public class WhenUsingDefaultSettings
         {
-            private readonly ObjectInfo objectInfo;
+            private readonly IObjectInfo objectInfo;
 
             public WhenUsingDefaultSettings()
             {
-                var mappingConvention = new ConventionMappingConvention(new ConventionMappingSettings());
+                var mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
 
                 this.objectInfo = mappingConvention.CreateObjectInfo(typeof(Customer));
             }
@@ -252,6 +363,24 @@
             public void AgeInYearsShouldNotBeMapped()
             {
                 Assert.False(this.objectInfo.TableInfo.Columns.Any(x => x.ColumnName == "AgeInYears"));
+            }
+
+            [Fact]
+            public void TheCreatedColumnShouldAllowInsert()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").AllowInsert);
+            }
+
+            [Fact]
+            public void TheCreatedColumnShouldAllowUpdate()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").AllowUpdate);
+            }
+
+            [Fact]
+            public void TheCreatedPropertyShouldBeMapped()
+            {
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Created"));
             }
 
             [Fact]
@@ -281,7 +410,7 @@
             [Fact]
             public void TheDateOfBirthPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "DateOfBirth"));
             }
 
             [Fact]
@@ -291,21 +420,27 @@
             }
 
             [Fact]
-            public void TheIdColumnShouldAllowUpdate()
-            {
-                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowUpdate);
-            }
-
-            [Fact]
             public void TheIdColumnShouldBeSet()
             {
                 Assert.Equal(typeof(Customer).GetProperty("Id"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").PropertyInfo);
             }
 
             [Fact]
+            public void TheIdColumnShouldNotAllowUpdate()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowUpdate);
+            }
+
+            [Fact]
             public void TheIdentifierColumnShouldBeSet()
             {
                 Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn);
+            }
+
+            [Fact]
+            public void TheIdentifierPropertyShouldBeSet()
+            {
+                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
             }
 
             [Fact]
@@ -317,7 +452,7 @@
             [Fact]
             public void TheIdPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Id"));
             }
 
             [Fact]
@@ -353,13 +488,19 @@
             [Fact]
             public void TheNamePropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Name"));
             }
 
             [Fact]
-            public void ThereShouldBe4Columns()
+            public void TheNonPersistedValuePropertyShouldBeMapped()
             {
-                Assert.Equal(4, this.objectInfo.TableInfo.Columns.Count());
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "NonPersistedValue"));
+            }
+
+            [Fact]
+            public void ThereShouldBe7Columns()
+            {
+                Assert.Equal(7, this.objectInfo.TableInfo.Columns.Count());
             }
 
             [Fact]
@@ -395,13 +536,31 @@
             [Fact]
             public void TheStatusPropertyShouldBeMapped()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId"));
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "CustomerStatusId"));
             }
 
             [Fact]
             public void TheTableNameShouldBePluralized()
             {
                 Assert.Equal("Customers", this.objectInfo.TableInfo.Name);
+            }
+
+            [Fact]
+            public void TheUpdatedColumnShouldAllowInsert()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").AllowInsert);
+            }
+
+            [Fact]
+            public void TheUpdatedColumnShouldAllowUpdate()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").AllowUpdate);
+            }
+
+            [Fact]
+            public void TheUpdatedPropertyShouldBeMapped()
+            {
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Updated"));
             }
         }
 
@@ -417,6 +576,12 @@
                 {
                     return DateTime.Today.Year - this.DateOfBirth.Year;
                 }
+            }
+
+            public DateTime Created
+            {
+                get;
+                set;
             }
 
             public DateTime DateOfBirth
@@ -437,7 +602,19 @@
                 set;
             }
 
+            public string NonPersistedValue
+            {
+                get;
+                set;
+            }
+
             public CustomerStatus Status
+            {
+                get;
+                set;
+            }
+
+            public DateTime Updated
             {
                 get;
                 set;

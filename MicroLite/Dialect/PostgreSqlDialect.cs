@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="PostgreSqlDialect.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <remarks>Constructor needs to be public so that it can be instantiated by SqlDialectFactory.</remarks>
         public PostgreSqlDialect()
+            : base(SqlCharacters.PostgreSql)
         {
         }
 
@@ -40,28 +41,6 @@ namespace MicroLite.Dialect
             }
         }
 
-        /// <summary>
-        /// Gets the SQL parameter.
-        /// </summary>
-        protected override char SqlParameter
-        {
-            get
-            {
-                return ':';
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether SQL parameters are named.
-        /// </summary>
-        protected override bool SupportsNamedParameters
-        {
-            get
-            {
-                return true;
-            }
-        }
-
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
             List<object> arguments = new List<object>(sqlQuery.Arguments.Count + 2);
@@ -72,9 +51,9 @@ namespace MicroLite.Dialect
             var sqlBuilder = new StringBuilder(sqlQuery.CommandText);
             sqlBuilder.Replace(Environment.NewLine, string.Empty);
             sqlBuilder.Append(" LIMIT ");
-            sqlBuilder.Append(this.FormatParameter(arguments.Count - 2));
+            sqlBuilder.Append(this.SqlCharacters.GetParameterName(arguments.Count - 2));
             sqlBuilder.Append(" OFFSET ");
-            sqlBuilder.Append(this.FormatParameter(arguments.Count - 1));
+            sqlBuilder.Append(this.SqlCharacters.GetParameterName(arguments.Count - 1));
 
             return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
         }

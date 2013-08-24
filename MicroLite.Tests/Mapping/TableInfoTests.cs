@@ -17,7 +17,7 @@
             var columns = new ReadOnlyCollection<ColumnInfo>(new[]
             {
                 new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true),
-                new ColumnInfo("Id", typeof(Customer).GetProperty("Id"), true, true, true)
+                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, true)
             });
             var identifierStrategy = IdentifierStrategy.Guid;
             var name = "Customers";
@@ -27,6 +27,7 @@
 
             Assert.Equal(columns, tableInfo.Columns);
             Assert.Equal(columns[1].ColumnName, tableInfo.IdentifierColumn);
+            Assert.Equal(columns[1].PropertyInfo.Name, tableInfo.IdentifierProperty);
             Assert.Equal(identifierStrategy, tableInfo.IdentifierStrategy);
             Assert.Equal(name, tableInfo.Name);
             Assert.Equal(schema, tableInfo.Schema);

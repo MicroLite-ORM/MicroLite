@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SessionFactory.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
+    using System;
     using System.Data;
     using System.Linq;
     using MicroLite.Dialect;
@@ -21,17 +22,19 @@ namespace MicroLite.Core
     /// <summary>
     /// The default implementation of <see cref="ISessionFactory"/>.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("SessionFactory for {ConnectionName} using {SqlDialect}")]
+    [System.Diagnostics.DebuggerDisplay("SessionFactory for {ConnectionName} using {sessionFactoryOptions.SqlDialectType.Name}")]
     internal sealed class SessionFactory : ISessionFactory
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly object locker = new object();
         private readonly IObjectBuilder objectBuilder = new ObjectBuilder();
         private readonly SessionFactoryOptions sessionFactoryOptions;
+        private readonly ISqlDialect sqlDialect;
 
         internal SessionFactory(SessionFactoryOptions sessionFactoryOptions)
         {
             this.sessionFactoryOptions = sessionFactoryOptions;
+            this.sqlDialect = (ISqlDialect)Activator.CreateInstance(sessionFactoryOptions.SqlDialectType);
         }
 
         public string ConnectionName
@@ -42,11 +45,11 @@ namespace MicroLite.Core
             }
         }
 
-        public string SqlDialect
+        public ISqlDialect SqlDialect
         {
             get
             {
-                return this.sessionFactoryOptions.SqlDialect;
+                return this.sqlDialect;
             }
         }
 
@@ -55,11 +58,11 @@ namespace MicroLite.Core
         {
             var connection = this.GetNewConnectionWithConnectionString();
 
-            log.TryLogDebug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.SqlDialect);
+            log.TryLogDebug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
             return new ReadOnlySession(
+                this,
                 new ConnectionManager(connection),
-                this.objectBuilder,
-                SqlDialectFactory.GetDialect(this.sessionFactoryOptions.SqlDialect));
+                this.objectBuilder);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This method is provided to create and return an ISession for the caller to use, it should not dispose of it, that is the responsibility of the caller.")]
@@ -67,11 +70,11 @@ namespace MicroLite.Core
         {
             var connection = this.GetNewConnectionWithConnectionString();
 
-            log.TryLogDebug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.SqlDialect);
+            log.TryLogDebug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
             return new Session(
+                this,
                 new ConnectionManager(connection),
                 this.objectBuilder,
-                SqlDialectFactory.GetDialect(this.sessionFactoryOptions.SqlDialect),
                 Listener.Listeners.ToArray());
         }
 

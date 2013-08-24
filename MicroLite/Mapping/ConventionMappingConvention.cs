@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ConventionMappingConvention.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using MicroLite.Logging;
 
@@ -38,38 +37,51 @@ namespace MicroLite.Mapping
             this.settings = settings;
         }
 
-        public ObjectInfo CreateObjectInfo(Type forType)
+        public IObjectInfo CreateObjectInfo(Type forType)
         {
             if (forType == null)
             {
                 throw new ArgumentNullException("forType");
             }
 
-            var columns = CreateColumnInfos(forType);
+            var columns = this.CreateColumnInfos(forType);
 
             var tableInfo = new TableInfo(
                 columns,
                 this.settings.IdentifierStrategy,
-                this.settings.UsePluralClassNameForTableName ? InflectionService.ToPlural(forType.Name) : forType.Name,
+                this.settings.UsePluralClassNameForTableName ? this.settings.InflectionService.ToPlural(forType.Name) : forType.Name,
                 this.settings.TableSchema);
 
             return new ObjectInfo(forType, tableInfo);
         }
 
-        private static List<ColumnInfo> CreateColumnInfos(Type forType)
+        private List<ColumnInfo> CreateColumnInfos(Type forType)
         {
-            var possibleClassIdentifiers = new[] { "Id", forType.Name + "Id" };
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var columns = new List<ColumnInfo>(properties.Length);
 
-            foreach (var property in properties.Where(p => p.CanRead && p.CanWrite))
+            foreach (var property in properties)
             {
+                if (!property.CanRead || !property.CanWrite)
+                {
+                    this.log.TryLogDebug(Messages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                    continue;
+                }
+
+                if (this.settings.Ignore(property))
+                {
+                    this.log.TryLogDebug(Messages.ConventionMappingConvention_IgnoringProperty, forType.Name, property.Name);
+                    continue;
+                }
+
+                var isIdentifier = this.settings.IsIdentifier(property);
+
                 var columnInfo = new ColumnInfo(
-                       columnName: property.PropertyType.IsEnum ? property.PropertyType.Name + "Id" : property.Name,
+                       columnName: isIdentifier ? this.settings.ResolveIdentifierColumnName(property) : this.settings.ResolveColumnName(property),
                        propertyInfo: property,
-                       isIdentifier: possibleClassIdentifiers.Contains(property.Name),
-                       allowInsert: true,
-                       allowUpdate: true);
+                       isIdentifier: isIdentifier,
+                       allowInsert: isIdentifier ? true : this.settings.AllowInsert(property),
+                       allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property));
 
                 columns.Add(columnInfo);
             }

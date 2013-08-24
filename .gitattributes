@@ -13,37 +13,37 @@
 *.png 	binary
 *.gif 	binary
 
-*.cs text=auto diff=csharp 
-*.vb text=auto
-*.c text=auto
-*.cpp text=auto
-*.cxx text=auto
-*.h text=auto
-*.hxx text=auto
-*.py text=auto
-*.rb text=auto
-*.java text=auto
-*.html text=auto
-*.htm text=auto
-*.css text=auto
-*.scss text=auto
-*.sass text=auto
-*.less text=auto
-*.js text=auto
-*.lisp text=auto
-*.clj text=auto
-*.sql text=auto
-*.php text=auto
-*.lua text=auto
-*.m text=auto
-*.asm text=auto
-*.erl text=auto
-*.fs text=auto
-*.fsx text=auto
-*.hs text=auto
+*.cs text eol=crlf diff=csharp 
+*.vb text eol=crlf
+*.c text eol=crlf
+*.cpp text eol=crlf
+*.cxx text eol=crlf
+*.h text eol=crlf
+*.hxx text eol=crlf
+*.py text eol=crlf
+*.rb text eol=crlf
+*.java text eol=crlf
+*.html text eol=crlf
+*.htm text eol=crlf
+*.css text eol=crlf
+*.scss text eol=crlf
+*.sass text eol=crlf
+*.less text eol=crlf
+*.js text eol=crlf
+*.lisp text eol=crlf
+*.clj text eol=crlf
+*.sql text eol=crlf
+*.php text eol=crlf
+*.lua text eol=crlf
+*.m text eol=crlf
+*.asm text eol=crlf
+*.erl text eol=crlf
+*.fs text eol=crlf
+*.fsx text eol=crlf
+*.hs text eol=crlf
 
-*.csproj text=auto merge=union 
-*.vbproj text=auto merge=union 
-*.fsproj text=auto merge=union 
-*.dbproj text=auto merge=union 
-*.sln text=auto eol=crlf merge=union 
+*.csproj text eol=crlf merge=union 
+*.vbproj text eol=crlf merge=union 
+*.fsproj text eol=crlf merge=union 
+*.dbproj text eol=crlf merge=union 
+*.sln text eol=crlf merge=union 

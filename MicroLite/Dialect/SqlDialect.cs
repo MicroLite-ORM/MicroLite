@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SqlDialect.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,9 +28,33 @@ namespace MicroLite.Dialect
     public abstract class SqlDialect : ISqlDialect
     {
         private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex selectRegex = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex tableNameRegex = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex selectRegexGreedy = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex selectRegexLazy = new Regex("SELECT(.+?)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex tableNameRegexGreedy = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex tableNameRegexLazy = new Regex("(?<=FROM)(.+?)(?=WHERE)|(?<=FROM)(.+?)(?=ORDER BY)|(?<=FROM)(.+?)(?=WHERE)?|(?<=FROM)(.+?)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+
+        private readonly SqlCharacters sqlCharacters;
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SqlDialect"/> class.
+        /// </summary>
+        /// <param name="sqlCharacters">The SQL characters.</param>
+        protected SqlDialect(SqlCharacters sqlCharacters)
+        {
+            this.sqlCharacters = sqlCharacters;
+        }
+
+        /// <summary>
+        /// Gets the SQL characters for the SQL dialect.
+        /// </summary>
+        public SqlCharacters SqlCharacters
+        {
+            get
+            {
+                return this.sqlCharacters;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether this SqlDialect supports batched queries.
@@ -44,77 +68,11 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the close quote character.
-        /// </summary>
-        protected virtual char CloseQuote
-        {
-            get
-            {
-                return '"';
-            }
-        }
-
-        /// <summary>
-        /// Gets the default table schema.
-        /// </summary>
-        protected virtual string DefaultTableSchema
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Gets the open quote character.
-        /// </summary>
-        protected virtual char OpenQuote
-        {
-            get
-            {
-                return '"';
-            }
-        }
-
-        /// <summary>
         /// Gets the select identity string.
         /// </summary>
         protected abstract string SelectIdentityString
         {
             get;
-        }
-
-        /// <summary>
-        /// Gets the select separator.
-        /// </summary>
-        protected virtual char SelectSeparator
-        {
-            get
-            {
-                return ';';
-            }
-        }
-
-        /// <summary>
-        /// Gets the SQL parameter.
-        /// </summary>
-        protected virtual char SqlParameter
-        {
-            get
-            {
-                return '?';
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether SQL parameters are named.
-        /// </summary>
-        protected virtual bool SupportsNamedParameters
-        {
-            get
-            {
-                return false;
-            }
         }
 
         /// <summary>
@@ -126,13 +84,13 @@ namespace MicroLite.Dialect
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
         public virtual void BuildCommand(IDbCommand command, SqlQuery sqlQuery)
         {
-            var parameterNames = this.SupportsNamedParameters
+            var parameterNames = this.sqlCharacters.SupportsNamedParameters
                 ? SqlUtility.GetParameterNames(sqlQuery.CommandText)
                 : Enumerable.Range(0, sqlQuery.Arguments.Count).Select(c => "Parameter" + c.ToString(CultureInfo.InvariantCulture)).ToArray();
 
             if (parameterNames.Count != sqlQuery.Arguments.Count)
             {
-                throw new MicroLiteException(Messages.ConnectionManager_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
+                throw new MicroLiteException(Messages.SqlDialect_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
             }
 
             command.CommandText = this.GetCommandText(sqlQuery.CommandText);
@@ -165,7 +123,7 @@ namespace MicroLite.Dialect
 
                 var commandText = SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                sqlBuilder.AppendLine(commandText + this.SelectSeparator);
+                sqlBuilder.AppendLine(commandText + this.sqlCharacters.StatementSeparator);
             }
 
             var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
@@ -227,7 +185,8 @@ namespace MicroLite.Dialect
 
                         if (column.AllowInsert)
                         {
-                            insertSqlBuilder.Append(this.FormatParameter(insertValues.Count) + ", ");
+                            insertSqlBuilder.Append(this.sqlCharacters.GetParameterName(insertValues.Count));
+                            insertSqlBuilder.Append(", ");
 
                             var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
 
@@ -240,7 +199,7 @@ namespace MicroLite.Dialect
 
                     if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
                     {
-                        insertSqlBuilder.Append(this.SelectSeparator);
+                        insertSqlBuilder.Append(this.sqlCharacters.StatementSeparator);
                         insertSqlBuilder.Append(this.SelectIdentityString);
                     }
 
@@ -258,8 +217,8 @@ namespace MicroLite.Dialect
                         {
                             updateSqlBuilder.AppendFormat(
                                         " {0} = {1},",
-                                        this.EscapeSql(column.ColumnName),
-                                        this.FormatParameter(updateValues.Count));
+                                        this.sqlCharacters.EscapeSql(column.ColumnName),
+                                        this.sqlCharacters.GetParameterName(updateValues.Count));
 
                             var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
 
@@ -271,8 +230,8 @@ namespace MicroLite.Dialect
 
                     updateSqlBuilder.AppendFormat(
                         " WHERE {0} = {1}",
-                        this.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
-                        this.FormatParameter(updateValues.Count));
+                        this.sqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
+                        this.sqlCharacters.GetParameterName(updateValues.Count));
 
                     updateValues.Add(objectInfo.GetIdentifierValue(instance));
 
@@ -298,14 +257,13 @@ namespace MicroLite.Dialect
             switch (statementType)
             {
                 case StatementType.Delete:
-                case StatementType.Select:
                     var objectInfo = ObjectInfo.For(forType);
 
                     var sqlBuilder = this.CreateSql(statementType, objectInfo);
                     sqlBuilder.AppendFormat(
                         " WHERE {0} = {1}",
-                        this.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
-                        this.FormatParameter(0));
+                        this.sqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
+                        this.sqlCharacters.GetParameterName(0));
 
                     return new SqlQuery(sqlBuilder.ToString(), identifier);
 
@@ -348,52 +306,25 @@ namespace MicroLite.Dialect
         /// <summary>
         /// Appends the name of the table.
         /// </summary>
-        /// <param name="objectInfo">The object info.</param>
         /// <param name="sqlBuilder">The SQL builder.</param>
-        protected void AppendTableName(ObjectInfo objectInfo, StringBuilder sqlBuilder)
+        /// <param name="objectInfo">The object info.</param>
+        protected void AppendTableName(StringBuilder sqlBuilder, IObjectInfo objectInfo)
         {
             var schema = !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
                 ? objectInfo.TableInfo.Schema
-                : this.DefaultTableSchema;
+                : string.Empty;
 
             if (!string.IsNullOrEmpty(schema))
             {
-                sqlBuilder.Append(this.OpenQuote);
+                sqlBuilder.Append(this.sqlCharacters.LeftDelimiter);
                 sqlBuilder.Append(schema);
-                sqlBuilder.Append(this.CloseQuote);
+                sqlBuilder.Append(this.sqlCharacters.RightDelimiter);
                 sqlBuilder.Append('.');
             }
 
-            sqlBuilder.Append(this.OpenQuote);
+            sqlBuilder.Append(this.sqlCharacters.LeftDelimiter);
             sqlBuilder.Append(objectInfo.TableInfo.Name);
-            sqlBuilder.Append(this.CloseQuote);
-        }
-
-        /// <summary>
-        /// Escapes the SQL.
-        /// </summary>
-        /// <param name="sql">The SQL.</param>
-        /// <returns>The escaped SQL.</returns>
-        protected string EscapeSql(string sql)
-        {
-            return this.OpenQuote + sql + this.CloseQuote;
-        }
-
-        /// <summary>
-        /// Formats the parameter.
-        /// </summary>
-        /// <param name="parameterPosition">The parameter position.</param>
-        /// <returns>The formatted parameter.</returns>
-        protected string FormatParameter(int parameterPosition)
-        {
-            if (this.SupportsNamedParameters)
-            {
-                return this.SqlParameter + ('p' + parameterPosition.ToString(CultureInfo.InvariantCulture));
-            }
-            else
-            {
-                return this.SqlParameter.ToString();
-            }
+            sqlBuilder.Append(this.sqlCharacters.RightDelimiter);
         }
 
         /// <summary>
@@ -435,7 +366,15 @@ namespace MicroLite.Dialect
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
         protected string ReadSelectList(string commandText)
         {
-            return selectRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            string selectList;
+
+            selectList = selectRegexLazy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            if (selectList.Length == 0)
+            {
+                selectList = selectRegexGreedy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            }
+
+            return selectList;
         }
 
         /// <summary>
@@ -446,7 +385,15 @@ namespace MicroLite.Dialect
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
         protected string ReadTableName(string commandText)
         {
-            return tableNameRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            string tableName;
+
+            tableName = tableNameRegexLazy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            if (tableName.Length == 0)
+            {
+                tableName = tableNameRegexGreedy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
+            }
+
+            return tableName;
         }
 
         /// <summary>
@@ -460,7 +407,7 @@ namespace MicroLite.Dialect
             return whereRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
         }
 
-        private StringBuilder CreateSql(StatementType statementType, ObjectInfo objectInfo)
+        private StringBuilder CreateSql(StatementType statementType, IObjectInfo objectInfo)
         {
             var sqlBuilder = new StringBuilder(capacity: 120);
 
@@ -468,13 +415,13 @@ namespace MicroLite.Dialect
             {
                 case StatementType.Delete:
                     sqlBuilder.Append("DELETE FROM ");
-                    this.AppendTableName(objectInfo, sqlBuilder);
+                    this.AppendTableName(sqlBuilder, objectInfo);
 
                     break;
 
                 case StatementType.Insert:
                     sqlBuilder.Append("INSERT INTO ");
-                    this.AppendTableName(objectInfo, sqlBuilder);
+                    this.AppendTableName(sqlBuilder, objectInfo);
                     sqlBuilder.Append(" (");
 
                     foreach (var column in objectInfo.TableInfo.Columns)
@@ -487,7 +434,8 @@ namespace MicroLite.Dialect
 
                         if (column.AllowInsert)
                         {
-                            sqlBuilder.Append(this.EscapeSql(column.ColumnName) + ", ");
+                            sqlBuilder.Append(this.sqlCharacters.EscapeSql(column.ColumnName));
+                            sqlBuilder.Append(", ");
                         }
                     }
 
@@ -496,22 +444,9 @@ namespace MicroLite.Dialect
 
                     break;
 
-                case StatementType.Select:
-                    sqlBuilder.Append("SELECT ");
-
-#if NET_3_5
-                    sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.EscapeSql(x.ColumnName)).ToArray()));
-#else
-                    sqlBuilder.Append(string.Join(", ", objectInfo.TableInfo.Columns.Select(x => this.EscapeSql(x.ColumnName))));
-#endif
-                    sqlBuilder.Append(" FROM ");
-                    this.AppendTableName(objectInfo, sqlBuilder);
-
-                    break;
-
                 case StatementType.Update:
                     sqlBuilder.Append("UPDATE ");
-                    this.AppendTableName(objectInfo, sqlBuilder);
+                    this.AppendTableName(sqlBuilder, objectInfo);
                     sqlBuilder.Append(" SET");
 
                     break;

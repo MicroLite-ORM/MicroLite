@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IReadOnlySession.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,6 +21,14 @@ namespace MicroLite
     /// </summary>
     public interface IReadOnlySession : IHideObjectMethods, IDisposable
     {
+        /// <summary>
+        /// Gets the advanced session operations.
+        /// </summary>
+        IAdvancedReadOnlySession Advanced
+        {
+            get;
+        }
+
         /// <summary>
         /// Gets the operations which allow additional objects to be queried in a single database call.
         /// </summary>
@@ -108,32 +116,7 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        IList<T> Fetch<T>(SqlQuery sqlQuery) where T : class, new();
-
-        /// <summary>
-        /// Pages the specified SQL query and returns an <see cref="PagedResult&lt;T&gt;"/> containing the desired results.
-        /// </summary>
-        /// <typeparam name="T">The type of object the query relates to.</typeparam>
-        /// <param name="sqlQuery">The SQL query to page before executing.</param>
-        /// <param name="page">The page number (supply a 1 for first page).</param>
-        /// <param name="resultsPerPage">The number of results per page.</param>
-        /// <returns>A <see cref="PagedResult&lt;T&gt;"/> containing the desired results.</returns>
-        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if page or resultsPerPage are below 1.</exception>
-        /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
-        /// <example>
-        /// <code>
-        /// using (var session = sessionFactory.OpenSession())
-        /// {
-        ///     var query = new SqlQuery("SELECT * FROM Customers WHERE LastName = @p0", "Smith");
-        ///
-        ///     var customers = session.Paged&lt;Customer&gt;(query, page: 1, resultsPerPage: 25);
-        /// }
-        /// </code>
-        /// </example>
-        [Obsolete("This method has been replaced and will be removed in MicroLite 4.0.0, please call session.Paged(sqlQuery, PagingOptions.ForPage(page, resultsPerPage)) instead of session.Paged(sqlQuery, page, resultsPerPage)", error: true)]
-        PagedResult<T> Paged<T>(SqlQuery sqlQuery, int page, int resultsPerPage) where T : class, new();
+        IList<T> Fetch<T>(SqlQuery sqlQuery);
 
         /// <summary>
         /// Pages the specified SQL query and returns an <see cref="PagedResult&lt;T&gt;"/> containing the desired results.
@@ -155,7 +138,7 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions) where T : class, new();
+        PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions);
 
 #if !NET_3_5
 
@@ -206,6 +189,7 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
+        [Obsolete("MicroLite 4.0 introduced the ability to use dynamic with .Fetch(SqlQuery), .Single(SqlQuery) and .Paged(SqlQuery, PagingOptions). Any calls previously made to .Projection(SqlQuery) should be changed to call .Fetch(SqlQuery) instead to achieve the same result", error: false)]
         IList<dynamic> Projection(SqlQuery sqlQuery);
 
 #endif
@@ -252,6 +236,6 @@ namespace MicroLite
         /// </code>
         /// </example>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Single", Justification = "It's used in loads of places by the linq extension methods as a method name.")]
-        T Single<T>(SqlQuery sqlQuery) where T : class, new();
+        T Single<T>(SqlQuery sqlQuery);
     }
 }

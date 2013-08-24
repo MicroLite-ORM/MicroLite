@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ISession.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the advanced session operations.
         /// </summary>
-        IAdvancedSession Advanced
+        new IAdvancedSession Advanced
         {
             get;
         }
@@ -108,6 +108,7 @@ namespace MicroLite
         /// Updates the database record for the specified instance with the current property values.
         /// </summary>
         /// <param name="instance">The instance to persist the values for.</param>
+        /// <returns>true if the object was updated successfully; otherwise false.</returns>
         /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
         /// <exception cref="ArgumentNullException">Thrown if the specified instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the update command.</exception>
@@ -123,6 +124,6 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        void Update(object instance);
+        bool Update(object instance);
     }
 }

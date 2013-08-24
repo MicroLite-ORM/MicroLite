@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IWithParameter.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,6 +23,17 @@ namespace MicroLite.Query
         /// <param name="parameter">The parameter to be added.</param>
         /// <param name="arg">The argument value for the parameter.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// Add each parameter separately, specifying the parameter name and value.
+        /// <code>
+        /// var sqlQuery = SqlBuilder
+        ///     .Execute("GetCustomerInvoices")
+        ///     .WithParameter("@CustomerId", 7633245)
+        ///     .WithParameter("@StartDate", DateTime.Today.AddMonths(-3))
+        ///     .WithParameter("@EndDate", DateTime.Today)
+        ///     .ToSqlQuery();
+        /// </code>
+        /// </example>
         IWithParameter WithParameter(string parameter, object arg);
     }
 }

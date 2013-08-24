@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IIncludeMany.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ namespace MicroLite
     /// The interface for including a multiple results.
     /// </summary>
     /// <typeparam name="T">The type of object to be included.</typeparam>
-    public interface IIncludeMany<T> where T : class, new()
+    public interface IIncludeMany<T>
     {
         /// <summary>
         /// Gets a value indicating whether this include has a value.

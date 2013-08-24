@@ -16,6 +16,13 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="MicroLite.Mapping.ConventionMappingSettings">
+    <Position X="6" Y="4.5" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQCAIAAAACAAAAIAAAAAAAQEACAEABACAAAAA=</HashCode>
+      <FileName>Mapping\ConventionMappingSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="MicroLite.Mapping.IMappingConvention">
     <Position X="0.5" Y="0.5" Width="3" />
     <TypeIdentifier>

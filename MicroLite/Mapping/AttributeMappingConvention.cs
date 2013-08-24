@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="AttributeMappingConvention.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
@@ -27,7 +26,7 @@ namespace MicroLite.Mapping
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
 
-        public ObjectInfo CreateObjectInfo(Type forType)
+        public IObjectInfo CreateObjectInfo(Type forType)
         {
             if (forType == null)
             {
@@ -55,8 +54,14 @@ namespace MicroLite.Mapping
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var columns = new List<ColumnInfo>(properties.Length);
 
-            foreach (var property in properties.Where(p => p.CanRead && p.CanWrite))
+            foreach (var property in properties)
             {
+                if (!property.CanRead || !property.CanWrite)
+                {
+                    log.TryLogDebug(Messages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                    continue;
+                }
+
                 var columnAttribute = property.GetAttribute<ColumnAttribute>(inherit: true);
 
                 if (columnAttribute == null)

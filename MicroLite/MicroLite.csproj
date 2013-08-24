@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MicroLite</RootNamespace>
     <AssemblyName>MicroLite</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\MicroLite.XML</DocumentationFile>
@@ -63,12 +63,14 @@
     <Compile Include="Core\IncludeScalar.cs" />
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
+    <Compile Include="SqlCharacters.cs" />
+    <Compile Include="FrameworkExtensions\TypeExtensions.cs" />
+    <Compile Include="IAdvancedReadOnlySession.cs" />
     <Compile Include="Infrastructure\AppSettingSymmetricAlgorithmProvider.cs" />
     <Compile Include="DbEncryptedString.cs" />
     <Compile Include="Dialect\MySqlDialect.cs" />
     <Compile Include="Dialect\PostgreSqlDialect.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />
-    <Compile Include="Dialect\SqlDialectFactory.cs" />
     <Compile Include="Dialect\SQLiteDialect.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="GuidGenerator.cs" />
@@ -77,6 +79,8 @@
     <Compile Include="IIncludeSession.cs" />
     <Compile Include="Infrastructure\IHaveReadOnlySession.cs" />
     <Compile Include="Infrastructure\IHaveSession.cs" />
+    <Compile Include="Infrastructure\Web\ISessionManager.cs" />
+    <Compile Include="Infrastructure\Web\SessionManager.cs" />
     <Compile Include="Infrastructure\SymmetricAlgorithmProvider.cs" />
     <Compile Include="IReadOnlySession.cs" />
     <Compile Include="Listeners\GuidCombListener.cs" />
@@ -116,10 +120,17 @@
     <Compile Include="Mapping\ColumnInfo.cs" />
     <Compile Include="Mapping\ConventionMappingSettings.cs" />
     <Compile Include="Mapping\ConventionMappingConvention.cs" />
+    <Compile Include="Mapping\ExpandoObjectInfo.cs" />
+    <Compile Include="Mapping\Inflection\EnglishInflectionService.cs" />
+    <Compile Include="Mapping\Inflection\IInflectionService.cs" />
+    <Compile Include="Mapping\IObjectInfo.cs" />
+    <Compile Include="Query\RawWhereBuilder.cs" />
+    <Compile Include="Query\SelectSqlBuilder.cs" />
+    <Compile Include="Query\StoredProcedureSqlBuilder.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverter.cs" />
     <Compile Include="TypeConverters\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
-    <Compile Include="Mapping\InflectionService.cs" />
+    <Compile Include="Mapping\Inflection\InflectionService.cs" />
     <Compile Include="Mapping\IPropertyAccessor.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
     <Compile Include="Mapping\AttributeMappingConvention.cs" />
@@ -149,7 +160,7 @@
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="Query\IToSqlQuery.cs" />
     <Compile Include="ITransaction.cs" />
-    <Compile Include="Query\IWhereBetweenOrIn.cs" />
+    <Compile Include="Query\IWhereSingleColumn.cs" />
     <Compile Include="Query\IWhereOrOrderBy.cs" />
     <Compile Include="Listeners\Listener.cs" />
     <Compile Include="Query\IWithParameter.cs" />
@@ -178,9 +189,11 @@
     <None Include="Dialect\_Dialect.cd" />
     <None Include="Listeners\_Listeners.cd" />
     <None Include="Logging\_Logging.cd" />
+    <None Include="Mapping\Inflection\_Inflection.cd" />
     <None Include="Mapping\_MappingAttributes.cd" />
     <None Include="Mapping\_MappingConvention.cd" />
     <None Include="Mapping\_ObjectInfo.cd" />
+    <None Include="Query\_SqlBuilders.cd" />
     <None Include="TypeConverters\_TypeConverters.cd" />
     <None Include="Query\_SqlBuilder.cd" />
     <None Include="_Session.cd" />

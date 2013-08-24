@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="TableInfo.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,8 +26,9 @@ namespace MicroLite.Mapping
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
 
-        private readonly ICollection<ColumnInfo> columns;
+        private readonly IList<ColumnInfo> columns;
         private readonly string identifierColumn;
+        private readonly string identifierProperty;
         private readonly IdentifierStrategy identifierStrategy;
         private readonly string name;
         private readonly string schema;
@@ -64,13 +65,17 @@ namespace MicroLite.Mapping
             this.ValidateColumns(columns);
 
             this.columns = new System.Collections.ObjectModel.ReadOnlyCollection<ColumnInfo>(columns);
-            this.identifierColumn = columns.Single(c => c.IsIdentifier).ColumnName;
+
+            var identifierColumnInfo = columns.Single(c => c.IsIdentifier);
+
+            this.identifierColumn = identifierColumnInfo.ColumnName;
+            this.identifierProperty = identifierColumnInfo.PropertyInfo.Name;
         }
 
         /// <summary>
         /// Gets the columns that are mapped for the table.
         /// </summary>
-        public ICollection<ColumnInfo> Columns
+        public IList<ColumnInfo> Columns
         {
             get
             {
@@ -86,6 +91,17 @@ namespace MicroLite.Mapping
             get
             {
                 return this.identifierColumn;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the property that is the object identifier property mapped to the table identifier column.
+        /// </summary>
+        public string IdentifierProperty
+        {
+            get
+            {
+                return this.identifierProperty;
             }
         }
 

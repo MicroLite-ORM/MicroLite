@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ReadOnlySession.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,28 +17,38 @@ namespace MicroLite.Core
     using System.Data;
     using MicroLite.Dialect;
     using MicroLite.Logging;
+    using MicroLite.Mapping;
+    using MicroLite.Query;
 
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.
     /// </summary>
-    internal class ReadOnlySession : IReadOnlySession, IIncludeSession
+    internal class ReadOnlySession : IReadOnlySession, IIncludeSession, IAdvancedReadOnlySession
     {
         protected static readonly ILog Log = LogManager.GetCurrentClassLog();
         private readonly IConnectionManager connectionManager;
         private readonly Queue<Include> includes = new Queue<Include>();
         private readonly IObjectBuilder objectBuilder;
         private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
-        private readonly ISqlDialect sqlDialect;
+        private readonly ISessionFactory sessionFactory;
         private bool disposed;
 
         internal ReadOnlySession(
+            ISessionFactory sessionFactory,
             IConnectionManager connectionManager,
-            IObjectBuilder objectBuilder,
-            ISqlDialect sqlDialect)
+            IObjectBuilder objectBuilder)
         {
+            this.sessionFactory = sessionFactory;
             this.connectionManager = connectionManager;
             this.objectBuilder = objectBuilder;
-            this.sqlDialect = sqlDialect;
+        }
+
+        public IAdvancedReadOnlySession Advanced
+        {
+            get
+            {
+                return this;
+            }
         }
 
         public IIncludeSession Include
@@ -46,6 +56,14 @@ namespace MicroLite.Core
             get
             {
                 return this;
+            }
+        }
+
+        public ISessionFactory SessionFactory
+        {
+            get
+            {
+                return this.sessionFactory;
             }
         }
 
@@ -69,14 +87,23 @@ namespace MicroLite.Core
         {
             get
             {
-                return this.sqlDialect;
+                return this.sessionFactory.SqlDialect;
             }
+        }
+
+        public IIncludeMany<T> All<T>() where T : class, new()
+        {
+            var sqlQuery = (new SelectSqlBuilder(this.SqlDialect.SqlCharacters, "*"))
+                .From(typeof(T))
+                .ToSqlQuery();
+
+            var include = this.Include.Many<T>(sqlQuery);
+
+            return include;
         }
 
         public ITransaction BeginTransaction()
         {
-            this.ThrowIfDisposed();
-
             return this.BeginTransaction(IsolationLevel.ReadCommitted);
         }
 
@@ -93,11 +120,41 @@ namespace MicroLite.Core
             GC.SuppressFinalize(this);
         }
 
-        public IList<T> Fetch<T>(SqlQuery sqlQuery) where T : class, new()
+        public void ExecutePendingQueries()
+        {
+            try
+            {
+                if (this.SqlDialect.SupportsBatchedQueries)
+                {
+                    this.ExecuteQueriesCombined();
+                }
+                else
+                {
+                    this.ExecuteQueriesIndividually();
+                }
+            }
+            catch (MicroLiteException)
+            {
+                // Don't re-wrap MicroLite exceptions
+                throw;
+            }
+            catch (Exception e)
+            {
+                Log.TryLogError(e.Message, e);
+                throw new MicroLiteException(e.Message, e);
+            }
+            finally
+            {
+                this.includes.Clear();
+                this.queries.Clear();
+            }
+        }
+
+        public IList<T> Fetch<T>(SqlQuery sqlQuery)
         {
             var include = this.Include.Many<T>(sqlQuery);
 
-            this.ExecuteAllQueries();
+            this.ExecutePendingQueries();
 
             return include.Values;
         }
@@ -111,9 +168,16 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("identifier");
             }
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Select, typeof(T), identifier);
+            var objectInfo = ObjectInfo.For(typeof(T));
 
-            return this.Include.Single<T>(sqlQuery);
+            var sqlQuery = (new SelectSqlBuilder(this.SqlDialect.SqlCharacters, "*"))
+                .From(objectInfo.ForType)
+                .Where(objectInfo.TableInfo.IdentifierColumn).IsEqualTo(identifier)
+                .ToSqlQuery();
+
+            var include = this.Include.Single<T>(sqlQuery);
+
+            return include;
         }
 
         IInclude<T> IIncludeSession.Single<T>(SqlQuery sqlQuery)
@@ -137,7 +201,7 @@ namespace MicroLite.Core
         {
             var include = this.Include.Single<T>(identifier);
 
-            this.ExecuteAllQueries();
+            this.ExecutePendingQueries();
 
             return include.Value;
         }
@@ -146,12 +210,12 @@ namespace MicroLite.Core
         {
             var include = this.Include.Single<T>(sqlQuery);
 
-            this.ExecuteAllQueries();
+            this.ExecutePendingQueries();
 
             return include.Value;
         }
 
-        public IIncludeMany<T> Many<T>(SqlQuery sqlQuery) where T : class, new()
+        public IIncludeMany<T> Many<T>(SqlQuery sqlQuery)
         {
             this.ThrowIfDisposed();
 
@@ -168,7 +232,7 @@ namespace MicroLite.Core
             return include;
         }
 
-        public PagedResult<T> Paged<T>(SqlQuery sqlQuery, int page, int resultsPerPage) where T : class, new()
+        public PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
             this.ThrowIfDisposed();
 
@@ -177,11 +241,6 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            return this.Paged<T>(sqlQuery, PagingOptions.ForPage(page, resultsPerPage));
-        }
-
-        public PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions) where T : class, new()
-        {
             if (pagingOptions == PagingOptions.None)
             {
                 throw new MicroLiteException(Messages.Session_PagingOptionsMustNotBeNone);
@@ -193,7 +252,7 @@ namespace MicroLite.Core
             var includeCount = this.Include.Scalar<int>(countSqlQuery);
             var includeMany = this.Include.Many<T>(pagedSqlQuery);
 
-            this.ExecuteAllQueries();
+            this.ExecutePendingQueries();
 
             var page = (pagingOptions.Offset / pagingOptions.Count) + 1;
 
@@ -204,41 +263,7 @@ namespace MicroLite.Core
 
         public IList<dynamic> Projection(SqlQuery sqlQuery)
         {
-            this.ThrowIfDisposed();
-
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            try
-            {
-                using (var command = this.ConnectionManager.CreateCommand())
-                {
-                    this.SqlDialect.BuildCommand(command, sqlQuery);
-
-                    var results = new List<dynamic>();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var expando = this.objectBuilder.BuildDynamic(reader);
-
-                            results.Add(expando);
-                        }
-                    }
-
-                    this.connectionManager.CommandCompleted(command);
-
-                    return results;
-                }
-            }
-            catch (Exception e)
-            {
-                Log.TryLogError(e.Message, e);
-                throw new MicroLiteException(e.Message, e);
-            }
+            return this.Fetch<dynamic>(sqlQuery);
         }
 
 #endif
@@ -276,36 +301,6 @@ namespace MicroLite.Core
             if (this.disposed)
             {
                 throw new ObjectDisposedException(this.GetType().Name);
-            }
-        }
-
-        private void ExecuteAllQueries()
-        {
-            try
-            {
-                if (this.sqlDialect.SupportsBatchedQueries)
-                {
-                    this.ExecuteQueriesCombined();
-                }
-                else
-                {
-                    this.ExecuteQueriesIndividually();
-                }
-            }
-            catch (MicroLiteException)
-            {
-                // Don't re-wrap MicroLite exceptions
-                throw;
-            }
-            catch (Exception e)
-            {
-                Log.TryLogError(e.Message, e);
-                throw new MicroLiteException(e.Message, e);
-            }
-            finally
-            {
-                this.includes.Clear();
-                this.queries.Clear();
             }
         }
 

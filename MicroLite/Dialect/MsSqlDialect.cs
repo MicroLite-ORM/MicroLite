@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="MsSqlDialect.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,29 +29,8 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <remarks>Constructor needs to be public so that it can be instantiated by SqlDialectFactory.</remarks>
         public MsSqlDialect()
+            : base(SqlCharacters.MsSql)
         {
-        }
-
-        /// <summary>
-        /// Gets the close quote character.
-        /// </summary>
-        protected override char CloseQuote
-        {
-            get
-            {
-                return ']';
-            }
-        }
-
-        /// <summary>
-        /// Gets the open quote character.
-        /// </summary>
-        protected override char OpenQuote
-        {
-            get
-            {
-                return '[';
-            }
         }
 
         /// <summary>
@@ -62,28 +41,6 @@ namespace MicroLite.Dialect
             get
             {
                 return "SELECT SCOPE_IDENTITY()";
-            }
-        }
-
-        /// <summary>
-        /// Gets the SQL parameter.
-        /// </summary>
-        protected override char SqlParameter
-        {
-            get
-            {
-                return '@';
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether SQL parameters are named.
-        /// </summary>
-        protected override bool SupportsNamedParameters
-        {
-            get
-            {
-                return true;
             }
         }
 
@@ -105,7 +62,7 @@ namespace MicroLite.Dialect
                     ? sqlQuery.CommandText
                     : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                sqlBuilder.AppendLine(commandText + this.SelectSeparator);
+                sqlBuilder.AppendLine(commandText + this.SqlCharacters.StatementSeparator);
             }
 
             var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
@@ -139,14 +96,14 @@ namespace MicroLite.Dialect
             sqlBuilder.Append(selectStatement);
             sqlBuilder.Append(" FROM");
             sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " ({0}, ROW_NUMBER() OVER({1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName);
-            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.FormatParameter(arguments.Count - 2), this.FormatParameter(arguments.Count - 1));
+            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Count - 2), this.SqlCharacters.GetParameterName(arguments.Count - 1));
 
             return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
         }
 
         protected override string GetCommandText(string commandText)
         {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SelectSeparator.ToString()))
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SqlCharacters.StatementSeparator))
             {
                 var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
 
@@ -165,7 +122,7 @@ namespace MicroLite.Dialect
 
         protected override CommandType GetCommandType(string commandText)
         {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SelectSeparator.ToString()))
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SqlCharacters.StatementSeparator))
             {
                 return CommandType.StoredProcedure;
             }

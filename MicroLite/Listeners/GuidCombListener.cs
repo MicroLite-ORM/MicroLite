@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="GuidCombListener.cs" company="MicroLite">
-// Copyright 2012 Trevor Pilley
+// Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ namespace MicroLite.Listeners
                 var identifierValue = GuidGenerator.CreateComb();
 
                 log.TryLogDebug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
-                objectInfo.SetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn, identifierValue);
+                objectInfo.SetPropertyValue(instance, objectInfo.TableInfo.IdentifierProperty, identifierValue);
             }
         }
 
