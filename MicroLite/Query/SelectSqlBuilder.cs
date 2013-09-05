@@ -299,6 +299,11 @@ namespace MicroLite.Query
         /// </example>
         public IHavingOrOrderBy GroupBy(params string[] columns)
         {
+            if (columns == null)
+            {
+                throw new ArgumentNullException("columns");
+            }
+
             this.InnerSql.Append(" GROUP BY ");
 
             for (int i = 0; i < columns.Length; i++)
@@ -1082,6 +1087,11 @@ namespace MicroLite.Query
 
         private void AddOrder(string[] columns, string direction)
         {
+            if (columns == null)
+            {
+                throw new ArgumentNullException("columns");
+            }
+
             this.InnerSql.Append(!this.addedOrder ? " ORDER BY " : ", ");
 
             for (int i = 0; i < columns.Length; i++)

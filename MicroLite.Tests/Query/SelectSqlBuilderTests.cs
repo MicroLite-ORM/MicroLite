@@ -44,6 +44,14 @@
         }
 
         [Fact]
+        public void GroupByThrowsArgumentNullException()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").GroupBy(null));
+        }
+
+        [Fact]
         public void InThrowArgumentNullExceptionForNullArgs()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
@@ -61,6 +69,22 @@
             var exception = Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("").Where("").In((SqlQuery)null));
 
             Assert.Equal("subQuery", exception.ParamName);
+        }
+
+        [Fact]
+        public void OrderByAscendingThrowsArgumentNullException()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByAscending(null));
+        }
+
+        [Fact]
+        public void OrderByDescendingThrowsArgumentNullException()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByDescending(null));
         }
 
         [Fact]
