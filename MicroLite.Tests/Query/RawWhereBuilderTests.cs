@@ -32,5 +32,14 @@
 
             Assert.Equal("selectFrom", exception.ParamName);
         }
+
+        [Fact]
+        public void ToStringReturnsInnerSql()
+        {
+            var rawWhereBuilder = new RawWhereBuilder();
+            rawWhereBuilder.Append("Forename = @p0", "Fred");
+
+            Assert.Equal("Forename = @p0", rawWhereBuilder.ToString());
+        }
     }
 }
