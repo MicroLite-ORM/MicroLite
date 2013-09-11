@@ -21,6 +21,79 @@ namespace MicroLite.Configuration
     public static class ConfigurationExtensions
     {
         /// <summary>
+        /// Specifies the name of the connection string in the app config and that the MsSqlDialect should be used.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure connections.</param>
+        /// <param name="connectionName">The name of the connection string in the app config.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
+        public static ICreateSessionFactory ForMsSqlConnection(this IConfigureConnection configureConnection, string connectionName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, "MicroLite.Dialect.MsSqlDialect");
+        }
+
+        /// <summary>
+        /// Specifies the name of the connection string in the app config and that the MySqlDialect should be used.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure connections.</param>
+        /// <param name="connectionName">The name of the connection string in the app config.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
+        public static ICreateSessionFactory ForMySqlConnection(this IConfigureConnection configureConnection, string connectionName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, "MicroLite.Dialect.MySqlDialect");
+        }
+
+        /// <summary>
+        /// Specifies the name of the connection string in the app config and that the PostgreSqlDialect should be used.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure connections.</param>
+        /// <param name="connectionName">The name of the connection string in the app config.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
+        public static ICreateSessionFactory ForPostgreSqlConnection(this IConfigureConnection configureConnection, string connectionName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, "MicroLite.Dialect.PostgreSqlDialect");
+        }
+
+        /// <summary>
+        /// Specifies the name of the connection string in the app config and that the SQLiteDialect should be used.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure connections.</param>
+        /// <param name="connectionName">The name of the connection string in the app config.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
+        public static ICreateSessionFactory ForSQLiteConnection(this IConfigureConnection configureConnection, string connectionName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, "MicroLite.Dialect.SQLiteDialect");
+        }
+
+        /// <summary>
         /// Configures the MicroLite ORM Framework to use the default attribute based mapping.
         /// </summary>
         /// <param name="configureExtensions">The interface to configure extensions.</param>

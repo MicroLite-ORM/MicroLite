@@ -56,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ConfigurationExtensions.cs" />
-    <Compile Include="Configuration\ConfigureConnectionExtensions.cs" />
     <Compile Include="Configuration\FluentConfiguration.cs" />
     <Compile Include="Core\AdoTransaction.cs" />
     <Compile Include="Core\Include.cs" />
