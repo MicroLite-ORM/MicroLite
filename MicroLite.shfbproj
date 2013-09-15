@@ -25,9 +25,8 @@
     <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <DocumentationSources>
-      <DocumentationSource sourceFile="build\4.0\MicroLite.dll" xmlns="" />
-      <DocumentationSource sourceFile="build\4.0\MicroLite.xml" xmlns="" />
-    </DocumentationSources>
+      <DocumentationSource sourceFile="build\4.5\MicroLite.dll" />
+<DocumentationSource sourceFile="build\4.5\MicroLite.xml" /></DocumentationSources>
     <SyntaxFilters>CSharp</SyntaxFilters>
     <ProjectSummary>MicroLite ORM Framework</ProjectSummary>
     <NamespaceSummaries>
@@ -46,7 +45,7 @@ For further information, see the MicroLite blog at http://microliteorm.wordpress
       <NamespaceSummaryItem name="MicroLite.TypeConverters" isDocumented="True">Contains the classes and interfaces required to convert values between .NET types and database types.</NamespaceSummaryItem>
     </NamespaceSummaries>
     <BuildAssemblerVerbosity>AllMessages</BuildAssemblerVerbosity>
-    <MissingTags>Summary, Parameter, Returns, TypeParameter</MissingTags>
+    <MissingTags>None</MissingTags>
     <NamingMethod>MemberName</NamingMethod>
     <IndentHtml>False</IndentHtml>
     <FrameworkVersion>.NET Framework 4.5</FrameworkVersion>
