@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests
 {
+    using System;
     using Moq;
     using Xunit;
 
@@ -29,6 +30,12 @@
         }
 
         [Fact]
+        public void EmptyEscapeSqlThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => SqlCharacters.Empty.EscapeSql(null));
+        }
+
+        [Fact]
         public void EmptyGetParameterNameReturnsCorrectValue()
         {
             Assert.Equal("?", SqlCharacters.Empty.GetParameterName(0));
@@ -38,6 +45,12 @@
         public void MsSqlDoesNotDoubleEscape()
         {
             Assert.Equal("[Name]", SqlCharacters.MsSql.EscapeSql("[Name]"));
+        }
+
+        [Fact]
+        public void MsSqlEscapeSqlThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => SqlCharacters.MsSql.EscapeSql(null));
         }
 
         [Fact]
@@ -77,6 +90,12 @@
         }
 
         [Fact]
+        public void MySqlEscapeSqlThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => SqlCharacters.MySql.EscapeSql(null));
+        }
+
+        [Fact]
         public void MySqlEscapesQualifiedColumnSqlCorrectly()
         {
             Assert.Equal("`Table`.`Column`", SqlCharacters.MySql.EscapeSql("Table.Column"));
@@ -113,6 +132,12 @@
         }
 
         [Fact]
+        public void PostgreSqlEscapeSqlThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => SqlCharacters.PostgreSql.EscapeSql(null));
+        }
+
+        [Fact]
         public void PostgreSqlEscapesQualifiedColumnSqlCorrectly()
         {
             Assert.Equal("\"Table\".\"Column\"", SqlCharacters.PostgreSql.EscapeSql("Table.Column"));
@@ -146,6 +171,12 @@
         public void SQLiteDoesNotDoubleEscape()
         {
             Assert.Equal("\"Name\"", SqlCharacters.SQLite.EscapeSql("\"Name\""));
+        }
+
+        [Fact]
+        public void SQLiteEscapeSqlThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => SqlCharacters.SQLite.EscapeSql(null));
         }
 
         [Fact]

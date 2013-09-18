@@ -1,4 +1,6 @@
-﻿using MicroLite.TypeConverters;
+﻿using System;
+using System.Xml.Linq;
+using MicroLite.TypeConverters;
 using Xunit;
 
 namespace MicroLite.Tests.TypeConverters
@@ -28,6 +30,25 @@ namespace MicroLite.Tests.TypeConverters
             {
                 var typeConverter = TypeConverter.For(typeof(int));
                 Assert.IsType<ObjectTypeConverter>(typeConverter);
+            }
+        }
+
+        public class WhenCallingForWithATypeOfXDocument
+        {
+            [Fact]
+            public void TheXDocumentTypeConverterIsReturned()
+            {
+                var typeConverter = TypeConverter.For(typeof(XDocument));
+                Assert.IsType<XDocumentTypeConverter>(typeConverter);
+            }
+        }
+
+        public class WhenCallingResolveActualTypeWithNullType
+        {
+            [Fact]
+            public void AnArgumentNullExceptionIsThrown()
+            {
+                Assert.Throws<ArgumentNullException>(() => TypeConverter.ResolveActualType(null));
             }
         }
     }

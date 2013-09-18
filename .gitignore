@@ -3,6 +3,7 @@ bin
 obj
 build
 packages
+NDependOut
 
 # mstest test results
 TestResults

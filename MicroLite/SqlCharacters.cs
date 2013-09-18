@@ -166,6 +166,11 @@ namespace MicroLite
         /// <returns>The escaped SQL.</returns>
         public string EscapeSql(string sql)
         {
+            if (sql == null)
+            {
+                throw new ArgumentNullException("sql");
+            }
+
             if (this.IsEscaped(sql))
             {
                 return sql;

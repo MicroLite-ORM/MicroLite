@@ -44,6 +44,26 @@
         }
 
         [Fact]
+        public void GroupByAppendsColumnsCorrectlyForMultipleColumns()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            var sqlQuery = sqlBuilder.From("Customer")
+                .GroupBy("CustomerId", "Created")
+                .ToSqlQuery();
+
+            Assert.Equal("SELECT CustomerId FROM Customer GROUP BY CustomerId, Created", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void GroupByThrowsArgumentNullException()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").GroupBy(null));
+        }
+
+        [Fact]
         public void InThrowArgumentNullExceptionForNullArgs()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
@@ -61,6 +81,38 @@
             var exception = Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("").Where("").In((SqlQuery)null));
 
             Assert.Equal("subQuery", exception.ParamName);
+        }
+
+        [Fact]
+        public void NotInThrowsArgumentNullExceptionForNullArgs()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").Where("Column").NotIn((object[])null));
+        }
+
+        [Fact]
+        public void NotInThrowsArgumentNullExceptionForNullSqlQuery()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").Where("Column").NotIn((SqlQuery)null));
+        }
+
+        [Fact]
+        public void OrderByAscendingThrowsArgumentNullException()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByAscending(null));
+        }
+
+        [Fact]
+        public void OrderByDescendingThrowsArgumentNullException()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByDescending(null));
         }
 
         [Fact]
@@ -762,6 +814,46 @@
             Assert.Equal(1024, sqlQuery.Arguments[1]);
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) AND ([Column1] IN (SELECT Id FROM Table WHERE Column = @p1))", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereAndWhereNotInArgsWithSqlCharacters()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("Column2 = @p0", "FOO")
+                .AndWhere("Column1").NotIn(1, 2, 3)
+                .ToSqlQuery();
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+            Assert.Equal(1, sqlQuery.Arguments[1]);
+            Assert.Equal(2, sqlQuery.Arguments[2]);
+            Assert.Equal(3, sqlQuery.Arguments[3]);
+
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) AND ([Column1] NOT IN (@p1, @p2, @p3))", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereAndWhereNotInSqlQuery()
+        {
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("Column2 = ?", "FOO")
+                .AndWhere("Column1").NotIn(subQuery)
+                .ToSqlQuery();
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+            Assert.Equal(1024, sqlQuery.Arguments[1]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) AND (Column1 NOT IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
         }
 
         [Fact]
