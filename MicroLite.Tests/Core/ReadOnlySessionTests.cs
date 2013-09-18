@@ -303,6 +303,31 @@
         }
 
         [Fact]
+        public void MicroLiteExceptionsCaughtByExecutePendingQueriesShouldNotBeWrappedInAnotherMicroLiteException()
+        {
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>())).Throws<MicroLiteException>();
+
+            var mockSessionFactory = new Mock<ISessionFactory>();
+            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
+
+            var session = new ReadOnlySession(
+                mockSessionFactory.Object,
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object);
+
+            // We need at least 1 queued query otherwise we will get an exception when doing queries.Dequeue() instead.
+            session.Include.Scalar<int>(new SqlQuery(""));
+
+            var exception = Assert.Throws<MicroLiteException>(() => session.ExecutePendingQueries());
+
+            Assert.IsNotType<MicroLiteException>(exception.InnerException);
+        }
+
+        [Fact]
         public void PagedExecutesAndReturnsResultsForFirstPageWithOnePerPage()
         {
             var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
