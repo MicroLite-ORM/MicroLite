@@ -234,17 +234,17 @@ namespace MicroLite.Query
         /// <summary>
         /// Specifies the table to perform the query against.
         /// </summary>
-        /// <param name="table">The name of the table.</param>
+        /// <param name="tableName">The name of the table.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <example>
         /// <code>
         /// var query = SqlBuilder.Select("Col1", "Col2").From("Customers")... // Add remainder of query
         /// </code>
         /// </example>
-        public IWhereOrOrderBy From(string table)
+        public IWhereOrOrderBy From(string tableName)
         {
             this.InnerSql.Append(" FROM ");
-            this.InnerSql.Append(this.sqlCharacters.EscapeSql(table));
+            this.InnerSql.Append(this.sqlCharacters.EscapeSql(tableName));
 
             return this;
         }

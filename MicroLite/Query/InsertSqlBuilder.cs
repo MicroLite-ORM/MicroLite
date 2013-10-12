@@ -26,9 +26,9 @@ namespace MicroLite.Query
             this.InnerSql.Append("INSERT INTO ");
         }
 
-        public IInsertValue Into(string table)
+        public IInsertValue Into(string tableName)
         {
-            this.InnerSql.Append(this.sqlCharacters.EscapeSql(table));
+            this.InnerSql.Append(this.sqlCharacters.EscapeSql(tableName));
             this.InnerSql.Append(" (");
 
             return this;
