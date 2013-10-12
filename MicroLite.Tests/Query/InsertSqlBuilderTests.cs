@@ -1,7 +1,6 @@
 ﻿namespace MicroLite.Tests.Query
 {
     using System;
-    using MicroLite.Dialect;
     using MicroLite.Mapping;
     using MicroLite.Query;
     using Xunit;
@@ -22,7 +21,7 @@
         }
 
         [Fact]
-        public void InsertInfoSpecifyingTableName()
+        public void InsertIntoSpecifyingTableName()
         {
             var sqlBuilder = new InsertSqlBuilder(SqlCharacters.Empty);
 
@@ -35,7 +34,7 @@
         }
 
         [Fact]
-        public void InsertInfoSpecifyingTableNameWithSqlCharacters()
+        public void InsertIntoSpecifyingTableNameWithSqlCharacters()
         {
             var sqlBuilder = new InsertSqlBuilder(SqlCharacters.MsSql);
 
@@ -48,7 +47,7 @@
         }
 
         [Fact]
-        public void InsertInfoSpecifyingType()
+        public void InsertIntoSpecifyingType()
         {
             var sqlBuilder = new InsertSqlBuilder(SqlCharacters.Empty);
 
@@ -61,7 +60,7 @@
         }
 
         [Fact]
-        public void InsertInfoSpecifyingTypeWithSqlCharacters()
+        public void InsertIntoSpecifyingTypeWithSqlCharacters()
         {
             var sqlBuilder = new InsertSqlBuilder(SqlCharacters.MsSql);
 
@@ -74,7 +73,7 @@
         }
 
         [Fact]
-        public void InsertInfoValues()
+        public void InsertIntoValues()
         {
             var sqlBuilder = new InsertSqlBuilder(SqlCharacters.Empty);
 
@@ -92,7 +91,7 @@
         }
 
         [Fact]
-        public void InsertInfoValuesWithSqlCharacters()
+        public void InsertIntoValuesWithSqlCharacters()
         {
             var sqlBuilder = new InsertSqlBuilder(SqlCharacters.MsSql);
 
