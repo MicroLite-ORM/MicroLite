@@ -14,7 +14,6 @@ namespace MicroLite.Query
 {
     using System;
     using System.Linq;
-    using MicroLite.Dialect;
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]

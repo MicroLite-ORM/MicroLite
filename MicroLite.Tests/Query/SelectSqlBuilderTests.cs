@@ -1,7 +1,6 @@
 ﻿namespace MicroLite.Tests.Query
 {
     using System;
-    using MicroLite.Dialect;
     using MicroLite.Mapping;
     using MicroLite.Query;
     using Xunit;
