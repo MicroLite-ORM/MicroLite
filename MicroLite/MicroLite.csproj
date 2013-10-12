@@ -64,6 +64,9 @@
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Query\IInsertValue.cs" />
+    <Compile Include="Query\IInto.cs" />
+    <Compile Include="Query\InsertSqlBuilder.cs" />
     <Compile Include="SqlCharacters.cs" />
     <Compile Include="FrameworkExtensions\TypeExtensions.cs" />
     <Compile Include="IAdvancedReadOnlySession.cs" />

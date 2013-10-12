@@ -3,24 +3,32 @@
   <Class Name="MicroLite.Query.SqlBuilder">
     <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAABAAAAAASAAAAAgAAAAAAgAAAAIAAAQAAAAAA=</HashCode>
+      <HashCode>AAAAAEABAAAAAASAAAAAgAAAAAAgAAAAIAAAQAAAAAA=</HashCode>
       <FileName>Query\SqlBuilder.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Query.SelectSqlBuilder">
-    <Position X="0.5" Y="4.75" Width="2" />
+    <Position X="0.5" Y="4.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AzEAAACgAJAAAAAAFBBBBUQEAAUAAAgIIADIEBAAgKQ=</HashCode>
+      <HashCode>AzEAAACgAJAAAAAAFBBBBUQEAAUAAAgIAADIEBAAgKQ=</HashCode>
       <FileName>Query\SelectSqlBuilder.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Query.StoredProcedureSqlBuilder">
-    <Position X="5.25" Y="4.75" Width="2.25" />
+    <Position X="3.25" Y="4.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Query\StoredProcedureSqlBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MicroLite.Query.InsertSqlBuilder">
+    <Position X="6.25" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAgAEAAAAA=</HashCode>
+      <FileName>Query\InsertSqlBuilder.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

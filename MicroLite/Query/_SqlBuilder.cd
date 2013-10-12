@@ -57,7 +57,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.Query.IWhereSingleColumn">
-    <Position X="5.5" Y="4.5" Width="1.75" />
+    <Position X="5.5" Y="4.5" Width="2" />
     <TypeIdentifier>
       <HashCode>ABAAAAAAAAAAAAAAAABAAAAAAAQAAAgIAADIEBAAgCA=</HashCode>
       <FileName>Query\IWhereSingleColumn.cs</FileName>
@@ -76,6 +76,20 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Query\IHavingOrOrderBy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Query.IInto">
+    <Position X="10.5" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Query\IInto.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Query.IInsertValue">
+    <Position X="10.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Query\IInsertValue.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

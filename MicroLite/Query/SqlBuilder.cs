@@ -75,6 +75,17 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Creates a new insert query builder.
+        /// </summary>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public static IInto Insert()
+        {
+            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
+
+            return new InsertSqlBuilder(sqlCharacters);
+        }
+
+        /// <summary>
         /// Creates a new query which selects the specified columns.
         /// </summary>
         /// <param name="columns">The columns to be included in the query.</param>
@@ -121,7 +132,7 @@ namespace MicroLite.Query
         /// </summary>
         /// <returns>The created <see cref="SqlQuery"/>.</returns>
         /// <remarks>This method is called to return an SqlQuery once query has been defined.</remarks>
-        public SqlQuery ToSqlQuery()
+        public virtual SqlQuery ToSqlQuery()
         {
             return new SqlQuery(this.innerSql.ToString(), this.arguments.ToArray());
         }

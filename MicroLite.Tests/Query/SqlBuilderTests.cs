@@ -9,7 +9,7 @@
     public class SqlBuilderTests
     {
         [Fact]
-        public void ExecuteReuturnsNewBuilderOnEachCall()
+        public void ExecuteReturnsNewBuilderOnEachCall()
         {
             var sqlBuilder1 = SqlBuilder.Execute("GetCustomerInvoices");
             var sqlBuilder2 = SqlBuilder.Execute("GetCustomerInvoices");
@@ -18,7 +18,16 @@
         }
 
         [Fact]
-        public void SelectReuturnsNewBuilderOnEachCall()
+        public void InsertReturnsNewBuilderOnEachCall()
+        {
+            var sqlBuilder1 = SqlBuilder.Insert();
+            var sqlBuilder2 = SqlBuilder.Insert();
+
+            Assert.NotSame(sqlBuilder1, sqlBuilder2);
+        }
+
+        [Fact]
+        public void SelectReturnsNewBuilderOnEachCall()
         {
             var sqlBuilder1 = SqlBuilder.Select("*");
             var sqlBuilder2 = SqlBuilder.Select("*");
