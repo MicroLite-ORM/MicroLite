@@ -67,6 +67,10 @@
     <Compile Include="Query\IInsertValue.cs" />
     <Compile Include="Query\IInto.cs" />
     <Compile Include="Query\InsertSqlBuilder.cs" />
+    <Compile Include="Query\ISetOrWhere.cs" />
+    <Compile Include="Query\IUpdate.cs" />
+    <Compile Include="Query\IWhereSingleColumn.cs" />
+    <Compile Include="Query\UpdateSqlBuilder.cs" />
     <Compile Include="SqlCharacters.cs" />
     <Compile Include="FrameworkExtensions\TypeExtensions.cs" />
     <Compile Include="IAdvancedReadOnlySession.cs" />
@@ -163,7 +167,6 @@
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="Query\IToSqlQuery.cs" />
     <Compile Include="ITransaction.cs" />
-    <Compile Include="Query\IWhereSingleColumn.cs" />
     <Compile Include="Query\IWhereOrOrderBy.cs" />
     <Compile Include="Listeners\Listener.cs" />
     <Compile Include="Query\IWithParameter.cs" />

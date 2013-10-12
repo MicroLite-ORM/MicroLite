@@ -14,7 +14,6 @@ namespace MicroLite.Query
 {
     using System.Collections.Generic;
     using System.Text;
-    using MicroLite.Dialect;
 
     /// <summary>
     /// A helper class for building an <see cref="SqlQuery" />.
@@ -125,6 +124,17 @@ namespace MicroLite.Query
             var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
 
             return new SelectSqlBuilder(sqlCharacters, columns);
+        }
+
+        /// <summary>
+        /// Creates a new update query builder.
+        /// </summary>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public static IUpdate Update()
+        {
+            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
+
+            return new UpdateSqlBuilder(sqlCharacters);
         }
 
         /// <summary>

@@ -34,5 +34,14 @@
 
             Assert.NotSame(sqlBuilder1, sqlBuilder2);
         }
+
+        [Fact]
+        public void UpdateReturnsNewBuilderOnEachCall()
+        {
+            var sqlBuilder1 = SqlBuilder.Update();
+            var sqlBuilder2 = SqlBuilder.Update();
+
+            Assert.NotSame(sqlBuilder1, sqlBuilder2);
+        }
     }
 }

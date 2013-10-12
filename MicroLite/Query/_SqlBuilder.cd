@@ -92,5 +92,19 @@
       <FileName>Query\IInsertValue.cs</FileName>
     </TypeIdentifier>
   </Interface>
+  <Interface Name="MicroLite.Query.ISetOrWhere">
+    <Position X="12.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Query\ISetOrWhere.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Query.IUpdate">
+    <Position X="10.5" Y="6" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Query\IUpdate.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
