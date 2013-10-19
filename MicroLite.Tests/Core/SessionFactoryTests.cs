@@ -31,7 +31,7 @@
                     SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
-                this.sessionFactory = new SessionFactory(this.options);
+                this.sessionFactory = new SessionFactory(new Mock<IObjectBuilder>().Object, this.options);
                 this.readOnlySession = this.sessionFactory.OpenReadOnlySession();
             }
 
@@ -73,7 +73,7 @@
                     SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
-                var sessionFactory = new SessionFactory(this.options);
+                var sessionFactory = new SessionFactory(new Mock<IObjectBuilder>().Object, this.options);
                 sessionFactory.OpenSession();
             }
 
@@ -111,7 +111,7 @@
                     SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
-                var sessionFactory = new SessionFactory(this.options);
+                var sessionFactory = new SessionFactory(new Mock<IObjectBuilder>().Object, this.options);
 
                 this.session1 = sessionFactory.OpenReadOnlySession();
                 this.session2 = sessionFactory.OpenReadOnlySession();
@@ -145,7 +145,7 @@
                     SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
                 };
 
-                var sessionFactory = new SessionFactory(this.options);
+                var sessionFactory = new SessionFactory(new Mock<IObjectBuilder>().Object, this.options);
 
                 this.session1 = sessionFactory.OpenSession();
                 this.session2 = sessionFactory.OpenSession();
@@ -170,7 +170,7 @@
 
             public WhenCreated()
             {
-                this.sessionFactory = new SessionFactory(this.options);
+                this.sessionFactory = new SessionFactory(new Mock<IObjectBuilder>().Object, this.options);
             }
 
             [Fact]

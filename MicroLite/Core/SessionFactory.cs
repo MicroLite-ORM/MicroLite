@@ -27,12 +27,13 @@ namespace MicroLite.Core
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly object locker = new object();
-        private readonly IObjectBuilder objectBuilder = new ObjectBuilder();
+        private readonly IObjectBuilder objectBuilder;
         private readonly SessionFactoryOptions sessionFactoryOptions;
         private readonly ISqlDialect sqlDialect;
 
-        internal SessionFactory(SessionFactoryOptions sessionFactoryOptions)
+        internal SessionFactory(IObjectBuilder objectBuilder, SessionFactoryOptions sessionFactoryOptions)
         {
+            this.objectBuilder = objectBuilder;
             this.sessionFactoryOptions = sessionFactoryOptions;
             this.sqlDialect = (ISqlDialect)Activator.CreateInstance(sessionFactoryOptions.SqlDialectType);
         }
