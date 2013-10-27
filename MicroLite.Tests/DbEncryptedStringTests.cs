@@ -33,7 +33,7 @@
         public class WhenCallingEqualsWithAnotherDbEncryptedStringContainingNoValue
         {
             [Fact]
-            public void TrueShouldBeReturned()
+            public void FalseShouldBeReturned()
             {
                 var value = "12334552233";
                 var dbEncryptedString = (DbEncryptedString)value;
@@ -46,7 +46,7 @@
         public class WhenCallingEqualsWithAnotherDbEncryptedStringContainingNull
         {
             [Fact]
-            public void TrueShouldBeReturned()
+            public void FalseShouldBeReturned()
             {
                 var value = "12334552233";
                 var dbEncryptedString = (DbEncryptedString)value;
@@ -69,16 +69,68 @@
             }
         }
 
-        public class WhenCallingEqualsWithANullDbEncryptedString
+        public class WhenCallingEqualsWithAnotherStringAsAnObjectContainingTheSameValue
+        {
+            [Fact]
+            public void TrueShouldBeReturned()
+            {
+                var value = "12334552233";
+                var dbEncryptedString = (DbEncryptedString)value;
+                var other = (object)value;
+
+                Assert.True(dbEncryptedString.Equals(other));
+            }
+        }
+
+        public class WhenCallingEqualsWithAnotherStringContainingADifferentValue
         {
             [Fact]
             public void FalseShouldBeReturned()
             {
                 var value = "12334552233";
                 var dbEncryptedString = (DbEncryptedString)value;
-                DbEncryptedString other = null;
+                var other = "sdifjsdjfosdfj";
 
                 Assert.False(dbEncryptedString.Equals(other));
+            }
+        }
+
+        public class WhenCallingEqualsWithAnotherStringContainingNoValue
+        {
+            [Fact]
+            public void FalseShouldBeReturned()
+            {
+                var value = "12334552233";
+                var dbEncryptedString = (DbEncryptedString)value;
+                var other = string.Empty;
+
+                Assert.False(dbEncryptedString.Equals(other));
+            }
+        }
+
+        public class WhenCallingEqualsWithAnotherStringContainingNull
+        {
+            [Fact]
+            public void FalseShouldBeReturned()
+            {
+                var value = "12334552233";
+                var dbEncryptedString = (DbEncryptedString)value;
+                var other = (string)null;
+
+                Assert.False(dbEncryptedString.Equals(other));
+            }
+        }
+
+        public class WhenCallingEqualsWithAnotherStringContainingTheSameValue
+        {
+            [Fact]
+            public void TrueShouldBeReturned()
+            {
+                var value = "12334552233";
+                var dbEncryptedString = (DbEncryptedString)value;
+                var other = value;
+
+                Assert.True(dbEncryptedString.Equals(other));
             }
         }
 
@@ -120,6 +172,12 @@
             public WhenCastFromANullString()
             {
                 this.encryptedString = this.source;
+            }
+
+            [Fact]
+            public void GetHashCodeShouldReturnSero()
+            {
+                Assert.Equal(0, this.encryptedString.GetHashCode());
             }
 
             [Fact]
