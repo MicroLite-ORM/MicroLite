@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="UpdateSqlBuilder.cs" company="MicroLite">
+// <copyright file="DeleteSqlBuilder.cs" company="MicroLite">
 // Copyright 2012 - 2013 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,45 +16,24 @@ namespace MicroLite.Query
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class UpdateSqlBuilder : SqlBuilder, IUpdate, ISetOrWhere
+    internal sealed class DeleteSqlBuilder : SqlBuilder, IWhereEquals
     {
         private readonly SqlCharacters sqlCharacters;
 
-        internal UpdateSqlBuilder(SqlCharacters sqlCharacters)
+        internal DeleteSqlBuilder(SqlCharacters sqlCharacters)
         {
             this.sqlCharacters = sqlCharacters;
-            this.InnerSql.Append("UPDATE ");
+            this.InnerSql.Append("DELETE FROM ");
         }
 
-        public ISetOrWhere SetColumnValue(string columnName, object columnValue)
-        {
-            if (this.Arguments.Count > 0)
-            {
-                this.InnerSql.Append(", ");
-            }
-            else
-            {
-                this.InnerSql.Append(" ");
-            }
-
-            this.InnerSql.Append(this.sqlCharacters.EscapeSql(columnName));
-            this.InnerSql.Append(" = ");
-
-            this.InnerSql.Append(this.sqlCharacters.GetParameterName(this.Arguments.Count));
-            this.Arguments.Add(columnValue);
-
-            return this;
-        }
-
-        public ISetOrWhere Table(string tableName)
+        public IWhereEquals From(string tableName)
         {
             this.InnerSql.Append(this.sqlCharacters.EscapeSql(tableName));
-            this.InnerSql.Append(" SET");
 
             return this;
         }
 
-        public ISetOrWhere Table(Type forType)
+        public IWhereEquals From(Type forType)
         {
             var objectInfo = ObjectInfo.For(forType);
 
@@ -69,19 +48,18 @@ namespace MicroLite.Query
             this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
             this.InnerSql.Append(objectInfo.TableInfo.Name);
             this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
-            this.InnerSql.Append(" SET");
 
             return this;
         }
 
-        public IToSqlQuery Where(string columnName, object columnValue)
+        public IWhereEquals WhereEquals(string columnName, object comparisonValue)
         {
             this.InnerSql.Append(" WHERE ");
             this.InnerSql.Append(this.sqlCharacters.EscapeSql(columnName));
             this.InnerSql.Append(" = ");
             this.InnerSql.Append(this.sqlCharacters.GetParameterName(this.Arguments.Count));
 
-            this.Arguments.Add(columnValue);
+            this.Arguments.Add(comparisonValue);
 
             return this;
         }

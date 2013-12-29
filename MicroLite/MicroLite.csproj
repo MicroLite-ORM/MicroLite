@@ -66,11 +66,13 @@
     <Compile Include="Core\ReadOnlySession.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ObjectDelta.cs" />
+    <Compile Include="Query\DeleteSqlBuilder.cs" />
     <Compile Include="Query\IInsertValue.cs" />
     <Compile Include="Query\IInto.cs" />
     <Compile Include="Query\InsertSqlBuilder.cs" />
     <Compile Include="Query\ISetOrWhere.cs" />
     <Compile Include="Query\IUpdate.cs" />
+    <Compile Include="Query\IWhereEquals.cs" />
     <Compile Include="Query\IWhereSingleColumn.cs" />
     <Compile Include="Query\UpdateSqlBuilder.cs" />
     <Compile Include="SqlCharacters.cs" />

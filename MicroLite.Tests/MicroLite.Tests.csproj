@@ -67,6 +67,7 @@
     <Compile Include="Dialect\MySqlDialectTests.cs" />
     <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
     <Compile Include="ObjectDeltaTests.cs" />
+    <Compile Include="Query\DeleteSqlBuilderTests.cs" />
     <Compile Include="Query\InsertSqlBuilderTests.cs" />
     <Compile Include="Query\UpdateSqlBuilderTests.cs" />
     <Compile Include="SqlCharactersTests.cs" />
