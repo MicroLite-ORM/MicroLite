@@ -90,7 +90,7 @@ namespace MicroLite
             }
 
             var argsAdded = 0;
-            var parameterPrefix = parameterNames.First().Substring(0, 2);
+            var parameterPrefix = parameterNames[0].Substring(0, 2);
 
             var predicateReWriter = new StringBuilder(sql);
 
