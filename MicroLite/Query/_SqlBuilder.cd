@@ -106,5 +106,12 @@
       <FileName>Query\IUpdate.cs</FileName>
     </TypeIdentifier>
   </Interface>
+  <Interface Name="MicroLite.Query.IWhereEquals">
+    <Position X="14.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Query\IWhereEquals.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
