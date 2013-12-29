@@ -419,7 +419,7 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", subQuery.CommandText, subQuery.Arguments.ToArray());
+            this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", subQuery.CommandText, subQuery.GetArgumentArray());
 
             return this;
         }
@@ -841,7 +841,7 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " NOT IN ({0}))", subQuery.CommandText, subQuery.Arguments.ToArray());
+            this.AppendPredicate(" (" + this.whereColumnName + " NOT IN ({0}))", subQuery.CommandText, subQuery.GetArgumentArray());
 
             return this;
         }

@@ -130,5 +130,14 @@ namespace MicroLite
         {
             return this.CommandText;
         }
+
+        /// <summary>
+        /// Gets the private argument array.
+        /// </summary>
+        /// <returns>The private argument array.</returns>
+        internal object[] GetArgumentArray()
+        {
+            return this.arguments;
+        }
     }
 }
