@@ -63,7 +63,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the name of the table.
+        /// The name of the table.
         /// </summary>
         public string Name
         {
@@ -74,7 +74,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the schema the table exists within.
+        /// The schema the table exists within.
         /// </summary>
         public string Schema
         {

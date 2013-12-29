@@ -15,7 +15,7 @@ namespace MicroLite
     using System;
 
     /// <summary>
-    /// A class which represents a string which is encrypted before being written to the database
+    /// Represents a string which is encrypted before being written to the database
     /// and decrypted after being read from the database.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{value}")]

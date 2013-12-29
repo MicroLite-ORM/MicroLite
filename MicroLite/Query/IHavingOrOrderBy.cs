@@ -13,12 +13,12 @@
 namespace MicroLite.Query
 {
     /// <summary>
-    /// The interface which specifies the having method in the fluent sql builder syntax.
+    /// The having method in the fluent sql builder syntax.
     /// </summary>
     public interface IHavingOrOrderBy : IHideObjectMethods, IOrderBy
     {
         /// <summary>
-        /// Specifies the having clause for the query.
+        /// The having clause for the query.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="value">The argument value.</param>

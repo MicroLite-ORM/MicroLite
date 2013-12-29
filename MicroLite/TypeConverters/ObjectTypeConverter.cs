@@ -19,7 +19,7 @@ namespace MicroLite.TypeConverters
     /// An ITypeConverter which can uses Convert.ChangeType.
     /// </summary>
     /// <remarks>
-    /// It is the default ITypeConverter used if no suitable specific implementation exists.
+    /// The default ITypeConverter used if no suitable specific implementation exists.
     /// </remarks>
     public sealed class ObjectTypeConverter : TypeConverter
     {

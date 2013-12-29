@@ -15,12 +15,12 @@ namespace MicroLite
     using System;
 
     /// <summary>
-    /// The interface which provides the write methods to map objects to database records.
+    /// Provides the write methods to map objects to database records.
     /// </summary>
     public interface ISession : IHideObjectMethods, IReadOnlySession
     {
         /// <summary>
-        /// Gets the advanced session operations.
+        /// The advanced session operations.
         /// </summary>
         new IAdvancedSession Advanced
         {

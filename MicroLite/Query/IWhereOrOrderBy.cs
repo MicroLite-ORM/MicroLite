@@ -13,19 +13,19 @@
 namespace MicroLite.Query
 {
     /// <summary>
-    /// The interface which specifies the where method in the fluent sql builder syntax.
+    /// The where method in the fluent sql builder syntax.
     /// </summary>
     public interface IWhereOrOrderBy : IHideObjectMethods, IGroupBy, IOrderBy, IToSqlQuery
     {
         /// <summary>
-        /// Specifies the where clause for the query.
+        /// The where clause for the query.
         /// </summary>
         /// <param name="columnName">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         IWhereSingleColumn Where(string columnName);
 
         /// <summary>
-        /// Specifies the where clause for the query.
+        /// The where clause for the query.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="args">The args.</param>

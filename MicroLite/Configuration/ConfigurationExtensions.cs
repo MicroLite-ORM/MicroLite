@@ -23,7 +23,7 @@ namespace MicroLite.Configuration
         /// <summary>
         /// Specifies the name of the connection string in the app config and that the MsSqlDialect should be used.
         /// </summary>
-        /// <param name="configureConnection">The interface to configure connections.</param>
+        /// <param name="configureConnection">Configures connections.</param>
         /// <param name="connectionName">The name of the connection string in the app config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
@@ -42,7 +42,7 @@ namespace MicroLite.Configuration
         /// <summary>
         /// Specifies the name of the connection string in the app config and that the MySqlDialect should be used.
         /// </summary>
-        /// <param name="configureConnection">The interface to configure connections.</param>
+        /// <param name="configureConnection">Configures connections.</param>
         /// <param name="connectionName">The name of the connection string in the app config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
@@ -60,7 +60,7 @@ namespace MicroLite.Configuration
         /// <summary>
         /// Specifies the name of the connection string in the app config and that the PostgreSqlDialect should be used.
         /// </summary>
-        /// <param name="configureConnection">The interface to configure connections.</param>
+        /// <param name="configureConnection">Configures connections.</param>
         /// <param name="connectionName">The name of the connection string in the app config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
@@ -78,7 +78,7 @@ namespace MicroLite.Configuration
         /// <summary>
         /// Specifies the name of the connection string in the app config and that the SQLiteDialect should be used.
         /// </summary>
-        /// <param name="configureConnection">The interface to configure connections.</param>
+        /// <param name="configureConnection">Configures connections.</param>
         /// <param name="connectionName">The name of the connection string in the app config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
@@ -96,7 +96,7 @@ namespace MicroLite.Configuration
         /// <summary>
         /// Configures the MicroLite ORM Framework to use the default attribute based mapping.
         /// </summary>
-        /// <param name="configureExtensions">The interface to configure extensions.</param>
+        /// <param name="configureExtensions">Configures extensions.</param>
         /// <returns>The configure extensions.</returns>
         public static IConfigureExtensions WithAttributeBasedMapping(
             this IConfigureExtensions configureExtensions)
@@ -115,7 +115,7 @@ namespace MicroLite.Configuration
         /// Configures the MicroLite ORM Framework to use convention based mapping instead of the default
         /// attribute based mapping.
         /// </summary>
-        /// <param name="configureExtensions">The interface to configure extensions.</param>
+        /// <param name="configureExtensions">Configures extensions.</param>
         /// <param name="settings">The settings for the convention mapping.</param>
         /// <returns>The configure extensions.</returns>
         public static IConfigureExtensions WithConventionBasedMapping(

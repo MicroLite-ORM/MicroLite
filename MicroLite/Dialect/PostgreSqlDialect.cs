@@ -31,7 +31,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the select identity string.
+        /// The select identity string.
         /// </summary>
         protected override string SelectIdentityString
         {

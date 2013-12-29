@@ -13,7 +13,7 @@
 namespace MicroLite.Query
 {
     /// <summary>
-    /// The interface which specifies the group by method in the fluent sql builder syntax.
+    /// The group by method in the fluent sql builder syntax.
     /// </summary>
     public interface IGroupBy : IHideObjectMethods
     {

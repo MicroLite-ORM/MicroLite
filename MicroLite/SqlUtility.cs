@@ -20,7 +20,7 @@ namespace MicroLite
     using System.Text.RegularExpressions;
 
     /// <summary>
-    /// A utility class containing useful methods for manipulating Sql.
+    /// Contains useful methods for manipulating SQL.
     /// </summary>
     public static class SqlUtility
     {
@@ -28,7 +28,7 @@ namespace MicroLite
         private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
 
         /// <summary>
-        /// Gets the position of the first parameter in the specified command text.
+        /// The position of the first parameter in the specified command text.
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The position of the first parameter in the command text or -1 if no parameters are found.</returns>
@@ -45,7 +45,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the parameter names from the specified command text.
+        /// The parameter names from the specified command text.
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The parameter names in the command text.</returns>

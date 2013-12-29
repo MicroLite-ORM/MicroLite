@@ -13,7 +13,7 @@
 namespace MicroLite.Listeners
 {
     /// <summary>
-    /// The interface which exposes hooks into the processing of an object by the MicroLite ORM framework.
+    /// Exposes hooks into the processing of an object by the MicroLite ORM framework.
     /// </summary>
     public interface IListener
     {

@@ -17,12 +17,12 @@ namespace MicroLite.Dialect
     using System.Data;
 
     /// <summary>
-    /// The interface for a class which builds an <see cref="SqlQuery"/> for a object instance.
+    /// Builds a <see cref="SqlQuery"/> for a object instance.
     /// </summary>
     public interface ISqlDialect
     {
         /// <summary>
-        /// Gets the SQL characters for the SQL dialect.
+        /// The SQL characters for the SQL dialect.
         /// </summary>
         SqlCharacters SqlCharacters
         {
@@ -30,7 +30,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets a value indicating whether this SqlDialect supports batched queries.
+        /// Indicates whether this SqlDialect supports batched queries.
         /// </summary>
         bool SupportsBatchedQueries
         {

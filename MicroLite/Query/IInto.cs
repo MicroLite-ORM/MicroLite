@@ -15,19 +15,19 @@ namespace MicroLite.Query
     using System;
 
     /// <summary>
-    /// The interface which specifies the into method in the fluent insert sql builder syntax.
+    /// The into method in the fluent insert sql builder syntax.
     /// </summary>
     public interface IInto
     {
         /// <summary>
-        /// Specifies the table to perform the query against.
+        /// The table to perform the query against.
         /// </summary>
         /// <param name="tableName">The name of the table.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         IInsertValue Into(string tableName);
 
         /// <summary>
-        /// Specifies the type to perform the query against.
+        /// The type to perform the query against.
         /// </summary>
         /// <param name="forType">The type of object the query relates to.</param>
         /// <returns>The next step in the fluent sql builder.</returns>

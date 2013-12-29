@@ -16,12 +16,12 @@ namespace MicroLite.Core
     using System.Data.Common;
 
     /// <summary>
-    /// The class used to hold the options for configuring a session factory.
+    /// The options for configuring a session factory.
     /// </summary>
     internal sealed class SessionFactoryOptions
     {
         /// <summary>
-        /// Gets or sets the connection name.
+        /// The connection name.
         /// </summary>
         internal string ConnectionName
         {
@@ -30,7 +30,7 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Gets or sets the connection string.
+        /// The connection string.
         /// </summary>
         internal string ConnectionString
         {
@@ -39,7 +39,7 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Gets or sets the provider factory.
+        /// The provider factory.
         /// </summary>
         internal DbProviderFactory ProviderFactory
         {
@@ -48,7 +48,7 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Gets or sets the type of SqlDialect for the connection.
+        /// The type of SqlDialect for the connection.
         /// </summary>
         internal Type SqlDialectType
         {

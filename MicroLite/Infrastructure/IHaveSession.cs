@@ -18,7 +18,7 @@ namespace MicroLite.Infrastructure
     public interface IHaveSession
     {
         /// <summary>
-        /// Gets or sets the MicroLite session.
+        /// The MicroLite session.
         /// </summary>
         ISession Session
         {

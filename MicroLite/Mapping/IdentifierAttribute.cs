@@ -44,7 +44,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the identifier strategy used to manage the identifier's value.
+        /// The identifier strategy used to manage the identifier's value.
         /// </summary>
         public IdentifierStrategy IdentifierStrategy
         {

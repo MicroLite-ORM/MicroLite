@@ -36,7 +36,7 @@ namespace MicroLite.Mapping
         /// <summary>
         /// The identifier is automatically assigned a new combed System.Guid as it's value prior to insert.
         /// </summary>
-        /// <remarks>This uses custom code to ensure that the Guid is unique but also reduces index fragmentation in the database.</remarks>
+        /// <remarks>This uses custom code to ensure that the GUID is unique but also reduces index fragmentation in the database.</remarks>
         GuidComb = 3
     }
 }

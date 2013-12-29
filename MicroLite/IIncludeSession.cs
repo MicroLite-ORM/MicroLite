@@ -15,7 +15,7 @@ namespace MicroLite
     using System;
 
     /// <summary>
-    /// The interface which provides access to include operations.
+    /// Provides access to include operations.
     /// </summary>
     /// <remarks>
     /// These operations allow for batch included values and have been moved to a separate interface to avoid

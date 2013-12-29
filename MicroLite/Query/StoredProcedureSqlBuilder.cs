@@ -22,7 +22,7 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Specifies that the stored procedure should be executed the specified parameter and argument.
+        /// Specifies that the stored procedure should be executed with the specified parameter and argument.
         /// </summary>
         /// <param name="parameter">The parameter to be added.</param>
         /// <param name="arg">The argument value for the parameter.</param>

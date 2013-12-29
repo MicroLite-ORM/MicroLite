@@ -231,7 +231,7 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Specifies the table to perform the query against.
+        /// The table to perform the query against.
         /// </summary>
         /// <param name="tableName">The name of the table.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
@@ -249,7 +249,7 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Specifies the type to perform the query against.
+        /// The type to perform the query against.
         /// </summary>
         /// <param name="forType">The type of object the query relates to.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
@@ -319,7 +319,7 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Specifies the having clause for the query.
+        /// The having clause for the query.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="value">The argument value.</param>
@@ -996,7 +996,7 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Specifies the where clause for the query.
+        /// The where clause for the query.
         /// </summary>
         /// <param name="columnName">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
@@ -1024,7 +1024,7 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Specifies the where clause for the query.
+        /// The where clause for the query.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="args">The args.</param>

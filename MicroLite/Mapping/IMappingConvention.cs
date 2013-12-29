@@ -15,7 +15,7 @@ namespace MicroLite.Mapping
     using System;
 
     /// <summary>
-    /// The interface for a class which implements a mapping convention between a class and a table.
+    /// Implements a mapping convention between a class and a table.
     /// </summary>
     public interface IMappingConvention
     {

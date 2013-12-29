@@ -20,7 +20,7 @@ namespace MicroLite.Core
     internal abstract class Include
     {
         /// <summary>
-        /// Gets or sets a value indicating whether this include has a value.
+        /// Indicates whether this include has a value.
         /// </summary>
         public bool HasValue
         {

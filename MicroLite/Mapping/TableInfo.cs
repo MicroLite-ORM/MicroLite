@@ -19,7 +19,7 @@ namespace MicroLite.Mapping
     using MicroLite.Logging;
 
     /// <summary>
-    /// A class which contains information about a database table .
+    /// Information about a database table.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Schema}.{Name}")]
     public sealed class TableInfo
@@ -73,7 +73,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the columns that are mapped for the table.
+        /// The columns that are mapped for the table.
         /// </summary>
         public IList<ColumnInfo> Columns
         {
@@ -84,7 +84,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the name of the column that is the table identifier column (primary key).
+        /// The name of the column that is the table identifier column (primary key).
         /// </summary>
         public string IdentifierColumn
         {
@@ -95,7 +95,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the name of the property that is the object identifier property mapped to the table identifier column.
+        /// The name of the property that is the object identifier property mapped to the table identifier column.
         /// </summary>
         public string IdentifierProperty
         {
@@ -106,7 +106,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the identifier strategy used by the table.
+        /// The identifier strategy used by the table.
         /// </summary>
         public IdentifierStrategy IdentifierStrategy
         {
@@ -117,7 +117,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the name of the table.
+        /// The name of the table.
         /// </summary>
         public string Name
         {
@@ -128,7 +128,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the name of the schema the table exists within.
+        /// The name of the schema the table exists within.
         /// </summary>
         public string Schema
         {

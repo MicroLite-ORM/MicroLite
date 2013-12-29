@@ -17,7 +17,7 @@ namespace MicroLite
     using System.Linq;
 
     /// <summary>
-    /// A class containing the SQL characters for an SQL Dialect.
+    /// Contains the SQL characters for an SQL Dialect.
     /// </summary>
     public abstract class SqlCharacters
     {
@@ -39,7 +39,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the SqlCharacters for MS SQL.
+        /// The SqlCharacters for MS SQL.
         /// </summary>
         public static SqlCharacters MsSql
         {
@@ -50,7 +50,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the SqlCharacters for MySql.
+        /// The SqlCharacters for MySql.
         /// </summary>
         public static SqlCharacters MySql
         {
@@ -61,7 +61,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the SqlCharacters for PostgreSql.
+        /// The SqlCharacters for PostgreSql.
         /// </summary>
         public static SqlCharacters PostgreSql
         {
@@ -72,7 +72,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the SqlCharacters for SQLite.
+        /// The SqlCharacters for SQLite.
         /// </summary>
         public static SqlCharacters SQLite
         {
@@ -83,7 +83,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the left delimiter character.
+        /// The left delimiter character.
         /// </summary>
         public virtual string LeftDelimiter
         {
@@ -94,7 +94,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the wildcard for use in like statements.
+        /// The wildcard for use in like statements.
         /// </summary>
         public virtual string LikeWildcard
         {
@@ -105,7 +105,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the right delimiter character.
+        /// The right delimiter character.
         /// </summary>
         public virtual string RightDelimiter
         {
@@ -116,7 +116,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the wildcard for use in select statements.
+        /// The wildcard for use in select statements.
         /// </summary>
         public virtual string SelectWildcard
         {
@@ -127,7 +127,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the SQL parameter.
+        /// The SQL parameter.
         /// </summary>
         public virtual string SqlParameter
         {
@@ -138,7 +138,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the character used to separate SQL statements.
+        /// The character used to separate SQL statements.
         /// </summary>
         public virtual string StatementSeparator
         {
@@ -149,7 +149,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets a value indicating whether SQL parameters are named.
+        /// Indicates whether SQL parameters are named.
         /// </summary>
         public virtual bool SupportsNamedParameters
         {
@@ -186,10 +186,10 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the name of the parameter for the specified position.
+        /// The name of the parameter for the specified position.
         /// </summary>
         /// <param name="position">The parameter position.</param>
-        /// <returns>The nape of the parameter for the specified position.</returns>
+        /// <returns>The name of the parameter for the specified position.</returns>
         public string GetParameterName(int position)
         {
             if (this.SupportsNamedParameters)

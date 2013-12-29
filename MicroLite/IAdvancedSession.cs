@@ -15,7 +15,7 @@ namespace MicroLite
     using System;
 
     /// <summary>
-    /// The interface which provides access to advanced session operations.
+    /// Provides access to advanced session operations.
     /// </summary>
     /// <remarks>
     /// These operations allow for more advanced use and have been moved to a separate interface to avoid

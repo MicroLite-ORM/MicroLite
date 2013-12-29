@@ -25,7 +25,7 @@ namespace MicroLite.Query
         private readonly StringBuilder innerSql = new StringBuilder(capacity: 120);
 
         /// <summary>
-        /// Gets or sets the SQL characters.
+        /// The SQL characters.
         /// </summary>
         /// <remarks>If no specific SqlCharacters are specified, SqlCharacters.Empty will be used.</remarks>
         public static SqlCharacters SqlCharacters
@@ -35,7 +35,7 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Gets the arguments currently added to the sql builder.
+        /// The arguments currently added to the sql builder.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Allowed in this instance, we want to make use of AddRange.")]
         protected List<object> Arguments
@@ -47,7 +47,7 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Gets the inner sql the sql builder.
+        /// The inner sql of the sql builder.
         /// </summary>
         protected StringBuilder InnerSql
         {
@@ -58,7 +58,7 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Species the name of the procedure to be executed.
+        /// The name of the procedure to be executed.
         /// </summary>
         /// <param name="procedure">The name of the stored procedure.</param>
         /// <returns>The next step in the fluent sql builder.</returns>

@@ -17,7 +17,7 @@ namespace MicroLite.Mapping
     using MicroLite.Mapping.Inflection;
 
     /// <summary>
-    /// A class containing the configurable settings.
+    /// The configurable settings.
     /// </summary>
     public sealed class ConventionMappingSettings
     {
@@ -73,7 +73,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the function which specifies whether a property can be inserted (returns true by default).
+        /// Specifies whether a property can be inserted (returns true by default).
         /// </summary>
         public Func<PropertyInfo, bool> AllowInsert
         {
@@ -82,7 +82,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the function which specifies whether a property can be updated (returns true by default).
+        /// Specifies whether a property can be updated (returns true by default).
         /// </summary>
         public Func<PropertyInfo, bool> AllowUpdate
         {
@@ -91,7 +91,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the identifier strategy (defaults to DbGenerated).
+        /// The identifier strategy (defaults to DbGenerated).
         /// </summary>
         public IdentifierStrategy IdentifierStrategy
         {
@@ -100,7 +100,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the function which specifies whether a property should be ignored from the mapping (returns false by default).
+        /// Specifies whether a property should be ignored from the mapping (returns false by default).
         /// </summary>
         public Func<PropertyInfo, bool> Ignore
         {
@@ -109,7 +109,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the inflection service (defaults to InflectionService.English).
+        /// The inflection service (defaults to InflectionService.English).
         /// </summary>
         public IInflectionService InflectionService
         {
@@ -118,7 +118,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the function which determines whether a property is the identifier property (default returns true if the property name is 'Id' or {ClassName} + 'Id').
+        /// Determines whether a property is the identifier property (default returns true if the property name is 'Id' or {ClassName} + 'Id').
         /// </summary>
         public Func<PropertyInfo, bool> IsIdentifier
         {
@@ -127,7 +127,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the function which determines the name of the column the property is mapped to (default returns the property name unless the property type is an enum in which case it returns {EnumName} + 'Id').
+        /// Determines the name of the column the property is mapped to (default returns the property name unless the property type is an enum in which case it returns {EnumName} + 'Id').
         /// </summary>
         public Func<PropertyInfo, string> ResolveColumnName
         {
@@ -136,7 +136,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the function which determines the name of the identifier column for the table (default returns the property name).
+        /// Determines the name of the identifier column for the table (default returns the property name).
         /// </summary>
         public Func<PropertyInfo, string> ResolveIdentifierColumnName
         {
@@ -145,7 +145,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the table schema (defaults to null).
+        /// The table schema (defaults to null).
         /// </summary>
         public string TableSchema
         {
@@ -154,7 +154,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to use the plural class name for the table name (defaults to true).
+        /// Indicates whether to use the plural class name for the table name (defaults to true).
         /// </summary>
         public bool UsePluralClassNameForTableName
         {

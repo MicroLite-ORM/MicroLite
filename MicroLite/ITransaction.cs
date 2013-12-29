@@ -21,7 +21,7 @@ namespace MicroLite
     public interface ITransaction : IHideObjectMethods, IDisposable
     {
         /// <summary>
-        /// Gets a value indicating whether this transaction is active.
+        /// Indicates whether this transaction is active.
         /// </summary>
         bool IsActive
         {
@@ -29,7 +29,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the isolation level of the transaction.
+        /// The isolation level of the transaction.
         /// </summary>
         IsolationLevel IsolationLevel
         {
@@ -37,7 +37,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets a value indicating whether this transaction has been committed.
+        /// Indicates whether this transaction has been committed.
         /// </summary>
         bool WasCommitted
         {
@@ -45,7 +45,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets a value indicating whether this transaction has been rolled back.
+        /// Indicates whether this transaction has been rolled back.
         /// </summary>
         bool WasRolledBack
         {

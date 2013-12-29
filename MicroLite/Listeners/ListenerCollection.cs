@@ -16,7 +16,7 @@ namespace MicroLite.Listeners
     using System.Collections.Generic;
 
     /// <summary>
-    /// The class which contains the IListeners used by the MicroLite ORM framework.
+    /// Contains the IListeners used by the MicroLite ORM framework.
     /// </summary>
     public sealed class ListenerCollection : ICollection<IListener>
     {
@@ -34,7 +34,7 @@ namespace MicroLite.Listeners
         }
 
         /// <summary>
-        /// Gets the number of listeners contained in the collection.
+        /// The number of listeners contained in the collection.
         /// </summary>
         public int Count
         {
@@ -45,7 +45,7 @@ namespace MicroLite.Listeners
         }
 
         /// <summary>
-        /// Gets a value indicating whether the collection is read-only.
+        /// Indicates whether the collection is read-only.
         /// </summary>
         /// <returns>true if the collection is read-only; otherwise, false.</returns>
         public bool IsReadOnly

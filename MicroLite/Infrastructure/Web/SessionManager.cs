@@ -27,8 +27,8 @@ namespace MicroLite.Infrastructure.Web
         /// Called when the action has been executed.
         /// </summary>
         /// <param name="session">The session used for the request.</param>
-        /// <param name="manageTransaction">A value indicating whether the transaction is managed by the session manager.</param>
-        /// <param name="hasException">A value indicating whether there was an exception during execution.</param>
+        /// <param name="manageTransaction">Indicates whether the transaction is managed by the session manager.</param>
+        /// <param name="hasException">Indicates whether there was an exception during execution.</param>
         public void OnActionExecuted(IReadOnlySession session, bool manageTransaction, bool hasException)
         {
             if (session != null)
@@ -59,7 +59,7 @@ namespace MicroLite.Infrastructure.Web
         /// Called when when the action is executing.
         /// </summary>
         /// <param name="session">The session used for the request.</param>
-        /// <param name="manageTransaction">A value indicating whether the transaction is managed by the session manager.</param>
+        /// <param name="manageTransaction">Indicates whether the transaction is managed by the session manager.</param>
         /// <param name="isolationLevel">The optional isolation level of the managed transaction.</param>
         public void OnActionExecuting(IReadOnlySession session, bool manageTransaction, IsolationLevel? isolationLevel)
         {

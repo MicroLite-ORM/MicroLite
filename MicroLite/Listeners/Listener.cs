@@ -17,14 +17,14 @@ namespace MicroLite.Listeners
     /// </summary>
     /// <remarks>
     /// Provided so that implementations don't have to implement full interface.
-    /// Quite possibly a violation of SRP but it does allow for simplified extensions to the framework.
+    /// Quite possibly a violation of SRP (single responsibility principle) but it does allow for simplified extensions to the framework.
     /// </remarks>
     public abstract class Listener : IListener
     {
         private static readonly ListenerCollection collection = new ListenerCollection();
 
         /// <summary>
-        /// Gets the listener collection which contains all listeners registered with the MicroLite ORM framework.
+        /// The listener collection which contains all listeners registered with the MicroLite ORM framework.
         /// </summary>
         public static ListenerCollection Listeners
         {

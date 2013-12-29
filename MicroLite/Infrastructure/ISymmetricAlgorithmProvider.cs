@@ -15,7 +15,7 @@ namespace MicroLite.Infrastructure
     using System.Security.Cryptography;
 
     /// <summary>
-    /// The interface for a class which can provide an <see cref="SymmetricAlgorithm"/>.
+    /// Provides a <see cref="SymmetricAlgorithm"/>.
     /// </summary>
     public interface ISymmetricAlgorithmProvider
     {

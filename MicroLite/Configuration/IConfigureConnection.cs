@@ -13,7 +13,7 @@
 namespace MicroLite.Configuration
 {
     /// <summary>
-    /// The interface which specifies the options for configuring the connection in the fluent configuration
+    /// The options for configuring the connection in the fluent configuration
     /// of the MicroLite ORM framework.
     /// </summary>
     public interface IConfigureConnection : IHideObjectMethods

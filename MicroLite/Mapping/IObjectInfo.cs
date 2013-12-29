@@ -15,12 +15,12 @@ namespace MicroLite.Mapping
     using System;
 
     /// <summary>
-    /// The interface for a class which describes a type and the table it is mapped to.
+    /// Describes a type and the table it is mapped to.
     /// </summary>
     public interface IObjectInfo
     {
         /// <summary>
-        /// Gets an object containing the default value for the type of identifier used by the type.
+        /// An object containing the default value for the type of identifier used by the type.
         /// </summary>
         /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
         object DefaultIdentifierValue
@@ -29,7 +29,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets type the object info relates to.
+        /// The type the object info relates to.
         /// </summary>
         Type ForType
         {
@@ -37,7 +37,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the table info for the type the object info relates to.
+        /// The table info for the type the object info relates to.
         /// </summary>
         /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
         TableInfo TableInfo
@@ -52,7 +52,7 @@ namespace MicroLite.Mapping
         object CreateInstance();
 
         /// <summary>
-        /// Gets the property value for the object identifier.
+        /// The property value for the object identifier.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
         /// <returns>The value of the identifier property.</returns>
@@ -60,7 +60,7 @@ namespace MicroLite.Mapping
         object GetIdentifierValue(object instance);
 
         /// <summary>
-        /// Gets the property value for the specified property on the specified instance.
+        /// The property value for the specified property on the specified instance.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
         /// <param name="propertyName">Name of the property to get the value for.</param>
@@ -69,7 +69,7 @@ namespace MicroLite.Mapping
         object GetPropertyValue(object instance, string propertyName);
 
         /// <summary>
-        /// Gets the property value from the specified instance and converts it to the correct type for the specified column.
+        /// The property value from the specified instance and converts it to the correct type for the specified column.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
         /// <param name="columnName">Name of the column to get the value for.</param>

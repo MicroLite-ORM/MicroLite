@@ -13,7 +13,7 @@
 namespace MicroLite.Mapping.Inflection
 {
     /// <summary>
-    /// The interface for a class which is capable of modifying the grammatical category of an English word.
+    /// Capable of modifying the grammatical category of an English word.
     /// </summary>
     public interface IInflectionService
     {
@@ -31,7 +31,7 @@ namespace MicroLite.Mapping.Inflection
         void AddRule(string searchPattern, string replacementPattern);
 
         /// <summary>
-        /// Returns the plural version of the specified singular word or the specified word if there is no plural version.
+        /// The plural version of the specified singular word or the specified word if there is no plural version.
         /// </summary>
         /// <param name="word">The word to be pluralized.</param>
         /// <returns>The plural word, or if the word cannot be pluralized; the specified word.</returns>

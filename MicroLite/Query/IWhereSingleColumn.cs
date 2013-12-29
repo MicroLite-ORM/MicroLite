@@ -13,7 +13,7 @@
 namespace MicroLite.Query
 {
     /// <summary>
-    /// The interface which specifies the where in method in the fluent sql builder syntax.
+    /// The where in method in the fluent sql builder syntax.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "OrIn", Justification = "In this case we mean OR/IN.")]
     public interface IWhereSingleColumn : IHideObjectMethods

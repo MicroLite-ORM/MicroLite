@@ -16,7 +16,7 @@ namespace MicroLite.Core
     using MicroLite.Mapping;
 
     /// <summary>
-    /// The interface for a class which builds an object instance from the values in a <see cref="IDataReader"/>.
+    /// Builds an object instance from the values in a <see cref="IDataReader"/>.
     /// </summary>
     internal interface IObjectBuilder
     {

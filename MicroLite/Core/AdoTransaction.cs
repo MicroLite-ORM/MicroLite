@@ -17,7 +17,7 @@ namespace MicroLite.Core
     using MicroLite.Logging;
 
     /// <summary>
-    /// The an implementation of <see cref="ITransaction"/> which manages an ADO transaction.
+    /// An implementation of <see cref="ITransaction"/> which manages an ADO transaction.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("Transaction - Active:{IsActive}, Committed:{WasCommitted}, RolledBack:{WasRolledBack}")]
     internal sealed class AdoTransaction : ITransaction

@@ -13,7 +13,7 @@
 namespace MicroLite.Query
 {
     /// <summary>
-    /// The interface which specifies the from method or function in the fluent sql builder syntax.
+    /// The from method or function in the fluent sql builder syntax.
     /// </summary>
     public interface IFunctionOrFrom : IHideObjectMethods, IFrom
     {

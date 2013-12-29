@@ -21,7 +21,7 @@ namespace MicroLite
     public interface IIncludeMany<T>
     {
         /// <summary>
-        /// Gets a value indicating whether this include has a value.
+        /// Indicates whether this include has a value.
         /// </summary>
         bool HasValue
         {
@@ -29,7 +29,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the included values.
+        /// The included values.
         /// </summary>
         /// <value>
         /// Values will be in one of the following states:
