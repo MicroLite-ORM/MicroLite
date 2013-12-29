@@ -58,6 +58,17 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Creates a new delete query builder.
+        /// </summary>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        public static IDeleteFrom Delete()
+        {
+            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
+
+            return new DeleteSqlBuilder(sqlCharacters);
+        }
+
+        /// <summary>
         /// Species the name of the procedure to be executed.
         /// </summary>
         /// <param name="procedure">The name of the stored procedure.</param>

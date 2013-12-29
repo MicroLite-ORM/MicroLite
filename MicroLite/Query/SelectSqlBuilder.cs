@@ -17,7 +17,7 @@ namespace MicroLite.Query
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class SelectSqlBuilder : SqlBuilder, IFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IWhereSingleColumn, IHavingOrOrderBy
+    internal sealed class SelectSqlBuilder : SqlBuilder, ISelectFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IWhereSingleColumn, IHavingOrOrderBy
     {
         private readonly SqlCharacters sqlCharacters;
         private bool addedOrder = false;
@@ -263,7 +263,7 @@ namespace MicroLite.Query
         {
             var objectInfo = ObjectInfo.For(forType);
 
-            IFrom select = this;
+            ISelectFrom select = this;
 
             if (this.InnerSql.Length > 7 && this.InnerSql[7].CompareTo('*') == 0)
             {

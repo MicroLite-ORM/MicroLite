@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IFrom.cs" company="MicroLite">
+// <copyright file="IDeleteFrom.cs" company="MicroLite">
 // Copyright 2012 - 2013 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,21 +17,20 @@ namespace MicroLite.Query
     /// <summary>
     /// The interface which specifies the from method in the fluent sql builder syntax.
     /// </summary>
-    public interface IFrom : IHideObjectMethods
+    public interface IDeleteFrom
     {
         /// <summary>
         /// Specifies the table to perform the query against.
         /// </summary>
         /// <param name="tableName">The name of the table.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IWhereOrOrderBy From(string tableName);
+        IWhereEquals From(string tableName);
 
         /// <summary>
         /// Specifies the type to perform the query against.
         /// </summary>
         /// <param name="forType">The type of object the query relates to.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        /// <remarks>Results in all columns being named if the select list is 'SELECT *'.</remarks>
-        IWhereOrOrderBy From(Type forType);
+        IWhereEquals From(Type forType);
     }
 }
