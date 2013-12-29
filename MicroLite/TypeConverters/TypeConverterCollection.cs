@@ -15,7 +15,7 @@ namespace MicroLite.TypeConverters
     using System.Collections.Generic;
 
     /// <summary>
-    /// The class which contains the ITypeConverters used by the MicroLite ORM framework.
+    /// Contains the ITypeConverters used by the MicroLite ORM framework.
     /// </summary>
     /// <remarks>The collection acts in the same way as a stack, the last converter added is the first used if it handles the type.</remarks>
     public sealed class TypeConverterCollection : ICollection<ITypeConverter>
@@ -33,7 +33,7 @@ namespace MicroLite.TypeConverters
         }
 
         /// <summary>
-        /// Gets the number of type converters contained in the collection.
+        /// The number of type converters contained in the collection.
         /// </summary>
         public int Count
         {
@@ -44,7 +44,7 @@ namespace MicroLite.TypeConverters
         }
 
         /// <summary>
-        /// Gets a value indicating whether the collection is read-only.
+        /// Indicates whether the collection is read-only.
         /// </summary>
         /// <returns>true if the collection is read-only; otherwise, false.</returns>
         public bool IsReadOnly

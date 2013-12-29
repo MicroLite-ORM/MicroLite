@@ -15,7 +15,7 @@ namespace MicroLite.Logging
     using System;
 
     /// <summary>
-    /// The interface for a framework independent logger.
+    /// A framework independent logger.
     /// </summary>
     public interface ILog
     {

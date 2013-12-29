@@ -23,7 +23,7 @@ namespace MicroLite.TypeConverters
         private static readonly TypeConverterCollection collection = new TypeConverterCollection();
 
         /// <summary>
-        /// Gets the type converter collection which contains all type converters registered with the MicroLite ORM framework.
+        /// The type converter collection which contains all type converters registered with the MicroLite ORM framework.
         /// </summary>
         public static TypeConverterCollection Converters
         {
@@ -34,7 +34,7 @@ namespace MicroLite.TypeConverters
         }
 
         /// <summary>
-        /// Gets the <see cref="ITypeConverter"/> for the specified type.
+        /// The <see cref="ITypeConverter"/> for the specified type.
         /// </summary>
         /// <param name="type">The type to get the converter for.</param>
         /// <returns>The <see cref="ITypeConverter"/> for the specified type.</returns>

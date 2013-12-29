@@ -17,12 +17,12 @@ namespace MicroLite
     using System.Data;
 
     /// <summary>
-    /// The interface which provides the read methods to map objects to database records.
+    /// Provides the read methods to map objects to database records.
     /// </summary>
     public interface IReadOnlySession : IHideObjectMethods, IDisposable
     {
         /// <summary>
-        /// Gets the advanced session operations.
+        /// The advanced session operations.
         /// </summary>
         IAdvancedReadOnlySession Advanced
         {
@@ -30,7 +30,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the operations which allow additional objects to be queried in a single database call.
+        /// The operations which allow additional objects to be queried in a single database call.
         /// </summary>
         IIncludeSession Include
         {
@@ -38,7 +38,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the current transaction or null if one has not been started.
+        /// The current transaction or null if one has not been started.
         /// </summary>
         ITransaction Transaction
         {

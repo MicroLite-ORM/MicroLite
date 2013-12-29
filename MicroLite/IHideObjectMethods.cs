@@ -16,7 +16,7 @@ namespace MicroLite
     using System.ComponentModel;
 
     /// <summary>
-    /// An interface used to hide the 4 System.Object instance methods from the API in Visual Studio intellisense.
+    /// Hides the 4 System.Object instance methods from the API in Visual Studio intellisense.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public interface IHideObjectMethods
@@ -41,7 +41,7 @@ namespace MicroLite
         int GetHashCode();
 
         /// <summary>
-        /// Gets the type.
+        /// The type.
         /// </summary>
         /// <returns>The type of the object.</returns>
         [EditorBrowsable(EditorBrowsableState.Never)]

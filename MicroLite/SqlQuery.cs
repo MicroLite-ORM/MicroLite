@@ -16,7 +16,7 @@ namespace MicroLite
     using System.Collections.Generic;
 
     /// <summary>
-    /// A class which represents a parameterised SQL query.
+    /// Represents a parameterised SQL query.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{CommandText}")]
     public sealed class SqlQuery : IEquatable<SqlQuery>
@@ -36,7 +36,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the parameter values of the SQL query.
+        /// The parameter values of the SQL query.
         /// </summary>
         public IList<object> Arguments
         {
@@ -47,7 +47,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets or sets the SQL statement execute against the data source.
+        /// The SQL statement to execute against the data source.
         /// </summary>
         public string CommandText
         {
@@ -56,7 +56,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets or sets the timeout in seconds for the query.
+        /// The timeout in seconds for the query.
         /// </summary>
         public int Timeout
         {

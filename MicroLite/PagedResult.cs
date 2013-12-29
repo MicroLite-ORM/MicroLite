@@ -15,7 +15,7 @@ namespace MicroLite
     using System.Collections.Generic;
 
     /// <summary>
-    /// A class which contains the result of a paged query.
+    /// Contains the result of a paged query.
     /// </summary>
     /// <typeparam name="T">The type of object the contained in the results.</typeparam>
     [System.Diagnostics.DebuggerDisplay("Page {Page} of {TotalPages} showing {ResultsPerPage} results per page with a total of {TotalResults} results")]
@@ -42,7 +42,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets a value indicating whether this page contains any results.
+        /// Indicates whether this page contains any results.
         /// </summary>
         public bool HasResults
         {
@@ -53,7 +53,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets a value indicating whether there are more results available.
+        /// Indicates whether there are more results available.
         /// </summary>
         public bool MoreResultsAvailable
         {
@@ -64,7 +64,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the page number for the results.
+        /// The page number for the results.
         /// </summary>
         public int Page
         {
@@ -75,7 +75,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the results in the page.
+        /// The results in the page.
         /// </summary>
         public IList<T> Results
         {
@@ -86,7 +86,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the number of results per page.
+        /// The number of results per page.
         /// </summary>
         public int ResultsPerPage
         {
@@ -97,7 +97,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the total number of pages for the query.
+        /// The total number of pages for the query.
         /// </summary>
         public int TotalPages
         {
@@ -108,7 +108,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the total number of results for the query.
+        /// The total number of results for the query.
         /// </summary>
         public int TotalResults
         {

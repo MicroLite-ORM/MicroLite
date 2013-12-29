@@ -17,7 +17,7 @@ namespace MicroLite.Configuration
     using MicroLite.Mapping;
 
     /// <summary>
-    /// The interface which specifies the options for configuring extensions to the MicroLite ORM framework.
+    /// The options for configuring extensions to the MicroLite ORM framework.
     /// </summary>
     public interface IConfigureExtensions : IHideObjectMethods
     {

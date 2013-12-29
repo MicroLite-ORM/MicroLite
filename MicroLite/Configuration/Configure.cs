@@ -15,14 +15,14 @@ namespace MicroLite.Configuration
     using System.Collections.Generic;
 
     /// <summary>
-    /// The class used to configure the MicroLite ORM framework.
+    /// Configures the MicroLite ORM framework.
     /// </summary>
     public static class Configure
     {
         private static readonly IList<ISessionFactory> sessionFactories = new List<ISessionFactory>();
 
         /// <summary>
-        /// Gets the session factories created by the configuration.
+        /// The session factories created by the configuration.
         /// </summary>
         public static ICollection<ISessionFactory> SessionFactories
         {
@@ -35,7 +35,7 @@ namespace MicroLite.Configuration
         /// <summary>
         /// Begins the process of specifying the extensions which should be used by MicroLite.
         /// </summary>
-        /// <returns>The interface which provides the extension points.</returns>
+        /// <returns>Provides the extension points.</returns>
         /// <remarks>Extensions should be configured before configuring any connections.</remarks>
         /// <example>
         /// Extensions can be added in any order although it is advised to add the logging extension first if you are using one

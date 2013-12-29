@@ -15,7 +15,7 @@ namespace MicroLite
     using System;
 
     /// <summary>
-    /// A class containing the count and offset for paged queries.
+    /// Contains the count and offset for paged queries.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("Count: {Count}, Offset: {Offset}")]
     public struct PagingOptions : IEquatable<PagingOptions>
@@ -35,7 +35,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the paging options for when no paging is required.
+        /// The paging options for when no paging is required.
         /// </summary>
         public static PagingOptions None
         {
@@ -46,7 +46,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the number of record to return.
+        /// The number of records to return.
         /// </summary>
         public int Count
         {
@@ -57,7 +57,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the number of records to skip.
+        /// The number of records to skip.
         /// </summary>
         public int Offset
         {
@@ -68,7 +68,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the paging options for the specified page number.
+        /// The paging options for the specified page number.
         /// </summary>
         /// <param name="page">The page number.</param>
         /// <param name="resultsPerPage">The results per page.</param>
@@ -113,7 +113,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the paging options for the specified skip and take numbers.
+        /// The paging options for the specified skip and take numbers.
         /// </summary>
         /// <param name="skip">The number of records to skip.</param>
         /// <param name="take">The number of records to take.</param>

@@ -18,7 +18,7 @@ namespace MicroLite
     using System.Threading;
 
     /// <summary>
-    /// A class for generating guids using our comb implementation.
+    /// Generates guids using our comb implementation.
     /// </summary>
     /// <remarks>
     /// Loosely based upon Mark J. Miller's implementation <![CDATA[http://www.developmentalmadness.com/archive/2010/10/13/sequential-guid-algorithm-ndash-improving-the-algorithm.aspx]]>

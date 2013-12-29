@@ -76,7 +76,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets a value indicating whether the column value is allowed to be inserted.
+        /// Indicates whether the column value is allowed to be inserted.
         /// </summary>
         public bool AllowInsert
         {
@@ -87,7 +87,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets a value indicating whether the column value is allowed to be updated.
+        /// Indicates whether the column value is allowed to be updated.
         /// </summary>
         public bool AllowUpdate
         {
@@ -98,7 +98,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the name of the column in the database table that the property maps to
+        /// The name of the column in the database table that the property maps to
         /// </summary>
         public string Name
         {

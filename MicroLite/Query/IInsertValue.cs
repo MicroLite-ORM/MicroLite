@@ -13,12 +13,12 @@
 namespace MicroLite.Query
 {
     /// <summary>
-    /// The interface which specifies the value method in the fluent insert sql builder syntax.
+    /// The value method in the fluent insert sql builder syntax.
     /// </summary>
     public interface IInsertValue : IToSqlQuery
     {
         /// <summary>
-        /// Specifies the column in the table and the value to be inserted into it.
+        /// The column in the table and the value to be inserted into it.
         /// </summary>
         /// <param name="columnName">Name of the column to be inserted.</param>
         /// <param name="columnValue">The value to be inserted into the column.</param>

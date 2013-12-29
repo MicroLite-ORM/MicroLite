@@ -16,12 +16,12 @@ namespace MicroLite.Core
     using System.Data;
 
     /// <summary>
-    /// The interface for a class which manages an IDbConnection.
+    /// Manages an IDbConnection.
     /// </summary>
     internal interface IConnectionManager : IDisposable
     {
         /// <summary>
-        /// Gets the current transaction or null if no transaction has been started.
+        /// The current transaction or null if no transaction has been started.
         /// </summary>
         ITransaction CurrentTransaction
         {

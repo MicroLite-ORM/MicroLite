@@ -46,7 +46,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the SQL characters for the SQL dialect.
+        /// The SQL characters for the SQL dialect.
         /// </summary>
         public SqlCharacters SqlCharacters
         {
@@ -57,7 +57,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets a value indicating whether this SqlDialect supports batched queries.
+        /// Indicates whether this SqlDialect supports batched queries.
         /// </summary>
         public virtual bool SupportsBatchedQueries
         {
@@ -68,7 +68,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the select identity string.
+        /// The select identity string.
         /// </summary>
         protected abstract string SelectIdentityString
         {
@@ -328,7 +328,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the command text.
+        /// The command text.
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The actual command text.</returns>
@@ -338,7 +338,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the type of the command.
+        /// The type of the command.
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The CommandType for the specified command text.</returns>
@@ -348,7 +348,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Reads the order by clause from the specified command text excluding the ORDER BY keyword.
+        /// The order by clause from the specified command text excluding the ORDER BY keyword.
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The columns in the order by list.</returns>
@@ -359,7 +359,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Reads the select clause from the specified command text including the SELECT keyword.
+        /// The select clause from the specified command text including the SELECT keyword.
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The columns in the select list.</returns>
@@ -378,7 +378,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Reads the name of the table the sql query is targeting.
+        /// The name of the table the sql query is targeting.
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The name of the table the sql query is targeting.</returns>
@@ -397,7 +397,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Reads the where clause from the specified command text excluding the WHERE keyword.
+        /// The where clause from the specified command text excluding the WHERE keyword.
         /// </summary>
         /// <param name="commandText">The command text.</param>
         /// <returns>The where clause without the WHERE keyword.</returns>

@@ -13,14 +13,14 @@
 namespace MicroLite.Mapping.Inflection
 {
     /// <summary>
-    /// A class for modifying the grammatical category of a word.
+    /// Modifies the grammatical category of a word.
     /// </summary>
     public static class InflectionService
     {
         private static readonly IInflectionService english = new EnglishInflectionService();
 
         /// <summary>
-        /// Gets the IInflection service for English (en-GB).
+        /// The IInflection service for English (en-GB).
         /// </summary>
         public static IInflectionService English
         {

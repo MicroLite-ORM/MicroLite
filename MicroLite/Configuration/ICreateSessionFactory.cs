@@ -13,7 +13,7 @@
 namespace MicroLite.Configuration
 {
     /// <summary>
-    /// The interface which specifies the creation of the <see cref="ISessionFactory"/> in the fluent configuration
+    /// The creation of the <see cref="ISessionFactory"/> in the fluent configuration
     /// of the MicroLite ORM framework.
     /// </summary>
     public interface ICreateSessionFactory : IHideObjectMethods

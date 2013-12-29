@@ -13,7 +13,7 @@
 namespace MicroLite
 {
     /// <summary>
-    /// The interface which provides access to advanced read only session operations.
+    /// Provides access to advanced read only session operations.
     /// </summary>
     /// <remarks>
     /// These operations allow for more advanced use and have been moved to a separate interface to avoid
@@ -22,7 +22,7 @@ namespace MicroLite
     public interface IAdvancedReadOnlySession : IHideObjectMethods
     {
         /// <summary>
-        /// Gets the session factory used to create this session.
+        /// The session factory used to create this session.
         /// </summary>
         ISessionFactory SessionFactory
         {

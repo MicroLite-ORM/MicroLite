@@ -13,7 +13,7 @@
 namespace MicroLite.Query
 {
     /// <summary>
-    /// The interface which specifies a parameter and argument for a stored procedure in the fluent sql builder syntax.
+    /// Specifies a parameter and argument for a stored procedure in the fluent sql builder syntax.
     /// </summary>
     public interface IWithParameter : IHideObjectMethods, IToSqlQuery
     {

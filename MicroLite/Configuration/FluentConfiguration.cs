@@ -22,7 +22,7 @@ namespace MicroLite.Configuration
     using MicroLite.Logging;
 
     /// <summary>
-    /// The class used to configure the MicroLite ORM framework using the fluent API.
+    /// Configures the MicroLite ORM framework using the fluent API.
     /// </summary>
     internal sealed class FluentConfiguration : IConfigureConnection, ICreateSessionFactory
     {

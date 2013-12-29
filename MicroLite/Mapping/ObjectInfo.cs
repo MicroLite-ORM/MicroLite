@@ -27,7 +27,7 @@ namespace MicroLite.Mapping
     using MicroLite.TypeConverters;
 
     /// <summary>
-    /// The class which describes a type and the table it is mapped to.
+    /// Describes a type and the table it is mapped to.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     public sealed class ObjectInfo : IObjectInfo
@@ -83,7 +83,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets an object containing the default value for the type of identifier used by the type.
+        /// An object containing the default value for the type of identifier used by the type.
         /// </summary>
         public object DefaultIdentifierValue
         {
@@ -92,7 +92,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets type the object info relates to.
+        /// The type the object info relates to.
         /// </summary>
         public Type ForType
         {
@@ -103,7 +103,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the table info for the type the object info relates to.
+        /// The table info for the type the object info relates to.
         /// </summary>
         public TableInfo TableInfo
         {
@@ -127,7 +127,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the object info for the specified type.
+        /// The object info for the specified type.
         /// </summary>
         /// <param name="forType">The type to get the object info for.</param>
         /// <returns>The <see cref="ObjectInfo"/> for the specified <see cref="Type"/>.</returns>
@@ -169,7 +169,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the property value for the object identifier.
+        /// The property value for the object identifier.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
         /// <returns>The value of the identifier property.</returns>
@@ -185,7 +185,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the property value for the specified property on the specified instance.
+        /// The property value for the specified property on the specified instance.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
         /// <param name="propertyName">Name of the property to get the value for.</param>
