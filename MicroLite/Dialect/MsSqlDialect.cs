@@ -76,10 +76,10 @@ namespace MicroLite.Dialect
             int fromRowNumber = pagingOptions.Offset + 1;
             int toRowNumber = pagingOptions.Offset + pagingOptions.Count;
 
-            List<object> arguments = new List<object>(sqlQuery.Arguments.Count + 2);
-            arguments.AddRange(sqlQuery.Arguments);
-            arguments.Add(fromRowNumber);
-            arguments.Add(toRowNumber);
+            var arguments = new object[sqlQuery.Arguments.Count + 2];
+            sqlQuery.Arguments.CopyTo(arguments, 0);
+            arguments[arguments.Length - 2] = fromRowNumber;
+            arguments[arguments.Length - 1] = toRowNumber;
 
             var selectStatement = this.ReadSelectList(sqlQuery.CommandText);
             var qualifiedTableName = this.ReadTableName(sqlQuery.CommandText);
@@ -96,9 +96,9 @@ namespace MicroLite.Dialect
             sqlBuilder.Append(selectStatement);
             sqlBuilder.Append(" FROM");
             sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " ({0}, ROW_NUMBER() OVER({1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName);
-            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Count - 2), this.SqlCharacters.GetParameterName(arguments.Count - 1));
+            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Length - 2), this.SqlCharacters.GetParameterName(arguments.Length - 1));
 
-            return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
+            return new SqlQuery(sqlBuilder.ToString(), arguments);
         }
 
         protected override string GetCommandText(string commandText)

@@ -13,7 +13,6 @@
 namespace MicroLite.Dialect
 {
     using System;
-    using System.Collections.Generic;
     using System.Text;
 
     /// <summary>
@@ -43,19 +42,19 @@ namespace MicroLite.Dialect
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
-            List<object> arguments = new List<object>(sqlQuery.Arguments.Count + 2);
-            arguments.AddRange(sqlQuery.Arguments);
-            arguments.Add(pagingOptions.Offset);
-            arguments.Add(pagingOptions.Count);
+            var arguments = new object[sqlQuery.Arguments.Count + 2];
+            sqlQuery.Arguments.CopyTo(arguments, 0);
+            arguments[arguments.Length - 2] = pagingOptions.Offset;
+            arguments[arguments.Length - 1] = pagingOptions.Count;
 
             var sqlBuilder = new StringBuilder(sqlQuery.CommandText);
             sqlBuilder.Replace(Environment.NewLine, string.Empty);
             sqlBuilder.Append(" LIMIT ");
-            sqlBuilder.Append(this.SqlCharacters.GetParameterName(arguments.Count - 2));
+            sqlBuilder.Append(this.SqlCharacters.GetParameterName(arguments.Length - 2));
             sqlBuilder.Append(',');
-            sqlBuilder.Append(this.SqlCharacters.GetParameterName(arguments.Count - 1));
+            sqlBuilder.Append(this.SqlCharacters.GetParameterName(arguments.Length - 1));
 
-            return new SqlQuery(sqlBuilder.ToString(), arguments.ToArray());
+            return new SqlQuery(sqlBuilder.ToString(), arguments);
         }
     }
 }
