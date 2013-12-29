@@ -100,5 +100,12 @@ namespace MicroLite
         /// </code>
         /// </example>
         T ExecuteScalar<T>(SqlQuery sqlQuery);
+
+        /// <summary>
+        /// Performs a partial update on a table row based upon the values specified in the object delta.
+        /// </summary>
+        /// <param name="objectDelta">The object delta.</param>
+        /// <returns>true if the object was updated successfully; otherwise false.</returns>
+        bool Update(ObjectDelta objectDelta);
     }
 }

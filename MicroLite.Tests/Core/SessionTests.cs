@@ -789,7 +789,7 @@
         }
 
         [Fact]
-        public void UpdateBuildsAndExecutesQuery()
+        public void UpdateInstanceBuildsAndExecutesQuery()
         {
             var customer = new Customer();
             var sqlQuery = new SqlQuery("");
@@ -822,7 +822,7 @@
         }
 
         [Fact]
-        public void UpdateInvokesListeners()
+        public void UpdateInstanceInvokesListeners()
         {
             var customer = new Customer();
             var sqlQuery = new SqlQuery("");
@@ -864,7 +864,7 @@
         }
 
         [Fact]
-        public void UpdateReturnsFalseIfNoRecordsUpdated()
+        public void UpdateInstanceReturnsFalseIfNoRecordsUpdated()
         {
             var customer = new Customer();
             var sqlQuery = new SqlQuery("");
@@ -896,7 +896,7 @@
         }
 
         [Fact]
-        public void UpdateReturnsTrueIfRecordUpdated()
+        public void UpdateInstanceReturnsTrueIfRecordUpdated()
         {
             var customer = new Customer();
             var sqlQuery = new SqlQuery("");
@@ -928,7 +928,7 @@
         }
 
         [Fact]
-        public void UpdateThrowsArgumentNullExceptionForNullInstance()
+        public void UpdateInstanceThrowsArgumentNullExceptionForNullInstance()
         {
             var session = new Session(
                 new Mock<ISessionFactory>().Object,
@@ -936,13 +936,13 @@
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Update(null));
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Update((Customer)null));
 
             Assert.Equal("instance", exception.ParamName);
         }
 
         [Fact]
-        public void UpdateThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
+        public void UpdateInstanceThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
         {
             var customer = new Customer();
             var sqlQuery = new SqlQuery("");
@@ -976,7 +976,7 @@
         }
 
         [Fact]
-        public void UpdateThrowsObjectDisposedExceptionIfDisposed()
+        public void UpdateInstanceThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new Session(
                 new Mock<ISessionFactory>().Object,
@@ -992,11 +992,125 @@
             Assert.Throws<ObjectDisposedException>(() => session.Update(new Customer()));
         }
 
-        [MicroLite.Mapping.Table("dbo", "Customers")]
+        [Fact]
+        public void UpdateObjectDeltaReturnsFalseIfNoRecordUpdated()
+        {
+            var objectDelta = new ObjectDelta(typeof(Customer), 1234);
+            objectDelta.AddChange("Name", "Fred Flintstone");
+
+            SqlQuery sqlQuery = null;
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+            mockSqlDialect
+                .Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()))
+                .Callback((IDbCommand cmd, SqlQuery query) =>
+                {
+                    sqlQuery = query;
+                });
+
+            var mockSessionFactory = new Mock<ISessionFactory>();
+            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockSessionFactory.Object,
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                new IListener[0]);
+
+            Assert.False(session.Update(objectDelta));
+
+            Assert.Equal("UPDATE Customers SET Name = ? WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal("Fred Flintstone", sqlQuery.Arguments[0]);
+            Assert.Equal(objectDelta.Identifier, sqlQuery.Arguments[1]);
+
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Fact]
+        public void UpdateObjectDeltaReturnsTrueIfRecordUpdated()
+        {
+            var objectDelta = new ObjectDelta(typeof(Customer), 1234);
+            objectDelta.AddChange("Name", "Fred Flintstone");
+
+            SqlQuery sqlQuery = null;
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+            mockSqlDialect
+                .Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()))
+                .Callback((IDbCommand cmd, SqlQuery query) =>
+                {
+                    sqlQuery = query;
+                });
+
+            var mockSessionFactory = new Mock<ISessionFactory>();
+            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockConnectionManager = new Mock<IConnectionManager>();
+            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var session = new Session(
+                mockSessionFactory.Object,
+                mockConnectionManager.Object,
+                new Mock<IObjectBuilder>().Object,
+                new IListener[0]);
+
+            Assert.True(session.Update(objectDelta));
+
+            Assert.Equal("UPDATE Customers SET Name = ? WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal("Fred Flintstone", sqlQuery.Arguments[0]);
+            Assert.Equal(objectDelta.Identifier, sqlQuery.Arguments[1]);
+
+            mockConnectionManager.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Fact]
+        public void UpdateObjectDeltaThrowsArgumentNullExceptionForNullObjectDelta()
+        {
+            var session = new Session(
+                new Mock<ISessionFactory>().Object,
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+                new IListener[0]);
+
+            var exception = Assert.Throws<ArgumentNullException>(() => session.Update((ObjectDelta)null));
+
+            Assert.Equal("objectDelta", exception.ParamName);
+        }
+
+        [Fact]
+        public void UpdateObjectDeltaThrowsObjectDisposedExceptionIfDisposed()
+        {
+            var session = new Session(
+                new Mock<ISessionFactory>().Object,
+                new Mock<IConnectionManager>().Object,
+                new Mock<IObjectBuilder>().Object,
+
+                new IListener[0]);
+
+            using (session)
+            {
+            }
+
+            Assert.Throws<ObjectDisposedException>(() => session.Update(new ObjectDelta(typeof(Customer), 1234)));
+        }
+
         private class Customer
         {
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
             public int Id
             {
                 get;

@@ -18,6 +18,7 @@ namespace MicroLite.Core
     using MicroLite.Listeners;
     using MicroLite.Logging;
     using MicroLite.Mapping;
+    using MicroLite.Query;
     using MicroLite.TypeConverters;
 
     /// <summary>
@@ -209,6 +210,33 @@ namespace MicroLite.Core
             var rowsAffected = this.Execute(sqlQuery);
 
             this.listeners.Reverse().Each(l => l.AfterUpdate(instance, rowsAffected));
+
+            return rowsAffected == 1;
+        }
+
+        public bool Update(ObjectDelta objectDelta)
+        {
+            this.ThrowIfDisposed();
+
+            if (objectDelta == null)
+            {
+                throw new ArgumentNullException("objectDelta");
+            }
+
+            var objectInfo = ObjectInfo.For(objectDelta.ForType);
+
+            var builder = new UpdateSqlBuilder(this.SqlDialect.SqlCharacters).Table(objectDelta.ForType);
+
+            foreach (var change in objectDelta.Changes)
+            {
+                builder.SetColumnValue(change.Key, change.Value);
+            }
+
+            builder.Where(objectInfo.TableInfo.IdentifierColumn, objectDelta.Identifier);
+
+            var sqlQuery = builder.ToSqlQuery();
+
+            var rowsAffected = this.Execute(sqlQuery);
 
             return rowsAffected == 1;
         }
