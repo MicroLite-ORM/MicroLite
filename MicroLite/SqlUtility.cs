@@ -24,6 +24,7 @@ namespace MicroLite
     /// </summary>
     public static class SqlUtility
     {
+        private static readonly string[] emptyStringArray = new string[0];
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
         private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
 
@@ -56,7 +57,21 @@ namespace MicroLite
                 throw new ArgumentNullException("commandText");
             }
 
-            return new HashSet<string>(parameterRegex.Matches(commandText).Cast<Match>().Select(x => x.Value)).ToList();
+            var matches = parameterRegex.Matches(commandText);
+
+            if (matches.Count == 0)
+            {
+                return emptyStringArray;
+            }
+
+            var hashSet = new HashSet<string>();
+
+            for (int i = 0; i < matches.Count; i++)
+            {
+                hashSet.Add(matches[i].Value);
+            }
+
+            return hashSet.ToList();
         }
 
         /// <summary>

@@ -58,6 +58,7 @@
         {
             var parameterNames = SqlUtility.GetParameterNames("SELECT * FROM TABLE WHERE Col1 = @p0 AND (Col2 = @p1 OR @p1 IS NULL)");
 
+            Assert.NotNull(parameterNames);
             Assert.Equal(2, parameterNames.Count);
             Assert.Equal(new List<string> { "@p0", "@p1" }, parameterNames);
         }
@@ -67,8 +68,18 @@
         {
             var parameterNames = SqlUtility.GetParameterNames("SELECT * FROM TABLE WHERE Col1 = :p0 AND (Col2 = :p1 OR :p1 IS NULL)");
 
+            Assert.NotNull(parameterNames);
             Assert.Equal(2, parameterNames.Count);
             Assert.Equal(new List<string> { ":p0", ":p1" }, parameterNames);
+        }
+
+        [Fact]
+        public void GetParameterNamesWithNoNamedParameters()
+        {
+            var parameterNames = SqlUtility.GetParameterNames("SELECT * FROM TABLE WHERE Col1 = ? AND (Col2 = ? OR ? IS NULL)");
+
+            Assert.NotNull(parameterNames);
+            Assert.Equal(0, parameterNames.Count);
         }
 
         [Fact]
