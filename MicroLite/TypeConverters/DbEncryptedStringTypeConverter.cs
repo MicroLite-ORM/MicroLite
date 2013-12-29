@@ -96,7 +96,7 @@ namespace MicroLite.TypeConverters
 
         private string Decrypt(string cipherText)
         {
-            var parts = cipherText.Split(Separator);
+            var parts = cipherText.Split(Characters.At);
 
             if (parts.Length != 2)
             {

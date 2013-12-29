@@ -176,7 +176,7 @@ namespace MicroLite
                 return sql;
             }
 
-            var sqlPieces = sql.Split('.');
+            var sqlPieces = sql.Split(Characters.Period);
 
 #if NET_3_5
             return string.Join(".", sqlPieces.Select(s => this.LeftDelimiter + s + this.RightDelimiter).ToArray());
