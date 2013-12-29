@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests
 {
-    using System.Collections.Generic;
     using Xunit;
 
     /// <summary>
@@ -20,9 +19,9 @@
         public void ConstructorSetsProperties()
         {
             var commandText = "SELECT * FROM Table WHERE Id = @p0";
-            var parameters = new List<object> { 10 };
+            var parameters = new object[] { 10 };
 
-            var sqlQuery = new SqlQuery(commandText, parameters.ToArray());
+            var sqlQuery = new SqlQuery(commandText, parameters);
 
             Assert.Equal(commandText, sqlQuery.CommandText);
             Assert.Equal(parameters, sqlQuery.Arguments);
