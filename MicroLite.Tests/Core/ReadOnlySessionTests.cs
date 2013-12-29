@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using System.Dynamic;
     using System.Linq;
     using MicroLite.Core;
     using MicroLite.Dialect;
@@ -509,104 +508,6 @@
             }
 
             Assert.Throws<ObjectDisposedException>(() => session.Paged<Customer>(null, PagingOptions.ForPage(1, 25)));
-        }
-
-        [Fact]
-        public void ProjectionExecutesAndReturnsResults()
-        {
-            var sqlQuery = new SqlQuery("");
-
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
-            var reader = mockReader.Object;
-
-            var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
-
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
-
-            var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildInstance<dynamic>(It.IsAny<IObjectInfo>(), reader)).Returns(new ExpandoObject());
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
-
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
-            var session = new ReadOnlySession(
-                mockSessionFactory.Object,
-                mockConnectionManager.Object,
-                mockObjectBuilder.Object);
-
-            var results = session.Projection(sqlQuery);
-
-            Assert.Equal(1, results.Count);
-
-            mockReader.VerifyAll();
-            mockCommand.VerifyAll();
-            mockConnectionManager.VerifyAll();
-            mockObjectBuilder.VerifyAll();
-            mockSqlDialect.VerifyAll();
-        }
-
-        [Fact]
-        public void ProjectionThrowsArgumentNullExceptionForNullSqlQuery()
-        {
-            var session = new ReadOnlySession(
-                new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
-                new Mock<IObjectBuilder>().Object);
-
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Projection(null));
-
-            Assert.Equal("sqlQuery", exception.ParamName);
-        }
-
-        [Fact]
-        public void ProjectionThrowsMicroLiteExceptionIfExecuteReaderThrowsException()
-        {
-            var sqlQuery = new SqlQuery("");
-
-            var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Throws<InvalidOperationException>();
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
-
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
-
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(new Mock<ISqlDialect>().Object);
-
-            var session = new ReadOnlySession(
-                mockSessionFactory.Object,
-                mockConnectionManager.Object,
-                new Mock<IObjectBuilder>().Object);
-
-            var exception = Assert.Throws<MicroLiteException>(() => session.Projection(sqlQuery));
-
-            Assert.NotNull(exception.InnerException);
-            Assert.Equal(exception.InnerException.Message, exception.Message);
-
-            // Command should still be disposed.
-            mockCommand.Verify(x => x.Dispose());
-        }
-
-        [Fact]
-        public void ProjectionThrowsObjectDisposedExceptionIfDisposed()
-        {
-            var session = new ReadOnlySession(
-                new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
-                new Mock<IObjectBuilder>().Object);
-
-            using (session)
-            {
-            }
-
-            Assert.Throws<ObjectDisposedException>(() => session.Projection(null));
         }
 
         [Fact]

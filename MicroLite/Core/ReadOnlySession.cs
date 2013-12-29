@@ -259,15 +259,6 @@ namespace MicroLite.Core
             return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
         }
 
-#if !NET_3_5
-
-        public IList<dynamic> Projection(SqlQuery sqlQuery)
-        {
-            return this.Fetch<dynamic>(sqlQuery);
-        }
-
-#endif
-
         public IInclude<T> Scalar<T>(SqlQuery sqlQuery)
         {
             this.ThrowIfDisposed();

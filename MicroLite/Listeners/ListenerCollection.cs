@@ -12,7 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Listeners
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -54,20 +53,6 @@ namespace MicroLite.Listeners
             {
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Adds the IListener to the collection.
-        /// </summary>
-        /// <typeparam name="T">The type of <see cref="IListener"/> to add.</typeparam>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification = "The syntax is accepted practice for registering types.")]
-        [Obsolete("This method has been replaced by Add(IListener).", error: false)]
-        public void Add<T>()
-            where T : IListener, new()
-        {
-            var listener = new T();
-
-            this.Add(listener);
         }
 
         /// <summary>
