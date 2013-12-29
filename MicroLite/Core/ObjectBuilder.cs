@@ -29,7 +29,7 @@ namespace MicroLite.Core
             log.TryLogDebug(Messages.ObjectBuilder_CreatingInstance, objectInfo.ForType.FullName);
             var instance = (T)objectInfo.CreateInstance();
 
-            for (int i = reader.FieldCount - 1; i >= 0; i--)
+            for (int i = 0; i < reader.FieldCount; i++)
             {
                 var columnName = reader.GetName(i);
 
