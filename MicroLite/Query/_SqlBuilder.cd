@@ -49,11 +49,11 @@
       <FileName>Query\IWithParameter.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="MicroLite.Query.IFrom">
-    <Position X="8.25" Y="4.5" Width="1.75" />
+  <Interface Name="MicroLite.Query.IDeleteFrom">
+    <Position X="12.75" Y="4.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Query\IFrom.cs</FileName>
+      <FileName>Query\IDeleteFrom.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.Query.IWhereSingleColumn">
@@ -111,6 +111,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Query\IWhereEquals.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Query.ISelectFrom">
+    <Position X="8.25" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Query\ISelectFrom.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
