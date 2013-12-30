@@ -26,7 +26,7 @@ namespace MicroLite
     {
         private static readonly string[] emptyStringArray = new string[0];
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
-        private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline);
 
         /// <summary>
         /// Gets the position of the first parameter in the specified command text.
@@ -57,21 +57,27 @@ namespace MicroLite
                 throw new ArgumentNullException("commandText");
             }
 
-            var matches = parameterRegex.Matches(commandText);
+            var match = parameterRegex.Match(commandText);
 
-            if (matches.Count == 0)
+            if (!match.Success)
             {
                 return emptyStringArray;
             }
 
-            var hashSet = new HashSet<string>();
+            var list = new List<string>();
 
-            for (int i = 0; i < matches.Count; i++)
+            do
             {
-                hashSet.Add(matches[i].Value);
-            }
+                if (!list.Contains(match.Value))
+                {
+                    list.Add(match.Value);
+                }
 
-            return hashSet.ToList();
+                match = match.NextMatch();
+            }
+            while (match.Success);
+
+            return list;
         }
 
         /// <summary>
