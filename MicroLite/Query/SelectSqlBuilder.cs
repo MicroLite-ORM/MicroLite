@@ -262,8 +262,6 @@ namespace MicroLite.Query
         {
             var objectInfo = ObjectInfo.For(forType);
 
-            ISelectFrom select = this;
-
             if (this.InnerSql.Length > 7 && this.InnerSql[7].CompareTo('*') == 0)
             {
 #if NET_3_5
@@ -274,9 +272,10 @@ namespace MicroLite.Query
                 this.AddColumns(objectInfo.TableInfo.Columns.Select(c => c.ColumnName).ToArray());
             }
 
-            return !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
-                ? select.From(objectInfo.TableInfo.Schema + "." + objectInfo.TableInfo.Name)
-                : select.From(objectInfo.TableInfo.Name);
+            this.InnerSql.Append(" FROM ");
+            this.AppendTableName(objectInfo);
+
+            return this;
         }
 
         /// <summary>
