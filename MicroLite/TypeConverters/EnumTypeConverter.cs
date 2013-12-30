@@ -54,7 +54,7 @@ namespace MicroLite.TypeConverters
 
             var enumStorageType = Enum.GetUnderlyingType(enumType);
 
-            var underlyingValue = System.Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
+            var underlyingValue = Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
 
             var enumValue = Enum.ToObject(enumType, underlyingValue);
 
@@ -80,7 +80,7 @@ namespace MicroLite.TypeConverters
 
             var enumStorageType = Enum.GetUnderlyingType(enumType);
 
-            var underlyingValue = System.Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
+            var underlyingValue = Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
 
             return underlyingValue;
         }

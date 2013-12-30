@@ -41,7 +41,7 @@ namespace MicroLite.Mapping
                 throw new MicroLiteException(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName));
             }
 
-            var identifierStrategy = MicroLite.Mapping.IdentifierStrategy.DbGenerated;
+            var identifierStrategy = IdentifierStrategy.DbGenerated;
             var columns = CreateColumnInfos(forType, ref identifierStrategy);
 
             var tableInfo = new TableInfo(columns, identifierStrategy, tableAttribute.Name, tableAttribute.Schema);

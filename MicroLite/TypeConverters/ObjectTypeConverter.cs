@@ -64,7 +64,7 @@ namespace MicroLite.TypeConverters
             }
             else
             {
-                var converted = System.Convert.ChangeType(value, propertyType, CultureInfo.InvariantCulture);
+                var converted = Convert.ChangeType(value, propertyType, CultureInfo.InvariantCulture);
 
                 return converted;
             }
