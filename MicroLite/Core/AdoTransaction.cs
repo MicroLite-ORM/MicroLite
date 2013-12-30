@@ -82,9 +82,17 @@ namespace MicroLite.Core
 
             try
             {
-                log.Debug(Messages.Transaction_Committing);
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.Transaction_Committing);
+                }
+
                 this.transaction.Commit();
-                log.Debug(Messages.Transaction_Committed);
+
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.Transaction_Committed);
+                }
 
                 this.committed = true;
 
@@ -117,9 +125,12 @@ namespace MicroLite.Core
                 this.transaction.Dispose();
                 this.transaction = null;
                 this.connection = null;
-
-                log.Debug(Messages.Transaction_Disposed);
                 this.disposed = true;
+
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.Transaction_Disposed);
+                }
             }
         }
 
@@ -132,7 +143,11 @@ namespace MicroLite.Core
 
             if (this.IsActive)
             {
-                log.Debug(Messages.Transaction_EnlistingCommand);
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.Transaction_EnlistingCommand);
+                }
+
                 command.Transaction = this.transaction;
             }
         }
@@ -144,9 +159,17 @@ namespace MicroLite.Core
 
             try
             {
-                log.Debug(Messages.Transaction_RollingBack);
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.Transaction_RollingBack);
+                }
+
                 this.transaction.Rollback();
-                log.Debug(Messages.Transaction_RolledBack);
+
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.Transaction_RolledBack);
+                }
 
                 this.rolledBack = true;
 

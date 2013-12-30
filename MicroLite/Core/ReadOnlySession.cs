@@ -41,6 +41,11 @@ namespace MicroLite.Core
             this.sessionFactory = sessionFactory;
             this.connectionManager = connectionManager;
             this.objectBuilder = objectBuilder;
+
+            if (Log.IsDebug)
+            {
+                Log.Debug(Messages.Session_Created);
+            }
         }
 
         public IAdvancedReadOnlySession Advanced
@@ -281,9 +286,12 @@ namespace MicroLite.Core
             if (disposing && !this.disposed)
             {
                 this.ConnectionManager.Dispose();
-
-                Log.Debug(Messages.Session_Disposed);
                 this.disposed = true;
+
+                if (Log.IsDebug)
+                {
+                    Log.Debug(Messages.Session_Disposed);
+                }
             }
         }
 

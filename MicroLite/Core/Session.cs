@@ -35,8 +35,6 @@ namespace MicroLite.Core
             : base(sessionFactory, connectionManager, objectBuilder)
         {
             this.listeners = listeners;
-
-            Log.Debug(Messages.Session_Created);
         }
 
         public new IAdvancedSession Advanced
