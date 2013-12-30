@@ -17,19 +17,19 @@ namespace MicroLite.FrameworkExtensions
 
     internal static class CollectionExtensions
     {
-        internal static void Each<T>(this IEnumerable<T> source, Action<T> action)
+        internal static void Each<T>(this IList<T> source, Action<T> action)
         {
-            foreach (var item in source)
+            for (int i = 0; i < source.Count; i++)
             {
-                action(item);
+                action(source[i]);
             }
         }
 
-        internal static IEnumerable<T> Reverse<T>(this IList<T> source)
+        internal static void Reverse<T>(this IList<T> source, Action<T> action)
         {
             for (int i = source.Count - 1; i >= 0; i--)
             {
-                yield return source[i];
+                action(source[i]);
             }
         }
     }
