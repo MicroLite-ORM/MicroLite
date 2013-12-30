@@ -13,14 +13,13 @@
 namespace MicroLite.TypeConverters
 {
     using System;
-    using System.Linq;
 
     /// <summary>
     /// The base class for any implementation of <see cref="ITypeConverter"/>.
     /// </summary>
     public abstract class TypeConverter : ITypeConverter
     {
-        private static readonly TypeConverterCollection collection = new TypeConverterCollection();
+        private static readonly TypeConverterCollection converters = new TypeConverterCollection();
 
         /// <summary>
         /// Gets the type converter collection which contains all type converters registered with the MicroLite ORM framework.
@@ -29,7 +28,7 @@ namespace MicroLite.TypeConverters
         {
             get
             {
-                return collection;
+                return converters;
             }
         }
 
@@ -40,7 +39,15 @@ namespace MicroLite.TypeConverters
         /// <returns>The <see cref="ITypeConverter"/> for the specified type.</returns>
         public static ITypeConverter For(Type type)
         {
-            return Converters.First(c => c.CanConvert(type));
+            foreach (var typeConverter in Converters)
+            {
+                if (typeConverter.CanConvert(type))
+                {
+                    return typeConverter;
+                }
+            }
+
+            throw new NotSupportedException();
         }
 
         /// <summary>
