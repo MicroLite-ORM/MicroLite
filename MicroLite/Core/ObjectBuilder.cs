@@ -31,10 +31,10 @@ namespace MicroLite.Core
 
             for (int i = 0; i < reader.FieldCount; i++)
             {
-                var columnName = reader.GetName(i);
-
                 try
                 {
+                    var columnName = reader.GetName(i);
+
                     objectInfo.SetPropertyValueForColumn(instance, columnName, reader[i]);
                 }
                 catch (Exception e)
