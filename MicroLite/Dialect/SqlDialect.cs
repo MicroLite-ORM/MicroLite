@@ -21,6 +21,7 @@ namespace MicroLite.Dialect
     using System.Text.RegularExpressions;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
+    using MicroLite.Query;
 
     /// <summary>
     /// The base class for implementations of <see cref="ISqlDialect" />.
@@ -164,16 +165,9 @@ namespace MicroLite.Dialect
 
             switch (statementType)
             {
-                case StatementType.Delete:
-                    var identifierValue = objectInfo.GetIdentifierValue(instance);
-
-                    return this.CreateQuery(StatementType.Delete, forType, identifierValue);
-
                 case StatementType.Insert:
-                    var insertValues = new List<object>(objectInfo.TableInfo.Columns.Count);
-
-                    var insertSqlBuilder = this.CreateSql(statementType, objectInfo);
-                    insertSqlBuilder.Append(" VALUES (");
+                    var insertSqlBuilder = new InsertSqlBuilder(this.SqlCharacters);
+                    insertSqlBuilder.Into(forType);
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
@@ -185,87 +179,40 @@ namespace MicroLite.Dialect
 
                         if (column.AllowInsert)
                         {
-                            insertSqlBuilder.Append(this.sqlCharacters.GetParameterName(insertValues.Count));
-                            insertSqlBuilder.Append(", ");
-
                             var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
 
-                            insertValues.Add(value);
+                            insertSqlBuilder.Value(column.ColumnName, value);
                         }
                     }
 
-                    insertSqlBuilder.Remove(insertSqlBuilder.Length - 2, 2);
-                    insertSqlBuilder.Append(")");
+                    var insertSqlQuery = objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
+                        ? insertSqlBuilder.ToSqlQuery(this.sqlCharacters.StatementSeparator + this.SelectIdentityString)
+                        : insertSqlBuilder.ToSqlQuery();
 
-                    if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
-                    {
-                        insertSqlBuilder.Append(this.sqlCharacters.StatementSeparator);
-                        insertSqlBuilder.Append(this.SelectIdentityString);
-                    }
-
-                    return new SqlQuery(insertSqlBuilder.ToString(), insertValues.ToArray());
+                    return insertSqlQuery;
 
                 case StatementType.Update:
-                    var updateValues = new List<object>(objectInfo.TableInfo.Columns.Count);
-
-                    var updateSqlBuilder = this.CreateSql(StatementType.Update, objectInfo);
+                    var updateSqlBuilder = new UpdateSqlBuilder(this.SqlCharacters);
+                    updateSqlBuilder.Table(forType);
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
                         if (column.AllowUpdate
                             && !column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
                         {
-                            updateSqlBuilder.AppendFormat(
-                                        " {0} = {1},",
-                                        this.sqlCharacters.EscapeSql(column.ColumnName),
-                                        this.sqlCharacters.GetParameterName(updateValues.Count));
-
                             var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
 
-                            updateValues.Add(value);
+                            updateSqlBuilder.SetColumnValue(column.ColumnName, value);
                         }
                     }
 
-                    updateSqlBuilder.Remove(updateSqlBuilder.Length - 1, 1);
-
-                    updateSqlBuilder.AppendFormat(
-                        " WHERE {0} = {1}",
+                    updateSqlBuilder.Where(
                         this.sqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
-                        this.sqlCharacters.GetParameterName(updateValues.Count));
+                        objectInfo.GetIdentifierValue(instance));
 
-                    updateValues.Add(objectInfo.GetIdentifierValue(instance));
+                    var updateSqlQuery = updateSqlBuilder.ToSqlQuery();
 
-                    return new SqlQuery(updateSqlBuilder.ToString(), updateValues.ToArray());
-
-                default:
-                    throw new NotSupportedException(Messages.SqlDialect_StatementTypeNotSupported);
-            }
-        }
-
-        /// <summary>
-        /// Creates an SqlQuery with the specified statement type for the specified type and identifier.
-        /// </summary>
-        /// <param name="statementType">Type of the statement.</param>
-        /// <param name="forType">The type of object to create the query for.</param>
-        /// <param name="identifier">The identifier of the instance to create the query for.</param>
-        /// <returns>
-        /// The created <see cref="SqlQuery" />.
-        /// </returns>
-        /// <exception cref="System.NotSupportedException">Thrown if the StatementType is not supported.</exception>
-        public virtual SqlQuery CreateQuery(StatementType statementType, Type forType, object identifier)
-        {
-            switch (statementType)
-            {
-                case StatementType.Delete:
-                    var objectInfo = ObjectInfo.For(forType);
-
-                    var sqlBuilder = this.CreateSql(statementType, objectInfo);
-                    sqlBuilder.AppendFormat(
-                        " WHERE {0} = {1}",
-                        this.sqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
-                        this.sqlCharacters.GetParameterName(0));
-
-                    return new SqlQuery(sqlBuilder.ToString(), identifier);
+                    return updateSqlQuery;
 
                 default:
                     throw new NotSupportedException(Messages.SqlDialect_StatementTypeNotSupported);
@@ -301,30 +248,6 @@ namespace MicroLite.Dialect
 
                 command.Parameters.Add(parameter);
             }
-        }
-
-        /// <summary>
-        /// Appends the name of the table.
-        /// </summary>
-        /// <param name="sqlBuilder">The SQL builder.</param>
-        /// <param name="objectInfo">The object info.</param>
-        protected void AppendTableName(StringBuilder sqlBuilder, IObjectInfo objectInfo)
-        {
-            var schema = !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
-                ? objectInfo.TableInfo.Schema
-                : string.Empty;
-
-            if (!string.IsNullOrEmpty(schema))
-            {
-                sqlBuilder.Append(this.sqlCharacters.LeftDelimiter);
-                sqlBuilder.Append(schema);
-                sqlBuilder.Append(this.sqlCharacters.RightDelimiter);
-                sqlBuilder.Append('.');
-            }
-
-            sqlBuilder.Append(this.sqlCharacters.LeftDelimiter);
-            sqlBuilder.Append(objectInfo.TableInfo.Name);
-            sqlBuilder.Append(this.sqlCharacters.RightDelimiter);
         }
 
         /// <summary>
@@ -405,54 +328,6 @@ namespace MicroLite.Dialect
         protected string ReadWhereClause(string commandText)
         {
             return whereRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-        }
-
-        private StringBuilder CreateSql(StatementType statementType, IObjectInfo objectInfo)
-        {
-            var sqlBuilder = new StringBuilder(capacity: 120);
-
-            switch (statementType)
-            {
-                case StatementType.Delete:
-                    sqlBuilder.Append("DELETE FROM ");
-                    this.AppendTableName(sqlBuilder, objectInfo);
-
-                    break;
-
-                case StatementType.Insert:
-                    sqlBuilder.Append("INSERT INTO ");
-                    this.AppendTableName(sqlBuilder, objectInfo);
-                    sqlBuilder.Append(" (");
-
-                    foreach (var column in objectInfo.TableInfo.Columns)
-                    {
-                        if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
-                            && column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
-                        {
-                            continue;
-                        }
-
-                        if (column.AllowInsert)
-                        {
-                            sqlBuilder.Append(this.sqlCharacters.EscapeSql(column.ColumnName));
-                            sqlBuilder.Append(", ");
-                        }
-                    }
-
-                    sqlBuilder.Remove(sqlBuilder.Length - 2, 2);
-                    sqlBuilder.Append(")");
-
-                    break;
-
-                case StatementType.Update:
-                    sqlBuilder.Append("UPDATE ");
-                    this.AppendTableName(sqlBuilder, objectInfo);
-                    sqlBuilder.Append(" SET");
-
-                    break;
-            }
-
-            return sqlBuilder;
         }
     }
 }

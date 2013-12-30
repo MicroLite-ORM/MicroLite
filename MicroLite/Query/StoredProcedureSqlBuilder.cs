@@ -16,6 +16,7 @@ namespace MicroLite.Query
     internal sealed class StoredProcedureSqlBuilder : SqlBuilder, IWithParameter
     {
         internal StoredProcedureSqlBuilder(string procedureName)
+            : base(SqlCharacters.Empty)
         {
             this.InnerSql.Append("EXEC ");
             this.InnerSql.Append(procedureName);

@@ -38,13 +38,13 @@
             [Fact]
             public void TheSqlCharactersPropertyOnSqlBuilderShouldBeSet()
             {
-                Assert.Equal(this.sessionFactory.SqlDialect.SqlCharacters, SqlBuilder.SqlCharacters);
+                Assert.Equal(this.sessionFactory.SqlDialect.SqlCharacters, SqlBuilder.DefaultSqlCharacters);
             }
 
             private void ResetExternalDependencies()
             {
                 Configure.SessionFactories.Clear();
-                SqlBuilder.SqlCharacters = null;
+                SqlBuilder.DefaultSqlCharacters = null;
             }
         }
 

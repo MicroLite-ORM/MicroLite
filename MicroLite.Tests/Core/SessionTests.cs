@@ -37,10 +37,9 @@
         public void DeleteInstanceInvokesListeners()
         {
             var customer = new Customer();
-            var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -57,12 +56,12 @@
             var mockListener1 = new Mock<IListener>();
             mockListener1.Setup(x => x.AfterDelete(customer, 1)).Callback(() => Assert.Equal(6, ++counter));
             mockListener1.Setup(x => x.BeforeDelete(customer)).Callback(() => Assert.Equal(1, ++counter));
-            mockListener1.Setup(x => x.BeforeDelete(customer, sqlQuery)).Callback(() => Assert.Equal(3, ++counter));
+            mockListener1.Setup(x => x.BeforeDelete(customer, It.IsAny<SqlQuery>())).Callback(() => Assert.Equal(3, ++counter));
 
             var mockListener2 = new Mock<IListener>();
             mockListener2.Setup(x => x.AfterDelete(customer, 1)).Callback(() => Assert.Equal(5, ++counter));
             mockListener2.Setup(x => x.BeforeDelete(customer)).Callback(() => Assert.Equal(2, ++counter));
-            mockListener2.Setup(x => x.BeforeDelete(customer, sqlQuery)).Callback(() => Assert.Equal(4, ++counter));
+            mockListener2.Setup(x => x.BeforeDelete(customer, It.IsAny<SqlQuery>())).Callback(() => Assert.Equal(4, ++counter));
 
             var session = new Session(
                 mockSessionFactory.Object,
@@ -78,11 +77,17 @@
         [Fact]
         public void DeleteInstanceReturnsFalseIfNoRecordsDeleted()
         {
-            var customer = new Customer();
-            var sqlQuery = new SqlQuery("");
+            var customer = new Customer
+            {
+                Id = 14556
+            };
+            SqlQuery sqlQuery = null;
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+            mockSqlDialect
+                .Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()))
+                .Callback((IDbCommand cmd, SqlQuery query) => sqlQuery = query);
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -102,6 +107,10 @@
 
             Assert.False(session.Delete(customer));
 
+            Assert.Equal("DELETE FROM Customers WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[0]);
+
             mockSqlDialect.VerifyAll();
             mockConnectionManager.VerifyAll();
             mockCommand.VerifyAll();
@@ -110,11 +119,17 @@
         [Fact]
         public void DeleteInstanceReturnsTrueIfRecordDeleted()
         {
-            var customer = new Customer();
-            var sqlQuery = new SqlQuery("");
+            var customer = new Customer
+            {
+                Id = 14556
+            };
+            SqlQuery sqlQuery = null;
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+            mockSqlDialect
+                .Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()))
+                .Callback((IDbCommand cmd, SqlQuery query) => sqlQuery = query);
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -133,6 +148,10 @@
                 new IListener[0]);
 
             Assert.True(session.Delete(customer));
+
+            Assert.Equal("DELETE FROM Customers WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[0]);
 
             mockSqlDialect.VerifyAll();
             mockConnectionManager.VerifyAll();
@@ -157,10 +176,9 @@
         public void DeleteInstanceThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
         {
             var customer = new Customer();
-            var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -209,10 +227,13 @@
         {
             var type = typeof(Customer);
             var identifier = 1234;
-            var sqlQuery = new SqlQuery("");
+            SqlQuery sqlQuery = null;
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, type, identifier)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+            mockSqlDialect
+                .Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()))
+                .Callback((IDbCommand cmd, SqlQuery query) => sqlQuery = query);
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -232,6 +253,10 @@
 
             Assert.False(session.Delete(type, identifier));
 
+            Assert.Equal("DELETE FROM Customers WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(identifier, sqlQuery.Arguments[0]);
+
             mockSqlDialect.VerifyAll();
             mockConnectionManager.VerifyAll();
             mockCommand.VerifyAll();
@@ -242,10 +267,13 @@
         {
             var type = typeof(Customer);
             var identifier = 1234;
-            var sqlQuery = new SqlQuery("");
+            SqlQuery sqlQuery = null;
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, type, identifier)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+            mockSqlDialect
+                .Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()))
+                .Callback((IDbCommand cmd, SqlQuery query) => sqlQuery = query);
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -264,6 +292,10 @@
                 new IListener[0]);
 
             Assert.True(session.Delete(type, identifier));
+
+            Assert.Equal("DELETE FROM Customers WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(identifier, sqlQuery.Arguments[0]);
 
             mockSqlDialect.VerifyAll();
             mockConnectionManager.VerifyAll();
@@ -303,10 +335,9 @@
         {
             var type = typeof(Customer);
             var identifier = 1234;
-            var sqlQuery = new SqlQuery("");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, type, identifier)).Returns(sqlQuery);
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -1004,10 +1035,7 @@
             mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
             mockSqlDialect
                 .Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()))
-                .Callback((IDbCommand cmd, SqlQuery query) =>
-                {
-                    sqlQuery = query;
-                });
+                .Callback((IDbCommand cmd, SqlQuery query) => sqlQuery = query);
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -1047,10 +1075,7 @@
             mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
             mockSqlDialect
                 .Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()))
-                .Callback((IDbCommand cmd, SqlQuery query) =>
-                {
-                    sqlQuery = query;
-                });
+                .Callback((IDbCommand cmd, SqlQuery query) => sqlQuery = query);
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);

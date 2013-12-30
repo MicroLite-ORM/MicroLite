@@ -18,17 +18,15 @@ namespace MicroLite.Query
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class InsertSqlBuilder : SqlBuilder, IInto, IInsertValue
     {
-        private readonly SqlCharacters sqlCharacters;
-
         internal InsertSqlBuilder(SqlCharacters sqlCharacters)
+            : base(sqlCharacters)
         {
-            this.sqlCharacters = sqlCharacters;
             this.InnerSql.Append("INSERT INTO ");
         }
 
         public IInsertValue Into(string tableName)
         {
-            this.InnerSql.Append(this.sqlCharacters.EscapeSql(tableName));
+            this.InnerSql.Append(this.SqlCharacters.EscapeSql(tableName));
             this.InnerSql.Append(" (");
 
             return this;
@@ -37,18 +35,7 @@ namespace MicroLite.Query
         public IInsertValue Into(Type forType)
         {
             var objectInfo = ObjectInfo.For(forType);
-
-            if (!string.IsNullOrEmpty(objectInfo.TableInfo.Schema))
-            {
-                this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
-                this.InnerSql.Append(objectInfo.TableInfo.Schema);
-                this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
-                this.InnerSql.Append(".");
-            }
-
-            this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
-            this.InnerSql.Append(objectInfo.TableInfo.Name);
-            this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
+            this.AppendTableName(objectInfo);
             this.InnerSql.Append(" (");
 
             return this;
@@ -56,11 +43,16 @@ namespace MicroLite.Query
 
         public override SqlQuery ToSqlQuery()
         {
+            return this.ToSqlQuery(string.Empty);
+        }
+
+        public SqlQuery ToSqlQuery(string selectIdentity)
+        {
             this.InnerSql.Append(") VALUES (");
 
             for (int i = 0; i < this.Arguments.Count; i++)
             {
-                this.InnerSql.Append(this.sqlCharacters.GetParameterName(i));
+                this.InnerSql.Append(this.SqlCharacters.GetParameterName(i));
 
                 if (i < this.Arguments.Count - 1)
                 {
@@ -69,6 +61,7 @@ namespace MicroLite.Query
             }
 
             this.InnerSql.Append(")");
+            this.InnerSql.Append(selectIdentity);
 
             return base.ToSqlQuery();
         }
@@ -80,7 +73,7 @@ namespace MicroLite.Query
                 this.InnerSql.Append(", ");
             }
 
-            this.InnerSql.Append(this.sqlCharacters.EscapeSql(columnName));
+            this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnName));
             this.Arguments.Add(columnValue);
 
             return this;

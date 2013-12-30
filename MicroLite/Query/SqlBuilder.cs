@@ -14,6 +14,7 @@ namespace MicroLite.Query
 {
     using System.Collections.Generic;
     using System.Text;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// A helper class for building an <see cref="SqlQuery" />.
@@ -23,12 +24,22 @@ namespace MicroLite.Query
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder(capacity: 120);
+        private readonly SqlCharacters sqlCharacters;
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SqlBuilder"/> class.
+        /// </summary>
+        /// <param name="sqlCharacters">The SQL characters.</param>
+        protected SqlBuilder(SqlCharacters sqlCharacters)
+        {
+            this.sqlCharacters = sqlCharacters;
+        }
 
         /// <summary>
         /// Gets or sets the SQL characters.
         /// </summary>
         /// <remarks>If no specific SqlCharacters are specified, SqlCharacters.Empty will be used.</remarks>
-        public static SqlCharacters SqlCharacters
+        public static SqlCharacters DefaultSqlCharacters
         {
             get;
             set;
@@ -58,12 +69,23 @@ namespace MicroLite.Query
         }
 
         /// <summary>
+        /// Gets the SQL characters.
+        /// </summary>
+        protected SqlCharacters SqlCharacters
+        {
+            get
+            {
+                return this.sqlCharacters;
+            }
+        }
+
+        /// <summary>
         /// Creates a new delete query builder.
         /// </summary>
         /// <returns>The next step in the fluent sql builder.</returns>
         public static IDeleteFrom Delete()
         {
-            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
+            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
 
             return new DeleteSqlBuilder(sqlCharacters);
         }
@@ -90,7 +112,7 @@ namespace MicroLite.Query
         /// <returns>The next step in the fluent sql builder.</returns>
         public static IInto Insert()
         {
-            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
+            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
 
             return new InsertSqlBuilder(sqlCharacters);
         }
@@ -132,7 +154,7 @@ namespace MicroLite.Query
         /// </example>
         public static IFunctionOrFrom Select(params string[] columns)
         {
-            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
+            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
 
             return new SelectSqlBuilder(sqlCharacters, columns);
         }
@@ -143,7 +165,7 @@ namespace MicroLite.Query
         /// <returns>The next step in the fluent sql builder.</returns>
         public static IUpdate Update()
         {
-            var sqlCharacters = SqlBuilder.SqlCharacters ?? SqlCharacters.Empty;
+            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
 
             return new UpdateSqlBuilder(sqlCharacters);
         }
@@ -156,6 +178,25 @@ namespace MicroLite.Query
         public virtual SqlQuery ToSqlQuery()
         {
             return new SqlQuery(this.innerSql.ToString(), this.arguments.ToArray());
+        }
+
+        /// <summary>
+        /// Appends the table name to the inner sql.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        protected void AppendTableName(IObjectInfo objectInfo)
+        {
+            if (!string.IsNullOrEmpty(objectInfo.TableInfo.Schema))
+            {
+                this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
+                this.InnerSql.Append(objectInfo.TableInfo.Schema);
+                this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
+                this.InnerSql.Append(".");
+            }
+
+            this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
+            this.InnerSql.Append(objectInfo.TableInfo.Name);
+            this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
         }
     }
 }

@@ -68,16 +68,6 @@ namespace MicroLite.Dialect
         SqlQuery CreateQuery(StatementType statementType, object instance);
 
         /// <summary>
-        /// Creates an SqlQuery with the specified statement type for the specified type and identifier.
-        /// </summary>
-        /// <param name="statementType">Type of the statement.</param>
-        /// <param name="forType">The type of object to create the query for.</param>
-        /// <param name="identifier">The identifier of the instance to create the query for.</param>
-        /// <returns>The created <see cref="SqlQuery" />.</returns>
-        /// <exception cref="NotSupportedException">Thrown if the statement type is not supported.</exception>
-        SqlQuery CreateQuery(StatementType statementType, Type forType, object identifier);
-
-        /// <summary>
         /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the paging options.
         /// </summary>
         /// <param name="sqlQuery">The SQL query.</param>

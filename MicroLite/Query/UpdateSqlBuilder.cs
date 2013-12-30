@@ -18,11 +18,9 @@ namespace MicroLite.Query
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class UpdateSqlBuilder : SqlBuilder, IUpdate, ISetOrWhere
     {
-        private readonly SqlCharacters sqlCharacters;
-
         internal UpdateSqlBuilder(SqlCharacters sqlCharacters)
+            : base(sqlCharacters)
         {
-            this.sqlCharacters = sqlCharacters;
             this.InnerSql.Append("UPDATE ");
         }
 
@@ -37,10 +35,10 @@ namespace MicroLite.Query
                 this.InnerSql.Append(" ");
             }
 
-            this.InnerSql.Append(this.sqlCharacters.EscapeSql(columnName));
+            this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnName));
             this.InnerSql.Append(" = ");
 
-            this.InnerSql.Append(this.sqlCharacters.GetParameterName(this.Arguments.Count));
+            this.InnerSql.Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
             this.Arguments.Add(columnValue);
 
             return this;
@@ -48,7 +46,7 @@ namespace MicroLite.Query
 
         public ISetOrWhere Table(string tableName)
         {
-            this.InnerSql.Append(this.sqlCharacters.EscapeSql(tableName));
+            this.InnerSql.Append(this.SqlCharacters.EscapeSql(tableName));
             this.InnerSql.Append(" SET");
 
             return this;
@@ -57,18 +55,7 @@ namespace MicroLite.Query
         public ISetOrWhere Table(Type forType)
         {
             var objectInfo = ObjectInfo.For(forType);
-
-            if (!string.IsNullOrEmpty(objectInfo.TableInfo.Schema))
-            {
-                this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
-                this.InnerSql.Append(objectInfo.TableInfo.Schema);
-                this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
-                this.InnerSql.Append(".");
-            }
-
-            this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
-            this.InnerSql.Append(objectInfo.TableInfo.Name);
-            this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
+            this.AppendTableName(objectInfo);
             this.InnerSql.Append(" SET");
 
             return this;
@@ -77,9 +64,9 @@ namespace MicroLite.Query
         public IToSqlQuery Where(string columnName, object columnValue)
         {
             this.InnerSql.Append(" WHERE ");
-            this.InnerSql.Append(this.sqlCharacters.EscapeSql(columnName));
+            this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnName));
             this.InnerSql.Append(" = ");
-            this.InnerSql.Append(this.sqlCharacters.GetParameterName(this.Arguments.Count));
+            this.InnerSql.Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
 
             this.Arguments.Add(columnValue);
 

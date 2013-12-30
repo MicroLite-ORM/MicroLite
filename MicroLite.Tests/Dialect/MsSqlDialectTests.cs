@@ -17,7 +17,7 @@
         {
             // The tests in this suite all use attribute mapping for the test.
             ObjectInfo.MappingConvention = new AttributeMappingConvention();
-            SqlBuilder.SqlCharacters = null;
+            SqlBuilder.DefaultSqlCharacters = null;
         }
 
         private enum CustomerStatus
@@ -123,7 +123,7 @@
         {
             // Reset the mapping convention after tests have run.
             ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
-            SqlBuilder.SqlCharacters = null;
+            SqlBuilder.DefaultSqlCharacters = null;
         }
 
         [Fact]
@@ -154,7 +154,7 @@
         [Fact]
         public void PagedQueryWithoutSubQuery()
         {
-            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+            SqlBuilder.DefaultSqlCharacters = SqlCharacters.MsSql;
 
             var sqlQuerySingleLevel = SqlBuilder
                                         .Select("*").From(typeof(Customer))
@@ -176,7 +176,7 @@
         [Fact]
         public void PagedQueryWithSubQuery()
         {
-            SqlBuilder.SqlCharacters = SqlCharacters.MsSql;
+            SqlBuilder.DefaultSqlCharacters = SqlCharacters.MsSql;
 
             var sqlQuerySubQuery = SqlBuilder
                                         .Select("*")

@@ -59,7 +59,14 @@ namespace MicroLite.Core
 
             this.listeners.Each(l => l.BeforeDelete(instance));
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, instance);
+            var objectInfo = ObjectInfo.For(instance.GetType());
+            var identifier = objectInfo.GetIdentifierValue(instance);
+
+            var sqlBuilder = new DeleteSqlBuilder(this.SqlDialect.SqlCharacters)
+                .From(objectInfo.ForType)
+                .WhereEquals(objectInfo.TableInfo.IdentifierColumn, identifier);
+
+            var sqlQuery = sqlBuilder.ToSqlQuery();
 
             this.listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
 
@@ -84,7 +91,13 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("identifier");
             }
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, type, identifier);
+            var objectInfo = ObjectInfo.For(type);
+
+            var sqlBuilder = new DeleteSqlBuilder(this.SqlDialect.SqlCharacters)
+                .From(type)
+                .WhereEquals(objectInfo.TableInfo.IdentifierColumn, identifier);
+
+            var sqlQuery = sqlBuilder.ToSqlQuery();
 
             var rowsAffected = this.Execute(sqlQuery);
 

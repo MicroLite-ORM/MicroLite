@@ -18,17 +18,15 @@ namespace MicroLite.Query
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class DeleteSqlBuilder : SqlBuilder, IDeleteFrom, IWhereEquals
     {
-        private readonly SqlCharacters sqlCharacters;
-
         internal DeleteSqlBuilder(SqlCharacters sqlCharacters)
+            : base(sqlCharacters)
         {
-            this.sqlCharacters = sqlCharacters;
             this.InnerSql.Append("DELETE FROM ");
         }
 
         public IWhereEquals From(string tableName)
         {
-            this.InnerSql.Append(this.sqlCharacters.EscapeSql(tableName));
+            this.InnerSql.Append(this.SqlCharacters.EscapeSql(tableName));
 
             return this;
         }
@@ -36,18 +34,7 @@ namespace MicroLite.Query
         public IWhereEquals From(Type forType)
         {
             var objectInfo = ObjectInfo.For(forType);
-
-            if (!string.IsNullOrEmpty(objectInfo.TableInfo.Schema))
-            {
-                this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
-                this.InnerSql.Append(objectInfo.TableInfo.Schema);
-                this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
-                this.InnerSql.Append(".");
-            }
-
-            this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
-            this.InnerSql.Append(objectInfo.TableInfo.Name);
-            this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
+            this.AppendTableName(objectInfo);
 
             return this;
         }
@@ -55,9 +42,9 @@ namespace MicroLite.Query
         public IWhereEquals WhereEquals(string columnName, object comparisonValue)
         {
             this.InnerSql.Append(" WHERE ");
-            this.InnerSql.Append(this.sqlCharacters.EscapeSql(columnName));
+            this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnName));
             this.InnerSql.Append(" = ");
-            this.InnerSql.Append(this.sqlCharacters.GetParameterName(this.Arguments.Count));
+            this.InnerSql.Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
 
             this.Arguments.Add(comparisonValue);
 
