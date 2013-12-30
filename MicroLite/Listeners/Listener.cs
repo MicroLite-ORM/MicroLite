@@ -21,7 +21,7 @@ namespace MicroLite.Listeners
     /// </remarks>
     public abstract class Listener : IListener
     {
-        private static readonly ListenerCollection collection = new ListenerCollection();
+        private static readonly ListenerCollection listeners = new ListenerCollection();
 
         /// <summary>
         /// Gets the listener collection which contains all listeners registered with the MicroLite ORM framework.
@@ -30,7 +30,7 @@ namespace MicroLite.Listeners
         {
             get
             {
-                return collection;
+                return listeners;
             }
         }
 
