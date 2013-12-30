@@ -52,7 +52,7 @@ namespace MicroLite.Dialect
             }
 
             int argumentsCount = 0;
-            var sqlBuilder = new StringBuilder(sqlQueries.Sum(s => s.CommandText.Length));
+            var stringBuilder = new StringBuilder(sqlQueries.Sum(s => s.CommandText.Length));
 
             foreach (var sqlQuery in sqlQueries)
             {
@@ -62,10 +62,10 @@ namespace MicroLite.Dialect
                     ? sqlQuery.CommandText
                     : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                sqlBuilder.AppendLine(commandText + this.SqlCharacters.StatementSeparator);
+                stringBuilder.AppendLine(commandText + this.SqlCharacters.StatementSeparator);
             }
 
-            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
+            var combinedQuery = new SqlQuery(stringBuilder.ToString(0, stringBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
             combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
 
             return combinedQuery;
@@ -92,18 +92,19 @@ namespace MicroLite.Dialect
             var orderByValue = this.ReadOrderBy(sqlQuery.CommandText);
             var orderByClause = "ORDER BY " + (!string.IsNullOrEmpty(orderByValue) ? orderByValue : "(SELECT NULL)");
 
-            var sqlBuilder = new StringBuilder(sqlQuery.CommandText.Length * 2);
-            sqlBuilder.Append(selectStatement);
-            sqlBuilder.Append(" FROM");
-            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " ({0}, ROW_NUMBER() OVER({1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName);
-            sqlBuilder.AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Length - 2), this.SqlCharacters.GetParameterName(arguments.Length - 1));
+            var stringBuilder = new StringBuilder(sqlQuery.CommandText.Length * 2);
+            stringBuilder.Append(selectStatement);
+            stringBuilder.Append(" FROM");
+            stringBuilder.AppendFormat(CultureInfo.InvariantCulture, " ({0}, ROW_NUMBER() OVER({1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName);
+            stringBuilder.AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Length - 2), this.SqlCharacters.GetParameterName(arguments.Length - 1));
 
-            return new SqlQuery(sqlBuilder.ToString(), arguments);
+            return new SqlQuery(stringBuilder.ToString(), arguments);
         }
 
         protected override string GetCommandText(string commandText)
         {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SqlCharacters.StatementSeparator))
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
+                && !commandText.Contains(this.SqlCharacters.StatementSeparator))
             {
                 var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
 
@@ -122,7 +123,8 @@ namespace MicroLite.Dialect
 
         protected override CommandType GetCommandType(string commandText)
         {
-            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase) && !commandText.Contains(this.SqlCharacters.StatementSeparator))
+            if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
+                && !commandText.Contains(this.SqlCharacters.StatementSeparator))
             {
                 return CommandType.StoredProcedure;
             }
