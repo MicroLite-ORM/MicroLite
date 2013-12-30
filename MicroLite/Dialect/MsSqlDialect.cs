@@ -83,7 +83,7 @@ namespace MicroLite.Dialect
 
             var selectStatement = this.ReadSelectList(sqlQuery.CommandText);
             var qualifiedTableName = this.ReadTableName(sqlQuery.CommandText);
-            var position = qualifiedTableName.LastIndexOf(".", StringComparison.OrdinalIgnoreCase) + 1;
+            var position = qualifiedTableName.LastIndexOf('.') + 1;
             var tableName = position > 0 ? qualifiedTableName.Substring(position, qualifiedTableName.Length - position) : qualifiedTableName;
 
             var whereValue = this.ReadWhereClause(sqlQuery.CommandText);
