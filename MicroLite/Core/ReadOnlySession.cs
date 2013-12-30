@@ -140,7 +140,7 @@ namespace MicroLite.Core
             }
             catch (Exception e)
             {
-                Log.TryLogError(e.Message, e);
+                Log.Error(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
             finally
@@ -282,7 +282,7 @@ namespace MicroLite.Core
             {
                 this.ConnectionManager.Dispose();
 
-                Log.TryLogDebug(Messages.Session_Disposed);
+                Log.Debug(Messages.Session_Disposed);
                 this.disposed = true;
             }
         }

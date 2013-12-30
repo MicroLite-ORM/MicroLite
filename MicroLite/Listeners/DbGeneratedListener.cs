@@ -45,7 +45,11 @@ namespace MicroLite.Listeners
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
-                log.TryLogDebug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
+                }
+
                 objectInfo.SetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn, executeScalarResult);
             }
         }

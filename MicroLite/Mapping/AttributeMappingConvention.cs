@@ -37,7 +37,11 @@ namespace MicroLite.Mapping
 
             if (tableAttribute == null)
             {
-                log.TryLogFatal(Messages.AttributeMappingConvention_NoTableAttribute, forType.FullName);
+                if (log.IsFatal)
+                {
+                    log.Fatal(Messages.AttributeMappingConvention_NoTableAttribute, forType.FullName);
+                }
+
                 throw new MicroLiteException(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName));
             }
 
@@ -58,7 +62,11 @@ namespace MicroLite.Mapping
             {
                 if (!property.CanRead || !property.CanWrite)
                 {
-                    log.TryLogDebug(Messages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                    if (log.IsDebug)
+                    {
+                        log.Debug(Messages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                    }
+
                     continue;
                 }
 
@@ -66,7 +74,11 @@ namespace MicroLite.Mapping
 
                 if (columnAttribute == null)
                 {
-                    log.TryLogInfo(Messages.AttributeMappingConvention_IgnoringProperty, forType.FullName, property.Name);
+                    if (log.IsDebug)
+                    {
+                        log.Debug(Messages.AttributeMappingConvention_IgnoringProperty, forType.FullName, property.Name);
+                    }
+
                     continue;
                 }
 

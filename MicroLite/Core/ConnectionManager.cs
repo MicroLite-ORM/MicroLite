@@ -41,7 +41,10 @@ namespace MicroLite.Core
         {
             if (this.currentTransaction == null || !this.currentTransaction.IsActive)
             {
-                log.TryLogDebug(Messages.ConnectionManager_BeginTransactionWithIsolationLevel, isolationLevel.ToString());
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.ConnectionManager_BeginTransactionWithIsolationLevel, isolationLevel.ToString());
+                }
 
                 this.connection.Open();
 
@@ -57,7 +60,7 @@ namespace MicroLite.Core
         {
             if (command.Transaction == null)
             {
-                log.TryLogDebug(Messages.ConnectionManager_ClosingConnection);
+                log.Debug(Messages.ConnectionManager_ClosingConnection);
                 command.Connection.Close();
             }
         }
@@ -66,16 +69,16 @@ namespace MicroLite.Core
         {
             if (this.connection.State == ConnectionState.Closed)
             {
-                log.TryLogDebug(Messages.ConnectionManager_OpeningConnection);
+                log.Debug(Messages.ConnectionManager_OpeningConnection);
                 this.connection.Open();
             }
 
-            log.TryLogDebug(Messages.ConnectionManager_CreatingCommand);
+            log.Debug(Messages.ConnectionManager_CreatingCommand);
             var command = this.connection.CreateCommand();
 
             if (this.currentTransaction != null)
             {
-                log.TryLogDebug(Messages.ConnectionManager_EnlistingInTransaction);
+                log.Debug(Messages.ConnectionManager_EnlistingInTransaction);
                 this.currentTransaction.Enlist(command);
             }
 

@@ -16,7 +16,6 @@ namespace MicroLite.Core
     using System.Data;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
-    using MicroLite.Logging;
     using MicroLite.Mapping;
     using MicroLite.Query;
     using MicroLite.TypeConverters;
@@ -37,7 +36,7 @@ namespace MicroLite.Core
         {
             this.listeners = listeners;
 
-            Log.TryLogDebug(Messages.Session_Created);
+            Log.Debug(Messages.Session_Created);
         }
 
         public new IAdvancedSession Advanced
@@ -128,7 +127,7 @@ namespace MicroLite.Core
             }
             catch (Exception e)
             {
-                Log.TryLogError(e.Message, e);
+                Log.Error(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }
@@ -161,7 +160,7 @@ namespace MicroLite.Core
             }
             catch (Exception e)
             {
-                Log.TryLogError(e.Message, e);
+                Log.Error(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }

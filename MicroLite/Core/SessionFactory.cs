@@ -59,7 +59,11 @@ namespace MicroLite.Core
         {
             var connection = this.GetNewConnectionWithConnectionString();
 
-            log.TryLogDebug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
+            if (log.IsDebug)
+            {
+                log.Debug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
+            }
+
             return new ReadOnlySession(
                 this,
                 new ConnectionManager(connection),
@@ -71,7 +75,11 @@ namespace MicroLite.Core
         {
             var connection = this.GetNewConnectionWithConnectionString();
 
-            log.TryLogDebug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
+            if (log.IsDebug)
+            {
+                log.Debug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
+            }
+
             return new Session(
                 this,
                 new ConnectionManager(connection),

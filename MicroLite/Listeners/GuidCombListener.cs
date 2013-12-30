@@ -69,7 +69,11 @@ namespace MicroLite.Listeners
 
                 var identifierValue = GuidGenerator.CreateComb();
 
-                log.TryLogDebug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, identifierValue.ToString());
+                }
+
                 objectInfo.SetPropertyValue(instance, objectInfo.TableInfo.IdentifierProperty, identifierValue);
             }
         }

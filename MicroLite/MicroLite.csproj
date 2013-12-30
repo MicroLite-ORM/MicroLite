@@ -65,6 +65,7 @@
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Logging\NullLog.cs" />
     <Compile Include="ObjectDelta.cs" />
     <Compile Include="Query\DeleteSqlBuilder.cs" />
     <Compile Include="Query\IDeleteFrom.cs" />
@@ -176,7 +177,6 @@
     <Compile Include="Listeners\Listener.cs" />
     <Compile Include="Query\IWithParameter.cs" />
     <Compile Include="Logging\ILog.cs" />
-    <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Logging\LogManager.cs" />
     <Compile Include="MicroLiteException.cs" />
     <Compile Include="PagedResult.cs" />

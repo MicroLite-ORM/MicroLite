@@ -118,55 +118,52 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SqlDialect_ArgumentsCountMismatch" xml:space="preserve">
-    <value>The number of parameters in the SQL statement and the number of specified parameter arguments should match. However [{0}] parameters used in the SQL statement and [{1}] parameter arguments were specified.</value>
+    <value>The number of parameters in the SQL statement and the number of specified parameter arguments should match. However '{0}' parameters used in the SQL statement and '{1}' parameter arguments were specified.</value>
   </data>
   <data name="AssignedListener_IdentifierNotSetForInsert" xml:space="preserve">
     <value>The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted.</value>
   </data>
   <data name="FluentConfiguration_ConnectionNotFound" xml:space="preserve">
-    <value>No connection was found in the app.config with the name [{0}]</value>
+    <value>No connection was found in the app.config with the name '{0}'</value>
   </data>
   <data name="FluentConfiguration_CreatingSessionFactory" xml:space="preserve">
-    <value>Creating a session factory for connection named [{0}]</value>
+    <value>Creating a session factory for connection named '{0}'</value>
   </data>
   <data name="FluentConfiguration_ReadingConnection" xml:space="preserve">
-    <value>Reading connection named [{0}] from app.config</value>
+    <value>Reading connection named '{0}' from app.config</value>
   </data>
   <data name="IListener_IdentifierNotSetForUpdate" xml:space="preserve">
     <value>The object does not have an identifier value set so it cannot be updated</value>
   </data>
   <data name="IListener_SettingIdentifierValue" xml:space="preserve">
-    <value>Setting the identifier value for an instance of the type [{0}] to [{1}]</value>
+    <value>Setting the identifier value for an instance of the type '{0}' to '{1}'</value>
   </data>
   <data name="PagingOptions_ResultsPerPageMustBeAtLeast1" xml:space="preserve">
     <value>There must be at least 1 result per page</value>
   </data>
-  <data name="ObjectBuilder_CreatingInstance" xml:space="preserve">
-    <value>Creating a new instance of [{0}]</value>
-  </data>
-  <data name="ObjectBuilder_SettingPropertyValue" xml:space="preserve">
-    <value>Setting the property value of [{0}].[{1}]</value>
+  <data name="ObjectInfo_CreatingInstance" xml:space="preserve">
+    <value>Creating a new instance of '{0}'</value>
   </data>
   <data name="ObjectInfo_UnknownColumn" xml:space="preserve">
-    <value>Ignoring the [{1}] column value as the mapped type [{0}] does not have a mapped property with the column name [{1}]</value>
+    <value>Ignoring the '{1}' column value as the mapped type '{0}' does not have a mapped property with the column name '{1}'</value>
   </data>
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
-    <value>Creating the ObjectInfo for the type [{0}]</value>
+    <value>Creating the ObjectInfo for the type '{0}'</value>
   </data>
   <data name="ObjectInfo_MappingTypeToTable" xml:space="preserve">
-    <value>Mapping the type [{0}] to the table [{1}].[{2}]</value>
+    <value>Mapping the type '{0}' to the table '{1}.{2}'</value>
   </data>
   <data name="ObjectInfo_MappingColumnToProperty" xml:space="preserve">
-    <value>Mapping the property [{0}].[{1}] to the column [{2}]</value>
+    <value>Mapping the property '{0}.{1}' to the column '{2}'</value>
   </data>
   <data name="ObjectInfo_RetrievingObjectInfo" xml:space="preserve">
-    <value>Retrieving the ObjectInfo for [{0}]</value>
+    <value>Retrieving the ObjectInfo for '{0}'</value>
   </data>
   <data name="PagingOptions_PagesMustBeAtleastOne" xml:space="preserve">
     <value>The first page which can be requested is page 1</value>
   </data>
   <data name="SessionFactory_CreatingSession" xml:space="preserve">
-    <value>Creating a new session for connection [{0}] using [{1}]</value>
+    <value>Creating a new session for connection '{0}' using '{1}'</value>
   </data>
   <data name="ConnectionManager_ClosingConnection" xml:space="preserve">
     <value>Closing the database connection</value>
@@ -181,61 +178,61 @@
     <value>Opening the database connection</value>
   </data>
   <data name="AttributeMappingConvention_IgnoringProperty" xml:space="preserve">
-    <value>The property [{0}].[{1}] will not be mapped by MicroLite as it has no ColumnAttribute</value>
+    <value>The property '{0}.{1}' will not be mapped by MicroLite as it has no ColumnAttribute</value>
   </data>
   <data name="AttributeMappingConvention_NoTableAttribute" xml:space="preserve">
-    <value>The type [{0}] cannot be used by MicroLite as is not decorated with a TableAttribute</value>
+    <value>The type '{0}' cannot be used by MicroLite as is not decorated with a TableAttribute</value>
   </data>
   <data name="TableInfo_NoIdentifierColumn" xml:space="preserve">
-    <value>No column has been mapped as the identifier for the table [{0}].[{1}]</value>
+    <value>No column has been mapped as the identifier for the table '{0}.{1}'</value>
   </data>
   <data name="Transaction_Committing" xml:space="preserve">
-    <value>Transaction committing changes</value>
+    <value>The Transaction is committing changes</value>
   </data>
   <data name="Transaction_Disposed" xml:space="preserve">
-    <value>Transaction disposed</value>
+    <value>The Transaction has been disposed of</value>
   </data>
   <data name="Transaction_DisposedUncommitted" xml:space="preserve">
-    <value>Transaction is being disposed with uncommitted changes</value>
+    <value>The Transaction is being disposed with uncommitted changes, they will be automatically rolled back</value>
   </data>
   <data name="Transaction_EnlistingCommand" xml:space="preserve">
-    <value>Command enlisted in transaction</value>
+    <value>The Command has been enlisted in the Transaction</value>
   </data>
   <data name="Transaction_RollingBack" xml:space="preserve">
-    <value>Transaction rolling back changes</value>
+    <value>The Transaction is rolling back changes</value>
   </data>
   <data name="ObjectInfo_TypeMustBeClass" xml:space="preserve">
-    <value>The type [{0}] is not a class and therefore cannot be used by the MicroLite ORM Framework</value>
+    <value>The type '{0}' is not a class and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>
   <data name="ObjectInfo_TypeMustHaveDefaultConstructor" xml:space="preserve">
-    <value>The type [{0}] has no default (parameterless) constructor and therefore cannot be used by the MicroLite ORM Framework</value>
+    <value>The type '{0}' has no default (parameterless) constructor and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>
   <data name="ObjectInfo_TypeMustNotBeAbstract" xml:space="preserve">
-    <value>The type [{0}] is abstract and therefore cannot be used by the MicroLite ORM Framework</value>
+    <value>The type '{0}' is abstract and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>
   <data name="TableInfo_ColumnMappedMultipleTimes" xml:space="preserve">
-    <value>The column [{0}] has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute</value>
+    <value>The column '{0}' has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute</value>
   </data>
   <data name="ConfigureExtensions_UsingLogger" xml:space="preserve">
-    <value>Using logger [{0}]</value>
+    <value>Using logger '{0}'</value>
   </data>
   <data name="ConfigureExtensions_UsingMappingConvention" xml:space="preserve">
-    <value>Using mapping convention [{0}]</value>
+    <value>Using mapping convention '{0}'</value>
   </data>
   <data name="Transaction_Committed" xml:space="preserve">
-    <value>Transaction committed changes</value>
+    <value>The Transaction has successfully committed changes</value>
   </data>
   <data name="Transaction_RolledBack" xml:space="preserve">
-    <value>Transaction rolled back changes</value>
+    <value>The Transaction has rolled back changes</value>
   </data>
   <data name="Transaction_Completed" xml:space="preserve">
-    <value>Transaction has been completed</value>
+    <value>The Transaction has been completed</value>
   </data>
   <data name="IncludeSingle_SingleResultExpected" xml:space="preserve">
     <value>There are multiple records returned in the results list, the single query should return a single row only</value>
   </data>
   <data name="FluentConfiguration_DialectNotSupported" xml:space="preserve">
-    <value>The sql dialect [{0}] is currently not supported by the MicroLite ORM framework</value>
+    <value>The sql dialect '{0}' is currently not supported by the MicroLite ORM framework</value>
   </data>
   <data name="IncludeScalar_MultipleColumns" xml:space="preserve">
     <value>The scalar query should return a single row with a single column</value>
@@ -247,16 +244,16 @@
     <value>The sql dialect does not support the creation of an SqlQuery for the given statement type</value>
   </data>
   <data name="IListener_IdentifierNotSetForDelete" xml:space="preserve">
-    <value>The object does not have an identifier value set so it cannot be delete</value>
+    <value>The object does not have an identifier value set so it cannot be deleted</value>
   </data>
   <data name="SessionFactory_CreatingReadOnlySession" xml:space="preserve">
-    <value>Creating a new read only session for connection [{0}] using [{1}]</value>
+    <value>Creating a new read only session for connection '{0}' using '{1}'</value>
   </data>
   <data name="ObjectInfo_GettingPropertyValueForColumn" xml:space="preserve">
-    <value>Getting the value of [{0}].[{1}] for the [{2}] column</value>
+    <value>Getting the value of '{0}.{1}' for the '{2}' column</value>
   </data>
-  <data name="IObjectInfo_SettingPropertyValue" xml:space="preserve">
-    <value>Setting the property value of [{0}].[{1}]</value>
+  <data name="ObjectInfo_SettingPropertyValue" xml:space="preserve">
+    <value>Setting the property value of '{0}.{1}'</value>
   </data>
   <data name="ObjectInfo_ColumnNotMapped" xml:space="preserve">
     <value>The column {0} is not mapped to a property on the {1} class</value>
@@ -271,7 +268,7 @@
     <value>At least 1 result must be returned</value>
   </data>
   <data name="ConnectionManager_BeginTransactionWithIsolationLevel" xml:space="preserve">
-    <value>Beginning a new transaction with IsolationLevel.{0}</value>
+    <value>Beginning a new Transaction with the IsolationLevel '{0}'.</value>
   </data>
   <data name="ConnectionManager_CreatingCommand" xml:space="preserve">
     <value>Creating a new IDbCommand for the managed connection</value>
@@ -283,7 +280,7 @@
     <value>The paging options must contain a count and offset, use the PagingOptions.ForPage or PagingOptions.SkipTake methods to specify the values</value>
   </data>
   <data name="ConventionMappingConvention_Configuration" xml:space="preserve">
-    <value>The convention to be used is pluralize names [{0}], the table schema [{1}] and an identifier strategy of [{2}]</value>
+    <value>The convention to be used is pluralize names '{0}', the table schema '{1}' and an identifier strategy of '{2}'</value>
   </data>
   <data name="Transaction_RollingBackFailedCommit" xml:space="preserve">
     <value>Transaction rolling back changes from failed commit</value>
@@ -304,15 +301,15 @@
     <value>The 'dynamic' type can only be used for queries where an SqlQuery is supplied, it cannot be used for select by identifier, insert, update or delete.</value>
   </data>
   <data name="ObjectInfo_GettingPropertyValue" xml:space="preserve">
-    <value>Getting the value of [{0}].[{1}]</value>
+    <value>Getting the value of '{0}.{1}'</value>
   </data>
   <data name="ObjectInfo_UnknownProperty" xml:space="preserve">
-    <value>The type [{0}] does not have a property with the name [{1}]</value>
+    <value>The type '{0}' does not have a property with the name '{1}'</value>
   </data>
   <data name="ConventionMappingConvention_IgnoringProperty" xml:space="preserve">
-    <value>The property [{0}].[{1}] will not be mapped by MicroLite as the convention settings have specified it is ignored</value>
+    <value>The property '{0}.{1}' will not be mapped by MicroLite as the convention settings have specified it is ignored</value>
   </data>
   <data name="MappingConvention_PropertyNotGetAndSet" xml:space="preserve">
-    <value>The property [{0}].[{1}] will not be mapped by MicroLite as it does not have a public getter and setter.</value>
+    <value>The property '{0}.{1}' will not be mapped by MicroLite as it does not have a public getter and setter.</value>
   </data>
 </root>

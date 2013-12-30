@@ -41,9 +41,9 @@
         }
 
         [Fact]
-        public void GetCurrentClassLogReturnsNullIfGetLoggerNotSet()
+        public void GetCurrentClassLogReturnsNullLogIfGetLoggerNotSet()
         {
-            Assert.Null(LogManager.GetCurrentClassLog());
+            Assert.IsType<NullLog>(LogManager.GetCurrentClassLog());
         }
     }
 }

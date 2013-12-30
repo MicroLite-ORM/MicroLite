@@ -99,7 +99,6 @@
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverterTests.cs" />
     <Compile Include="TypeConverters\EnumTypeConverterTests.cs" />
     <Compile Include="Mapping\IdentifierAttributeTests.cs" />
-    <Compile Include="Logging\LogExtensionsTests.cs" />
     <Compile Include="Logging\LogManagerTests.cs" />
     <Compile Include="Mapping\Inflection\EnglishInflectionServiceTests.cs" />
     <Compile Include="Mapping\ObjectInfoTests.cs" />

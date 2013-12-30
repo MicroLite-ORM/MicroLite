@@ -26,7 +26,6 @@ namespace MicroLite.Core
 
         public T BuildInstance<T>(IObjectInfo objectInfo, IDataReader reader)
         {
-            log.TryLogDebug(Messages.ObjectBuilder_CreatingInstance, objectInfo.ForType.FullName);
             var instance = (T)objectInfo.CreateInstance();
 
             for (int i = 0; i < reader.FieldCount; i++)
@@ -39,7 +38,7 @@ namespace MicroLite.Core
                 }
                 catch (Exception e)
                 {
-                    log.TryLogError(e.Message, e);
+                    log.Error(e.Message, e);
                     throw new MicroLiteException(e.Message, e);
                 }
             }

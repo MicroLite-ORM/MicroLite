@@ -65,14 +65,22 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("tableInfo");
             }
 
-            log.TryLogDebug(Messages.ObjectInfo_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
+            if (log.IsDebug)
+            {
+                log.Debug(Messages.ObjectInfo_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
+            }
+
             this.forType = forType;
             this.tableInfo = tableInfo;
             this.propertyAccessors = new Dictionary<string, IPropertyAccessor>(this.tableInfo.Columns.Count);
 
             foreach (var columnInfo in this.tableInfo.Columns)
             {
-                log.TryLogDebug(Messages.ObjectInfo_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.ObjectInfo_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                }
+
                 this.propertyAccessors.Add(columnInfo.PropertyInfo.Name, PropertyAccessor.Create(columnInfo.PropertyInfo));
 
                 if (columnInfo.IsIdentifier && columnInfo.PropertyInfo.PropertyType.IsValueType)
@@ -146,7 +154,11 @@ namespace MicroLite.Mapping
             {
                 VerifyType(forType);
 
-                log.TryLogDebug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
+                }
+
                 objectInfo = ObjectInfo.MappingConvention.CreateObjectInfo(forType);
 
                 var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos);
@@ -155,7 +167,11 @@ namespace MicroLite.Mapping
                 objectInfos = newObjectInfos;
             }
 
-            log.TryLogDebug(Messages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
+            if (log.IsDebug)
+            {
+                log.Debug(Messages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
+            }
+
             return objectInfo;
         }
 
@@ -165,6 +181,11 @@ namespace MicroLite.Mapping
         /// <returns>A new instance of the type.</returns>
         public object CreateInstance()
         {
+            if (log.IsDebug)
+            {
+                log.Debug(Messages.ObjectInfo_CreatingInstance, this.forType.FullName);
+            }
+
             return Activator.CreateInstance(this.forType);
         }
 
@@ -198,11 +219,16 @@ namespace MicroLite.Mapping
 
             if (!this.propertyAccessors.TryGetValue(propertyName, out propertyAccessor))
             {
-                log.TryLogError(Messages.ObjectInfo_UnknownProperty, this.ForType.Name, propertyName);
-                throw new MicroLiteException(Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName));
+                var message = Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName);
+                log.Error(message);
+                throw new MicroLiteException(message);
             }
 
-            log.TryLogDebug(Messages.ObjectInfo_GettingPropertyValue, this.ForType.Name, propertyName);
+            if (log.IsDebug)
+            {
+                log.Debug(Messages.ObjectInfo_GettingPropertyValue, this.ForType.Name, propertyName);
+            }
+
             var value = propertyAccessor.GetValue(instance);
 
             return value;
@@ -224,11 +250,16 @@ namespace MicroLite.Mapping
 
             if (columnInfo == null)
             {
-                log.TryLogError(Messages.ObjectInfo_ColumnNotMapped, columnName, this.ForType.Name);
-                throw new MicroLiteException(Messages.ObjectInfo_ColumnNotMapped.FormatWith(columnName, this.ForType.Name));
+                var message = Messages.ObjectInfo_ColumnNotMapped.FormatWith(columnName, this.ForType.Name);
+                log.Error(message);
+                throw new MicroLiteException(message);
             }
 
-            log.TryLogDebug(Messages.ObjectInfo_GettingPropertyValueForColumn, this.ForType.Name, columnInfo.PropertyInfo.Name, columnName);
+            if (log.IsDebug)
+            {
+                log.Debug(Messages.ObjectInfo_GettingPropertyValueForColumn, this.ForType.Name, columnInfo.PropertyInfo.Name, columnName);
+            }
+
             var value = this.propertyAccessors[columnInfo.PropertyInfo.Name].GetValue(instance);
 
             var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
@@ -272,11 +303,16 @@ namespace MicroLite.Mapping
 
             if (!this.propertyAccessors.TryGetValue(propertyName, out propertyAccessor))
             {
-                log.TryLogError(Messages.ObjectInfo_UnknownProperty, this.ForType.Name, propertyName);
-                throw new MicroLiteException(Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName));
+                var message = Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName);
+                log.Error(message);
+                throw new MicroLiteException(message);
             }
 
-            log.TryLogDebug(Messages.IObjectInfo_SettingPropertyValue, this.ForType.Name, propertyName);
+            if (log.IsDebug)
+            {
+                log.Debug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, propertyName);
+            }
+
             propertyAccessor.SetValue(instance, value);
         }
 
@@ -296,15 +332,20 @@ namespace MicroLite.Mapping
 
             if (columnInfo == null)
             {
-                log.TryLogError(Messages.ObjectInfo_UnknownColumn, this.ForType.Name, columnName);
-                throw new MicroLiteException(Messages.ObjectInfo_UnknownColumn.FormatWith(this.ForType.Name, columnName));
+                var message = Messages.ObjectInfo_UnknownColumn.FormatWith(this.ForType.Name, columnName);
+                log.Error(message);
+                throw new MicroLiteException(message);
             }
 
             var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
 
             var converted = typeConverter.ConvertFromDbValue(value, columnInfo.PropertyInfo.PropertyType);
 
-            log.TryLogDebug(Messages.IObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
+            if (log.IsDebug)
+            {
+                log.Debug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
+            }
+
             this.propertyAccessors[columnInfo.PropertyInfo.Name].SetValue(instance, converted);
         }
 
@@ -327,7 +368,7 @@ namespace MicroLite.Mapping
 
             if (message != null)
             {
-                log.TryLogFatal(message);
+                log.Fatal(message);
                 throw new MicroLiteException(message);
             }
         }
@@ -341,8 +382,9 @@ namespace MicroLite.Mapping
 
             if (instance.GetType() != this.ForType)
             {
-                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
-                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
+                var mesage = Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name);
+                log.Error(mesage);
+                throw new MicroLiteException(mesage);
             }
         }
     }

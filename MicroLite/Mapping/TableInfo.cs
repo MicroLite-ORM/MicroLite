@@ -151,13 +151,21 @@ namespace MicroLite.Mapping
 
             if (duplicatedColumn != null)
             {
-                log.TryLogFatal(Messages.TableInfo_ColumnMappedMultipleTimes, duplicatedColumn.Key);
+                if (log.IsFatal)
+                {
+                    log.Fatal(Messages.TableInfo_ColumnMappedMultipleTimes, duplicatedColumn.Key);
+                }
+
                 throw new MicroLiteException(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
             }
 
             if (!mappedColumns.Any(c => c.IsIdentifier))
             {
-                log.TryLogFatal(Messages.TableInfo_NoIdentifierColumn, this.schema, this.name);
+                if (log.IsFatal)
+                {
+                    log.Fatal(Messages.TableInfo_NoIdentifierColumn, this.schema, this.name);
+                }
+
                 throw new MicroLiteException(Messages.TableInfo_NoIdentifierColumn.FormatWith(this.schema, this.name));
             }
         }

@@ -28,11 +28,14 @@ namespace MicroLite.Mapping
 
         internal ConventionMappingConvention(ConventionMappingSettings settings)
         {
-            this.log.TryLogInfo(
-                Messages.ConventionMappingConvention_Configuration,
-                settings.UsePluralClassNameForTableName.ToString(),
-                settings.TableSchema ?? "null",
-                settings.IdentifierStrategy.ToString());
+            if (this.log.IsInfo)
+            {
+                this.log.Info(
+                    Messages.ConventionMappingConvention_Configuration,
+                    settings.UsePluralClassNameForTableName.ToString(),
+                    settings.TableSchema ?? "null",
+                    settings.IdentifierStrategy.ToString());
+            }
 
             this.settings = settings;
         }
@@ -64,13 +67,21 @@ namespace MicroLite.Mapping
             {
                 if (!property.CanRead || !property.CanWrite)
                 {
-                    this.log.TryLogDebug(Messages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                    if (this.log.IsDebug)
+                    {
+                        this.log.Debug(Messages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                    }
+
                     continue;
                 }
 
                 if (this.settings.Ignore(property))
                 {
-                    this.log.TryLogDebug(Messages.ConventionMappingConvention_IgnoringProperty, forType.Name, property.Name);
+                    if (this.log.IsDebug)
+                    {
+                        this.log.Debug(Messages.ConventionMappingConvention_IgnoringProperty, forType.Name, property.Name);
+                    }
+
                     continue;
                 }
 

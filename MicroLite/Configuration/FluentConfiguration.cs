@@ -46,7 +46,11 @@ namespace MicroLite.Configuration
 
                 if (sessionFactory == null)
                 {
-                    this.log.TryLogDebug(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
+                    if (this.log.IsDebug)
+                    {
+                        this.log.Debug(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
+                    }
+
                     sessionFactory = new SessionFactory(objectBuilder, this.options);
                     MicroLite.Query.SqlBuilder.DefaultSqlCharacters = sessionFactory.SqlDialect.SqlCharacters;
 
@@ -73,12 +77,16 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("connectionName");
             }
 
-            this.log.TryLogDebug(Messages.FluentConfiguration_ReadingConnection, connectionName);
+            if (this.log.IsDebug)
+            {
+                this.log.Debug(Messages.FluentConfiguration_ReadingConnection, connectionName);
+            }
+
             var configSection = ConfigurationManager.ConnectionStrings[connectionName];
 
             if (configSection == null)
             {
-                this.log.TryLogFatal(Messages.FluentConfiguration_ConnectionNotFound, connectionName);
+                this.log.Fatal(Messages.FluentConfiguration_ConnectionNotFound, connectionName);
                 throw new MicroLiteException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
 
@@ -95,7 +103,7 @@ namespace MicroLite.Configuration
             }
             catch (Exception e)
             {
-                this.log.TryLogFatal(e.Message, e);
+                this.log.Fatal(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }
@@ -106,13 +114,13 @@ namespace MicroLite.Configuration
 
             if (sqlDialectType == null)
             {
-                this.log.TryLogFatal(Messages.FluentConfiguration_DialectNotSupported.FormatWith(sqlDialect));
+                this.log.Fatal(Messages.FluentConfiguration_DialectNotSupported.FormatWith(sqlDialect));
                 throw new NotSupportedException(Messages.FluentConfiguration_DialectNotSupported.FormatWith(sqlDialect));
             }
 
             if (!typeof(ISqlDialect).IsAssignableFrom(sqlDialectType))
             {
-                this.log.TryLogFatal(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith(sqlDialect));
+                this.log.Fatal(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith(sqlDialect));
                 throw new NotSupportedException(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith(sqlDialect));
             }
 

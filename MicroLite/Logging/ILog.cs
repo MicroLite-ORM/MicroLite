@@ -20,6 +20,46 @@ namespace MicroLite.Logging
     public interface ILog
     {
         /// <summary>
+        /// Gets a value indicating whether the logger is logging debug statements.
+        /// </summary>
+        bool IsDebug
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger is logging error statements.
+        /// </summary>
+        bool IsError
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger is logging fatal statements.
+        /// </summary>
+        bool IsFatal
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger is logging info statements.
+        /// </summary>
+        bool IsInfo
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger is logging warning statements.
+        /// </summary>
+        bool IsWarn
+        {
+            get;
+        }
+
+        /// <summary>
         /// Writes the message to the log as a debug statement.
         /// </summary>
         /// <param name="message">The message to be logged.</param>

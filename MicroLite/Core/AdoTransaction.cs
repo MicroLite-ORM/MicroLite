@@ -82,9 +82,9 @@ namespace MicroLite.Core
 
             try
             {
-                log.TryLogDebug(Messages.Transaction_Committing);
+                log.Debug(Messages.Transaction_Committing);
                 this.transaction.Commit();
-                log.TryLogDebug(Messages.Transaction_Committed);
+                log.Debug(Messages.Transaction_Committed);
 
                 this.committed = true;
 
@@ -94,7 +94,7 @@ namespace MicroLite.Core
             {
                 this.failed = true;
 
-                log.TryLogError(e.Message, e);
+                log.Error(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }
@@ -105,12 +105,12 @@ namespace MicroLite.Core
             {
                 if (this.IsActive)
                 {
-                    log.TryLogWarn(Messages.Transaction_DisposedUncommitted);
+                    log.Warn(Messages.Transaction_DisposedUncommitted);
                     this.Rollback();
                 }
                 else if (this.failed && !this.rolledBack)
                 {
-                    log.TryLogWarn(Messages.Transaction_RollingBackFailedCommit);
+                    log.Warn(Messages.Transaction_RollingBackFailedCommit);
                     this.Rollback();
                 }
 
@@ -118,7 +118,7 @@ namespace MicroLite.Core
                 this.transaction = null;
                 this.connection = null;
 
-                log.TryLogDebug(Messages.Transaction_Disposed);
+                log.Debug(Messages.Transaction_Disposed);
                 this.disposed = true;
             }
         }
@@ -132,7 +132,7 @@ namespace MicroLite.Core
 
             if (this.IsActive)
             {
-                log.TryLogDebug(Messages.Transaction_EnlistingCommand);
+                log.Debug(Messages.Transaction_EnlistingCommand);
                 command.Transaction = this.transaction;
             }
         }
@@ -144,9 +144,9 @@ namespace MicroLite.Core
 
             try
             {
-                log.TryLogDebug(Messages.Transaction_RollingBack);
+                log.Debug(Messages.Transaction_RollingBack);
                 this.transaction.Rollback();
-                log.TryLogDebug(Messages.Transaction_RolledBack);
+                log.Debug(Messages.Transaction_RolledBack);
 
                 this.rolledBack = true;
 
@@ -156,7 +156,7 @@ namespace MicroLite.Core
             {
                 this.failed = true;
 
-                log.TryLogError(e.Message, e);
+                log.Error(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }
