@@ -235,7 +235,7 @@ namespace MicroLite.Core
 
             var objectInfo = ObjectInfo.For(objectDelta.ForType);
 
-            var builder = new UpdateSqlBuilder(this.SqlDialect.SqlCharacters).Table(objectDelta.ForType);
+            var builder = new UpdateSqlBuilder(this.SqlDialect.SqlCharacters).Table(objectInfo);
 
             foreach (var change in objectDelta.Changes)
             {

@@ -229,6 +229,24 @@ namespace MicroLite.Query
             return this;
         }
 
+        public IWhereOrOrderBy From(IObjectInfo objectInfo)
+        {
+            if (this.InnerSql.Length > 7 && this.InnerSql[7].CompareTo('*') == 0)
+            {
+#if NET_3_5
+                this.InnerSql.Length = 0;
+#else
+                this.InnerSql.Clear();
+#endif
+                this.AddColumns(objectInfo.TableInfo.Columns.Select(c => c.ColumnName).ToArray());
+            }
+
+            this.InnerSql.Append(" FROM ");
+            this.AppendTableName(objectInfo);
+
+            return this;
+        }
+
         /// <summary>
         /// Specifies the table to perform the query against.
         /// </summary>
@@ -262,20 +280,7 @@ namespace MicroLite.Query
         {
             var objectInfo = ObjectInfo.For(forType);
 
-            if (this.InnerSql.Length > 7 && this.InnerSql[7].CompareTo('*') == 0)
-            {
-#if NET_3_5
-                this.InnerSql.Length = 0;
-#else
-                this.InnerSql.Clear();
-#endif
-                this.AddColumns(objectInfo.TableInfo.Columns.Select(c => c.ColumnName).ToArray());
-            }
-
-            this.InnerSql.Append(" FROM ");
-            this.AppendTableName(objectInfo);
-
-            return this;
+            return this.From(objectInfo);
         }
 
         /// <summary>

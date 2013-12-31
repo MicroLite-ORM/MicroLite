@@ -24,6 +24,14 @@ namespace MicroLite.Query
             this.InnerSql.Append("INSERT INTO ");
         }
 
+        public IInsertValue Into(IObjectInfo objectInfo)
+        {
+            this.AppendTableName(objectInfo);
+            this.InnerSql.Append(" (");
+
+            return this;
+        }
+
         public IInsertValue Into(string tableName)
         {
             this.AppendTableName(tableName);
@@ -35,10 +43,8 @@ namespace MicroLite.Query
         public IInsertValue Into(Type forType)
         {
             var objectInfo = ObjectInfo.For(forType);
-            this.AppendTableName(objectInfo);
-            this.InnerSql.Append(" (");
 
-            return this;
+            return this.Into(objectInfo);
         }
 
         public override SqlQuery ToSqlQuery()

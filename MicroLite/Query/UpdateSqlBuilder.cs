@@ -44,6 +44,14 @@ namespace MicroLite.Query
             return this;
         }
 
+        public ISetOrWhere Table(IObjectInfo objectInfo)
+        {
+            this.AppendTableName(objectInfo);
+            this.InnerSql.Append(" SET");
+
+            return this;
+        }
+
         public ISetOrWhere Table(string tableName)
         {
             this.AppendTableName(tableName);
@@ -55,10 +63,8 @@ namespace MicroLite.Query
         public ISetOrWhere Table(Type forType)
         {
             var objectInfo = ObjectInfo.For(forType);
-            this.AppendTableName(objectInfo);
-            this.InnerSql.Append(" SET");
 
-            return this;
+            return this.Table(objectInfo);
         }
 
         public IToSqlQuery Where(string columnName, object columnValue)

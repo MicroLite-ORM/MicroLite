@@ -160,14 +160,13 @@ namespace MicroLite.Dialect
         /// <exception cref="System.NotSupportedException">Thrown if the StatementType is not supported.</exception>
         public virtual SqlQuery CreateQuery(StatementType statementType, object instance)
         {
-            var forType = instance.GetType();
-            var objectInfo = ObjectInfo.For(forType);
+            var objectInfo = ObjectInfo.For(instance.GetType());
 
             switch (statementType)
             {
                 case StatementType.Insert:
                     var insertSqlBuilder = new InsertSqlBuilder(this.SqlCharacters);
-                    insertSqlBuilder.Into(forType);
+                    insertSqlBuilder.Into(objectInfo);
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {
@@ -193,7 +192,7 @@ namespace MicroLite.Dialect
 
                 case StatementType.Update:
                     var updateSqlBuilder = new UpdateSqlBuilder(this.SqlCharacters);
-                    updateSqlBuilder.Table(forType);
+                    updateSqlBuilder.Table(objectInfo);
 
                     foreach (var column in objectInfo.TableInfo.Columns)
                     {

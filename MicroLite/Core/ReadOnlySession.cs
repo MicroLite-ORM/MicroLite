@@ -176,7 +176,7 @@ namespace MicroLite.Core
             var objectInfo = ObjectInfo.For(typeof(T));
 
             var sqlQuery = new SelectSqlBuilder(this.SqlDialect.SqlCharacters, "*")
-                .From(objectInfo.ForType)
+                .From(objectInfo)
                 .Where(objectInfo.TableInfo.IdentifierColumn).IsEqualTo(identifier)
                 .ToSqlQuery();
 
