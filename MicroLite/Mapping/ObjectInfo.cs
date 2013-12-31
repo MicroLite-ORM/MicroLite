@@ -21,7 +21,6 @@ namespace MicroLite.Mapping
 
 #endif
 
-    using System.Linq;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
     using MicroLite.TypeConverters;
@@ -246,7 +245,16 @@ namespace MicroLite.Mapping
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var columnInfo = this.TableInfo.Columns.SingleOrDefault(c => c.ColumnName == columnName);
+            ColumnInfo columnInfo = null;
+
+            for (int i = 0; i < this.tableInfo.Columns.Count; i++)
+            {
+                if (this.tableInfo.Columns[i].ColumnName == columnName)
+                {
+                    columnInfo = this.tableInfo.Columns[i];
+                    break;
+                }
+            }
 
             if (columnInfo == null)
             {
@@ -328,7 +336,16 @@ namespace MicroLite.Mapping
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var columnInfo = this.TableInfo.Columns.SingleOrDefault(c => c.ColumnName == columnName);
+            ColumnInfo columnInfo = null;
+
+            for (int i = 0; i < this.tableInfo.Columns.Count; i++)
+            {
+                if (this.tableInfo.Columns[i].ColumnName == columnName)
+                {
+                    columnInfo = this.tableInfo.Columns[i];
+                    break;
+                }
+            }
 
             if (columnInfo == null)
             {
