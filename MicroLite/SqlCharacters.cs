@@ -176,6 +176,11 @@ namespace MicroLite
                 return sql;
             }
 
+            if (!sql.Contains('.'))
+            {
+                return this.LeftDelimiter + sql + this.RightDelimiter;
+            }
+
             var sqlPieces = sql.Split(Characters.Period);
 
 #if NET_3_5
