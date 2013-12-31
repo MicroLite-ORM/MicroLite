@@ -27,7 +27,27 @@ namespace MicroLite.Query
         internal SelectSqlBuilder(SqlCharacters sqlCharacters, params string[] columns)
             : base(sqlCharacters)
         {
-            this.AddColumns(columns);
+            this.InnerSql.Append("SELECT ");
+
+            if (columns != null)
+            {
+                if (columns.Length == 1 && columns[0] == "*")
+                {
+                    this.InnerSql.Append("*");
+                }
+                else
+                {
+                    for (int i = 0; i < columns.Length; i++)
+                    {
+                        if (i > 0)
+                        {
+                            this.InnerSql.Append(", ");
+                        }
+
+                        this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -238,7 +258,17 @@ namespace MicroLite.Query
 #else
                 this.InnerSql.Clear();
 #endif
-                this.AddColumns(objectInfo.TableInfo.Columns.Select(c => c.ColumnName).ToArray());
+                this.InnerSql.Append("SELECT ");
+
+                for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        this.InnerSql.Append(", ");
+                    }
+
+                    this.InnerSql.Append(this.SqlCharacters.EscapeSql(objectInfo.TableInfo.Columns[i].ColumnName));
+                }
             }
 
             this.InnerSql.Append(" FROM ");
@@ -1060,31 +1090,6 @@ namespace MicroLite.Query
             this.addedWhere = true;
 
             return this;
-        }
-
-        private void AddColumns(string[] columns)
-        {
-            this.InnerSql.Append("SELECT ");
-
-            if (columns != null)
-            {
-                if (columns.Length == 1 && columns[0] == "*")
-                {
-                    this.InnerSql.Append("*");
-                }
-                else
-                {
-                    for (int i = 0; i < columns.Length; i++)
-                    {
-                        if (i > 0)
-                        {
-                            this.InnerSql.Append(", ");
-                        }
-
-                        this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
-                    }
-                }
-            }
         }
 
         private void AddOrder(string[] columns, string direction)
