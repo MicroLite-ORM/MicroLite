@@ -194,9 +194,25 @@ namespace MicroLite.Query
                 this.InnerSql.Append(".");
             }
 
-            this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
-            this.InnerSql.Append(objectInfo.TableInfo.Name);
-            this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
+            this.AppendTableName(objectInfo.TableInfo.Name);
+        }
+
+        /// <summary>
+        /// Appends the table name to the inner sql.
+        /// </summary>
+        /// <param name="tableName">The name of the table.</param>
+        protected void AppendTableName(string tableName)
+        {
+            if (this.sqlCharacters.IsEscaped(tableName))
+            {
+                this.innerSql.Append(tableName);
+            }
+            else
+            {
+                this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
+                this.InnerSql.Append(tableName);
+                this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
+            }
         }
     }
 }

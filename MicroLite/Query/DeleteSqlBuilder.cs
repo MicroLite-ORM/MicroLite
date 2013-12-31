@@ -26,7 +26,7 @@ namespace MicroLite.Query
 
         public IWhereEquals From(string tableName)
         {
-            this.InnerSql.Append(this.SqlCharacters.EscapeSql(tableName));
+            this.AppendTableName(tableName);
 
             return this;
         }

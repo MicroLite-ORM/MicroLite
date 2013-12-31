@@ -242,7 +242,7 @@ namespace MicroLite.Query
         public IWhereOrOrderBy From(string tableName)
         {
             this.InnerSql.Append(" FROM ");
-            this.InnerSql.Append(this.SqlCharacters.EscapeSql(tableName));
+            this.AppendTableName(tableName);
 
             return this;
         }

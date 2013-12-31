@@ -46,7 +46,7 @@ namespace MicroLite.Query
 
         public ISetOrWhere Table(string tableName)
         {
-            this.InnerSql.Append(this.SqlCharacters.EscapeSql(tableName));
+            this.AppendTableName(tableName);
             this.InnerSql.Append(" SET");
 
             return this;
