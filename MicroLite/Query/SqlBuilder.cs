@@ -23,7 +23,7 @@ namespace MicroLite.Query
     public abstract class SqlBuilder : IToSqlQuery
     {
         private readonly List<object> arguments = new List<object>();
-        private readonly StringBuilder innerSql = new StringBuilder(capacity: 120);
+        private readonly StringBuilder innerSql = new StringBuilder(capacity: 128);
         private readonly SqlCharacters sqlCharacters;
 
         /// <summary>
@@ -188,10 +188,10 @@ namespace MicroLite.Query
         {
             if (!string.IsNullOrEmpty(objectInfo.TableInfo.Schema))
             {
-                this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
-                this.InnerSql.Append(objectInfo.TableInfo.Schema);
-                this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
-                this.InnerSql.Append(".");
+                this.InnerSql.Append(this.sqlCharacters.LeftDelimiter)
+                    .Append(objectInfo.TableInfo.Schema)
+                    .Append(this.sqlCharacters.RightDelimiter)
+                    .Append('.');
             }
 
             this.AppendTableName(objectInfo.TableInfo.Name);
@@ -209,9 +209,9 @@ namespace MicroLite.Query
             }
             else
             {
-                this.InnerSql.Append(this.sqlCharacters.LeftDelimiter);
-                this.InnerSql.Append(tableName);
-                this.InnerSql.Append(this.sqlCharacters.RightDelimiter);
+                this.InnerSql.Append(this.sqlCharacters.LeftDelimiter)
+                    .Append(tableName)
+                    .Append(this.sqlCharacters.RightDelimiter);
             }
         }
     }

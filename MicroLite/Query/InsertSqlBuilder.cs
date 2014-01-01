@@ -66,8 +66,7 @@ namespace MicroLite.Query
                 }
             }
 
-            this.InnerSql.Append(")");
-            this.InnerSql.Append(selectIdentity);
+            this.InnerSql.Append(")").Append(selectIdentity);
 
             return base.ToSqlQuery();
         }

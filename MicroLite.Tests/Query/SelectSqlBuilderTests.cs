@@ -1472,6 +1472,14 @@
             Assert.Equal(@"SELECT Column1 FROM Table WHERE (Column2 IN (?, ?)) AND (Column3 = ?) AND (Column4 > ?) AND (Column5 >= ?) AND (Column6 < ?) AND (Column7 <= ?) AND (Column8 LIKE ?) AND (Column9 <> ?) AND (Column10 IS NOT NULL) AND (Column11 IS NULL)", sqlQuery.CommandText);
         }
 
+        [Fact]
+        public void WhenCreatedWithoutSpecifyingAnyColumnsTheCommandTextIsSelectStar()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            Assert.Equal("SELECT *", sqlBuilder.ToSqlQuery().CommandText);
+        }
+
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
         private class Customer
         {

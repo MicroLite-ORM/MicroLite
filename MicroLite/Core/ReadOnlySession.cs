@@ -98,7 +98,7 @@ namespace MicroLite.Core
 
         public IIncludeMany<T> All<T>() where T : class, new()
         {
-            var sqlQuery = new SelectSqlBuilder(this.SqlDialect.SqlCharacters, "*")
+            var sqlQuery = new SelectSqlBuilder(this.SqlDialect.SqlCharacters)
                 .From(typeof(T))
                 .ToSqlQuery();
 
@@ -175,7 +175,7 @@ namespace MicroLite.Core
 
             var objectInfo = ObjectInfo.For(typeof(T));
 
-            var sqlQuery = new SelectSqlBuilder(this.SqlDialect.SqlCharacters, "*")
+            var sqlQuery = new SelectSqlBuilder(this.SqlDialect.SqlCharacters)
                 .From(objectInfo)
                 .Where(objectInfo.TableInfo.IdentifierColumn).IsEqualTo(identifier)
                 .ToSqlQuery();

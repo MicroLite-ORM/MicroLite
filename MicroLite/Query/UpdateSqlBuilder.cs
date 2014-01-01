@@ -35,10 +35,10 @@ namespace MicroLite.Query
                 this.InnerSql.Append(" ");
             }
 
-            this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnName));
-            this.InnerSql.Append(" = ");
+            this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnName))
+                .Append(" = ")
+                .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
 
-            this.InnerSql.Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
             this.Arguments.Add(columnValue);
 
             return this;
@@ -69,10 +69,10 @@ namespace MicroLite.Query
 
         public IToSqlQuery Where(string columnName, object columnValue)
         {
-            this.InnerSql.Append(" WHERE ");
-            this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnName));
-            this.InnerSql.Append(" = ");
-            this.InnerSql.Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
+            this.InnerSql.Append(" WHERE ")
+                .Append(this.SqlCharacters.EscapeSql(columnName))
+                .Append(" = ")
+                .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
 
             this.Arguments.Add(columnValue);
 

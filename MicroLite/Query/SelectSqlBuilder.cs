@@ -13,7 +13,6 @@
 namespace MicroLite.Query
 {
     using System;
-    using System.Linq;
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
@@ -24,6 +23,12 @@ namespace MicroLite.Query
         private string operand;
         private string whereColumnName;
 
+        internal SelectSqlBuilder(SqlCharacters sqlCharacters)
+            : base(sqlCharacters)
+        {
+            this.InnerSql.Append("SELECT *");
+        }
+
         internal SelectSqlBuilder(SqlCharacters sqlCharacters, params string[] columns)
             : base(sqlCharacters)
         {
@@ -33,7 +38,7 @@ namespace MicroLite.Query
             {
                 if (columns.Length == 1 && columns[0] == "*")
                 {
-                    this.InnerSql.Append("*");
+                    this.InnerSql.Append('*');
                 }
                 else
                 {
@@ -109,7 +114,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy AndWhere(string predicate, params object[] args)
         {
-            this.AppendPredicate(" AND ({0})", predicate, args);
+            this.Arguments.AddRange(args);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
+
+            this.InnerSql.AppendFormat(" AND ({0})", renumberedPredicate);
 
             return this;
         }
@@ -191,10 +200,13 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(
-                " (" + this.whereColumnName + " BETWEEN {0})",
-                this.SqlCharacters.GetParameterName(0) + " AND " + this.SqlCharacters.GetParameterName(1),
-                new[] { lower, upper });
+            this.Arguments.Add(lower);
+            this.Arguments.Add(upper);
+
+            var lowerParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 2);
+            var upperParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.AppendFormat(" ({0} BETWEEN {1} AND {2})", this.whereColumnName, lowerParam, upperParam);
 
             return this;
         }
@@ -251,14 +263,9 @@ namespace MicroLite.Query
 
         public IWhereOrOrderBy From(IObjectInfo objectInfo)
         {
-            if (this.InnerSql.Length > 7 && this.InnerSql[7].CompareTo('*') == 0)
+            if (this.InnerSql.Length == 8 && this.InnerSql[7].CompareTo('*') == 0)
             {
-#if NET_3_5
-                this.InnerSql.Length = 0;
-#else
-                this.InnerSql.Clear();
-#endif
-                this.InnerSql.Append("SELECT ");
+                this.InnerSql.Remove(7, 1);
 
                 for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
                 {
@@ -373,7 +380,11 @@ namespace MicroLite.Query
         /// </example>
         public IOrderBy Having(string predicate, object value)
         {
-            this.AppendPredicate(" HAVING {0}", predicate, value);
+            this.Arguments.Add(value);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
+
+            this.InnerSql.AppendFormat(" HAVING {0}", renumberedPredicate);
 
             return this;
         }
@@ -407,12 +418,21 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-#if NET_3_5
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.SqlCharacters.GetParameterName(i)).ToArray());
-#else
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.SqlCharacters.GetParameterName(i)));
-#endif
-            this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", predicate, args);
+            this.Arguments.AddRange(args);
+
+            this.InnerSql.AppendFormat(" ({0} IN (", this.whereColumnName);
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (i > 0)
+                {
+                    this.InnerSql.Append(", ");
+                }
+
+                this.InnerSql.Append(this.SqlCharacters.GetParameterName((this.Arguments.Count - args.Length) + i));
+            }
+
+            this.InnerSql.Append("))");
 
             return this;
         }
@@ -452,7 +472,11 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " IN ({0}))", subQuery.CommandText, subQuery.GetArgumentArray());
+            this.Arguments.AddRange(subQuery.Arguments);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+
+            this.InnerSql.AppendFormat(" ({0} IN ({1}))", this.whereColumnName, renumberedPredicate);
 
             return this;
         }
@@ -481,7 +505,11 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " = {0})", this.SqlCharacters.GetParameterName(0), comparisonValue);
+            this.Arguments.Add(comparisonValue);
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.AppendFormat(" ({0} = {1})", this.whereColumnName, parameter);
 
             return this;
         }
@@ -510,7 +538,11 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " > {0})", this.SqlCharacters.GetParameterName(0), comparisonValue);
+            this.Arguments.Add(comparisonValue);
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.AppendFormat(" ({0} > {1})", this.whereColumnName, parameter);
 
             return this;
         }
@@ -539,7 +571,11 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " >= {0})", this.SqlCharacters.GetParameterName(0), comparisonValue);
+            this.Arguments.Add(comparisonValue);
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.AppendFormat(" ({0} >= {1})", this.whereColumnName, parameter);
 
             return this;
         }
@@ -568,7 +604,11 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " < {0})", this.SqlCharacters.GetParameterName(0), comparisonValue);
+            this.Arguments.Add(comparisonValue);
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.AppendFormat(" ({0} < {1})", this.whereColumnName, parameter);
 
             return this;
         }
@@ -597,7 +637,11 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " <= {0})", this.SqlCharacters.GetParameterName(0), comparisonValue);
+            this.Arguments.Add(comparisonValue);
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.AppendFormat(" ({0} <= {1})", this.whereColumnName, parameter);
 
             return this;
         }
@@ -626,7 +670,11 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " LIKE {0})", this.SqlCharacters.GetParameterName(0), comparisonValue);
+            this.Arguments.Add(comparisonValue);
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.AppendFormat(" ({0} LIKE {1})", this.whereColumnName, parameter);
 
             return this;
         }
@@ -655,7 +703,11 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " <> {0})", this.SqlCharacters.GetParameterName(0), comparisonValue);
+            this.Arguments.Add(comparisonValue);
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.AppendFormat(" ({0} <> {1})", this.whereColumnName, parameter);
 
             return this;
         }
@@ -829,12 +881,21 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-#if NET_3_5
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.SqlCharacters.GetParameterName(i)).ToArray());
-#else
-            var predicate = string.Join(", ", Enumerable.Range(0, args.Length).Select(i => this.SqlCharacters.GetParameterName(i)));
-#endif
-            this.AppendPredicate(" (" + this.whereColumnName + " NOT IN ({0}))", predicate, args);
+            this.Arguments.AddRange(args);
+
+            this.InnerSql.AppendFormat(" ({0} NOT IN (", this.whereColumnName);
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (i > 0)
+                {
+                    this.InnerSql.Append(", ");
+                }
+
+                this.InnerSql.Append(this.SqlCharacters.GetParameterName((this.Arguments.Count - args.Length) + i));
+            }
+
+            this.InnerSql.Append("))");
 
             return this;
         }
@@ -874,7 +935,11 @@ namespace MicroLite.Query
                 this.InnerSql.Append(this.operand);
             }
 
-            this.AppendPredicate(" (" + this.whereColumnName + " NOT IN ({0}))", subQuery.CommandText, subQuery.GetArgumentArray());
+            this.Arguments.AddRange(subQuery.Arguments);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+
+            this.InnerSql.AppendFormat(" ({0} NOT IN ({1}))", this.whereColumnName, renumberedPredicate);
 
             return this;
         }
@@ -971,7 +1036,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy OrWhere(string predicate, params object[] args)
         {
-            this.AppendPredicate(" OR ({0})", predicate, args);
+            this.Arguments.AddRange(args);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
+
+            this.InnerSql.AppendFormat(" OR ({0})", renumberedPredicate);
 
             return this;
         }
@@ -1086,7 +1155,11 @@ namespace MicroLite.Query
         /// </example>
         public IAndOrOrderBy Where(string predicate, params object[] args)
         {
-            this.AppendPredicate(" WHERE ({0})", predicate, args);
+            this.Arguments.AddRange(args);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
+
+            this.InnerSql.AppendFormat(" WHERE ({0})", renumberedPredicate);
             this.addedWhere = true;
 
             return this;
@@ -1113,15 +1186,6 @@ namespace MicroLite.Query
 
             this.InnerSql.Append(direction);
             this.addedOrder = true;
-        }
-
-        private void AppendPredicate(string appendFormat, string predicate, params object[] args)
-        {
-            this.Arguments.AddRange(args);
-
-            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
-
-            this.InnerSql.AppendFormat(appendFormat, renumberedPredicate);
         }
     }
 }
