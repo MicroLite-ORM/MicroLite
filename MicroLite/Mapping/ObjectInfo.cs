@@ -32,7 +32,7 @@ namespace MicroLite.Mapping
     public sealed class ObjectInfo : IObjectInfo
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private static IMappingConvention mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+        private static IMappingConvention mappingConvention;
 
         private static IDictionary<Type, IObjectInfo> objectInfos = new Dictionary<Type, IObjectInfo>
         {
@@ -124,6 +124,11 @@ namespace MicroLite.Mapping
         {
             get
             {
+                if (ObjectInfo.mappingConvention == null)
+                {
+                    ObjectInfo.mappingConvention = ObjectInfo.mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+                }
+
                 return ObjectInfo.mappingConvention;
             }
 
