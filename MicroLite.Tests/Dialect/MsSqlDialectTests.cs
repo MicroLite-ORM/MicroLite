@@ -225,17 +225,17 @@
         public void PageWithMultiWhereAndMultiOrderByMultiLine()
         {
             var sqlQuery = new SqlQuery(@"SELECT
- [Customers].[CustomerId],
- [Customers].[Name],
- [Customers].[DoB],
- [Customers].[StatusId]
- FROM
- [Sales].[Customers]
- WHERE
- ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)
- ORDER BY
- [Customers].[Name] ASC,
- [Customers].[DoB] ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
+[Customers].[CustomerId],
+[Customers].[Name],
+[Customers].[DoB],
+[Customers].[StatusId]
+FROM
+[Sales].[Customers]
+WHERE
+([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)
+ORDER BY
+[Customers].[Name] ASC,
+[Customers].[DoB] ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
 
             var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
@@ -304,16 +304,16 @@
         public void PageWithWhereAndOrderByMultiLine()
         {
             var sqlQuery = new SqlQuery(@"SELECT
- [Customers].[CustomerId],
- [Customers].[Name],
- [Customers].[DoB],
- [Customers].[StatusId]
- FROM
- [Sales].[Customers]
- WHERE
- [Customers].[StatusId] = @p0
- ORDER BY
- [Customers].[Name] ASC", new object[] { CustomerStatus.Active });
+[Customers].[CustomerId],
+[Customers].[Name],
+[Customers].[DoB],
+[Customers].[StatusId]
+FROM
+[Sales].[Customers]
+WHERE
+[Customers].[StatusId] = @p0
+ORDER BY
+[Customers].[Name] ASC", new object[] { CustomerStatus.Active });
 
             var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));

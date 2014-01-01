@@ -91,11 +91,384 @@
         }
 
         [Fact]
+        public void ReNumberParametersNoParameters()
+        {
+            var commandText = SqlUtility.RenumberParameters("(Column1 IS NULL)", totalArgumentCount: 5);
+
+            Assert.Equal("(Column1 IS NULL)", commandText);
+        }
+
+        [Fact]
         public void ReNumberParametersWithExistingArguments()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", totalArgumentCount: 4);
 
             Assert.Equal("(Column1 = @p2 OR @p2 IS NULL) AND Column2 = @p3", commandText);
+        }
+
+        public class WhenTheCommandTextIsOnASingleLineAndContainsOrderByButNoWhere
+        {
+            private readonly string commandText = @"SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] ORDER BY [Customers].[Name] ASC";
+
+            private readonly string orderbyClause;
+            private readonly string selectClause;
+            private readonly string tableName;
+            private readonly string whereClause;
+
+            public WhenTheCommandTextIsOnASingleLineAndContainsOrderByButNoWhere()
+            {
+                this.selectClause = SqlUtility.ReadSelectClause(this.commandText);
+                this.tableName = SqlUtility.ReadTableName(this.commandText);
+                this.whereClause = SqlUtility.ReadWhereClause(this.commandText);
+                this.orderbyClause = SqlUtility.ReadOrderByClause(this.commandText);
+            }
+
+            [Fact]
+            public void TheOrderByClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[Name] ASC", this.orderbyClause);
+            }
+
+            [Fact]
+            public void TheSelectClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId]", this.selectClause);
+            }
+
+            [Fact]
+            public void TheTableNameShouldBeReturned()
+            {
+                Assert.Equal("[Sales].[Customers]", this.tableName);
+            }
+
+            [Fact]
+            public void TheWhereClauseShouldBeEmpty()
+            {
+                Assert.Equal(string.Empty, this.whereClause);
+            }
+        }
+
+        public class WhenTheCommandTextIsOnASingleLineAndContainsWhereAndOrderBy
+        {
+            private readonly string commandText = "SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC";
+            private readonly string orderbyClause;
+            private readonly string selectClause;
+            private readonly string tableName;
+            private readonly string whereClause;
+
+            public WhenTheCommandTextIsOnASingleLineAndContainsWhereAndOrderBy()
+            {
+                this.selectClause = SqlUtility.ReadSelectClause(this.commandText);
+                this.tableName = SqlUtility.ReadTableName(this.commandText);
+                this.whereClause = SqlUtility.ReadWhereClause(this.commandText);
+                this.orderbyClause = SqlUtility.ReadOrderByClause(this.commandText);
+            }
+
+            [Fact]
+            public void TheOrderByClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[Name] ASC", this.orderbyClause);
+            }
+
+            [Fact]
+            public void TheSelectClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId]", this.selectClause);
+            }
+
+            [Fact]
+            public void TheTableNameShouldBeReturned()
+            {
+                Assert.Equal("[Sales].[Customers]", this.tableName);
+            }
+
+            [Fact]
+            public void TheWhereClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[StatusId] = @p0", this.whereClause);
+            }
+        }
+
+        public class WhenTheCommandTextIsOnASingleLineAndContainsWhereButNoOrderBy
+        {
+            private readonly string commandText = "SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0";
+            private readonly string orderbyClause;
+            private readonly string selectClause;
+            private readonly string tableName;
+            private readonly string whereClause;
+
+            public WhenTheCommandTextIsOnASingleLineAndContainsWhereButNoOrderBy()
+            {
+                this.selectClause = SqlUtility.ReadSelectClause(this.commandText);
+                this.tableName = SqlUtility.ReadTableName(this.commandText);
+                this.whereClause = SqlUtility.ReadWhereClause(this.commandText);
+                this.orderbyClause = SqlUtility.ReadOrderByClause(this.commandText);
+            }
+
+            [Fact]
+            public void TheOrderByClauseShouldBeEmpty()
+            {
+                Assert.Equal(string.Empty, this.orderbyClause);
+            }
+
+            [Fact]
+            public void TheSelectClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId]", this.selectClause);
+            }
+
+            [Fact]
+            public void TheTableNameShouldBeReturned()
+            {
+                Assert.Equal("[Sales].[Customers]", this.tableName);
+            }
+
+            [Fact]
+            public void TheWhereClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[StatusId] = @p0", this.whereClause);
+            }
+        }
+
+        public class WhenTheCommandTextIsOnASingleLineAndDoesNotContainWhereOrOrderBy
+        {
+            private readonly string commandText = "SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]";
+            private readonly string orderbyClause;
+            private readonly string selectClause;
+            private readonly string tableName;
+            private readonly string whereClause;
+
+            public WhenTheCommandTextIsOnASingleLineAndDoesNotContainWhereOrOrderBy()
+            {
+                this.selectClause = SqlUtility.ReadSelectClause(this.commandText);
+                this.tableName = SqlUtility.ReadTableName(this.commandText);
+                this.whereClause = SqlUtility.ReadWhereClause(this.commandText);
+                this.orderbyClause = SqlUtility.ReadOrderByClause(this.commandText);
+            }
+
+            [Fact]
+            public void TheOrderByClauseShouldBeEmpty()
+            {
+                Assert.Equal(string.Empty, this.orderbyClause);
+            }
+
+            [Fact]
+            public void TheSelectClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId]", this.selectClause);
+            }
+
+            [Fact]
+            public void TheTableNameShouldBeReturned()
+            {
+                Assert.Equal("[Sales].[Customers]", this.tableName);
+            }
+
+            [Fact]
+            public void TheWhereClauseShouldBeEmpty()
+            {
+                Assert.Equal(string.Empty, this.whereClause);
+            }
+        }
+
+        public class WhenTheCommandTextIsOnMultipleLinesAndContainsOrderByButNoWhere
+        {
+            private readonly string commandText = @"SELECT
+[Customers].[CustomerId],
+[Customers].[Name],
+[Customers].[DoB],
+[Customers].[StatusId]
+FROM
+[Sales].[Customers]
+ORDER BY
+[Customers].[Name] ASC";
+
+            private readonly string orderbyClause;
+            private readonly string selectClause;
+            private readonly string tableName;
+            private readonly string whereClause;
+
+            public WhenTheCommandTextIsOnMultipleLinesAndContainsOrderByButNoWhere()
+            {
+                this.selectClause = SqlUtility.ReadSelectClause(this.commandText);
+                this.tableName = SqlUtility.ReadTableName(this.commandText);
+                this.whereClause = SqlUtility.ReadWhereClause(this.commandText);
+                this.orderbyClause = SqlUtility.ReadOrderByClause(this.commandText);
+            }
+
+            [Fact]
+            public void TheOrderByClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[Name] ASC", this.orderbyClause);
+            }
+
+            [Fact]
+            public void TheSelectClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId]", this.selectClause);
+            }
+
+            [Fact]
+            public void TheTableNameShouldBeReturned()
+            {
+                Assert.Equal("[Sales].[Customers]", this.tableName);
+            }
+
+            [Fact]
+            public void TheWhereClauseShouldBeEmpty()
+            {
+                Assert.Equal(string.Empty, this.whereClause);
+            }
+        }
+
+        public class WhenTheCommandTextIsOnMultipleLinesAndContainsWhereAndOrderBy
+        {
+            private readonly string commandText = @"SELECT
+[Customers].[CustomerId],
+[Customers].[Name],
+[Customers].[DoB],
+[Customers].[StatusId]
+FROM
+[Sales].[Customers]
+WHERE
+[Customers].[StatusId] = @p0
+ORDER BY
+[Customers].[Name] ASC";
+
+            private readonly string orderbyClause;
+            private readonly string selectClause;
+            private readonly string tableName;
+            private readonly string whereClause;
+
+            public WhenTheCommandTextIsOnMultipleLinesAndContainsWhereAndOrderBy()
+            {
+                this.selectClause = SqlUtility.ReadSelectClause(this.commandText);
+                this.tableName = SqlUtility.ReadTableName(this.commandText);
+                this.whereClause = SqlUtility.ReadWhereClause(this.commandText);
+                this.orderbyClause = SqlUtility.ReadOrderByClause(this.commandText);
+            }
+
+            [Fact]
+            public void TheOrderByClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[Name] ASC", this.orderbyClause);
+            }
+
+            [Fact]
+            public void TheSelectClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId]", this.selectClause);
+            }
+
+            [Fact]
+            public void TheTableNameShouldBeReturned()
+            {
+                Assert.Equal("[Sales].[Customers]", this.tableName);
+            }
+
+            [Fact]
+            public void TheWhereClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[StatusId] = @p0", this.whereClause);
+            }
+        }
+
+        public class WhenTheCommandTextIsOnMultipleLinesAndContainsWhereButNoOrderBy
+        {
+            private readonly string commandText = @"SELECT
+[Customers].[CustomerId],
+[Customers].[Name],
+[Customers].[DoB],
+[Customers].[StatusId]
+FROM
+[Sales].[Customers]
+WHERE
+[Customers].[StatusId] = @p0";
+
+            private readonly string orderbyClause;
+            private readonly string selectClause;
+            private readonly string tableName;
+            private readonly string whereClause;
+
+            public WhenTheCommandTextIsOnMultipleLinesAndContainsWhereButNoOrderBy()
+            {
+                this.selectClause = SqlUtility.ReadSelectClause(this.commandText);
+                this.tableName = SqlUtility.ReadTableName(this.commandText);
+                this.whereClause = SqlUtility.ReadWhereClause(this.commandText);
+                this.orderbyClause = SqlUtility.ReadOrderByClause(this.commandText);
+            }
+
+            [Fact]
+            public void TheOrderByClauseShouldBeEmpty()
+            {
+                Assert.Equal(string.Empty, this.orderbyClause);
+            }
+
+            [Fact]
+            public void TheSelectClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId]", this.selectClause);
+            }
+
+            [Fact]
+            public void TheTableNameShouldBeReturned()
+            {
+                Assert.Equal("[Sales].[Customers]", this.tableName);
+            }
+
+            [Fact]
+            public void TheWhereClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[StatusId] = @p0", this.whereClause);
+            }
+        }
+
+        public class WhenTheCommandTextIsOnMultipleLinesAndDoesNotContainWhereOrOrderBy
+        {
+            private readonly string commandText = @"SELECT
+[Customers].[CustomerId],
+[Customers].[Name],
+[Customers].[DoB],
+[Customers].[StatusId]
+FROM
+[Sales].[Customers]";
+
+            private readonly string orderbyClause;
+            private readonly string selectClause;
+            private readonly string tableName;
+            private readonly string whereClause;
+
+            public WhenTheCommandTextIsOnMultipleLinesAndDoesNotContainWhereOrOrderBy()
+            {
+                this.selectClause = SqlUtility.ReadSelectClause(this.commandText);
+                this.tableName = SqlUtility.ReadTableName(this.commandText);
+                this.whereClause = SqlUtility.ReadWhereClause(this.commandText);
+                this.orderbyClause = SqlUtility.ReadOrderByClause(this.commandText);
+            }
+
+            [Fact]
+            public void TheOrderByClauseShouldBeEmpty()
+            {
+                Assert.Equal(string.Empty, this.orderbyClause);
+            }
+
+            [Fact]
+            public void TheSelectClauseShouldBeReturned()
+            {
+                Assert.Equal("[Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId]", this.selectClause);
+            }
+
+            [Fact]
+            public void TheTableNameShouldBeReturned()
+            {
+                Assert.Equal("[Sales].[Customers]", this.tableName);
+            }
+
+            [Fact]
+            public void TheWhereClauseShouldBeEmpty()
+            {
+                Assert.Equal(string.Empty, this.whereClause);
+            }
         }
     }
 }

@@ -47,12 +47,12 @@ namespace MicroLite.Dialect
             arguments[arguments.Length - 2] = pagingOptions.Offset;
             arguments[arguments.Length - 1] = pagingOptions.Count;
 
-            var stringBuilder = new StringBuilder(sqlQuery.CommandText);
-            stringBuilder.Replace(Environment.NewLine, string.Empty);
-            stringBuilder.Append(" LIMIT ");
-            stringBuilder.Append(this.SqlCharacters.GetParameterName(arguments.Length - 2));
-            stringBuilder.Append(',');
-            stringBuilder.Append(this.SqlCharacters.GetParameterName(arguments.Length - 1));
+            var stringBuilder = new StringBuilder(sqlQuery.CommandText)
+                .Replace(Environment.NewLine, string.Empty)
+                .Append(" LIMIT ")
+                .Append(this.SqlCharacters.GetParameterName(arguments.Length - 2))
+                .Append(',')
+                .Append(this.SqlCharacters.GetParameterName(arguments.Length - 1));
 
             return new SqlQuery(stringBuilder.ToString(), arguments);
         }

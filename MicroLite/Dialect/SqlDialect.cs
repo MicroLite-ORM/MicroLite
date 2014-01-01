@@ -18,7 +18,6 @@ namespace MicroLite.Dialect
     using System.Globalization;
     using System.Linq;
     using System.Text;
-    using System.Text.RegularExpressions;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using MicroLite.Query;
@@ -28,13 +27,6 @@ namespace MicroLite.Dialect
     /// </summary>
     public abstract class SqlDialect : ISqlDialect
     {
-        private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex selectRegexGreedy = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex selectRegexLazy = new Regex("SELECT(.+?)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex tableNameRegexGreedy = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex tableNameRegexLazy = new Regex("(?<=FROM)(.+?)(?=WHERE)|(?<=FROM)(.+?)(?=ORDER BY)|(?<=FROM)(.+?)(?=WHERE)?|(?<=FROM)(.+?)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-
         private readonly SqlCharacters sqlCharacters;
 
         /// <summary>
@@ -142,8 +134,8 @@ namespace MicroLite.Dialect
         /// </returns>
         public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
         {
-            var qualifiedTableName = this.ReadTableName(sqlQuery.CommandText);
-            var whereValue = this.ReadWhereClause(sqlQuery.CommandText);
+            var qualifiedTableName = SqlUtility.ReadTableName(sqlQuery.CommandText);
+            var whereValue = SqlUtility.ReadWhereClause(sqlQuery.CommandText);
             var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
 
             return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, sqlQuery.GetArgumentArray());
@@ -267,66 +259,6 @@ namespace MicroLite.Dialect
         protected virtual CommandType GetCommandType(string commandText)
         {
             return CommandType.Text;
-        }
-
-        /// <summary>
-        /// Reads the order by clause from the specified command text excluding the ORDER BY keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The columns in the order by list.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
-        protected string ReadOrderBy(string commandText)
-        {
-            return orderByRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-        }
-
-        /// <summary>
-        /// Reads the select clause from the specified command text including the SELECT keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The columns in the select list.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
-        protected string ReadSelectList(string commandText)
-        {
-            string selectList;
-
-            selectList = selectRegexLazy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-            if (selectList.Length == 0)
-            {
-                selectList = selectRegexGreedy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-            }
-
-            return selectList;
-        }
-
-        /// <summary>
-        /// Reads the name of the table the sql query is targeting.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The name of the table the sql query is targeting.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
-        protected string ReadTableName(string commandText)
-        {
-            string tableName;
-
-            tableName = tableNameRegexLazy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-            if (tableName.Length == 0)
-            {
-                tableName = tableNameRegexGreedy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-            }
-
-            return tableName;
-        }
-
-        /// <summary>
-        /// Reads the where clause from the specified command text excluding the WHERE keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The where clause without the WHERE keyword.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
-        protected string ReadWhereClause(string commandText)
-        {
-            return whereRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
         }
     }
 }

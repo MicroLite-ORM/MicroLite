@@ -25,8 +25,13 @@ namespace MicroLite
     public static class SqlUtility
     {
         private static readonly string[] emptyStringArray = new string[0];
+        private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
         private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex selectRegex = new Regex("(?<=SELECT)(.+?)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex tableNameRegexGreedy = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex tableNameRegexLazy = new Regex("(?<=FROM)(.+?)(?=WHERE)|(?<=FROM)(.+?)(?=ORDER BY)|(?<=FROM)(.+?)(?=WHERE)?|(?<=FROM)(.+?)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
 
         /// <summary>
         /// Gets the position of the first parameter in the specified command text.
@@ -81,6 +86,53 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Reads the ORDER BY clause from the specified command text excluding the ORDER BY keyword.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The ORDER BY clause without the ORDER BY keyword.</returns>
+        public static string ReadOrderByClause(string commandText)
+        {
+            return ExtractUsingRegex(commandText, orderByRegex);
+        }
+
+        /// <summary>
+        /// Reads the SELECT clause from the specified command text excluding the SELECT keyword.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The SELECT clause without the SELECT keyword.</returns>
+        public static string ReadSelectClause(string commandText)
+        {
+            return ExtractUsingRegex(commandText, selectRegex);
+        }
+
+        /// <summary>
+        /// Reads the name of the table the sql query is targeting.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The name of the table the sql query is targeting.</returns>
+        public static string ReadTableName(string commandText)
+        {
+            var tableName = ExtractUsingRegex(commandText, tableNameRegexLazy);
+
+            if (string.IsNullOrEmpty(tableName))
+            {
+                tableName = ExtractUsingRegex(commandText, tableNameRegexGreedy);
+            }
+
+            return tableName;
+        }
+
+        /// <summary>
+        /// Reads the WHERE clause from the specified command text excluding the WHERE keyword.
+        /// </summary>
+        /// <param name="commandText">The command text.</param>
+        /// <returns>The WHERE clause without the WHERE keyword.</returns>
+        public static string ReadWhereClause(string commandText)
+        {
+            return ExtractUsingRegex(commandText, whereRegex);
+        }
+
+        /// <summary>
         /// Re-numbers the parameters in the SQL based upon the total number of arguments.
         /// </summary>
         /// <param name="sql">The SQL.</param>
@@ -108,6 +160,25 @@ namespace MicroLite
             }
 
             return predicateReWriter.ToString();
+        }
+
+        private static string ExtractUsingRegex(string commandText, Regex regex)
+        {
+            var match = regex.Match(commandText);
+
+            if (!match.Success)
+            {
+                return string.Empty;
+            }
+
+            var sql = match.Value.Trim();
+
+            if (sql.Contains(Environment.NewLine))
+            {
+                sql = sql.Replace(Environment.NewLine, Strings.Space);
+            }
+
+            return sql;
         }
     }
 }
