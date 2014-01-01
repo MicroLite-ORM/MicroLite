@@ -160,19 +160,21 @@ namespace MicroLite.Dialect
                     var insertSqlBuilder = new InsertSqlBuilder(this.SqlCharacters);
                     insertSqlBuilder.Into(objectInfo);
 
-                    foreach (var column in objectInfo.TableInfo.Columns)
+                    for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
                     {
+                        var columnInfo = objectInfo.TableInfo.Columns[i];
+
                         if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
-                            && column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
+                            && columnInfo.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
                         {
                             continue;
                         }
 
-                        if (column.AllowInsert)
+                        if (columnInfo.AllowInsert)
                         {
-                            var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
+                            var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
 
-                            insertSqlBuilder.Value(column.ColumnName, value);
+                            insertSqlBuilder.Value(columnInfo.ColumnName, value);
                         }
                     }
 
@@ -186,14 +188,16 @@ namespace MicroLite.Dialect
                     var updateSqlBuilder = new UpdateSqlBuilder(this.SqlCharacters);
                     updateSqlBuilder.Table(objectInfo);
 
-                    foreach (var column in objectInfo.TableInfo.Columns)
+                    for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
                     {
-                        if (column.AllowUpdate
-                            && !column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
-                        {
-                            var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
+                        var columnInfo = objectInfo.TableInfo.Columns[i];
 
-                            updateSqlBuilder.SetColumnValue(column.ColumnName, value);
+                        if (columnInfo.AllowUpdate
+                            && !columnInfo.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
+                        {
+                            var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
+
+                            updateSqlBuilder.SetColumnValue(columnInfo.ColumnName, value);
                         }
                     }
 
