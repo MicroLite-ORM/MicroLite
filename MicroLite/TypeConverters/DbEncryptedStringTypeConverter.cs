@@ -22,7 +22,6 @@ namespace MicroLite.TypeConverters
     /// </summary>
     public sealed class DbEncryptedStringTypeConverter : TypeConverter
     {
-        private const char Separator = '@';
         private readonly ISymmetricAlgorithmProvider algorithmProvider;
 
         /// <summary>
@@ -171,7 +170,7 @@ namespace MicroLite.TypeConverters
                 }
             }
 
-            return Convert.ToBase64String(cipherBytes) + Separator + Convert.ToBase64String(ivBytes);
+            return Convert.ToBase64String(cipherBytes) + "@" + Convert.ToBase64String(ivBytes);
         }
     }
 }
