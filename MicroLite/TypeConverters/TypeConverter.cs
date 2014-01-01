@@ -39,15 +39,17 @@ namespace MicroLite.TypeConverters
         /// <returns>The <see cref="ITypeConverter"/> for the specified type.</returns>
         public static ITypeConverter For(Type type)
         {
-            foreach (var typeConverter in Converters)
+            for (int i = 0; i < Converters.Count; i++)
             {
+                var typeConverter = Converters[i];
+
                 if (typeConverter.CanConvert(type))
                 {
                     return typeConverter;
                 }
             }
 
-            throw new NotSupportedException();
+            throw new NotSupportedException(type.FullName);
         }
 
         /// <summary>
