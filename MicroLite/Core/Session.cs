@@ -13,6 +13,7 @@
 namespace MicroLite.Core
 {
     using System;
+    using System.Collections.Generic;
     using System.Data;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
@@ -25,13 +26,13 @@ namespace MicroLite.Core
     /// </summary>
     internal sealed class Session : ReadOnlySession, ISession, IAdvancedSession
     {
-        private readonly IListener[] listeners;
+        private readonly IList<IListener> listeners;
 
         internal Session(
             ISessionFactory sessionFactory,
             IConnectionManager connectionManager,
             IObjectBuilder objectBuilder,
-            IListener[] listeners)
+            IList<IListener> listeners)
             : base(sessionFactory, connectionManager, objectBuilder)
         {
             this.listeners = listeners;

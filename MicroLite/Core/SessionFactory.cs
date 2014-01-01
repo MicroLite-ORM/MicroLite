@@ -14,7 +14,6 @@ namespace MicroLite.Core
 {
     using System;
     using System.Data;
-    using System.Linq;
     using MicroLite.Dialect;
     using MicroLite.Listeners;
     using MicroLite.Logging;
@@ -84,7 +83,7 @@ namespace MicroLite.Core
                 this,
                 new ConnectionManager(connection),
                 this.objectBuilder,
-                Listener.Listeners.ToArray());
+                Listener.Listeners);
         }
 
         private IDbConnection GetNewConnectionWithConnectionString()
