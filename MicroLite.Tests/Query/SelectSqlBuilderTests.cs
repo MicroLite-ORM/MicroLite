@@ -117,7 +117,7 @@
         [Fact]
         public void SelectAverage()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
                 .Average("Total")
@@ -134,7 +134,7 @@
         [Fact]
         public void SelectAverageWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
                 .Average("Total", columnAlias: "AverageTotal")
@@ -169,7 +169,7 @@
         [Fact]
         public void SelectAverageWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, null);
 
             var sqlQuery = sqlBuilder
                 .Average("Total")
@@ -204,7 +204,7 @@
         [Fact]
         public void SelectCount()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
                 .Count("CustomerId")
@@ -218,7 +218,7 @@
         [Fact]
         public void SelectCountWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
                 .Count("CustomerId", columnAlias: "CustomerCount")
@@ -247,7 +247,7 @@
         [Fact]
         public void SelectCountWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, null);
 
             var sqlQuery = sqlBuilder
                 .Count("CustomerId")
@@ -533,7 +533,7 @@
         [Fact]
         public void SelectMax()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
                 .Max("Total")
@@ -550,7 +550,7 @@
         [Fact]
         public void SelectMaxWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
                 .Max("Total", columnAlias: "MaxTotal")
@@ -584,7 +584,7 @@
         [Fact]
         public void SelectMaxWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, null);
 
             var sqlQuery = sqlBuilder
                 .Max("Total")
@@ -601,7 +601,7 @@
         [Fact]
         public void SelectMin()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
                 .Min("Total")
@@ -618,7 +618,7 @@
         [Fact]
         public void SelectMinWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
                 .Min("Total", columnAlias: "MinTotal")
@@ -652,7 +652,7 @@
         [Fact]
         public void SelectMinWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, null);
 
             var sqlQuery = sqlBuilder
                 .Min("Total")
@@ -669,7 +669,7 @@
         [Fact]
         public void SelectSum()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
                 .Sum("Total")
@@ -686,7 +686,7 @@
         [Fact]
         public void SelectSumWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
                 .Sum("Total", columnAlias: "SumTotal")
@@ -720,7 +720,7 @@
         [Fact]
         public void SelectSumWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, null);
 
             var sqlQuery = sqlBuilder
                 .Sum("Total")
