@@ -109,29 +109,8 @@ namespace MicroLite.Core
 
         public void Dispose()
         {
-            if (!this.disposed)
-            {
-                if (this.IsActive)
-                {
-                    log.Warn(Messages.Transaction_DisposedUncommitted);
-                    this.Rollback();
-                }
-                else if (this.failed && !this.rolledBack)
-                {
-                    log.Warn(Messages.Transaction_RollingBackFailedCommit);
-                    this.Rollback();
-                }
-
-                this.transaction.Dispose();
-                this.transaction = null;
-                this.connection = null;
-                this.disposed = true;
-
-                if (log.IsDebug)
-                {
-                    log.Debug(Messages.Transaction_Disposed);
-                }
-            }
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public void Enlist(IDbCommand command)
@@ -181,6 +160,33 @@ namespace MicroLite.Core
 
                 log.Error(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
+            }
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing && !this.disposed)
+            {
+                if (this.IsActive)
+                {
+                    log.Warn(Messages.Transaction_DisposedUncommitted);
+                    this.Rollback();
+                }
+                else if (this.failed && !this.rolledBack)
+                {
+                    log.Warn(Messages.Transaction_RollingBackFailedCommit);
+                    this.Rollback();
+                }
+
+                this.transaction.Dispose();
+                this.transaction = null;
+                this.connection = null;
+                this.disposed = true;
+
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.Transaction_Disposed);
+                }
             }
         }
 
