@@ -142,6 +142,32 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
+        /// Creates an SqlQuery to perform an update based upon the values in the object delta.
+        /// </summary>
+        /// <param name="objectDelta">The object delta to create the query for.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        public SqlQuery CreateQuery(ObjectDelta objectDelta)
+        {
+            var objectInfo = ObjectInfo.For(objectDelta.ForType);
+
+            var builder = new UpdateSqlBuilder(this.SqlCharacters)
+                .Table(objectInfo);
+
+            foreach (var change in objectDelta.Changes)
+            {
+                builder.SetColumnValue(change.Key, change.Value);
+            }
+
+            var sqlQuery = builder
+                .Where(objectInfo.TableInfo.IdentifierColumn, objectDelta.Identifier)
+                .ToSqlQuery();
+
+            return sqlQuery;
+        }
+
+        /// <summary>
         /// Creates an SqlQuery with the specified statement type for the specified instance.
         /// </summary>
         /// <param name="statementType">Type of the statement.</param>
@@ -156,6 +182,14 @@ namespace MicroLite.Dialect
 
             switch (statementType)
             {
+                case StatementType.Delete:
+                    var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
+                        .From(objectInfo)
+                        .WhereEquals(objectInfo.TableInfo.IdentifierColumn, objectInfo.GetIdentifierValue(instance))
+                        .ToSqlQuery();
+
+                    return deleteSqlQuery;
+
                 case StatementType.Insert:
                     var insertSqlBuilder = new InsertSqlBuilder(this.SqlCharacters);
                     insertSqlBuilder.Into(objectInfo);
@@ -194,13 +228,48 @@ namespace MicroLite.Dialect
                         }
                     }
 
-                    updateSqlBuilder.Where(
-                        this.sqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
-                        objectInfo.GetIdentifierValue(instance));
+                    updateSqlBuilder.Where(objectInfo.TableInfo.IdentifierColumn, objectInfo.GetIdentifierValue(instance));
 
                     var updateSqlQuery = updateSqlBuilder.ToSqlQuery();
 
                     return updateSqlQuery;
+
+                default:
+                    throw new NotSupportedException(Messages.SqlDialect_StatementTypeNotSupported);
+            }
+        }
+
+        /// <summary>
+        /// Creates an SqlQuery with the specified statement type for the specified type and identifier.
+        /// </summary>
+        /// <param name="statementType">Type of the statement.</param>
+        /// <param name="forType">The type of object to create the query for.</param>
+        /// <param name="identifier">The identifier of the instance to create the query for.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        /// <exception cref="System.NotSupportedException">Thrown if the StatementType is not supported.</exception>
+        public virtual SqlQuery CreateQuery(StatementType statementType, Type forType, object identifier)
+        {
+            var objectInfo = ObjectInfo.For(forType);
+
+            switch (statementType)
+            {
+                case StatementType.Delete:
+                    var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
+                        .From(objectInfo)
+                        .WhereEquals(objectInfo.TableInfo.IdentifierColumn, identifier)
+                        .ToSqlQuery();
+
+                    return deleteSqlQuery;
+
+                case StatementType.Select:
+                    var selectSqlQuery = new SelectSqlBuilder(this.SqlCharacters)
+                        .From(objectInfo)
+                        .Where(objectInfo.TableInfo.IdentifierColumn).IsEqualTo(identifier)
+                        .ToSqlQuery();
+
+                    return selectSqlQuery;
 
                 default:
                     throw new NotSupportedException(Messages.SqlDialect_StatementTypeNotSupported);

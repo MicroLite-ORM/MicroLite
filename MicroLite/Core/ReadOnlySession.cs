@@ -17,7 +17,6 @@ namespace MicroLite.Core
     using System.Data;
     using MicroLite.Dialect;
     using MicroLite.Logging;
-    using MicroLite.Mapping;
     using MicroLite.Query;
 
     /// <summary>
@@ -173,12 +172,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("identifier");
             }
 
-            var objectInfo = ObjectInfo.For(typeof(T));
-
-            var sqlQuery = new SelectSqlBuilder(this.SqlDialect.SqlCharacters)
-                .From(objectInfo)
-                .Where(objectInfo.TableInfo.IdentifierColumn).IsEqualTo(identifier)
-                .ToSqlQuery();
+            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Select, typeof(T), identifier);
 
             var include = this.Include.Single<T>(sqlQuery);
 

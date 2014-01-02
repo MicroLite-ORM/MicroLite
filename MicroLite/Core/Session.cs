@@ -18,7 +18,6 @@ namespace MicroLite.Core
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Mapping;
-    using MicroLite.Query;
     using MicroLite.TypeConverters;
 
     /// <summary>
@@ -57,14 +56,7 @@ namespace MicroLite.Core
 
             this.listeners.Each(l => l.BeforeDelete(instance));
 
-            var objectInfo = ObjectInfo.For(instance.GetType());
-            var identifier = objectInfo.GetIdentifierValue(instance);
-
-            var sqlBuilder = new DeleteSqlBuilder(this.SqlDialect.SqlCharacters)
-                .From(objectInfo.ForType)
-                .WhereEquals(objectInfo.TableInfo.IdentifierColumn, identifier);
-
-            var sqlQuery = sqlBuilder.ToSqlQuery();
+            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, instance);
 
             this.listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
 
@@ -89,13 +81,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("identifier");
             }
 
-            var objectInfo = ObjectInfo.For(type);
-
-            var sqlBuilder = new DeleteSqlBuilder(this.SqlDialect.SqlCharacters)
-                .From(type)
-                .WhereEquals(objectInfo.TableInfo.IdentifierColumn, identifier);
-
-            var sqlQuery = sqlBuilder.ToSqlQuery();
+            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, type, identifier);
 
             var rowsAffected = this.Execute(sqlQuery);
 
@@ -234,18 +220,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("objectDelta");
             }
 
-            var objectInfo = ObjectInfo.For(objectDelta.ForType);
-
-            var builder = new UpdateSqlBuilder(this.SqlDialect.SqlCharacters).Table(objectInfo);
-
-            foreach (var change in objectDelta.Changes)
-            {
-                builder.SetColumnValue(change.Key, change.Value);
-            }
-
-            builder.Where(objectInfo.TableInfo.IdentifierColumn, objectDelta.Identifier);
-
-            var sqlQuery = builder.ToSqlQuery();
+            var sqlQuery = this.SqlDialect.CreateQuery(objectDelta);
 
             var rowsAffected = this.Execute(sqlQuery);
 

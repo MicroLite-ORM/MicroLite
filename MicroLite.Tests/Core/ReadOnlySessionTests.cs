@@ -542,8 +542,8 @@
             mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
-            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, It.Is<SqlQuery>(s => s.Arguments[0] == identifier)));
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), identifier)).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -583,8 +583,8 @@
             mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
-            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, It.Is<SqlQuery>(s => s.Arguments[0] == identifier)));
+            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), identifier)).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
             var mockSessionFactory = new Mock<ISessionFactory>();
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -798,9 +798,8 @@
                 mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), It.IsAny<IDataReader>())).Returns(new Customer());
 
                 mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(false);
-                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
-                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.Is<SqlQuery>(s => s.Arguments[0] == (object)1)));
-                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.Is<SqlQuery>(s => s.Arguments[0] == (object)2)));
+                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), It.IsAny<object>())).Returns(new SqlQuery(""));
+                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
                 var mockSessionFactory = new Mock<ISessionFactory>();
                 mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
@@ -846,9 +845,8 @@
                 mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), It.IsAny<IDataReader>())).Returns(new Customer());
 
                 mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(true);
-                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
-                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.Is<SqlQuery>(s => s.Arguments[0] == (object)2 && s.Arguments[1] == (object)1)));
-                mockSqlDialect.Setup(x => x.Combine(It.IsAny<IEnumerable<SqlQuery>>())).Returns(new SqlQuery("", 2, 1));
+                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), It.IsAny<object>())).Returns(new SqlQuery(""));
+                mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
                 var mockSessionFactory = new Mock<ISessionFactory>();
                 mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);

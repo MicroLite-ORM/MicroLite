@@ -24,6 +24,13 @@ namespace MicroLite.Query
             this.InnerSql.Append("DELETE FROM ");
         }
 
+        public IWhereEquals From(IObjectInfo objectInfo)
+        {
+            this.AppendTableName(objectInfo);
+
+            return this;
+        }
+
         public IWhereEquals From(string tableName)
         {
             this.AppendTableName(tableName);
@@ -34,9 +41,8 @@ namespace MicroLite.Query
         public IWhereEquals From(Type forType)
         {
             var objectInfo = ObjectInfo.For(forType);
-            this.AppendTableName(objectInfo);
 
-            return this;
+            return this.From(objectInfo);
         }
 
         public IWhereEquals WhereEquals(string columnName, object comparisonValue)
