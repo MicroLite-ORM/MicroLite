@@ -196,7 +196,7 @@ namespace MicroLite.Mapping
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var value = this.GetPropertyValueForColumn(instance, this.TableInfo.IdentifierColumn);
+            var value = this.GetPropertyValue(instance, this.tableInfo.IdentifierProperty);
 
             return value;
         }
