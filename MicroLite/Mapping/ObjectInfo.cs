@@ -64,21 +64,13 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("tableInfo");
             }
 
-            if (log.IsDebug)
-            {
-                log.Debug(Messages.ObjectInfo_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
-            }
-
             this.forType = forType;
             this.tableInfo = tableInfo;
             this.propertyAccessors = new Dictionary<string, IPropertyAccessor>(this.tableInfo.Columns.Count);
 
-            foreach (var columnInfo in this.tableInfo.Columns)
+            for (int i = 0; i < this.tableInfo.Columns.Count; i++)
             {
-                if (log.IsDebug)
-                {
-                    log.Debug(Messages.ObjectInfo_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
-                }
+                var columnInfo = this.tableInfo.Columns[i];
 
                 this.propertyAccessors.Add(columnInfo.PropertyInfo.Name, PropertyAccessor.Create(columnInfo.PropertyInfo));
 
@@ -124,17 +116,17 @@ namespace MicroLite.Mapping
         {
             get
             {
-                if (ObjectInfo.mappingConvention == null)
+                if (mappingConvention == null)
                 {
-                    ObjectInfo.mappingConvention = ObjectInfo.mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+                    mappingConvention = mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
                 }
 
-                return ObjectInfo.mappingConvention;
+                return mappingConvention;
             }
 
             set
             {
-                ObjectInfo.mappingConvention = value;
+                mappingConvention = value;
             }
         }
 
@@ -163,7 +155,7 @@ namespace MicroLite.Mapping
                     log.Debug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
                 }
 
-                objectInfo = ObjectInfo.MappingConvention.CreateObjectInfo(forType);
+                objectInfo = MappingConvention.CreateObjectInfo(forType);
 
                 var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos);
                 newObjectInfos[forType] = objectInfo;

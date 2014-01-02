@@ -414,9 +414,9 @@
             }
 
             [Fact]
-            public void TheIdColumnShouldAllowInsert()
+            public void TheIdColumnShouldNotAllowInsert()
             {
-                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowInsert);
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowInsert);
             }
 
             [Fact]

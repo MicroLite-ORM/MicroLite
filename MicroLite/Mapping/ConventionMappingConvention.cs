@@ -55,6 +55,11 @@ namespace MicroLite.Mapping
                 this.settings.UsePluralClassNameForTableName ? this.settings.InflectionService.ToPlural(forType.Name) : forType.Name,
                 this.settings.TableSchema);
 
+            if (this.log.IsDebug)
+            {
+                this.log.Debug(Messages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
+            }
+
             return new ObjectInfo(forType, tableInfo);
         }
 
@@ -91,8 +96,13 @@ namespace MicroLite.Mapping
                        columnName: isIdentifier ? this.settings.ResolveIdentifierColumnName(property) : this.settings.ResolveColumnName(property),
                        propertyInfo: property,
                        isIdentifier: isIdentifier,
-                       allowInsert: isIdentifier ? true : this.settings.AllowInsert(property),
+                       allowInsert: isIdentifier ? this.settings.IdentifierStrategy != IdentifierStrategy.DbGenerated : this.settings.AllowInsert(property),
                        allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property));
+
+                if (this.log.IsDebug)
+                {
+                    this.log.Debug(Messages.MappingConvention_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                }
 
                 columns.Add(columnInfo);
             }

@@ -150,10 +150,10 @@
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
     <value>Creating the ObjectInfo for the type '{0}'</value>
   </data>
-  <data name="ObjectInfo_MappingTypeToTable" xml:space="preserve">
+  <data name="MappingConvention_MappingTypeToTable" xml:space="preserve">
     <value>Mapping the type '{0}' to the table '{1}.{2}'</value>
   </data>
-  <data name="ObjectInfo_MappingColumnToProperty" xml:space="preserve">
+  <data name="MappingConvention_MappingColumnToProperty" xml:space="preserve">
     <value>Mapping the property '{0}.{1}' to the column '{2}'</value>
   </data>
   <data name="ObjectInfo_RetrievingObjectInfo" xml:space="preserve">
@@ -311,5 +311,8 @@
   </data>
   <data name="MappingConvention_PropertyNotGetAndSet" xml:space="preserve">
     <value>The property '{0}.{1}' will not be mapped by MicroLite as it does not have a public getter and setter.</value>
+  </data>
+  <data name="TableInfo_MultipleIdentifierColumns" xml:space="preserve">
+    <value>Multiple columns have been mapped as the identifier for the table '{0}.{1}'</value>
   </data>
 </root>

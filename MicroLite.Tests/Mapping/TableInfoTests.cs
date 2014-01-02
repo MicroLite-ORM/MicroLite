@@ -80,6 +80,21 @@
             Assert.Equal(Messages.TableInfo_NoIdentifierColumn.FormatWith("Sales", "Customers"), exception.Message);
         }
 
+        [Fact]
+        public void ConstructorThrowsMicroLiteExceptionMultipleNoColumnsAreIdentifierColumn()
+        {
+            var columns = new[]
+            {
+                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, true),
+                new ColumnInfo("Id", typeof(Customer).GetProperty("Id"), true, true, true)
+            };
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
+
+            Assert.Equal(Messages.TableInfo_MultipleIdentifierColumns.FormatWith("Sales", "Customers"), exception.Message);
+        }
+
         private class Customer
         {
             public Customer()

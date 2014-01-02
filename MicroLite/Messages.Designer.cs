@@ -304,6 +304,24 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mapping the property &apos;{0}.{1}&apos; to the column &apos;{2}&apos;.
+        /// </summary>
+        internal static string MappingConvention_MappingColumnToProperty {
+            get {
+                return ResourceManager.GetString("MappingConvention_MappingColumnToProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping the type &apos;{0}&apos; to the table &apos;{1}.{2}&apos;.
+        /// </summary>
+        internal static string MappingConvention_MappingTypeToTable {
+            get {
+                return ResourceManager.GetString("MappingConvention_MappingTypeToTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The property &apos;{0}.{1}&apos; will not be mapped by MicroLite as it does not have a public getter and setter..
         /// </summary>
         internal static string MappingConvention_PropertyNotGetAndSet {
@@ -354,24 +372,6 @@ namespace MicroLite {
         internal static string ObjectInfo_GettingPropertyValueForColumn {
             get {
                 return ResourceManager.GetString("ObjectInfo_GettingPropertyValueForColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mapping the property &apos;{0}.{1}&apos; to the column &apos;{2}&apos;.
-        /// </summary>
-        internal static string ObjectInfo_MappingColumnToProperty {
-            get {
-                return ResourceManager.GetString("ObjectInfo_MappingColumnToProperty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mapping the type &apos;{0}&apos; to the table &apos;{1}.{2}&apos;.
-        /// </summary>
-        internal static string ObjectInfo_MappingTypeToTable {
-            get {
-                return ResourceManager.GetString("ObjectInfo_MappingTypeToTable", resourceCulture);
             }
         }
         
@@ -552,6 +552,15 @@ namespace MicroLite {
         internal static string TableInfo_ColumnMappedMultipleTimes {
             get {
                 return ResourceManager.GetString("TableInfo_ColumnMappedMultipleTimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple columns have been mapped as the identifier for the table &apos;{0}.{1}&apos;.
+        /// </summary>
+        internal static string TableInfo_MultipleIdentifierColumns {
+            get {
+                return ResourceManager.GetString("TableInfo_MultipleIdentifierColumns", resourceCulture);
             }
         }
         

@@ -14,6 +14,7 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
@@ -58,13 +59,12 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("name");
             }
 
+            this.columns = new ReadOnlyCollection<ColumnInfo>(columns);
             this.identifierStrategy = identifierStrategy;
             this.name = name;
             this.schema = schema;
 
-            this.ValidateColumns(columns);
-
-            this.columns = new System.Collections.ObjectModel.ReadOnlyCollection<ColumnInfo>(columns);
+            this.ValidateColumns();
 
             var identifierColumnInfo = columns.Single(c => c.IsIdentifier);
 
@@ -138,9 +138,9 @@ namespace MicroLite.Mapping
             }
         }
 
-        private void ValidateColumns(IEnumerable<ColumnInfo> mappedColumns)
+        private void ValidateColumns()
         {
-            var duplicatedColumn = mappedColumns
+            var duplicatedColumn = this.columns
                 .GroupBy(c => c.ColumnName)
                 .Select(x => new
                 {
@@ -159,14 +159,18 @@ namespace MicroLite.Mapping
                 throw new MicroLiteException(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
             }
 
-            if (!mappedColumns.Any(c => c.IsIdentifier))
+            if (!this.columns.Any(c => c.IsIdentifier))
             {
-                if (log.IsFatal)
-                {
-                    log.Fatal(Messages.TableInfo_NoIdentifierColumn, this.schema, this.name);
-                }
+                var message = Messages.TableInfo_NoIdentifierColumn.FormatWith(this.schema, this.name);
+                log.Fatal(message);
+                throw new MicroLiteException(message);
+            }
 
-                throw new MicroLiteException(Messages.TableInfo_NoIdentifierColumn.FormatWith(this.schema, this.name));
+            if (this.columns.Count(x => x.IsIdentifier) > 1)
+            {
+                var message = Messages.TableInfo_MultipleIdentifierColumns.FormatWith(this.schema, this.name);
+                log.Fatal(message);
+                throw new MicroLiteException(message);
             }
         }
     }

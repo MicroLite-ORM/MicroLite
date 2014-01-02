@@ -164,12 +164,6 @@ namespace MicroLite.Dialect
                     {
                         var columnInfo = objectInfo.TableInfo.Columns[i];
 
-                        if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
-                            && columnInfo.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
-                        {
-                            continue;
-                        }
-
                         if (columnInfo.AllowInsert)
                         {
                             var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
@@ -192,8 +186,7 @@ namespace MicroLite.Dialect
                     {
                         var columnInfo = objectInfo.TableInfo.Columns[i];
 
-                        if (columnInfo.AllowUpdate
-                            && !columnInfo.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
+                        if (columnInfo.AllowUpdate)
                         {
                             var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
 
