@@ -19,11 +19,9 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 	$assemblyVersionPattern = 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
 	$fileVersionPattern = 'AssemblyFileVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
 	$infoVersionPattern = 'AssemblyInformationalVersion\("[0-9]+(\.([0-9]+|\*)){1,3}(.*)"\)'
-	$copyrightPattern = 'AssemblyCopyright\(".+"\)'
 	$assemblyVersion = 'AssemblyVersion("' + $buildVersion.SubString(0, 3) + '.0.0")';
 	$fileVersion = 'AssemblyFileVersion("' + $buildVersion.SubString(0, 5) + '.0")';
 	$infoVersion = 'AssemblyInformationalVersion("' + $buildVersion + ' (' + $commit + ')")';
-	$copyright = 'AssemblyCopyright("Copyright 2012-' + $date.Year + ' MicroLite Project Contributors all rights reserved.")';
 	
 	Get-ChildItem $scriptPath -r -filter AssemblyInfo.cs | ForEach-Object {
 		$filename = $_.Directory.ToString() + '\' + $_.Name
@@ -32,8 +30,7 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 		(Get-Content $filename) | ForEach-Object {
 			% {$_ -replace $assemblyVersionPattern, $assemblyVersion } |
 			% {$_ -replace $fileVersionPattern, $fileVersion } |
-			% {$_ -replace $infoVersionPattern, $infoVersion } |
-			% {$_ -replace $copyrightPattern, $copyright }
+			% {$_ -replace $infoVersionPattern, $infoVersion }
 		} | Set-Content $filename -Encoding UTF8
 	}
 }
