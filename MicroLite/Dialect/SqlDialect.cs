@@ -28,6 +28,10 @@ namespace MicroLite.Dialect
     public abstract class SqlDialect : ISqlDialect
     {
         private readonly SqlCharacters sqlCharacters;
+        private Dictionary<Type, string> deleteCommandCache = new Dictionary<Type, string>();
+        private Dictionary<Type, string> insertCommandCache = new Dictionary<Type, string>();
+        private Dictionary<Type, string> selectCommandCache = new Dictionary<Type, string>();
+        private Dictionary<Type, string> updateCommandCache = new Dictionary<Type, string>();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlDialect"/> class.
@@ -176,63 +180,20 @@ namespace MicroLite.Dialect
         /// The created <see cref="SqlQuery" />.
         /// </returns>
         /// <exception cref="System.NotSupportedException">Thrown if the StatementType is not supported.</exception>
-        public virtual SqlQuery CreateQuery(StatementType statementType, object instance)
+        public SqlQuery CreateQuery(StatementType statementType, object instance)
         {
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             switch (statementType)
             {
                 case StatementType.Delete:
-                    var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
-                        .From(objectInfo)
-                        .WhereEquals(objectInfo.TableInfo.IdentifierColumn, objectInfo.GetIdentifierValue(instance))
-                        .ToSqlQuery();
-
-                    return deleteSqlQuery;
+                    return this.BuildDeleteSqlQuery(instance, objectInfo);
 
                 case StatementType.Insert:
-                    var insertSqlBuilder = new InsertSqlBuilder(this.SqlCharacters);
-                    insertSqlBuilder.Into(objectInfo);
-
-                    for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
-                    {
-                        var columnInfo = objectInfo.TableInfo.Columns[i];
-
-                        if (columnInfo.AllowInsert)
-                        {
-                            var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
-
-                            insertSqlBuilder.Value(columnInfo.ColumnName, value);
-                        }
-                    }
-
-                    var insertSqlQuery = objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
-                        ? insertSqlBuilder.ToSqlQuery(this.sqlCharacters.StatementSeparator + this.SelectIdentityString)
-                        : insertSqlBuilder.ToSqlQuery();
-
-                    return insertSqlQuery;
+                    return this.BuildInsertSqlQuery(instance, objectInfo);
 
                 case StatementType.Update:
-                    var updateSqlBuilder = new UpdateSqlBuilder(this.SqlCharacters);
-                    updateSqlBuilder.Table(objectInfo);
-
-                    for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
-                    {
-                        var columnInfo = objectInfo.TableInfo.Columns[i];
-
-                        if (columnInfo.AllowUpdate)
-                        {
-                            var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
-
-                            updateSqlBuilder.SetColumnValue(columnInfo.ColumnName, value);
-                        }
-                    }
-
-                    updateSqlBuilder.Where(objectInfo.TableInfo.IdentifierColumn, objectInfo.GetIdentifierValue(instance));
-
-                    var updateSqlQuery = updateSqlBuilder.ToSqlQuery();
-
-                    return updateSqlQuery;
+                    return this.BuildUpdateSqlQuery(instance, objectInfo);
 
                 default:
                     throw new NotSupportedException(Messages.SqlDialect_StatementTypeNotSupported);
@@ -249,27 +210,17 @@ namespace MicroLite.Dialect
         /// The created <see cref="SqlQuery" />.
         /// </returns>
         /// <exception cref="System.NotSupportedException">Thrown if the StatementType is not supported.</exception>
-        public virtual SqlQuery CreateQuery(StatementType statementType, Type forType, object identifier)
+        public SqlQuery CreateQuery(StatementType statementType, Type forType, object identifier)
         {
             var objectInfo = ObjectInfo.For(forType);
 
             switch (statementType)
             {
                 case StatementType.Delete:
-                    var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
-                        .From(objectInfo)
-                        .WhereEquals(objectInfo.TableInfo.IdentifierColumn, identifier)
-                        .ToSqlQuery();
-
-                    return deleteSqlQuery;
+                    return this.BuildDeleteSqlQuery(objectInfo, identifier);
 
                 case StatementType.Select:
-                    var selectSqlQuery = new SelectSqlBuilder(this.SqlCharacters)
-                        .From(objectInfo)
-                        .Where(objectInfo.TableInfo.IdentifierColumn).IsEqualTo(identifier)
-                        .ToSqlQuery();
-
-                    return selectSqlQuery;
+                    return this.BuildSelectSqlQuery(objectInfo, identifier);
 
                 default:
                     throw new NotSupportedException(Messages.SqlDialect_StatementTypeNotSupported);
@@ -305,6 +256,200 @@ namespace MicroLite.Dialect
 
                 command.Parameters.Add(parameter);
             }
+        }
+
+        /// <summary>
+        /// Builds the delete SQL query.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <param name="identifier">The identifier of the object to delete.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        protected virtual SqlQuery BuildDeleteSqlQuery(IObjectInfo objectInfo, object identifier)
+        {
+            string deleteCommand;
+
+            if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out deleteCommand))
+            {
+                var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
+                    .From(objectInfo)
+                    .WhereEquals(objectInfo.TableInfo.IdentifierColumn, identifier)
+                    .ToSqlQuery();
+
+                var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
+                newDeleteCommandCache[objectInfo.ForType] = deleteSqlQuery.CommandText;
+
+                this.deleteCommandCache = newDeleteCommandCache;
+
+                return deleteSqlQuery;
+            }
+
+            return new SqlQuery(deleteCommand, identifier);
+        }
+
+        /// <summary>
+        /// Builds the delete SQL query.
+        /// </summary>
+        /// <param name="instance">The instance to be deleted.</param>
+        /// <param name="objectInfo">The object information.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        protected virtual SqlQuery BuildDeleteSqlQuery(object instance, IObjectInfo objectInfo)
+        {
+            string deleteCommand;
+
+            if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out deleteCommand))
+            {
+                var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
+                    .From(objectInfo)
+                    .WhereEquals(objectInfo.TableInfo.IdentifierColumn, objectInfo.GetIdentifierValue(instance))
+                    .ToSqlQuery();
+
+                var newDeleteCache = new Dictionary<Type, string>(this.deleteCommandCache);
+                newDeleteCache[objectInfo.ForType] = deleteSqlQuery.CommandText;
+
+                this.deleteCommandCache = newDeleteCache;
+
+                return deleteSqlQuery;
+            }
+
+            return new SqlQuery(deleteCommand, objectInfo.GetIdentifierValue(instance));
+        }
+
+        /// <summary>
+        /// Builds the insert SQL query.
+        /// </summary>
+        /// <param name="instance">The instance to be inserted.</param>
+        /// <param name="objectInfo">The object information.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        protected virtual SqlQuery BuildInsertSqlQuery(object instance, IObjectInfo objectInfo)
+        {
+            string insertCommand;
+
+            if (!this.insertCommandCache.TryGetValue(objectInfo.ForType, out insertCommand))
+            {
+                var insertSqlBuilder = new InsertSqlBuilder(this.SqlCharacters);
+                insertSqlBuilder.Into(objectInfo);
+
+                for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
+                {
+                    var columnInfo = objectInfo.TableInfo.Columns[i];
+
+                    if (columnInfo.AllowInsert)
+                    {
+                        var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
+
+                        insertSqlBuilder.Value(columnInfo.ColumnName, value);
+                    }
+                }
+
+                var insertSqlQuery = objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
+                    ? insertSqlBuilder.ToSqlQuery(this.sqlCharacters.StatementSeparator + this.SelectIdentityString)
+                    : insertSqlBuilder.ToSqlQuery();
+
+                return insertSqlQuery;
+            }
+
+            var insertValues = new List<object>();
+
+            for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
+            {
+                var columnInfo = objectInfo.TableInfo.Columns[i];
+
+                if (columnInfo.AllowInsert)
+                {
+                    var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
+                    insertValues.Add(value);
+                }
+            }
+
+            return new SqlQuery(insertCommand, insertValues.ToArray());
+        }
+
+        /// <summary>
+        /// Builds the select SQL query.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <param name="identifier">The identifier.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        protected virtual SqlQuery BuildSelectSqlQuery(IObjectInfo objectInfo, object identifier)
+        {
+            string selectCommand;
+
+            if (!this.selectCommandCache.TryGetValue(objectInfo.ForType, out selectCommand))
+            {
+                var selectSqlQuery = new SelectSqlBuilder(this.SqlCharacters)
+                    .From(objectInfo)
+                    .Where(objectInfo.TableInfo.IdentifierColumn).IsEqualTo(identifier)
+                    .ToSqlQuery();
+
+                var newSelectCommandCache = new Dictionary<Type, string>(this.selectCommandCache);
+                newSelectCommandCache[objectInfo.ForType] = selectSqlQuery.CommandText;
+
+                this.selectCommandCache = newSelectCommandCache;
+
+                return selectSqlQuery;
+            }
+
+            return new SqlQuery(selectCommand, identifier);
+        }
+
+        /// <summary>
+        /// Builds the update SQL query.
+        /// </summary>
+        /// <param name="instance">The instance to be updated.</param>
+        /// <param name="objectInfo">The object information.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        protected virtual SqlQuery BuildUpdateSqlQuery(object instance, IObjectInfo objectInfo)
+        {
+            string updateCommand;
+
+            if (!this.updateCommandCache.TryGetValue(objectInfo.ForType, out updateCommand))
+            {
+                var updateSqlBuilder = new UpdateSqlBuilder(this.SqlCharacters);
+                updateSqlBuilder.Table(objectInfo);
+
+                for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
+                {
+                    var columnInfo = objectInfo.TableInfo.Columns[i];
+
+                    if (columnInfo.AllowUpdate)
+                    {
+                        var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
+
+                        updateSqlBuilder.SetColumnValue(columnInfo.ColumnName, value);
+                    }
+                }
+
+                updateSqlBuilder.Where(objectInfo.TableInfo.IdentifierColumn, objectInfo.GetIdentifierValue(instance));
+
+                var updateSqlQuery = updateSqlBuilder.ToSqlQuery();
+
+                return updateSqlQuery;
+            }
+
+            var updateValues = new List<object>();
+
+            for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
+            {
+                var columnInfo = objectInfo.TableInfo.Columns[i];
+
+                if (columnInfo.AllowUpdate)
+                {
+                    var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
+                    updateValues.Add(value);
+                }
+            }
+
+            return new SqlQuery(updateCommand, updateValues.ToArray());
         }
 
         /// <summary>
