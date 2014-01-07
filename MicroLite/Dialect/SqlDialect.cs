@@ -359,7 +359,7 @@ namespace MicroLite.Dialect
                 return insertSqlQuery;
             }
 
-            var insertValues = new List<object>();
+            var insertValues = new List<object>(objectInfo.TableInfo.Columns.Count);
 
             for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
             {
@@ -446,7 +446,7 @@ namespace MicroLite.Dialect
                 return updateSqlQuery;
             }
 
-            var updateValues = new List<object>();
+            var updateValues = new List<object>(objectInfo.TableInfo.Columns.Count);
 
             for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
             {
