@@ -17,7 +17,6 @@ namespace MicroLite
     using System.Globalization;
     using System.Linq;
     using System.Text;
-    using System.Text.RegularExpressions;
 
     /// <summary>
     /// A utility class containing useful methods for manipulating Sql.
@@ -26,7 +25,6 @@ namespace MicroLite
     {
         private static readonly string[] emptyStringArray = new string[0];
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
-        private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline);
 
         /// <summary>
         /// Gets the position of the first parameter in the specified command text.
@@ -57,27 +55,45 @@ namespace MicroLite
                 throw new ArgumentNullException("commandText");
             }
 
-            var match = parameterRegex.Match(commandText);
+            var parameterNames = new List<string>();
 
-            if (!match.Success)
+            var startIndex = 0;
+
+            for (int i = 0; i < commandText.Length; i++)
             {
-                return emptyStringArray;
-            }
+                var character = commandText[i];
 
-            var list = new List<string>();
-
-            do
-            {
-                if (!list.Contains(match.Value))
+                if (character == '@' || character == ':')
                 {
-                    list.Add(match.Value);
+                    startIndex = i;
                 }
+                else if (startIndex > 0 && !char.IsLetterOrDigit(character) && character != '_')
+                {
+                    var length = i - startIndex;
 
-                match = match.NextMatch();
+                    var parameter = commandText.Substring(startIndex, length);
+
+                    if (!parameterNames.Contains(parameter))
+                    {
+                        parameterNames.Add(parameter);
+                    }
+
+                    startIndex = 0;
+                }
+                else if (startIndex > 0 && i == commandText.Length - 1)
+                {
+                    var length = commandText.Length - startIndex;
+
+                    var parameter = commandText.Substring(startIndex, length);
+
+                    if (!parameterNames.Contains(parameter))
+                    {
+                        parameterNames.Add(parameter);
+                    }
+                }
             }
-            while (match.Success);
 
-            return list;
+            return parameterNames;
         }
 
         /// <summary>
