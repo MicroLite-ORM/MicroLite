@@ -22,6 +22,7 @@ namespace MicroLite
     public sealed class SqlQuery : IEquatable<SqlQuery>
     {
         private readonly object[] arguments;
+        private readonly string commandText;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlQuery"/> class with the specified command text and parameter values.
@@ -30,7 +31,7 @@ namespace MicroLite
         /// <param name="arguments">The parameter values for the query.</param>
         public SqlQuery(string commandText, params object[] arguments)
         {
-            this.CommandText = commandText;
+            this.commandText = commandText;
             this.arguments = arguments ?? new object[0];
             this.Timeout = 30;
         }
@@ -47,12 +48,14 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets or sets the SQL statement execute against the data source.
+        /// Gets the SQL statement execute against the data source.
         /// </summary>
         public string CommandText
         {
-            get;
-            set;
+            get
+            {
+                return this.commandText;
+            }
         }
 
         /// <summary>
