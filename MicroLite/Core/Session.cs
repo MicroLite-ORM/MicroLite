@@ -58,8 +58,6 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, instance);
 
-            this.listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
-
             var rowsAffected = this.Execute(sqlQuery);
 
             this.listeners.Reverse(l => l.AfterDelete(instance, rowsAffected));
@@ -163,8 +161,6 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Insert, instance);
 
-            this.listeners.Each(l => l.BeforeInsert(instance, sqlQuery));
-
             var identifier = this.ExecuteScalar<object>(sqlQuery);
 
             this.listeners.Reverse(l => l.AfterInsert(instance, identifier));
@@ -201,8 +197,6 @@ namespace MicroLite.Core
             this.listeners.Each(l => l.BeforeUpdate(instance));
 
             var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Update, instance);
-
-            this.listeners.Each(l => l.BeforeUpdate(instance, sqlQuery));
 
             var rowsAffected = this.Execute(sqlQuery);
 

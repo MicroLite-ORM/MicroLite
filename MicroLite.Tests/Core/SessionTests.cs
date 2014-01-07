@@ -55,14 +55,12 @@
             int counter = 0;
 
             var mockListener1 = new Mock<IListener>();
-            mockListener1.Setup(x => x.AfterDelete(customer, 1)).Callback(() => Assert.Equal(6, ++counter));
+            mockListener1.Setup(x => x.AfterDelete(customer, 1)).Callback(() => Assert.Equal(4, ++counter));
             mockListener1.Setup(x => x.BeforeDelete(customer)).Callback(() => Assert.Equal(1, ++counter));
-            mockListener1.Setup(x => x.BeforeDelete(customer, It.IsAny<SqlQuery>())).Callback(() => Assert.Equal(3, ++counter));
 
             var mockListener2 = new Mock<IListener>();
-            mockListener2.Setup(x => x.AfterDelete(customer, 1)).Callback(() => Assert.Equal(5, ++counter));
+            mockListener2.Setup(x => x.AfterDelete(customer, 1)).Callback(() => Assert.Equal(3, ++counter));
             mockListener2.Setup(x => x.BeforeDelete(customer)).Callback(() => Assert.Equal(2, ++counter));
-            mockListener2.Setup(x => x.BeforeDelete(customer, It.IsAny<SqlQuery>())).Callback(() => Assert.Equal(4, ++counter));
 
             var session = new Session(
                 mockSessionFactory.Object,
@@ -633,14 +631,12 @@
             int counter = 0;
 
             var mockListener1 = new Mock<IListener>();
-            mockListener1.Setup(x => x.AfterInsert(customer, identifier)).Callback(() => Assert.Equal(6, ++counter));
+            mockListener1.Setup(x => x.AfterInsert(customer, identifier)).Callback(() => Assert.Equal(4, ++counter));
             mockListener1.Setup(x => x.BeforeInsert(customer)).Callback(() => Assert.Equal(1, ++counter));
-            mockListener1.Setup(x => x.BeforeInsert(customer, sqlQuery)).Callback(() => Assert.Equal(3, ++counter));
 
             var mockListener2 = new Mock<IListener>();
-            mockListener2.Setup(x => x.AfterInsert(customer, identifier)).Callback(() => Assert.Equal(5, ++counter));
+            mockListener2.Setup(x => x.AfterInsert(customer, identifier)).Callback(() => Assert.Equal(3, ++counter));
             mockListener2.Setup(x => x.BeforeInsert(customer)).Callback(() => Assert.Equal(2, ++counter));
-            mockListener2.Setup(x => x.BeforeInsert(customer, sqlQuery)).Callback(() => Assert.Equal(4, ++counter));
 
             var session = new Session(
                 mockSessionFactory.Object,
@@ -849,14 +845,12 @@
             int counter = 0;
 
             var mockListener1 = new Mock<IListener>();
-            mockListener1.Setup(x => x.AfterUpdate(customer, 1)).Callback(() => Assert.Equal(6, ++counter));
+            mockListener1.Setup(x => x.AfterUpdate(customer, 1)).Callback(() => Assert.Equal(4, ++counter));
             mockListener1.Setup(x => x.BeforeUpdate(customer)).Callback(() => Assert.Equal(1, ++counter));
-            mockListener1.Setup(x => x.BeforeUpdate(customer, sqlQuery)).Callback(() => Assert.Equal(3, ++counter));
 
             var mockListener2 = new Mock<IListener>();
-            mockListener2.Setup(x => x.AfterUpdate(customer, 1)).Callback(() => Assert.Equal(5, ++counter));
+            mockListener2.Setup(x => x.AfterUpdate(customer, 1)).Callback(() => Assert.Equal(3, ++counter));
             mockListener2.Setup(x => x.BeforeUpdate(customer)).Callback(() => Assert.Equal(2, ++counter));
-            mockListener2.Setup(x => x.BeforeUpdate(customer, sqlQuery)).Callback(() => Assert.Equal(4, ++counter));
 
             var session = new Session(
                 mockSessionFactory.Object,

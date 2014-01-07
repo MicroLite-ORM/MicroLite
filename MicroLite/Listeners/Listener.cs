@@ -70,15 +70,6 @@ namespace MicroLite.Listeners
         }
 
         /// <summary>
-        /// Invoked before the SqlQuery to delete the record from the database is executed.
-        /// </summary>
-        /// <param name="instance">The instance to be deleted.</param>
-        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
-        public virtual void BeforeDelete(object instance, SqlQuery sqlQuery)
-        {
-        }
-
-        /// <summary>
         /// Invoked before the SqlQuery to insert the record into the database is created.
         /// </summary>
         /// <param name="instance">The instance to be inserted.</param>
@@ -87,28 +78,10 @@ namespace MicroLite.Listeners
         }
 
         /// <summary>
-        /// Invoked before the SqlQuery to insert the record into the database is executed.
-        /// </summary>
-        /// <param name="instance">The instance to be inserted.</param>
-        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
-        public virtual void BeforeInsert(object instance, SqlQuery sqlQuery)
-        {
-        }
-
-        /// <summary>
         /// Invoked before the SqlQuery to update the record in the database is created.
         /// </summary>
         /// <param name="instance">The instance to be updated.</param>
         public virtual void BeforeUpdate(object instance)
-        {
-        }
-
-        /// <summary>
-        /// Invoked before the SqlQuery to update the record in the database is executed.
-        /// </summary>
-        /// <param name="instance">The instance to be updated.</param>
-        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
-        public virtual void BeforeUpdate(object instance, SqlQuery sqlQuery)
         {
         }
     }
