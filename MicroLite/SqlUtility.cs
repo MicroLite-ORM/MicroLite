@@ -25,13 +25,8 @@ namespace MicroLite
     public static class SqlUtility
     {
         private static readonly string[] emptyStringArray = new string[0];
-        private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
         private static readonly Regex parameterRegex = new Regex(@"((@|:)[\w]+)", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex selectRegex = new Regex("(?<=SELECT)(.+?)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex tableNameRegexGreedy = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex tableNameRegexLazy = new Regex("(?<=FROM)(.+?)(?=WHERE)|(?<=FROM)(.+?)(?=ORDER BY)|(?<=FROM)(.+?)(?=WHERE)?|(?<=FROM)(.+?)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
 
         /// <summary>
         /// Gets the position of the first parameter in the specified command text.
@@ -92,7 +87,29 @@ namespace MicroLite
         /// <returns>The ORDER BY clause without the ORDER BY keyword.</returns>
         public static string ReadOrderByClause(string commandText)
         {
-            return ExtractUsingRegex(commandText, orderByRegex);
+            if (string.IsNullOrEmpty(commandText))
+            {
+                return string.Empty;
+            }
+
+            var segmentPositions = SegmentPositions.GetSegmentPositions(commandText);
+
+            if (segmentPositions.OrderByIndex == -1)
+            {
+                return string.Empty;
+            }
+
+            var startIndex = segmentPositions.OrderByIndex + 8; // Remove the ORDER BY keyword
+            var length = commandText.Length - startIndex;
+
+            var segment = commandText.Substring(startIndex, length).Trim();
+
+            if (segment.Contains(Environment.NewLine))
+            {
+                segment = segment.Replace(Environment.NewLine, Strings.Space);
+            }
+
+            return segment;
         }
 
         /// <summary>
@@ -102,7 +119,29 @@ namespace MicroLite
         /// <returns>The SELECT clause without the SELECT keyword.</returns>
         public static string ReadSelectClause(string commandText)
         {
-            return ExtractUsingRegex(commandText, selectRegex);
+            if (string.IsNullOrEmpty(commandText))
+            {
+                return string.Empty;
+            }
+
+            var segmentPositions = SegmentPositions.GetSegmentPositions(commandText);
+
+            if (segmentPositions.FromIndex < 6)
+            {
+                return string.Empty;
+            }
+
+            var startIndex = 6; // Remove the SELECT keyword
+            var length = segmentPositions.FromIndex - startIndex;
+
+            var segment = commandText.Substring(startIndex, length).Trim();
+
+            if (segment.Contains(Environment.NewLine))
+            {
+                segment = segment.Replace(Environment.NewLine, Strings.Space);
+            }
+
+            return segment;
         }
 
         /// <summary>
@@ -112,14 +151,38 @@ namespace MicroLite
         /// <returns>The name of the table the sql query is targeting.</returns>
         public static string ReadTableName(string commandText)
         {
-            var tableName = ExtractUsingRegex(commandText, tableNameRegexLazy);
-
-            if (string.IsNullOrEmpty(tableName))
+            if (string.IsNullOrEmpty(commandText))
             {
-                tableName = ExtractUsingRegex(commandText, tableNameRegexGreedy);
+                return string.Empty;
             }
 
-            return tableName;
+            var segmentPositions = SegmentPositions.GetSegmentPositions(commandText);
+
+            if (segmentPositions.FromIndex == -1)
+            {
+                return string.Empty;
+            }
+
+            var startIndex = segmentPositions.FromIndex + 4; // Start after the FROM keyword.
+            var length = commandText.Length - startIndex;
+
+            if (segmentPositions.WhereIndex != -1)
+            {
+                length = segmentPositions.WhereIndex - startIndex;
+            }
+            else if (segmentPositions.OrderByIndex != -1)
+            {
+                length = segmentPositions.OrderByIndex - startIndex;
+            }
+
+            var segment = commandText.Substring(startIndex, length).Trim();
+
+            if (segment.Contains(Environment.NewLine))
+            {
+                segment = segment.Replace(Environment.NewLine, Strings.Space);
+            }
+
+            return segment;
         }
 
         /// <summary>
@@ -129,7 +192,31 @@ namespace MicroLite
         /// <returns>The WHERE clause without the WHERE keyword.</returns>
         public static string ReadWhereClause(string commandText)
         {
-            return ExtractUsingRegex(commandText, whereRegex);
+            if (string.IsNullOrEmpty(commandText))
+            {
+                return string.Empty;
+            }
+
+            var segmentPositions = SegmentPositions.GetSegmentPositions(commandText);
+
+            if (segmentPositions.WhereIndex == -1)
+            {
+                return string.Empty;
+            }
+
+            var startIndex = segmentPositions.WhereIndex + 5; // Start after the WHERE keyword.
+            var length = segmentPositions.OrderByIndex != -1
+                ? segmentPositions.OrderByIndex - startIndex
+                : commandText.Length - startIndex;
+
+            var segment = commandText.Substring(startIndex, length).Trim();
+
+            if (segment.Contains(Environment.NewLine))
+            {
+                segment = segment.Replace(Environment.NewLine, Strings.Space);
+            }
+
+            return segment;
         }
 
         /// <summary>
@@ -162,23 +249,37 @@ namespace MicroLite
             return predicateReWriter.ToString();
         }
 
-        private static string ExtractUsingRegex(string commandText, Regex regex)
+        private struct SegmentPositions
         {
-            var match = regex.Match(commandText);
-
-            if (!match.Success)
+            public int FromIndex
             {
-                return string.Empty;
+                get;
+                set;
             }
 
-            var sql = match.Value.Trim();
-
-            if (sql.Contains(Environment.NewLine))
+            public int OrderByIndex
             {
-                sql = sql.Replace(Environment.NewLine, Strings.Space);
+                get;
+                set;
             }
 
-            return sql;
+            public int WhereIndex
+            {
+                get;
+                set;
+            }
+
+            internal static SegmentPositions GetSegmentPositions(string commandText)
+            {
+                var segmentPositions = new SegmentPositions
+                {
+                    FromIndex = commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase),
+                    OrderByIndex = commandText.IndexOf("ORDER BY", StringComparison.OrdinalIgnoreCase),
+                    WhereIndex = commandText.IndexOf("WHERE", StringComparison.OrdinalIgnoreCase)
+                };
+
+                return segmentPositions;
+            }
         }
     }
 }
