@@ -307,10 +307,10 @@ namespace MicroLite.Dialect
                     .WhereEquals(objectInfo.TableInfo.IdentifierColumn, objectInfo.GetIdentifierValue(instance))
                     .ToSqlQuery();
 
-                var newDeleteCache = new Dictionary<Type, string>(this.deleteCommandCache);
-                newDeleteCache[objectInfo.ForType] = deleteSqlQuery.CommandText;
+                var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
+                newDeleteCommandCache[objectInfo.ForType] = deleteSqlQuery.CommandText;
 
-                this.deleteCommandCache = newDeleteCache;
+                this.deleteCommandCache = newDeleteCommandCache;
 
                 return deleteSqlQuery;
             }
@@ -350,6 +350,11 @@ namespace MicroLite.Dialect
                 var insertSqlQuery = objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
                     ? insertSqlBuilder.ToSqlQuery(this.sqlCharacters.StatementSeparator + this.SelectIdentityString)
                     : insertSqlBuilder.ToSqlQuery();
+
+                var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
+                newInsertCommandCache[objectInfo.ForType] = insertSqlQuery.CommandText;
+
+                this.insertCommandCache = newInsertCommandCache;
 
                 return insertSqlQuery;
             }
@@ -432,6 +437,11 @@ namespace MicroLite.Dialect
                 updateSqlBuilder.Where(objectInfo.TableInfo.IdentifierColumn, objectInfo.GetIdentifierValue(instance));
 
                 var updateSqlQuery = updateSqlBuilder.ToSqlQuery();
+
+                var newUpdateCommandCache = new Dictionary<Type, string>(this.updateCommandCache);
+                newUpdateCommandCache[objectInfo.ForType] = updateSqlQuery.CommandText;
+
+                this.updateCommandCache = newUpdateCommandCache;
 
                 return updateSqlQuery;
             }
