@@ -459,6 +459,8 @@ namespace MicroLite.Dialect
                 }
             }
 
+            updateValues.Add(objectInfo.GetIdentifierValue(instance));
+
             return new SqlQuery(updateCommand, updateValues.ToArray());
         }
 
