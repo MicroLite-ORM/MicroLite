@@ -21,8 +21,18 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("{CommandText}")]
     public sealed class SqlQuery : IEquatable<SqlQuery>
     {
+        private static readonly object[] empty = new object[0];
         private readonly object[] arguments;
         private readonly string commandText;
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SqlQuery"/> class with the specified command text and parameter values.
+        /// </summary>
+        /// <param name="commandText">The SQL command text.</param>
+        public SqlQuery(string commandText)
+            : this(commandText, null)
+        {
+        }
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlQuery"/> class with the specified command text and parameter values.
@@ -32,7 +42,7 @@ namespace MicroLite
         public SqlQuery(string commandText, params object[] arguments)
         {
             this.commandText = commandText;
-            this.arguments = arguments ?? new object[0];
+            this.arguments = arguments ?? SqlQuery.empty;
             this.Timeout = 30;
         }
 
