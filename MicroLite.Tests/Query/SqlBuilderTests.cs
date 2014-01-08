@@ -69,6 +69,38 @@
         }
 
         [Fact]
+        public void SelectReturnsSqlBuilderWithColumnSelectListIfColumnSpecified()
+        {
+            var sqlBuilder = SqlBuilder.Select("Id").From("Customers").ToSqlQuery();
+
+            Assert.Equal("SELECT Id FROM Customers", sqlBuilder.ToString());
+        }
+
+        [Fact]
+        public void SelectReturnsSqlBuilderWithColumnsSelectListIfColumnsSpecified()
+        {
+            var sqlBuilder = SqlBuilder.Select("Id", "Name").From("Customers").ToSqlQuery();
+
+            Assert.Equal("SELECT Id, Name FROM Customers", sqlBuilder.ToString());
+        }
+
+        [Fact]
+        public void SelectReturnsSqlBuilderWithNoSelectListIfNoColumnsSpecified()
+        {
+            var sqlBuilder = SqlBuilder.Select().From("Customers").ToSqlQuery();
+
+            Assert.Equal("SELECT  FROM Customers", sqlBuilder.ToString());
+        }
+
+        [Fact]
+        public void SelectReturnsSqlBuilderWithWildcardSelectListIfWildcardSpecified()
+        {
+            var sqlBuilder = SqlBuilder.Select("*").From("Customers").ToSqlQuery();
+
+            Assert.Equal("SELECT * FROM Customers", sqlBuilder.ToString());
+        }
+
+        [Fact]
         public void UpdateReturnsNewBuilderOnEachCall()
         {
             var sqlBuilder1 = SqlBuilder.Update();

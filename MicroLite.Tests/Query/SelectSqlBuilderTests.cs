@@ -55,11 +55,24 @@
         }
 
         [Fact]
+        public void GroupByAppendsColumnsCorrectlyForSingleColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            var sqlQuery = sqlBuilder.From("Customer")
+                .GroupBy("CustomerId")
+                .ToSqlQuery();
+
+            Assert.Equal("SELECT CustomerId FROM Customer GROUP BY CustomerId", sqlQuery.CommandText);
+        }
+
+        [Fact]
         public void GroupByThrowsArgumentNullException()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
 
-            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").GroupBy(null));
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").GroupBy((string)null));
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").GroupBy((string[])null));
         }
 
         [Fact]
@@ -99,11 +112,60 @@
         }
 
         [Fact]
+        public void OrderByAscendingAppendsColumnsCorrectlyForMultipleColumns()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            var sqlQuery = sqlBuilder.From("Customer")
+                .OrderByAscending("FirstName", "LastName")
+                .ToSqlQuery();
+
+            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY FirstName, LastName ASC", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void OrderByAscendingAppendsColumnsCorrectlyForSingleColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            var sqlQuery = sqlBuilder.From("Customer")
+                .OrderByAscending("CustomerId")
+                .ToSqlQuery();
+
+            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY CustomerId ASC", sqlQuery.CommandText);
+        }
+
+        [Fact]
         public void OrderByAscendingThrowsArgumentNullException()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
 
-            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByAscending(null));
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByAscending((string)null));
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByAscending((string[])null));
+        }
+
+        [Fact]
+        public void OrderByDescendingAppendsColumnsCorrectlyForMultipleColumns()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            var sqlQuery = sqlBuilder.From("Customer")
+                .OrderByDescending("FirstName", "LastName")
+                .ToSqlQuery();
+
+            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY FirstName, LastName DESC", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void OrderByDescendingAppendsColumnsCorrectlyForSingleColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            var sqlQuery = sqlBuilder.From("Customer")
+                .OrderByDescending("CustomerId")
+                .ToSqlQuery();
+
+            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY CustomerId DESC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -111,7 +173,8 @@
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
 
-            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByDescending(null));
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByDescending((string)null));
+            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByDescending((string[])null));
         }
 
         [Fact]
@@ -403,35 +466,9 @@
         }
 
         [Fact]
-        public void SelectFromSpecifyingWildcardAndTableName()
+        public void SelectFromType()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "*");
-
-            var sqlQuery = sqlBuilder
-                .From("Table")
-                .ToSqlQuery();
-
-            Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT * FROM Table", sqlQuery.CommandText);
-        }
-
-        [Fact]
-        public void SelectFromSpecifyingWildcardAndTableNameWithSqlCharacters()
-        {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "*");
-
-            var sqlQuery = sqlBuilder
-                .From("Table")
-                .ToSqlQuery();
-
-            Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT * FROM [Table]", sqlQuery.CommandText);
-        }
-
-        [Fact]
-        public void SelectFromSpecifyingWildcardAndType()
-        {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "*");
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
 
             var sqlQuery = sqlBuilder
                 .From(typeof(Customer))
@@ -442,9 +479,9 @@
         }
 
         [Fact]
-        public void SelectFromSpecifyingWildcardAndTypeWithSqlCharacters()
+        public void SelectFromTypeWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "*");
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql);
 
             var sqlQuery = sqlBuilder
                 .From(typeof(Customer))
@@ -1473,7 +1510,7 @@
         }
 
         [Fact]
-        public void WhenCreatedWithoutSpecifyingAnyColumnsTheCommandTextIsSelectStar()
+        public void WhenCreatedWithoutSpecifyingAnyColumnsTheCommandTextIsSelectWildcard()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
 

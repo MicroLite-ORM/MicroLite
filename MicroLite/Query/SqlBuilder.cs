@@ -118,24 +118,29 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Creates a new query which selects the specified columns.
+        /// Creates a new select query with no specified columns.
         /// </summary>
-        /// <param name="columns">The columns to be included in the query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <example>
-        /// Option 1, don't enter any column names, this is generally used if you want to just call a function such as Count.
+        /// Don't enter any column names, this is generally used if you want to just call a function such as Count.
         /// <code>
         /// var query = SqlBuilder.Select()...
         /// </code>
         /// </example>
+        public static IFunctionOrFrom Select()
+        {
+            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
+
+            return new SelectSqlBuilder(sqlCharacters, null);
+        }
+
+        /// <summary>
+        /// Creates a new select query with a single specified column or '*'.
+        /// </summary>
+        /// <param name="column">The column (or wildcard *) to be included in the query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
         /// <example>
-        /// Option 2, enter specific column names.
-        /// <code>
-        /// var query = SqlBuilder.Select("Name", "DoB")...
-        /// </code>
-        /// </example>
-        /// <example>
-        /// Option 3, enter * followed by a table name
+        /// Option 1, enter * followed by a table name
         /// <code>
         /// var query = SqlBuilder.Select("*").From("Customers")...
         ///
@@ -144,12 +149,35 @@ namespace MicroLite.Query
         /// </code>
         /// </example>
         /// <example>
-        /// Option 4, enter * followed by a type in From, all mapped columns will be specified in the SQL.
+        /// Option 2, enter * followed by a type in From, all mapped columns will be specified in the SQL.
         /// <code>
         /// var query = SqlBuilder.Select("*").From(typeof(Customer))...
         ///
         /// // SELECT CustomerId, Name, DoB FROM Customers
         /// // will be generated
+        /// </code>
+        /// </example>
+        public static IFunctionOrFrom Select(string column)
+        {
+            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
+
+            if (column == "*")
+            {
+                return new SelectSqlBuilder(sqlCharacters);
+            }
+
+            return new SelectSqlBuilder(sqlCharacters, column);
+        }
+
+        /// <summary>
+        /// Creates a new query which selects the specified columns.
+        /// </summary>
+        /// <param name="columns">The columns to be included in the query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// Enter specific column names.
+        /// <code>
+        /// var query = SqlBuilder.Select("Name", "DoB")...
         /// </code>
         /// </example>
         public static IFunctionOrFrom Select(params string[] columns)

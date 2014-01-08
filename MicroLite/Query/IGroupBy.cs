@@ -18,6 +18,13 @@ namespace MicroLite.Query
     public interface IGroupBy : IHideObjectMethods
     {
         /// <summary>
+        /// Groups the results of the query by the specified column.
+        /// </summary>
+        /// <param name="column">The column to group by.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        IHavingOrOrderBy GroupBy(string column);
+
+        /// <summary>
         /// Groups the results of the query by the specified columns.
         /// </summary>
         /// <param name="columns">The columns to group by.</param>

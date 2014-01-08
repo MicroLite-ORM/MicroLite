@@ -23,12 +23,21 @@ namespace MicroLite.Query
         private string operand;
         private string whereColumnName;
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SelectSqlBuilder"/> class with the starting command text 'SELECT *'.
+        /// </summary>
+        /// <param name="sqlCharacters">The SQL characters.</param>
         internal SelectSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)
         {
             this.InnerSql.Append("SELECT *");
         }
 
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SelectSqlBuilder"/> class with an optional list of columns to select.
+        /// </summary>
+        /// <param name="sqlCharacters">The SQL characters.</param>
+        /// <param name="columns">The columns.</param>
         internal SelectSqlBuilder(SqlCharacters sqlCharacters, params string[] columns)
             : base(sqlCharacters)
         {
@@ -36,21 +45,14 @@ namespace MicroLite.Query
 
             if (columns != null)
             {
-                if (columns.Length == 1 && columns[0] == "*")
+                for (int i = 0; i < columns.Length; i++)
                 {
-                    this.InnerSql.Append('*');
-                }
-                else
-                {
-                    for (int i = 0; i < columns.Length; i++)
+                    if (i > 0)
                     {
-                        if (i > 0)
-                        {
-                            this.InnerSql.Append(", ");
-                        }
-
-                        this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
+                        this.InnerSql.Append(", ");
                     }
+
+                    this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
                 }
             }
         }
@@ -321,9 +323,9 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Groups the results of the query by the specified columns.
+        /// Groups the results of the query by the specified column.
         /// </summary>
-        /// <param name="columns">The columns to group by.</param>
+        /// <param name="column">The column to group by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <example>
         /// <code>
@@ -335,6 +337,35 @@ namespace MicroLite.Query
         ///     .ToSqlQuery();
         /// </code>
         /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId
+        /// </example>
+        public IHavingOrOrderBy GroupBy(string column)
+        {
+            if (column == null)
+            {
+                throw new ArgumentNullException("column");
+            }
+
+            this.InnerSql.Append(" GROUP BY ");
+            this.InnerSql.Append(this.SqlCharacters.EscapeSql(column));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Groups the results of the query by the specified columns.
+        /// </summary>
+        /// <param name="columns">The columns to group by.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// <code>
+        /// var sqlQuery = SqlBuilder
+        ///     .Select("CustomerId, OrderDate")
+        ///     .Max("Total")
+        ///     .From(typeof(Invoice))
+        ///     .GroupBy("CustomerId, OrderDate")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT CustomerId, OrderDate, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId, OrderDate
         /// </example>
         public IHavingOrOrderBy GroupBy(params string[] columns)
         {
@@ -945,9 +976,9 @@ namespace MicroLite.Query
         }
 
         /// <summary>
-        /// Orders the results of the query by the specified columns in ascending order.
+        /// Orders the results of the query by the specified column in ascending order.
         /// </summary>
-        /// <param name="columns">The columns to order by.</param>
+        /// <param name="column">The column to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <example>
         /// <code>
@@ -959,9 +990,53 @@ namespace MicroLite.Query
         /// </code>
         /// Would generate SELECT [Columns] FROM Customers ORDER BY CustomerId ASC
         /// </example>
+        public IOrderBy OrderByAscending(string column)
+        {
+            this.AddOrder(column, " ASC");
+
+            return this;
+        }
+
+        /// <summary>
+        /// Orders the results of the query by the specified columns in ascending order.
+        /// </summary>
+        /// <param name="columns">The columns to order by.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .OrderByDescending("FirstName", "LastName")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Would generate SELECT [Columns] FROM Customers ORDER BY FirstName, LastName ASC
+        /// </example>
         public IOrderBy OrderByAscending(params string[] columns)
         {
             this.AddOrder(columns, " ASC");
+
+            return this;
+        }
+
+        /// <summary>
+        /// Orders the results of the query by the specified column in descending order.
+        /// </summary>
+        /// <param name="column">The column to order by.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .OrderByDescending("CustomerId")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Would generate SELECT [Columns] FROM Customers ORDER BY CustomerId DESC
+        /// </example>
+        public IOrderBy OrderByDescending(string column)
+        {
+            this.AddOrder(column, " DESC");
 
             return this;
         }
@@ -976,10 +1051,10 @@ namespace MicroLite.Query
         /// var query = SqlBuilder
         ///     .Select("*")
         ///     .From(typeof(Customer))
-        ///     .OrderByDescending("CustomerId")
+        ///     .OrderByDescending("FirstName", "LastName")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers ORDER BY CustomerId DESC
+        /// Would generate SELECT [Columns] FROM Customers ORDER BY FirstName, LastName DESC
         /// </example>
         public IOrderBy OrderByDescending(params string[] columns)
         {
@@ -1163,6 +1238,20 @@ namespace MicroLite.Query
             this.addedWhere = true;
 
             return this;
+        }
+
+        private void AddOrder(string column, string direction)
+        {
+            if (column == null)
+            {
+                throw new ArgumentNullException("column");
+            }
+
+            this.InnerSql.Append(!this.addedOrder ? " ORDER BY " : ", ");
+            this.InnerSql.Append(this.SqlCharacters.EscapeSql(column));
+            this.InnerSql.Append(direction);
+
+            this.addedOrder = true;
         }
 
         private void AddOrder(string[] columns, string direction)
