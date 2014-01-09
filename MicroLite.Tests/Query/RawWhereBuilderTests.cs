@@ -11,15 +11,16 @@
         public void ApplyToEnsuresParametersAreRenumberedAndAllArgumentsAreAppended()
         {
             var rawWhereBuilder = new RawWhereBuilder();
-            rawWhereBuilder.Append("ForeName = @p0 AND Surname = @p1", "Fred", "Flintstone");
-            rawWhereBuilder.Append(" AND Created > @p0", DateTime.Today);
+            rawWhereBuilder.Append("ForeName = @p0 AND Surname = @p1", "Fred", "Flintstone")
+                .Append(" AND Created > @p0", DateTime.Today)
+                .Append(" AND LastLogin IS NOT NULL");
 
             var mockSqlBuilder = new Mock<IWhereOrOrderBy>();
 
             rawWhereBuilder.ApplyTo(mockSqlBuilder.Object);
 
             mockSqlBuilder.Verify(
-                x => x.Where("ForeName = @p0 AND Surname = @p1 AND Created > @p2", "Fred", "Flintstone", DateTime.Today),
+                x => x.Where("ForeName = @p0 AND Surname = @p1 AND Created > @p2 AND LastLogin IS NOT NULL", "Fred", "Flintstone", DateTime.Today),
                 Times.Once());
         }
 

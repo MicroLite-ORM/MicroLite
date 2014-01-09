@@ -33,8 +33,37 @@ namespace MicroLite.Query
         /// Appends the specified predicate (the WHERE keyword will be set when calling ApplyTo so it doesn't need specifying in the predicate).
         /// </summary>
         /// <param name="predicate">The predicate to be appended.</param>
+        /// <returns>The raw builder.</returns>
+        public RawWhereBuilder Append(string predicate)
+        {
+            this.builder.Append(predicate);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Appends the specified predicate (the WHERE keyword will be set when calling ApplyTo so it doesn't need specifying in the predicate).
+        /// </summary>
+        /// <param name="predicate">The predicate to be appended.</param>
+        /// <param name="arg">The argument value.</param>
+        /// <returns>The raw builder.</returns>
+        public RawWhereBuilder Append(string predicate, object arg)
+        {
+            this.arguments.Add(arg);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.arguments.Count);
+
+            this.builder.Append(renumberedPredicate);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Appends the specified predicate (the WHERE keyword will be set when calling ApplyTo so it doesn't need specifying in the predicate).
+        /// </summary>
+        /// <param name="predicate">The predicate to be appended.</param>
         /// <param name="args">The argument values.</param>
-        /// <returns>The predicate builder.</returns>
+        /// <returns>The raw builder.</returns>
         public RawWhereBuilder Append(string predicate, params object[] args)
         {
             this.arguments.AddRange(args);
