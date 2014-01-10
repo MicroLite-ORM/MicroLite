@@ -52,7 +52,7 @@ namespace MicroLite.Mapping
             var tableInfo = new TableInfo(
                 columns,
                 this.settings.IdentifierStrategy,
-                this.settings.UsePluralClassNameForTableName ? this.settings.InflectionService.ToPlural(forType.Name) : forType.Name,
+                this.settings.ResolveTableName(forType),
                 this.settings.TableSchema);
 
             if (this.log.IsDebug)

@@ -9,9 +9,55 @@
     /// </summary>
     public class ConventionMappingSettingsTests
     {
+        private enum CustomerStatus
+        {
+            New = 0,
+            Old = 1
+        }
+
         public class WhenConstructed
         {
             private readonly ConventionMappingSettings settings = new ConventionMappingSettings();
+
+            [Fact]
+            public void IsIdentifierReturnsTrueIfPropertyNameIsClassId()
+            {
+                var propertyInfo = typeof(Invoice).GetProperty("InvoiceId");
+
+                Assert.True(this.settings.IsIdentifier(propertyInfo));
+            }
+
+            [Fact]
+            public void IsIdentifierReturnsTrueIfPropertyNameIsId()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Id");
+
+                Assert.True(this.settings.IsIdentifier(propertyInfo));
+            }
+
+            [Fact]
+            public void ResolveColumnNameReturnsPropertyNameIdIfEnum()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("CustomerStatus");
+
+                Assert.Equal("CustomerStatusId", this.settings.ResolveColumnName(propertyInfo));
+            }
+
+            [Fact]
+            public void ResolveColumnNameReturnsPropertyNameIfNotEnum()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Name");
+
+                Assert.Equal("Name", this.settings.ResolveColumnName(propertyInfo));
+            }
+
+            [Fact]
+            public void ResolveTableNameReturnsPluralTypeName()
+            {
+                var type = typeof(Customer);
+
+                Assert.Equal("Customers", this.settings.ResolveTableName(type));
+            }
 
             [Fact]
             public void TheAllowInsertFunctionShouldBeSet()
@@ -62,6 +108,12 @@
             }
 
             [Fact]
+            public void TheResolveTableNameFunctionShouldBeSet()
+            {
+                Assert.NotNull(this.settings.ResolveTableName);
+            }
+
+            [Fact]
             public void TheTableSchemIsSetToNull()
             {
                 Assert.Null(this.settings.TableSchema);
@@ -71,6 +123,36 @@
             public void UsePluralClassNameForTableNameIsSetToTrue()
             {
                 Assert.True(this.settings.UsePluralClassNameForTableName);
+            }
+        }
+
+        private class Customer
+        {
+            public CustomerStatus CustomerStatus
+            {
+                get;
+                set;
+            }
+
+            public int Id
+            {
+                get;
+                set;
+            }
+
+            public string Name
+            {
+                get;
+                set;
+            }
+        }
+
+        private class Invoice
+        {
+            public int InvoiceId
+            {
+                get;
+                set;
             }
         }
     }
