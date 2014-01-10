@@ -18,9 +18,9 @@ namespace MicroLite.Dialect
     using System.Globalization;
     using System.Linq;
     using System.Text;
+    using MicroLite.Builder;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
-    using MicroLite.Query;
 
     /// <summary>
     /// The base class for implementations of <see cref="ISqlDialect" />.

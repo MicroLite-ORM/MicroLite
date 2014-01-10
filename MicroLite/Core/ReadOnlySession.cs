@@ -15,9 +15,9 @@ namespace MicroLite.Core
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using MicroLite.Builder;
     using MicroLite.Dialect;
     using MicroLite.Logging;
-    using MicroLite.Query;
 
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.

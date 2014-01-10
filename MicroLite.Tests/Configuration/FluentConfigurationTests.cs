@@ -3,7 +3,7 @@
     using System;
     using MicroLite.Configuration;
     using MicroLite.FrameworkExtensions;
-    using MicroLite.Query;
+    using MicroLite.Builder;
     using Xunit;
 
     /// <summary>

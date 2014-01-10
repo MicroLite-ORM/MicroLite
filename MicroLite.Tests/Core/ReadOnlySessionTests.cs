@@ -7,7 +7,7 @@
     using MicroLite.Core;
     using MicroLite.Dialect;
     using MicroLite.Mapping;
-    using MicroLite.Query;
+    using MicroLite.Builder;
     using Moq;
     using Xunit;
 
