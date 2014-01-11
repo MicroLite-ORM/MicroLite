@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <NDepend AppName="MicroLite" Platform="DotNet">
   <OutputDir KeepHistoric="True" KeepXmlFiles="True">C:\Source\GitHub\MicroLite\NDependOut</OutputDir>
   <Assemblies>
@@ -34,7 +34,8 @@
   <BuildComparisonSetting ProjectMode="DontCompare" BuildMode="MostRecentAnalysisResultAvailable" ProjectFileToCompareWith="" BuildFileToCompareWith="" NDaysAgo="1" />
   <BaselineInUISetting ProjectMode="DontCompare" BuildMode="MostRecentAnalysisResultAvailable" ProjectFileToCompareWith="" BuildFileToCompareWith="" NDaysAgo="1" />
   <CoverageFiles UncoverableAttribute="" />
-  <SourceFileRebasing FromPath="" ToPath="" /><Queries>
+  <SourceFileRebasing FromPath="" ToPath="" />
+  <Queries>
     <Group Name="Code Quality" Active="True" ShownInReport="False">
       <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="True"><![CDATA[// <Name>Types too big - critical</Name>
 warnif count > 0 from t in JustMyCode.Types where 
@@ -2596,11 +2597,6 @@ from m in Application.Methods where
   m.ReturnType != null &&
   m.ReturnType.FullName != "System.Boolean"
 
-// Ignore this rule for LogExtensions, it's a safe
-// method hence the Try prefix but it's not one you
-// care about the result of.
-&& m.ParentType.Name != "LogExtensions"
-
 select new { m, m.ReturnType }]]></Query>
     </Group>
     <Group Name="Source Files Organization" Active="True" ShownInReport="False">
@@ -3042,7 +3038,7 @@ select m
 // because you are using third party code that requires 
 // working with these classes or because you are 
 // coding with .NET 1.x.]]></Query>
-        <Query Active="False" DisplayList="False" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Caution with List.Contains()</Name>
+        <Query Active="True" DisplayList="False" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Caution with List.Contains()</Name>
 let containsMethods = ThirdParty.Methods.WithFullNameIn(
    "System.Collections.Generic.List<T>.Contains(T)",
    "System.Collections.Generic.IList<T>.Contains(T)",
@@ -3058,7 +3054,7 @@ select m
 // System.Collections.Generic.HashSet<T> class 
 // where calls to Contains() takes a constant 
 // time (O(0) operation).]]></Query>
-        <Query Active="False" DisplayList="False" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Prefer return collection abstraction instead of implementation</Name>
+        <Query Active="True" DisplayList="False" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Prefer return collection abstraction instead of implementation</Name>
 let implTypes = ThirdParty.Types.WithFullNameIn(
    "System.Collections.Generic.List<T>",
    "System.Collections.Generic.HashSet<T>",
@@ -3620,4 +3616,5 @@ from f in Application.Fields where
   f.Name == "components" && f.ParentType.DeriveFrom("System.Windows.Forms.Control".AllowNoMatch())
 select f]]></Query>
     </Group>
-  </Queries></NDepend>
+  </Queries>
+</NDepend>
