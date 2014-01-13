@@ -149,6 +149,24 @@
         }
 
         [Fact]
+        public void GetColumnInfoReturnsColumnInfoIfColumnMapped()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var columnInfo = objectInfo.GetColumnInfo("Name");
+
+            Assert.NotNull(columnInfo);
+            Assert.Equal("Name", columnInfo.ColumnName);
+        }
+
+        [Fact]
+        public void GetColumnInfoReturnsNullIfColumnNotMapped()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            Assert.Null(objectInfo.GetColumnInfo("Wibble"));
+        }
+
+        [Fact]
         public void GetIdentifierValueReturnsPropertyValue()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));

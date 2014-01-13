@@ -54,6 +54,11 @@ namespace MicroLite.Mapping
             return new ExpandoObject();
         }
 
+        public ColumnInfo GetColumnInfo(string columnName)
+        {
+            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+        }
+
         public object GetIdentifierValue(object instance)
         {
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);

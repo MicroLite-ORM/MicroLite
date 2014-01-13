@@ -36,6 +36,16 @@
         }
 
         [Fact]
+        public void GetColumnInfoThrowsNotSupportedException()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.GetColumnInfo("Name"));
+
+            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+        }
+
+        [Fact]
         public void GetIdentifierValueThrowsNotSupportedException()
         {
             var objectInfo = new ExpandoObjectInfo();

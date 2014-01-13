@@ -52,6 +52,13 @@ namespace MicroLite.Mapping
         object CreateInstance();
 
         /// <summary>
+        /// Gets the column information for the column with the specified name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns>The ColumnInfo or null if no column is mapped for the object with the specified name.</returns>
+        ColumnInfo GetColumnInfo(string columnName);
+
+        /// <summary>
         /// Gets the property value for the object identifier.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>

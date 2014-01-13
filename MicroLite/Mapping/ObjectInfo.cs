@@ -186,6 +186,27 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
+        /// Gets the column information for the column with the specified name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns>The ColumnInfo or null if no column is mapped for the object with the specified name.</returns>
+        public ColumnInfo GetColumnInfo(string columnName)
+        {
+            ColumnInfo columnInfo = null;
+
+            for (int i = 0; i < this.tableInfo.Columns.Count; i++)
+            {
+                if (this.tableInfo.Columns[i].ColumnName == columnName)
+                {
+                    columnInfo = this.tableInfo.Columns[i];
+                    break;
+                }
+            }
+
+            return columnInfo;
+        }
+
+        /// <summary>
         /// Gets the property value for the object identifier.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
@@ -242,16 +263,7 @@ namespace MicroLite.Mapping
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            ColumnInfo columnInfo = null;
-
-            for (int i = 0; i < this.tableInfo.Columns.Count; i++)
-            {
-                if (this.tableInfo.Columns[i].ColumnName == columnName)
-                {
-                    columnInfo = this.tableInfo.Columns[i];
-                    break;
-                }
-            }
+            var columnInfo = this.GetColumnInfo(columnName);
 
             if (columnInfo == null)
             {
@@ -333,16 +345,7 @@ namespace MicroLite.Mapping
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            ColumnInfo columnInfo = null;
-
-            for (int i = 0; i < this.tableInfo.Columns.Count; i++)
-            {
-                if (this.tableInfo.Columns[i].ColumnName == columnName)
-                {
-                    columnInfo = this.tableInfo.Columns[i];
-                    break;
-                }
-            }
+            var columnInfo = this.GetColumnInfo(columnName);
 
             if (columnInfo == null)
             {
