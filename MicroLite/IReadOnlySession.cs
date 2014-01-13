@@ -40,7 +40,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the current transaction or null if one has not been started.
         /// </summary>
-        ITransaction Transaction
+        ITransaction CurrentTransaction
         {
             get;
         }

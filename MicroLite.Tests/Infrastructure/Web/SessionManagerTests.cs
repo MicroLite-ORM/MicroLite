@@ -26,15 +26,15 @@
             }
 
             [Fact]
-            public void TheTransactionShouldNotBeCommitted()
+            public void TheCurrentTransactionShouldNotBeCommitted()
             {
-                this.mockSession.Verify(x => x.Transaction.Commit(), Times.Never());
+                this.mockSession.Verify(x => x.CurrentTransaction.Commit(), Times.Never());
             }
 
             [Fact]
-            public void TheTransactionShouldNotBeRolledBack()
+            public void TheCurrentTransactionShouldNotBeRolledBack()
             {
-                this.mockSession.Verify(x => x.Transaction.Rollback(), Times.Never());
+                this.mockSession.Verify(x => x.CurrentTransaction.Rollback(), Times.Never());
             }
         }
 
@@ -44,7 +44,7 @@
 
             public WhenCallingOnActionExecutedWithAnActiveBackManagedTransactionAndHasExceptionIsTrue()
             {
-                this.mockSession.Setup(x => x.Transaction.WasRolledBack).Returns(false);
+                this.mockSession.Setup(x => x.CurrentTransaction.WasRolledBack).Returns(false);
 
                 var sessionManager = new SessionManager();
                 sessionManager.OnActionExecuted(this.mockSession.Object, manageTransaction: true, hasException: true);
@@ -57,15 +57,15 @@
             }
 
             [Fact]
-            public void TheTransactionShouldNotBeCommitted()
+            public void TheCurrentTransactionShouldNotBeCommitted()
             {
-                this.mockSession.Verify(x => x.Transaction.Commit(), Times.Never());
+                this.mockSession.Verify(x => x.CurrentTransaction.Commit(), Times.Never());
             }
 
             [Fact]
-            public void TheTransactionShouldNotBeRolledBack()
+            public void TheCurrentTransactionShouldNotBeRolledBack()
             {
-                this.mockSession.Verify(x => x.Transaction.Rollback(), Times.Once());
+                this.mockSession.Verify(x => x.CurrentTransaction.Rollback(), Times.Once());
             }
         }
 
@@ -75,7 +75,7 @@
 
             public WhenCallingOnActionExecutedWithAnActiveManagedTransactionAndHasExceptionIsFalse()
             {
-                this.mockSession.Setup(x => x.Transaction.IsActive).Returns(true);
+                this.mockSession.Setup(x => x.CurrentTransaction.IsActive).Returns(true);
 
                 var sessionManager = new SessionManager();
                 sessionManager.OnActionExecuted(this.mockSession.Object, manageTransaction: true, hasException: false);
@@ -88,15 +88,15 @@
             }
 
             [Fact]
-            public void TheTransactionShouldBeCommitted()
+            public void TheCurrentTransactionShouldBeCommitted()
             {
-                this.mockSession.Verify(x => x.Transaction.Commit(), Times.Once());
+                this.mockSession.Verify(x => x.CurrentTransaction.Commit(), Times.Once());
             }
 
             [Fact]
-            public void TheTransactionShouldNotBeRolledBack()
+            public void TheCurrentTransactionShouldNotBeRolledBack()
             {
-                this.mockSession.Verify(x => x.Transaction.Rollback(), Times.Never());
+                this.mockSession.Verify(x => x.CurrentTransaction.Rollback(), Times.Never());
             }
         }
 
@@ -106,7 +106,7 @@
 
             public WhenCallingOnActionExecutedWithAnCompletedManagedTransactionAndHasExceptionIsFalse()
             {
-                this.mockSession.Setup(x => x.Transaction.IsActive).Returns(false);
+                this.mockSession.Setup(x => x.CurrentTransaction.IsActive).Returns(false);
 
                 var sessionManager = new SessionManager();
                 sessionManager.OnActionExecuted(this.mockSession.Object, manageTransaction: true, hasException: false);
@@ -119,15 +119,15 @@
             }
 
             [Fact]
-            public void TheTransactionShouldNotBeCommitted()
+            public void TheCurrentTransactionShouldNotBeCommitted()
             {
-                this.mockSession.Verify(x => x.Transaction.Commit(), Times.Never());
+                this.mockSession.Verify(x => x.CurrentTransaction.Commit(), Times.Never());
             }
 
             [Fact]
-            public void TheTransactionShouldNotBeRolledBack()
+            public void TheCurrentTransactionShouldNotBeRolledBack()
             {
-                this.mockSession.Verify(x => x.Transaction.Rollback(), Times.Never());
+                this.mockSession.Verify(x => x.CurrentTransaction.Rollback(), Times.Never());
             }
         }
 
@@ -137,7 +137,7 @@
 
             public WhenCallingOnActionExecutedWithARolledBackManagedTransactionAndHasExceptionIsTrue()
             {
-                this.mockSession.Setup(x => x.Transaction.WasRolledBack).Returns(true);
+                this.mockSession.Setup(x => x.CurrentTransaction.WasRolledBack).Returns(true);
 
                 var sessionManager = new SessionManager();
                 sessionManager.OnActionExecuted(this.mockSession.Object, manageTransaction: true, hasException: true);
@@ -150,15 +150,15 @@
             }
 
             [Fact]
-            public void TheTransactionShouldNotBeCommitted()
+            public void TheCurrentTransactionShouldNotBeCommitted()
             {
-                this.mockSession.Verify(x => x.Transaction.Commit(), Times.Never());
+                this.mockSession.Verify(x => x.CurrentTransaction.Commit(), Times.Never());
             }
 
             [Fact]
-            public void TheTransactionShouldNotBeRolledBack()
+            public void TheCurrentTransactionShouldNotBeRolledBack()
             {
-                this.mockSession.Verify(x => x.Transaction.Rollback(), Times.Never());
+                this.mockSession.Verify(x => x.CurrentTransaction.Rollback(), Times.Never());
             }
         }
 

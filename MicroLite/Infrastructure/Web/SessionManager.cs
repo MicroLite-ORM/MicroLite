@@ -33,20 +33,20 @@ namespace MicroLite.Infrastructure.Web
         {
             if (session != null)
             {
-                if (manageTransaction && session.Transaction != null)
+                if (manageTransaction && session.CurrentTransaction != null)
                 {
                     if (hasException)
                     {
-                        if (!session.Transaction.WasRolledBack)
+                        if (!session.CurrentTransaction.WasRolledBack)
                         {
-                            session.Transaction.Rollback();
+                            session.CurrentTransaction.Rollback();
                         }
                     }
                     else
                     {
-                        if (session.Transaction.IsActive)
+                        if (session.CurrentTransaction.IsActive)
                         {
-                            session.Transaction.Commit();
+                            session.CurrentTransaction.Commit();
                         }
                     }
                 }

@@ -52,9 +52,9 @@
             }
 
             [Fact]
-            public void TheTransactionPropertyIsSetToTheReturnedTransaction()
+            public void TheCurrentTransactionPropertyIsSetToTheReturnedTransaction()
             {
-                Assert.Same(this.transaction, sessionBase.Transaction);
+                Assert.Same(this.transaction, sessionBase.CurrentTransaction);
             }
         }
 
@@ -108,9 +108,9 @@
             }
 
             [Fact]
-            public void TheTransactionPropertyIsSetToTheReturnedTransaction()
+            public void TheCurrentTransactionPropertyIsSetToTheReturnedTransaction()
             {
-                Assert.Same(this.transaction, sessionBase.Transaction);
+                Assert.Same(this.transaction, sessionBase.CurrentTransaction);
             }
         }
 
@@ -273,9 +273,9 @@
             }
 
             [Fact]
-            public void TheTransactionIsSetToNull()
+            public void TheCurrentTransactionIsSetToNull()
             {
-                Assert.Null(this.sessionBase.Transaction);
+                Assert.Null(this.sessionBase.CurrentTransaction);
             }
         }
 
@@ -294,9 +294,9 @@
             }
 
             [Fact]
-            public void TheTransactionIsSetToNull()
+            public void TheCurrentTransactionIsSetToNull()
             {
-                Assert.Null(this.sessionBase.Transaction);
+                Assert.Null(this.sessionBase.CurrentTransaction);
             }
         }
 
@@ -332,9 +332,9 @@
             }
 
             [Fact]
-            public void TheTransactionIsNull()
+            public void TheCurrentTransactionIsNull()
             {
-                Assert.Null(this.sessionBase.Transaction);
+                Assert.Null(this.sessionBase.CurrentTransaction);
             }
         }
 
@@ -370,9 +370,9 @@
             }
 
             [Fact]
-            public void TheTransactionIsNull()
+            public void TheCurrentTransactionIsNull()
             {
-                Assert.Null(this.sessionBase.Transaction);
+                Assert.Null(this.sessionBase.CurrentTransaction);
             }
         }
 

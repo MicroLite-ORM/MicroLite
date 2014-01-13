@@ -56,7 +56,7 @@ namespace MicroLite.Core
             }
         }
 
-        public ITransaction Transaction
+        public ITransaction CurrentTransaction
         {
             get
             {
@@ -75,7 +75,7 @@ namespace MicroLite.Core
 
             this.currentTransaction = new Transaction(this, isolationLevel);
 
-            return this.Transaction;
+            return this.currentTransaction;
         }
 
         public void Dispose()
