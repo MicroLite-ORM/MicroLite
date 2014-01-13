@@ -1,9 +1,9 @@
 ﻿namespace MicroLite.Tests.Configuration
 {
     using System;
+    using MicroLite.Builder;
     using MicroLite.Configuration;
     using MicroLite.FrameworkExtensions;
-    using MicroLite.Builder;
     using Xunit;
 
     /// <summary>

@@ -56,6 +56,12 @@ namespace MicroLite.Core
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This method is provided to create and return an ISession for the caller to use, it should not dispose of it, that is the responsibility of the caller.")]
         public IReadOnlySession OpenReadOnlySession()
         {
+            return this.OpenReadOnlySession(ConnectionScope.PerTransaction);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This method is provided to create and return an ISession for the caller to use, it should not dispose of it, that is the responsibility of the caller.")]
+        public IReadOnlySession OpenReadOnlySession(ConnectionScope connectonScope)
+        {
             var connection = this.GetNewConnectionWithConnectionString();
 
             if (log.IsDebug)
@@ -63,14 +69,17 @@ namespace MicroLite.Core
                 log.Debug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
             }
 
-            return new ReadOnlySession(
-                this,
-                new ConnectionManager(connection),
-                this.objectBuilder);
+            return new ReadOnlySession(connectonScope, connection, this, this.objectBuilder);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This method is provided to create and return an ISession for the caller to use, it should not dispose of it, that is the responsibility of the caller.")]
         public ISession OpenSession()
+        {
+            return this.OpenSession(ConnectionScope.PerTransaction);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This method is provided to create and return an ISession for the caller to use, it should not dispose of it, that is the responsibility of the caller.")]
+        public ISession OpenSession(ConnectionScope connectonScope)
         {
             var connection = this.GetNewConnectionWithConnectionString();
 
@@ -79,11 +88,7 @@ namespace MicroLite.Core
                 log.Debug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
             }
 
-            return new Session(
-                this,
-                new ConnectionManager(connection),
-                this.objectBuilder,
-                Listener.Listeners);
+            return new Session(connectonScope, connection, this, this.objectBuilder, Listener.Listeners);
         }
 
         private IDbConnection GetNewConnectionWithConnectionString()

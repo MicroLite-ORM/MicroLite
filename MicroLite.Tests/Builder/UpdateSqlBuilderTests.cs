@@ -2,8 +2,8 @@
 {
     using System;
     using MicroLite;
-    using MicroLite.Mapping;
     using MicroLite.Builder;
+    using MicroLite.Mapping;
     using Xunit;
 
     /// <summary>

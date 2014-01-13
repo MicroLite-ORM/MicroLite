@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="MicroLite.Core.Session">
-    <Position X="8" Y="0.75" Width="1.75" />
+    <Position X="11.25" Y="0.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAQAAEAQAAAAAAQAAAAAAAAAAIEAAAABAAAAAAACAAA=</HashCode>
       <FileName>Core\Session.cs</FileName>
@@ -9,9 +9,9 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Core.ReadOnlySession">
-    <Position X="4.25" Y="0.75" Width="3" />
+    <Position X="7.5" Y="0.75" Width="3" />
     <TypeIdentifier>
-      <HashCode>CAKAQAABACBCgUIAAAkACBiABQgAAAAQAIAAECASAEA=</HashCode>
+      <HashCode>CAAAAAAAAABCAUAAAAkACBgABQAAAAAQAIAAECACAEA=</HashCode>
       <FileName>Core\ReadOnlySession.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -29,6 +29,13 @@
     <TypeIdentifier>
       <HashCode>gAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAACAAAAEAAAA=</HashCode>
       <FileName>Core\SessionFactoryOptions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Core.SessionBase">
+    <Position X="4.25" Y="0.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAABACAAgQEAAAQEAAAEAAgIAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Core\SessionBase.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

@@ -28,11 +28,12 @@ namespace MicroLite.Core
         private readonly IList<IListener> listeners;
 
         internal Session(
+            ConnectionScope connectionScope,
+            IDbConnection connection,
             ISessionFactory sessionFactory,
-            IConnectionManager connectionManager,
             IObjectBuilder objectBuilder,
             IList<IListener> listeners)
-            : base(sessionFactory, connectionManager, objectBuilder)
+            : base(connectionScope, connection, sessionFactory, objectBuilder)
         {
             this.listeners = listeners;
         }
@@ -97,13 +98,13 @@ namespace MicroLite.Core
 
             try
             {
-                using (var command = this.ConnectionManager.CreateCommand())
+                using (var command = this.CreateCommand())
                 {
                     this.SqlDialect.BuildCommand(command, sqlQuery);
 
                     var result = command.ExecuteNonQuery();
 
-                    this.ConnectionManager.CommandCompleted(command);
+                    this.CommandCompleted();
 
                     return result;
                 }
@@ -126,13 +127,13 @@ namespace MicroLite.Core
 
             try
             {
-                using (var command = this.ConnectionManager.CreateCommand())
+                using (var command = this.CreateCommand())
                 {
                     this.SqlDialect.BuildCommand(command, sqlQuery);
 
                     var result = command.ExecuteScalar();
 
-                    this.ConnectionManager.CommandCompleted(command);
+                    this.CommandCompleted();
 
                     var resultType = typeof(T);
                     var typeConverter = TypeConverter.For(resultType);

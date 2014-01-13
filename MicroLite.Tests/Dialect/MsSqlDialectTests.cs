@@ -2,10 +2,10 @@
 {
     using System;
     using System.Data;
+    using MicroLite.Builder;
     using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
-    using MicroLite.Builder;
     using Xunit;
 
     /// <summary>

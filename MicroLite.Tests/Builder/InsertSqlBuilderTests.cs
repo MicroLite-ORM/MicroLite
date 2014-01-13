@@ -1,8 +1,8 @@
 ﻿namespace MicroLite.Tests.Builder
 {
     using System;
-    using MicroLite.Mapping;
     using MicroLite.Builder;
+    using MicroLite.Mapping;
     using Xunit;
 
     /// <summary>

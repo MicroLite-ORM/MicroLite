@@ -17,34 +17,27 @@ namespace MicroLite.Core
     using System.Data;
     using MicroLite.Builder;
     using MicroLite.Dialect;
-    using MicroLite.Logging;
 
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.
     /// </summary>
-    internal class ReadOnlySession : IReadOnlySession, IIncludeSession, IAdvancedReadOnlySession
+    internal class ReadOnlySession : SessionBase, IReadOnlySession, IIncludeSession, IAdvancedReadOnlySession
     {
-        protected static readonly ILog Log = LogManager.GetCurrentClassLog();
-        private readonly IConnectionManager connectionManager;
         private readonly Queue<Include> includes = new Queue<Include>();
         private readonly IObjectBuilder objectBuilder;
         private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
         private readonly ISessionFactory sessionFactory;
-        private bool disposed;
+        private IDbConnection dbConnection;
 
         internal ReadOnlySession(
+            ConnectionScope connectionScope,
+            IDbConnection connection,
             ISessionFactory sessionFactory,
-            IConnectionManager connectionManager,
             IObjectBuilder objectBuilder)
+            : base(connectionScope, connection)
         {
             this.sessionFactory = sessionFactory;
-            this.connectionManager = connectionManager;
             this.objectBuilder = objectBuilder;
-
-            if (Log.IsDebug)
-            {
-                Log.Debug(Messages.Session_Created);
-            }
         }
 
         public IAdvancedReadOnlySession Advanced
@@ -71,22 +64,6 @@ namespace MicroLite.Core
             }
         }
 
-        public ITransaction Transaction
-        {
-            get
-            {
-                return this.ConnectionManager.CurrentTransaction;
-            }
-        }
-
-        protected IConnectionManager ConnectionManager
-        {
-            get
-            {
-                return this.connectionManager;
-            }
-        }
-
         protected ISqlDialect SqlDialect
         {
             get
@@ -104,24 +81,6 @@ namespace MicroLite.Core
             var include = this.Include.Many<T>(sqlQuery);
 
             return include;
-        }
-
-        public ITransaction BeginTransaction()
-        {
-            return this.BeginTransaction(IsolationLevel.ReadCommitted);
-        }
-
-        public ITransaction BeginTransaction(IsolationLevel isolationLevel)
-        {
-            this.ThrowIfDisposed();
-
-            return this.ConnectionManager.BeginTransaction(isolationLevel);
-        }
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         public void ExecutePendingQueries()
@@ -275,33 +234,11 @@ namespace MicroLite.Core
             return include;
         }
 
-        protected void Dispose(bool disposing)
-        {
-            if (disposing && !this.disposed)
-            {
-                this.ConnectionManager.Dispose();
-                this.disposed = true;
-
-                if (Log.IsDebug)
-                {
-                    Log.Debug(Messages.Session_Disposed);
-                }
-            }
-        }
-
-        protected void ThrowIfDisposed()
-        {
-            if (this.disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
-        }
-
         private void ExecuteQueriesCombined()
         {
             var sqlQuery = this.queries.Count == 1 ? this.queries.Peek() : this.SqlDialect.Combine(this.queries);
 
-            using (var command = this.ConnectionManager.CreateCommand())
+            using (var command = this.CreateCommand())
             {
                 try
                 {
@@ -319,7 +256,7 @@ namespace MicroLite.Core
                 }
                 finally
                 {
-                    this.connectionManager.CommandCompleted(command);
+                    this.CommandCompleted();
                 }
             }
         }
@@ -328,7 +265,7 @@ namespace MicroLite.Core
         {
             do
             {
-                using (var command = this.ConnectionManager.CreateCommand())
+                using (var command = this.CreateCommand())
                 {
                     try
                     {
@@ -343,7 +280,7 @@ namespace MicroLite.Core
                     }
                     finally
                     {
-                        this.connectionManager.CommandCompleted(command);
+                        this.CommandCompleted();
                     }
                 }
             }

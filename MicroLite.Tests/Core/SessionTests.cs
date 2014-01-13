@@ -23,8 +23,9 @@
         public void AdvancedReturnsSameSessionByDifferentInterface()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -49,8 +50,8 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             int counter = 0;
 
@@ -63,8 +64,9 @@
             mockListener2.Setup(x => x.BeforeDelete(customer)).Callback(() => Assert.Equal(2, ++counter));
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new[] { mockListener1.Object, mockListener2.Object });
 
@@ -92,19 +94,20 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.False(session.Delete(customer));
 
             mockSqlDialect.VerifyAll();
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -127,19 +130,20 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.True(session.Delete(customer));
 
             mockSqlDialect.VerifyAll();
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -147,8 +151,9 @@
         public void DeleteInstanceThrowsArgumentNullExceptionForNullInstance()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -173,12 +178,13 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Throws<InvalidOperationException>();
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -195,8 +201,9 @@
         public void DeleteInstanceThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
 
                 new IListener[0]);
@@ -225,19 +232,20 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.False(session.Delete(type, identifier));
 
             mockSqlDialect.VerifyAll();
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -258,19 +266,20 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.True(session.Delete(type, identifier));
 
             mockSqlDialect.VerifyAll();
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -278,8 +287,9 @@
         public void DeleteTypeByIdentifierThrowsArgumentNullExceptionForNullIdentifier()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -292,8 +302,9 @@
         public void DeleteTypeByIdentifierThrowsArgumentNullExceptionForNullType()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -319,12 +330,13 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Throws<InvalidOperationException>();
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -341,8 +353,9 @@
         public void DeleteTypeByIdentifierThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -363,8 +376,8 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(result);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
@@ -373,45 +386,15 @@
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.Equal(result, session.Execute(sqlQuery));
 
-            mockConnectionManager.VerifyAll();
-            mockCommand.VerifyAll();
-        }
-
-        [Fact]
-        public void ExecuteDoesNotOpenOrCloseConnectionWhenInTransaction()
-        {
-            var sqlQuery = new SqlQuery("");
-            var result = 1;
-
-            var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(result);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
-
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
-
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
-            var session = new Session(
-                mockSessionFactory.Object,
-                mockConnectionManager.Object,
-                new Mock<IObjectBuilder>().Object,
-                new IListener[0]);
-
-            Assert.Equal(result, session.Execute(sqlQuery));
-
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -425,44 +408,8 @@
             mockCommand.Setup(x => x.ExecuteScalar()).Returns(result);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
-
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
-            var session = new Session(
-                mockSessionFactory.Object,
-                mockConnectionManager.Object,
-                new Mock<IObjectBuilder>().Object,
-                new IListener[0]);
-
-            Assert.Equal(result, session.ExecuteScalar<object>(sqlQuery));
-
-            mockConnectionManager.VerifyAll();
-            mockCommand.VerifyAll();
-        }
-
-        [Fact]
-        public void ExecuteScalarDoesNotOpenOrCloseConnectionWhenInTransaction()
-        {
-            var sqlQuery = new SqlQuery("");
-            var result = new object();
-
             var mockConnection = new Mock<IDbConnection>();
-            mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
-            mockConnection.Setup(x => x.Open());
-            mockConnection.Setup(x => x.Close());
-
-            var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteScalar()).Returns(result);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
-
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
@@ -471,26 +418,25 @@
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.Equal(result, session.ExecuteScalar<object>(sqlQuery));
 
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
-
-            mockConnection.Verify(x => x.Open(), Times.Never());
-            mockConnection.Verify(x => x.Close(), Times.Never());
         }
 
         [Fact]
         public void ExecuteScalarThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -503,8 +449,9 @@
         public void ExecuteScalarThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -525,8 +472,8 @@
             mockCommand.Setup(x => x.ExecuteScalar()).Returns(result);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
@@ -535,14 +482,15 @@
             mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.Equal((CustomerStatus)result, session.ExecuteScalar<CustomerStatus>(sqlQuery));
 
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -550,8 +498,9 @@
         public void ExecuteThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -564,8 +513,9 @@
         public void ExecuteThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -593,19 +543,20 @@
             mockCommand.Setup(x => x.ExecuteScalar()).Returns(identifier);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             session.Insert(customer);
 
             mockSqlDialect.VerifyAll();
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -625,8 +576,8 @@
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteScalar()).Returns(identifier);
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             int counter = 0;
 
@@ -639,8 +590,9 @@
             mockListener2.Setup(x => x.BeforeInsert(customer)).Callback(() => Assert.Equal(2, ++counter));
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new[] { mockListener1.Object, mockListener2.Object });
 
@@ -652,8 +604,8 @@
         [Fact]
         public void InsertOrUpdateInsertsInstanceIfIdentifierIsNotSet()
         {
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(It.IsAny<StatementType>(), It.IsAny<object>())).Returns(new SqlQuery(""));
@@ -664,8 +616,9 @@
             var mockListener = new Mock<IListener>();
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new[] { mockListener.Object });
 
@@ -684,8 +637,9 @@
         public void InsertOrUpdateThrowsArgumentNullExceptionForNullInstance()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -697,8 +651,8 @@
         [Fact]
         public void InsertOrUpdateUpdatesInstanceIfIdentifierIsNotSet()
         {
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(It.IsAny<StatementType>(), It.IsAny<object>())).Returns(new SqlQuery(""));
@@ -709,8 +663,9 @@
             var mockListener = new Mock<IListener>();
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new[] { mockListener.Object });
 
@@ -729,8 +684,9 @@
         public void InsertThrowsArgumentNullExceptionForNullInstance()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -755,12 +711,13 @@
             mockCommand.Setup(x => x.ExecuteScalar()).Throws<InvalidOperationException>();
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -777,8 +734,9 @@
         public void InsertThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
 
                 new IListener[0]);
@@ -807,19 +765,20 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(rowsAffected);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             session.Update(customer);
 
             mockSqlDialect.VerifyAll();
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -839,8 +798,8 @@
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(rowsAffected);
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             int counter = 0;
 
@@ -853,8 +812,9 @@
             mockListener2.Setup(x => x.BeforeUpdate(customer)).Callback(() => Assert.Equal(2, ++counter));
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new[] { mockListener1.Object, mockListener2.Object });
 
@@ -879,19 +839,20 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.False(session.Delete(customer));
 
             mockSqlDialect.VerifyAll();
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -911,19 +872,20 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.True(session.Delete(customer));
 
             mockSqlDialect.VerifyAll();
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -931,8 +893,9 @@
         public void UpdateInstanceThrowsArgumentNullExceptionForNullInstance()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -957,12 +920,13 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Throws<InvalidOperationException>();
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -979,8 +943,9 @@
         public void UpdateInstanceThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
 
                 new IListener[0]);
@@ -1009,18 +974,19 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.False(session.Update(objectDelta));
 
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -1041,18 +1007,19 @@
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
-            var mockConnectionManager = new Mock<IConnectionManager>();
-            mockConnectionManager.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockConnection.Object,
                 mockSessionFactory.Object,
-                mockConnectionManager.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.True(session.Update(objectDelta));
 
-            mockConnectionManager.VerifyAll();
+            mockConnection.VerifyAll();
             mockCommand.VerifyAll();
         }
 
@@ -1060,8 +1027,9 @@
         public void UpdateObjectDeltaThrowsArgumentNullExceptionForNullObjectDelta()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -1074,8 +1042,9 @@
         public void UpdateObjectDeltaThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<IDbConnection>().Object,
                 new Mock<ISessionFactory>().Object,
-                new Mock<IConnectionManager>().Object,
                 new Mock<IObjectBuilder>().Object,
 
                 new IListener[0]);

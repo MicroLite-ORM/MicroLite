@@ -1,0 +1,164 @@
+﻿// -----------------------------------------------------------------------
+// <copyright file="SessionBase.cs" company="MicroLite">
+// Copyright 2012 - 2014 Project Contributors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// </copyright>
+// -----------------------------------------------------------------------
+namespace MicroLite.Core
+{
+    using System;
+    using System.Data;
+    using MicroLite.Logging;
+
+    /// <summary>
+    /// The base class for a session.
+    /// </summary>
+    internal abstract class SessionBase : ISessionBase, IDisposable
+    {
+        protected static readonly ILog Log = LogManager.GetCurrentClassLog();
+        private readonly ConnectionScope connectionScope;
+        private Transaction currentTransaction;
+        private bool disposed;
+
+        protected SessionBase(ConnectionScope connectionScope, IDbConnection connection)
+        {
+            this.connectionScope = connectionScope;
+            this.Connection = connection;
+
+            if (this.connectionScope == ConnectionScope.PerSession)
+            {
+                this.Connection.Open();
+            }
+
+            if (Log.IsDebug)
+            {
+                Log.Debug(Messages.Session_Created);
+            }
+        }
+
+        public IDbConnection Connection
+        {
+            get;
+            private set;
+        }
+
+        public ConnectionScope ConnectionScope
+        {
+            get
+            {
+                return this.connectionScope;
+            }
+        }
+
+        public ITransaction Transaction
+        {
+            get
+            {
+                return this.currentTransaction;
+            }
+        }
+
+        public ITransaction BeginTransaction()
+        {
+            return this.BeginTransaction(IsolationLevel.ReadCommitted);
+        }
+
+        public ITransaction BeginTransaction(IsolationLevel isolationLevel)
+        {
+            this.ThrowIfDisposed();
+
+            this.currentTransaction = new Transaction(this, isolationLevel);
+
+            return this.Transaction;
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public void TransactionCompleted()
+        {
+            this.currentTransaction = null;
+        }
+
+        protected void CommandCompleted()
+        {
+            if (this.ConnectionScope == ConnectionScope.PerTransaction
+                && this.currentTransaction == null
+                && this.Connection.State == ConnectionState.Open)
+            {
+                this.Connection.Close();
+            }
+        }
+
+        protected IDbCommand CreateCommand()
+        {
+            if (this.ConnectionScope == ConnectionScope.PerTransaction
+                && this.currentTransaction == null
+                && this.Connection.State == ConnectionState.Closed)
+            {
+                this.Connection.Open();
+            }
+
+            var command = this.Connection.CreateCommand();
+
+            if (this.currentTransaction != null)
+            {
+                this.currentTransaction.Enlist(command);
+            }
+
+            return command;
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                this.disposed = true;
+
+                if (this.currentTransaction != null)
+                {
+                    this.currentTransaction.Dispose();
+                    this.currentTransaction = null;
+                }
+
+                if (this.connectionScope == ConnectionScope.PerSession)
+                {
+                    this.Connection.Close();
+                }
+
+                if (this.Connection != null)
+                {
+                    this.Connection.Dispose();
+                    this.Connection = null;
+                }
+
+                if (Log.IsDebug)
+                {
+                    Log.Debug(Messages.Session_Disposed);
+                }
+            }
+        }
+
+        protected void ThrowIfDisposed()
+        {
+            if (this.disposed)
+            {
+                throw new ObjectDisposedException(this.GetType().Name);
+            }
+        }
+    }
+}

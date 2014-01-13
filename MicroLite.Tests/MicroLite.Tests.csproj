@@ -58,11 +58,15 @@
   <ItemGroup>
     <Compile Include="Configuration\ConfigurationExtensionsTests.cs" />
     <Compile Include="Configuration\FluentConfigurationTests.cs" />
-    <Compile Include="Core\AdoTransactionTests.cs" />
     <Compile Include="Core\IncludeManyTests.cs" />
     <Compile Include="Core\IncludeScalarTests.cs" />
     <Compile Include="Core\IncludeSingleTests.cs" />
     <Compile Include="Core\ReadOnlySessionTests.cs" />
+    <Compile Include="Core\SessionBaseTests.cs" />
+    <Compile Include="Core\SessionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\TransactionTests.cs" />
     <Compile Include="DbEncryptedStringTests.cs" />
     <Compile Include="Dialect\MySqlDialectTests.cs" />
     <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
@@ -81,12 +85,10 @@
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
     <Compile Include="Listeners\AssignedListenerTests.cs" />
-    <Compile Include="Core\ConnectionManagerTests.cs" />
     <Compile Include="Listeners\GuidListenerTests.cs" />
     <Compile Include="Listeners\DbGeneratedListenerTests.cs" />
     <Compile Include="Core\ObjectBuilderTests.cs" />
     <Compile Include="Core\SessionFactoryTests.cs" />
-    <Compile Include="Core\SessionTests.cs" />
     <Compile Include="Dialect\MsSqlDialectTests.cs" />
     <Compile Include="Listeners\ListenerCollectionTests.cs" />
     <Compile Include="Mapping\ColumnInfoTests.cs" />

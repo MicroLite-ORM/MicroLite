@@ -58,12 +58,15 @@
     <Compile Include="Characters.cs" />
     <Compile Include="Configuration\ConfigurationExtensions.cs" />
     <Compile Include="Configuration\FluentConfiguration.cs" />
-    <Compile Include="Core\AdoTransaction.cs" />
+    <Compile Include="ConnectionScope.cs" />
+    <Compile Include="Core\ISessionBase.cs" />
+    <Compile Include="Core\Transaction.cs" />
     <Compile Include="Core\Include.cs" />
     <Compile Include="Core\IncludeMany.cs" />
     <Compile Include="Core\IncludeScalar.cs" />
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
+    <Compile Include="Core\SessionBase.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Logging\NullLog.cs" />
     <Compile Include="ObjectDelta.cs" />
@@ -109,11 +112,9 @@
     </Compile>
     <Compile Include="Core\SessionFactoryOptions.cs" />
     <Compile Include="Listeners\AssignedListener.cs" />
-    <Compile Include="Core\ConnectionManager.cs" />
     <Compile Include="FrameworkExtensions\CollectionExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\IConnectionManager.cs" />
     <Compile Include="Listeners\GuidListener.cs" />
     <Compile Include="Listeners\DbGeneratedListener.cs">
       <SubType>Code</SubType>
