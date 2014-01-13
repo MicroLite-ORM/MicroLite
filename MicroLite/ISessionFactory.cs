@@ -44,9 +44,9 @@ namespace MicroLite
         /// <summary>
         /// Opens a new read only session to the database.
         /// </summary>
-        /// <param name="connectonScope">The connecton scope.</param>
+        /// <param name="connectionScope">The connection scope.</param>
         /// <returns>A new read only session instance.</returns>
-        IReadOnlySession OpenReadOnlySession(ConnectionScope connectonScope);
+        IReadOnlySession OpenReadOnlySession(ConnectionScope connectionScope);
 
         /// <summary>
         /// Opens a new session to the database.
@@ -57,8 +57,8 @@ namespace MicroLite
         /// <summary>
         /// Opens a new session to the database.
         /// </summary>
-        /// <param name="connectonScope">The connecton scope.</param>
+        /// <param name="connectionScope">The connection scope.</param>
         /// <returns>A new session instance.</returns>
-        ISession OpenSession(ConnectionScope connectonScope);
+        ISession OpenSession(ConnectionScope connectionScope);
     }
 }
