@@ -56,14 +56,6 @@ namespace MicroLite.Core
             }
         }
 
-        public ISessionFactory SessionFactory
-        {
-            get
-            {
-                return this.sessionFactory;
-            }
-        }
-
         protected ISqlDialect SqlDialect
         {
             get
