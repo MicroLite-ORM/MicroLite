@@ -161,7 +161,7 @@ namespace MicroLite.Builder
         {
             var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
 
-            if (column == "*")
+            if (column == sqlCharacters.SelectWildcard)
             {
                 return new SelectSqlBuilder(sqlCharacters);
             }
