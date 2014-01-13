@@ -17,19 +17,7 @@ namespace MicroLite
     /// </summary>
     internal static class Characters
     {
-        private static readonly char[] at = new[] { '@' };
         private static readonly char[] period = new[] { '.' };
-
-        /// <summary>
-        /// Gets a character array containing the at character.
-        /// </summary>
-        internal static char[] At
-        {
-            get
-            {
-                return at;
-            }
-        }
 
         /// <summary>
         /// Gets a character array containing the period character.

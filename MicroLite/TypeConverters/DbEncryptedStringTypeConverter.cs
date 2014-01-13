@@ -95,15 +95,15 @@ namespace MicroLite.TypeConverters
 
         private string Decrypt(string cipherText)
         {
-            var parts = cipherText.Split(Characters.At);
+            var index = cipherText.IndexOf('@');
 
-            if (parts.Length != 2)
+            if (index == -1)
             {
                 throw new MicroLiteException(Messages.DbEncryptedStringTypeConverter_CipherTextInvalid);
             }
 
-            byte[] cipherBytes = Convert.FromBase64String(parts[0]);
-            byte[] ivBytes = Convert.FromBase64String(parts[1]);
+            byte[] cipherBytes = Convert.FromBase64String(cipherText.Substring(0, index));
+            byte[] ivBytes = Convert.FromBase64String(cipherText.Substring(index + 1, cipherText.Length - (index + 1)));
 
             using (var algorithm = this.algorithmProvider.CreateAlgorithm())
             {
