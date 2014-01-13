@@ -17,7 +17,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Builder.StoredProcedureSqlBuilder">
-    <Position X="8.5" Y="6.75" Width="2.25" />
+    <Position X="8.75" Y="6.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Builder\StoredProcedureSqlBuilder.cs</FileName>
@@ -25,7 +25,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Builder.InsertSqlBuilder">
-    <Position X="3.25" Y="6.75" Width="2.25" />
+    <Position X="3" Y="6.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAgAEAAAAA=</HashCode>
       <FileName>Builder\InsertSqlBuilder.cs</FileName>
