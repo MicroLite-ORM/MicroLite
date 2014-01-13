@@ -62,7 +62,8 @@ namespace MicroLite.Dialect
                     ? sqlQuery.CommandText
                     : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                stringBuilder.AppendLine(commandText + this.SqlCharacters.StatementSeparator);
+                stringBuilder.Append(commandText)
+                    .AppendLine(this.SqlCharacters.StatementSeparator);
             }
 
             var combinedQuery = new SqlQuery(stringBuilder.ToString(0, stringBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
@@ -90,13 +91,13 @@ namespace MicroLite.Dialect
             var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
 
             var orderByValue = SqlUtility.ReadOrderByClause(sqlQuery.CommandText);
-            var orderByClause = "ORDER BY " + (!string.IsNullOrEmpty(orderByValue) ? orderByValue : "(SELECT NULL)");
+            var orderByClause = !string.IsNullOrEmpty(orderByValue) ? orderByValue : "(SELECT NULL)";
 
             var stringBuilder = new StringBuilder(sqlQuery.CommandText.Length * 2)
                 .Append("SELECT ")
                 .Append(selectStatement)
                 .Append(" FROM")
-                .AppendFormat(CultureInfo.InvariantCulture, " (SELECT {0}, ROW_NUMBER() OVER({1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName)
+                .AppendFormat(CultureInfo.InvariantCulture, " (SELECT {0}, ROW_NUMBER() OVER(ORDER BY {1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName)
                 .AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Length - 2), this.SqlCharacters.GetParameterName(arguments.Length - 1));
 
             return new SqlQuery(stringBuilder.ToString(), arguments);

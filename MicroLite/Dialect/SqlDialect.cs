@@ -120,7 +120,7 @@ namespace MicroLite.Dialect
 
                 var commandText = SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                sqlBuilder.AppendLine(commandText + this.sqlCharacters.StatementSeparator);
+                sqlBuilder.Append(commandText).AppendLine(this.sqlCharacters.StatementSeparator);
             }
 
             var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
