@@ -67,7 +67,6 @@
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
     <Compile Include="Core\SessionBase.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Logging\NullLog.cs" />
     <Compile Include="ObjectDelta.cs" />
     <Compile Include="Builder\DeleteSqlBuilder.cs" />
