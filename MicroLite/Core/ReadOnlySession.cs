@@ -27,7 +27,6 @@ namespace MicroLite.Core
         private readonly IObjectBuilder objectBuilder;
         private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
         private readonly ISessionFactory sessionFactory;
-        private IDbConnection dbConnection;
 
         internal ReadOnlySession(
             ConnectionScope connectionScope,

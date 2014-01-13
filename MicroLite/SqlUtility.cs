@@ -23,7 +23,6 @@ namespace MicroLite
     /// </summary>
     public static class SqlUtility
     {
-        private static readonly string[] emptyStringArray = new string[0];
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
 
         /// <summary>
