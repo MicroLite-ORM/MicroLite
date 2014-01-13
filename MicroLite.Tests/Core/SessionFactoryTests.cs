@@ -46,12 +46,6 @@
             {
                 this.mockConnection.VerifySet(x => x.ConnectionString = this.options.ConnectionString, Times.Once());
             }
-
-            [Fact]
-            public void TheSessionFactoryShouldBePassed()
-            {
-                Assert.Same(this.sessionFactory, this.readOnlySession.Advanced.SessionFactory);
-            }
         }
 
         public class WhenCallingOpenSession

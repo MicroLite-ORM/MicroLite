@@ -22,14 +22,6 @@ namespace MicroLite
     public interface IAdvancedReadOnlySession : IHideObjectMethods
     {
         /// <summary>
-        /// Gets the session factory used to create this session.
-        /// </summary>
-        ISessionFactory SessionFactory
-        {
-            get;
-        }
-
-        /// <summary>
         /// Executes any pending queries which have been included.
         /// </summary>
         void ExecutePendingQueries();

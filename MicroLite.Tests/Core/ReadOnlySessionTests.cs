@@ -459,22 +459,6 @@
         }
 
         [Fact]
-        public void SessionFactoryPassedToConstructorIsExposed()
-        {
-            var mockSessionFactory = new Mock<ISessionFactory>();
-
-            var sessionFactory = mockSessionFactory.Object;
-
-            var session = new ReadOnlySession(
-                ConnectionScope.PerTransaction,
-                new Mock<IDbConnection>().Object,
-                sessionFactory,
-                new Mock<IObjectBuilder>().Object);
-
-            Assert.Same(sessionFactory, session.Advanced.SessionFactory);
-        }
-
-        [Fact]
         public void SingleIdentifierExecutesAndReturnsNull()
         {
             object identifier = 100;
