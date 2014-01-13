@@ -8,7 +8,6 @@
     {
         private static readonly ISessionFactory sessionFactory;
         private ISession session;
-        private ITransaction transaction;
 
         static IntegrationTest()
         {
@@ -18,7 +17,7 @@
 
             sessionFactory = Configure
                 .Fluently()
-                .ForConnection("SQLiteInMemory", "MicroLite.Dialect.SQLiteDialect")
+                .ForSQLiteConnection("SQLiteInMemory")
                 .CreateSessionFactory();
         }
 
@@ -28,13 +27,7 @@
             {
                 if (this.session == null)
                 {
-                    this.session = sessionFactory.OpenSession();
-
-                    // When used In-Memory, SQLite will re-set the database when the connection is closed.
-                    // Since MicroLite only holds on to the connection during the scope of a transaction, we need to open
-                    // one here and manage it at this level.
-                    // It does mean that we can't do any transactional tests and that it shouldn't be managed by individual tests.
-                    this.transaction = this.session.BeginTransaction();
+                    this.session = sessionFactory.OpenSession(ConnectionScope.PerSession);
 
                     this.CreateDatabase();
                 }
@@ -45,13 +38,6 @@
 
         public void Dispose()
         {
-            if (this.transaction != null)
-            {
-                this.transaction.Commit();
-                this.transaction.Dispose();
-                this.transaction = null;
-            }
-
             if (this.session != null)
             {
                 this.session.Dispose();

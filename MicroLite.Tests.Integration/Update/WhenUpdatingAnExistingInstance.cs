@@ -9,26 +9,41 @@
 
         public WhenUpdatingAnExistingInstance()
         {
-            this.Session.Insert(new Customer
+            using (var transaction = this.Session.BeginTransaction())
             {
-                DateOfBirth = DateTime.Today,
-                EmailAddress = "joe.bloggs@email.com",
-                Forename = "Joe",
-                Status = CustomerStatus.Active,
-                Surname = "Bloggs"
-            });
+                this.Session.Insert(new Customer
+                {
+                    DateOfBirth = DateTime.Today,
+                    EmailAddress = "joe.bloggs@email.com",
+                    Forename = "Joe",
+                    Status = CustomerStatus.Active,
+                    Surname = "Bloggs"
+                });
 
-            this.Session.Update(new Customer
+                transaction.Commit();
+            }
+
+            using (var transaction = this.Session.BeginTransaction())
             {
-                CustomerId = 1,
-                DateOfBirth = new DateTime(2000, 6, 20),
-                EmailAddress = "john.smith@email.com",
-                Forename = "John",
-                Status = CustomerStatus.Suspended,
-                Surname = "Smith"
-            });
+                this.Session.Update(new Customer
+                {
+                    CustomerId = 1,
+                    DateOfBirth = new DateTime(2000, 6, 20),
+                    EmailAddress = "john.smith@email.com",
+                    Forename = "John",
+                    Status = CustomerStatus.Suspended,
+                    Surname = "Smith"
+                });
 
-            this.customer = this.Session.Single<Customer>(1);
+                transaction.Commit();
+            }
+
+            using (var transaction = this.Session.BeginTransaction())
+            {
+                this.customer = this.Session.Single<Customer>(1);
+
+                transaction.Commit();
+            }
         }
 
         [Fact]

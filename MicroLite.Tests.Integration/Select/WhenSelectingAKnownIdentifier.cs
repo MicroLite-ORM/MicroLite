@@ -9,14 +9,19 @@
 
         public WhenSelectingAKnownIdentifier()
         {
-            this.Session.Insert(new Customer
+            using (var transaction = this.Session.BeginTransaction())
             {
-                DateOfBirth = DateTime.Today,
-                EmailAddress = "joe.bloggs@email.com",
-                Forename = "Joe",
-                Status = CustomerStatus.Active,
-                Surname = "Bloggs"
-            });
+                this.Session.Insert(new Customer
+                {
+                    DateOfBirth = DateTime.Today,
+                    EmailAddress = "joe.bloggs@email.com",
+                    Forename = "Joe",
+                    Status = CustomerStatus.Active,
+                    Surname = "Bloggs"
+                });
+
+                transaction.Commit();
+            }
 
             this.customer = this.Session.Single<Customer>(1);
         }

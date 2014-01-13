@@ -5,7 +5,7 @@
 
     public class WhenDeletingAKnownInstance : IntegrationTest
     {
-        private readonly bool deleted;
+        private readonly Customer customer;
 
         public WhenDeletingAKnownInstance()
         {
@@ -18,15 +18,29 @@
                 Status = CustomerStatus.Active
             };
 
-            this.Session.Insert(customer);
+            using (var transaction = this.Session.BeginTransaction())
+            {
+                this.Session.Insert(customer);
 
-            this.deleted = this.Session.Delete(customer);
+                transaction.Commit();
+            }
+
+            this.customer = customer;
         }
 
         [Fact]
         public void DeleteShouldReturnTrue()
         {
-            Assert.True(this.deleted);
+            bool deleted;
+
+            using (var transaction = this.Session.BeginTransaction())
+            {
+                deleted = this.Session.Delete(this.customer);
+
+                transaction.Commit();
+            }
+
+            Assert.True(deleted);
         }
     }
 }

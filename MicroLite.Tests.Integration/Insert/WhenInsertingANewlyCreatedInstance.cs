@@ -18,7 +18,12 @@
                 Status = CustomerStatus.Active
             };
 
-            this.Session.Insert(this.customer);
+            using (var transaction = this.Session.BeginTransaction())
+            {
+                this.Session.Insert(customer);
+
+                transaction.Commit();
+            }
         }
 
         [Fact]
