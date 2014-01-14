@@ -354,14 +354,14 @@ namespace MicroLite.Mapping
                 throw new MicroLiteException(message);
             }
 
-            var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
-
-            var converted = typeConverter.ConvertFromDbValue(value, columnInfo.PropertyInfo.PropertyType);
-
             if (log.IsDebug)
             {
                 log.Debug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
             }
+
+            var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
+
+            var converted = typeConverter.ConvertFromDbValue(value, columnInfo.PropertyInfo.PropertyType);
 
             this.propertyAccessors[columnInfo.PropertyInfo.Name].SetValue(instance, converted);
         }
