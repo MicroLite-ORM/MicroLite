@@ -14,9 +14,9 @@
 
             var sqlCharacters = mockSqlCharacters.Object;
 
-            Assert.Equal("\"", sqlCharacters.LeftDelimiter);
+            Assert.Equal(string.Empty, sqlCharacters.LeftDelimiter);
             Assert.Equal("%", sqlCharacters.LikeWildcard);
-            Assert.Equal("\"", sqlCharacters.RightDelimiter);
+            Assert.Equal(string.Empty, sqlCharacters.RightDelimiter);
             Assert.Equal("*", sqlCharacters.SelectWildcard);
             Assert.Equal("?", sqlCharacters.SqlParameter);
             Assert.Equal(";", sqlCharacters.StatementSeparator);

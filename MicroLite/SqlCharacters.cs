@@ -19,7 +19,7 @@ namespace MicroLite
     /// <summary>
     /// A class containing the SQL characters for an SQL Dialect.
     /// </summary>
-    public abstract class SqlCharacters
+    public class SqlCharacters
     {
         private static SqlCharacters empty;
         private static SqlCharacters msSql;
@@ -28,13 +28,20 @@ namespace MicroLite
         private static SqlCharacters sqlite;
 
         /// <summary>
+        /// Initialises a new instance of the <see cref="SqlCharacters"/> class.
+        /// </summary>
+        protected SqlCharacters()
+        {
+        }
+
+        /// <summary>
         /// Gets an Empty set of SqlCharacters.
         /// </summary>
         public static SqlCharacters Empty
         {
             get
             {
-                return empty ?? (empty = new EmptySqlCharacters());
+                return empty ?? (empty = new SqlCharacters());
             }
         }
 
@@ -89,7 +96,7 @@ namespace MicroLite
         {
             get
             {
-                return "\"";
+                return string.Empty;
             }
         }
 
@@ -111,7 +118,7 @@ namespace MicroLite
         {
             get
             {
-                return "\"";
+                return string.Empty;
             }
         }
 
@@ -222,25 +229,6 @@ namespace MicroLite
             return sql.StartsWith(this.LeftDelimiter, StringComparison.Ordinal) && sql.EndsWith(this.RightDelimiter, StringComparison.Ordinal);
         }
 
-        private sealed class EmptySqlCharacters : SqlCharacters
-        {
-            public override string LeftDelimiter
-            {
-                get
-                {
-                    return string.Empty;
-                }
-            }
-
-            public override string RightDelimiter
-            {
-                get
-                {
-                    return string.Empty;
-                }
-            }
-        }
-
         private sealed class MsSqlCharacters : SqlCharacters
         {
             public override string LeftDelimiter
@@ -313,6 +301,22 @@ namespace MicroLite
 
         private sealed class PostgreSqlCharacters : SqlCharacters
         {
+            public override string LeftDelimiter
+            {
+                get
+                {
+                    return "\"";
+                }
+            }
+
+            public override string RightDelimiter
+            {
+                get
+                {
+                    return "\"";
+                }
+            }
+
             public override string SqlParameter
             {
                 get
@@ -332,6 +336,22 @@ namespace MicroLite
 
         private sealed class SQLiteCharacters : SqlCharacters
         {
+            public override string LeftDelimiter
+            {
+                get
+                {
+                    return "\"";
+                }
+            }
+
+            public override string RightDelimiter
+            {
+                get
+                {
+                    return "\"";
+                }
+            }
+
             public override string SqlParameter
             {
                 get
