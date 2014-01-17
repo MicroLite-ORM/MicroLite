@@ -31,8 +31,10 @@ namespace MicroLite.Mapping
         private readonly string identifierColumn;
         private readonly string identifierProperty;
         private readonly IdentifierStrategy identifierStrategy;
+        private readonly int insertColumnCount;
         private readonly string name;
         private readonly string schema;
+        private readonly int updateColumnCount;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="TableInfo"/> class.
@@ -70,6 +72,9 @@ namespace MicroLite.Mapping
 
             this.identifierColumn = identifierColumnInfo.ColumnName;
             this.identifierProperty = identifierColumnInfo.PropertyInfo.Name;
+
+            this.insertColumnCount = columns.Count(c => c.AllowInsert);
+            this.updateColumnCount = columns.Count(c => c.AllowUpdate);
         }
 
         /// <summary>
@@ -117,6 +122,17 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
+        /// Gets the number of columns which can be inserted.
+        /// </summary>
+        public int InsertColumnCount
+        {
+            get
+            {
+                return this.insertColumnCount;
+            }
+        }
+
+        /// <summary>
         /// Gets the name of the table.
         /// </summary>
         public string Name
@@ -135,6 +151,17 @@ namespace MicroLite.Mapping
             get
             {
                 return this.schema;
+            }
+        }
+
+        /// <summary>
+        /// Gets the number of columns which can be updated.
+        /// </summary>
+        public int UpdateColumnCount
+        {
+            get
+            {
+                return this.updateColumnCount;
             }
         }
 
@@ -166,7 +193,7 @@ namespace MicroLite.Mapping
                 throw new MicroLiteException(message);
             }
 
-            if (this.columns.Count(x => x.IsIdentifier) > 1)
+            if (this.columns.Count(c => c.IsIdentifier) > 1)
             {
                 var message = Messages.TableInfo_MultipleIdentifierColumns.FormatWith(this.schema, this.name);
                 log.Fatal(message);

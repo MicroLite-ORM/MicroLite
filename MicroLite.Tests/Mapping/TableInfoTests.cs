@@ -17,7 +17,9 @@
             var columns = new ReadOnlyCollection<ColumnInfo>(new[]
             {
                 new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true),
-                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, true)
+                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, false),
+                new ColumnInfo("Created", typeof(Customer).GetProperty("Created"), false, true, false),
+                new ColumnInfo("Updated", typeof(Customer).GetProperty("Updated"), false, false, true)
             });
             var identifierStrategy = IdentifierStrategy.Guid;
             var name = "Customers";
@@ -31,6 +33,8 @@
             Assert.Equal(identifierStrategy, tableInfo.IdentifierStrategy);
             Assert.Equal(name, tableInfo.Name);
             Assert.Equal(schema, tableInfo.Schema);
+            Assert.Equal(3, tableInfo.InsertColumnCount);
+            Assert.Equal(2, tableInfo.UpdateColumnCount);
         }
 
         [Fact]
@@ -101,6 +105,12 @@
             {
             }
 
+            public DateTime Created
+            {
+                get;
+                set;
+            }
+
             public Guid Id
             {
                 get;
@@ -108,6 +118,12 @@
             }
 
             public string Name
+            {
+                get;
+                set;
+            }
+
+            public DateTime? Updated
             {
                 get;
                 set;

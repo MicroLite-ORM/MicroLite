@@ -359,7 +359,8 @@ namespace MicroLite.Dialect
                 return insertSqlQuery;
             }
 
-            var insertValues = new List<object>(objectInfo.TableInfo.Columns.Count);
+            var insertValues = new object[objectInfo.TableInfo.InsertColumnCount];
+            var position = 0;
 
             for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
             {
@@ -368,11 +369,11 @@ namespace MicroLite.Dialect
                 if (columnInfo.AllowInsert)
                 {
                     var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
-                    insertValues.Add(value);
+                    insertValues[position++] = value;
                 }
             }
 
-            return new SqlQuery(insertCommand, insertValues.ToArray());
+            return new SqlQuery(insertCommand, insertValues);
         }
 
         /// <summary>
@@ -446,7 +447,8 @@ namespace MicroLite.Dialect
                 return updateSqlQuery;
             }
 
-            var updateValues = new List<object>(objectInfo.TableInfo.Columns.Count);
+            var updateValues = new object[objectInfo.TableInfo.UpdateColumnCount];
+            var position = 0;
 
             for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
             {
@@ -455,13 +457,11 @@ namespace MicroLite.Dialect
                 if (columnInfo.AllowUpdate)
                 {
                     var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
-                    updateValues.Add(value);
+                    updateValues[position++] = value;
                 }
             }
 
-            updateValues.Add(objectInfo.GetIdentifierValue(instance));
-
-            return new SqlQuery(updateCommand, updateValues.ToArray());
+            return new SqlQuery(updateCommand, updateValues);
         }
 
         /// <summary>
