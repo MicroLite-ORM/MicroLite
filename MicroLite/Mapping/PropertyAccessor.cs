@@ -26,8 +26,7 @@ namespace MicroLite.Mapping
             return propertyAccessor;
         }
 
-        [System.Diagnostics.DebuggerDisplay("PropertyAccessor for {propertyInfo.Name}")]
-        private sealed class PropertyAccessorImpl<TObject, TValue> : IPropertyAccessor
+        private sealed class PropertyAccessorImpl<TObject, TValue> : IPropertyAccessor, IPropertyAccessor<TObject, TValue>
         {
             private readonly Func<TObject, TValue> getMethod;
             private readonly Action<TObject, TValue> setMethod;
@@ -48,6 +47,13 @@ namespace MicroLite.Mapping
                 return value;
             }
 
+            public TValue GetValue(TObject instance)
+            {
+                TValue value = this.getMethod(instance);
+
+                return value;
+            }
+
             public void SetValue(object instance, object value)
             {
                 if (value == DBNull.Value)
@@ -56,6 +62,11 @@ namespace MicroLite.Mapping
                 }
 
                 this.setMethod((TObject)instance, (TValue)value);
+            }
+
+            public void SetValue(TObject instance, TValue value)
+            {
+                this.setMethod(instance, value);
             }
         }
     }

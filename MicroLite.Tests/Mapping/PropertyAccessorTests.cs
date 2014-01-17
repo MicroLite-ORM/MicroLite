@@ -65,7 +65,7 @@
             [Fact]
             public void TheValueShouldBeReturned()
             {
-                Assert.Equal(100, this.customer.LastInvoice);
+                Assert.Equal(this.customer.LastInvoice, this.value);
             }
         }
 
@@ -89,7 +89,7 @@
             [Fact]
             public void TheValueShouldBeReturned()
             {
-                Assert.Null(this.customer.LastInvoice);
+                Assert.Null(this.value);
             }
         }
 
@@ -106,6 +106,78 @@
             {
                 var propertyInfo = typeof(Customer).GetProperty("Name");
                 var propertyAccessor = PropertyAccessor.Create(propertyInfo);
+
+                this.value = propertyAccessor.GetValue(this.customer);
+            }
+
+            [Fact]
+            public void TheValueShouldBeReturned()
+            {
+                Assert.Equal(this.customer.Name, this.value);
+            }
+        }
+
+        public class WhenCallingGetValueGenericForANullableValueTypeWithANonNullValue
+        {
+            private readonly Customer customer = new Customer
+            {
+                LastInvoice = 100
+            };
+
+            private readonly int? value;
+
+            public WhenCallingGetValueGenericForANullableValueTypeWithANonNullValue()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
+                var propertyAccessor = (IPropertyAccessor<Customer, int?>)PropertyAccessor.Create(propertyInfo);
+
+                this.value = propertyAccessor.GetValue(this.customer);
+            }
+
+            [Fact]
+            public void TheValueShouldBeReturned()
+            {
+                Assert.Equal(this.customer.LastInvoice, this.value);
+            }
+        }
+
+        public class WhenCallingGetValueGenericForANullableValueTypeWithANullValue
+        {
+            private readonly Customer customer = new Customer
+            {
+                LastInvoice = null
+            };
+
+            private readonly int? value;
+
+            public WhenCallingGetValueGenericForANullableValueTypeWithANullValue()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
+                var propertyAccessor = (IPropertyAccessor<Customer, int?>)PropertyAccessor.Create(propertyInfo);
+
+                this.value = propertyAccessor.GetValue(this.customer);
+            }
+
+            [Fact]
+            public void TheValueShouldBeReturned()
+            {
+                Assert.Null(this.value);
+            }
+        }
+
+        public class WhenCallingGetValueGenericForAReferenceType
+        {
+            private readonly Customer customer = new Customer
+            {
+                Name = "Fred Bloggs"
+            };
+
+            private readonly string value;
+
+            public WhenCallingGetValueGenericForAReferenceType()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Name");
+                var propertyAccessor = (IPropertyAccessor<Customer, string>)PropertyAccessor.Create(propertyInfo);
 
                 this.value = propertyAccessor.GetValue(this.customer);
             }
@@ -196,11 +268,87 @@
             }
         }
 
+        public class WhenCallingSetValueGenericForANullableStructWithNonNull
+        {
+            private readonly Customer customer = new Customer();
+
+            public WhenCallingSetValueGenericForANullableStructWithNonNull()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
+                var propertyAccessor = (IPropertyAccessor<Customer, int?>)PropertyAccessor.Create(propertyInfo);
+
+                propertyAccessor.SetValue(this.customer, 100);
+            }
+
+            [Fact]
+            public void ThePropertyShouldBeSet()
+            {
+                Assert.Equal(100, this.customer.LastInvoice);
+            }
+        }
+
+        public class WhenCallingSetValueGenericForANullableStructWithNull
+        {
+            private readonly Customer customer = new Customer
+            {
+                LastInvoice = 100
+            };
+
+            public WhenCallingSetValueGenericForANullableStructWithNull()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
+                var propertyAccessor = (IPropertyAccessor<Customer, int?>)PropertyAccessor.Create(propertyInfo);
+
+                propertyAccessor.SetValue(this.customer, null);
+            }
+
+            [Fact]
+            public void ThePropertyShouldBeSet()
+            {
+                Assert.Null(this.customer.LastInvoice);
+            }
+        }
+
+        public class WhenCallingSetValueGenericForAReferenceType
+        {
+            private readonly Customer customer = new Customer();
+
+            public WhenCallingSetValueGenericForAReferenceType()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Name");
+                var propertyAccessor = (IPropertyAccessor<Customer, string>)PropertyAccessor.Create(propertyInfo);
+
+                propertyAccessor.SetValue(this.customer, "Fred Blogs");
+            }
+
+            [Fact]
+            public void ThePropertyShouldBeSet()
+            {
+                Assert.Equal("Fred Blogs", this.customer.Name);
+            }
+        }
+
+        public class WhenCallingSetValueWithDbNull
+        {
+            private readonly Customer customer = new Customer();
+
+            public WhenCallingSetValueWithDbNull()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Name");
+                var propertyAccessor = PropertyAccessor.Create(propertyInfo);
+
+                propertyAccessor.SetValue(this.customer, System.DBNull.Value);
+            }
+
+            [Fact]
+            public void ThePropertyShouldNotBeSet()
+            {
+                Assert.Null(this.customer.Name);
+            }
+        }
+
         private class Customer
         {
-            private string name;
-            private bool nameSet;
-
             public int Id
             {
                 get;
@@ -215,24 +363,8 @@
 
             public string Name
             {
-                get
-                {
-                    return this.name;
-                }
-
-                set
-                {
-                    this.name = value;
-                    this.nameSet = true;
-                }
-            }
-
-            public bool NameSet
-            {
-                get
-                {
-                    return this.nameSet;
-                }
+                get;
+                set;
             }
 
             public CustomerStatus Status

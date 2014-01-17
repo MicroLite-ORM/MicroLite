@@ -18,4 +18,11 @@ namespace MicroLite.Mapping
 
         void SetValue(object instance, object value);
     }
+
+    internal interface IPropertyAccessor<TObject, TValue>
+    {
+        TValue GetValue(TObject instance);
+
+        void SetValue(TObject instance, TValue value);
+    }
 }
