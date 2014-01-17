@@ -145,17 +145,6 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the character used to separate SQL statements.
-        /// </summary>
-        public virtual string StatementSeparator
-        {
-            get
-            {
-                return ";";
-            }
-        }
-
-        /// <summary>
         /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
         public virtual bool SupportsNamedParameters

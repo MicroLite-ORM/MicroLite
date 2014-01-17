@@ -73,6 +73,17 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
+        /// Gets the character used to separate SQL statements.
+        /// </summary>
+        protected virtual string StatementSeparator
+        {
+            get
+            {
+                return ";";
+            }
+        }
+
+        /// <summary>
         /// Builds the command using the values in the specified SqlQuery.
         /// </summary>
         /// <param name="command">The command to build.</param>
@@ -120,7 +131,7 @@ namespace MicroLite.Dialect
 
                 var commandText = SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                sqlBuilder.Append(commandText).AppendLine(this.sqlCharacters.StatementSeparator);
+                sqlBuilder.Append(commandText).AppendLine(this.StatementSeparator);
             }
 
             var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
@@ -348,7 +359,7 @@ namespace MicroLite.Dialect
                 }
 
                 var insertSqlQuery = objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
-                    ? insertSqlBuilder.ToSqlQuery(this.sqlCharacters.StatementSeparator + this.SelectIdentityString)
+                    ? insertSqlBuilder.ToSqlQuery(this.StatementSeparator + this.SelectIdentityString)
                     : insertSqlBuilder.ToSqlQuery();
 
                 var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);

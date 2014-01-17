@@ -63,7 +63,7 @@ namespace MicroLite.Dialect
                     : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
                 stringBuilder.Append(commandText)
-                    .AppendLine(this.SqlCharacters.StatementSeparator);
+                    .AppendLine(this.StatementSeparator);
             }
 
             var combinedQuery = new SqlQuery(stringBuilder.ToString(0, stringBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
@@ -106,7 +106,7 @@ namespace MicroLite.Dialect
         protected override string GetCommandText(string commandText)
         {
             if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
-                && !commandText.Contains(this.SqlCharacters.StatementSeparator))
+                && !commandText.Contains(this.StatementSeparator))
             {
                 var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
 
@@ -126,7 +126,7 @@ namespace MicroLite.Dialect
         protected override CommandType GetCommandType(string commandText)
         {
             if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
-                && !commandText.Contains(this.SqlCharacters.StatementSeparator))
+                && !commandText.Contains(this.StatementSeparator))
             {
                 return CommandType.StoredProcedure;
             }
