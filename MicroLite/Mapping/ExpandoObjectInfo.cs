@@ -25,14 +25,6 @@ namespace MicroLite.Mapping
         private static readonly Type forType = typeof(ExpandoObject);
         private static readonly ILog log = LogManager.GetCurrentClassLog();
 
-        public object DefaultIdentifierValue
-        {
-            get
-            {
-                throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
-            }
-        }
-
         public Type ForType
         {
             get

@@ -42,6 +42,7 @@ namespace MicroLite.Mapping
 #endif
         };
 
+        private readonly object defaultIdentifierValue;
         private readonly Type forType;
         private readonly Dictionary<string, IPropertyAccessor> propertyAccessors; // key is property name.
         private readonly TableInfo tableInfo;
@@ -76,18 +77,9 @@ namespace MicroLite.Mapping
 
                 if (columnInfo.IsIdentifier && columnInfo.PropertyInfo.PropertyType.IsValueType)
                 {
-                    this.DefaultIdentifierValue = (ValueType)Activator.CreateInstance(columnInfo.PropertyInfo.PropertyType);
+                    this.defaultIdentifierValue = (ValueType)Activator.CreateInstance(columnInfo.PropertyInfo.PropertyType);
                 }
             }
-        }
-
-        /// <summary>
-        /// Gets an object containing the default value for the type of identifier used by the type.
-        /// </summary>
-        public object DefaultIdentifierValue
-        {
-            get;
-            private set;
         }
 
         /// <summary>
@@ -299,7 +291,7 @@ namespace MicroLite.Mapping
 
             var identifierValue = this.GetPropertyValue(instance, this.TableInfo.IdentifierProperty);
 
-            bool hasDefaultIdentifier = object.Equals(identifierValue, this.DefaultIdentifierValue);
+            bool hasDefaultIdentifier = object.Equals(identifierValue, this.defaultIdentifierValue);
 
             return hasDefaultIdentifier;
         }

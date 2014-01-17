@@ -20,15 +20,6 @@ namespace MicroLite.Mapping
     public interface IObjectInfo
     {
         /// <summary>
-        /// Gets an object containing the default value for the type of identifier used by the type.
-        /// </summary>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
-        object DefaultIdentifierValue
-        {
-            get;
-        }
-
-        /// <summary>
         /// Gets type the object info relates to.
         /// </summary>
         Type ForType

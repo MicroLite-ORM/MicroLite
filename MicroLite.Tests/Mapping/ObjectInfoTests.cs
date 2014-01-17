@@ -49,30 +49,6 @@
             Assert.IsType<CustomerWithIntegerIdentifier>(instance);
         }
 
-        [Fact]
-        public void DefaultIdentifierValueIsSetCorrectlyForGuid()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
-
-            Assert.Equal(Guid.Empty, objectInfo.DefaultIdentifierValue);
-        }
-
-        [Fact]
-        public void DefaultIdentifierValueIsSetCorrectlyForInteger()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            Assert.Equal(0, objectInfo.DefaultIdentifierValue);
-        }
-
-        [Fact]
-        public void DefaultIdentifierValueIsSetCorrectlyForString()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
-
-            Assert.Null(objectInfo.DefaultIdentifierValue);
-        }
-
         public void Dispose()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
