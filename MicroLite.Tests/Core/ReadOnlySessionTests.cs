@@ -18,7 +18,7 @@
     {
         public ReadOnlySessionTests()
         {
-            SqlBuilder.DefaultSqlCharacters = null;
+            SqlCharacters.Current = null;
         }
 
         [Fact]
@@ -80,7 +80,7 @@
 
         public void Dispose()
         {
-            SqlBuilder.DefaultSqlCharacters = null;
+            SqlCharacters.Current = null;
         }
 
         [Fact]

@@ -36,16 +36,6 @@ namespace MicroLite.Builder
         }
 
         /// <summary>
-        /// Gets or sets the SQL characters.
-        /// </summary>
-        /// <remarks>If no specific SqlCharacters are specified, SqlCharacters.Empty will be used.</remarks>
-        public static SqlCharacters DefaultSqlCharacters
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Gets the arguments currently added to the sql builder.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Allowed in this instance, we want to make use of AddRange.")]
@@ -85,9 +75,7 @@ namespace MicroLite.Builder
         /// <returns>The next step in the fluent sql builder.</returns>
         public static IDeleteFrom Delete()
         {
-            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
-
-            return new DeleteSqlBuilder(sqlCharacters);
+            return new DeleteSqlBuilder(SqlCharacters.Current);
         }
 
         /// <summary>
@@ -112,9 +100,7 @@ namespace MicroLite.Builder
         /// <returns>The next step in the fluent sql builder.</returns>
         public static IInto Insert()
         {
-            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
-
-            return new InsertSqlBuilder(sqlCharacters);
+            return new InsertSqlBuilder(SqlCharacters.Current);
         }
 
         /// <summary>
@@ -129,9 +115,7 @@ namespace MicroLite.Builder
         /// </example>
         public static IFunctionOrFrom Select()
         {
-            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
-
-            return new SelectSqlBuilder(sqlCharacters, null);
+            return new SelectSqlBuilder(SqlCharacters.Current, null);
         }
 
         /// <summary>
@@ -159,7 +143,7 @@ namespace MicroLite.Builder
         /// </example>
         public static IFunctionOrFrom Select(string column)
         {
-            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
+            var sqlCharacters = SqlCharacters.Current;
 
             if (column == sqlCharacters.SelectWildcard)
             {
@@ -182,9 +166,7 @@ namespace MicroLite.Builder
         /// </example>
         public static IFunctionOrFrom Select(params string[] columns)
         {
-            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
-
-            return new SelectSqlBuilder(sqlCharacters, columns);
+            return new SelectSqlBuilder(SqlCharacters.Current, columns);
         }
 
         /// <summary>
@@ -193,9 +175,7 @@ namespace MicroLite.Builder
         /// <returns>The next step in the fluent sql builder.</returns>
         public static IUpdate Update()
         {
-            var sqlCharacters = SqlBuilder.DefaultSqlCharacters ?? SqlCharacters.Empty;
-
-            return new UpdateSqlBuilder(sqlCharacters);
+            return new UpdateSqlBuilder(SqlCharacters.Current);
         }
 
         /// <summary>

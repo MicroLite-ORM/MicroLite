@@ -21,6 +21,7 @@ namespace MicroLite
     /// </summary>
     public class SqlCharacters
     {
+        private static SqlCharacters current;
         private static SqlCharacters empty;
         private static SqlCharacters msSql;
         private static SqlCharacters mySql;
@@ -32,6 +33,22 @@ namespace MicroLite
         /// </summary>
         protected SqlCharacters()
         {
+        }
+
+        /// <summary>
+        /// Gets or sets the current SqlCharacters or Empty if not otherwise specified.
+        /// </summary>
+        public static SqlCharacters Current
+        {
+            get
+            {
+                return current ?? Empty;
+            }
+
+            set
+            {
+                current = value;
+            }
         }
 
         /// <summary>

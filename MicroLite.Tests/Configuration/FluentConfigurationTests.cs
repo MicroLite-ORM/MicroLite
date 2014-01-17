@@ -36,15 +36,15 @@
             }
 
             [Fact]
-            public void TheSqlCharactersPropertyOnSqlBuilderShouldBeSet()
+            public void TheSqlCharactersCurrentPropertyShouldBeSetToTheSqlDialectSqlCharacters()
             {
-                Assert.Equal(this.sessionFactory.SqlDialect.SqlCharacters, SqlBuilder.DefaultSqlCharacters);
+                Assert.Equal(this.sessionFactory.SqlDialect.SqlCharacters, SqlCharacters.Current);
             }
 
             private void ResetExternalDependencies()
             {
                 Configure.SessionFactories.Clear();
-                SqlBuilder.DefaultSqlCharacters = null;
+                SqlCharacters.Current = null;
             }
         }
 
