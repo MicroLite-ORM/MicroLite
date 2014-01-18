@@ -288,6 +288,7 @@
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
+            // Do a second query to check that the caching doesn't cause a problem.
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
 
             Assert.Equal("INSERT INTO Customers (Created, DoB, CustomerId, Name, StatusId) VALUES (?, ?, ?, ?, ?)", sqlQuery.CommandText);
@@ -297,6 +298,16 @@
             Assert.Equal(customer.Id, sqlQuery.Arguments[2]);
             Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
             Assert.Equal((int)customer.Status, sqlQuery.Arguments[4]);
+
+            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
+
+            Assert.Equal("INSERT INTO Customers (Created, DoB, CustomerId, Name, StatusId) VALUES (?, ?, ?, ?, ?)", sqlQuery2.CommandText);
+            Assert.Equal(5, sqlQuery2.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery2.Arguments[0]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[1]);
+            Assert.Equal(customer.Id, sqlQuery2.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery2.Arguments[3]);
+            Assert.Equal((int)customer.Status, sqlQuery2.Arguments[4]);
         }
 
         [Fact]
@@ -360,6 +371,17 @@
             Assert.Equal((int)customer.Status, sqlQuery.Arguments[2]);
             Assert.Equal(customer.Updated, sqlQuery.Arguments[3]);
             Assert.Equal(customer.Id, sqlQuery.Arguments[4]);
+
+            // Do a second query to check that the caching doesn't cause a problem.
+            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Update, customer);
+
+            Assert.Equal("UPDATE Customers SET DoB = ?, Name = ?, StatusId = ?, Updated = ? WHERE CustomerId = ?", sqlQuery2.CommandText);
+            Assert.Equal(5, sqlQuery2.Arguments.Count);
+            Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[0]);
+            Assert.Equal(customer.Name, sqlQuery2.Arguments[1]);
+            Assert.Equal((int)customer.Status, sqlQuery2.Arguments[2]);
+            Assert.Equal(customer.Updated, sqlQuery2.Arguments[3]);
+            Assert.Equal(customer.Id, sqlQuery2.Arguments[4]);
         }
 
         public class WhenCallingCombine

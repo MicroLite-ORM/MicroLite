@@ -458,7 +458,7 @@ namespace MicroLite.Dialect
                 return updateSqlQuery;
             }
 
-            var updateValues = new object[objectInfo.TableInfo.UpdateColumnCount];
+            var updateValues = new object[objectInfo.TableInfo.UpdateColumnCount + 1];
             var position = 0;
 
             for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
@@ -471,6 +471,8 @@ namespace MicroLite.Dialect
                     updateValues[position++] = value;
                 }
             }
+
+            updateValues[position] = objectInfo.GetIdentifierValue(instance);
 
             return new SqlQuery(updateCommand, updateValues);
         }
