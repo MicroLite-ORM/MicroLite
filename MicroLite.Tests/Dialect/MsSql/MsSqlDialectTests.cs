@@ -1,9 +1,9 @@
-﻿namespace MicroLite.Tests.Dialect
+﻿namespace MicroLite.Tests.Dialect.MsSql
 {
     using System;
     using System.Data;
     using MicroLite.Builder;
-    using MicroLite.Dialect;
+    using MicroLite.Dialect.MsSql;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using Xunit;
@@ -154,7 +154,7 @@
         [Fact]
         public void PagedQueryWithoutSubQuery()
         {
-            SqlCharacters.Current = SqlCharacters.MsSql;
+            SqlCharacters.Current = MsSqlCharacters.Instance;
 
             var sqlQuerySingleLevel = SqlBuilder
                                         .Select("*").From(typeof(Customer))
@@ -176,7 +176,7 @@
         [Fact]
         public void PagedQueryWithSubQuery()
         {
-            SqlCharacters.Current = SqlCharacters.MsSql;
+            SqlCharacters.Current = MsSqlCharacters.Instance;
 
             var sqlQuerySubQuery = SqlBuilder
                                         .Select("*")

@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using MicroLite.Dialect;
+    using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
     using Moq;
     using Xunit;
@@ -328,10 +329,10 @@
         [Fact]
         public void SqlCharactersPassedToConstructorAreExposed()
         {
-            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.MsSql);
+            var mockSqlDialect = new Mock<SqlDialect>(MsSqlCharacters.Instance);
             mockSqlDialect.CallBase = true;
 
-            Assert.Same(SqlCharacters.MsSql, mockSqlDialect.Object.SqlCharacters);
+            Assert.Same(MsSqlCharacters.Instance, mockSqlDialect.Object.SqlCharacters);
         }
 
         [Fact]

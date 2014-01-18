@@ -67,6 +67,7 @@
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
     <Compile Include="Core\SessionBase.cs" />
+    <Compile Include="Dialect\MsSql\MsSqlCharacters.cs" />
     <Compile Include="Logging\NullLog.cs" />
     <Compile Include="ObjectDelta.cs" />
     <Compile Include="Builder\DeleteSqlBuilder.cs" />
@@ -84,10 +85,7 @@
     <Compile Include="IAdvancedReadOnlySession.cs" />
     <Compile Include="Infrastructure\AppSettingSymmetricAlgorithmProvider.cs" />
     <Compile Include="DbEncryptedString.cs" />
-    <Compile Include="Dialect\MySqlDialect.cs" />
-    <Compile Include="Dialect\PostgreSqlDialect.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />
-    <Compile Include="Dialect\SQLiteDialect.cs" />
     <Compile Include="GuidGenerator.cs" />
     <Compile Include="IInclude.cs" />
     <Compile Include="IIncludeMany.cs" />
@@ -126,7 +124,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\SessionFactory.cs" />
-    <Compile Include="Dialect\MsSqlDialect.cs" />
+    <Compile Include="Dialect\MsSql\MsSqlDialect.cs" />
     <Compile Include="FrameworkExtensions\StringExtensions.cs" />
     <Compile Include="Listeners\ListenerCollection.cs" />
     <Compile Include="IAdvancedSession.cs" />

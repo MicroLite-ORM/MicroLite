@@ -2,6 +2,7 @@
 {
     using System;
     using MicroLite.Builder;
+    using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
     using Xunit;
 
@@ -232,7 +233,7 @@
         [Fact]
         public void SelectAverageWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
 
             var sqlQuery = sqlBuilder
                 .Average("Total")
@@ -310,7 +311,7 @@
         [Fact]
         public void SelectCountWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
 
             var sqlQuery = sqlBuilder
                 .Count("CustomerId")
@@ -356,7 +357,7 @@
         [Fact]
         public void SelectFromOrderByAscendingWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1", "Column2");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1", "Column2");
 
             var sqlQuery = sqlBuilder
                 .From("Table")
@@ -402,7 +403,7 @@
         [Fact]
         public void SelectFromOrderByDescendingWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1", "Column2");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1", "Column2");
 
             var sqlQuery = sqlBuilder
                 .From("Table")
@@ -429,7 +430,7 @@
         [Fact]
         public void SelectFromSpecifyingColumnsAndTableNameWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1", "Column2");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1", "Column2");
 
             var sqlQuery = sqlBuilder
                 .From("Table")
@@ -455,7 +456,7 @@
         [Fact]
         public void SelectFromSpecifyingColumnsAndTypeWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Name", "DoB");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Name", "DoB");
 
             var sqlQuery = sqlBuilder
                 .From(typeof(Customer))
@@ -481,7 +482,7 @@
         [Fact]
         public void SelectFromTypeWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance);
 
             var sqlQuery = sqlBuilder
                 .From(typeof(Customer))
@@ -621,7 +622,7 @@
         [Fact]
         public void SelectMaxWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
 
             var sqlQuery = sqlBuilder
                 .Max("Total")
@@ -689,7 +690,7 @@
         [Fact]
         public void SelectMinWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
 
             var sqlQuery = sqlBuilder
                 .Min("Total")
@@ -757,7 +758,7 @@
         [Fact]
         public void SelectSumWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
 
             var sqlQuery = sqlBuilder
                 .Sum("Total")
@@ -795,7 +796,7 @@
         [Fact]
         public void SelectWhereAndWhereInArgsWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                 .From("Table")
@@ -837,7 +838,7 @@
         {
             var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = @p0", 1024);
 
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                 .From("Table")
@@ -855,7 +856,7 @@
         [Fact]
         public void SelectWhereAndWhereNotInArgsWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                 .From("Table")
@@ -913,7 +914,7 @@
         [Fact]
         public void SelectWhereBetweenUsingWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                    .From("Table")
@@ -948,7 +949,7 @@
         [Fact]
         public void SelectWhereColumnIsEqualToWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                    .From("Table")
@@ -999,7 +1000,7 @@
         [Fact]
         public void SelectWhereColumnIsGreaterThanOrEqualToWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                    .From("Table")
@@ -1016,7 +1017,7 @@
         [Fact]
         public void SelectWhereColumnIsGreaterThanWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                    .From("Table")
@@ -1067,7 +1068,7 @@
         [Fact]
         public void SelectWhereColumnIsLessThanOrEqualToWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                    .From("Table")
@@ -1084,7 +1085,7 @@
         [Fact]
         public void SelectWhereColumnIsLessThanWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                    .From("Table")
@@ -1118,7 +1119,7 @@
         [Fact]
         public void SelectWhereColumnIsLikeWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                    .From("Table")
@@ -1152,7 +1153,7 @@
         [Fact]
         public void SelectWhereColumnIsNotEqualToWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                    .From("Table")
@@ -1185,7 +1186,7 @@
         [Fact]
         public void SelectWhereColumnIsNotNullWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                    .From("Table")
@@ -1217,7 +1218,7 @@
         [Fact]
         public void SelectWhereColumnIsNullWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                    .From("Table")
@@ -1273,7 +1274,7 @@
         [Fact]
         public void SelectWhereGroupByOrderByWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "CustomerId");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "CustomerId");
 
             var sqlQuery = sqlBuilder
                 .Sum("Total")
@@ -1311,7 +1312,7 @@
         [Fact]
         public void SelectWhereInArgsWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                 .From("Table")
@@ -1368,7 +1369,7 @@
         [Fact]
         public void SelectWhereNotInArgsWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                 .From("Table")
@@ -1425,7 +1426,7 @@
         [Fact]
         public void SelectWhereOrWhereInArgsWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                 .From("Table")
@@ -1468,7 +1469,7 @@
         {
             var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = @p0", 1024);
 
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.MsSql, "Column1");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
             var sqlQuery = sqlBuilder
                 .From("Table")

@@ -2,6 +2,7 @@
 {
     using System;
     using MicroLite.Builder;
+    using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
     using Xunit;
 
@@ -13,11 +14,6 @@
         public DeleteSqlBuilderTests()
         {
             ObjectInfo.MappingConvention = new AttributeMappingConvention();
-        }
-
-        public void Dispose()
-        {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
         }
 
         [Fact]
@@ -36,7 +32,7 @@
         [Fact]
         public void DeleteFromSpecifyingTableNameWithSqlCharacters()
         {
-            var sqlBuilder = new DeleteSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new DeleteSqlBuilder(MsSqlCharacters.Instance);
 
             var sqlQuery = sqlBuilder
                 .From("Table")
@@ -62,7 +58,7 @@
         [Fact]
         public void DeleteFromSpecifyingTypeWithSqlCharacters()
         {
-            var sqlBuilder = new DeleteSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new DeleteSqlBuilder(MsSqlCharacters.Instance);
 
             var sqlQuery = sqlBuilder
                 .From(typeof(Customer))
@@ -91,7 +87,7 @@
         [Fact]
         public void DeleteFromValuesWithSqlCharacters()
         {
-            var sqlBuilder = new DeleteSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new DeleteSqlBuilder(MsSqlCharacters.Instance);
 
             var sqlQuery = sqlBuilder
                 .From("Table")
@@ -102,6 +98,11 @@
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
 
             Assert.Equal("DELETE FROM [Table] WHERE [Column1] = @p0", sqlQuery.CommandText);
+        }
+
+        public void Dispose()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
         }
 
         [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]

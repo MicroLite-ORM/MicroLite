@@ -2,6 +2,7 @@
 {
     using System;
     using MicroLite.Builder;
+    using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
     using Xunit;
 
@@ -36,7 +37,7 @@
         [Fact]
         public void InsertIntoSpecifyingTableNameWithSqlCharacters()
         {
-            var sqlBuilder = new InsertSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new InsertSqlBuilder(MsSqlCharacters.Instance);
 
             var sqlQuery = sqlBuilder
                 .Into("Table")
@@ -62,7 +63,7 @@
         [Fact]
         public void InsertIntoSpecifyingTypeWithSqlCharacters()
         {
-            var sqlBuilder = new InsertSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new InsertSqlBuilder(MsSqlCharacters.Instance);
 
             var sqlQuery = sqlBuilder
                 .Into(typeof(Customer))
@@ -93,7 +94,7 @@
         [Fact]
         public void InsertIntoValuesWithSqlCharacters()
         {
-            var sqlBuilder = new InsertSqlBuilder(SqlCharacters.MsSql);
+            var sqlBuilder = new InsertSqlBuilder(MsSqlCharacters.Instance);
 
             var sqlQuery = sqlBuilder
                 .Into("Table")

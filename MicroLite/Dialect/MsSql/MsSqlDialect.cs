@@ -10,7 +10,7 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Dialect
+namespace MicroLite.Dialect.MsSql
 {
     using System;
     using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <remarks>Constructor needs to be public so that it can be instantiated by SqlDialectFactory.</remarks>
         public MsSqlDialect()
-            : base(SqlCharacters.MsSql)
+            : base(MsSqlCharacters.Instance)
         {
         }
 

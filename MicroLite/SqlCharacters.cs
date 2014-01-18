@@ -23,10 +23,6 @@ namespace MicroLite
     {
         private static SqlCharacters current;
         private static SqlCharacters empty;
-        private static SqlCharacters msSql;
-        private static SqlCharacters mySql;
-        private static SqlCharacters postgreSql;
-        private static SqlCharacters sqlite;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlCharacters"/> class.
@@ -59,50 +55,6 @@ namespace MicroLite
             get
             {
                 return empty ?? (empty = new SqlCharacters());
-            }
-        }
-
-        /// <summary>
-        /// Gets the SqlCharacters for MS SQL.
-        /// </summary>
-        public static SqlCharacters MsSql
-        {
-            get
-            {
-                return msSql ?? (msSql = new MsSqlCharacters());
-            }
-        }
-
-        /// <summary>
-        /// Gets the SqlCharacters for MySql.
-        /// </summary>
-        public static SqlCharacters MySql
-        {
-            get
-            {
-                return mySql ?? (mySql = new MySqlCharacters());
-            }
-        }
-
-        /// <summary>
-        /// Gets the SqlCharacters for PostgreSql.
-        /// </summary>
-        public static SqlCharacters PostgreSql
-        {
-            get
-            {
-                return postgreSql ?? (postgreSql = new PostgreSqlCharacters());
-            }
-        }
-
-        /// <summary>
-        /// Gets the SqlCharacters for SQLite.
-        /// </summary>
-        public static SqlCharacters SQLite
-        {
-            get
-            {
-                return sqlite ?? (sqlite = new SQLiteCharacters());
             }
         }
 
@@ -233,146 +185,6 @@ namespace MicroLite
             }
 
             return sql.StartsWith(this.LeftDelimiter, StringComparison.Ordinal) && sql.EndsWith(this.RightDelimiter, StringComparison.Ordinal);
-        }
-
-        private sealed class MsSqlCharacters : SqlCharacters
-        {
-            public override string LeftDelimiter
-            {
-                get
-                {
-                    return "[";
-                }
-            }
-
-            public override string RightDelimiter
-            {
-                get
-                {
-                    return "]";
-                }
-            }
-
-            public override string SqlParameter
-            {
-                get
-                {
-                    return "@";
-                }
-            }
-
-            public override bool SupportsNamedParameters
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class MySqlCharacters : SqlCharacters
-        {
-            public override string LeftDelimiter
-            {
-                get
-                {
-                    return "`";
-                }
-            }
-
-            public override string RightDelimiter
-            {
-                get
-                {
-                    return "`";
-                }
-            }
-
-            public override string SqlParameter
-            {
-                get
-                {
-                    return "@";
-                }
-            }
-
-            public override bool SupportsNamedParameters
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class PostgreSqlCharacters : SqlCharacters
-        {
-            public override string LeftDelimiter
-            {
-                get
-                {
-                    return "\"";
-                }
-            }
-
-            public override string RightDelimiter
-            {
-                get
-                {
-                    return "\"";
-                }
-            }
-
-            public override string SqlParameter
-            {
-                get
-                {
-                    return ":";
-                }
-            }
-
-            public override bool SupportsNamedParameters
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class SQLiteCharacters : SqlCharacters
-        {
-            public override string LeftDelimiter
-            {
-                get
-                {
-                    return "\"";
-                }
-            }
-
-            public override string RightDelimiter
-            {
-                get
-                {
-                    return "\"";
-                }
-            }
-
-            public override string SqlParameter
-            {
-                get
-                {
-                    return "@";
-                }
-            }
-
-            public override bool SupportsNamedParameters
-            {
-                get
-                {
-                    return true;
-                }
-            }
         }
     }
 }

@@ -28,7 +28,7 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSql.MsSqlDialect)
                 };
 
                 this.sessionFactory = new SessionFactory(new Mock<IObjectBuilder>().Object, this.options);
@@ -64,7 +64,7 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSql.MsSqlDialect)
                 };
 
                 var sessionFactory = new SessionFactory(new Mock<IObjectBuilder>().Object, this.options);
@@ -102,7 +102,7 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSql.MsSqlDialect)
                 };
 
                 var sessionFactory = new SessionFactory(new Mock<IObjectBuilder>().Object, this.options);
@@ -136,7 +136,7 @@
                 {
                     ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
                     ProviderFactory = mockFactory.Object,
-                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
+                    SqlDialectType = typeof(MicroLite.Dialect.MsSql.MsSqlDialect)
                 };
 
                 var sessionFactory = new SessionFactory(new Mock<IObjectBuilder>().Object, this.options);
@@ -157,7 +157,7 @@
             private readonly SessionFactoryOptions options = new SessionFactoryOptions
             {
                 ConnectionName = "Northwind",
-                SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
+                SqlDialectType = typeof(MicroLite.Dialect.MsSql.MsSqlDialect)
             };
 
             private readonly SessionFactory sessionFactory;
