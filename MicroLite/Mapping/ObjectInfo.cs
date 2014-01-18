@@ -14,13 +14,7 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
-
-#if !NET_3_5
-
-    using System.Dynamic;
-
-#endif
-
+    using System.Data;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
     using MicroLite.TypeConverters;
@@ -37,7 +31,7 @@ namespace MicroLite.Mapping
         private static IDictionary<Type, IObjectInfo> objectInfos = new Dictionary<Type, IObjectInfo>
         {
 #if !NET_3_5
-            { typeof(ExpandoObject), new ExpandoObjectInfo() },
+            { typeof(System.Dynamic.ExpandoObject), new ExpandoObjectInfo() },
             { typeof(object), new ExpandoObjectInfo() } // If the generic argument <dynamic> is used (in ISession.Fetch for example), typeof(T) will return object.
 #endif
         };
@@ -358,6 +352,93 @@ namespace MicroLite.Mapping
             this.propertyAccessors[columnInfo.PropertyInfo.Name].SetValue(instance, converted);
         }
 
+        /// <summary>
+        /// Sets the property value for each property mapped to a column in the specified IDataReader after converting it to the correct type for the property.
+        /// </summary>
+        /// <typeparam name="T">The type of the instance to set the values for.</typeparam>
+        /// <param name="instance">The instance to set the property value on.</param>
+        /// <param name="reader">The IDataReader containing the query results.</param>
+        public void SetPropertyValues<T>(T instance, IDataReader reader)
+        {
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                if (reader.IsDBNull(i))
+                {
+                    continue;
+                }
+
+                var columnName = reader.GetName(i);
+                var columnInfo = this.GetColumnInfo(columnName);
+
+                if (columnInfo == null)
+                {
+                    if (log.IsWarn)
+                    {
+                        log.Warn(Messages.ObjectInfo_UnknownColumn, this.ForType.Name, columnName);
+                    }
+
+                    continue;
+                }
+
+                switch (columnInfo.PropertyInfo.PropertyType.ResolveActualType().FullName)
+                {
+                    case "System.Boolean":
+                        this.SetBoolean<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Byte":
+                        this.SetByte<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Char":
+                        this.SetChar<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.DateTime":
+                        this.SetDateTime<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Decimal":
+                        this.SetDecimal<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Double":
+                        this.SetDouble<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Single":
+                        this.SetSingle<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Guid":
+                        this.SetGuid<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Int16":
+                        this.SetInt16<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Int32":
+                        this.SetInt32<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Int64":
+                        this.SetInt64<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.String":
+                        ((IPropertyAccessor<T, string>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetString(i));
+                        continue;
+
+                    default:
+                        this.SetPropertyValueForColumn(instance, columnName, reader.GetValue(i));
+                        continue;
+                }
+            }
+        }
+
         private static void VerifyType(Type forType)
         {
             string message = null;
@@ -379,6 +460,138 @@ namespace MicroLite.Mapping
             {
                 log.Fatal(message);
                 throw new MicroLiteException(message);
+            }
+        }
+
+        private void SetBoolean<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)
+        {
+            if (columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                ((IPropertyAccessor<T, bool?>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, (bool?)reader.GetBoolean(i));
+            }
+            else
+            {
+                ((IPropertyAccessor<T, bool>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetBoolean(i));
+            }
+        }
+
+        private void SetByte<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)
+        {
+            if (columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                ((IPropertyAccessor<T, byte?>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, (byte?)reader.GetByte(i));
+            }
+            else
+            {
+                ((IPropertyAccessor<T, byte>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetByte(i));
+            }
+        }
+
+        private void SetChar<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)
+        {
+            if (columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                ((IPropertyAccessor<T, char?>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, (char?)reader.GetChar(i));
+            }
+            else
+            {
+                ((IPropertyAccessor<T, char>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetChar(i));
+            }
+        }
+
+        private void SetDateTime<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)
+        {
+            if (columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                ((IPropertyAccessor<T, DateTime?>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, (DateTime?)reader.GetDateTime(i));
+            }
+            else
+            {
+                ((IPropertyAccessor<T, DateTime>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetDateTime(i));
+            }
+        }
+
+        private void SetDecimal<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)
+        {
+            if (columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                ((IPropertyAccessor<T, decimal?>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, (decimal?)reader.GetDecimal(i));
+            }
+            else
+            {
+                ((IPropertyAccessor<T, decimal>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetDecimal(i));
+            }
+        }
+
+        private void SetDouble<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)
+        {
+            if (columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                ((IPropertyAccessor<T, double?>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, (double?)reader.GetDouble(i));
+            }
+            else
+            {
+                ((IPropertyAccessor<T, double>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetDouble(i));
+            }
+        }
+
+        private void SetGuid<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)
+        {
+            if (columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                ((IPropertyAccessor<T, Guid?>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, (Guid?)reader.GetGuid(i));
+            }
+            else
+            {
+                ((IPropertyAccessor<T, Guid>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetGuid(i));
+            }
+        }
+
+        private void SetInt16<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)
+        {
+            if (columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                ((IPropertyAccessor<T, short?>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, (short?)reader.GetInt16(i));
+            }
+            else
+            {
+                ((IPropertyAccessor<T, short>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetInt16(i));
+            }
+        }
+
+        private void SetInt32<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)
+        {
+            if (columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                ((IPropertyAccessor<T, int?>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, (int?)reader.GetInt32(i));
+            }
+            else
+            {
+                ((IPropertyAccessor<T, int>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetInt32(i));
+            }
+        }
+
+        private void SetInt64<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)
+        {
+            if (columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                ((IPropertyAccessor<T, long?>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, (long?)reader.GetInt64(i));
+            }
+            else
+            {
+                ((IPropertyAccessor<T, long>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetInt64(i));
+            }
+        }
+
+        private void SetSingle<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)
+        {
+            if (columnInfo.PropertyInfo.PropertyType.IsGenericType)
+            {
+                ((IPropertyAccessor<T, float?>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, (float?)reader.GetFloat(i));
+            }
+            else
+            {
+                ((IPropertyAccessor<T, float>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetFloat(i));
             }
         }
 

@@ -21,5 +21,10 @@ namespace MicroLite.FrameworkExtensions
         {
             return type.IsPrimitive || type.IsEnum || type.IsValueType || type == typeof(string) || type == typeof(XDocument);
         }
+
+        internal static Type ResolveActualType(this Type type)
+        {
+            return type.IsGenericType ? type.GetGenericArguments()[0] : type;
+        }
     }
 }

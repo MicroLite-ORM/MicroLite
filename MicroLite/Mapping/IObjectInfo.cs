@@ -13,6 +13,7 @@
 namespace MicroLite.Mapping
 {
     using System;
+    using System.Data;
 
     /// <summary>
     /// The interface for a class which describes a type and the table it is mapped to.
@@ -101,5 +102,13 @@ namespace MicroLite.Mapping
         /// <param name="columnName">The name of the column the property is mapped to.</param>
         /// <param name="value">The value from the database column to set the property to.</param>
         void SetPropertyValueForColumn(object instance, string columnName, object value);
+
+        /// <summary>
+        /// Sets the property value for each property mapped to a column in the specified IDataReader after converting it to the correct type for the property.
+        /// </summary>
+        /// <typeparam name="T">The type of the instance to set the values for.</typeparam>
+        /// <param name="instance">The instance to set the property value on.</param>
+        /// <param name="reader">The IDataReader containing the query results.</param>
+        void SetPropertyValues<T>(T instance, IDataReader reader);
     }
 }

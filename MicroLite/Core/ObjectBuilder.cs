@@ -12,9 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
-    using System;
     using System.Data;
-    using MicroLite.Logging;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -22,26 +20,11 @@ namespace MicroLite.Core
     /// </summary>
     internal sealed class ObjectBuilder : IObjectBuilder
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
-
         public T BuildInstance<T>(IObjectInfo objectInfo, IDataReader reader)
         {
             var instance = (T)objectInfo.CreateInstance();
 
-            for (int i = 0; i < reader.FieldCount; i++)
-            {
-                try
-                {
-                    var columnName = reader.GetName(i);
-
-                    objectInfo.SetPropertyValueForColumn(instance, columnName, reader[i]);
-                }
-                catch (Exception e)
-                {
-                    log.Error(e.Message, e);
-                    throw new MicroLiteException(e.Message, e);
-                }
-            }
+            objectInfo.SetPropertyValues(instance, reader);
 
             return instance;
         }

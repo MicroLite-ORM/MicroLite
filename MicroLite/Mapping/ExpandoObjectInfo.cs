@@ -16,6 +16,7 @@ namespace MicroLite.Mapping
 
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Dynamic;
     using MicroLite.Logging;
 
@@ -86,6 +87,30 @@ namespace MicroLite.Mapping
             }
 
             dictionary.Add(columnName, value == DBNull.Value ? null : value);
+        }
+
+        public void SetPropertyValues<T>(T instance, IDataReader reader)
+        {
+            var dictionary = (IDictionary<string, object>)instance;
+
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                if (reader.IsDBNull(i))
+                {
+                    continue;
+                }
+
+                var columnName = reader.GetName(i);
+
+                var value = reader[i];
+
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnName);
+                }
+
+                dictionary[columnName] = value;
+            }
         }
     }
 
