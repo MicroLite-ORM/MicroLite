@@ -38,7 +38,7 @@
 
             using (var command = new System.Data.SqlClient.SqlCommand())
             {
-                var sqlDialect = new MsSqlDialect();
+                var sqlDialect = MsSqlDialect.Instance;
                 sqlDialect.BuildCommand(command, sqlQuery);
 
                 Assert.Equal(sqlQuery.CommandText, command.CommandText);
@@ -64,7 +64,7 @@
 
             using (var command = new System.Data.SqlClient.SqlCommand())
             {
-                var sqlDialect = new MsSqlDialect();
+                var sqlDialect = MsSqlDialect.Instance;
                 sqlDialect.BuildCommand(command, sqlQuery);
 
                 // The command text should only contain the stored procedure name.
@@ -83,7 +83,7 @@
 
             using (var command = new System.Data.SqlClient.SqlCommand())
             {
-                var sqlDialect = new MsSqlDialect();
+                var sqlDialect = MsSqlDialect.Instance;
                 sqlDialect.BuildCommand(command, sqlQuery);
 
                 // The command text should only contain the stored procedure name.
@@ -110,7 +110,7 @@
 
             using (var command = new System.Data.SqlClient.SqlCommand())
             {
-                var sqlDialect = new MsSqlDialect();
+                var sqlDialect = MsSqlDialect.Instance;
 
                 var exception = Assert.Throws<MicroLiteException>(
                     () => sqlDialect.BuildCommand(command, sqlQuery));
@@ -137,7 +137,7 @@
                 Status = CustomerStatus.Active
             };
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = MsSqlDialect.Instance;
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
 
@@ -161,7 +161,7 @@
                                         .Where("Name LIKE @p0", "Fred%")
                                         .ToSqlQuery();
 
-            MsSqlDialect msSqlDialect = new MsSqlDialect();
+            var msSqlDialect = MsSqlDialect.Instance;
 
             SqlQuery pageQuerySingleLevel = msSqlDialect.PageQuery(sqlQuerySingleLevel, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
             Assert.Equal("SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated] FROM (SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0)) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", pageQuerySingleLevel.CommandText);
@@ -185,7 +185,7 @@
                                         .AndWhere("SourceId").In(new SqlQuery("SELECT SourceId FROM Source WHERE Status = @p0", 1))
                                         .ToSqlQuery();
 
-            MsSqlDialect msSqlDialect = new MsSqlDialect();
+            var msSqlDialect = MsSqlDialect.Instance;
 
             SqlQuery pageQuerySubQuery = msSqlDialect.PageQuery(sqlQuerySubQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
             Assert.Equal("SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated] FROM (SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0) AND ([SourceId] IN (SELECT SourceId FROM Source WHERE Status = @p1))) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", pageQuerySubQuery.CommandText);
@@ -200,7 +200,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = MsSqlDialect.Instance;
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT CustomerId, Name, DoB, StatusId FROM (SELECT CustomerId, Name, DoB, StatusId, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -213,7 +213,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT * FROM Customers");
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = MsSqlDialect.Instance;
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -237,7 +237,7 @@ ORDER BY
 [Customers].[Name] ASC,
 [Customers].[DoB] ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = MsSqlDialect.Instance;
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC) AS RowNumber FROM [Sales].[Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
@@ -252,7 +252,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [dbo].[Customers] ORDER BY [CustomerId] ASC");
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = MsSqlDialect.Instance;
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM (SELECT [CustomerId], [Name], [DoB], [StatusId], ROW_NUMBER() OVER(ORDER BY [CustomerId] ASC) AS RowNumber FROM [dbo].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -265,7 +265,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]");
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = MsSqlDialect.Instance;
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -278,7 +278,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]");
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = MsSqlDialect.Instance;
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -291,7 +291,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = MsSqlDialect.Instance;
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
@@ -315,7 +315,7 @@ WHERE
 ORDER BY
 [Customers].[Name] ASC", new object[] { CustomerStatus.Active });
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = MsSqlDialect.Instance;
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
@@ -329,7 +329,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", CustomerStatus.Active);
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = MsSqlDialect.Instance;
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
@@ -352,7 +352,7 @@ ORDER BY
                 this.sqlQuery2 = new SqlQuery("SELECT [Column_1], [Column_2] FROM [dbo].[Table_2] WHERE ([Column_1] = @p0 OR @p0 IS NULL) AND [Column_2] < @p1", "Bar", -1);
                 this.sqlQuery2.Timeout = 42;
 
-                var sqlDialect = new MsSqlDialect();
+                var sqlDialect = MsSqlDialect.Instance;
 
                 this.combinedQuery = sqlDialect.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
             }
@@ -416,7 +416,7 @@ ORDER BY
                 this.sqlQuery1 = new SqlQuery("SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1", "Foo", 100);
                 this.sqlQuery2 = new SqlQuery("EXEC CustomersByStatus @StatusId", 2);
 
-                var sqlDialect = new MsSqlDialect();
+                var sqlDialect = MsSqlDialect.Instance;
 
                 this.combinedQuery = sqlDialect.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
             }
@@ -435,7 +435,7 @@ ORDER BY
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
-                var sqlDialect = new MsSqlDialect();
+                var sqlDialect = MsSqlDialect.Instance;
                 var exception = Assert.Throws<ArgumentNullException>(() => sqlDialect.Combine(null));
 
                 Assert.Equal("sqlQueries", exception.ParamName);

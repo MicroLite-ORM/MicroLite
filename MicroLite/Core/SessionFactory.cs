@@ -12,7 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
-    using System;
     using System.Data;
     using MicroLite.Dialect;
     using MicroLite.Listeners;
@@ -34,7 +33,7 @@ namespace MicroLite.Core
         {
             this.objectBuilder = objectBuilder;
             this.sessionFactoryOptions = sessionFactoryOptions;
-            this.sqlDialect = (ISqlDialect)Activator.CreateInstance(sessionFactoryOptions.SqlDialectType);
+            this.sqlDialect = sessionFactoryOptions.SqlDialect;
         }
 
         public string ConnectionName
@@ -66,7 +65,7 @@ namespace MicroLite.Core
 
             if (log.IsDebug)
             {
-                log.Debug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
+                log.Debug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.sqlDialect.GetType().Name);
             }
 
             return new ReadOnlySession(connectionScope, connection, this, this.objectBuilder);
@@ -85,7 +84,7 @@ namespace MicroLite.Core
 
             if (log.IsDebug)
             {
-                log.Debug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.sessionFactoryOptions.SqlDialectType.Name);
+                log.Debug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.sqlDialect.GetType().Name);
             }
 
             return new Session(connectionScope, connection, this, this.objectBuilder, Listener.Listeners);

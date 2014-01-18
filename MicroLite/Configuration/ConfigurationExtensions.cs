@@ -13,6 +13,8 @@
 namespace MicroLite.Configuration
 {
     using System;
+    using System.Data.SqlClient;
+    using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -36,7 +38,7 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("configureConnection");
             }
 
-            return configureConnection.ForConnection(connectionName, "MicroLite.Dialect.MsSqlDialect");
+            return configureConnection.ForConnection(connectionName, MsSqlDialect.Instance, SqlClientFactory.Instance);
         }
 
         /// <summary>

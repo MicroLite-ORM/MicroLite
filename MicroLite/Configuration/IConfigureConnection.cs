@@ -12,6 +12,9 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Configuration
 {
+    using System.Data.Common;
+    using MicroLite.Dialect;
+
     /// <summary>
     /// The interface which specifies the options for configuring the connection in the fluent configuration
     /// of the MicroLite ORM framework.
@@ -22,11 +25,11 @@ namespace MicroLite.Configuration
         /// Specifies the name of the connection string in the app config and the sql dialect to be used.
         /// </summary>
         /// <param name="connectionName">The name of the connection string in the app config.</param>
-        /// <param name="sqlDialect">The name of the sql dialect to use for the connection.</param>
+        /// <param name="sqlDialect">The sql dialect to use for the connection.</param>
+        /// <param name="providerFactory">The provider factory to use for the connection.</param>
         /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
-        /// <exception cref="System.NotSupportedException">Thrown if the provider name or sql dialect is not supported.</exception>
-        ICreateSessionFactory ForConnection(string connectionName, string sqlDialect);
+        ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, DbProviderFactory providerFactory);
     }
 }

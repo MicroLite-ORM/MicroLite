@@ -65,16 +65,26 @@ namespace MicroLite.Configuration
         /// Specifies the name of the connection string in the app config and the sql dialect to be used.
         /// </summary>
         /// <param name="connectionName">The name of the connection string in the app config.</param>
-        /// <param name="sqlDialect">The name of the sql dialect to use for the connection.</param>
+        /// <param name="sqlDialect">The sql dialect to use for the connection.</param>
+        /// <param name="providerFactory">The provider factory to use for the connection.</param>
         /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
-        /// <exception cref="System.NotSupportedException">Thrown if the provider name or sql dialect is not supported.</exception>
-        public ICreateSessionFactory ForConnection(string connectionName, string sqlDialect)
+        public ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, DbProviderFactory providerFactory)
         {
             if (connectionName == null)
             {
                 throw new ArgumentNullException("connectionName");
+            }
+
+            if (sqlDialect == null)
+            {
+                throw new ArgumentNullException("sqlDialect");
+            }
+
+            if (providerFactory == null)
+            {
+                throw new ArgumentNullException("providerFactory");
             }
 
             if (this.log.IsDebug)
@@ -90,41 +100,12 @@ namespace MicroLite.Configuration
                 throw new MicroLiteException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
 
-            var sqlDialectType = this.GetSqlDialectType(sqlDialect);
+            this.options.ConnectionName = configSection.Name;
+            this.options.ConnectionString = configSection.ConnectionString;
+            this.options.ProviderFactory = providerFactory;
+            this.options.SqlDialect = sqlDialect;
 
-            try
-            {
-                this.options.ConnectionName = configSection.Name;
-                this.options.ConnectionString = configSection.ConnectionString;
-                this.options.ProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
-                this.options.SqlDialectType = sqlDialectType;
-
-                return this;
-            }
-            catch (Exception e)
-            {
-                this.log.Fatal(e.Message, e);
-                throw new MicroLiteException(e.Message, e);
-            }
-        }
-
-        private Type GetSqlDialectType(string sqlDialect)
-        {
-            var sqlDialectType = Type.GetType(sqlDialect, throwOnError: false);
-
-            if (sqlDialectType == null)
-            {
-                this.log.Fatal(Messages.FluentConfiguration_DialectNotSupported.FormatWith(sqlDialect));
-                throw new NotSupportedException(Messages.FluentConfiguration_DialectNotSupported.FormatWith(sqlDialect));
-            }
-
-            if (!typeof(ISqlDialect).IsAssignableFrom(sqlDialectType))
-            {
-                this.log.Fatal(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith(sqlDialect));
-                throw new NotSupportedException(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith(sqlDialect));
-            }
-
-            return sqlDialectType;
+            return this;
         }
     }
 }

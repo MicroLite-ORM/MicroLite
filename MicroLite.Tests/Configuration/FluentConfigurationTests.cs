@@ -1,9 +1,11 @@
 ﻿namespace MicroLite.Tests.Configuration
 {
     using System;
-    using MicroLite.Builder;
+    using System.Data.Common;
     using MicroLite.Configuration;
+    using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
+    using Moq;
     using Xunit;
 
     /// <summary>
@@ -21,7 +23,12 @@
 
                 var fluentConfiguration = new FluentConfiguration();
 
-                this.sessionFactory = fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.MsSqlDialect").CreateSessionFactory();
+                var mockSqlDialect = new Mock<ISqlDialect>();
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(new Mock<SqlCharacters>().Object);
+
+                this.sessionFactory = fluentConfiguration
+                    .ForConnection("SqlConnection", mockSqlDialect.Object, new Mock<DbProviderFactory>().Object)
+                    .CreateSessionFactory();
             }
 
             public void Dispose()
@@ -48,19 +55,24 @@
             }
         }
 
-        public class WhenCallingCreateSessionFactoryMultipleTimesForTheSameConnection : IDisposable
+        public class WhenCallingCreateSessionFactory_MultipleTimesForTheSameConnection : IDisposable
         {
             private readonly ISessionFactory sessionFactory1;
             private readonly ISessionFactory sessionFactory2;
 
-            public WhenCallingCreateSessionFactoryMultipleTimesForTheSameConnection()
+            public WhenCallingCreateSessionFactory_MultipleTimesForTheSameConnection()
             {
                 Configure.SessionFactories.Clear();
 
                 var fluentConfiguration = new FluentConfiguration();
 
-                this.sessionFactory1 = fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.MsSqlDialect").CreateSessionFactory();
-                this.sessionFactory2 = fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.MsSqlDialect").CreateSessionFactory();
+                this.sessionFactory1 = fluentConfiguration
+                    .ForConnection("SqlConnection", new Mock<ISqlDialect>().Object, new Mock<DbProviderFactory>().Object)
+                    .CreateSessionFactory();
+
+                this.sessionFactory2 = fluentConfiguration
+                    .ForConnection("SqlConnection", new Mock<ISqlDialect>().Object, new Mock<DbProviderFactory>().Object)
+                    .CreateSessionFactory();
             }
 
             public void Dispose()
@@ -75,69 +87,59 @@
             }
         }
 
-        public class WhenCallingForConnectionAndTheConnectionNameDoesNotExistInTheAppConfig
+        public class WhenCallingForConnection_AndTheConnectionNameDoesNotExistInTheAppConfig
         {
             [Fact]
             public void AMicroLiteExceptionShouldBeThrown()
             {
                 var fluentConfiguration = new FluentConfiguration();
 
-                var exception = Assert.Throws<MicroLiteException>(() => fluentConfiguration.ForConnection("TestDB", "MicroLite.Dialect.MsSqlDialect"));
+                var exception = Assert.Throws<MicroLiteException>(
+                    () => fluentConfiguration.ForConnection("TestDB", new Mock<ISqlDialect>().Object, new Mock<DbProviderFactory>().Object));
 
                 Assert.Equal(Messages.FluentConfiguration_ConnectionNotFound.FormatWith("TestDB"), exception.Message);
             }
         }
 
-        public class WhenCallingForConnectionAndTheConnectionNameIsNull
+        public class WhenCallingForConnection_AndTheConnectionNameIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
                 var fluentConfiguration = new FluentConfiguration();
 
-                var exception = Assert.Throws<ArgumentNullException>(() => fluentConfiguration.ForConnection(null, "MicroLite.Dialect.MsSqlDialect"));
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => fluentConfiguration.ForConnection(null, new Mock<ISqlDialect>().Object, new Mock<DbProviderFactory>().Object));
 
                 Assert.Equal(exception.ParamName, "connectionName");
             }
         }
 
-        public class WhenCallingForConnectionAndTheProviderInTheAppConfigIsNotSupported
+        public class WhenCallingForConnection_AndTheDbProviderFactoryIsNull
         {
             [Fact]
-            public void AMicroLiteExceptionShouldBeThrown()
+            public void AnArgumentNullExceptionShouldBeThrown()
             {
                 var fluentConfiguration = new FluentConfiguration();
 
-                Assert.Throws<MicroLiteException>(
-                    () => fluentConfiguration.ForConnection("ConnectionWithInvalidProviderName", "MicroLite.Dialect.MsSqlDialect"));
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => fluentConfiguration.ForConnection("SqlConnection", new Mock<ISqlDialect>().Object, null));
+
+                Assert.Equal(exception.ParamName, "providerFactory");
             }
         }
 
-        public class WhenCallingForConnectionAndTheSqlDialectDoesNotImplementISqlDialect
+        public class WhenCallingForConnection_AndTheSqlDialectIsNull
         {
             [Fact]
-            public void AMicroLiteExceptionShouldBeThrown()
+            public void AnArgumentNullExceptionShouldBeThrown()
             {
                 var fluentConfiguration = new FluentConfiguration();
 
-                var exception = Assert.Throws<NotSupportedException>(
-                    () => fluentConfiguration.ForConnection("SqlConnection", "MicroLite.SqlQuery"));
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => fluentConfiguration.ForConnection("SqlConnection", null, new Mock<DbProviderFactory>().Object));
 
-                Assert.Equal(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith("MicroLite.SqlQuery"), exception.Message);
-            }
-        }
-
-        public class WhenCallingForConnectionAndTheSqlDialectIsNotSupported
-        {
-            [Fact]
-            public void AMicroLiteExceptionShouldBeThrown()
-            {
-                var fluentConfiguration = new FluentConfiguration();
-
-                var exception = Assert.Throws<NotSupportedException>(
-                    () => fluentConfiguration.ForConnection("SqlConnection", "MicroLite.Dialect.DB2"));
-
-                Assert.Equal(Messages.FluentConfiguration_DialectNotSupported.FormatWith("MicroLite.Dialect.DB2"), exception.Message);
+                Assert.Equal(exception.ParamName, "sqlDialect");
             }
         }
     }

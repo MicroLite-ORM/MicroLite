@@ -12,8 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
-    using System;
     using System.Data.Common;
+    using MicroLite.Dialect;
 
     /// <summary>
     /// The class used to hold the options for configuring a session factory.
@@ -48,9 +48,9 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Gets or sets the type of SqlDialect for the connection.
+        /// Gets or sets the SqlDialect for the connection.
         /// </summary>
-        internal Type SqlDialectType
+        internal ISqlDialect SqlDialect
         {
             get;
             set;

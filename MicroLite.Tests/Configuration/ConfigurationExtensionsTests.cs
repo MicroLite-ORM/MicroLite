@@ -1,7 +1,9 @@
 ﻿namespace MicroLite.Tests.Configuration
 {
     using System;
+    using System.Data.SqlClient;
     using MicroLite.Configuration;
+    using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
     using Moq;
     using Xunit;
@@ -21,18 +23,21 @@
             }
 
             [Fact]
-            public void SetMappingConventionIsCalledWithAnInstanceOfAttributeMappingConvention()
+            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbProviderFactory()
             {
-                this.mockConfigureConnection.Verify(x => x.ForConnection("TestConnection", "MicroLite.Dialect.MsSqlDialect"), Times.Once());
+                this.mockConfigureConnection.Verify(
+                    x => x.ForConnection("TestConnection", MsSqlDialect.Instance, SqlClientFactory.Instance),
+                    Times.Once());
             }
         }
 
-        public class WhenCallingForMsSqlConnectionAndTheConfigureConnectionIsNull
+        public class WhenCallingForMsSqlConnection_AndTheConfigureConnectionIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()
             {
-                var exception = Assert.Throws<ArgumentNullException>(() => ConfigurationExtensions.ForMsSqlConnection(null, "TestConnection"));
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => ConfigurationExtensions.ForMsSqlConnection(null, "TestConnection"));
 
                 Assert.Equal("configureConnection", exception.ParamName);
             }
@@ -54,7 +59,7 @@
             }
         }
 
-        public class WhenCallingWithAttributeBasedMappingAndTheConfigureExtensionsIsNull
+        public class WhenCallingWithAttributeBasedMapping_AndTheConfigureExtensionsIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()
@@ -81,7 +86,7 @@
             }
         }
 
-        public class WhenCallingWithConventionBasedMappingAndTheConfigureExtensionsIsNull
+        public class WhenCallingWithConventionBasedMapping_AndTheConfigureExtensionsIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()
@@ -92,7 +97,7 @@
             }
         }
 
-        public class WhenCallingWithConventionBasedMappingAndTheSettingsAreNull
+        public class WhenCallingWithConventionBasedMapping_AndTheSettingsAreNull
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()

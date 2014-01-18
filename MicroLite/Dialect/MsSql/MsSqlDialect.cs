@@ -25,10 +25,14 @@ namespace MicroLite.Dialect.MsSql
     internal sealed class MsSqlDialect : SqlDialect
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="MsSqlDialect"/> class.
+        /// The single instance of SqlDialect for MsSql.
         /// </summary>
-        /// <remarks>Constructor needs to be public so that it can be instantiated by SqlDialectFactory.</remarks>
-        public MsSqlDialect()
+        internal static readonly SqlDialect Instance = new MsSqlDialect();
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="MsSqlDialect"/> class from being created.
+        /// </summary>
+        private MsSqlDialect()
             : base(MsSqlCharacters.Instance)
         {
         }
