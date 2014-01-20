@@ -5,13 +5,13 @@ Requirements:
 
   - Visual Studio 2010 or later
   - .NET 4.5
-  - Sandcastle Help File Builder 1.9.7 (http://shfb.codeplex.com/)
-  - StyleCop version 4.7.45.0 - ensure that MSBuild integration is selected when installed (http://stylecop.codeplex.com/)
-  - Git (http://git-scm.com/download/win)
+  - Sandcastle Help File Builder 1.9.8 (http://shfb.codeplex.com/)
+  - StyleCop version 4.7.48 - ensure that MSBuild integration is selected when installed (http://stylecop.codeplex.com/)
+  - Git 1.8.5.2 (http://git-scm.com/download/win)
 
 Optional:
 
-  - NDepend 4.1 or later
+  - NDepend 5.0 or later
 
 If running on a 64 bit machine, run the PowerShell (x86) executable otherwise the StyleCop.targets won't be found.
 
