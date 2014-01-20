@@ -12,7 +12,7 @@ $nuSpec = "$scriptPath\$projectName.nuspec"
 $nuGetPackage = "$buildDir\$projectName.$version.nupkg"
 $date = Get-Date
 $gitDir = $scriptPath + "\.git"
-$commit = git --git-dir $gitDir log -1 --pretty=format:%h
+$commit = git --git-dir $gitDir rev-list HEAD --count
 
 function UpdateAssemblyInfoFiles ([string] $buildVersion)
 {
@@ -21,7 +21,7 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 	$infoVersionPattern = 'AssemblyInformationalVersion\("[0-9]+(\.([0-9]+|\*)){1,3}(.*)"\)'
 	$assemblyVersion = 'AssemblyVersion("' + $buildVersion.SubString(0, 3) + '.0.0")';
 	$fileVersion = 'AssemblyFileVersion("' + $buildVersion.SubString(0, 5) + '.0")';
-	$infoVersion = 'AssemblyInformationalVersion("' + $buildVersion + ' (' + $commit + ')")';
+	$infoVersion = 'AssemblyInformationalVersion("' + $buildVersion.SubString(0, 5) + '.' + $commit + '")';
 	
 	Get-ChildItem $scriptPath -r -filter AssemblyInfo.cs | ForEach-Object {
 		$filename = $_.Directory.ToString() + '\' + $_.Name
