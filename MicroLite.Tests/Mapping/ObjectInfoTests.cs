@@ -76,7 +76,8 @@
         [Fact]
         public void ForThrowsArgumentNullExceptonForNullForType()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => ObjectInfo.For(null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => ObjectInfo.For(null));
 
             Assert.Equal("forType", exception.ParamName);
         }
@@ -84,7 +85,7 @@
         [Fact]
         public void ForThrowsMicroLiteExceptionIfAbstractClass()
         {
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => ObjectInfo.For(typeof(AbstractCustomer)));
 
             Assert.Equal(
@@ -95,7 +96,7 @@
         [Fact]
         public void ForThrowsMicroLiteExceptionIfNoDefaultConstructor()
         {
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => ObjectInfo.For(typeof(CustomerWithNoDefaultConstructor)));
 
             Assert.Equal(
@@ -106,7 +107,7 @@
         [Fact]
         public void ForThrowsMicroLiteExceptionIfNotClass()
         {
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => ObjectInfo.For(typeof(CustomerStruct)));
 
             Assert.Equal(
@@ -162,7 +163,8 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetIdentifierValue(null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.GetIdentifierValue(null));
 
             Assert.Equal("instance", exception.ParamName);
         }
@@ -172,7 +174,7 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => objectInfo.GetIdentifierValue(new CustomerWithGuidIdentifier()));
 
             Assert.Equal(
@@ -200,7 +202,8 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetPropertyValueForColumn(null, "Name"));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.GetPropertyValueForColumn(null, "Name"));
 
             Assert.Equal("instance", exception.ParamName);
         }
@@ -210,7 +213,7 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => objectInfo.GetPropertyValueForColumn(new CustomerWithGuidIdentifier(), "Name"));
 
             Assert.Equal(
@@ -223,7 +226,7 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => objectInfo.GetPropertyValueForColumn(new CustomerWithIntegerIdentifier(), "UnknownColumn"));
 
             Assert.Equal(
@@ -251,7 +254,8 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetPropertyValue(null, "Name"));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.GetPropertyValue(null, "Name"));
 
             Assert.Equal("instance", exception.ParamName);
         }
@@ -261,7 +265,7 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => objectInfo.GetPropertyValue(new CustomerWithGuidIdentifier(), "Name"));
 
             Assert.Equal(
@@ -274,7 +278,7 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => objectInfo.GetPropertyValue(new CustomerWithIntegerIdentifier(), "UnknownProperty"));
 
             Assert.Equal(
@@ -287,7 +291,8 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.HasDefaultIdentifierValue(null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.HasDefaultIdentifierValue(null));
 
             Assert.Equal("instance", exception.ParamName);
         }
@@ -299,7 +304,7 @@
 
             var instance = new CustomerWithGuidIdentifier();
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => objectInfo.HasDefaultIdentifierValue(instance));
 
             Assert.Equal(
@@ -368,7 +373,8 @@
 
             var instance = new CustomerWithIntegerIdentifier();
 
-            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetPropertyValueForColumn(instance, "UnknownColumn", 1));
+            var exception = Assert.Throws<MappingException>(
+                () => objectInfo.SetPropertyValueForColumn(instance, "UnknownColumn", 1));
 
             Assert.Equal(
                 string.Format(Messages.ObjectInfo_UnknownColumn, objectInfo.ForType.Name, "UnknownColumn"),
@@ -380,7 +386,8 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.SetPropertyValueForColumn(null, "StatusId", 1));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.SetPropertyValueForColumn(null, "StatusId", 1));
 
             Assert.Equal("instance", exception.ParamName);
         }
@@ -392,7 +399,7 @@
 
             var instance = new CustomerWithGuidIdentifier();
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1));
 
             Assert.Equal(
@@ -419,7 +426,8 @@
 
             var instance = new CustomerWithIntegerIdentifier();
 
-            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetPropertyValue(instance, "UnknownProperty", CustomerStatus.Active));
+            var exception = Assert.Throws<MappingException>(
+                () => objectInfo.SetPropertyValue(instance, "UnknownProperty", CustomerStatus.Active));
 
             Assert.Equal(
                 string.Format(Messages.ObjectInfo_UnknownProperty, objectInfo.ForType.Name, "UnknownProperty"),
@@ -431,7 +439,8 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.SetPropertyValue(null, "Status", CustomerStatus.Active));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.SetPropertyValue(null, "Status", CustomerStatus.Active));
 
             Assert.Equal("instance", exception.ParamName);
         }
@@ -443,7 +452,7 @@
 
             var instance = new CustomerWithGuidIdentifier();
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => objectInfo.SetPropertyValue(instance, "Status", CustomerStatus.Active));
 
             Assert.Equal(

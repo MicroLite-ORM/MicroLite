@@ -183,21 +183,21 @@ namespace MicroLite.Mapping
                     log.Fatal(Messages.TableInfo_ColumnMappedMultipleTimes, duplicatedColumn.Key);
                 }
 
-                throw new MicroLiteException(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
+                throw new MappingException(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
             }
 
             if (!this.columns.Any(c => c.IsIdentifier))
             {
                 var message = Messages.TableInfo_NoIdentifierColumn.FormatWith(this.schema, this.name);
                 log.Fatal(message);
-                throw new MicroLiteException(message);
+                throw new MappingException(message);
             }
 
             if (this.columns.Count(c => c.IsIdentifier) > 1)
             {
                 var message = Messages.TableInfo_MultipleIdentifierColumns.FormatWith(this.schema, this.name);
                 log.Fatal(message);
-                throw new MicroLiteException(message);
+                throw new MappingException(message);
             }
         }
     }

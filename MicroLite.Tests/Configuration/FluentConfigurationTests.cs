@@ -90,11 +90,11 @@
         public class WhenCallingForConnection_AndTheConnectionNameDoesNotExistInTheAppConfig
         {
             [Fact]
-            public void AMicroLiteExceptionShouldBeThrown()
+            public void AMicroLiteConfigurationExceptionShouldBeThrown()
             {
                 var fluentConfiguration = new FluentConfiguration();
 
-                var exception = Assert.Throws<MicroLiteException>(
+                var exception = Assert.Throws<ConfigurationException>(
                     () => fluentConfiguration.ForConnection("TestDB", new Mock<ISqlDialect>().Object, new Mock<DbProviderFactory>().Object));
 
                 Assert.Equal(Messages.FluentConfiguration_ConnectionNotFound.FormatWith("TestDB"), exception.Message);

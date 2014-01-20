@@ -97,7 +97,7 @@ namespace MicroLite.Configuration
             if (configSection == null)
             {
                 this.log.Fatal(Messages.FluentConfiguration_ConnectionNotFound, connectionName);
-                throw new MicroLiteException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
+                throw new ConfigurationException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
 
             this.options.ConnectionName = configSection.Name;

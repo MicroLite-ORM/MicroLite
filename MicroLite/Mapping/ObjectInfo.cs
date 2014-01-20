@@ -224,7 +224,7 @@ namespace MicroLite.Mapping
             {
                 var message = Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName);
                 log.Error(message);
-                throw new MicroLiteException(message);
+                throw new MappingException(message);
             }
 
             if (log.IsDebug)
@@ -255,7 +255,7 @@ namespace MicroLite.Mapping
             {
                 var message = Messages.ObjectInfo_ColumnNotMapped.FormatWith(columnName, this.ForType.Name);
                 log.Error(message);
-                throw new MicroLiteException(message);
+                throw new MappingException(message);
             }
 
             if (log.IsDebug)
@@ -308,7 +308,7 @@ namespace MicroLite.Mapping
             {
                 var message = Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName);
                 log.Error(message);
-                throw new MicroLiteException(message);
+                throw new MappingException(message);
             }
 
             if (log.IsDebug)
@@ -337,7 +337,7 @@ namespace MicroLite.Mapping
             {
                 var message = Messages.ObjectInfo_UnknownColumn.FormatWith(this.ForType.Name, columnName);
                 log.Error(message);
-                throw new MicroLiteException(message);
+                throw new MappingException(message);
             }
 
             if (log.IsDebug)
@@ -459,7 +459,7 @@ namespace MicroLite.Mapping
             if (message != null)
             {
                 log.Fatal(message);
-                throw new MicroLiteException(message);
+                throw new MappingException(message);
             }
         }
 
@@ -606,7 +606,7 @@ namespace MicroLite.Mapping
             {
                 var mesage = Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name);
                 log.Error(mesage);
-                throw new MicroLiteException(mesage);
+                throw new MappingException(mesage);
             }
         }
     }

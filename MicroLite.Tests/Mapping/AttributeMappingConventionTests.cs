@@ -139,7 +139,7 @@
             {
                 var mappingConvention = new AttributeMappingConvention();
 
-                var exception = Assert.Throws<MicroLiteException>(
+                var exception = Assert.Throws<MappingException>(
                     () => mappingConvention.CreateObjectInfo(typeof(CustomerWithNoTableAttribute)));
 
                 Assert.Equal(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(typeof(CustomerWithNoTableAttribute).FullName), exception.Message);

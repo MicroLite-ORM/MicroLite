@@ -109,6 +109,11 @@ namespace MicroLite.Core
                     return result;
                 }
             }
+            catch (MicroLiteException)
+            {
+                // Don't re-wrap MicroLite exceptions
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e.Message, e);
@@ -141,6 +146,11 @@ namespace MicroLite.Core
 
                     return converted;
                 }
+            }
+            catch (MicroLiteException)
+            {
+                // Don't re-wrap MicroLite exceptions
+                throw;
             }
             catch (Exception e)
             {

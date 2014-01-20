@@ -29,7 +29,7 @@ namespace MicroLite.Configuration
         /// <param name="providerFactory">The provider factory to use for the connection.</param>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
+        /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, DbProviderFactory providerFactory);
     }
 }

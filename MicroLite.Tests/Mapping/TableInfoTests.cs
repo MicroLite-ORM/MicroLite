@@ -64,7 +64,7 @@
                 new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true)
             };
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
             Assert.Equal(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith("Name"), exception.Message);
@@ -78,7 +78,7 @@
                 new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true)
             };
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
             Assert.Equal(Messages.TableInfo_NoIdentifierColumn.FormatWith("Sales", "Customers"), exception.Message);
@@ -93,7 +93,7 @@
                 new ColumnInfo("Id", typeof(Customer).GetProperty("Id"), true, true, true)
             };
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
             Assert.Equal(Messages.TableInfo_MultipleIdentifierColumns.FormatWith("Sales", "Customers"), exception.Message);

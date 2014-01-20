@@ -42,7 +42,7 @@ namespace MicroLite.Mapping
                     this.log.Fatal(Messages.AttributeMappingConvention_NoTableAttribute, forType.FullName);
                 }
 
-                throw new MicroLiteException(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName));
+                throw new MappingException(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName));
             }
 
             var identifierStrategy = IdentifierStrategy.DbGenerated;

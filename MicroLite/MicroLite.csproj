@@ -58,6 +58,7 @@
     <Compile Include="Characters.cs" />
     <Compile Include="Configuration\ConfigurationExtensions.cs" />
     <Compile Include="Configuration\FluentConfiguration.cs" />
+    <Compile Include="Configuration\ConfigurationException.cs" />
     <Compile Include="ConnectionScope.cs" />
     <Compile Include="Core\ISessionBase.cs" />
     <Compile Include="Core\Transaction.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Core\SessionBase.cs" />
     <Compile Include="Dialect\MsSql\MsSqlCharacters.cs" />
     <Compile Include="Logging\NullLog.cs" />
+    <Compile Include="Mapping\MappingException.cs" />
     <Compile Include="ObjectDelta.cs" />
     <Compile Include="Builder\DeleteSqlBuilder.cs" />
     <Compile Include="Builder\IDeleteFrom.cs" />
