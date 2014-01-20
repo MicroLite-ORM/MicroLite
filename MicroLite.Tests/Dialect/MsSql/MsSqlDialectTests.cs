@@ -148,6 +148,15 @@
             Assert.Equal((int)customer.Status, sqlQuery.Arguments[3]);
         }
 
+        [Fact]
+        public void InstanceReturnsTheSameInstanceEachTime()
+        {
+            var characters1 = MsSqlDialect.Instance;
+            var characters2 = MsSqlDialect.Instance;
+
+            Assert.Same(characters1, characters2);
+        }
+
         /// <summary>
         /// Issue #206 - Session.Paged errors if the query includes a sub query
         /// </summary>
