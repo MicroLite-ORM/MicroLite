@@ -30,25 +30,9 @@
             }
 
             [Fact]
-            public void ConstructorRegistersGuidCombListener()
+            public void ThereShouldBe2RegisteredListeners()
             {
-                var listener = this.collection.OfType<GuidCombListener>().SingleOrDefault();
-
-                Assert.NotNull(listener);
-            }
-
-            [Fact]
-            public void ConstructorRegistersGuidListener()
-            {
-                var listener = this.collection.OfType<GuidListener>().SingleOrDefault();
-
-                Assert.NotNull(listener);
-            }
-
-            [Fact]
-            public void ThereShouldBe4RegisteredListeners()
-            {
-                Assert.Equal(4, this.collection.Count);
+                Assert.Equal(2, this.collection.Count);
             }
         }
 

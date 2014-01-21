@@ -88,7 +88,6 @@
     <Compile Include="Infrastructure\AppSettingSymmetricAlgorithmProvider.cs" />
     <Compile Include="DbEncryptedString.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />
-    <Compile Include="GuidGenerator.cs" />
     <Compile Include="IInclude.cs" />
     <Compile Include="IIncludeMany.cs" />
     <Compile Include="IIncludeSession.cs" />
@@ -98,7 +97,6 @@
     <Compile Include="Infrastructure\Web\SessionManager.cs" />
     <Compile Include="Infrastructure\SymmetricAlgorithmProvider.cs" />
     <Compile Include="IReadOnlySession.cs" />
-    <Compile Include="Listeners\GuidCombListener.cs" />
     <Compile Include="Mapping\ColumnAttribute.cs" />
     <Compile Include="Configuration\Configure.cs" />
     <Compile Include="Configuration\ConfigureExtensions.cs" />
@@ -114,7 +112,6 @@
     <Compile Include="FrameworkExtensions\CollectionExtensions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Listeners\GuidListener.cs" />
     <Compile Include="Listeners\DbGeneratedListener.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -26,8 +26,6 @@ namespace MicroLite.Listeners
         {
             this.Add(new DbGeneratedListener());
             this.Add(new AssignedListener());
-            this.Add(new GuidListener());
-            this.Add(new GuidCombListener());
         }
     }
 }

@@ -21,7 +21,7 @@
                 new ColumnInfo("Created", typeof(Customer).GetProperty("Created"), false, true, false),
                 new ColumnInfo("Updated", typeof(Customer).GetProperty("Updated"), false, false, true)
             });
-            var identifierStrategy = IdentifierStrategy.Guid;
+            var identifierStrategy = IdentifierStrategy.Assigned;
             var name = "Customers";
             var schema = "Sales";
 

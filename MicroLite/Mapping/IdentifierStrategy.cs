@@ -25,18 +25,6 @@ namespace MicroLite.Mapping
         /// <summary>
         /// The identifier value is assigned by user code prior to insert.
         /// </summary>
-        Assigned = 1,
-
-        /// <summary>
-        /// The identifier is automatically assigned a new System.Guid as it's value prior to insert.
-        /// </summary>
-        /// <remarks>This uses the static method Guid.NewGuid() to generate the GUID.</remarks>
-        Guid = 2,
-
-        /// <summary>
-        /// The identifier is automatically assigned a new combed System.Guid as it's value prior to insert.
-        /// </summary>
-        /// <remarks>This uses custom code to ensure that the Guid is unique but also reduces index fragmentation in the database.</remarks>
-        GuidComb = 3
+        Assigned = 1
     }
 }

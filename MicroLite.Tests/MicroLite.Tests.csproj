@@ -75,15 +75,12 @@
     <Compile Include="Builder\UpdateSqlBuilderTests.cs" />
     <Compile Include="SqlCharactersTests.cs" />
     <Compile Include="Dialect\SqlDialectTests.cs" />
-    <Compile Include="GuidGeneratorTests.cs" />
     <Compile Include="Infrastructure\Web\SessionManagerTests.cs" />
     <Compile Include="Infrastructure\SymmetricAlgorithmProviderTests.cs" />
-    <Compile Include="Listeners\GuidCombListenerTests.cs" />
     <Compile Include="Mapping\ColumnAttributeTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
     <Compile Include="Listeners\AssignedListenerTests.cs" />
-    <Compile Include="Listeners\GuidListenerTests.cs" />
     <Compile Include="Listeners\DbGeneratedListenerTests.cs" />
     <Compile Include="Core\ObjectBuilderTests.cs" />
     <Compile Include="Core\SessionFactoryTests.cs" />
