@@ -23,7 +23,7 @@ namespace MicroLite
     {
         private static readonly char[] period = new[] { '.' };
         private static SqlCharacters current;
-        private static SqlCharacters empty;
+        private static SqlCharacters empty = new SqlCharacters();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlCharacters"/> class.
@@ -39,7 +39,7 @@ namespace MicroLite
         {
             get
             {
-                return current ?? Empty;
+                return current ?? empty;
             }
 
             set
@@ -55,7 +55,7 @@ namespace MicroLite
         {
             get
             {
-                return empty ?? (empty = new SqlCharacters());
+                return empty;
             }
         }
 
