@@ -85,7 +85,7 @@ namespace MicroLite.Core
 
             try
             {
-                if (this.SqlDialect.SupportsBatchedQueries)
+                if (this.SqlDialect.SupportsBatchedQueries && this.queries.Count > 1)
                 {
                     this.ExecuteQueriesCombined();
                 }
@@ -234,13 +234,13 @@ namespace MicroLite.Core
 
         private void ExecuteQueriesCombined()
         {
-            var sqlQuery = this.queries.Count == 1 ? this.queries.Peek() : this.SqlDialect.Combine(this.queries);
+            var combinedSqlQuery = this.SqlDialect.Combine(this.queries);
 
             using (var command = this.CreateCommand())
             {
                 try
                 {
-                    this.SqlDialect.BuildCommand(command, sqlQuery);
+                    this.SqlDialect.BuildCommand(command, combinedSqlQuery);
 
                     using (var reader = command.ExecuteReader())
                     {
