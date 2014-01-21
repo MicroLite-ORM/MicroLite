@@ -20,7 +20,7 @@ namespace MicroLite.Core
     /// <summary>
     /// The default implementation of <see cref="ISessionFactory"/>.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("SessionFactory for {ConnectionName} using {sessionFactoryOptions.SqlDialectType.Name}")]
+    [System.Diagnostics.DebuggerDisplay("SessionFactory for {ConnectionName}")]
     internal sealed class SessionFactory : ISessionFactory
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();

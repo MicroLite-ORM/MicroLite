@@ -18,7 +18,7 @@ namespace MicroLite.Mapping
     /// <summary>
     /// A class which contains information about a database table column and the property it is mapped to.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Column {ColumnName}, Identifier:{IsIdentifier}, Insert:{AllowInsert}, Update:{AllowUpdate}")]
+    [System.Diagnostics.DebuggerDisplay("Column: {ColumnName}, Identifier: {IsIdentifier}, Insert: {AllowInsert}, Update: {AllowUpdate}")]
     public sealed class ColumnInfo
     {
         private readonly bool allowInsert;

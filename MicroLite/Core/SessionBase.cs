@@ -19,6 +19,7 @@ namespace MicroLite.Core
     /// <summary>
     /// The base class for a session.
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("ConnectionScope: {ConnectionScope}")]
     internal abstract class SessionBase : ISessionBase, IDisposable
     {
         protected static readonly ILog Log = LogManager.GetCurrentClassLog();

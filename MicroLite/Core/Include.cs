@@ -17,6 +17,7 @@ namespace MicroLite.Core
     /// <summary>
     /// The base class for include implementations.
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}")]
     internal abstract class Include
     {
         /// <summary>

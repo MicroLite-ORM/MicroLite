@@ -21,6 +21,7 @@ namespace MicroLite.Core
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("ConnectionScope: {ConnectionScope}")]
     internal class ReadOnlySession : SessionBase, IReadOnlySession, IIncludeSession, IAdvancedReadOnlySession
     {
         private readonly Queue<Include> includes = new Queue<Include>();

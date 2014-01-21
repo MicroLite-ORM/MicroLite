@@ -24,6 +24,7 @@ namespace MicroLite.Core
     /// <summary>
     /// The default implementation of <see cref="ISession"/>.
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("ConnectionScope: {ConnectionScope}")]
     internal sealed class Session : ReadOnlySession, ISession, IAdvancedSession
     {
         private readonly IList<IListener> listeners;
