@@ -28,15 +28,6 @@ namespace MicroLite.Mapping
 
         internal ConventionMappingConvention(ConventionMappingSettings settings)
         {
-            if (this.log.IsInfo)
-            {
-                this.log.Info(
-                    Messages.ConventionMappingConvention_Configuration,
-                    settings.UsePluralClassNameForTableName.ToString(),
-                    settings.TableSchema ?? "null",
-                    settings.IdentifierStrategy.ToString());
-            }
-
             this.settings = settings;
         }
 
@@ -47,11 +38,12 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("forType");
             }
 
-            var columns = this.CreateColumnInfos(forType);
+            var identifierStrategy = this.settings.ResolveIdentifierStrategy(forType);
+            var columns = this.CreateColumnInfos(forType, identifierStrategy);
 
             var tableInfo = new TableInfo(
                 columns,
-                this.settings.IdentifierStrategy,
+                identifierStrategy,
                 this.settings.ResolveTableName(forType),
                 this.settings.TableSchema);
 
@@ -63,7 +55,7 @@ namespace MicroLite.Mapping
             return new ObjectInfo(forType, tableInfo);
         }
 
-        private List<ColumnInfo> CreateColumnInfos(Type forType)
+        private List<ColumnInfo> CreateColumnInfos(Type forType, IdentifierStrategy identifierStrategy)
         {
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var columns = new List<ColumnInfo>(properties.Length);
@@ -96,7 +88,7 @@ namespace MicroLite.Mapping
                        columnName: isIdentifier ? this.settings.ResolveIdentifierColumnName(property) : this.settings.ResolveColumnName(property),
                        propertyInfo: property,
                        isIdentifier: isIdentifier,
-                       allowInsert: isIdentifier ? this.settings.IdentifierStrategy != IdentifierStrategy.DbGenerated : this.settings.AllowInsert(property),
+                       allowInsert: isIdentifier ? identifierStrategy != IdentifierStrategy.DbGenerated : this.settings.AllowInsert(property),
                        allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property));
 
                 if (this.log.IsDebug)

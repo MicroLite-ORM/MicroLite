@@ -47,10 +47,13 @@
                     {
                         return propertyInfo.Name != "Created";
                     },
-                    IdentifierStrategy = IdentifierStrategy.Assigned,
                     Ignore = (PropertyInfo propertyInfo) =>
                     {
                         return propertyInfo.Name == "NonPersistedValue";
+                    },
+                    ResolveIdentifierStrategy = (Type type) =>
+                    {
+                        return IdentifierStrategy.Assigned;
                     },
                     TableSchema = "Sales",
                     UsePluralClassNameForTableName = false
@@ -272,7 +275,10 @@
             {
                 var mappingConvention = new ConventionMappingConvention(new ConventionMappingSettings
                 {
-                    IdentifierStrategy = IdentifierStrategy.Assigned,
+                    ResolveIdentifierStrategy = (Type type) =>
+                    {
+                        return IdentifierStrategy.Assigned;
+                    },
                     UsePluralClassNameForTableName = false
                 });
 
@@ -312,7 +318,10 @@
             {
                 var mappingConvention = new ConventionMappingConvention(new ConventionMappingSettings
                 {
-                    IdentifierStrategy = IdentifierStrategy.Assigned,
+                    ResolveIdentifierStrategy = (Type type) =>
+                    {
+                        return IdentifierStrategy.Assigned;
+                    },
                     ResolveIdentifierColumnName = (PropertyInfo propertyInfo) =>
                     {
                         return propertyInfo.DeclaringType.Name + "Id";

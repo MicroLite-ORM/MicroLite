@@ -72,12 +72,6 @@
             }
 
             [Fact]
-            public void TheIdentifierStrategyIsSetToDbGenerated()
-            {
-                Assert.Equal(IdentifierStrategy.DbGenerated, this.settings.IdentifierStrategy);
-            }
-
-            [Fact]
             public void TheIgnoreFunctionShouldBeSet()
             {
                 Assert.NotNull(this.settings.Ignore);
@@ -105,6 +99,12 @@
             public void TheResolveIdentifierColumnNameFunctionShouldBeSet()
             {
                 Assert.NotNull(this.settings.ResolveIdentifierColumnName);
+            }
+
+            [Fact]
+            public void TheResolveIdentifierStrategyFunctionShouldBeSet()
+            {
+                Assert.NotNull(this.settings.ResolveIdentifierStrategy);
             }
 
             [Fact]
