@@ -59,15 +59,6 @@ namespace MicroLite.Mapping
         object GetIdentifierValue(object instance);
 
         /// <summary>
-        /// Gets the property value for the specified property on the specified instance.
-        /// </summary>
-        /// <param name="instance">The instance to retrieve the value from.</param>
-        /// <param name="propertyName">Name of the property to get the value for.</param>
-        /// <returns>The value of the property.</returns>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
-        object GetPropertyValue(object instance, string propertyName);
-
-        /// <summary>
         /// Gets the property value from the specified instance and converts it to the correct type for the specified column.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
@@ -85,15 +76,6 @@ namespace MicroLite.Mapping
         /// </returns>
         /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
         bool HasDefaultIdentifierValue(object instance);
-
-        /// <summary>
-        /// Sets the property value for the specified property on the specified instance to the specified value.
-        /// </summary>
-        /// <param name="instance">The instance to set the property value on.</param>
-        /// <param name="propertyName">Name of the property to set the value for.</param>
-        /// <param name="value">The value to be set.</param>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
-        void SetPropertyValue(object instance, string propertyName, object value);
 
         /// <summary>
         /// Sets the property value of the property mapped to the specified column after converting it to the correct type for the property.

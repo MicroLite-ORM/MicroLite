@@ -203,36 +203,7 @@ namespace MicroLite.Mapping
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var value = this.GetPropertyValue(instance, this.tableInfo.IdentifierProperty);
-
-            return value;
-        }
-
-        /// <summary>
-        /// Gets the property value for the specified property on the specified instance.
-        /// </summary>
-        /// <param name="instance">The instance to retrieve the value from.</param>
-        /// <param name="propertyName">Name of the property to get the value for.</param>
-        /// <returns>The value of the property.</returns>
-        public object GetPropertyValue(object instance, string propertyName)
-        {
-            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
-
-            IPropertyAccessor propertyAccessor;
-
-            if (!this.propertyAccessors.TryGetValue(propertyName, out propertyAccessor))
-            {
-                var message = Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName);
-                log.Error(message);
-                throw new MappingException(message);
-            }
-
-            if (log.IsDebug)
-            {
-                log.Debug(Messages.ObjectInfo_GettingPropertyValue, this.ForType.Name, propertyName);
-            }
-
-            var value = propertyAccessor.GetValue(instance);
+            var value = this.propertyAccessors[this.tableInfo.IdentifierProperty].GetValue(instance);
 
             return value;
         }
@@ -283,40 +254,11 @@ namespace MicroLite.Mapping
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var identifierValue = this.GetPropertyValue(instance, this.TableInfo.IdentifierProperty);
+            var identifierValue = this.propertyAccessors[this.tableInfo.IdentifierProperty].GetValue(instance);
 
             bool hasDefaultIdentifier = object.Equals(identifierValue, this.defaultIdentifierValue);
 
             return hasDefaultIdentifier;
-        }
-
-        /// <summary>
-        /// Sets the property value for the specified property on the specified instance to the specified value.
-        /// </summary>
-        /// <param name="instance">The instance to set the property value on.</param>
-        /// <param name="propertyName">Name of the property to set the value for.</param>
-        /// <param name="value">The value to be set.</param>
-        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        public void SetPropertyValue(object instance, string propertyName, object value)
-        {
-            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
-
-            IPropertyAccessor propertyAccessor;
-
-            if (!this.propertyAccessors.TryGetValue(propertyName, out propertyAccessor))
-            {
-                var message = Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName);
-                log.Error(message);
-                throw new MappingException(message);
-            }
-
-            if (log.IsDebug)
-            {
-                log.Debug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, propertyName);
-            }
-
-            propertyAccessor.SetValue(instance, value);
         }
 
         /// <summary>

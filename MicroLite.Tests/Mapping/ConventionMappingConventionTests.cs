@@ -414,15 +414,15 @@
             }
 
             [Fact]
-            public void TheIdColumnShouldNotAllowInsert()
-            {
-                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowInsert);
-            }
-
-            [Fact]
             public void TheIdColumnShouldBeSet()
             {
                 Assert.Equal(typeof(Customer).GetProperty("Id"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").PropertyInfo);
+            }
+
+            [Fact]
+            public void TheIdColumnShouldNotAllowInsert()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowInsert);
             }
 
             [Fact]

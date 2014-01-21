@@ -30,7 +30,8 @@
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.GetColumnInfo("Name"));
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.GetColumnInfo("Name"));
 
             Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
         }
@@ -40,7 +41,8 @@
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.GetIdentifierValue(new ExpandoObject()));
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.GetIdentifierValue(new ExpandoObject()));
 
             Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
         }
@@ -50,17 +52,8 @@
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.GetPropertyValueForColumn(new ExpandoObject(), "foo"));
-
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
-        }
-
-        [Fact]
-        public void GetPropertyValueThrowsNotSupportedException()
-        {
-            var objectInfo = new ExpandoObjectInfo();
-
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.GetPropertyValue(new ExpandoObject(), "foo"));
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.GetPropertyValueForColumn(new ExpandoObject(), "foo"));
 
             Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
         }
@@ -70,7 +63,8 @@
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.HasDefaultIdentifierValue(new ExpandoObject()));
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.HasDefaultIdentifierValue(new ExpandoObject()));
 
             Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
         }
@@ -102,21 +96,12 @@
         }
 
         [Fact]
-        public void SetPropertyValueThrowsNotSupportedException()
-        {
-            var objectInfo = new ExpandoObjectInfo();
-
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.SetPropertyValue(new ExpandoObject(), "Name", "foo"));
-
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
-        }
-
-        [Fact]
         public void TableInfoThrowsNotSupportedException()
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.TableInfo);
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.TableInfo);
 
             Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
         }

@@ -57,22 +57,12 @@ namespace MicroLite.Mapping
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
         }
 
-        public object GetPropertyValue(object instance, string propertyName)
-        {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
-        }
-
         public object GetPropertyValueForColumn(object instance, string columnName)
         {
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         public bool HasDefaultIdentifierValue(object instance)
-        {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
-        }
-
-        public void SetPropertyValue(object instance, string propertyName, object value)
         {
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
         }
