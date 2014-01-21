@@ -34,12 +34,12 @@ namespace MicroLite.Core
 
             if (this.connectionScope == ConnectionScope.PerSession)
             {
-                this.Connection.Open();
-            }
+                if (Log.IsDebug)
+                {
+                    Log.Debug(Messages.OpeningConnection);
+                }
 
-            if (Log.IsDebug)
-            {
-                Log.Debug(Messages.Session_Created);
+                this.Connection.Open();
             }
         }
 
@@ -96,6 +96,11 @@ namespace MicroLite.Core
                 && this.currentTransaction == null
                 && this.Connection.State == ConnectionState.Open)
             {
+                if (Log.IsDebug)
+                {
+                    Log.Debug(Messages.ClosingConnection);
+                }
+
                 this.Connection.Close();
             }
         }
@@ -106,6 +111,11 @@ namespace MicroLite.Core
                 && this.currentTransaction == null
                 && this.Connection.State == ConnectionState.Closed)
             {
+                if (Log.IsDebug)
+                {
+                    Log.Debug(Messages.OpeningConnection);
+                }
+
                 this.Connection.Open();
             }
 
@@ -138,6 +148,11 @@ namespace MicroLite.Core
 
                 if (this.connectionScope == ConnectionScope.PerSession)
                 {
+                    if (Log.IsDebug)
+                    {
+                        Log.Debug(Messages.ClosingConnection);
+                    }
+
                     this.Connection.Close();
                 }
 
@@ -145,11 +160,6 @@ namespace MicroLite.Core
                 {
                     this.Connection.Dispose();
                     this.Connection = null;
-                }
-
-                if (Log.IsDebug)
-                {
-                    Log.Debug(Messages.Session_Disposed);
                 }
             }
         }

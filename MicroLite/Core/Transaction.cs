@@ -41,12 +41,17 @@ namespace MicroLite.Core
 
             if (this.sessionBase.ConnectionScope == ConnectionScope.PerTransaction)
             {
+                if (log.IsDebug)
+                {
+                    log.Debug(Messages.OpeningConnection);
+                }
+
                 this.sessionBase.Connection.Open();
             }
 
             if (log.IsDebug)
             {
-                log.Debug(Messages.ConnectionManager_BeginTransactionWithIsolationLevel, isolationLevel.ToString());
+                log.Debug(Messages.Transaction_BeginTransactionWithIsolationLevel, isolationLevel.ToString());
             }
 
             this.transaction = this.sessionBase.Connection.BeginTransaction(isolationLevel);
@@ -92,6 +97,11 @@ namespace MicroLite.Core
 
                 if (this.sessionBase.ConnectionScope == ConnectionScope.PerTransaction)
                 {
+                    if (log.IsDebug)
+                    {
+                        log.Debug(Messages.ClosingConnection);
+                    }
+
                     this.sessionBase.Connection.Close();
                 }
 
@@ -134,6 +144,11 @@ namespace MicroLite.Core
 
                 if (this.sessionBase.ConnectionScope == ConnectionScope.PerTransaction)
                 {
+                    if (log.IsDebug)
+                    {
+                        log.Debug(Messages.ClosingConnection);
+                    }
+
                     this.sessionBase.Connection.Close();
                 }
 
@@ -208,7 +223,7 @@ namespace MicroLite.Core
         {
             if (!this.IsActive)
             {
-                throw new InvalidOperationException(Messages.Transaction_Completed);
+                throw new InvalidOperationException(Messages.Transaction_AlreadyCompleted);
             }
         }
 
@@ -216,7 +231,7 @@ namespace MicroLite.Core
         {
             if (this.rolledBack || this.committed)
             {
-                throw new InvalidOperationException(Messages.Transaction_Completed);
+                throw new InvalidOperationException(Messages.Transaction_AlreadyCompleted);
             }
         }
     }

@@ -77,6 +77,11 @@ namespace MicroLite.Core
 
         public void ExecutePendingQueries()
         {
+            if (Log.IsDebug)
+            {
+                Log.Debug(Messages.Session_ExecutingQueries, this.queries.Count.ToString());
+            }
+
             try
             {
                 if (this.SqlDialect.SupportsBatchedQueries)

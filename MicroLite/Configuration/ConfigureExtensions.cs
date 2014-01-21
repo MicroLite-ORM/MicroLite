@@ -28,7 +28,6 @@ namespace MicroLite.Configuration
             LogManager.GetLogger = logResolver;
 
             this.log = LogManager.GetCurrentClassLog();
-            this.log.Info(Messages.ConfigureExtensions_UsingLogger, logResolver != null && logResolver.Method != null ? logResolver.Method.ToString() : string.Empty);
         }
 
         public void SetMappingConvention(IMappingConvention mappingConvention)

@@ -44,6 +44,11 @@ namespace MicroLite.Mapping
 
         public object CreateInstance()
         {
+            if (log.IsDebug)
+            {
+                log.Debug(Messages.ObjectInfo_CreatingInstance, this.ForType.FullName);
+            }
+
             return new ExpandoObject();
         }
 

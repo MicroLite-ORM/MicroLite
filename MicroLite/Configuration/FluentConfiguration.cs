@@ -87,11 +87,6 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("providerFactory");
             }
 
-            if (this.log.IsDebug)
-            {
-                this.log.Debug(Messages.FluentConfiguration_ReadingConnection, connectionName);
-            }
-
             var configSection = ConfigurationManager.ConnectionStrings[connectionName];
 
             if (configSection == null)

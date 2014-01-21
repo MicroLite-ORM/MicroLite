@@ -106,11 +106,11 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using logger &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Closing the database connection.
         /// </summary>
-        internal static string ConfigureExtensions_UsingLogger {
+        internal static string ClosingConnection {
             get {
-                return ResourceManager.GetString("ConfigureExtensions_UsingLogger", resourceCulture);
+                return ResourceManager.GetString("ClosingConnection", resourceCulture);
             }
         }
         
@@ -120,60 +120,6 @@ namespace MicroLite {
         internal static string ConfigureExtensions_UsingMappingConvention {
             get {
                 return ResourceManager.GetString("ConfigureExtensions_UsingMappingConvention", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Beginning a new Transaction with the IsolationLevel &apos;{0}&apos;..
-        /// </summary>
-        internal static string ConnectionManager_BeginTransactionWithIsolationLevel {
-            get {
-                return ResourceManager.GetString("ConnectionManager_BeginTransactionWithIsolationLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Closing the database connection.
-        /// </summary>
-        internal static string ConnectionManager_ClosingConnection {
-            get {
-                return ResourceManager.GetString("ConnectionManager_ClosingConnection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Creating a new IDbCommand for the managed connection.
-        /// </summary>
-        internal static string ConnectionManager_CreatingCommand {
-            get {
-                return ResourceManager.GetString("ConnectionManager_CreatingCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enlisting in the current transaction.
-        /// </summary>
-        internal static string ConnectionManager_EnlistingInTransaction {
-            get {
-                return ResourceManager.GetString("ConnectionManager_EnlistingInTransaction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Opening the database connection.
-        /// </summary>
-        internal static string ConnectionManager_OpeningConnection {
-            get {
-                return ResourceManager.GetString("ConnectionManager_OpeningConnection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The convention to be used is pluralize names &apos;{0}&apos;, the table schema &apos;{1}&apos; and an identifier strategy of &apos;{2}&apos;.
-        /// </summary>
-        internal static string ConventionMappingConvention_Configuration {
-            get {
-                return ResourceManager.GetString("ConventionMappingConvention_Configuration", resourceCulture);
             }
         }
         
@@ -219,33 +165,6 @@ namespace MicroLite {
         internal static string FluentConfiguration_CreatingSessionFactory {
             get {
                 return ResourceManager.GetString("FluentConfiguration_CreatingSessionFactory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The dialect type being added &apos;{0}&apos; does not implement ISqlDialect.
-        /// </summary>
-        internal static string FluentConfiguration_DialectMustImplementISqlDialect {
-            get {
-                return ResourceManager.GetString("FluentConfiguration_DialectMustImplementISqlDialect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The sql dialect &apos;{0}&apos; is currently not supported by the MicroLite ORM framework.
-        /// </summary>
-        internal static string FluentConfiguration_DialectNotSupported {
-            get {
-                return ResourceManager.GetString("FluentConfiguration_DialectNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reading connection named &apos;{0}&apos; from app.config.
-        /// </summary>
-        internal static string FluentConfiguration_ReadingConnection {
-            get {
-                return ResourceManager.GetString("FluentConfiguration_ReadingConnection", resourceCulture);
             }
         }
         
@@ -358,15 +277,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Getting the value of &apos;{0}.{1}&apos;.
-        /// </summary>
-        internal static string ObjectInfo_GettingPropertyValue {
-            get {
-                return ResourceManager.GetString("ObjectInfo_GettingPropertyValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Getting the value of &apos;{0}.{1}&apos; for the &apos;{2}&apos; column.
         /// </summary>
         internal static string ObjectInfo_GettingPropertyValueForColumn {
@@ -430,7 +340,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignoring the &apos;{1}&apos; column value as the mapped type &apos;{0}&apos; does not have a mapped property with the column name &apos;{1}&apos;.
+        ///   Looks up a localized string similar to The type &apos;{0}&apos; does not have a property mapped to the column name &apos;{1}&apos;.
         /// </summary>
         internal static string ObjectInfo_UnknownColumn {
             get {
@@ -439,11 +349,11 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type &apos;{0}&apos; does not have a property with the name &apos;{1}&apos;.
+        ///   Looks up a localized string similar to Opening the database connection.
         /// </summary>
-        internal static string ObjectInfo_UnknownProperty {
+        internal static string OpeningConnection {
             get {
-                return ResourceManager.GetString("ObjectInfo_UnknownProperty", resourceCulture);
+                return ResourceManager.GetString("OpeningConnection", resourceCulture);
             }
         }
         
@@ -484,20 +394,11 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session created.
+        ///   Looks up a localized string similar to Executing &apos;{0}&apos; queries.
         /// </summary>
-        internal static string Session_Created {
+        internal static string Session_ExecutingQueries {
             get {
-                return ResourceManager.GetString("Session_Created", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Session disposed.
-        /// </summary>
-        internal static string Session_Disposed {
-            get {
-                return ResourceManager.GetString("Session_Disposed", resourceCulture);
+                return ResourceManager.GetString("Session_ExecutingQueries", resourceCulture);
             }
         }
         
@@ -574,6 +475,24 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Transaction has been completed.
+        /// </summary>
+        internal static string Transaction_AlreadyCompleted {
+            get {
+                return ResourceManager.GetString("Transaction_AlreadyCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beginning a new Transaction with the IsolationLevel &apos;{0}&apos;..
+        /// </summary>
+        internal static string Transaction_BeginTransactionWithIsolationLevel {
+            get {
+                return ResourceManager.GetString("Transaction_BeginTransactionWithIsolationLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Transaction has successfully committed changes.
         /// </summary>
         internal static string Transaction_Committed {
@@ -592,15 +511,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Transaction has been completed.
-        /// </summary>
-        internal static string Transaction_Completed {
-            get {
-                return ResourceManager.GetString("Transaction_Completed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The Transaction has been disposed of.
         /// </summary>
         internal static string Transaction_Disposed {
@@ -615,15 +525,6 @@ namespace MicroLite {
         internal static string Transaction_DisposedUncommitted {
             get {
                 return ResourceManager.GetString("Transaction_DisposedUncommitted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The Command has been enlisted in the Transaction.
-        /// </summary>
-        internal static string Transaction_EnlistingCommand {
-            get {
-                return ResourceManager.GetString("Transaction_EnlistingCommand", resourceCulture);
             }
         }
         

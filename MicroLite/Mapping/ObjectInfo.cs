@@ -316,12 +316,9 @@ namespace MicroLite.Mapping
 
                 if (columnInfo == null)
                 {
-                    if (log.IsWarn)
-                    {
-                        log.Warn(Messages.ObjectInfo_UnknownColumn, this.ForType.Name, columnName);
-                    }
-
-                    continue;
+                    var message = Messages.ObjectInfo_UnknownColumn.FormatWith(this.ForType.Name, columnName);
+                    log.Error(message);
+                    throw new MappingException(message);
                 }
 
                 switch (columnInfo.PropertyInfo.PropertyType.ResolveActualType().FullName)
