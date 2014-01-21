@@ -121,7 +121,7 @@ namespace MicroLite
 
             if (segment.Contains(Environment.NewLine))
             {
-                segment = segment.Replace(Environment.NewLine, Strings.Space);
+                segment = segment.Replace(Environment.NewLine, " ");
             }
 
             return segment;
@@ -153,7 +153,7 @@ namespace MicroLite
 
             if (segment.Contains(Environment.NewLine))
             {
-                segment = segment.Replace(Environment.NewLine, Strings.Space);
+                segment = segment.Replace(Environment.NewLine, " ");
             }
 
             return segment;
@@ -194,7 +194,7 @@ namespace MicroLite
 
             if (segment.Contains(Environment.NewLine))
             {
-                segment = segment.Replace(Environment.NewLine, Strings.Space);
+                segment = segment.Replace(Environment.NewLine, " ");
             }
 
             return segment;
@@ -228,7 +228,7 @@ namespace MicroLite
 
             if (segment.Contains(Environment.NewLine))
             {
-                segment = segment.Replace(Environment.NewLine, Strings.Space);
+                segment = segment.Replace(Environment.NewLine, " ");
             }
 
             return segment;

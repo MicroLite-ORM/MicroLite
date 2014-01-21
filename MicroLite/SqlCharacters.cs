@@ -21,6 +21,7 @@ namespace MicroLite
     /// </summary>
     public class SqlCharacters
     {
+        private static readonly char[] period = new[] { '.' };
         private static SqlCharacters current;
         private static SqlCharacters empty;
 
@@ -146,7 +147,7 @@ namespace MicroLite
                 return this.LeftDelimiter + sql + this.RightDelimiter;
             }
 
-            var sqlPieces = sql.Split(Characters.Period);
+            var sqlPieces = sql.Split(period);
 
 #if NET_3_5
             return string.Join(".", sqlPieces.Select(s => this.LeftDelimiter + s + this.RightDelimiter).ToArray());
