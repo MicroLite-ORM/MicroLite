@@ -1,5 +1,4 @@
-Build scripts etc assume that the repository is checked out to C:\Source\GitHub\MicroLite\ if this is not the case, 
-you may not be able to run the build scripts or open the SandCastle or NDepend projects.
+Build scripts etc assume that the repository is checked out to C:\Source\GitHub\MicroLite\ if this is not the case, you may not be able to run the build scripts or open the SandCastle or NDepend projects.
 
 Requirements:
 
