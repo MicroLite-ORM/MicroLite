@@ -16,6 +16,7 @@
         public class WhenCallingCreateSessionFactory : IDisposable
         {
             private readonly ISessionFactory sessionFactory;
+            private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
             public WhenCallingCreateSessionFactory()
             {
@@ -24,7 +25,7 @@
                 var fluentConfiguration = new FluentConfiguration();
 
                 var mockSqlDialect = new Mock<ISqlDialect>();
-                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(new Mock<SqlCharacters>().Object);
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
 
                 this.sessionFactory = fluentConfiguration
                     .ForConnection("SqlConnection", mockSqlDialect.Object, new Mock<DbProviderFactory>().Object)
@@ -45,7 +46,7 @@
             [Fact]
             public void TheSqlCharactersCurrentPropertyShouldBeSetToTheSqlDialectSqlCharacters()
             {
-                Assert.Equal(this.sessionFactory.SqlDialect.SqlCharacters, SqlCharacters.Current);
+                Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
             }
 
             private void ResetExternalDependencies()

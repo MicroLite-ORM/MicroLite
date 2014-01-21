@@ -12,8 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
-    using MicroLite.Dialect;
-
     /// <summary>
     /// The interface which specifies the factory options for creating <see cref="ISession"/>s.
     /// </summary>
@@ -23,14 +21,6 @@ namespace MicroLite
         /// Gets the name of the connection used by the session factory.
         /// </summary>
         string ConnectionName
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the SQL dialect used by the session factory.
-        /// </summary>
-        ISqlDialect SqlDialect
         {
             get;
         }

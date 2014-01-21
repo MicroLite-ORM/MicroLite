@@ -15,6 +15,7 @@ namespace MicroLite.Core
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Mapping;
@@ -30,10 +31,10 @@ namespace MicroLite.Core
         internal Session(
             ConnectionScope connectionScope,
             IDbConnection connection,
-            ISessionFactory sessionFactory,
+            ISqlDialect sqlDialect,
             IObjectBuilder objectBuilder,
             IList<IListener> listeners)
-            : base(connectionScope, connection, sessionFactory, objectBuilder)
+            : base(connectionScope, connection, sqlDialect, objectBuilder)
         {
             this.listeners = listeners;
         }

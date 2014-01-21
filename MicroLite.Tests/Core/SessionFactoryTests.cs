@@ -173,12 +173,6 @@
             {
                 Assert.Equal(this.options.ConnectionName, this.sessionFactory.ConnectionName);
             }
-
-            [Fact]
-            public void SqlDialectReturnsSqlDialectFromOptions()
-            {
-                Assert.Equal(options.SqlDialect, sessionFactory.SqlDialect);
-            }
         }
     }
 }

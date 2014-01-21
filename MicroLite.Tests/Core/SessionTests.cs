@@ -25,7 +25,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -42,9 +42,6 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
-
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
@@ -66,7 +63,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new[] { mockListener1.Object, mockListener2.Object });
 
@@ -87,9 +84,6 @@
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -100,7 +94,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -123,9 +117,6 @@
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -136,7 +127,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -153,7 +144,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -171,9 +162,6 @@
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Throws<InvalidOperationException>();
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -184,7 +172,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -203,7 +191,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
 
                 new IListener[0]);
@@ -225,9 +213,6 @@
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, type, identifier)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -238,7 +223,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -259,9 +244,6 @@
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, type, identifier)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -272,7 +254,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -289,7 +271,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -304,7 +286,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -323,9 +305,6 @@
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, type, identifier)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Throws<InvalidOperationException>();
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -336,7 +315,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -355,7 +334,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -382,13 +361,10 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -414,13 +390,10 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -436,7 +409,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -451,7 +424,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -478,13 +451,10 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -500,7 +470,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -515,7 +485,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -536,9 +506,6 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Insert, customer)).Returns(sqlQuery);
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteScalar()).Returns(identifier);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -549,7 +516,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -570,9 +537,6 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Insert, customer)).Returns(sqlQuery);
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteScalar()).Returns(identifier);
 
@@ -592,7 +556,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new[] { mockListener1.Object, mockListener2.Object });
 
@@ -610,15 +574,12 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(It.IsAny<StatementType>(), It.IsAny<object>())).Returns(new SqlQuery(""));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockListener = new Mock<IListener>();
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new[] { mockListener.Object });
 
@@ -639,7 +600,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -657,15 +618,12 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(It.IsAny<StatementType>(), It.IsAny<object>())).Returns(new SqlQuery(""));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockListener = new Mock<IListener>();
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new[] { mockListener.Object });
 
@@ -686,7 +644,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -704,9 +662,6 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Insert, customer)).Returns(sqlQuery);
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteScalar()).Throws<InvalidOperationException>();
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -717,7 +672,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -736,7 +691,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
 
                 new IListener[0]);
@@ -758,9 +713,6 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Update, customer)).Returns(sqlQuery);
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(rowsAffected);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -771,7 +723,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -792,9 +744,6 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Update, customer)).Returns(sqlQuery);
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(rowsAffected);
 
@@ -814,7 +763,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new[] { mockListener1.Object, mockListener2.Object });
 
@@ -832,9 +781,6 @@
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -845,7 +791,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -865,9 +811,6 @@
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Delete, customer)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -878,7 +821,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -895,7 +838,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -913,9 +856,6 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Update, customer)).Returns(sqlQuery);
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Throws<InvalidOperationException>();
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -926,7 +866,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -945,7 +885,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
 
                 new IListener[0]);
@@ -967,9 +907,6 @@
             mockSqlDialect.Setup(x => x.CreateQuery(objectDelta)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -980,7 +917,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -1000,9 +937,6 @@
             mockSqlDialect.Setup(x => x.CreateQuery(objectDelta)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
 
-            var mockSessionFactory = new Mock<ISessionFactory>();
-            mockSessionFactory.Setup(x => x.SqlDialect).Returns(mockSqlDialect.Object);
-
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
@@ -1013,7 +947,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSessionFactory.Object,
+                mockSqlDialect.Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -1029,7 +963,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
@@ -1044,7 +978,7 @@
             var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISessionFactory>().Object,
+                new Mock<ISqlDialect>().Object,
                 new Mock<IObjectBuilder>().Object,
 
                 new IListener[0]);

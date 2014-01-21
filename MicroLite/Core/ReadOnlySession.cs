@@ -26,16 +26,16 @@ namespace MicroLite.Core
         private readonly Queue<Include> includes = new Queue<Include>();
         private readonly IObjectBuilder objectBuilder;
         private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
-        private readonly ISessionFactory sessionFactory;
+        private readonly ISqlDialect sqlDialect;
 
         internal ReadOnlySession(
             ConnectionScope connectionScope,
             IDbConnection connection,
-            ISessionFactory sessionFactory,
+            ISqlDialect sqlDialect,
             IObjectBuilder objectBuilder)
             : base(connectionScope, connection)
         {
-            this.sessionFactory = sessionFactory;
+            this.sqlDialect = sqlDialect;
             this.objectBuilder = objectBuilder;
         }
 
@@ -59,7 +59,7 @@ namespace MicroLite.Core
         {
             get
             {
-                return this.sessionFactory.SqlDialect;
+                return this.sqlDialect;
             }
         }
 
