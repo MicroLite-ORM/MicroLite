@@ -15,6 +15,7 @@ namespace MicroLite.Core
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Globalization;
     using MicroLite.Builder;
     using MicroLite.Dialect;
 
@@ -79,7 +80,7 @@ namespace MicroLite.Core
         {
             if (Log.IsDebug)
             {
-                Log.Debug(Messages.Session_ExecutingQueries, this.queries.Count.ToString());
+                Log.Debug(Messages.Session_ExecutingQueries, this.queries.Count.ToString(CultureInfo.InvariantCulture));
             }
 
             try
