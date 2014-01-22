@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests.TypeConverters
 {
-    using System.Linq;
     using MicroLite.TypeConverters;
     using Xunit;
 
@@ -52,29 +51,6 @@
             public void TheXDocumentTypeConverterShouldBePositionZero()
             {
                 Assert.IsType<XDocumentTypeConverter>(this.collection[0]);
-            }
-        }
-
-        public class WhenEnumerating
-        {
-            private readonly TypeConverterCollection collection = new TypeConverterCollection();
-            private readonly ITypeConverter typeConverter1;
-            private readonly ITypeConverter typeConverter2;
-
-            public WhenEnumerating()
-            {
-                collection.Clear();
-
-                collection.Add(new TestTypeConverter());
-
-                typeConverter1 = collection.Single();
-                typeConverter2 = collection.Single();
-            }
-
-            [Fact]
-            public void TheSameInstanceShouldBeReturned()
-            {
-                Assert.Same(typeConverter1, typeConverter2);
             }
         }
 
