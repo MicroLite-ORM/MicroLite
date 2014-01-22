@@ -9,6 +9,23 @@
     /// </summary>
     public class ListenerCollectionTests
     {
+        public class WhenCallingAdd
+        {
+            private readonly ListenerCollection collection = new ListenerCollection();
+            private readonly TestListener listener = new TestListener();
+
+            public WhenCallingAdd()
+            {
+                this.collection.Add(this.listener);
+            }
+
+            [Fact]
+            public void TheListenerShouldBeAddedAtTheTopOfTheList()
+            {
+                Assert.IsType<TestListener>(this.collection[0]);
+            }
+        }
+
         public class WhenCallingTheConstructor
         {
             private readonly ListenerCollection collection = new ListenerCollection();
@@ -34,6 +51,10 @@
             {
                 Assert.Equal(2, this.collection.Count);
             }
+        }
+
+        private class TestListener : Listener
+        {
         }
     }
 }
