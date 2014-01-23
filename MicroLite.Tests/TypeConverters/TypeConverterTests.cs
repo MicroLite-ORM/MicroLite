@@ -1,10 +1,10 @@
-﻿using System;
-using System.Xml.Linq;
-using MicroLite.TypeConverters;
-using Xunit;
-
-namespace MicroLite.Tests.TypeConverters
+﻿namespace MicroLite.Tests.TypeConverters
 {
+    using System;
+    using System.Xml.Linq;
+    using MicroLite.TypeConverters;
+    using Xunit;
+
     public class TypeConverterTests
     {
         private enum Status
@@ -13,7 +13,7 @@ namespace MicroLite.Tests.TypeConverters
             New = 1
         }
 
-        public class WhenCallingForWithATypeOfEnum
+        public class WhenCallingFor_WithATypeOfEnum
         {
             [Fact]
             public void TheEnumTypeConverterIsReturned()
@@ -23,7 +23,7 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingForWithATypeOfInt
+        public class WhenCallingFor_WithATypeOfInt
         {
             [Fact]
             public void TheObjectTypeConverterIsReturned()
@@ -33,7 +33,17 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingForWithATypeOfXDocument
+        public class WhenCallingForWith_ATypeOfUri
+        {
+            [Fact]
+            public void TheUriTypeConverterConverterIsReturned()
+            {
+                var typeConverter = TypeConverter.For(typeof(Uri));
+                Assert.IsType<MicroLite.TypeConverters.UriTypeConverter>(typeConverter);
+            }
+        }
+
+        public class WhenCallingForWith_ATypeOfXDocument
         {
             [Fact]
             public void TheXDocumentTypeConverterIsReturned()
@@ -43,7 +53,7 @@ namespace MicroLite.Tests.TypeConverters
             }
         }
 
-        public class WhenCallingResolveActualTypeWithNullType
+        public class WhenCallingResolveActualType_WithNullType
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()

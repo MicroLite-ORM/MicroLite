@@ -10,7 +10,7 @@
 
     public class DbEncryptedStringTypeConverterTests
     {
-        public class WhenCallingCanConvertWithDbEncryptedString
+        public class WhenCallingCanConvert_WithDbEncryptedString
         {
             [Fact]
             public void TrueShouldBeReturned()
@@ -20,7 +20,7 @@
             }
         }
 
-        public class WhenCallingConvertFromDbValueAndTheValueDoesntHaveAnAtSign
+        public class WhenCallingConvertFromDbValue_AndTheValueDoesntHaveAnAtSign
         {
             [Fact]
             public void AMicroLiteExceptionShouldBeThrown()
@@ -31,11 +31,11 @@
             }
         }
 
-        public class WhenCallingConvertFromDbValueWithAnEmptyValue
+        public class WhenCallingConvertFromDbValue_WithAnEmptyValue
         {
             private DbEncryptedString result;
 
-            public WhenCallingConvertFromDbValueWithAnEmptyValue()
+            public WhenCallingConvertFromDbValue_WithAnEmptyValue()
             {
                 var typeConverter = new DbEncryptedStringTypeConverter(new Mock<ISymmetricAlgorithmProvider>().Object);
                 this.result = (DbEncryptedString)typeConverter.ConvertFromDbValue(string.Empty, typeof(DbEncryptedString));
@@ -48,11 +48,11 @@
             }
         }
 
-        public class WhenCallingConvertFromDbValueWithDbNull
+        public class WhenCallingConvertFromDbValue_WithDbNull
         {
             private DbEncryptedString result;
 
-            public WhenCallingConvertFromDbValueWithDbNull()
+            public WhenCallingConvertFromDbValue_WithDbNull()
             {
                 var typeConverter = new DbEncryptedStringTypeConverter(new Mock<ISymmetricAlgorithmProvider>().Object);
                 this.result = (DbEncryptedString)typeConverter.ConvertFromDbValue(DBNull.Value, typeof(DbEncryptedString));
@@ -107,11 +107,11 @@
             }
         }
 
-        public class WhenCallingConvertToDbValueWithAnEmptyValue
+        public class WhenCallingConvertToDbValue_WithAnEmptyValue
         {
             private string result;
 
-            public WhenCallingConvertToDbValueWithAnEmptyValue()
+            public WhenCallingConvertToDbValue_WithAnEmptyValue()
             {
                 var typeConverter = new DbEncryptedStringTypeConverter(new Mock<ISymmetricAlgorithmProvider>().Object);
                 this.result = (string)typeConverter.ConvertToDbValue(string.Empty, typeof(DbEncryptedString));
@@ -124,11 +124,11 @@
             }
         }
 
-        public class WhenCallingConvertToDbValueWithNull
+        public class WhenCallingConvertToDbValue_WithNull
         {
             private string result;
 
-            public WhenCallingConvertToDbValueWithNull()
+            public WhenCallingConvertToDbValue_WithNull()
             {
                 var typeConverter = new DbEncryptedStringTypeConverter(new Mock<ISymmetricAlgorithmProvider>().Object);
                 this.result = (string)typeConverter.ConvertToDbValue(null, typeof(DbEncryptedString));
@@ -141,7 +141,7 @@
             }
         }
 
-        public class WhenConstructedWithANullISymmetricAlgorithmProvider
+        public class WhenConstructed_WithANullISymmetricAlgorithmProvider
         {
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()

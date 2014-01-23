@@ -112,6 +112,7 @@
     <Compile Include="SqlQueryTests.cs" />
     <Compile Include="Mapping\TableAttributeTests.cs" />
     <Compile Include="SqlUtilityTests.cs" />
+    <Compile Include="TypeConverters\UriTypeConverterTests.cs" />
     <Compile Include="TypeConverters\XDocumentTypeConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>

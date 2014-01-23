@@ -1,56 +1,52 @@
 ﻿namespace MicroLite.Tests.TypeConverters
 {
-    using System;
-    using System.Xml.Linq;
     using MicroLite.TypeConverters;
     using Xunit;
 
-    public class XDocumentTypeConverterTests
+    public class UriTypeConverterTests
     {
-        public class WhenCallingCanConvert_WithTypeOfXDocument
+        public class WhenCallingCanConvert_WithTypeOfUri
         {
             [Fact]
             public void TrueShouldBeReturned()
             {
-                var typeConverter = new XDocumentTypeConverter();
-                Assert.True(typeConverter.CanConvert(typeof(XDocument)));
+                var typeConverter = new UriTypeConverter();
+                Assert.True(typeConverter.CanConvert(typeof(System.Uri)));
             }
         }
 
         public class WhenCallingConvertFromDbValue_AndTheValueIsNotNull
         {
             private object result;
-            private ITypeConverter typeConverter = new XDocumentTypeConverter();
-            private string value = "<customer><name>fred</name></customer>";
+            private ITypeConverter typeConverter = new UriTypeConverter();
+            private string value = "http://microliteorm.wordpress.com";
 
             public WhenCallingConvertFromDbValue_AndTheValueIsNotNull()
             {
-                this.result = typeConverter.ConvertFromDbValue(value, typeof(XDocument));
+                this.result = typeConverter.ConvertFromDbValue(value, typeof(System.Uri));
             }
 
             [Fact]
-            public void TheResultShouldBeAnXDocument()
+            public void TheResultShouldBeAUri()
             {
-                Assert.IsType<XDocument>(this.result);
+                Assert.IsType<System.Uri>(this.result);
             }
 
             [Fact]
             public void TheResultShouldContainTheSpecifiedValue()
             {
-                Assert.Equal(
-                    XDocument.Parse(this.value).ToString(SaveOptions.DisableFormatting),
-                    ((XDocument)this.result).ToString(SaveOptions.DisableFormatting));
+                Assert.Equal(new System.Uri(this.value), this.result);
             }
         }
 
         public class WhenCallingConvertFromDbValue_AndTheValueIsNull
         {
             private object result;
-            private ITypeConverter typeConverter = new XDocumentTypeConverter();
+            private ITypeConverter typeConverter = new UriTypeConverter();
 
             public WhenCallingConvertFromDbValue_AndTheValueIsNull()
             {
-                this.result = typeConverter.ConvertFromDbValue(DBNull.Value, typeof(XDocument));
+                this.result = typeConverter.ConvertFromDbValue(System.DBNull.Value, typeof(System.Uri));
             }
 
             [Fact]
@@ -63,12 +59,12 @@
         public class WhenCallingConvertToDbValue_AndTheValueIsNotNull
         {
             private object result;
-            private ITypeConverter typeConverter = new XDocumentTypeConverter();
-            private XDocument value = XDocument.Parse("<customer><name>fred</name></customer>");
+            private ITypeConverter typeConverter = new UriTypeConverter();
+            private System.Uri value = new System.Uri("http://microliteorm.wordpress.com");
 
             public WhenCallingConvertToDbValue_AndTheValueIsNotNull()
             {
-                this.result = typeConverter.ConvertToDbValue(value, typeof(XDocument));
+                this.result = typeConverter.ConvertToDbValue(value, typeof(System.Uri));
             }
 
             [Fact]
@@ -80,18 +76,18 @@
             [Fact]
             public void TheResultShouldContainTheSpecifiedValue()
             {
-                Assert.Equal(this.value.ToString(SaveOptions.DisableFormatting), this.result);
+                Assert.Equal(this.value.ToString(), this.result);
             }
         }
 
         public class WhenCallingConvertToDbValue_AndTheValueIsNull
         {
             private object result;
-            private ITypeConverter typeConverter = new XDocumentTypeConverter();
+            private ITypeConverter typeConverter = new UriTypeConverter();
 
             public WhenCallingConvertToDbValue_AndTheValueIsNull()
             {
-                this.result = typeConverter.ConvertToDbValue(null, typeof(XDocument));
+                this.result = typeConverter.ConvertToDbValue(null, typeof(System.Uri));
             }
 
             [Fact]

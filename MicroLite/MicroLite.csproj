@@ -184,6 +184,7 @@
     <Compile Include="TypeConverters\ITypeConverter.cs" />
     <Compile Include="TypeConverters\ObjectTypeConverter.cs" />
     <Compile Include="TypeConverters\TypeConverterCollection.cs" />
+    <Compile Include="TypeConverters\UriTypeConverter.cs" />
     <Compile Include="TypeConverters\XDocumentTypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -30,21 +30,27 @@
             private readonly TypeConverterCollection collection = new TypeConverterCollection();
 
             [Fact]
-            public void TheEnumTypeConverterShouldBePositionOne()
+            public void TheEnumTypeConverterShouldBePositionTwo()
             {
-                Assert.IsType<EnumTypeConverter>(this.collection[1]);
+                Assert.IsType<EnumTypeConverter>(this.collection[2]);
             }
 
             [Fact]
-            public void TheObjectTypeConverterShouldBePositionTwo()
+            public void TheObjectTypeConverterShouldBePositionThree()
             {
-                Assert.IsType<ObjectTypeConverter>(this.collection[2]);
+                Assert.IsType<ObjectTypeConverter>(this.collection[3]);
             }
 
             [Fact]
-            public void ThereShouldBe3RegisteredTypeConverters()
+            public void ThereShouldBe4RegisteredTypeConverters()
             {
-                Assert.Equal(3, this.collection.Count);
+                Assert.Equal(4, this.collection.Count);
+            }
+
+            [Fact]
+            public void TheUriTypeConverterShouldBePositionOne()
+            {
+                Assert.IsType<UriTypeConverter>(this.collection[1]);
             }
 
             [Fact]
