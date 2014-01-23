@@ -16,7 +16,7 @@ namespace MicroLite.Configuration
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A more specific MicroLiteException which is only thrown for configuration exceptions.
+    /// A <see cref="MicroLiteException"/> which is thrown for configuration exceptions.
     /// </summary>
     [Serializable]
     public class ConfigurationException : MicroLiteException

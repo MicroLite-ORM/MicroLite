@@ -43,7 +43,7 @@ namespace MicroLite.Configuration
         /// <code>
         /// Configure
         ///     .Extensions()
-        ///     .WithLog4Net() // To use log4net, install the MicroLite.Extensions.Log4Net package (there is also an NLog package).
+        ///     .WithLog4Net() // To use log4net, install the MicroLite.Logging.Log4Net package (there is also an NLog package).
         ///     .WithMvc(); // To use the MVC extensions, install the MicroLite.Extensions.Mvc package.
         /// </code>
         /// </example>
@@ -57,11 +57,11 @@ namespace MicroLite.Configuration
         /// </summary>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <example>
-        /// Option 1: Use the default SqlDialect which is MicroLite.Dialect.MsSqlDialect.
+        /// Option 1: If your database is MsSql, specify ForMsSqlConnection which is included in the core package.
         /// <code>
         /// var sessionFactory = Configure
         ///     .Fluently()
-        ///     .ForConnection("TestDB")
+        ///     .ForMsConnection("TestDB")
         ///     .CreateSessionFactory();
         /// </code>
         /// </example>
@@ -70,7 +70,7 @@ namespace MicroLite.Configuration
         /// <code>
         /// var sessionFactory = Configure
         ///     .Fluently()
-        ///     .ForConnection("TestDB", "MicroLite.Dialect.SQLiteDialect")
+        ///     .ForSQLiteConnection("TestDB") // To use an alternative database, install the MicroLite.Dialect package for the database.
         ///     .CreateSessionFactory();
         /// </code>
         /// </example>

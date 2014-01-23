@@ -31,12 +31,6 @@ namespace MicroLite.Configuration
         private readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly SessionFactoryOptions options = new SessionFactoryOptions();
 
-        /// <summary>
-        /// Creates the session factory for the configured connection.
-        /// </summary>
-        /// <returns>
-        /// The session factory for the specified connection.
-        /// </returns>
         public ISessionFactory CreateSessionFactory()
         {
             lock (locker)
@@ -61,15 +55,6 @@ namespace MicroLite.Configuration
             }
         }
 
-        /// <summary>
-        /// Specifies the name of the connection string in the app config and the sql dialect to be used.
-        /// </summary>
-        /// <param name="connectionName">The name of the connection string in the app config.</param>
-        /// <param name="sqlDialect">The sql dialect to use for the connection.</param>
-        /// <param name="providerFactory">The provider factory to use for the connection.</param>
-        /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
         public ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, DbProviderFactory providerFactory)
         {
             if (connectionName == null)

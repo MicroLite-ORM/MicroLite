@@ -28,7 +28,7 @@ namespace MicroLite.Configuration
         void SetLogResolver(Func<string, ILog> logResolver);
 
         /// <summary>
-        /// Sets the mapping convention.
+        /// Specifies the mapping convention which should be used by MicroLite ORM to map classes to tables.
         /// </summary>
         /// <param name="mappingConvention">The mapping convention to use.</param>
         /// <exception cref="ArgumentNullException">Thrown if mappingConvention is null.</exception>

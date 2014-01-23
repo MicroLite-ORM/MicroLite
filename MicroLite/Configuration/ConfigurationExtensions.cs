@@ -18,18 +18,19 @@ namespace MicroLite.Configuration
     using MicroLite.Mapping;
 
     /// <summary>
-    /// Extensions for the MicroLite configuration.
+    /// Extension methods for the MicroLite configuration API.
     /// </summary>
     public static class ConfigurationExtensions
     {
         /// <summary>
-        /// Specifies the name of the connection string in the app config and that the MsSqlDialect should be used.
+        /// Configures a MsSql connection using the connection string with the specified name
+        /// in the connection strings section of the app/web config.
         /// </summary>
-        /// <param name="configureConnection">The interface to configure connections.</param>
-        /// <param name="connectionName">The name of the connection string in the app config.</param>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name of the connection string in the app/web config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
         public static ICreateSessionFactory ForMsSqlConnection(this IConfigureConnection configureConnection, string connectionName)
         {
@@ -42,10 +43,11 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// Configures the MicroLite ORM Framework to use the default attribute based mapping.
+        /// Configures the MicroLite ORM Framework to use attribute based mapping instead of the default convention based mapping.
         /// </summary>
         /// <param name="configureExtensions">The interface to configure extensions.</param>
         /// <returns>The configure extensions.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if configureExtensions is null.</exception>
         public static IConfigureExtensions WithAttributeBasedMapping(
             this IConfigureExtensions configureExtensions)
         {
@@ -60,12 +62,12 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// Configures the MicroLite ORM Framework to use convention based mapping instead of the default
-        /// attribute based mapping.
+        /// Configures the MicroLite ORM Framework to use the default convention based mapping.
         /// </summary>
         /// <param name="configureExtensions">The interface to configure extensions.</param>
         /// <param name="settings">The settings for the convention mapping.</param>
         /// <returns>The configure extensions.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if configureExtensions or settings is null.</exception>
         public static IConfigureExtensions WithConventionBasedMapping(
             this IConfigureExtensions configureExtensions,
             ConventionMappingSettings settings)

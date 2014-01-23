@@ -22,7 +22,8 @@ namespace MicroLite.Configuration
     public interface IConfigureConnection : IHideObjectMethods
     {
         /// <summary>
-        /// Specifies the name of the connection string in the app config and the sql dialect to be used.
+        /// Specifies the name of the connection string and the implementations of ISqlDialect and DbProviderFactory to use
+        /// for the connection.
         /// </summary>
         /// <param name="connectionName">The name of the connection string in the app config.</param>
         /// <param name="sqlDialect">The sql dialect to use for the connection.</param>
@@ -30,6 +31,7 @@ namespace MicroLite.Configuration
         /// <returns>The next step in the fluent configuration.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
+        /// <remarks>This method should not be called by user code, rather it is the extension point for implementations of ISqlDialect.</remarks>
         ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, DbProviderFactory providerFactory);
     }
 }
