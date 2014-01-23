@@ -25,7 +25,7 @@ namespace MicroLite.Dialect.MsSql
     internal sealed class MsSqlDialect : SqlDialect
     {
         /// <summary>
-        /// The single instance of SqlDialect for MsSql.
+        /// The single instance of SqlDialect for MsSql server.
         /// </summary>
         internal static readonly SqlDialect Instance = new MsSqlDialect();
 
@@ -37,9 +37,6 @@ namespace MicroLite.Dialect.MsSql
         {
         }
 
-        /// <summary>
-        /// Gets the select identity string.
-        /// </summary>
         protected override string SelectIdentityString
         {
             get

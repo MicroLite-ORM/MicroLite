@@ -453,23 +453,6 @@
             }
         }
 
-        public class WhenCallingCombineAndTheSourceQueriesIsNull
-        {
-            [Fact]
-            public void AnArgumentNullExceptionShouldBeThrown()
-            {
-                var mockSqlCharacters = new Mock<SqlCharacters>();
-                mockSqlCharacters.CallBase = true;
-
-                var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
-                mockSqlDialect.CallBase = true;
-
-                var exception = Assert.Throws<ArgumentNullException>(() => mockSqlDialect.Object.Combine(null));
-
-                Assert.Equal("sqlQueries", exception.ParamName);
-            }
-        }
-
         [MicroLite.Mapping.Table("Customers")]
         private class Customer
         {

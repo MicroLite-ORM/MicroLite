@@ -17,7 +17,7 @@ namespace MicroLite.Dialect
     using System.Data;
 
     /// <summary>
-    /// The interface for a class which builds an <see cref="SqlQuery"/> for a object instance.
+    /// The interface for a class which builds an <see cref="SqlQuery"/> for a specific database.
     /// </summary>
     public interface ISqlDialect
     {
@@ -42,13 +42,14 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <param name="command">The command to build.</param>
         /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
+        /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
         void BuildCommand(IDbCommand command, SqlQuery sqlQuery);
 
         /// <summary>
         /// Combines the specified SQL queries into a single SqlQuery.
         /// </summary>
         /// <param name="sqlQueries">The SQL queries to be combined.</param>
-        /// <returns>The combined <see cref="SqlQuery" />.</returns>
+        /// <returns>An <see cref="SqlQuery" /> containing the combined command text and arguments.</returns>
         SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries);
 
         /// <summary>

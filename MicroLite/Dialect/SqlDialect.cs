@@ -112,16 +112,10 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <param name="sqlQueries">The SQL queries to be combined.</param>
         /// <returns>
-        /// The combined <see cref="SqlQuery" />.
+        /// An <see cref="SqlQuery" /> containing the combined command text and arguments.
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if sqlQueries is null.</exception>
         public virtual SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
         {
-            if (sqlQueries == null)
-            {
-                throw new ArgumentNullException("sqlQueries");
-            }
-
             int argumentsCount = 0;
             var sqlBuilder = new StringBuilder(sqlQueries.Sum(s => s.CommandText.Length));
 
