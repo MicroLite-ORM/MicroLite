@@ -30,9 +30,9 @@
             private readonly TypeConverterCollection collection = new TypeConverterCollection();
 
             [Fact]
-            public void TheEnumTypeConverterShouldBePositionTwo()
+            public void TheEnumTypeConverterShouldBePositionZero()
             {
-                Assert.IsType<EnumTypeConverter>(this.collection[2]);
+                Assert.IsType<EnumTypeConverter>(this.collection[0]);
             }
 
             [Fact]
@@ -54,9 +54,9 @@
             }
 
             [Fact]
-            public void TheXDocumentTypeConverterShouldBePositionZero()
+            public void TheXDocumentTypeConverterShouldBePositionTwo()
             {
-                Assert.IsType<XDocumentTypeConverter>(this.collection[0]);
+                Assert.IsType<XDocumentTypeConverter>(this.collection[2]);
             }
         }
 
