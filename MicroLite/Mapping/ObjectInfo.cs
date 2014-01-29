@@ -203,7 +203,7 @@ namespace MicroLite.Mapping
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var value = this.propertyAccessors[this.tableInfo.IdentifierProperty].GetValue(instance);
+            var value = this.propertyAccessors[this.tableInfo.IdentifierColumn.PropertyInfo.Name].GetValue(instance);
 
             return value;
         }
@@ -254,7 +254,7 @@ namespace MicroLite.Mapping
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var identifierValue = this.propertyAccessors[this.tableInfo.IdentifierProperty].GetValue(instance);
+            var identifierValue = this.propertyAccessors[this.tableInfo.IdentifierColumn.PropertyInfo.Name].GetValue(instance);
 
             bool hasDefaultIdentifier = object.Equals(identifierValue, this.defaultIdentifierValue);
 

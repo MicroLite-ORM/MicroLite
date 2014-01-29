@@ -137,13 +137,7 @@
             [Fact]
             public void TheIdentifierColumnShouldBeSet()
             {
-                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn);
-            }
-
-            [Fact]
-            public void TheIdentifierPropertyShouldBeSet()
-            {
-                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
+                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn.ColumnName);
             }
 
             [Fact]
@@ -288,13 +282,7 @@
             [Fact]
             public void TheIdentifierColumnShouldBeSet()
             {
-                Assert.Equal("InvoiceId", this.objectInfo.TableInfo.IdentifierColumn);
-            }
-
-            [Fact]
-            public void TheIdentifierPropertyShouldBeSet()
-            {
-                Assert.Equal("InvoiceId", this.objectInfo.TableInfo.IdentifierProperty);
+                Assert.Equal("InvoiceId", this.objectInfo.TableInfo.IdentifierColumn.ColumnName);
             }
 
             [Fact]
@@ -335,13 +323,7 @@
             [Fact]
             public void TheIdentifierColumnShouldBeSet()
             {
-                Assert.Equal("CustomerId", this.objectInfo.TableInfo.IdentifierColumn);
-            }
-
-            [Fact]
-            public void TheIdentifierPropertyShouldBeSet()
-            {
-                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
+                Assert.Equal("CustomerId", this.objectInfo.TableInfo.IdentifierColumn.ColumnName);
             }
 
             [Fact]
@@ -443,13 +425,7 @@
             [Fact]
             public void TheIdentifierColumnShouldBeSet()
             {
-                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn);
-            }
-
-            [Fact]
-            public void TheIdentifierPropertyShouldBeSet()
-            {
-                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
+                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn.ColumnName);
             }
 
             [Fact]

@@ -28,8 +28,7 @@
             var tableInfo = new TableInfo(columns, identifierStrategy, name, schema);
 
             Assert.Equal(columns, tableInfo.Columns);
-            Assert.Equal(columns[1].ColumnName, tableInfo.IdentifierColumn);
-            Assert.Equal(columns[1].PropertyInfo.Name, tableInfo.IdentifierProperty);
+            Assert.Equal(columns[1].ColumnName, tableInfo.IdentifierColumn.ColumnName);
             Assert.Equal(identifierStrategy, tableInfo.IdentifierStrategy);
             Assert.Equal(name, tableInfo.Name);
             Assert.Equal(schema, tableInfo.Schema);

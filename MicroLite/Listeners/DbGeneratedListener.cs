@@ -50,7 +50,7 @@ namespace MicroLite.Listeners
                     log.Debug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
                 }
 
-                objectInfo.SetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn, executeScalarResult);
+                objectInfo.SetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn.ColumnName, executeScalarResult);
             }
         }
 

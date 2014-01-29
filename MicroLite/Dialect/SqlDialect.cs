@@ -170,7 +170,7 @@ namespace MicroLite.Dialect
             }
 
             var sqlQuery = builder
-                .Where(objectInfo.TableInfo.IdentifierColumn, objectDelta.Identifier)
+                .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectDelta.Identifier)
                 .ToSqlQuery();
 
             return sqlQuery;
@@ -279,7 +279,7 @@ namespace MicroLite.Dialect
             {
                 var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
                     .From(objectInfo)
-                    .WhereEquals(objectInfo.TableInfo.IdentifierColumn, identifier)
+                    .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, identifier)
                     .ToSqlQuery();
 
                 var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
@@ -309,7 +309,7 @@ namespace MicroLite.Dialect
             {
                 var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
                     .From(objectInfo)
-                    .WhereEquals(objectInfo.TableInfo.IdentifierColumn, objectInfo.GetIdentifierValue(instance))
+                    .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectInfo.GetIdentifierValue(instance))
                     .ToSqlQuery();
 
                 var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
@@ -397,7 +397,7 @@ namespace MicroLite.Dialect
             {
                 var selectSqlQuery = new SelectSqlBuilder(this.SqlCharacters)
                     .From(objectInfo)
-                    .Where(objectInfo.TableInfo.IdentifierColumn).IsEqualTo(identifier)
+                    .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(identifier)
                     .ToSqlQuery();
 
                 var newSelectCommandCache = new Dictionary<Type, string>(this.selectCommandCache);
@@ -440,7 +440,7 @@ namespace MicroLite.Dialect
                     }
                 }
 
-                updateSqlBuilder.Where(objectInfo.TableInfo.IdentifierColumn, objectInfo.GetIdentifierValue(instance));
+                updateSqlBuilder.Where(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectInfo.GetIdentifierValue(instance));
 
                 var updateSqlQuery = updateSqlBuilder.ToSqlQuery();
 

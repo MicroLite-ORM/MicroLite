@@ -28,8 +28,7 @@ namespace MicroLite.Mapping
         private static readonly ILog log = LogManager.GetCurrentClassLog();
 
         private readonly IList<ColumnInfo> columns;
-        private readonly string identifierColumn;
-        private readonly string identifierProperty;
+        private readonly ColumnInfo identifierColumn;
         private readonly IdentifierStrategy identifierStrategy;
         private readonly int insertColumnCount;
         private readonly string name;
@@ -68,10 +67,7 @@ namespace MicroLite.Mapping
 
             this.ValidateColumns();
 
-            var identifierColumnInfo = columns.Single(c => c.IsIdentifier);
-
-            this.identifierColumn = identifierColumnInfo.ColumnName;
-            this.identifierProperty = identifierColumnInfo.PropertyInfo.Name;
+            this.identifierColumn = columns.Single(c => c.IsIdentifier);
 
             this.insertColumnCount = columns.Count(c => c.AllowInsert);
             this.updateColumnCount = columns.Count(c => c.AllowUpdate);
@@ -89,24 +85,13 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the name of the column that is the table identifier column (primary key).
+        /// Gets the ColumnInfo of the column that is the table identifier column (primary key).
         /// </summary>
-        public string IdentifierColumn
+        public ColumnInfo IdentifierColumn
         {
             get
             {
                 return this.identifierColumn;
-            }
-        }
-
-        /// <summary>
-        /// Gets the name of the property that is the object identifier property mapped to the table identifier column.
-        /// </summary>
-        public string IdentifierProperty
-        {
-            get
-            {
-                return this.identifierProperty;
             }
         }
 
