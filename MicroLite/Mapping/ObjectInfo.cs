@@ -15,6 +15,7 @@ namespace MicroLite.Mapping
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Reflection.Emit;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
     using MicroLite.TypeConverters;
@@ -38,6 +39,7 @@ namespace MicroLite.Mapping
 
         private readonly object defaultIdentifierValue;
         private readonly Type forType;
+        private readonly Delegate instanceFactory;
         private readonly Dictionary<string, IPropertyAccessor> propertyAccessors; // key is property name.
         private readonly TableInfo tableInfo;
 
@@ -74,6 +76,8 @@ namespace MicroLite.Mapping
                     this.defaultIdentifierValue = (ValueType)Activator.CreateInstance(columnInfo.PropertyInfo.PropertyType);
                 }
             }
+
+            this.instanceFactory = this.CreateInstanceFactory();
         }
 
         /// <summary>
@@ -160,15 +164,24 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Creates a new instance of the type.
         /// </summary>
+        /// <typeparam name="T">The type of object to create</typeparam>
         /// <returns>A new instance of the type.</returns>
-        public object CreateInstance()
+        /// <exception cref="InvalidOperationException">Thrown if the type is not correct for the object info.</exception>
+        public T CreateInstance<T>()
         {
+            if (typeof(T) != this.forType)
+            {
+                throw new InvalidOperationException();
+            }
+
             if (log.IsDebug)
             {
                 log.Debug(Messages.ObjectInfo_CreatingInstance, this.forType.FullName);
             }
 
-            return Activator.CreateInstance(this.forType);
+            var instance = ((Func<T>)this.instanceFactory).Invoke();
+
+            return instance;
         }
 
         /// <summary>
@@ -400,6 +413,23 @@ namespace MicroLite.Mapping
                 log.Fatal(message);
                 throw new MappingException(message);
             }
+        }
+
+        private Delegate CreateInstanceFactory()
+        {
+            var dynamicMethod = new DynamicMethod("MicroLite" + this.forType.Name + "Factory", this.forType, null, this.forType);
+
+            var ilGenerator = dynamicMethod.GetILGenerator();
+
+            // var entity = new T();
+            ilGenerator.Emit(OpCodes.Newobj, this.forType.GetConstructor(Type.EmptyTypes));
+
+            // return entity;
+            ilGenerator.Emit(OpCodes.Ret);
+
+            var factoryType = typeof(Func<>).MakeGenericType(this.forType);
+
+            return dynamicMethod.CreateDelegate(factoryType);
         }
 
         private void SetBoolean<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)

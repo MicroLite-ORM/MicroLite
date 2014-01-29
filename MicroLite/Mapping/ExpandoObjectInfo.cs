@@ -42,14 +42,16 @@ namespace MicroLite.Mapping
             }
         }
 
-        public object CreateInstance()
+        public T CreateInstance<T>()
         {
             if (log.IsDebug)
             {
                 log.Debug(Messages.ObjectInfo_CreatingInstance, this.ForType.FullName);
             }
 
-            return new ExpandoObject();
+            var instance = new ExpandoObject();
+
+            return (dynamic)instance;
         }
 
         public ColumnInfo GetColumnInfo(string columnName)

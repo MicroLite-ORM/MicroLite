@@ -40,8 +40,10 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Creates a new instance of the type.
         /// </summary>
+        /// <typeparam name="T">The type of object to create</typeparam>
         /// <returns>A new instance of the type.</returns>
-        object CreateInstance();
+        /// <exception cref="InvalidOperationException">Thrown if the type is not correct for the object info.</exception>
+        T CreateInstance<T>();
 
         /// <summary>
         /// Gets the column information for the column with the specified name.

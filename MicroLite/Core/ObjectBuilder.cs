@@ -22,7 +22,7 @@ namespace MicroLite.Core
     {
         public T BuildInstance<T>(IObjectInfo objectInfo, IDataReader reader)
         {
-            var instance = (T)objectInfo.CreateInstance();
+            var instance = objectInfo.CreateInstance<T>();
 
             objectInfo.SetPropertyValues(instance, reader);
 

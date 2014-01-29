@@ -12,7 +12,7 @@
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var instance = objectInfo.CreateInstance();
+            var instance = objectInfo.CreateInstance<ExpandoObject>();
 
             Assert.IsType<ExpandoObject>(instance);
         }
@@ -74,7 +74,7 @@
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var instance = (dynamic)objectInfo.CreateInstance();
+            var instance = (dynamic)objectInfo.CreateInstance<ExpandoObject>();
 
             objectInfo.SetPropertyValueForColumn(instance, "Id", 12345);
             objectInfo.SetPropertyValueForColumn(instance, "Name", "Fred Flintstone");
@@ -88,7 +88,7 @@
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var instance = (dynamic)objectInfo.CreateInstance();
+            var instance = (dynamic)objectInfo.CreateInstance<ExpandoObject>();
 
             objectInfo.SetPropertyValueForColumn(instance, "Name", DBNull.Value);
 

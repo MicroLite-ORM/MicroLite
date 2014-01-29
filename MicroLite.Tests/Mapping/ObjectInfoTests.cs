@@ -44,7 +44,7 @@
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var instance = objectInfo.CreateInstance();
+            var instance = objectInfo.CreateInstance<CustomerWithIntegerIdentifier>();
 
             Assert.IsType<CustomerWithIntegerIdentifier>(instance);
         }
