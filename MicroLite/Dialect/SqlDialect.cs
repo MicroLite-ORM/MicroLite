@@ -65,14 +65,6 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the select identity string.
-        /// </summary>
-        protected abstract string SelectIdentityString
-        {
-            get;
-        }
-
-        /// <summary>
         /// Gets the character used to separate SQL statements.
         /// </summary>
         protected virtual string StatementSeparator
@@ -353,7 +345,7 @@ namespace MicroLite.Dialect
                 }
 
                 var insertSqlQuery = objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
-                    ? insertSqlBuilder.ToSqlQuery(this.StatementSeparator + this.SelectIdentityString)
+                    ? insertSqlBuilder.ToSqlQuery(this.StatementSeparator + this.GetSelectIdentityString(objectInfo))
                     : insertSqlBuilder.ToSqlQuery();
 
                 var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
@@ -490,5 +482,12 @@ namespace MicroLite.Dialect
         {
             return CommandType.Text;
         }
+
+        /// <summary>
+        /// Gets the select identity string for the specified type.
+        /// </summary>
+        /// <param name="objectInfo">The object information for the type to return the select identity statement for.</param>
+        /// <returns>The SQL command text to select the identity value for an inserted object.</returns>
+        protected abstract string GetSelectIdentityString(IObjectInfo objectInfo);
     }
 }

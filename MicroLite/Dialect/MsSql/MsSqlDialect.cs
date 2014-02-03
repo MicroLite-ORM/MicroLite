@@ -18,6 +18,7 @@ namespace MicroLite.Dialect.MsSql
     using System.Globalization;
     using System.Linq;
     using System.Text;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for MsSql server.
@@ -35,14 +36,6 @@ namespace MicroLite.Dialect.MsSql
         private MsSqlDialect()
             : base(MsSqlCharacters.Instance)
         {
-        }
-
-        protected override string SelectIdentityString
-        {
-            get
-            {
-                return "SELECT SCOPE_IDENTITY()";
-            }
         }
 
         public override SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
@@ -133,6 +126,11 @@ namespace MicroLite.Dialect.MsSql
             }
 
             return base.GetCommandType(commandText);
+        }
+
+        protected override string GetSelectIdentityString(IObjectInfo objectInfo)
+        {
+            return "SELECT SCOPE_IDENTITY()";
         }
     }
 }
