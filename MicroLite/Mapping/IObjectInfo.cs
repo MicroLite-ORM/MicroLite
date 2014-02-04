@@ -80,6 +80,14 @@ namespace MicroLite.Mapping
         bool HasDefaultIdentifierValue(object instance);
 
         /// <summary>
+        /// Sets the property value for the object identifier to the supplied value.
+        /// </summary>
+        /// <param name="instance">The instance to set the value for.</param>
+        /// <param name="identifier">The value to set as the identifier property.</param>
+        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
+        void SetIdentifierValue(object instance, object identifier);
+
+        /// <summary>
         /// Sets the property value of the property mapped to the specified column after converting it to the correct type for the property.
         /// </summary>
         /// <param name="instance">The instance to set the property value on.</param>

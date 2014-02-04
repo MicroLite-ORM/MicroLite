@@ -303,6 +303,18 @@
         }
 
         [Fact]
+        public void SetIdentifierValueSetsPropertyValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var customer = new CustomerWithIntegerIdentifier();
+
+            objectInfo.SetIdentifierValue(customer, 122323);
+
+            Assert.Equal(122323, customer.Id);
+        }
+
+        [Fact]
         public void SetPropertyValueForColumnSetsPropertyValue()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));

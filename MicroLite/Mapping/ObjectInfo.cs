@@ -39,6 +39,7 @@ namespace MicroLite.Mapping
 
         private readonly object defaultIdentifierValue;
         private readonly Type forType;
+        private readonly IPropertyAccessor identifierAccessor;
         private readonly Delegate instanceFactory;
         private readonly Dictionary<string, IPropertyAccessor> propertyAccessors; // key is property name.
         private readonly TableInfo tableInfo;
@@ -71,9 +72,14 @@ namespace MicroLite.Mapping
 
                 this.propertyAccessors.Add(columnInfo.PropertyInfo.Name, PropertyAccessor.Create(columnInfo.PropertyInfo));
 
-                if (columnInfo.IsIdentifier && columnInfo.PropertyInfo.PropertyType.IsValueType)
+                if (columnInfo.IsIdentifier)
                 {
-                    this.defaultIdentifierValue = (ValueType)Activator.CreateInstance(columnInfo.PropertyInfo.PropertyType);
+                    this.identifierAccessor = this.propertyAccessors[columnInfo.PropertyInfo.Name];
+
+                    if (columnInfo.PropertyInfo.PropertyType.IsValueType)
+                    {
+                        this.defaultIdentifierValue = (ValueType)Activator.CreateInstance(columnInfo.PropertyInfo.PropertyType);
+                    }
                 }
             }
 
@@ -216,7 +222,7 @@ namespace MicroLite.Mapping
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var value = this.propertyAccessors[this.tableInfo.IdentifierColumn.PropertyInfo.Name].GetValue(instance);
+            var value = this.identifierAccessor.GetValue(instance);
 
             return value;
         }
@@ -272,6 +278,18 @@ namespace MicroLite.Mapping
             bool hasDefaultIdentifier = object.Equals(identifierValue, this.defaultIdentifierValue);
 
             return hasDefaultIdentifier;
+        }
+
+        /// <summary>
+        /// Sets the property value for the object identifier to the supplied value.
+        /// </summary>
+        /// <param name="instance">The instance to set the value for.</param>
+        /// <param name="identifier">The value to set as the identifier property.</param>
+        public void SetIdentifierValue(object instance, object identifier)
+        {
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+
+            this.identifierAccessor.SetValue(instance, identifier);
         }
 
         /// <summary>

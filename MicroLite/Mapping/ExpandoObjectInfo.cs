@@ -74,6 +74,11 @@ namespace MicroLite.Mapping
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
         }
 
+        public void SetIdentifierValue(object instance, object identifier)
+        {
+            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+        }
+
         public void SetPropertyValueForColumn(object instance, string columnName, object value)
         {
             var dictionary = (IDictionary<string, object>)instance;
