@@ -13,6 +13,7 @@
 namespace MicroLite.Listeners
 {
     using System;
+    using System.Globalization;
     using MicroLite.Logging;
     using MicroLite.Mapping;
 
@@ -50,7 +51,18 @@ namespace MicroLite.Listeners
                     log.Debug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
                 }
 
-                objectInfo.SetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn.ColumnName, executeScalarResult);
+                var propertyType = objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType;
+
+                if (executeScalarResult.GetType() != propertyType)
+                {
+                    var converted = Convert.ChangeType(executeScalarResult, propertyType, CultureInfo.InvariantCulture);
+
+                    objectInfo.SetIdentifierValue(instance, converted);
+                }
+                else
+                {
+                    objectInfo.SetIdentifierValue(instance, executeScalarResult);
+                }
             }
         }
 

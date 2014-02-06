@@ -13,6 +13,18 @@
         public void AfterInsertSetsIdentifierValue()
         {
             var customer = new Customer();
+            int scalarResult = 4354;
+
+            var listener = new DbGeneratedListener();
+            listener.AfterInsert(customer, scalarResult);
+
+            Assert.Equal(scalarResult, customer.Id);
+        }
+
+        [Fact]
+        public void AfterInsertSetsIdentifierValueConvertingItToThePropertyType()
+        {
+            var customer = new Customer();
             decimal scalarResult = 4354;
 
             var listener = new DbGeneratedListener();
