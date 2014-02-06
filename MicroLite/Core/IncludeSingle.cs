@@ -42,7 +42,7 @@ namespace MicroLite.Core
             {
                 if (resultType.IsNotEntityAndConvertible())
                 {
-                    var typeConverter = TypeConverter.For(resultType);
+                    var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
 
                     this.value = (T)typeConverter.ConvertFromDbValue(reader[0], resultType);
                     this.HasValue = true;

@@ -41,7 +41,7 @@ namespace MicroLite.Core
         {
             if (resultType.IsNotEntityAndConvertible())
             {
-                var typeConverter = TypeConverter.For(resultType);
+                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
 
                 while (reader.Read())
                 {

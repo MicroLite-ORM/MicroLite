@@ -20,6 +20,7 @@ namespace MicroLite.TypeConverters
     public abstract class TypeConverter : ITypeConverter
     {
         private static readonly TypeConverterCollection converters = new TypeConverterCollection();
+        private static readonly ITypeConverter defaultConverter = new ObjectTypeConverter();
 
         /// <summary>
         /// Gets the type converter collection which contains all type converters registered with the MicroLite ORM framework.
@@ -33,10 +34,24 @@ namespace MicroLite.TypeConverters
         }
 
         /// <summary>
+        /// Gets the default type converter which can be used if there is no specific type converter for a given type.
+        /// </summary>
+        public static ITypeConverter Default
+        {
+            get
+            {
+                return defaultConverter;
+            }
+        }
+
+        /// <summary>
         /// Gets the <see cref="ITypeConverter"/> for the specified type.
         /// </summary>
         /// <param name="type">The type to get the converter for.</param>
-        /// <returns>The <see cref="ITypeConverter"/> for the specified type.</returns>
+        /// <returns>The <see cref="ITypeConverter"/> for the specified type, or null if no specific type converter exists for the type.</returns>
+        /// <remarks>
+        /// If For returns null, the TypeConverter.Default can be used.
+        /// </remarks>
         public static ITypeConverter For(Type type)
         {
             for (int i = 0; i < Converters.Count; i++)
@@ -49,22 +64,7 @@ namespace MicroLite.TypeConverters
                 }
             }
 
-            throw new NotSupportedException(type.FullName);
-        }
-
-        /// <summary>
-        /// Resolves the actual type. If the type is generic (as it would be for a nullable struct) it returns the inner type.
-        /// </summary>
-        /// <param name="type">The type to resolve.</param>
-        /// <returns>The actual type.</returns>
-        public static Type ResolveActualType(Type type)
-        {
-            if (type == null)
-            {
-                throw new ArgumentNullException("type");
-            }
-
-            return type.IsGenericType ? type.GetGenericArguments()[0] : type;
+            return null;
         }
 
         /// <summary>

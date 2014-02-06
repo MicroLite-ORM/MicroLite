@@ -14,6 +14,7 @@ namespace MicroLite.TypeConverters
 {
     using System;
     using System.Globalization;
+    using MicroLite.FrameworkExtensions;
 
     /// <summary>
     /// An ITypeConverter which can convert Enum values to and from database values.
@@ -30,7 +31,7 @@ namespace MicroLite.TypeConverters
         /// </returns>
         public override bool CanConvert(Type propertyType)
         {
-            var actualType = TypeConverter.ResolveActualType(propertyType);
+            var actualType = propertyType.ResolveActualType();
 
             return actualType.IsEnum;
         }
@@ -50,7 +51,7 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            var enumType = TypeConverter.ResolveActualType(propertyType);
+            var enumType = propertyType.ResolveActualType();
 
             var enumStorageType = Enum.GetUnderlyingType(enumType);
 
@@ -76,7 +77,7 @@ namespace MicroLite.TypeConverters
                 return value;
             }
 
-            var enumType = TypeConverter.ResolveActualType(propertyType);
+            var enumType = propertyType.ResolveActualType();
 
             var enumStorageType = Enum.GetUnderlyingType(enumType);
 

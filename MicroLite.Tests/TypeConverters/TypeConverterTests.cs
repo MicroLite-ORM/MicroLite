@@ -26,10 +26,10 @@
         public class WhenCallingFor_WithATypeOfInt
         {
             [Fact]
-            public void TheObjectTypeConverterIsReturned()
+            public void NoTypeConverterIsReturned()
             {
                 var typeConverter = TypeConverter.For(typeof(int));
-                Assert.IsType<ObjectTypeConverter>(typeConverter);
+                Assert.Null(typeConverter);
             }
         }
 
@@ -50,15 +50,6 @@
             {
                 var typeConverter = TypeConverter.For(typeof(XDocument));
                 Assert.IsType<XDocumentTypeConverter>(typeConverter);
-            }
-        }
-
-        public class WhenCallingResolveActualType_WithNullType
-        {
-            [Fact]
-            public void AnArgumentNullExceptionIsThrown()
-            {
-                Assert.Throws<ArgumentNullException>(() => TypeConverter.ResolveActualType(null));
             }
         }
     }

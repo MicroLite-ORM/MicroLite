@@ -36,15 +36,9 @@
             }
 
             [Fact]
-            public void TheObjectTypeConverterShouldBePositionThree()
+            public void ThereShouldBe3RegisteredTypeConverters()
             {
-                Assert.IsType<ObjectTypeConverter>(this.collection[3]);
-            }
-
-            [Fact]
-            public void ThereShouldBe4RegisteredTypeConverters()
-            {
-                Assert.Equal(4, this.collection.Count);
+                Assert.Equal(3, this.collection.Count);
             }
 
             [Fact]

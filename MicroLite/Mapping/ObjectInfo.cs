@@ -257,9 +257,14 @@ namespace MicroLite.Mapping
 
             var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
 
-            var converted = typeConverter.ConvertToDbValue(value, columnInfo.PropertyInfo.PropertyType);
+            if (typeConverter != null)
+            {
+                var converted = typeConverter.ConvertToDbValue(value, columnInfo.PropertyInfo.PropertyType);
 
-            return converted;
+                return converted;
+            }
+
+            return value;
         }
 
         /// <summary>
@@ -318,7 +323,8 @@ namespace MicroLite.Mapping
                 log.Debug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
             }
 
-            var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
+            // Always use a type converter to set as SQLite only has a bigint type which can't be auto cast to int.
+            var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType) ?? TypeConverter.Default;
 
             var converted = typeConverter.ConvertFromDbValue(value, columnInfo.PropertyInfo.PropertyType);
 

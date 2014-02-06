@@ -16,12 +16,12 @@ namespace MicroLite.TypeConverters
     using System.Globalization;
 
     /// <summary>
-    /// An ITypeConverter which can uses Convert.ChangeType.
+    /// An ITypeConverter which uses Convert.ChangeType.
     /// </summary>
     /// <remarks>
-    /// It is the default ITypeConverter used if no suitable specific implementation exists.
+    /// It is the default ITypeConverter, which can be used if no suitable specific implementation exists.
     /// </remarks>
-    public sealed class ObjectTypeConverter : TypeConverter
+    internal sealed class ObjectTypeConverter : TypeConverter
     {
         /// <summary>
         /// Determines whether this type converter can convert values for the specified property type.
