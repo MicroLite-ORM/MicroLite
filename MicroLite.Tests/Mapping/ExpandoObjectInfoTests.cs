@@ -1,8 +1,10 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
     using System;
+    using System.Data;
     using System.Dynamic;
     using MicroLite.Mapping;
+    using Moq;
     using Xunit;
 
     public class ExpandoObjectInfoTests
@@ -92,27 +94,42 @@
         }
 
         [Fact]
-        public void SetPropertyValueForColumnSetsPropertyValue()
+        public void SetPropertyValuesSetsPropertyValues()
         {
             var objectInfo = new ExpandoObjectInfo();
 
             var instance = (dynamic)objectInfo.CreateInstance<ExpandoObject>();
 
-            objectInfo.SetPropertyValueForColumn(instance, "Id", 12345);
-            objectInfo.SetPropertyValueForColumn(instance, "Name", "Fred Flintstone");
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(2);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
+
+            mockReader.Setup(x => x.GetName(0)).Returns("Id");
+            mockReader.Setup(x => x.GetName(1)).Returns("Name");
+
+            mockReader.Setup(x => x.GetValue(0)).Returns(12345);
+            mockReader.Setup(x => x.GetValue(1)).Returns("Fred Flintstone");
+
+            objectInfo.SetPropertyValues(instance, mockReader.Object);
 
             Assert.Equal(12345, instance.Id);
             Assert.Equal("Fred Flintstone", instance.Name);
         }
 
         [Fact]
-        public void SetPropertyValueForColumnSetsPropertyValueToNullIfPassedDBNull()
+        public void SetPropertyValuesSetsPropertyValueToNullIfPassedDBNull()
         {
             var objectInfo = new ExpandoObjectInfo();
 
             var instance = (dynamic)objectInfo.CreateInstance<ExpandoObject>();
 
-            objectInfo.SetPropertyValueForColumn(instance, "Name", DBNull.Value);
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(1);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(true);
+
+            mockReader.Setup(x => x.GetName(0)).Returns("Name");
+
+            objectInfo.SetPropertyValues(instance, mockReader.Object);
 
             Assert.Null(instance.Name);
         }

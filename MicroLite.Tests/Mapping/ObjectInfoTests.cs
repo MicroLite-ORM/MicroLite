@@ -1,8 +1,10 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
     using System;
+    using System.Data;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
+    using Moq;
     using Xunit;
 
     /// <summary>
@@ -263,56 +265,26 @@
         }
 
         [Fact]
-        public void SetPropertyValueForColumnSetsPropertyValue()
+        public void SetPropertyValuesSetsPropertyValues()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var instance = new CustomerWithIntegerIdentifier();
+            var instance = objectInfo.CreateInstance<CustomerWithIntegerIdentifier>();
 
-            objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1);
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(2);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
 
+            mockReader.Setup(x => x.GetName(0)).Returns("CustomerId");
+            mockReader.Setup(x => x.GetName(1)).Returns("StatusId");
+
+            mockReader.Setup(x => x.GetInt32(0)).Returns(12345);
+            mockReader.Setup(x => x.GetValue(1)).Returns(1);
+
+            objectInfo.SetPropertyValues(instance, mockReader.Object);
+
+            Assert.Equal(12345, instance.Id);
             Assert.Equal(CustomerStatus.Active, instance.Status);
-        }
-
-        [Fact]
-        public void SetPropertyValueForColumnThrowsAnExceptionForUnknownColumn()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var instance = new CustomerWithIntegerIdentifier();
-
-            var exception = Assert.Throws<MappingException>(
-                () => objectInfo.SetPropertyValueForColumn(instance, "UnknownColumn", 1));
-
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_UnknownColumn, objectInfo.ForType.Name, "UnknownColumn"),
-                exception.Message);
-        }
-
-        [Fact]
-        public void SetPropertyValueForColumnThrowsArgumentNullExceptionForNullInstance()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => objectInfo.SetPropertyValueForColumn(null, "StatusId", 1));
-
-            Assert.Equal("instance", exception.ParamName);
-        }
-
-        [Fact]
-        public void SetPropertyValueForColumnThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var instance = new CustomerWithGuidIdentifier();
-
-            var exception = Assert.Throws<MappingException>(
-                () => objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1));
-
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
-                exception.Message);
         }
 
         /// <summary>
