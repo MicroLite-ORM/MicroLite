@@ -84,37 +84,20 @@ namespace MicroLite.Mapping
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
         }
 
-        public void SetPropertyValueForColumn(object instance, string columnName, object value)
-        {
-            var dictionary = (IDictionary<string, object>)instance;
-
-            if (log.IsDebug)
-            {
-                log.Debug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnName);
-            }
-
-            dictionary.Add(columnName, value == DBNull.Value ? null : value);
-        }
-
         public void SetPropertyValues<T>(T instance, IDataReader reader)
         {
             var dictionary = (IDictionary<string, object>)instance;
 
             for (int i = 0; i < reader.FieldCount; i++)
             {
-                if (reader.IsDBNull(i))
-                {
-                    continue;
-                }
-
                 var columnName = reader.GetName(i);
-
-                var value = reader[i];
 
                 if (log.IsDebug)
                 {
                     log.Debug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnName);
                 }
+
+                var value = reader.IsDBNull(i) ? null : reader.GetValue(i);
 
                 dictionary[columnName] = value;
             }

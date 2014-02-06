@@ -350,40 +350,6 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Sets the property value of the property mapped to the specified column after converting it to the correct type for the property.
-        /// </summary>
-        /// <param name="instance">The instance to set the property value on.</param>
-        /// <param name="columnName">The name of the column the property is mapped to.</param>
-        /// <param name="value">The value from the database column to set the property to.</param>
-        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        public void SetPropertyValueForColumn(object instance, string columnName, object value)
-        {
-            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
-
-            var columnInfo = this.GetColumnInfo(columnName);
-
-            if (columnInfo == null)
-            {
-                var message = Messages.ObjectInfo_UnknownColumn.FormatWith(this.ForType.Name, columnName);
-                log.Error(message);
-                throw new MappingException(message);
-            }
-
-            if (log.IsDebug)
-            {
-                log.Debug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
-            }
-
-            // Always use a type converter to set as SQLite only has a bigint type which can't be auto cast to int.
-            var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType) ?? TypeConverter.Default;
-
-            var converted = typeConverter.ConvertFromDbValue(value, columnInfo.PropertyInfo.PropertyType);
-
-            this.propertyAccessors[columnInfo.PropertyInfo.Name].SetValue(instance, converted);
-        }
-
-        /// <summary>
         /// Sets the property value for each property mapped to a column in the specified IDataReader after converting it to the correct type for the property.
         /// </summary>
         /// <typeparam name="T">The type of the instance to set the values for.</typeparam>
@@ -461,7 +427,12 @@ namespace MicroLite.Mapping
                         continue;
 
                     default:
-                        this.SetPropertyValueForColumn(instance, columnName, reader.GetValue(i));
+                        // Always use a type converter to set as SQLite only has a bigint type which can't be auto cast to int.
+                        var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType) ?? TypeConverter.Default;
+
+                        var converted = typeConverter.ConvertFromDbValue(reader.GetValue(i), columnInfo.PropertyInfo.PropertyType);
+
+                        this.propertyAccessors[columnInfo.PropertyInfo.Name].SetValue(instance, converted);
                         continue;
                 }
             }
