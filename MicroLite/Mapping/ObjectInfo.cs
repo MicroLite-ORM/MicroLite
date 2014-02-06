@@ -228,43 +228,95 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the property value from the specified instance and converts it to the correct type for the specified column.
+        /// Gets the insert values for the specified instance.
         /// </summary>
-        /// <param name="instance">The instance to retrieve the value from.</param>
-        /// <param name="columnName">Name of the column to get the value for.</param>
-        /// <returns>The column value of the property.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        public object GetPropertyValueForColumn(object instance, string columnName)
+        /// <param name="instance">The instance.</param>
+        /// <returns>
+        /// An array of values to be used for the insert command.
+        /// </returns>
+        public object[] GetInsertValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var columnInfo = this.GetColumnInfo(columnName);
+            var insertValues = new object[this.TableInfo.InsertColumnCount];
+            var position = 0;
 
-            if (columnInfo == null)
+            for (int i = 0; i < this.TableInfo.Columns.Count; i++)
             {
-                var message = Messages.ObjectInfo_ColumnNotMapped.FormatWith(columnName, this.ForType.Name);
-                log.Error(message);
-                throw new MappingException(message);
+                var columnInfo = this.TableInfo.Columns[i];
+
+                if (columnInfo.AllowInsert)
+                {
+                    if (log.IsDebug)
+                    {
+                        log.Debug(Messages.ObjectInfo_GettingPropertyValueForColumn, this.ForType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                    }
+
+                    var value = this.propertyAccessors[columnInfo.PropertyInfo.Name].GetValue(instance);
+
+                    var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
+
+                    if (typeConverter != null)
+                    {
+                        var converted = typeConverter.ConvertToDbValue(value, columnInfo.PropertyInfo.PropertyType);
+
+                        insertValues[position++] = converted;
+                    }
+                    else
+                    {
+                        insertValues[position++] = value;
+                    }
+                }
             }
 
-            if (log.IsDebug)
+            return insertValues;
+        }
+
+        /// <summary>
+        /// Gets the update values for the specified instance.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns>
+        /// An array of values to be used for the update command.
+        /// </returns>
+        public object[] GetUpdateValues(object instance)
+        {
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+
+            var updateValues = new object[this.TableInfo.UpdateColumnCount + 1];
+            var position = 0;
+
+            for (int i = 0; i < this.TableInfo.Columns.Count; i++)
             {
-                log.Debug(Messages.ObjectInfo_GettingPropertyValueForColumn, this.ForType.Name, columnInfo.PropertyInfo.Name, columnName);
+                var columnInfo = this.TableInfo.Columns[i];
+
+                if (columnInfo.AllowUpdate)
+                {
+                    if (log.IsDebug)
+                    {
+                        log.Debug(Messages.ObjectInfo_GettingPropertyValueForColumn, this.ForType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                    }
+
+                    var value = this.propertyAccessors[columnInfo.PropertyInfo.Name].GetValue(instance);
+
+                    var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
+
+                    if (typeConverter != null)
+                    {
+                        var converted = typeConverter.ConvertToDbValue(value, columnInfo.PropertyInfo.PropertyType);
+
+                        updateValues[position++] = converted;
+                    }
+                    else
+                    {
+                        updateValues[position++] = value;
+                    }
+                }
             }
 
-            var value = this.propertyAccessors[columnInfo.PropertyInfo.Name].GetValue(instance);
+            updateValues[position++] = this.identifierAccessor.GetValue(instance);
 
-            var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
-
-            if (typeConverter != null)
-            {
-                var converted = typeConverter.ConvertToDbValue(value, columnInfo.PropertyInfo.PropertyType);
-
-                return converted;
-            }
-
-            return value;
+            return updateValues;
         }
 
         /// <summary>

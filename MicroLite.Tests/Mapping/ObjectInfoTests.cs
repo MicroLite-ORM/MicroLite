@@ -183,58 +183,6 @@
         }
 
         [Fact]
-        public void GetPropertyValueForColumnConvertsPropertyValueToDbValue()
-        {
-            var instance = new CustomerWithIntegerIdentifier
-            {
-                Status = CustomerStatus.Active
-            };
-
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var value = objectInfo.GetPropertyValueForColumn(instance, "StatusId");
-
-            Assert.Equal(1, value);
-        }
-
-        [Fact]
-        public void GetPropertyValueForColumnThrowsArgumentNullExceptionForNullInstance()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => objectInfo.GetPropertyValueForColumn(null, "Name"));
-
-            Assert.Equal("instance", exception.ParamName);
-        }
-
-        [Fact]
-        public void GetPropertyValueForColumnThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var exception = Assert.Throws<MappingException>(
-                () => objectInfo.GetPropertyValueForColumn(new CustomerWithGuidIdentifier(), "Name"));
-
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
-                exception.Message);
-        }
-
-        [Fact]
-        public void GetPropertyValueForColumnThrowsMicroLiteExceptionIfInvalidColumnName()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var exception = Assert.Throws<MappingException>(
-                () => objectInfo.GetPropertyValueForColumn(new CustomerWithIntegerIdentifier(), "UnknownColumn"));
-
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_ColumnNotMapped, "UnknownColumn", objectInfo.ForType.Name),
-                exception.Message);
-        }
-
-        [Fact]
         public void HasDefaultIdentifierValueThrowsArgumentNullExceptionForNullInstance()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));

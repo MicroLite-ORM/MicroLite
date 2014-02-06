@@ -64,7 +64,12 @@ namespace MicroLite.Mapping
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
         }
 
-        public object GetPropertyValueForColumn(object instance, string columnName)
+        public object[] GetInsertValues(object instance)
+        {
+            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+        }
+
+        public object[] GetUpdateValues(object instance)
         {
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
         }

@@ -61,13 +61,18 @@ namespace MicroLite.Mapping
         object GetIdentifierValue(object instance);
 
         /// <summary>
-        /// Gets the property value from the specified instance and converts it to the correct type for the specified column.
+        /// Gets the insert values for the specified instance.
         /// </summary>
-        /// <param name="instance">The instance to retrieve the value from.</param>
-        /// <param name="columnName">Name of the column to get the value for.</param>
-        /// <returns>The column value of the property.</returns>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
-        object GetPropertyValueForColumn(object instance, string columnName);
+        /// <param name="instance">The instance.</param>
+        /// <returns>An array of values to be used for the insert command.</returns>
+        object[] GetInsertValues(object instance);
+
+        /// <summary>
+        /// Gets the update values for the specified instance.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns>An array of values to be used for the update command.</returns>
+        object[] GetUpdateValues(object instance);
 
         /// <summary>
         /// Determines whether the specified instance has the default identifier value.

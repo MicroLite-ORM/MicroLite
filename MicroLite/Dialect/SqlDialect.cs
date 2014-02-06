@@ -338,9 +338,7 @@ namespace MicroLite.Dialect
 
                     if (columnInfo.AllowInsert)
                     {
-                        var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
-
-                        insertSqlBuilder.Value(columnInfo.ColumnName, value);
+                        insertSqlBuilder.Value(columnInfo.ColumnName, null);
                     }
                 }
 
@@ -350,25 +348,12 @@ namespace MicroLite.Dialect
 
                 var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
                 newInsertCommandCache[objectInfo.ForType] = insertSqlQuery.CommandText;
+                insertCommand = insertSqlQuery.CommandText;
 
                 this.insertCommandCache = newInsertCommandCache;
-
-                return insertSqlQuery;
             }
 
-            var insertValues = new object[objectInfo.TableInfo.InsertColumnCount];
-            var position = 0;
-
-            for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
-            {
-                var columnInfo = objectInfo.TableInfo.Columns[i];
-
-                if (columnInfo.AllowInsert)
-                {
-                    var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
-                    insertValues[position++] = value;
-                }
-            }
+            var insertValues = objectInfo.GetInsertValues(instance);
 
             return new SqlQuery(insertCommand, insertValues);
         }
@@ -426,9 +411,7 @@ namespace MicroLite.Dialect
 
                     if (columnInfo.AllowUpdate)
                     {
-                        var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
-
-                        updateSqlBuilder.SetColumnValue(columnInfo.ColumnName, value);
+                        updateSqlBuilder.SetColumnValue(columnInfo.ColumnName, null);
                     }
                 }
 
@@ -438,27 +421,12 @@ namespace MicroLite.Dialect
 
                 var newUpdateCommandCache = new Dictionary<Type, string>(this.updateCommandCache);
                 newUpdateCommandCache[objectInfo.ForType] = updateSqlQuery.CommandText;
+                updateCommand = updateSqlQuery.CommandText;
 
                 this.updateCommandCache = newUpdateCommandCache;
-
-                return updateSqlQuery;
             }
 
-            var updateValues = new object[objectInfo.TableInfo.UpdateColumnCount + 1];
-            var position = 0;
-
-            for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
-            {
-                var columnInfo = objectInfo.TableInfo.Columns[i];
-
-                if (columnInfo.AllowUpdate)
-                {
-                    var value = objectInfo.GetPropertyValueForColumn(instance, columnInfo.ColumnName);
-                    updateValues[position++] = value;
-                }
-            }
-
-            updateValues[position] = objectInfo.GetIdentifierValue(instance);
+            var updateValues = objectInfo.GetUpdateValues(instance);
 
             return new SqlQuery(updateCommand, updateValues);
         }

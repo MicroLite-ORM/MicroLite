@@ -48,12 +48,23 @@
         }
 
         [Fact]
-        public void GetPropertyValueForColumnThrowsNotSupportedException()
+        public void GetInsertValuesThrowsNotSupportedException()
         {
             var objectInfo = new ExpandoObjectInfo();
 
             var exception = Assert.Throws<NotSupportedException>(
-                () => objectInfo.GetPropertyValueForColumn(new ExpandoObject(), "foo"));
+                () => objectInfo.GetInsertValues(new ExpandoObject()));
+
+            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+        }
+
+        [Fact]
+        public void GetUpdateValuesThrowsNotSupportedException()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.GetUpdateValues(new ExpandoObject()));
 
             Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
         }
