@@ -21,7 +21,7 @@ namespace MicroLite.TypeConverters
     /// <remarks>
     /// It is the default ITypeConverter, which can be used if no suitable specific implementation exists.
     /// </remarks>
-    internal sealed class ObjectTypeConverter : TypeConverter
+    internal sealed class ObjectTypeConverter : ITypeConverter
     {
         /// <summary>
         /// Determines whether this type converter can convert values for the specified property type.
@@ -30,7 +30,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         ///   <c>true</c> if this instance can convert the specified property type; otherwise, <c>false</c>.
         /// </returns>
-        public override bool CanConvert(Type propertyType)
+        public bool CanConvert(Type propertyType)
         {
             return true;
         }
@@ -44,7 +44,7 @@ namespace MicroLite.TypeConverters
         /// An instance of the specified property type containing the specified value.
         /// </returns>
         /// <exception cref="System.ArgumentNullException">thrown if propertyType is null.</exception>
-        public override object ConvertFromDbValue(object value, Type propertyType)
+        public object ConvertFromDbValue(object value, Type propertyType)
         {
             if (propertyType == null)
             {
@@ -78,7 +78,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         /// An instance of the corresponding database type for the property type containing the property value.
         /// </returns>
-        public override object ConvertToDbValue(object value, Type propertyType)
+        public object ConvertToDbValue(object value, Type propertyType)
         {
             return value;
         }

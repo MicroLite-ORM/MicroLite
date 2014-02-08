@@ -20,7 +20,7 @@ namespace MicroLite.TypeConverters
     /// An ITypeConverter which can convert Enum values to and from database values.
     /// </summary>
     /// <remarks>It ensures that the database value is converted to and from the underlying storage type of the Enum to allow for db columns being byte, short, integer or long.</remarks>
-    public sealed class EnumTypeConverter : TypeConverter
+    public sealed class EnumTypeConverter : ITypeConverter
     {
         /// <summary>
         /// Determines whether this type converter can convert values for the specified property type.
@@ -29,7 +29,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         ///   <c>true</c> if this instance can convert the specified property type; otherwise, <c>false</c>.
         /// </returns>
-        public override bool CanConvert(Type propertyType)
+        public bool CanConvert(Type propertyType)
         {
             var actualType = propertyType.ResolveActualType();
 
@@ -44,7 +44,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         /// An instance of the specified property type containing the specified value.
         /// </returns>
-        public override object ConvertFromDbValue(object value, Type propertyType)
+        public object ConvertFromDbValue(object value, Type propertyType)
         {
             if (value == null || value == DBNull.Value)
             {
@@ -70,7 +70,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         /// An instance of the corresponding database type for the property type containing the property value.
         /// </returns>
-        public override object ConvertToDbValue(object value, Type propertyType)
+        public object ConvertToDbValue(object value, Type propertyType)
         {
             if (value == null)
             {

@@ -20,7 +20,7 @@ namespace MicroLite.TypeConverters
     /// <summary>
     /// An ITypeConverter which can encrypt and decrypt the stored database value.
     /// </summary>
-    public sealed class DbEncryptedStringTypeConverter : TypeConverter
+    public sealed class DbEncryptedStringTypeConverter : ITypeConverter
     {
         private readonly ISymmetricAlgorithmProvider algorithmProvider;
 
@@ -45,7 +45,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         ///   <c>true</c> if this instance can convert the specified property type; otherwise, <c>false</c>.
         /// </returns>
-        public override bool CanConvert(Type propertyType)
+        public bool CanConvert(Type propertyType)
         {
             return propertyType == typeof(DbEncryptedString);
         }
@@ -58,7 +58,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         /// An instance of the specified property type containing the specified value.
         /// </returns>
-        public override object ConvertFromDbValue(object value, Type propertyType)
+        public object ConvertFromDbValue(object value, Type propertyType)
         {
             if (value == DBNull.Value)
             {
@@ -83,7 +83,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         /// An instance of the corresponding database type for the property type containing the property value.
         /// </returns>
-        public override object ConvertToDbValue(object value, Type propertyType)
+        public object ConvertToDbValue(object value, Type propertyType)
         {
             if (value == null || string.IsNullOrEmpty(value.ToString()))
             {

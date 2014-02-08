@@ -15,9 +15,9 @@ namespace MicroLite.TypeConverters
     using System;
 
     /// <summary>
-    /// The base class for any implementation of <see cref="ITypeConverter"/>.
+    /// A class which allows access to <see cref="ITypeConverter"/>s.
     /// </summary>
-    public abstract class TypeConverter : ITypeConverter
+    public static class TypeConverter
     {
         private static readonly TypeConverterCollection converters = new TypeConverterCollection();
         private static readonly ITypeConverter defaultConverter = new ObjectTypeConverter();
@@ -66,34 +66,5 @@ namespace MicroLite.TypeConverters
 
             return null;
         }
-
-        /// <summary>
-        /// Determines whether this type converter can convert values for the specified property type.
-        /// </summary>
-        /// <param name="propertyType">The type of the property value to be converted.</param>
-        /// <returns>
-        ///   <c>true</c> if this instance can convert the specified property type; otherwise, <c>false</c>.
-        /// </returns>
-        public abstract bool CanConvert(Type propertyType);
-
-        /// <summary>
-        /// Converts the specified database value into an instance of the property type.
-        /// </summary>
-        /// <param name="value">The database value to be converted.</param>
-        /// <param name="propertyType">The property type to convert to.</param>
-        /// <returns>
-        /// An instance of the specified property type containing the specified value.
-        /// </returns>
-        public abstract object ConvertFromDbValue(object value, Type propertyType);
-
-        /// <summary>
-        /// Converts the specified property value into an instance of the database value.
-        /// </summary>
-        /// <param name="value">The property value to be converted.</param>
-        /// <param name="propertyType">The property type to convert from.</param>
-        /// <returns>
-        /// An instance of the corresponding database type for the property type containing the property value.
-        /// </returns>
-        public abstract object ConvertToDbValue(object value, Type propertyType);
     }
 }

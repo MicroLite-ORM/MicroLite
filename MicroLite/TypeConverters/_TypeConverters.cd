@@ -6,6 +6,7 @@
       <HashCode>AAAAAAAACAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>TypeConverters\EnumTypeConverter.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.TypeConverters.ObjectTypeConverter">
     <Position X="5.75" Y="5" Width="1.75" />
@@ -13,11 +14,12 @@
       <HashCode>AAAAAAAACAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>TypeConverters\ObjectTypeConverter.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.TypeConverters.TypeConverter">
     <Position X="4.25" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AACAQAAACAAAAAAAAAEAAAAAIAAAAAAAAAAAAAAAiAA=</HashCode>
+      <HashCode>AACAAAAAAAAAAAAAAAAAIAAAIAAAAAAAAAAAAAAAgEA=</HashCode>
       <FileName>TypeConverters\TypeConverter.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -35,6 +37,7 @@
       <HashCode>AAAAAAAACAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>TypeConverters\XDocumentTypeConverter.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.TypeConverters.DbEncryptedStringTypeConverter">
     <Position X="0.5" Y="5" Width="2.5" />
@@ -42,6 +45,7 @@
       <HashCode>AQAAAAAACAAAAAAQAAEAAAAAAAAAAABAAAAAAAAACAA=</HashCode>
       <FileName>TypeConverters\DbEncryptedStringTypeConverter.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.TypeConverters.UriTypeConverter">
     <Position X="8" Y="5" Width="1.75" />
@@ -49,6 +53,7 @@
       <HashCode>AAAAAAAACAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>TypeConverters\UriTypeConverter.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Interface Name="MicroLite.TypeConverters.ITypeConverter">
     <Position X="0.5" Y="0.5" Width="1.75" />
