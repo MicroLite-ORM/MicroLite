@@ -184,7 +184,7 @@ namespace MicroLite.Dialect
             switch (statementType)
             {
                 case StatementType.Delete:
-                    return this.BuildDeleteSqlQuery(instance, objectInfo);
+                    return this.BuildDeleteSqlQuery(objectInfo, objectInfo.GetIdentifierValue(instance));
 
                 case StatementType.Insert:
                     return this.BuildInsertSqlQuery(instance, objectInfo);
@@ -283,36 +283,6 @@ namespace MicroLite.Dialect
             }
 
             return new SqlQuery(deleteCommand, identifier);
-        }
-
-        /// <summary>
-        /// Builds the delete SQL query.
-        /// </summary>
-        /// <param name="instance">The instance to be deleted.</param>
-        /// <param name="objectInfo">The object information.</param>
-        /// <returns>
-        /// The created <see cref="SqlQuery" />.
-        /// </returns>
-        protected virtual SqlQuery BuildDeleteSqlQuery(object instance, IObjectInfo objectInfo)
-        {
-            string deleteCommand;
-
-            if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out deleteCommand))
-            {
-                var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
-                    .From(objectInfo)
-                    .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectInfo.GetIdentifierValue(instance))
-                    .ToSqlQuery();
-
-                var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
-                newDeleteCommandCache[objectInfo.ForType] = deleteSqlQuery.CommandText;
-
-                this.deleteCommandCache = newDeleteCommandCache;
-
-                return deleteSqlQuery;
-            }
-
-            return new SqlQuery(deleteCommand, objectInfo.GetIdentifierValue(instance));
         }
 
         /// <summary>
