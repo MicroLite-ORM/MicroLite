@@ -83,7 +83,7 @@ namespace MicroLite.Mapping
                 }
             }
 
-            this.instanceFactory = this.CreateInstanceFactory();
+            this.instanceFactory = DelegateFactory.CreateInstanceFactory(this);
         }
 
         /// <summary>
@@ -460,23 +460,6 @@ namespace MicroLite.Mapping
                 log.Fatal(message);
                 throw new MappingException(message);
             }
-        }
-
-        private Delegate CreateInstanceFactory()
-        {
-            var dynamicMethod = new DynamicMethod("MicroLite" + this.forType.Name + "Factory", this.forType, null, this.forType);
-
-            var ilGenerator = dynamicMethod.GetILGenerator();
-
-            // var entity = new T();
-            ilGenerator.Emit(OpCodes.Newobj, this.forType.GetConstructor(Type.EmptyTypes));
-
-            // return entity;
-            ilGenerator.Emit(OpCodes.Ret);
-
-            var factoryType = typeof(Func<>).MakeGenericType(this.forType);
-
-            return dynamicMethod.CreateDelegate(factoryType);
         }
 
         private void SetBoolean<T>(T instance, IDataReader reader, int i, ColumnInfo columnInfo)

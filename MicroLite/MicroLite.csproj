@@ -59,6 +59,7 @@
     <Compile Include="Configuration\FluentConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationException.cs" />
     <Compile Include="ConnectionScope.cs" />
+    <Compile Include="Mapping\DelegateFactory.cs" />
     <Compile Include="Core\ISessionBase.cs" />
     <Compile Include="Core\Transaction.cs" />
     <Compile Include="Core\Include.cs" />
