@@ -19,16 +19,16 @@ namespace MicroLite
     using System.Text;
 
     /// <summary>
-    /// A utility class containing useful methods for manipulating Sql.
+    /// A utility class containing useful methods for manipulating SQL.
     /// </summary>
     public static class SqlUtility
     {
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
 
         /// <summary>
-        /// Gets the position of the first parameter in the specified command text.
+        /// Gets the position of the first parameter in the specified SQL command text.
         /// </summary>
-        /// <param name="commandText">The command text.</param>
+        /// <param name="commandText">The SQL command text.</param>
         /// <returns>The position of the first parameter in the command text or -1 if no parameters are found.</returns>
         public static int GetFirstParameterPosition(string commandText)
         {
@@ -43,10 +43,10 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the parameter names from the specified command text.
+        /// Gets the parameter names from the specified SQL command text.
         /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The parameter names in the command text.</returns>
+        /// <param name="commandText">The SQL command text.</param>
+        /// <returns>A list containing the parameter names in the SQL command text.</returns>
         public static IList<string> GetParameterNames(string commandText)
         {
             if (commandText == null)
@@ -96,10 +96,10 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Reads the ORDER BY clause from the specified command text excluding the ORDER BY keyword.
+        /// Reads the ORDER BY clause from the specified SQL command text excluding the ORDER BY keyword.
         /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The ORDER BY clause without the ORDER BY keyword.</returns>
+        /// <param name="commandText">The SQL command text.</param>
+        /// <returns>The ORDER BY clause without the ORDER BY keyword, or an empty string if there is no ORDER BY clause.</returns>
         public static string ReadOrderByClause(string commandText)
         {
             if (string.IsNullOrEmpty(commandText))
@@ -128,10 +128,10 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Reads the SELECT clause from the specified command text excluding the SELECT keyword.
+        /// Reads the SELECT clause from the specified SQL command text excluding the SELECT keyword.
         /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The SELECT clause without the SELECT keyword.</returns>
+        /// <param name="commandText">The SQL command text.</param>
+        /// <returns>The SELECT clause without the SELECT keyword, or an empty string if there is no SELECT clause.</returns>
         public static string ReadSelectClause(string commandText)
         {
             if (string.IsNullOrEmpty(commandText))
@@ -162,7 +162,7 @@ namespace MicroLite
         /// <summary>
         /// Reads the name of the table the sql query is targeting.
         /// </summary>
-        /// <param name="commandText">The command text.</param>
+        /// <param name="commandText">The SQL command text.</param>
         /// <returns>The name of the table the sql query is targeting.</returns>
         public static string ReadTableName(string commandText)
         {
@@ -201,10 +201,10 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Reads the WHERE clause from the specified command text excluding the WHERE keyword.
+        /// Reads the WHERE clause from the specified SQL command text excluding the WHERE keyword.
         /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The WHERE clause without the WHERE keyword.</returns>
+        /// <param name="commandText">The SQL command text.</param>
+        /// <returns>The WHERE clause without the WHERE keyword, or an empty string if there is no WHERE clause.</returns>
         public static string ReadWhereClause(string commandText)
         {
             if (string.IsNullOrEmpty(commandText))

@@ -49,7 +49,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets an Empty set of SqlCharacters.
+        /// Gets an Empty set of SqlCharacters which does not support named parameters or escaping of values.
         /// </summary>
         public static SqlCharacters Empty
         {
@@ -60,7 +60,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the left delimiter character.
+        /// Gets a string containing the delimiter used on the left hand side to escape an SQL value.
         /// </summary>
         public virtual string LeftDelimiter
         {
@@ -71,7 +71,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the wildcard for use in like statements.
+        /// Gets a string containing the wildcard value for use in LIKE statements.
         /// </summary>
         public virtual string LikeWildcard
         {
@@ -82,7 +82,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the right delimiter character.
+        /// Gets a string containing the delimiter used on the right hand side to escape an SQL value.
         /// </summary>
         public virtual string RightDelimiter
         {
@@ -93,7 +93,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the wildcard for use in select statements.
+        /// Gets a string containing the wildcard value for use in SELECT statements.
         /// </summary>
         public virtual string SelectWildcard
         {
@@ -104,7 +104,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the SQL parameter.
+        /// Gets a string containing the parameter value for use in parameterised statements.
         /// </summary>
         public virtual string SqlParameter
         {
@@ -160,7 +160,7 @@ namespace MicroLite
         /// Gets the name of the parameter for the specified position.
         /// </summary>
         /// <param name="position">The parameter position.</param>
-        /// <returns>The nape of the parameter for the specified position.</returns>
+        /// <returns>The name of the parameter for the specified position.</returns>
         public string GetParameterName(int position)
         {
             if (this.SupportsNamedParameters)

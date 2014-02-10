@@ -15,7 +15,7 @@ namespace MicroLite
     using System;
 
     /// <summary>
-    /// A class containing the count and offset for paged queries.
+    /// A struct containing the count and offset to be used for paged queries.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("Count: {Count}, Offset: {Offset}")]
     public struct PagingOptions : IEquatable<PagingOptions>
@@ -26,8 +26,8 @@ namespace MicroLite
         /// <summary>
         /// Initialises a new instance of the <see cref="PagingOptions" /> struct.
         /// </summary>
-        /// <param name="count">The count.</param>
-        /// <param name="offset">The offset.</param>
+        /// <param name="count">The count (number of records to return).</param>
+        /// <param name="offset">The offset (number of records to skip).</param>
         private PagingOptions(int count, int offset)
         {
             this.count = count;
@@ -70,9 +70,10 @@ namespace MicroLite
         /// <summary>
         /// Gets the paging options for the specified page number.
         /// </summary>
-        /// <param name="page">The page number.</param>
+        /// <param name="page">The page number (starting at 1).</param>
         /// <param name="resultsPerPage">The results per page.</param>
         /// <returns>The paging options for the specified page number.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if page or resultsPerPage are less than 1.</exception>
         public static PagingOptions ForPage(int page, int resultsPerPage)
         {
             if (page < 1)
@@ -118,6 +119,7 @@ namespace MicroLite
         /// <param name="skip">The number of records to skip.</param>
         /// <param name="take">The number of records to take.</param>
         /// <returns>The paging options for the specified skip and take numbers.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if skip is below 0 or take is less than 1.</exception>
         public static PagingOptions SkipTake(int skip, int take)
         {
             if (skip < 0)
