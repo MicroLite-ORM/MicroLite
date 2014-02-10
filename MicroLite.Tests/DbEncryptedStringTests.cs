@@ -69,6 +69,19 @@
             }
         }
 
+        public class WhenCallingEqualsWithAnotherDbEncryptedStringWhichIsNull
+        {
+            [Fact]
+            public void FalseShouldBeReturned()
+            {
+                var value = "12334552233";
+                var dbEncryptedString = (DbEncryptedString)value;
+                var other = (DbEncryptedString)null;
+
+                Assert.False(dbEncryptedString.Equals(other));
+            }
+        }
+
         public class WhenCallingEqualsWithAnotherStringAsAnObjectContainingTheSameValue
         {
             [Fact]
@@ -143,6 +156,18 @@
                 var dbEncryptedString = (DbEncryptedString)value;
 
                 Assert.Equal(value.GetHashCode(), dbEncryptedString.GetHashCode());
+            }
+        }
+
+        public class WhenCallingToString
+        {
+            [Fact]
+            public void TheInnerStringShouldBeReturned()
+            {
+                var value = "12334552233";
+                var dbEncryptedString = (DbEncryptedString)value;
+
+                Assert.Equal(value, dbEncryptedString.ToString());
             }
         }
 

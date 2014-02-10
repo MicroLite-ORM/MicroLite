@@ -8,11 +8,12 @@
     public class SqlQueryTests
     {
         [Fact]
-        public void ConstructorSetsArgumentsToEmptyListIfNoneSpecified()
+        public void ConstructorSetsArgumentsToEmptyArrayIfNoneSpecified()
         {
             var sqlQuery = new SqlQuery(string.Empty);
 
             Assert.NotNull(sqlQuery.Arguments);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -76,6 +77,16 @@
             var sqlQuery2 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", 10);
 
             Assert.True(sqlQuery1.Equals(sqlQuery2));
+        }
+
+        [Fact]
+        public void GetArgumentArrayReturnsInnerArgumentArray()
+        {
+            var args = new[] { new object() };
+
+            var sqlQuery = new SqlQuery(string.Empty, args);
+
+            Assert.ReferenceEquals(args, sqlQuery.GetArgumentArray());
         }
 
         [Fact]

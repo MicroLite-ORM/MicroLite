@@ -83,6 +83,98 @@
         }
 
         [Fact]
+        public void ReadOrderByClauseRemovesLineBreaks()
+        {
+            var commandText = @"SELECT * FROM Table ORDER BY
+Name ASC,
+Age DESC";
+
+            Assert.Equal("Name ASC, Age DESC", SqlUtility.ReadOrderByClause(commandText));
+        }
+
+        [Fact]
+        public void ReadOrderByClauseReturnsAnEmptyStringIfTheCommandTextIsEmpty()
+        {
+            Assert.Empty(SqlUtility.ReadOrderByClause(string.Empty));
+        }
+
+        [Fact]
+        public void ReadOrderByClauseReturnsAnEmptyStringIfTheCommandTextIsNull()
+        {
+            Assert.Empty(SqlUtility.ReadOrderByClause(null));
+        }
+
+        [Fact]
+        public void ReadSelectClauseReturnsAnEmptyStringIfTheCommandTextDoesNotContainSelect()
+        {
+            Assert.Empty(SqlUtility.ReadSelectClause("EXEC sp_who"));
+        }
+
+        [Fact]
+        public void ReadSelectClauseReturnsAnEmptyStringIfTheCommandTextIsEmpty()
+        {
+            Assert.Empty(SqlUtility.ReadSelectClause(string.Empty));
+        }
+
+        [Fact]
+        public void ReadSelectClauseReturnsAnEmptyStringIfTheCommandTextIsNull()
+        {
+            Assert.Empty(SqlUtility.ReadSelectClause(null));
+        }
+
+        [Fact]
+        public void ReadTableNameRemovesLineBreaks()
+        {
+            var commandText = @"SELECT
+*
+FROM
+Table
+tbl";
+
+            Assert.Equal("Table tbl", SqlUtility.ReadTableName(commandText));
+        }
+
+        [Fact]
+        public void ReadTableNameReturnsAnEmptyStringIfTheCommandTextDoesNotContainFrom()
+        {
+            Assert.Empty(SqlUtility.ReadTableName("EXEC sp_who"));
+        }
+
+        [Fact]
+        public void ReadTableNameReturnsAnEmptyStringIfTheCommandTextIsEmpty()
+        {
+            Assert.Empty(SqlUtility.ReadTableName(string.Empty));
+        }
+
+        [Fact]
+        public void ReadTableNameReturnsAnEmptyStringIfTheCommandTextIsNull()
+        {
+            Assert.Empty(SqlUtility.ReadTableName(null));
+        }
+
+        [Fact]
+        public void ReadWhereClauseRemovesLineBreaks()
+        {
+            var commandText = @"SELECT * FROM Table WHERE
+Name = ?
+AND Age = ?";
+
+            Assert.Equal("Name = ? AND Age = ?", SqlUtility.ReadWhereClause(commandText));
+        }
+
+        [Fact]
+        public void ReadWhereClauseReturnsAnEmptyStringIfTheCommandTextIsEmpty()
+        {
+            Assert.Empty(SqlUtility.ReadWhereClause(string.Empty));
+        }
+
+        [Fact]
+        public void ReadWhereClauseReturnsAnEmptyStringIfTheCommandTextIsNull()
+        {
+            Assert.Empty(SqlUtility.ReadWhereClause(null));
+        }
+
+        [Fact]
         public void ReNumberParametersNoExistingArguments()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", totalArgumentCount: 2);

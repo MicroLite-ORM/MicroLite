@@ -1,9 +1,28 @@
 ﻿namespace MicroLite.Tests
 {
+    using System.Linq;
     using Xunit;
 
     public class ObjectDeltaTests
     {
+        public class WhenCallingAddChange
+        {
+            private readonly ObjectDelta objectDelta = new ObjectDelta(typeof(Customer), 1332);
+
+            public WhenCallingAddChange()
+            {
+                this.objectDelta.AddChange("Name", "Fred");
+            }
+
+            [Fact]
+            public void ChangesShouldContainTheChange()
+            {
+                var change = this.objectDelta.Changes.Single();
+                Assert.Equal("Name", change.Key);
+                Assert.Equal("Fred", change.Value);
+            }
+        }
+
         public class WhenConstructed
         {
             private readonly ObjectDelta objectDelta;
