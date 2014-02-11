@@ -55,7 +55,10 @@
                     {
                         return IdentifierStrategy.Assigned;
                     },
-                    TableSchema = "Sales",
+                    ResolveTableSchema = (Type type) =>
+                    {
+                        return "Sales";
+                    },
                     UsePluralClassNameForTableName = false
                 });
 

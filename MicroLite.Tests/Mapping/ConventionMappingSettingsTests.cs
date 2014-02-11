@@ -69,6 +69,14 @@
             }
 
             [Fact]
+            public void ResolveTableSchemaReturnsNull()
+            {
+                var type = typeof(Customer);
+
+                Assert.Null(this.settings.ResolveTableSchema(type));
+            }
+
+            [Fact]
             public void TheAllowInsertFunctionShouldBeSet()
             {
                 Assert.NotNull(this.settings.AllowInsert);
@@ -123,9 +131,9 @@
             }
 
             [Fact]
-            public void TheTableSchemIsSetToNull()
+            public void TheResolveTableSchemaFunctionShouldBeSet()
             {
-                Assert.Null(this.settings.TableSchema);
+                Assert.NotNull(this.settings.ResolveTableSchema);
             }
 
             [Fact]

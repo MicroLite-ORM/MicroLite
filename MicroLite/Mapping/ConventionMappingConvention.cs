@@ -45,7 +45,7 @@ namespace MicroLite.Mapping
                 columns,
                 identifierStrategy,
                 this.settings.ResolveTableName(forType),
-                this.settings.TableSchema);
+                this.settings.ResolveTableSchema(forType));
 
             if (this.log.IsDebug)
             {

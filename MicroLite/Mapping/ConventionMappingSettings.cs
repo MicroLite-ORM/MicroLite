@@ -64,7 +64,10 @@ namespace MicroLite.Mapping
             {
                 return this.UsePluralClassNameForTableName ? this.InflectionService.ToPlural(type.Name) : type.Name;
             };
-            this.TableSchema = null;
+            this.ResolveTableSchema = (Type type) =>
+            {
+                return null;
+            };
             this.UsePluralClassNameForTableName = true;
         }
 
@@ -161,9 +164,9 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets or sets the table schema (defaults to null).
+        /// Gets or sets the function which determines the schema of the table the class is mapped to (default returns null).
         /// </summary>
-        public string TableSchema
+        public Func<Type, string> ResolveTableSchema
         {
             get;
             set;
