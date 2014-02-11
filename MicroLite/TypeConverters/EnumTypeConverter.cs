@@ -19,7 +19,10 @@ namespace MicroLite.TypeConverters
     /// <summary>
     /// An ITypeConverter which can convert Enum values to and from database values.
     /// </summary>
-    /// <remarks>It ensures that the database value is converted to and from the underlying storage type of the Enum to allow for db columns being byte, short, integer or long.</remarks>
+    /// <remarks>
+    /// It ensures that the database value is converted to and from the underlying storage type of the Enum to allow for db
+    /// columns being byte, short, integer or long.
+    /// </remarks>
     public sealed class EnumTypeConverter : ITypeConverter
     {
         /// <summary>

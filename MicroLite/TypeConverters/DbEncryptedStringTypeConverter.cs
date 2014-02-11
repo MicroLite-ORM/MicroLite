@@ -18,7 +18,8 @@ namespace MicroLite.TypeConverters
     using MicroLite.Infrastructure;
 
     /// <summary>
-    /// An ITypeConverter which can encrypt and decrypt the stored database value.
+    /// An ITypeConverter which can encrypt and decrypt a string which ensures that the cypher text is stored in the database but the
+    /// clear text is used in the object.
     /// </summary>
     public sealed class DbEncryptedStringTypeConverter : ITypeConverter
     {
