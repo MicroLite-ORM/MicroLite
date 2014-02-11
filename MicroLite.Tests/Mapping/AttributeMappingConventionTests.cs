@@ -7,7 +7,7 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="AttributeMappingConvention"/> class.
+    /// Unit Tests for the <see cref="AttributeMappingConvention" /> class.
     /// </summary>
     public class AttributeMappingConventionTests
     {

@@ -5,7 +5,7 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="ColumnInfo"/> class.
+    /// Unit Tests for the <see cref="ColumnInfo" /> class.
     /// </summary>
     public class ColumnInfoTests
     {

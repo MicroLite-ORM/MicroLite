@@ -8,7 +8,7 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="ObjectInfo"/> class.
+    /// Unit Tests for the <see cref="ObjectInfo" /> class.
     /// </summary>
     public class ObjectInfoTests : IDisposable
     {
@@ -24,16 +24,7 @@
         }
 
         [Fact]
-        public void ConstructorThrowsArgumentNullExceptionForNullForTableInfo()
-        {
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => new ObjectInfo(typeof(CustomerWithIntegerIdentifier), null));
-
-            Assert.Equal("tableInfo", exception.ParamName);
-        }
-
-        [Fact]
-        public void ConstructorThrowsArgumentNullExceptionForNullForType()
+        public void Constructor_ThrowsArgumentNullException_IfForTypeIsNull()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => new ObjectInfo(null, null));
@@ -42,7 +33,16 @@
         }
 
         [Fact]
-        public void CreateInstance()
+        public void Constructor_ThrowsArgumentNullException_IfTableInfoIsNull()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new ObjectInfo(typeof(CustomerWithIntegerIdentifier), null));
+
+            Assert.Equal("tableInfo", exception.ParamName);
+        }
+
+        [Fact]
+        public void CreateInstance_ReturnsAnInstanceOfTheTypeTheObjectInfoIsFor()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
@@ -51,13 +51,26 @@
             Assert.IsType<CustomerWithIntegerIdentifier>(instance);
         }
 
+        [Fact]
+        public void CreateInstance_ThrowsMappingException_IfIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MappingException>(
+                () => objectInfo.CreateInstance<CustomerWithGuidIdentifier>());
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
         public void Dispose()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
         }
 
         [Fact]
-        public void ForReturnsExpandoObjectInfoForTypeOfDynamic()
+        public void For_ReturnsExpandoObjectInfo_ForTypeOfDynamic()
         {
             var objectInfo = ObjectInfoHelper<dynamic>();
 
@@ -65,7 +78,7 @@
         }
 
         [Fact]
-        public void ForReturnsSameObjectInfoForSameType()
+        public void For_ReturnsSameObjectInfo_ForSameType()
         {
             var forType = typeof(CustomerWithIntegerIdentifier);
 
@@ -76,7 +89,7 @@
         }
 
         [Fact]
-        public void ForThrowsArgumentNullExceptonForNullForType()
+        public void For_ThrowsArgumentNullExceptonForNullForType()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => ObjectInfo.For(null));
@@ -85,7 +98,7 @@
         }
 
         [Fact]
-        public void ForThrowsMicroLiteExceptionIfAbstractClass()
+        public void For_ThrowsMappingException_IfAbstractClass()
         {
             var exception = Assert.Throws<MappingException>(
                 () => ObjectInfo.For(typeof(AbstractCustomer)));
@@ -96,7 +109,7 @@
         }
 
         [Fact]
-        public void ForThrowsMicroLiteExceptionIfNoDefaultConstructor()
+        public void For_ThrowsMappingException_IfNoDefaultConstructor()
         {
             var exception = Assert.Throws<MappingException>(
                 () => ObjectInfo.For(typeof(CustomerWithNoDefaultConstructor)));
@@ -107,7 +120,7 @@
         }
 
         [Fact]
-        public void ForThrowsMicroLiteExceptionIfNotClass()
+        public void For_ThrowsMicroLiteException_IfNotClass()
         {
             var exception = Assert.Throws<MappingException>(
                 () => ObjectInfo.For(typeof(CustomerStruct)));
@@ -118,7 +131,7 @@
         }
 
         [Fact]
-        public void ForTypeReturnsTypePassedToConstructor()
+        public void ForType_ReturnsTypePassedToConstructor()
         {
             var forType = typeof(CustomerWithIntegerIdentifier);
 
@@ -128,7 +141,7 @@
         }
 
         [Fact]
-        public void GetColumnInfoReturnsColumnInfoIfColumnMapped()
+        public void GetColumnInfo_ReturnsColumnInfo_IfColumnMapped()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
             var columnInfo = objectInfo.GetColumnInfo("Name");
@@ -138,7 +151,7 @@
         }
 
         [Fact]
-        public void GetColumnInfoReturnsNullIfColumnNotMapped()
+        public void GetColumnInfo_ReturnsNull_IfColumnNotMapped()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
@@ -146,7 +159,7 @@
         }
 
         [Fact]
-        public void GetIdentifierValueReturnsPropertyValue()
+        public void GetIdentifierValue_ReturnsPropertyValueOfIdentifierProperty()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
@@ -161,7 +174,7 @@
         }
 
         [Fact]
-        public void GetIdentifierValueThrowsArgumentNullExceptionForNullInstance()
+        public void GetIdentifierValue_ThrowsArgumentNullException_IfInstanceIsNull()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
@@ -172,7 +185,7 @@
         }
 
         [Fact]
-        public void GetIdentifierValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        public void GetIdentifierValue_ThrowsMappingException_IfInstanceIsIncorrectType()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
@@ -185,7 +198,81 @@
         }
 
         [Fact]
-        public void HasDefaultIdentifierValueThrowsArgumentNullExceptionForNullInstance()
+        public void GetInsertValues_ReturnsPropertyValues()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var customer = new CustomerWithIntegerIdentifier
+            {
+                CreditLimit = 8822.22M,
+                DateOfBirth = new DateTime(1972, 12, 23),
+                Id = 122323,
+                Name = "Fred Flintstone",
+                Status = CustomerStatus.Active
+            };
+
+            var values = objectInfo.GetInsertValues(customer);
+
+            Assert.Equal(5, values.Length);
+            Assert.Equal(customer.CreditLimit, values[0]);
+            Assert.Equal(customer.DateOfBirth, values[1]);
+            Assert.Equal(customer.Id, values[2]); // Id should be included because Id is Assigned.
+            Assert.Equal(customer.Name, values[3]);
+            Assert.Equal((int)customer.Status, values[4]);
+        }
+
+        [Fact]
+        public void GetInsertValues_ThrowsMappingException_IfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MappingException>(
+                () => objectInfo.GetInsertValues(new CustomerWithGuidIdentifier()));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void GetUpdateValues_ReturnsPropertyValues()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var customer = new CustomerWithIntegerIdentifier
+            {
+                CreditLimit = 8822.22M,
+                DateOfBirth = new DateTime(1972, 12, 23),
+                Id = 122323,
+                Name = "Fred Flintstone",
+                Status = CustomerStatus.Active
+            };
+
+            var values = objectInfo.GetUpdateValues(customer);
+
+            Assert.Equal(5, values.Length);
+            Assert.Equal(customer.CreditLimit, values[0]);
+            Assert.Equal(customer.DateOfBirth, values[1]);
+            Assert.Equal(customer.Name, values[2]);
+            Assert.Equal((int)customer.Status, values[3]);
+            Assert.Equal(customer.Id, values[4]);
+        }
+
+        [Fact]
+        public void GetUpdateValues_ThrowsMappingException_IfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+
+            var exception = Assert.Throws<MappingException>(
+                () => objectInfo.GetUpdateValues(new CustomerWithGuidIdentifier()));
+
+            Assert.Equal(
+                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void HasDefaultIdentifierValue_ThrowsArgumentNullException_IfInstanceIsNull()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
@@ -196,7 +283,7 @@
         }
 
         [Fact]
-        public void HasDefaultIdentifierValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        public void HasDefaultIdentifierValue_ThrowsMappingException_IfInstanceIsIncorrectType()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
@@ -211,7 +298,7 @@
         }
 
         [Fact]
-        public void HasDefaultIdentifierValueWhenIdentifierIsGuid()
+        public void HasDefaultIdentifierValue_WhenIdentifierIsGuid()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
 
@@ -225,7 +312,7 @@
         }
 
         [Fact]
-        public void HasDefaultIdentifierValueWhenIdentifierIsInteger()
+        public void HasDefaultIdentifierValue_WhenIdentifierIsInteger()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
@@ -239,7 +326,7 @@
         }
 
         [Fact]
-        public void HasDefaultIdentifierValueWhenIdentifierIsString()
+        public void HasDefaultIdentifierValue_WhenIdentifierIsString()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
 
@@ -253,7 +340,7 @@
         }
 
         [Fact]
-        public void SetIdentifierValueSetsPropertyValue()
+        public void SetIdentifierValue_SetsPropertyValue()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
@@ -265,7 +352,7 @@
         }
 
         [Fact]
-        public void SetPropertyValuesSetsPropertyValues()
+        public void SetPropertyValues_SetsPropertyValues()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 

@@ -5,7 +5,7 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="ConventionMappingSettings"/> class.
+    /// Unit Tests for the <see cref="ConventionMappingSettings" /> class.
     /// </summary>
     public class ConventionMappingSettingsTests
     {
@@ -13,6 +13,15 @@
         {
             New = 0,
             Old = 1
+        }
+
+        [Fact]
+        public void Default_ReturnsNewInstanceEachTime()
+        {
+            var settings1 = ConventionMappingSettings.Default;
+            var settings2 = ConventionMappingSettings.Default;
+
+            Assert.NotSame(settings1, settings2);
         }
 
         public class WhenConstructed

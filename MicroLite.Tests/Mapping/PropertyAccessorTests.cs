@@ -4,7 +4,7 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="PropertyAccessor"/> class.
+    /// Unit Tests for the <see cref="PropertyAccessor" /> class.
     /// </summary>
     public class PropertyAccessorTests
     {
@@ -15,7 +15,7 @@
             Suspended = 2
         }
 
-        public class WhenCallingGetValueForAnEnum
+        public class WhenCallingGetValue_ForAnEnum
         {
             private readonly Customer customer = new Customer
             {
@@ -24,7 +24,7 @@
 
             private readonly object value;
 
-            public WhenCallingGetValueForAnEnum()
+            public WhenCallingGetValue_ForAnEnum()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Status");
                 var propertyAccessor = PropertyAccessor.Create(propertyInfo);
@@ -45,7 +45,7 @@
             }
         }
 
-        public class WhenCallingGetValueForANullableValueTypeWithANonNullValue
+        public class WhenCallingGetValue_ForANullableValueType_WithANonNullValue
         {
             private readonly Customer customer = new Customer
             {
@@ -54,7 +54,7 @@
 
             private readonly object value;
 
-            public WhenCallingGetValueForANullableValueTypeWithANonNullValue()
+            public WhenCallingGetValue_ForANullableValueType_WithANonNullValue()
             {
                 var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
                 var propertyAccessor = PropertyAccessor.Create(propertyInfo);
@@ -69,7 +69,7 @@
             }
         }
 
-        public class WhenCallingGetValueForANullableValueTypeWithANullValue
+        public class WhenCallingGetValue_ForANullableValueType_WithANullValue
         {
             private readonly Customer customer = new Customer
             {
@@ -78,7 +78,7 @@
 
             private readonly object value;
 
-            public WhenCallingGetValueForANullableValueTypeWithANullValue()
+            public WhenCallingGetValue_ForANullableValueType_WithANullValue()
             {
                 var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
                 var propertyAccessor = PropertyAccessor.Create(propertyInfo);
@@ -93,7 +93,7 @@
             }
         }
 
-        public class WhenCallingGetValueForAReferenceType
+        public class WhenCallingGetValue_ForAReferenceType
         {
             private readonly Customer customer = new Customer
             {
@@ -102,7 +102,7 @@
 
             private readonly object value;
 
-            public WhenCallingGetValueForAReferenceType()
+            public WhenCallingGetValue_ForAReferenceType()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Name");
                 var propertyAccessor = PropertyAccessor.Create(propertyInfo);
@@ -117,7 +117,7 @@
             }
         }
 
-        public class WhenCallingGetValueGenericForANullableValueTypeWithANonNullValue
+        public class WhenCallingGetValueGeneric_ForANullableValueType_WithANonNullValue
         {
             private readonly Customer customer = new Customer
             {
@@ -126,7 +126,7 @@
 
             private readonly int? value;
 
-            public WhenCallingGetValueGenericForANullableValueTypeWithANonNullValue()
+            public WhenCallingGetValueGeneric_ForANullableValueType_WithANonNullValue()
             {
                 var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
                 var propertyAccessor = (IPropertyAccessor<Customer, int?>)PropertyAccessor.Create(propertyInfo);
@@ -141,7 +141,7 @@
             }
         }
 
-        public class WhenCallingGetValueGenericForANullableValueTypeWithANullValue
+        public class WhenCallingGetValueGeneric_ForANullableValueType_WithANullValue
         {
             private readonly Customer customer = new Customer
             {
@@ -150,7 +150,7 @@
 
             private readonly int? value;
 
-            public WhenCallingGetValueGenericForANullableValueTypeWithANullValue()
+            public WhenCallingGetValueGeneric_ForANullableValueType_WithANullValue()
             {
                 var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
                 var propertyAccessor = (IPropertyAccessor<Customer, int?>)PropertyAccessor.Create(propertyInfo);
@@ -165,7 +165,7 @@
             }
         }
 
-        public class WhenCallingGetValueGenericForAReferenceType
+        public class WhenCallingGetValueGeneric_ForAReferenceType
         {
             private readonly Customer customer = new Customer
             {
@@ -174,7 +174,7 @@
 
             private readonly string value;
 
-            public WhenCallingGetValueGenericForAReferenceType()
+            public WhenCallingGetValueGeneric_ForAReferenceType()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Name");
                 var propertyAccessor = (IPropertyAccessor<Customer, string>)PropertyAccessor.Create(propertyInfo);
@@ -189,11 +189,11 @@
             }
         }
 
-        public class WhenCallingSetValueForAnEnum
+        public class WhenCallingSetValue_ForAnEnum
         {
             private readonly Customer customer = new Customer();
 
-            public WhenCallingSetValueForAnEnum()
+            public WhenCallingSetValue_ForAnEnum()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Status");
                 var propertyAccessor = PropertyAccessor.Create(propertyInfo);
@@ -208,11 +208,11 @@
             }
         }
 
-        public class WhenCallingSetValueForANullableStructWithNonNull
+        public class WhenCallingSetValue_ForANullableStruct_WithNonNull
         {
             private readonly Customer customer = new Customer();
 
-            public WhenCallingSetValueForANullableStructWithNonNull()
+            public WhenCallingSetValue_ForANullableStruct_WithNonNull()
             {
                 var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
                 var propertyAccessor = PropertyAccessor.Create(propertyInfo);
@@ -227,14 +227,14 @@
             }
         }
 
-        public class WhenCallingSetValueForANullableStructWithNull
+        public class WhenCallingSetValue_ForANullableStruct_WithNull
         {
             private readonly Customer customer = new Customer
             {
                 LastInvoice = 100
             };
 
-            public WhenCallingSetValueForANullableStructWithNull()
+            public WhenCallingSetValue_ForANullableStruct_WithNull()
             {
                 var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
                 var propertyAccessor = PropertyAccessor.Create(propertyInfo);
@@ -249,11 +249,11 @@
             }
         }
 
-        public class WhenCallingSetValueForAReferenceType
+        public class WhenCallingSetValue_ForAReferenceType
         {
             private readonly Customer customer = new Customer();
 
-            public WhenCallingSetValueForAReferenceType()
+            public WhenCallingSetValue_ForAReferenceType()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Name");
                 var propertyAccessor = PropertyAccessor.Create(propertyInfo);
@@ -268,71 +268,11 @@
             }
         }
 
-        public class WhenCallingSetValueGenericForANullableStructWithNonNull
+        public class WhenCallingSetValue_WithDbNull
         {
             private readonly Customer customer = new Customer();
 
-            public WhenCallingSetValueGenericForANullableStructWithNonNull()
-            {
-                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
-                var propertyAccessor = (IPropertyAccessor<Customer, int?>)PropertyAccessor.Create(propertyInfo);
-
-                propertyAccessor.SetValue(this.customer, 100);
-            }
-
-            [Fact]
-            public void ThePropertyShouldBeSet()
-            {
-                Assert.Equal(100, this.customer.LastInvoice);
-            }
-        }
-
-        public class WhenCallingSetValueGenericForANullableStructWithNull
-        {
-            private readonly Customer customer = new Customer
-            {
-                LastInvoice = 100
-            };
-
-            public WhenCallingSetValueGenericForANullableStructWithNull()
-            {
-                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
-                var propertyAccessor = (IPropertyAccessor<Customer, int?>)PropertyAccessor.Create(propertyInfo);
-
-                propertyAccessor.SetValue(this.customer, null);
-            }
-
-            [Fact]
-            public void ThePropertyShouldBeSet()
-            {
-                Assert.Null(this.customer.LastInvoice);
-            }
-        }
-
-        public class WhenCallingSetValueGenericForAReferenceType
-        {
-            private readonly Customer customer = new Customer();
-
-            public WhenCallingSetValueGenericForAReferenceType()
-            {
-                var propertyInfo = typeof(Customer).GetProperty("Name");
-                var propertyAccessor = (IPropertyAccessor<Customer, string>)PropertyAccessor.Create(propertyInfo);
-
-                propertyAccessor.SetValue(this.customer, "Fred Blogs");
-            }
-
-            [Fact]
-            public void ThePropertyShouldBeSet()
-            {
-                Assert.Equal("Fred Blogs", this.customer.Name);
-            }
-        }
-
-        public class WhenCallingSetValueWithDbNull
-        {
-            private readonly Customer customer = new Customer();
-
-            public WhenCallingSetValueWithDbNull()
+            public WhenCallingSetValue_WithDbNull()
             {
                 var propertyInfo = typeof(Customer).GetProperty("Name");
                 var propertyAccessor = PropertyAccessor.Create(propertyInfo);
@@ -344,6 +284,66 @@
             public void ThePropertyShouldNotBeSet()
             {
                 Assert.Null(this.customer.Name);
+            }
+        }
+
+        public class WhenCallingSetValueGeneric_ForANullableStruct_WithNonNull
+        {
+            private readonly Customer customer = new Customer();
+
+            public WhenCallingSetValueGeneric_ForANullableStruct_WithNonNull()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
+                var propertyAccessor = (IPropertyAccessor<Customer, int?>)PropertyAccessor.Create(propertyInfo);
+
+                propertyAccessor.SetValue(this.customer, 100);
+            }
+
+            [Fact]
+            public void ThePropertyShouldBeSet()
+            {
+                Assert.Equal(100, this.customer.LastInvoice);
+            }
+        }
+
+        public class WhenCallingSetValueGeneric_ForANullableStruct_WithNull
+        {
+            private readonly Customer customer = new Customer
+            {
+                LastInvoice = 100
+            };
+
+            public WhenCallingSetValueGeneric_ForANullableStruct_WithNull()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("LastInvoice");
+                var propertyAccessor = (IPropertyAccessor<Customer, int?>)PropertyAccessor.Create(propertyInfo);
+
+                propertyAccessor.SetValue(this.customer, null);
+            }
+
+            [Fact]
+            public void ThePropertyShouldBeSet()
+            {
+                Assert.Null(this.customer.LastInvoice);
+            }
+        }
+
+        public class WhenCallingSetValueGeneric_ForAReferenceType
+        {
+            private readonly Customer customer = new Customer();
+
+            public WhenCallingSetValueGeneric_ForAReferenceType()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Name");
+                var propertyAccessor = (IPropertyAccessor<Customer, string>)PropertyAccessor.Create(propertyInfo);
+
+                propertyAccessor.SetValue(this.customer, "Fred Blogs");
+            }
+
+            [Fact]
+            public void ThePropertyShouldBeSet()
+            {
+                Assert.Equal("Fred Blogs", this.customer.Name);
             }
         }
 

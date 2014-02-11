@@ -7,7 +7,7 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="ConventionMappingConvention"/> class.
+    /// Unit Tests for the <see cref="ConventionMappingConvention" /> class.
     /// </summary>
     public class ConventionMappingConventionTests
     {

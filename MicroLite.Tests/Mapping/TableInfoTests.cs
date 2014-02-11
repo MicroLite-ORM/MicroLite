@@ -7,7 +7,7 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="TableInfo"/> class.
+    /// Unit Tests for the <see cref="TableInfo" /> class.
     /// </summary>
     public class TableInfoTests
     {

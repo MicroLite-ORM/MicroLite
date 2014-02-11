@@ -4,7 +4,7 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="ColumnAttribute"/> class.
+    /// Unit Tests for the <see cref="ColumnAttribute" /> class.
     /// </summary>
     public class ColumnAttributeTests
     {
