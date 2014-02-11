@@ -13,7 +13,7 @@
 namespace MicroLite.Mapping.Inflection
 {
     /// <summary>
-    /// The interface for a class which is capable of modifying the grammatical category of an English word.
+    /// The interface for a class which is capable of modifying the grammatical category of words.
     /// </summary>
     public interface IInflectionService
     {

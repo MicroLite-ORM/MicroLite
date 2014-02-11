@@ -20,7 +20,7 @@ namespace MicroLite.Mapping
     using MicroLite.Logging;
 
     /// <summary>
-    /// A class which contains information about a database table .
+    /// A class which contains information about a database table which a class is mapped to.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Schema}.{Name}")]
     public sealed class TableInfo
@@ -43,7 +43,7 @@ namespace MicroLite.Mapping
         /// <param name="name">The name of the table.</param>
         /// <param name="schema">The name of the schema the table exists within.</param>
         /// <exception cref="ArgumentNullException">Thrown if columns or name are null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if no identifier column is specified.</exception>
+        /// <exception cref="MappingException">Thrown if no there is a problem with the column mappings.</exception>
         public TableInfo(
             IList<ColumnInfo> columns,
             IdentifierStrategy identifierStrategy,
@@ -163,11 +163,7 @@ namespace MicroLite.Mapping
 
             if (duplicatedColumn != null)
             {
-                if (log.IsFatal)
-                {
-                    log.Fatal(Messages.TableInfo_ColumnMappedMultipleTimes, duplicatedColumn.Key);
-                }
-
+                log.Fatal(Messages.TableInfo_ColumnMappedMultipleTimes, duplicatedColumn.Key);
                 throw new MappingException(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
             }
 

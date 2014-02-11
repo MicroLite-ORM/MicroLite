@@ -15,7 +15,6 @@ namespace MicroLite.Mapping
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using System.Reflection.Emit;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
     using MicroLite.TypeConverters;
@@ -45,11 +44,13 @@ namespace MicroLite.Mapping
         private readonly TableInfo tableInfo;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="ObjectInfo"/> class.
+        /// Initialises a new instance of the <see cref="ObjectInfo" /> class.
         /// </summary>
         /// <param name="forType">The type the object info relates to.</param>
         /// <param name="tableInfo">The table info.</param>
-        /// <exception cref="ArgumentNullException">Thrown if forType or tableInfo are null.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if forType or tableInfo are null.
+        /// </exception>
         public ObjectInfo(Type forType, TableInfo tableInfo)
         {
             if (forType == null)
@@ -130,9 +131,11 @@ namespace MicroLite.Mapping
         /// Gets the object info for the specified type.
         /// </summary>
         /// <param name="forType">The type to get the object info for.</param>
-        /// <returns>The <see cref="ObjectInfo"/> for the specified <see cref="Type"/>.</returns>
+        /// <returns>The <see cref="ObjectInfo" /> for the specified <see cref="Type" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if forType is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the specified type cannot be used with MicroLite.</exception>
+        /// <exception cref="MicroLiteException">
+        /// Thrown if the specified type cannot be used with MicroLite.
+        /// </exception>
         public static IObjectInfo For(Type forType)
         {
             if (forType == null)
@@ -172,13 +175,12 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <typeparam name="T">The type of object to create</typeparam>
         /// <returns>A new instance of the type.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the type is not correct for the object info.</exception>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if the type is not correct for the object info.
+        /// </exception>
         public T CreateInstance<T>()
         {
-            if (typeof(T) != this.forType)
-            {
-                throw new InvalidOperationException();
-            }
+            this.VerifyTypeIsCorrectTypeForThisObjectInfo(typeof(T));
 
             if (log.IsDebug)
             {
@@ -194,7 +196,9 @@ namespace MicroLite.Mapping
         /// Gets the column information for the column with the specified name.
         /// </summary>
         /// <param name="columnName">Name of the column.</param>
-        /// <returns>The ColumnInfo or null if no column is mapped for the object with the specified name.</returns>
+        /// <returns>
+        /// The ColumnInfo or null if no column is mapped for the object with the specified name.
+        /// </returns>
         public ColumnInfo GetColumnInfo(string columnName)
         {
             ColumnInfo columnInfo = null;
@@ -217,7 +221,9 @@ namespace MicroLite.Mapping
         /// <param name="instance">The instance to retrieve the value from.</param>
         /// <returns>The value of the identifier property.</returns>
         /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
+        /// <exception cref="MicroLiteException">
+        /// Thrown if the instance is not of the correct type.
+        /// </exception>
         public object GetIdentifierValue(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
@@ -231,9 +237,7 @@ namespace MicroLite.Mapping
         /// Gets the insert values for the specified instance.
         /// </summary>
         /// <param name="instance">The instance.</param>
-        /// <returns>
-        /// An array of values to be used for the insert command.
-        /// </returns>
+        /// <returns>An array of values to be used for the insert command.</returns>
         public object[] GetInsertValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
@@ -276,9 +280,7 @@ namespace MicroLite.Mapping
         /// Gets the update values for the specified instance.
         /// </summary>
         /// <param name="instance">The instance.</param>
-        /// <returns>
-        /// An array of values to be used for the update command.
-        /// </returns>
+        /// <returns>An array of values to be used for the update command.</returns>
         public object[] GetUpdateValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
@@ -324,7 +326,7 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns>
-        ///   <c>true</c> if the instance has the default identifier value; otherwise, <c>false</c>.
+        /// <c>true</c> if the instance has the default identifier value; otherwise, <c>false</c>.
         /// </returns>
         public bool HasDefaultIdentifierValue(object instance)
         {
@@ -350,7 +352,8 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Sets the property value for each property mapped to a column in the specified IDataReader after converting it to the correct type for the property.
+        /// Sets the property value for each property mapped to a column in the specified
+        /// IDataReader after converting it to the correct type for the property.
         /// </summary>
         /// <typeparam name="T">The type of the instance to set the values for.</typeparam>
         /// <param name="instance">The instance to set the property value on.</param>
@@ -427,7 +430,8 @@ namespace MicroLite.Mapping
                         continue;
 
                     default:
-                        // Always use a type converter to set as SQLite only has a bigint type which can't be auto cast to int.
+                        // Always use a type converter to set as SQLite only has a bigint type which
+                        // can't be auto cast to int.
                         var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType) ?? TypeConverter.Default;
 
                         var converted = typeConverter.ConvertFromDbValue(reader.GetValue(i), columnInfo.PropertyInfo.PropertyType);
@@ -601,9 +605,14 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("instance");
             }
 
-            if (instance.GetType() != this.ForType)
+            this.VerifyTypeIsCorrectTypeForThisObjectInfo(instance.GetType());
+        }
+
+        private void VerifyTypeIsCorrectTypeForThisObjectInfo(Type type)
+        {
+            if (type != this.ForType)
             {
-                var mesage = Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name);
+                var mesage = Messages.ObjectInfo_TypeMismatch.FormatWith(type.Name, this.ForType.Name);
                 log.Error(mesage);
                 throw new MappingException(mesage);
             }

@@ -18,7 +18,9 @@ namespace MicroLite.Mapping.Inflection
     /// <summary>
     /// A class for modifying the grammatical category of an English word.
     /// </summary>
-    /// <remarks>Based upon the example here <![CDATA[http://mattgrande.wordpress.com/2009/10/28/pluralization-helper-for-c/]]></remarks>
+    /// <remarks>
+    /// Based upon the example here <see href="http://mattgrande.wordpress.com/2009/10/28/pluralization-helper-for-c/" />
+    /// </remarks>
     internal sealed class EnglishInflectionService : IInflectionService
     {
         private readonly IDictionary<string, string> rules = new Dictionary<string, string>
@@ -66,10 +68,13 @@ namespace MicroLite.Mapping.Inflection
         }
 
         /// <summary>
-        /// Returns the plural version of the specified singular word or the specified word if there is no plural version.
+        /// Returns the plural version of the specified singular word or the specified word if there
+        /// is no plural version.
         /// </summary>
         /// <param name="word">The word to be pluralized.</param>
-        /// <returns>The plural word, or if the word cannot be pluralized; the specified word.</returns>
+        /// <returns>
+        /// The plural word, or if the word cannot be pluralized; the specified word.
+        /// </returns>
         public string ToPlural(string word)
         {
             if (this.singularWords.Contains(word))
