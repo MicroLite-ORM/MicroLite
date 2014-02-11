@@ -13,6 +13,16 @@
             New = 1
         }
 
+        public class WhenCallingDefault
+        {
+            [Fact]
+            public void AnObjectTypeConverterIsReturned()
+            {
+                var typeConverter = TypeConverter.Default;
+                Assert.IsType<ObjectTypeConverter>(typeConverter);
+            }
+        }
+
         public class WhenCallingFor_WithATypeOfEnum
         {
             [Fact]
