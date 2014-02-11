@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <NDepend AppName="MicroLite" Platform="DotNet">
-  <OutputDir KeepHistoric="True" KeepXmlFiles="True">C:\Source\GitHub\MicroLite\NDependOut</OutputDir>
+  <OutputDir KeepXmlFiles="True">C:\Source\GitHub\MicroLite\NDependOut</OutputDir>
   <Assemblies>
     <Name>MicroLite</Name>
   </Assemblies>
@@ -11,31 +11,23 @@
     <Name>System.Core</Name>
     <Name>System.Configuration</Name>
     <Name>System.Xml.Linq</Name>
+    <Name>Microsoft.CSharp</Name>
   </FrameworkAssemblies>
   <Dirs>
     <Dir>C:\Windows\Microsoft.NET\Framework\v4.0.30319</Dir>
     <Dir>C:\Windows\Microsoft.NET\Framework\v4.0.30319\WPF</Dir>
     <Dir>C:\Source\GitHub\MicroLite\MicroLite\bin\Debug</Dir>
     <Dir>C:\Source\GitHub\MicroLite\MicroLite.Tests\bin\Debug</Dir>
+    <Dir>C:\Source\GitHub\MicroLite\build\4.5</Dir>
   </Dirs>
-  <Report Kind="0" SectionsEnabled="12287" XslPath="" Flags="64512">
-    <Section Enabled="True">Application Metrics</Section>
-    <Section Enabled="True">.NET Assemblies Metrics</Section>
-    <Section Enabled="True">Treemap Metric View</Section>
-    <Section Enabled="True">.NET Assemblies Abstractness vs. Instability</Section>
-    <Section Enabled="True">.NET Assemblies Dependencies</Section>
-    <Section Enabled="True">.NET Assemblies Dependency Graph</Section>
-    <Section Enabled="True">.NET Assemblies Build Order</Section>
-    <Section Enabled="True">Analysis Log</Section>
-    <Section Enabled="True">CQL Rules Violated</Section>
-    <Section Enabled="True">Types Metrics</Section>
-    <Section Enabled="False">Types Dependencies</Section>
-  </Report>
-  <BuildComparisonSetting ProjectMode="DontCompare" BuildMode="MostRecentAnalysisResultAvailable" ProjectFileToCompareWith="" BuildFileToCompareWith="" NDaysAgo="1" />
-  <BaselineInUISetting ProjectMode="DontCompare" BuildMode="MostRecentAnalysisResultAvailable" ProjectFileToCompareWith="" BuildFileToCompareWith="" NDaysAgo="1" />
+  <Report Kind="0" SectionsEnabled="12287" XslPath="" Flags="64512" />
+  <BuildComparisonSetting ProjectMode="DontCompare" BuildMode="MostRecentAnalysisResultAvailable" ProjectFileToCompareWith="" BuildFileToCompareWith="" NDaysAgo="1" FocusOnRecentRulesViolations="False" />
+  <BaselineInUISetting ProjectMode="DontCompare" BuildMode="MostRecentAnalysisResultAvailable" ProjectFileToCompareWith="" BuildFileToCompareWith="" NDaysAgo="1" FocusOnRecentRulesViolations="False" />
   <CoverageFiles UncoverableAttribute="" />
+  <TrendMetrics UseCustomLog="False" LogRecurrence="3" LogLabel="2" UseCustomDir="False" CustomDir="" />
+  <HistoricAnalysisResult PersistRecurrence="3" UseCustomDir="False" CustomDir="" />
   <SourceFileRebasing FromPath="" ToPath="" />
-  <Queries>
+  <PathVariables /><Queries>
     <Group Name="Code Quality" Active="True" ShownInReport="False">
       <Query Active="True" DisplayList="True" DisplayStat="True" DisplaySelectionView="False" IsCriticalRule="True"><![CDATA[// <Name>Types too big - critical</Name>
 warnif count > 0 from t in JustMyCode.Types where 
@@ -3616,5 +3608,4 @@ from f in Application.Fields where
   f.Name == "components" && f.ParentType.DeriveFrom("System.Windows.Forms.Control".AllowNoMatch())
 select f]]></Query>
     </Group>
-  </Queries>
-</NDepend>
+  </Queries></NDepend>
