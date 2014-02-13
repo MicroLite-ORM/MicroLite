@@ -38,12 +38,11 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Creates a new instance of the type.
+        /// Creates a new instance of the type populated with the values from the specified IDataReader.
         /// </summary>
-        /// <typeparam name="T">The type of object to create</typeparam>
-        /// <returns>A new instance of the type.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the type is not correct for the object info.</exception>
-        T CreateInstance<T>();
+        /// <param name="reader">The IDataReader containing the values to build the instance from.</param>
+        /// <returns>A new instance of the type populated with the values from the specified IDataReader.</returns>
+        object CreateInstance(IDataReader reader);
 
         /// <summary>
         /// Gets the column information for the column with the specified name.
@@ -91,13 +90,5 @@ namespace MicroLite.Mapping
         /// <param name="identifier">The value to set as the identifier property.</param>
         /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
         void SetIdentifierValue(object instance, object identifier);
-
-        /// <summary>
-        /// Sets the property value for each property mapped to a column in the specified IDataReader after converting it to the correct type for the property.
-        /// </summary>
-        /// <typeparam name="T">The type of the instance to set the values for.</typeparam>
-        /// <param name="instance">The instance to set the property value on.</param>
-        /// <param name="reader">The IDataReader containing the query results.</param>
-        void SetPropertyValues<T>(T instance, IDataReader reader);
     }
 }

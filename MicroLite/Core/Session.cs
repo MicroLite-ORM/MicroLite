@@ -33,9 +33,8 @@ namespace MicroLite.Core
             ConnectionScope connectionScope,
             IDbConnection connection,
             ISqlDialect sqlDialect,
-            IObjectBuilder objectBuilder,
             IList<IListener> listeners)
-            : base(connectionScope, connection, sqlDialect, objectBuilder)
+            : base(connectionScope, connection, sqlDialect)
         {
             this.listeners = listeners;
         }

@@ -34,7 +34,7 @@ namespace MicroLite.Core
             }
         }
 
-        internal override void BuildValue(IDataReader reader, IObjectBuilder objectBuilder)
+        internal override void BuildValue(IDataReader reader)
         {
             if (reader.Read())
             {

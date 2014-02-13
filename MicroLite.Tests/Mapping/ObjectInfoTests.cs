@@ -42,26 +42,26 @@
         }
 
         [Fact]
-        public void CreateInstance_ReturnsAnInstanceOfTheTypeTheObjectInfoIsFor()
+        public void CreateInstance()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
 
-            var instance = objectInfo.CreateInstance<CustomerWithIntegerIdentifier>();
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(2);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
 
+            mockReader.Setup(x => x.GetName(0)).Returns("CustomerId");
+            mockReader.Setup(x => x.GetName(1)).Returns("StatusId");
+
+            mockReader.Setup(x => x.GetInt32(0)).Returns(12345);
+            mockReader.Setup(x => x.GetValue(1)).Returns(1);
+
+            var instance = objectInfo.CreateInstance(mockReader.Object) as CustomerWithIntegerIdentifier;
+
+            Assert.NotNull(instance);
             Assert.IsType<CustomerWithIntegerIdentifier>(instance);
-        }
-
-        [Fact]
-        public void CreateInstance_ThrowsMappingException_IfIncorrectType()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var exception = Assert.Throws<MappingException>(
-                () => objectInfo.CreateInstance<CustomerWithGuidIdentifier>());
-
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
-                exception.Message);
+            Assert.Equal(12345, instance.Id);
+            Assert.Equal(CustomerStatus.Active, instance.Status);
         }
 
         public void Dispose()
@@ -349,29 +349,6 @@
             objectInfo.SetIdentifierValue(customer, 122323);
 
             Assert.Equal(122323, customer.Id);
-        }
-
-        [Fact]
-        public void SetPropertyValues_SetsPropertyValues()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var instance = objectInfo.CreateInstance<CustomerWithIntegerIdentifier>();
-
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(2);
-            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
-
-            mockReader.Setup(x => x.GetName(0)).Returns("CustomerId");
-            mockReader.Setup(x => x.GetName(1)).Returns("StatusId");
-
-            mockReader.Setup(x => x.GetInt32(0)).Returns(12345);
-            mockReader.Setup(x => x.GetValue(1)).Returns(1);
-
-            objectInfo.SetPropertyValues(instance, mockReader.Object);
-
-            Assert.Equal(12345, instance.Id);
-            Assert.Equal(CustomerStatus.Active, instance.Status);
         }
 
         /// <summary>

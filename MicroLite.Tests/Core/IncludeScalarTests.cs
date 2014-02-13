@@ -29,7 +29,7 @@
             {
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -65,7 +65,7 @@
                 this.mockReader.Setup(x => x[0]).Returns(1);
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -96,7 +96,7 @@
             {
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -129,7 +129,7 @@
                 this.mockReader.Setup(x => x[0]).Returns("Foo");
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -181,7 +181,7 @@
             {
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -214,7 +214,7 @@
                 this.mockReader.Setup(x => x[0]).Returns(10);
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -271,7 +271,7 @@
             [Fact]
             public void BuildValueShouldThrowAMicroLiteException()
             {
-                var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object, null));
+                var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object));
 
                 Assert.Equal(Messages.IncludeScalar_MultipleColumns, exception.Message);
             }
@@ -292,7 +292,7 @@
             [Fact]
             public void BuildValueShouldThrowAMicroLiteException()
             {
-                var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object, null));
+                var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object));
 
                 Assert.Equal(Messages.IncludeSingle_SingleResultExpected, exception.Message);
             }

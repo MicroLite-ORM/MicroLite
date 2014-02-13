@@ -14,9 +14,38 @@
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var instance = objectInfo.CreateInstance<ExpandoObject>();
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(2);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
 
+            mockReader.Setup(x => x.GetName(0)).Returns("Id");
+            mockReader.Setup(x => x.GetName(1)).Returns("Name");
+
+            mockReader.Setup(x => x.GetValue(0)).Returns(12345);
+            mockReader.Setup(x => x.GetValue(1)).Returns("Fred Flintstone");
+
+            var instance = (dynamic)objectInfo.CreateInstance(mockReader.Object);
+
+            Assert.NotNull(instance);
             Assert.IsType<ExpandoObject>(instance);
+            Assert.Equal(12345, instance.Id);
+            Assert.Equal("Fred Flintstone", instance.Name);
+        }
+
+        [Fact]
+        public void CreateInstanceSetsPropertyValueToNullIfPassedDBNull()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(1);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(true);
+
+            mockReader.Setup(x => x.GetName(0)).Returns("Name");
+
+            var instance = (dynamic)objectInfo.CreateInstance(mockReader.Object);
+
+            Assert.Null(instance.Name);
         }
 
         [Fact]
@@ -91,47 +120,6 @@
                 () => objectInfo.SetIdentifierValue(new ExpandoObject(), 1));
 
             Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
-        }
-
-        [Fact]
-        public void SetPropertyValuesSetsPropertyValues()
-        {
-            var objectInfo = new ExpandoObjectInfo();
-
-            var instance = (dynamic)objectInfo.CreateInstance<ExpandoObject>();
-
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(2);
-            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
-
-            mockReader.Setup(x => x.GetName(0)).Returns("Id");
-            mockReader.Setup(x => x.GetName(1)).Returns("Name");
-
-            mockReader.Setup(x => x.GetValue(0)).Returns(12345);
-            mockReader.Setup(x => x.GetValue(1)).Returns("Fred Flintstone");
-
-            objectInfo.SetPropertyValues(instance, mockReader.Object);
-
-            Assert.Equal(12345, instance.Id);
-            Assert.Equal("Fred Flintstone", instance.Name);
-        }
-
-        [Fact]
-        public void SetPropertyValuesSetsPropertyValueToNullIfPassedDBNull()
-        {
-            var objectInfo = new ExpandoObjectInfo();
-
-            var instance = (dynamic)objectInfo.CreateInstance<ExpandoObject>();
-
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(1);
-            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(true);
-
-            mockReader.Setup(x => x.GetName(0)).Returns("Name");
-
-            objectInfo.SetPropertyValues(instance, mockReader.Object);
-
-            Assert.Null(instance.Name);
         }
 
         [Fact]

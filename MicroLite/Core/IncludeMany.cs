@@ -37,7 +37,7 @@ namespace MicroLite.Core
             }
         }
 
-        internal override void BuildValue(IDataReader reader, IObjectBuilder objectBuilder)
+        internal override void BuildValue(IDataReader reader)
         {
             if (resultType.IsNotEntityAndConvertible())
             {
@@ -56,9 +56,9 @@ namespace MicroLite.Core
 
                 while (reader.Read())
                 {
-                    var value = objectBuilder.BuildInstance<T>(objectInfo, reader);
+                    var instance = (T)objectInfo.CreateInstance(reader);
 
-                    this.values.Add(value);
+                    this.values.Add(instance);
                 }
             }
 

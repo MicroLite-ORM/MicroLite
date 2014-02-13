@@ -39,7 +39,7 @@ namespace MicroLite.Mapping
         private readonly object defaultIdentifierValue;
         private readonly Type forType;
         private readonly IPropertyAccessor identifierAccessor;
-        private readonly Delegate instanceFactory;
+        private readonly Func<object> instanceFactory;
         private readonly Dictionary<string, IPropertyAccessor> propertyAccessors; // key is property name.
         private readonly TableInfo tableInfo;
 
@@ -171,23 +171,20 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Creates a new instance of the type.
+        /// Creates a new instance of the type populated with the values from the specified IDataReader.
         /// </summary>
-        /// <typeparam name="T">The type of object to create</typeparam>
-        /// <returns>A new instance of the type.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if the type is not correct for the object info.
-        /// </exception>
-        public T CreateInstance<T>()
+        /// <param name="reader">The IDataReader containing the values to build the instance from.</param>
+        /// <returns>A new instance of the type populated with the values from the specified IDataReader.</returns>
+        public object CreateInstance(IDataReader reader)
         {
-            this.VerifyTypeIsCorrectTypeForThisObjectInfo(typeof(T));
-
             if (log.IsDebug)
             {
                 log.Debug(Messages.ObjectInfo_CreatingInstance, this.forType.FullName);
             }
 
-            var instance = ((Func<T>)this.instanceFactory).Invoke();
+            var instance = this.instanceFactory();
+
+            this.SetPropertyValues(instance, reader);
 
             return instance;
         }
@@ -351,97 +348,6 @@ namespace MicroLite.Mapping
             this.identifierAccessor.SetValue(instance, identifier);
         }
 
-        /// <summary>
-        /// Sets the property value for each property mapped to a column in the specified
-        /// IDataReader after converting it to the correct type for the property.
-        /// </summary>
-        /// <typeparam name="T">The type of the instance to set the values for.</typeparam>
-        /// <param name="instance">The instance to set the property value on.</param>
-        /// <param name="reader">The IDataReader containing the query results.</param>
-        public void SetPropertyValues<T>(T instance, IDataReader reader)
-        {
-            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
-
-            for (int i = 0; i < reader.FieldCount; i++)
-            {
-                if (reader.IsDBNull(i))
-                {
-                    continue;
-                }
-
-                var columnName = reader.GetName(i);
-                var columnInfo = this.GetColumnInfo(columnName);
-
-                if (columnInfo == null)
-                {
-                    var message = Messages.ObjectInfo_UnknownColumn.FormatWith(this.ForType.Name, columnName);
-                    log.Error(message);
-                    throw new MappingException(message);
-                }
-
-                switch (columnInfo.PropertyInfo.PropertyType.ResolveActualType().FullName)
-                {
-                    case "System.Boolean":
-                        this.SetBoolean<T>(instance, reader, i, columnInfo);
-                        continue;
-
-                    case "System.Byte":
-                        this.SetByte<T>(instance, reader, i, columnInfo);
-                        continue;
-
-                    case "System.Char":
-                        this.SetChar<T>(instance, reader, i, columnInfo);
-                        continue;
-
-                    case "System.DateTime":
-                        this.SetDateTime<T>(instance, reader, i, columnInfo);
-                        continue;
-
-                    case "System.Decimal":
-                        this.SetDecimal<T>(instance, reader, i, columnInfo);
-                        continue;
-
-                    case "System.Double":
-                        this.SetDouble<T>(instance, reader, i, columnInfo);
-                        continue;
-
-                    case "System.Single":
-                        this.SetSingle<T>(instance, reader, i, columnInfo);
-                        continue;
-
-                    case "System.Guid":
-                        this.SetGuid<T>(instance, reader, i, columnInfo);
-                        continue;
-
-                    case "System.Int16":
-                        this.SetInt16<T>(instance, reader, i, columnInfo);
-                        continue;
-
-                    case "System.Int32":
-                        this.SetInt32<T>(instance, reader, i, columnInfo);
-                        continue;
-
-                    case "System.Int64":
-                        this.SetInt64<T>(instance, reader, i, columnInfo);
-                        continue;
-
-                    case "System.String":
-                        ((IPropertyAccessor<T, string>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetString(i));
-                        continue;
-
-                    default:
-                        // Always use a type converter to set as SQLite only has a bigint type which
-                        // can't be auto cast to int.
-                        var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType) ?? TypeConverter.Default;
-
-                        var converted = typeConverter.ConvertFromDbValue(reader.GetValue(i), columnInfo.PropertyInfo.PropertyType);
-
-                        this.propertyAccessors[columnInfo.PropertyInfo.Name].SetValue(instance, converted);
-                        continue;
-                }
-            }
-        }
-
         private static void VerifyType(Type forType)
         {
             string message = null;
@@ -583,6 +489,97 @@ namespace MicroLite.Mapping
             else
             {
                 ((IPropertyAccessor<T, long>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetInt64(i));
+            }
+        }
+
+        /// <summary>
+        /// Sets the property value for each property mapped to a column in the specified
+        /// IDataReader after converting it to the correct type for the property.
+        /// </summary>
+        /// <typeparam name="T">The type of the instance to set the values for.</typeparam>
+        /// <param name="instance">The instance to set the property value on.</param>
+        /// <param name="reader">The IDataReader containing the query results.</param>
+        private void SetPropertyValues<T>(T instance, IDataReader reader)
+        {
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                if (reader.IsDBNull(i))
+                {
+                    continue;
+                }
+
+                var columnName = reader.GetName(i);
+                var columnInfo = this.GetColumnInfo(columnName);
+
+                if (columnInfo == null)
+                {
+                    var message = Messages.ObjectInfo_UnknownColumn.FormatWith(this.ForType.Name, columnName);
+                    log.Error(message);
+                    throw new MappingException(message);
+                }
+
+                switch (columnInfo.PropertyInfo.PropertyType.ResolveActualType().FullName)
+                {
+                    case "System.Boolean":
+                        this.SetBoolean<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Byte":
+                        this.SetByte<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Char":
+                        this.SetChar<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.DateTime":
+                        this.SetDateTime<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Decimal":
+                        this.SetDecimal<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Double":
+                        this.SetDouble<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Single":
+                        this.SetSingle<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Guid":
+                        this.SetGuid<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Int16":
+                        this.SetInt16<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Int32":
+                        this.SetInt32<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.Int64":
+                        this.SetInt64<T>(instance, reader, i, columnInfo);
+                        continue;
+
+                    case "System.String":
+                        ((IPropertyAccessor<T, string>)this.propertyAccessors[columnInfo.PropertyInfo.Name]).SetValue(instance, reader.GetString(i));
+                        continue;
+
+                    default:
+                        // Always use a type converter to set as SQLite only has a bigint type which
+                        // can't be auto cast to int.
+                        var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType) ?? TypeConverter.Default;
+
+                        var converted = typeConverter.ConvertFromDbValue(reader.GetValue(i), columnInfo.PropertyInfo.PropertyType);
+
+                        this.propertyAccessors[columnInfo.PropertyInfo.Name].SetValue(instance, converted);
+                        continue;
+                }
             }
         }
 

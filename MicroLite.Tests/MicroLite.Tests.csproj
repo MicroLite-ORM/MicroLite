@@ -83,7 +83,6 @@
     <Compile Include="Configuration\ConfigureTests.cs" />
     <Compile Include="Listeners\AssignedListenerTests.cs" />
     <Compile Include="Listeners\DbGeneratedListenerTests.cs" />
-    <Compile Include="Core\ObjectBuilderTests.cs" />
     <Compile Include="Core\SessionFactoryTests.cs" />
     <Compile Include="Dialect\MsSql\MsSqlDialectTests.cs" />
     <Compile Include="Listeners\ListenerCollectionTests.cs" />

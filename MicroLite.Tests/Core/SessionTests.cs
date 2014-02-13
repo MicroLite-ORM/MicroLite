@@ -26,7 +26,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var advancedSession = session.Advanced;
@@ -64,7 +63,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new[] { mockListener1.Object, mockListener2.Object });
 
             session.Delete(customer);
@@ -95,7 +93,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.False(session.Delete(customer));
@@ -128,7 +125,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.True(session.Delete(customer));
@@ -145,7 +141,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Delete(null));
@@ -173,7 +168,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<MicroLiteException>(() => session.Delete(customer));
@@ -192,7 +186,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
 
                 new IListener[0]);
 
@@ -224,7 +217,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.False(session.Delete(type, identifier));
@@ -255,7 +247,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.True(session.Delete(type, identifier));
@@ -272,7 +263,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Delete(typeof(Customer), null));
@@ -287,7 +277,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Delete(null, 1234));
@@ -316,7 +305,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<MicroLiteException>(() => session.Delete(type, identifier));
@@ -335,7 +323,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             using (session)
@@ -365,7 +352,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.Equal(result, session.Execute(sqlQuery));
@@ -394,7 +380,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.Equal(result, session.ExecuteScalar<object>(sqlQuery));
@@ -410,7 +395,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.ExecuteScalar<object>(null));
@@ -425,7 +409,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             using (session)
@@ -455,7 +438,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.Equal((CustomerStatus)result, session.ExecuteScalar<CustomerStatus>(sqlQuery));
@@ -471,7 +453,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Execute(null));
@@ -486,7 +467,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             using (session)
@@ -517,7 +497,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             session.Insert(customer);
@@ -557,7 +536,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new[] { mockListener1.Object, mockListener2.Object });
 
             session.Insert(customer);
@@ -580,7 +558,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new[] { mockListener.Object });
 
             var customer = new Customer
@@ -601,7 +578,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.InsertOrUpdate(null));
@@ -624,7 +600,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new[] { mockListener.Object });
 
             var customer = new Customer
@@ -645,7 +620,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Insert(null));
@@ -673,7 +647,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<MicroLiteException>(() => session.Insert(customer));
@@ -692,8 +665,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
-
                 new IListener[0]);
 
             using (session)
@@ -724,7 +695,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             session.Update(customer);
@@ -764,7 +734,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new[] { mockListener1.Object, mockListener2.Object });
 
             session.Update(customer);
@@ -792,7 +761,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.False(session.Delete(customer));
@@ -822,7 +790,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.True(session.Delete(customer));
@@ -839,7 +806,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Update((Customer)null));
@@ -867,7 +833,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<MicroLiteException>(() => session.Update(customer));
@@ -886,8 +851,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
-
                 new IListener[0]);
 
             using (session)
@@ -918,7 +881,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.False(session.Update(objectDelta));
@@ -948,7 +910,6 @@
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
                 mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             Assert.True(session.Update(objectDelta));
@@ -964,7 +925,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
                 new IListener[0]);
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Update((ObjectDelta)null));
@@ -979,8 +939,6 @@
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
                 new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object,
-
                 new IListener[0]);
 
             using (session)

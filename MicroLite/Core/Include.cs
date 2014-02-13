@@ -30,10 +30,9 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Builds the included value from the results in the data reader using the supplied object builder.
+        /// Builds the included value from the results in the data reader.
         /// </summary>
         /// <param name="reader">The <see cref="IDataReader"/> containing the results.</param>
-        /// <param name="objectBuilder">The object builder to use to build the included value.</param>
-        internal abstract void BuildValue(IDataReader reader, IObjectBuilder objectBuilder);
+        internal abstract void BuildValue(IDataReader reader);
     }
 }

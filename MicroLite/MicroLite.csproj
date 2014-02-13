@@ -115,10 +115,8 @@
     <Compile Include="Listeners\DbGeneratedListener.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\IObjectBuilder.cs" />
     <Compile Include="Dialect\ISqlDialect.cs" />
     <Compile Include="FrameworkExtensions\MemberInfoExtensions.cs" />
-    <Compile Include="Core\ObjectBuilder.cs" />
     <Compile Include="Core\Session.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -27,7 +27,6 @@ namespace MicroLite.Configuration
     internal sealed class FluentConfiguration : IConfigureConnection, ICreateSessionFactory
     {
         private static readonly object locker = new object();
-        private static readonly IObjectBuilder objectBuilder = new ObjectBuilder();
         private readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly SessionFactoryOptions options = new SessionFactoryOptions();
 
@@ -45,7 +44,7 @@ namespace MicroLite.Configuration
                         this.log.Debug(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
                     }
 
-                    sessionFactory = new SessionFactory(objectBuilder, this.options);
+                    sessionFactory = new SessionFactory(this.options);
                     SqlCharacters.Current = this.options.SqlDialect.SqlCharacters;
 
                     Configure.SessionFactories.Add(sessionFactory);

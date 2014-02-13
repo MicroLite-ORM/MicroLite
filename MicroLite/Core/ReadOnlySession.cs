@@ -26,19 +26,16 @@ namespace MicroLite.Core
     internal class ReadOnlySession : SessionBase, IReadOnlySession, IIncludeSession, IAdvancedReadOnlySession
     {
         private readonly Queue<Include> includes = new Queue<Include>();
-        private readonly IObjectBuilder objectBuilder;
         private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
         private readonly ISqlDialect sqlDialect;
 
         internal ReadOnlySession(
             ConnectionScope connectionScope,
             IDbConnection connection,
-            ISqlDialect sqlDialect,
-            IObjectBuilder objectBuilder)
+            ISqlDialect sqlDialect)
             : base(connectionScope, connection)
         {
             this.sqlDialect = sqlDialect;
-            this.objectBuilder = objectBuilder;
         }
 
         public IAdvancedReadOnlySession Advanced
@@ -247,7 +244,7 @@ namespace MicroLite.Core
                         do
                         {
                             var include = this.includes.Dequeue();
-                            include.BuildValue(reader, this.objectBuilder);
+                            include.BuildValue(reader);
                         }
                         while (reader.NextResult());
                     }
@@ -273,7 +270,7 @@ namespace MicroLite.Core
                         using (var reader = command.ExecuteReader())
                         {
                             var include = this.includes.Dequeue();
-                            include.BuildValue(reader, this.objectBuilder);
+                            include.BuildValue(reader);
                         }
                     }
                     finally

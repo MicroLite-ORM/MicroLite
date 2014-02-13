@@ -39,6 +39,12 @@
             }
 
             [Fact]
+            public void TheCurrentTransactionPropertyIsSetToTheReturnedTransaction()
+            {
+                Assert.Same(this.transaction, sessionBase.CurrentTransaction);
+            }
+
+            [Fact]
             public void TheIsolationLevelIsReadCommitted()
             {
                 this.mockConnection.Verify(x => x.BeginTransaction(IsolationLevel.ReadCommitted), Times.Once());
@@ -49,12 +55,6 @@
             {
                 Assert.NotNull(this.transaction);
                 Assert.IsType<Transaction>(this.transaction);
-            }
-
-            [Fact]
-            public void TheCurrentTransactionPropertyIsSetToTheReturnedTransaction()
-            {
-                Assert.Same(this.transaction, sessionBase.CurrentTransaction);
             }
         }
 
@@ -95,6 +95,12 @@
             }
 
             [Fact]
+            public void TheCurrentTransactionPropertyIsSetToTheReturnedTransaction()
+            {
+                Assert.Same(this.transaction, sessionBase.CurrentTransaction);
+            }
+
+            [Fact]
             public void TheSpecifiedIsolationLevelIsUsed()
             {
                 this.mockConnection.Verify(x => x.BeginTransaction(this.isolationLevel), Times.Once());
@@ -105,12 +111,6 @@
             {
                 Assert.NotNull(this.transaction);
                 Assert.IsType<Transaction>(this.transaction);
-            }
-
-            [Fact]
-            public void TheCurrentTransactionPropertyIsSetToTheReturnedTransaction()
-            {
-                Assert.Same(this.transaction, sessionBase.CurrentTransaction);
             }
         }
 

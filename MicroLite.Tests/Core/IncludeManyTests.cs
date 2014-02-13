@@ -5,7 +5,6 @@
     using System.Data;
     using System.Xml.Linq;
     using MicroLite.Core;
-    using MicroLite.Mapping;
     using Moq;
     using Xunit;
 
@@ -23,7 +22,6 @@
         public class WhenBuildValueHasBeenCalledAndThereAreNoResults
         {
             private IncludeMany<Customer> include = new IncludeMany<Customer>();
-            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
             public WhenBuildValueHasBeenCalledAndThereAreNoResults()
@@ -32,9 +30,7 @@
 
                 var reader = this.mockReader.Object;
 
-                this.mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader));
-
-                this.include.BuildValue(this.mockReader.Object, this.mockObjectBuilder.Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -50,15 +46,6 @@
             }
 
             [Fact]
-            public void TheObjectBuilderShouldNotBuildAnyObjects()
-            {
-                this.mockObjectBuilder.Verify(
-                    x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), It.IsAny<IDataReader>()),
-                    Times.Never(),
-                    "If the first call to IDataReader.Read() returns false, we should not try and create an object.");
-            }
-
-            [Fact]
             public void ValuesShouldBeEmpty()
             {
                 Assert.Empty(this.include.Values);
@@ -68,7 +55,6 @@
         public class WhenBuildValueHasBeenCalledAndThereAreResults
         {
             private IncludeMany<Customer> include = new IncludeMany<Customer>();
-            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
             public WhenBuildValueHasBeenCalledAndThereAreResults()
@@ -77,9 +63,7 @@
 
                 var reader = this.mockReader.Object;
 
-                this.mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
-
-                this.include.BuildValue(reader, this.mockObjectBuilder.Object);
+                this.include.BuildValue(reader);
             }
 
             [Fact]
@@ -92,12 +76,6 @@
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
-            }
-
-            [Fact]
-            public void TheObjectBuilderShouldBeCalled()
-            {
-                this.mockObjectBuilder.VerifyAll();
             }
 
             [Fact]
@@ -131,7 +109,6 @@
         public class WhenTheTypeIsAGuid
         {
             private IncludeMany<Guid> include = new IncludeMany<Guid>();
-            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
             public WhenTheTypeIsAGuid()
@@ -141,7 +118,7 @@
 
                 var reader = this.mockReader.Object;
 
-                this.include.BuildValue(reader, this.mockObjectBuilder.Object);
+                this.include.BuildValue(reader);
             }
 
             [Fact]
@@ -154,12 +131,6 @@
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
-            }
-
-            [Fact]
-            public void TheObjectBuilderShouldNotBeUsed()
-            {
-                this.mockObjectBuilder.Verify(x => x.BuildInstance<Guid>(It.IsAny<IObjectInfo>(), It.IsAny<IDataReader>()), Times.Never());
             }
 
             [Fact]
@@ -178,7 +149,6 @@
         public class WhenTheTypeIsAnEnum
         {
             private IncludeMany<CustomerStatus> include = new IncludeMany<CustomerStatus>();
-            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
             public WhenTheTypeIsAnEnum()
@@ -188,7 +158,7 @@
 
                 var reader = this.mockReader.Object;
 
-                this.include.BuildValue(reader, this.mockObjectBuilder.Object);
+                this.include.BuildValue(reader);
             }
 
             [Fact]
@@ -201,12 +171,6 @@
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
-            }
-
-            [Fact]
-            public void TheObjectBuilderShouldNotBeUsed()
-            {
-                this.mockObjectBuilder.Verify(x => x.BuildInstance<CustomerStatus>(It.IsAny<IObjectInfo>(), It.IsAny<IDataReader>()), Times.Never());
             }
 
             [Fact]
@@ -225,7 +189,6 @@
         public class WhenTheTypeIsAnXDocument
         {
             private IncludeMany<XDocument> include = new IncludeMany<XDocument>();
-            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
             public WhenTheTypeIsAnXDocument()
@@ -235,7 +198,7 @@
 
                 var reader = this.mockReader.Object;
 
-                this.include.BuildValue(reader, this.mockObjectBuilder.Object);
+                this.include.BuildValue(reader);
             }
 
             [Fact]
@@ -248,12 +211,6 @@
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
-            }
-
-            [Fact]
-            public void TheObjectBuilderShouldNotBeUsed()
-            {
-                this.mockObjectBuilder.Verify(x => x.BuildInstance<XDocument>(It.IsAny<IObjectInfo>(), It.IsAny<IDataReader>()), Times.Never());
             }
 
             [Fact]
@@ -272,7 +229,6 @@
         public class WhenTheTypeIsAString
         {
             private IncludeMany<string> include = new IncludeMany<string>();
-            private Mock<IObjectBuilder> mockObjectBuilder = new Mock<IObjectBuilder>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
             public WhenTheTypeIsAString()
@@ -282,7 +238,7 @@
 
                 var reader = this.mockReader.Object;
 
-                this.include.BuildValue(reader, this.mockObjectBuilder.Object);
+                this.include.BuildValue(reader);
             }
 
             [Fact]
@@ -295,12 +251,6 @@
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
-            }
-
-            [Fact]
-            public void TheObjectBuilderShouldNotBeUsed()
-            {
-                this.mockObjectBuilder.Verify(x => x.BuildInstance<string>(It.IsAny<IObjectInfo>(), It.IsAny<IDataReader>()), Times.Never());
             }
 
             [Fact]

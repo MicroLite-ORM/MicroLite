@@ -17,7 +17,7 @@ namespace MicroLite.Mapping
 
     internal static class DelegateFactory
     {
-        internal static Delegate CreateInstanceFactory(IObjectInfo objectInfo)
+        internal static Func<object> CreateInstanceFactory(IObjectInfo objectInfo)
         {
             var dynamicMethod = new DynamicMethod(
                 name: "MicroLite" + objectInfo.ForType.Name + "Factory",
@@ -33,7 +33,7 @@ namespace MicroLite.Mapping
             // return entity;
             ilGenerator.Emit(OpCodes.Ret);
 
-            var instanceFactory = dynamicMethod.CreateDelegate(typeof(Func<>).MakeGenericType(objectInfo.ForType));
+            var instanceFactory = (Func<object>)dynamicMethod.CreateDelegate(typeof(Func<object>));
 
             return instanceFactory;
         }

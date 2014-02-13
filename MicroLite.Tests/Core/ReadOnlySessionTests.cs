@@ -7,7 +7,6 @@
     using MicroLite.Builder;
     using MicroLite.Core;
     using MicroLite.Dialect;
-    using MicroLite.Mapping;
     using Moq;
     using Xunit;
 
@@ -27,8 +26,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             var advancedSession = session.Advanced;
 
@@ -49,9 +47,6 @@
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-            var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
-
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, SqlBuilder.Select("*").From(typeof(Customer)).ToSqlQuery()));
@@ -59,8 +54,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSqlDialect.Object,
-                mockObjectBuilder.Object);
+                mockSqlDialect.Object);
 
             var customers = session.All<Customer>();
 
@@ -71,7 +65,6 @@
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
             mockConnection.VerifyAll();
-            mockObjectBuilder.VerifyAll();
             mockSqlDialect.VerifyAll();
         }
 
@@ -96,17 +89,13 @@
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-            var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
-
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSqlDialect.Object,
-                mockObjectBuilder.Object);
+                mockSqlDialect.Object);
 
             var customers = session.Fetch<Customer>(sqlQuery);
 
@@ -115,7 +104,6 @@
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
             mockConnection.VerifyAll();
-            mockObjectBuilder.VerifyAll();
             mockSqlDialect.VerifyAll();
         }
 
@@ -125,8 +113,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Fetch<Customer>(null));
 
@@ -139,8 +126,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             using (session)
             {
@@ -155,8 +141,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             var includeSession = session.Include;
 
@@ -187,8 +172,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object);
+                mockSqlDialect.Object);
 
             var includeScalar = session.Include.Scalar<int>(sqlQuery);
 
@@ -208,8 +192,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             SqlQuery sqlQuery = null;
 
@@ -224,8 +207,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             using (session)
             {
@@ -246,8 +228,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object);
+                mockSqlDialect.Object);
 
             // We need at least 1 queued query otherwise we will get an exception when doing queries.Dequeue() instead.
             session.Include.Scalar<int>(new SqlQuery(""));
@@ -263,10 +244,10 @@
             var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
             var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
             var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
-            var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
+            var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT Id FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
 
             var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(1);
+            mockReader.Setup(x => x.FieldCount).Returns(new Queue<int>(new[] { 1, 0 }).Dequeue);
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
             mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
@@ -279,9 +260,6 @@
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-            var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
-
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
@@ -292,8 +270,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSqlDialect.Object,
-                mockObjectBuilder.Object);
+                mockSqlDialect.Object);
 
             var page = session.Paged<Customer>(sqlQuery, PagingOptions.ForPage(1, 1));
 
@@ -303,7 +280,6 @@
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
             mockConnection.VerifyAll();
-            mockObjectBuilder.VerifyAll();
             mockSqlDialect.VerifyAll();
         }
 
@@ -316,7 +292,7 @@
             var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
 
             var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(1);
+            mockReader.Setup(x => x.FieldCount).Returns(new Queue<int>(new[] { 1, 0 }).Dequeue);
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
             mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
@@ -329,9 +305,6 @@
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-            var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
-
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
@@ -342,8 +315,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSqlDialect.Object,
-                mockObjectBuilder.Object);
+                mockSqlDialect.Object);
 
             var page = session.Paged<Customer>(sqlQuery, PagingOptions.ForPage(1, 25));
 
@@ -353,7 +325,6 @@
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
             mockConnection.VerifyAll();
-            mockObjectBuilder.VerifyAll();
             mockSqlDialect.VerifyAll();
         }
 
@@ -366,7 +337,7 @@
             var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
 
             var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(1);
+            mockReader.Setup(x => x.FieldCount).Returns(new Queue<int>(new[] { 1, 0 }).Dequeue);
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
             mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
@@ -379,9 +350,6 @@
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-            var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
-
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
@@ -392,8 +360,7 @@
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSqlDialect.Object,
-                mockObjectBuilder.Object);
+                mockSqlDialect.Object);
 
             var page = session.Paged<Customer>(sqlQuery, PagingOptions.ForPage(10, 25));
 
@@ -403,7 +370,6 @@
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
             mockConnection.VerifyAll();
-            mockObjectBuilder.VerifyAll();
             mockSqlDialect.VerifyAll();
         }
 
@@ -413,8 +379,7 @@
             IReadOnlySession session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             var exception = Assert.Throws<ArgumentNullException>(() => session.Paged<Customer>(null, PagingOptions.ForPage(1, 25)));
 
@@ -427,8 +392,7 @@
             IReadOnlySession session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             using (session)
             {
@@ -460,8 +424,7 @@
             IReadOnlySession session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object);
+                mockSqlDialect.Object);
 
             var customer = session.Single<Customer>(identifier);
 
@@ -489,9 +452,6 @@
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-            var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
-
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), identifier)).Returns(new SqlQuery(""));
             mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
@@ -499,8 +459,7 @@
             IReadOnlySession session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSqlDialect.Object,
-                mockObjectBuilder.Object);
+                mockSqlDialect.Object);
 
             var customer = session.Single<Customer>(identifier);
 
@@ -509,7 +468,6 @@
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
             mockConnection.VerifyAll();
-            mockObjectBuilder.VerifyAll();
             mockSqlDialect.VerifyAll();
         }
 
@@ -519,8 +477,7 @@
             IReadOnlySession session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             object identifier = null;
 
@@ -535,8 +492,7 @@
             IReadOnlySession session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             using (session)
             {
@@ -567,8 +523,7 @@
             IReadOnlySession session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSqlDialect.Object,
-                new Mock<IObjectBuilder>().Object);
+                mockSqlDialect.Object);
 
             var customer = session.Single<Customer>(sqlQuery);
 
@@ -595,17 +550,13 @@
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-            var mockObjectBuilder = new Mock<IObjectBuilder>();
-            mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), reader)).Returns(new Customer());
-
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildCommand(mockCommand.Object, sqlQuery));
 
             IReadOnlySession session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockConnection.Object,
-                mockSqlDialect.Object,
-                mockObjectBuilder.Object);
+                mockSqlDialect.Object);
 
             var customer = session.Single<Customer>(sqlQuery);
 
@@ -614,7 +565,6 @@
             mockReader.VerifyAll();
             mockCommand.VerifyAll();
             mockConnection.VerifyAll();
-            mockObjectBuilder.VerifyAll();
         }
 
         [Fact]
@@ -623,8 +573,7 @@
             IReadOnlySession session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             SqlQuery sqlQuery = null;
 
@@ -639,8 +588,7 @@
             IReadOnlySession session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<IDbConnection>().Object,
-                new Mock<ISqlDialect>().Object,
-                new Mock<IObjectBuilder>().Object);
+                new Mock<ISqlDialect>().Object);
 
             using (session)
             {
@@ -657,8 +605,7 @@
                 var session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
                     new Mock<IDbConnection>().Object,
-                    new Mock<ISqlDialect>().Object,
-                    new Mock<IObjectBuilder>().Object);
+                    new Mock<ISqlDialect>().Object);
 
                 var exception = Assert.Throws<MicroLiteException>(() => session.Paged<Customer>(new SqlQuery(""), PagingOptions.None));
 
@@ -687,9 +634,6 @@
                     return mockCommand.Object;
                 });
 
-                var mockObjectBuilder = new Mock<IObjectBuilder>();
-                mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), It.IsAny<IDataReader>())).Returns(new Customer());
-
                 mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(false);
                 mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), It.IsAny<object>())).Returns(new SqlQuery(""));
                 mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
@@ -697,8 +641,7 @@
                 IReadOnlySession session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
                     mockConnection.Object,
-                    mockSqlDialect.Object,
-                    mockObjectBuilder.Object);
+                    mockSqlDialect.Object);
 
                 var includeCustomer = session.Include.Single<Customer>(2);
                 var customer = session.Single<Customer>(1);
@@ -732,9 +675,6 @@
                 var mockConnection = new Mock<IDbConnection>();
                 mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-                var mockObjectBuilder = new Mock<IObjectBuilder>();
-                mockObjectBuilder.Setup(x => x.BuildInstance<Customer>(It.IsAny<ObjectInfo>(), It.IsAny<IDataReader>())).Returns(new Customer());
-
                 mockSqlDialect.Setup(x => x.SupportsBatchedQueries).Returns(true);
                 mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), It.IsAny<object>())).Returns(new SqlQuery(""));
                 mockSqlDialect.Setup(x => x.BuildCommand(It.IsAny<IDbCommand>(), It.IsAny<SqlQuery>()));
@@ -742,8 +682,7 @@
                 IReadOnlySession session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
                     mockConnection.Object,
-                    mockSqlDialect.Object,
-                    mockObjectBuilder.Object);
+                    mockSqlDialect.Object);
 
                 var includeCustomer = session.Include.Single<Customer>(2);
                 var customer = session.Single<Customer>(1);

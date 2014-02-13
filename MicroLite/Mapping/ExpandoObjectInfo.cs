@@ -42,7 +42,7 @@ namespace MicroLite.Mapping
             }
         }
 
-        public T CreateInstance<T>()
+        public object CreateInstance(IDataReader reader)
         {
             if (log.IsDebug)
             {
@@ -50,8 +50,17 @@ namespace MicroLite.Mapping
             }
 
             var instance = new ExpandoObject();
+            var dictionary = (IDictionary<string, object>)instance;
 
-            return (dynamic)instance;
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                var columnName = reader.GetName(i);
+                var value = reader.IsDBNull(i) ? null : reader.GetValue(i);
+
+                dictionary[columnName] = value;
+            }
+
+            return instance;
         }
 
         public ColumnInfo GetColumnInfo(string columnName)
@@ -82,25 +91,6 @@ namespace MicroLite.Mapping
         public void SetIdentifierValue(object instance, object identifier)
         {
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
-        }
-
-        public void SetPropertyValues<T>(T instance, IDataReader reader)
-        {
-            var dictionary = (IDictionary<string, object>)instance;
-
-            for (int i = 0; i < reader.FieldCount; i++)
-            {
-                var columnName = reader.GetName(i);
-
-                if (log.IsDebug)
-                {
-                    log.Debug(Messages.ObjectInfo_SettingPropertyValue, this.ForType.Name, columnName);
-                }
-
-                var value = reader.IsDBNull(i) ? null : reader.GetValue(i);
-
-                dictionary[columnName] = value;
-            }
         }
     }
 
