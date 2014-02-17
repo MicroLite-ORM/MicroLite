@@ -96,7 +96,14 @@ namespace MicroLite.Dialect
             command.CommandText = this.GetCommandText(sqlQuery.CommandText);
             command.CommandTimeout = sqlQuery.Timeout;
             command.CommandType = this.GetCommandType(sqlQuery.CommandText);
-            this.AddParameters(command, sqlQuery, parameterNames);
+
+            for (int i = 0; i < parameterNames.Count; i++)
+            {
+                var parameterName = parameterNames[i];
+                var parameterValue = sqlQuery.Arguments[i];
+
+                this.AddParameter(command, parameterName, parameterValue);
+            }
         }
 
         /// <summary>
@@ -235,24 +242,19 @@ namespace MicroLite.Dialect
         public abstract SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions);
 
         /// <summary>
-        /// Adds the parameters.
+        /// Add a parameter to the IDbCommand with the specified name and value.
         /// </summary>
-        /// <param name="command">The command.</param>
-        /// <param name="sqlQuery">The SQL query.</param>
-        /// <param name="parameterNames">The parameter names.</param>
-        protected virtual void AddParameters(IDbCommand command, SqlQuery sqlQuery, IList<string> parameterNames)
+        /// <param name="command">The command to add a parameter to.</param>
+        /// <param name="parameterName">The name for the parameter.</param>
+        /// <param name="parameterValue">The value for the parameter.</param>
+        protected virtual void AddParameter(IDbCommand command, string parameterName, object parameterValue)
         {
-            for (int i = 0; i < parameterNames.Count; i++)
-            {
-                var parameterName = parameterNames[i];
+            var parameter = command.CreateParameter();
+            parameter.Direction = ParameterDirection.Input;
+            parameter.ParameterName = parameterName;
+            parameter.Value = parameterValue ?? DBNull.Value;
 
-                var parameter = command.CreateParameter();
-                parameter.Direction = ParameterDirection.Input;
-                parameter.ParameterName = parameterName;
-                parameter.Value = sqlQuery.Arguments[i] ?? DBNull.Value;
-
-                command.Parameters.Add(parameter);
-            }
+            command.Parameters.Add(parameter);
         }
 
         /// <summary>
