@@ -4,16 +4,17 @@
     using MicroLite.Builder;
     using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="DeleteSqlBuilder"/> class.
     /// </summary>
-    public class DeleteSqlBuilderTests
+    public class DeleteSqlBuilderTests : IDisposable
     {
         public DeleteSqlBuilderTests()
         {
-            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(UnitTestConfig.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
         }
 
         [Fact]
@@ -102,37 +103,7 @@
 
         public void Dispose()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
-        }
-
-        [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
-        private class Customer
-        {
-            public Customer()
-            {
-            }
-
-            [MicroLite.Mapping.Column("DoB")]
-            public DateTime DateOfBirth
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Name")]
-            public string Name
-            {
-                get;
-                set;
-            }
+            ObjectInfo.MappingConvention = null;
         }
     }
 }

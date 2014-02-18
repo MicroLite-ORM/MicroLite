@@ -5,21 +5,22 @@
     using MicroLite.Builder;
     using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="UpdateSqlBuilder"/> class.
     /// </summary>
-    public class UpdateSqlBuilderTests
+    public class UpdateSqlBuilderTests : IDisposable
     {
         public UpdateSqlBuilderTests()
         {
-            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(UnitTestConfig.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
         }
 
         public void Dispose()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+            ObjectInfo.MappingConvention = null;
         }
 
         [Fact]
@@ -112,36 +113,6 @@
             Assert.Equal(100122, sqlQuery.Arguments[2]);
 
             Assert.Equal("UPDATE [Table] SET [Column1] = @p0, [Column2] = @p1 WHERE [Id] = @p2", sqlQuery.CommandText);
-        }
-
-        [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
-        private class Customer
-        {
-            public Customer()
-            {
-            }
-
-            [MicroLite.Mapping.Column("DoB")]
-            public DateTime DateOfBirth
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Name")]
-            public string Name
-            {
-                get;
-                set;
-            }
         }
     }
 }

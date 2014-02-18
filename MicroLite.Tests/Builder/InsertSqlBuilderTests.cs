@@ -4,6 +4,7 @@
     using MicroLite.Builder;
     using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
@@ -13,12 +14,12 @@
     {
         public InsertSqlBuilderTests()
         {
-            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(UnitTestConfig.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
         }
 
         public void Dispose()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+            ObjectInfo.MappingConvention = null;
         }
 
         [Fact]
@@ -107,36 +108,6 @@
             Assert.Equal(12, sqlQuery.Arguments[1]);
 
             Assert.Equal("INSERT INTO [Table] ([Column1], [Column2]) VALUES (@p0, @p1)", sqlQuery.CommandText);
-        }
-
-        [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
-        private class Customer
-        {
-            public Customer()
-            {
-            }
-
-            [MicroLite.Mapping.Column("DoB")]
-            public DateTime DateOfBirth
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Name")]
-            public string Name
-            {
-                get;
-                set;
-            }
         }
     }
 }

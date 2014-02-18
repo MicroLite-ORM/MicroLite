@@ -4,6 +4,7 @@
     using MicroLite.Builder;
     using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
@@ -13,7 +14,7 @@
     {
         public SelectSqlBuilderTests()
         {
-            ObjectInfo.MappingConvention = new AttributeMappingConvention();
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(UnitTestConfig.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
         }
 
         /// <summary>
@@ -40,7 +41,7 @@
 
         public void Dispose()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+            ObjectInfo.MappingConvention = null;
         }
 
         [Fact]
@@ -184,15 +185,15 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
-                .Average("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Average("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT AVG(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -201,33 +202,33 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
-                .Average("Total", columnAlias: "AverageTotal")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Average("CreditLimit", columnAlias: "AverageCreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT AVG(Total) AS AverageTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT AVG(CreditLimit) AS AverageCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
         public void SelectAverageWithOtherColumn()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Id");
 
             var sqlQuery = sqlBuilder
-                .Average("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
-                .GroupBy("CustomerId")
+                .Average("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .GroupBy("CustomerStatusId")
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT CustomerId, AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0) GROUP BY CustomerId", sqlQuery.CommandText);
+            Assert.Equal("SELECT Id, AVG(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0) GROUP BY CustomerStatusId", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -236,15 +237,15 @@
             var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
 
             var sqlQuery = sqlBuilder
-                .Average("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Average("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT AVG([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT AVG([CreditLimit]) AS CreditLimit FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
         }
 
         /// <summary>
@@ -271,12 +272,12 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
-                .Count("CustomerId")
+                .Count("Id")
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT COUNT(CustomerId) AS CustomerId FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Equal("SELECT COUNT(Id) AS Id FROM Sales.Customers", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -285,27 +286,27 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
-                .Count("CustomerId", columnAlias: "CustomerCount")
+                .Count("Id", columnAlias: "CustomerCount")
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT COUNT(CustomerId) AS CustomerCount FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Equal("SELECT COUNT(Id) AS CustomerCount FROM Sales.Customers", sqlQuery.CommandText);
         }
 
         [Fact]
         public void SelectCountWithOtherColumn()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "ServiceId");
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerStatusId");
 
             var sqlQuery = sqlBuilder
-                .Count("CustomerId")
+                .Count("Id")
                 .From(typeof(Customer))
-                .GroupBy("ServiceId")
+                .GroupBy("CustomerStatusId")
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT ServiceId, COUNT(CustomerId) AS CustomerId FROM Sales.Customers GROUP BY ServiceId", sqlQuery.CommandText);
+            Assert.Equal("SELECT CustomerStatusId, COUNT(Id) AS Id FROM Sales.Customers GROUP BY CustomerStatusId", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -314,12 +315,15 @@
             var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
 
             var sqlQuery = sqlBuilder
-                .Count("CustomerId")
+                .Count("Id")
                 .From(typeof(Customer))
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT COUNT([CustomerId]) AS CustomerId FROM [Sales].[Customers]", sqlQuery.CommandText);
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT COUNT([Id]) AS Id FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -443,27 +447,27 @@
         [Fact]
         public void SelectFromSpecifyingColumnsAndType()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Name", "DoB");
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Name", "DateOfBirth");
 
             var sqlQuery = sqlBuilder
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT Name, DoB FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Equal("SELECT Name, DateOfBirth FROM Sales.Customers", sqlQuery.CommandText);
         }
 
         [Fact]
         public void SelectFromSpecifyingColumnsAndTypeWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Name", "DoB");
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Name", "DateOfBirth");
 
             var sqlQuery = sqlBuilder
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT [Name], [DoB] FROM [Sales].[Customers]", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Name], [DateOfBirth] FROM [Sales].[Customers]", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -476,7 +480,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT DoB, CustomerId, Name FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Equal("SELECT Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Updated, Website FROM Sales.Customers", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -489,7 +493,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT [DoB], [CustomerId], [Name] FROM [Sales].[Customers]", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Created], [CreditLimit], [DateOfBirth], [Id], [Name], [CustomerStatusId], [Updated], [Website] FROM [Sales].[Customers]", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -574,15 +578,15 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
-                .Max("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Max("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT MAX(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -591,32 +595,32 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
-                .Max("Total", columnAlias: "MaxTotal")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Max("CreditLimit", columnAlias: "MaxCreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT MAX(Total) AS MaxTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT MAX(CreditLimit) AS MaxCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
         public void SelectMaxWithOtherColumn()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Id");
 
             var sqlQuery = sqlBuilder
-                .Max("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Max("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT CustomerId, MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Id, MAX(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -625,15 +629,15 @@
             var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
 
             var sqlQuery = sqlBuilder
-                .Max("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Max("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT MAX([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT MAX([CreditLimit]) AS CreditLimit FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -642,15 +646,15 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
-                .Min("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Min("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT MIN(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -659,32 +663,32 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
-                .Min("Total", columnAlias: "MinTotal")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Min("CreditLimit", columnAlias: "MinCreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT MIN(Total) AS MinTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT MIN(CreditLimit) AS MinCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
         public void SelectMinWithOtherColumn()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Id");
 
             var sqlQuery = sqlBuilder
-                .Min("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Min("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT CustomerId, MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Id, MIN(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -693,15 +697,15 @@
             var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
 
             var sqlQuery = sqlBuilder
-                .Min("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Min("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT MIN([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT MIN([CreditLimit]) AS CreditLimit FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -710,15 +714,15 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
-                .Sum("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Sum("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT SUM(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -727,32 +731,32 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
 
             var sqlQuery = sqlBuilder
-                .Sum("Total", columnAlias: "SumTotal")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Sum("CreditLimit", columnAlias: "SumCreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT SUM(Total) AS SumTotal FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT SUM(CreditLimit) AS SumCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
         public void SelectSumWithOtherColumn()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Id");
 
             var sqlQuery = sqlBuilder
-                .Sum("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Sum("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Id, SUM(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -761,15 +765,15 @@
             var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
 
             var sqlQuery = sqlBuilder
-                .Sum("Total")
-                .From(typeof(Invoice))
-                .Where("CustomerId = @p0", 1022)
+                .Sum("CreditLimit")
+                .From(typeof(Customer))
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1022, sqlQuery.Arguments[0]);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT SUM([Total]) AS Total FROM [Invoices] WHERE (CustomerId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT SUM([CreditLimit]) AS CreditLimit FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1516,66 +1520,6 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
 
             Assert.Equal("SELECT *", sqlBuilder.ToSqlQuery().CommandText);
-        }
-
-        [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
-        private class Customer
-        {
-            public Customer()
-            {
-            }
-
-            [MicroLite.Mapping.Column("DoB")]
-            public DateTime DateOfBirth
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Name")]
-            public string Name
-            {
-                get;
-                set;
-            }
-        }
-
-        [MicroLite.Mapping.Table(name: "Invoices")]
-        private class Invoice
-        {
-            public Invoice()
-            {
-            }
-
-            [MicroLite.Mapping.Column("CustomerId")]
-            public int CustomerId
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("InvoiceId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Total")]
-            public decimal Total
-            {
-                get;
-                set;
-            }
         }
     }
 }
