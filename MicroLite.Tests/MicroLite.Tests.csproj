@@ -93,6 +93,8 @@
     <Compile Include="Builder\RawWhereBuilderTests.cs" />
     <Compile Include="Builder\SelectSqlBuilderTests.cs" />
     <Compile Include="Builder\StoredProcedureSqlBuilderTests.cs" />
+    <Compile Include="TestEntities\Customer.cs" />
+    <Compile Include="TestEntities\CustomerStatus.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverterTests.cs" />
     <Compile Include="TypeConverters\EnumTypeConverterTests.cs" />
     <Compile Include="Mapping\IdentifierAttributeTests.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="SqlUtilityTests.cs" />
     <Compile Include="TypeConverters\UriTypeConverterTests.cs" />
     <Compile Include="TypeConverters\XDocumentTypeConverterTests.cs" />
+    <Compile Include="UnitTestConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicroLite\MicroLite.csproj">
