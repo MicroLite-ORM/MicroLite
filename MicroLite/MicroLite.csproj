@@ -139,10 +139,8 @@
     <Compile Include="TypeConverters\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
     <Compile Include="Mapping\Inflection\InflectionService.cs" />
-    <Compile Include="Mapping\IPropertyAccessor.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
     <Compile Include="Mapping\AttributeMappingConvention.cs" />
-    <Compile Include="Mapping\PropertyAccessor.cs" />
     <Compile Include="Mapping\TableInfo.cs">
       <SubType>Code</SubType>
     </Compile>

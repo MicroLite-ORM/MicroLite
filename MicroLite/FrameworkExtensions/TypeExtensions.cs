@@ -24,7 +24,14 @@ namespace MicroLite.FrameworkExtensions
 
         internal static Type ResolveActualType(this Type type)
         {
-            return type.IsGenericType ? type.GetGenericArguments()[0] : type;
+            var actualType = type;
+
+            if (type.IsGenericType)
+            {
+                actualType = Nullable.GetUnderlyingType(type);
+            }
+
+            return actualType;
         }
     }
 }
