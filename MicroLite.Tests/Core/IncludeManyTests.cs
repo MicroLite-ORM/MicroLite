@@ -5,6 +5,7 @@
     using System.Data;
     using System.Xml.Linq;
     using MicroLite.Core;
+    using MicroLite.Tests.TestEntities;
     using Moq;
     using Xunit;
 
@@ -13,12 +14,6 @@
     /// </summary>
     public class IncludeManyTests
     {
-        private enum CustomerStatus
-        {
-            Disabled = 0,
-            Active = 1
-        }
-
         public class WhenBuildValueHasBeenCalledAndThereAreNoResults
         {
             private IncludeMany<Customer> include = new IncludeMany<Customer>();
@@ -263,18 +258,6 @@
             public void ValuesShouldNotBeEmpty()
             {
                 Assert.NotEmpty(this.include.Values);
-            }
-        }
-
-        [MicroLite.Mapping.Table("Customers")]
-        private class Customer
-        {
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
-            public int Id
-            {
-                get;
-                set;
             }
         }
     }

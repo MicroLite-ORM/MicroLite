@@ -5,6 +5,7 @@
     using MicroLite.Core;
     using MicroLite.Dialect;
     using MicroLite.Listeners;
+    using MicroLite.Tests.TestEntities;
     using Moq;
     using Xunit;
 
@@ -13,12 +14,6 @@
     /// </summary>
     public class SessionTests
     {
-        private enum CustomerStatus
-        {
-            Inactive = 0,
-            Active = 1
-        }
-
         [Fact]
         public void AdvancedReturnsSameSessionByDifferentInterface()
         {
@@ -946,15 +941,6 @@
             }
 
             Assert.Throws<ObjectDisposedException>(() => session.Update(new ObjectDelta(typeof(Customer), 1234)));
-        }
-
-        private class Customer
-        {
-            public int Id
-            {
-                get;
-                set;
-            }
         }
     }
 }

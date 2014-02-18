@@ -7,6 +7,8 @@
     using MicroLite.Builder;
     using MicroLite.Core;
     using MicroLite.Dialect;
+    using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Moq;
     using Xunit;
 
@@ -17,6 +19,7 @@
     {
         public ReadOnlySessionTests()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(UnitTestConfig.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
             SqlCharacters.Current = null;
         }
 
@@ -70,6 +73,7 @@
 
         public void Dispose()
         {
+            ObjectInfo.MappingConvention = null;
             SqlCharacters.Current = null;
         }
 
@@ -698,18 +702,6 @@
             public void TheSqlDialectShouldCombineTheQueries()
             {
                 this.mockSqlDialect.Verify(x => x.Combine(It.IsAny<IEnumerable<SqlQuery>>()), Times.Once());
-            }
-        }
-
-        [MicroLite.Mapping.Table("dbo", "Customers")]
-        private class Customer
-        {
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
-            public int Id
-            {
-                get;
-                set;
             }
         }
     }

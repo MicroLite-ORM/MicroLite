@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Data;
     using MicroLite.Core;
+    using MicroLite.Tests.TestEntities;
     using Moq;
     using Xunit;
 
@@ -11,18 +12,12 @@
     /// </summary>
     public class IncludeScalarTests
     {
-        private enum Status
-        {
-            New = 0,
-            Saved = 1
-        }
-
         /// <summary>
         /// Issue #172 - Cannot use Session.Include.Scalar to return an enum
         /// </summary>
         public class ForAnEnumTypeWhenBuildValueHasBeenCalledAndThereAreNoResults
         {
-            private IncludeScalar<Status> include = new IncludeScalar<Status>();
+            private IncludeScalar<CustomerStatus> include = new IncludeScalar<CustomerStatus>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
             public ForAnEnumTypeWhenBuildValueHasBeenCalledAndThereAreNoResults()
@@ -47,7 +42,7 @@
             [Fact]
             public void ValueShouldBeDefaultValue()
             {
-                Assert.Equal(default(Status), this.include.Value);
+                Assert.Equal(default(CustomerStatus), this.include.Value);
             }
         }
 
@@ -56,7 +51,7 @@
         /// </summary>
         public class ForAnEnumTypeWhenBuildValueHasBeenCalledAndThereIsOneResult
         {
-            private IncludeScalar<Status> include = new IncludeScalar<Status>();
+            private IncludeScalar<CustomerStatus> include = new IncludeScalar<CustomerStatus>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
             public ForAnEnumTypeWhenBuildValueHasBeenCalledAndThereIsOneResult()
@@ -83,7 +78,7 @@
             [Fact]
             public void ValueShouldBeSetToTheResult()
             {
-                Assert.Equal(Status.Saved, this.include.Value);
+                Assert.Equal(CustomerStatus.Active, this.include.Value);
             }
         }
 
