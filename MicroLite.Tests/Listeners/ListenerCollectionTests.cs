@@ -1,4 +1,4 @@
-﻿namespace MicroLite.Tests.Core
+﻿namespace MicroLite.Tests.Listeners
 {
     using System.Linq;
     using MicroLite.Listeners;
