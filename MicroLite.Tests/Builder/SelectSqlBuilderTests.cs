@@ -10,11 +10,12 @@
     /// <summary>
     /// Unit Tests for the <see cref="SelectSqlBuilder"/> class.
     /// </summary>
-    public class SelectSqlBuilderTests : IDisposable
+    public class SelectSqlBuilderTests : UnitTest
     {
         public SelectSqlBuilderTests()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(UnitTestConfig.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
         }
 
         /// <summary>
@@ -37,11 +38,6 @@
             Assert.Equal("Opt2", sqlQuery.Arguments[1]);
             Assert.Equal(1, sqlQuery.Arguments[2]);
             Assert.Equal(10, sqlQuery.Arguments[3]);
-        }
-
-        public void Dispose()
-        {
-            ObjectInfo.MappingConvention = null;
         }
 
         [Fact]
@@ -82,7 +78,8 @@
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
 
-            var exception = Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("").Where("").In((object[])(object[])null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("").Where("").In((object[])(object[])null));
 
             Assert.Equal("args", exception.ParamName);
         }
@@ -92,7 +89,8 @@
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
 
-            var exception = Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("").Where("").In((SqlQuery)null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("").Where("").In((SqlQuery)null));
 
             Assert.Equal("subQuery", exception.ParamName);
         }
@@ -102,7 +100,8 @@
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
 
-            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").Where("Column").NotIn((object[])null));
+            Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").Where("Column").NotIn((object[])null));
         }
 
         [Fact]
@@ -110,7 +109,8 @@
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
 
-            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").Where("Column").NotIn((SqlQuery)null));
+            Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").Where("Column").NotIn((SqlQuery)null));
         }
 
         [Fact]
@@ -142,8 +142,11 @@
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
 
-            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByAscending((string)null));
-            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByAscending((string[])null));
+            Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").OrderByAscending((string)null));
+
+            Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").OrderByAscending((string[])null));
         }
 
         [Fact]
@@ -175,8 +178,11 @@
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
 
-            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByDescending((string)null));
-            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").OrderByDescending((string[])null));
+            Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").OrderByDescending((string)null));
+
+            Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").OrderByDescending((string[])null));
         }
 
         [Fact]

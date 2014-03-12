@@ -278,6 +278,18 @@ namespace MicroLite.Mapping
             this.setIdentifierValue(instance, identifier);
         }
 
+        /// <summary>
+        /// Resets the object info state, removing any cached object information and restoring the default mapping convention.
+        /// </summary>
+        /// <remarks>
+        /// Makes it easier to unit test using different mapping conventions - should remain an internal method.
+        /// </remarks>
+        internal static void Reset()
+        {
+            mappingConvention = null;
+            objectInfos = new Dictionary<Type, IObjectInfo>();
+        }
+
         private static void VerifyType(Type forType)
         {
             string message = null;

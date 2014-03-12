@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests.Builder
 {
-    using System;
     using MicroLite.Builder;
     using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
@@ -10,11 +9,12 @@
     /// <summary>
     /// Unit Tests for the <see cref="DeleteSqlBuilder"/> class.
     /// </summary>
-    public class DeleteSqlBuilderTests : IDisposable
+    public class DeleteSqlBuilderTests : UnitTest
     {
         public DeleteSqlBuilderTests()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(UnitTestConfig.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
         }
 
         [Fact]
@@ -99,11 +99,6 @@
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
 
             Assert.Equal("DELETE FROM [Table] WHERE [Column1] = @p0", sqlQuery.CommandText);
-        }
-
-        public void Dispose()
-        {
-            ObjectInfo.MappingConvention = null;
         }
     }
 }

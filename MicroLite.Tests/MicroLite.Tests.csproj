@@ -70,6 +70,7 @@
     <Compile Include="DbEncryptedStringTests.cs" />
     <Compile Include="Dialect\MsSql\MsSqlCharactersTests.cs" />
     <Compile Include="Mapping\Inflection\InflectionServiceTests.cs" />
+    <Compile Include="UnitTest.cs" />
     <Compile Include="ObjectDeltaTests.cs" />
     <Compile Include="Builder\DeleteSqlBuilderTests.cs" />
     <Compile Include="Builder\InsertSqlBuilderTests.cs" />
@@ -115,7 +116,6 @@
     <Compile Include="SqlUtilityTests.cs" />
     <Compile Include="TypeConverters\UriTypeConverterTests.cs" />
     <Compile Include="TypeConverters\XDocumentTypeConverterTests.cs" />
-    <Compile Include="UnitTestConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MicroLite\MicroLite.csproj">

@@ -15,12 +15,12 @@
     /// <summary>
     /// Unit Tests for the <see cref="ReadOnlySession"/> class.
     /// </summary>
-    public class ReadOnlySessionTests : IDisposable
+    public class ReadOnlySessionTests : UnitTest
     {
         public ReadOnlySessionTests()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(UnitTestConfig.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
-            SqlCharacters.Current = null;
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
         }
 
         [Fact]
@@ -69,12 +69,6 @@
             mockCommand.VerifyAll();
             mockConnection.VerifyAll();
             mockSqlDialect.VerifyAll();
-        }
-
-        public void Dispose()
-        {
-            ObjectInfo.MappingConvention = null;
-            SqlCharacters.Current = null;
         }
 
         [Fact]
@@ -611,7 +605,8 @@
                     new Mock<IDbConnection>().Object,
                     new Mock<ISqlDialect>().Object);
 
-                var exception = Assert.Throws<MicroLiteException>(() => session.Paged<Customer>(new SqlQuery(""), PagingOptions.None));
+                var exception = Assert.Throws<MicroLiteException>(
+                    () => session.Paged<Customer>(new SqlQuery(""), PagingOptions.None));
 
                 Assert.Equal(Messages.Session_PagingOptionsMustNotBeNone, exception.Message);
             }

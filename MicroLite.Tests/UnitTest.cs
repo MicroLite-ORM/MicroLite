@@ -4,9 +4,15 @@
     using System.Reflection;
     using MicroLite.Mapping;
 
-    internal static class UnitTestConfig
+    public abstract class UnitTest : IDisposable
     {
-        internal static ConventionMappingSettings GetConventionMappingSettings(IdentifierStrategy identifierStrategy)
+        protected UnitTest()
+        {
+            ObjectInfo.Reset();
+            SqlCharacters.Current = null;
+        }
+
+        public static ConventionMappingSettings GetConventionMappingSettings(IdentifierStrategy identifierStrategy)
         {
             return new ConventionMappingSettings
             {
@@ -27,6 +33,18 @@
                     return "Sales";
                 }
             };
+        }
+
+        public void Dispose()
+        {
+            ObjectInfo.Reset();
+            SqlCharacters.Current = null;
+
+            this.OnDispose();
+        }
+
+        protected virtual void OnDispose()
+        {
         }
     }
 }

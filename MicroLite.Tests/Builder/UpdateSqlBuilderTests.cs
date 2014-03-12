@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests.Builder
 {
-    using System;
     using MicroLite;
     using MicroLite.Builder;
     using MicroLite.Dialect.MsSql;
@@ -11,16 +10,12 @@
     /// <summary>
     /// Unit Tests for the <see cref="UpdateSqlBuilder"/> class.
     /// </summary>
-    public class UpdateSqlBuilderTests : IDisposable
+    public class UpdateSqlBuilderTests : UnitTest
     {
         public UpdateSqlBuilderTests()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(UnitTestConfig.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
-        }
-
-        public void Dispose()
-        {
-            ObjectInfo.MappingConvention = null;
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
         }
 
         [Fact]
