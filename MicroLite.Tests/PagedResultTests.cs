@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests
 {
     using System.Collections.Generic;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
@@ -146,10 +147,6 @@
             var pagedResults = new PagedResult<Customer>(1, null, resultsPerPage, totalResults);
 
             Assert.Equal(2, pagedResults.TotalPages);
-        }
-
-        private class Customer
-        {
         }
     }
 }

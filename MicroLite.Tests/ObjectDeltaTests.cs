@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests
 {
     using System.Linq;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     public class ObjectDeltaTests
@@ -49,10 +50,6 @@
             {
                 Assert.Equal(1332, this.objectDelta.Identifier);
             }
-        }
-
-        private class Customer
-        {
         }
     }
 }
