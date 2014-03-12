@@ -31,9 +31,9 @@ namespace MicroLite.Dialect.MsSql
         internal static readonly SqlDialect Instance = new MsSqlDialect();
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="MsSqlDialect"/> class from being created.
+        /// Initialises a new instance of the <see cref="MsSqlDialect"/> class.
         /// </summary>
-        private MsSqlDialect()
+        internal MsSqlDialect()
             : base(MsSqlCharacters.Instance)
         {
         }

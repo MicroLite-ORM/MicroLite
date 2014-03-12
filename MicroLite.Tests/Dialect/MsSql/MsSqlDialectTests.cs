@@ -6,26 +6,14 @@
     using MicroLite.Dialect.MsSql;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="MsSqlDialect"/> class.
     /// </summary>
-    public class MsSqlDialectTests : IDisposable
+    public class MsSqlDialectTests : UnitTest
     {
-        public MsSqlDialectTests()
-        {
-            // The tests in this suite all use attribute mapping for the test.
-            ObjectInfo.MappingConvention = new AttributeMappingConvention();
-            SqlCharacters.Current = null;
-        }
-
-        private enum CustomerStatus
-        {
-            Inactive = 0,
-            Active = 1
-        }
-
         /// <summary>
         /// Issue #6 - The argument count check needs to cater for the same argument being used twice.
         /// </summary>
@@ -38,7 +26,7 @@
 
             using (var command = new System.Data.SqlClient.SqlCommand())
             {
-                var sqlDialect = MsSqlDialect.Instance;
+                var sqlDialect = new MsSqlDialect();
                 sqlDialect.BuildCommand(command, sqlQuery);
 
                 Assert.Equal(sqlQuery.CommandText, command.CommandText);
@@ -64,7 +52,7 @@
 
             using (var command = new System.Data.SqlClient.SqlCommand())
             {
-                var sqlDialect = MsSqlDialect.Instance;
+                var sqlDialect = new MsSqlDialect();
                 sqlDialect.BuildCommand(command, sqlQuery);
 
                 // The command text should only contain the stored procedure name.
@@ -83,7 +71,7 @@
 
             using (var command = new System.Data.SqlClient.SqlCommand())
             {
-                var sqlDialect = MsSqlDialect.Instance;
+                var sqlDialect = new MsSqlDialect();
                 sqlDialect.BuildCommand(command, sqlQuery);
 
                 // The command text should only contain the stored procedure name.
@@ -110,7 +98,7 @@
 
             using (var command = new System.Data.SqlClient.SqlCommand())
             {
-                var sqlDialect = MsSqlDialect.Instance;
+                var sqlDialect = new MsSqlDialect();
 
                 var exception = Assert.Throws<MicroLiteException>(
                     () => sqlDialect.BuildCommand(command, sqlQuery));
@@ -119,33 +107,69 @@
             }
         }
 
-        public void Dispose()
-        {
-            // Reset the mapping convention after tests have run.
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
-            SqlCharacters.Current = null;
-        }
-
         [Fact]
-        public void InsertQueryForIdentityInstance()
+        public void InsertInstanceQueryForIdentifierStrategyAssigned()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
             var customer = new Customer
             {
-                Created = DateTime.Now,
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
                 DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
                 Name = "Joe Bloggs",
-                Status = CustomerStatus.Active
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
-            var sqlDialect = MsSqlDialect.Instance;
+            var sqlDialect = new MsSqlDialect();
 
             var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
 
-            Assert.Equal("INSERT INTO [Sales].[Customers] ([Created], [DoB], [Name], [StatusId]) VALUES (@p0, @p1, @p2, @p3);SELECT SCOPE_IDENTITY()", sqlQuery.CommandText);
+            Assert.Equal("INSERT INTO [Sales].[Customers] ([Created], [CreditLimit], [DateOfBirth], [Id], [Name], [CustomerStatusId], [Website]) VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6)", sqlQuery.CommandText);
+            Assert.Equal(7, sqlQuery.Arguments.Count);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
-            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
-            Assert.Equal(customer.Name, sqlQuery.Arguments[2]);
-            Assert.Equal((int)customer.Status, sqlQuery.Arguments[3]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[3]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[4]);
+            Assert.Equal(1, sqlQuery.Arguments[5]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[6]);
+        }
+
+        [Fact]
+        public void InsertInstanceQueryForIdentifierStrategyDbGenerated()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new Customer
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var sqlDialect = new MsSqlDialect();
+
+            var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
+
+            Assert.Equal("INSERT INTO [Sales].[Customers] ([Created], [CreditLimit], [DateOfBirth], [Name], [CustomerStatusId], [Website]) VALUES (@p0, @p1, @p2, @p3, @p4, @p5);SELECT SCOPE_IDENTITY()", sqlQuery.CommandText);
+            Assert.Equal(6, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
+            Assert.Equal(1, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
         }
 
         [Fact]
@@ -173,7 +197,7 @@
             var msSqlDialect = MsSqlDialect.Instance;
 
             SqlQuery pageQuerySingleLevel = msSqlDialect.PageQuery(sqlQuerySingleLevel, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
-            Assert.Equal("SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated] FROM (SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0)) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", pageQuerySingleLevel.CommandText);
+            Assert.Equal("SELECT [Created], [CreditLimit], [DateOfBirth], [Id], [Name], [CustomerStatusId], [Updated], [Website] FROM (SELECT [Created], [CreditLimit], [DateOfBirth], [Id], [Name], [CustomerStatusId], [Updated], [Website], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Customers] WHERE (Name LIKE @p0)) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", pageQuerySingleLevel.CommandText);
             Assert.Equal("Fred%", pageQuerySingleLevel.Arguments[0]);
             Assert.Equal(11, pageQuerySingleLevel.Arguments[1]);
             Assert.Equal(20, pageQuerySingleLevel.Arguments[2]);
@@ -197,7 +221,7 @@
             var msSqlDialect = MsSqlDialect.Instance;
 
             SqlQuery pageQuerySubQuery = msSqlDialect.PageQuery(sqlQuerySubQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
-            Assert.Equal("SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated] FROM (SELECT [Created], [DoB], [CustomerId], [Name], [StatusId], [Updated], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE (Name LIKE @p0) AND ([SourceId] IN (SELECT SourceId FROM Source WHERE Status = @p1))) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", pageQuerySubQuery.CommandText);
+            Assert.Equal("SELECT [Created], [CreditLimit], [DateOfBirth], [Id], [Name], [CustomerStatusId], [Updated], [Website] FROM (SELECT [Created], [CreditLimit], [DateOfBirth], [Id], [Name], [CustomerStatusId], [Updated], [Website], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Customers] WHERE (Name LIKE @p0) AND ([SourceId] IN (SELECT SourceId FROM Source WHERE Status = @p1))) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", pageQuerySubQuery.CommandText);
             Assert.Equal("Fred%", pageQuerySubQuery.Arguments[0]);
             Assert.Equal(1, pageQuerySubQuery.Arguments[1]);
             Assert.Equal(11, pageQuerySubQuery.Arguments[2]);
@@ -209,7 +233,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
 
-            var sqlDialect = MsSqlDialect.Instance;
+            var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT CustomerId, Name, DoB, StatusId FROM (SELECT CustomerId, Name, DoB, StatusId, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -222,7 +246,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT * FROM Customers");
 
-            var sqlDialect = MsSqlDialect.Instance;
+            var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -246,7 +270,7 @@ ORDER BY
 [Customers].[Name] ASC,
 [Customers].[DoB] ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
 
-            var sqlDialect = MsSqlDialect.Instance;
+            var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC) AS RowNumber FROM [Sales].[Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
@@ -261,7 +285,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [dbo].[Customers] ORDER BY [CustomerId] ASC");
 
-            var sqlDialect = MsSqlDialect.Instance;
+            var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM (SELECT [CustomerId], [Name], [DoB], [StatusId], ROW_NUMBER() OVER(ORDER BY [CustomerId] ASC) AS RowNumber FROM [dbo].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -274,7 +298,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]");
 
-            var sqlDialect = MsSqlDialect.Instance;
+            var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -287,7 +311,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]");
 
-            var sqlDialect = MsSqlDialect.Instance;
+            var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -300,7 +324,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
 
-            var sqlDialect = MsSqlDialect.Instance;
+            var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
@@ -324,7 +348,7 @@ WHERE
 ORDER BY
 [Customers].[Name] ASC", new object[] { CustomerStatus.Active });
 
-            var sqlDialect = MsSqlDialect.Instance;
+            var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
@@ -338,7 +362,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", CustomerStatus.Active);
 
-            var sqlDialect = MsSqlDialect.Instance;
+            var sqlDialect = new MsSqlDialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId], ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
@@ -361,7 +385,7 @@ ORDER BY
                 this.sqlQuery2 = new SqlQuery("SELECT [Column_1], [Column_2] FROM [dbo].[Table_2] WHERE ([Column_1] = @p0 OR @p0 IS NULL) AND [Column_2] < @p1", "Bar", -1);
                 this.sqlQuery2.Timeout = 42;
 
-                var sqlDialect = MsSqlDialect.Instance;
+                var sqlDialect = new MsSqlDialect();
 
                 this.combinedQuery = sqlDialect.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
             }
@@ -425,7 +449,7 @@ ORDER BY
                 this.sqlQuery1 = new SqlQuery("SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1", "Foo", 100);
                 this.sqlQuery2 = new SqlQuery("EXEC CustomersByStatus @StatusId", 2);
 
-                var sqlDialect = MsSqlDialect.Instance;
+                var sqlDialect = new MsSqlDialect();
 
                 this.combinedQuery = sqlDialect.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
             }
@@ -444,61 +468,10 @@ ORDER BY
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
-                var sqlDialect = MsSqlDialect.Instance;
+                var sqlDialect = new MsSqlDialect();
                 var exception = Assert.Throws<ArgumentNullException>(() => sqlDialect.Combine(null));
 
                 Assert.Equal("sqlQueries", exception.ParamName);
-            }
-        }
-
-        [MicroLite.Mapping.Table(schema: "Sales", name: "Customers")]
-        private class Customer
-        {
-            public Customer()
-            {
-            }
-
-            [MicroLite.Mapping.Column("Created", allowInsert: true, allowUpdate: false)]
-            public DateTime Created
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("DoB")]
-            public DateTime DateOfBirth
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.DbGenerated)]
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Name")]
-            public string Name
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("StatusId")]
-            public CustomerStatus Status
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Updated", allowInsert: false, allowUpdate: true)]
-            public DateTime? Updated
-            {
-                get;
-                set;
             }
         }
     }

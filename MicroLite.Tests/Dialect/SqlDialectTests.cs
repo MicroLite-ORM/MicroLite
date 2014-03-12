@@ -5,26 +5,15 @@
     using MicroLite.Dialect;
     using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Moq;
     using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="SqlDialect"/> class.
     /// </summary>
-    public class SqlDialectTests : IDisposable
+    public class SqlDialectTests : UnitTest
     {
-        public SqlDialectTests()
-        {
-            // The tests in this suite all use attribute mapping for the test.
-            ObjectInfo.MappingConvention = new AttributeMappingConvention();
-        }
-
-        private enum CustomerStatus
-        {
-            Inactive = 0,
-            Active = 1
-        }
-
         [Fact]
         public void BuildCommandForSqlQueryWithSqlText()
         {
@@ -176,6 +165,9 @@
         [Fact]
         public void CreateQueryForObjectDelta()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var objectDelta = new ObjectDelta(typeof(Customer), 1234);
             objectDelta.AddChange("Name", "Fred Flintstone");
 
@@ -184,7 +176,7 @@
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(objectDelta);
 
-            Assert.Equal("UPDATE Customers SET Name = ? WHERE CustomerId = ?", sqlQuery.CommandText);
+            Assert.Equal("UPDATE Sales.Customers SET Name = ? WHERE Id = ?", sqlQuery.CommandText);
             Assert.Equal(2, sqlQuery.Arguments.Count);
             Assert.Equal("Fred Flintstone", sqlQuery.Arguments[0]);
             Assert.Equal(1234, sqlQuery.Arguments[1]);
@@ -229,6 +221,9 @@
         [Fact]
         public void DeleteByIdentifierQuery()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var identifier = 134875;
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
@@ -236,7 +231,7 @@
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Delete, typeof(Customer), identifier);
 
-            Assert.Equal("DELETE FROM Customers WHERE CustomerId = ?", sqlQuery.CommandText);
+            Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(identifier, sqlQuery.Arguments[0]);
         }
@@ -244,14 +239,19 @@
         [Fact]
         public void DeleteInstanceQuery()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var customer = new Customer
             {
                 Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
                 DateOfBirth = new System.DateTime(1975, 9, 18),
                 Id = 134875,
                 Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
-                Updated = DateTime.Now
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
@@ -259,61 +259,109 @@
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Delete, customer);
 
-            Assert.Equal("DELETE FROM Customers WHERE CustomerId = ?", sqlQuery.CommandText);
+            Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(customer.Id, sqlQuery.Arguments[0]);
         }
 
-        public void Dispose()
-        {
-            // Reset the mapping convention after tests have run.
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
-        }
-
-        /// <summary>
-        /// Issue #11 - Identifier property value should be included on insert for IdentifierStrategy.Assigned.
-        /// </summary>
         [Fact]
-        public void InsertInstanceQuery()
+        public void InsertInstanceQueryForIdentifierStrategyAssigned()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
             var customer = new Customer
             {
-                Created = DateTime.Now,
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
                 DateOfBirth = new System.DateTime(1975, 9, 18),
                 Id = 134875,
                 Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
-                Updated = DateTime.Now
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
-            // Do a second query to check that the caching doesn't cause a problem.
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
 
-            Assert.Equal("INSERT INTO Customers (Created, DoB, CustomerId, Name, StatusId) VALUES (?, ?, ?, ?, ?)", sqlQuery.CommandText);
-            Assert.Equal(5, sqlQuery.Arguments.Count);
+            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?, ?)", sqlQuery.CommandText);
+            Assert.Equal(7, sqlQuery.Arguments.Count);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
-            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
-            Assert.Equal(customer.Id, sqlQuery.Arguments[2]);
-            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
-            Assert.Equal((int)customer.Status, sqlQuery.Arguments[4]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[3]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[4]);
+            Assert.Equal(1, sqlQuery.Arguments[5]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[6]);
 
+            // Do a second query to check that the caching doesn't cause a problem.
             var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
 
-            Assert.Equal("INSERT INTO Customers (Created, DoB, CustomerId, Name, StatusId) VALUES (?, ?, ?, ?, ?)", sqlQuery2.CommandText);
-            Assert.Equal(5, sqlQuery2.Arguments.Count);
-            Assert.Equal(customer.Created, sqlQuery2.Arguments[0]);
-            Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[1]);
-            Assert.Equal(customer.Id, sqlQuery2.Arguments[2]);
-            Assert.Equal(customer.Name, sqlQuery2.Arguments[3]);
-            Assert.Equal((int)customer.Status, sqlQuery2.Arguments[4]);
+            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?, ?)", sqlQuery.CommandText);
+            Assert.Equal(7, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[3]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[4]);
+            Assert.Equal(1, sqlQuery.Arguments[5]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[6]);
+        }
+
+        [Fact]
+        public void InsertInstanceQueryForIdentifierStrategyDbGenerated()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new Customer
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
+
+            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?);", sqlQuery.CommandText);
+            Assert.Equal(6, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
+            Assert.Equal(1, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
+
+            // Do a second query to check that the caching doesn't cause a problem.
+            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
+
+            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?);", sqlQuery.CommandText);
+            Assert.Equal(6, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
+            Assert.Equal(1, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
         }
 
         [Fact]
         public void SelectByIdentifierQuery()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var identifier = 134875;
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
@@ -321,7 +369,7 @@
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Select, typeof(Customer), identifier);
 
-            Assert.Equal("SELECT Created, DoB, CustomerId, Name, StatusId, Updated FROM Customers WHERE (CustomerId = ?)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Updated, Website FROM Sales.Customers WHERE (Id = ?)", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(identifier, sqlQuery.Arguments[0]);
         }
@@ -350,14 +398,19 @@
         [Fact]
         public void UpdateInstanceQuery()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var customer = new Customer
             {
                 Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
                 DateOfBirth = new System.DateTime(1975, 9, 18),
                 Id = 134875,
                 Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
-                Updated = DateTime.Now
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
@@ -365,24 +418,28 @@
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Update, customer);
 
-            Assert.Equal("UPDATE Customers SET DoB = ?, Name = ?, StatusId = ?, Updated = ? WHERE CustomerId = ?", sqlQuery.CommandText);
-            Assert.Equal(5, sqlQuery.Arguments.Count);
-            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[0]);
-            Assert.Equal(customer.Name, sqlQuery.Arguments[1]);
-            Assert.Equal((int)customer.Status, sqlQuery.Arguments[2]);
-            Assert.Equal(customer.Updated, sqlQuery.Arguments[3]);
-            Assert.Equal(customer.Id, sqlQuery.Arguments[4]);
+            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?, DateOfBirth = ?, Name = ?, CustomerStatusId = ?, Updated = ?, Website = ? WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal(7, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[2]);
+            Assert.Equal(1, sqlQuery.Arguments[3]);
+            Assert.Equal(customer.Updated, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[6]);
 
             // Do a second query to check that the caching doesn't cause a problem.
             var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Update, customer);
 
-            Assert.Equal("UPDATE Customers SET DoB = ?, Name = ?, StatusId = ?, Updated = ? WHERE CustomerId = ?", sqlQuery2.CommandText);
-            Assert.Equal(5, sqlQuery2.Arguments.Count);
-            Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[0]);
-            Assert.Equal(customer.Name, sqlQuery2.Arguments[1]);
-            Assert.Equal((int)customer.Status, sqlQuery2.Arguments[2]);
-            Assert.Equal(customer.Updated, sqlQuery2.Arguments[3]);
-            Assert.Equal(customer.Id, sqlQuery2.Arguments[4]);
+            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?, DateOfBirth = ?, Name = ?, CustomerStatusId = ?, Updated = ?, Website = ? WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal(7, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[2]);
+            Assert.Equal(1, sqlQuery.Arguments[3]);
+            Assert.Equal(customer.Updated, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[6]);
         }
 
         public class WhenCallingCombine
@@ -450,57 +507,6 @@
             public void TheTimeoutShouldBeSetToTheLongestTimeoutOfTheSourceQueries()
             {
                 Assert.Equal(this.sqlQuery2.Timeout, this.combinedQuery.Timeout);
-            }
-        }
-
-        [MicroLite.Mapping.Table("Customers")]
-        private class Customer
-        {
-            public Customer()
-            {
-            }
-
-            [MicroLite.Mapping.Column("Created", allowInsert: true, allowUpdate: false)]
-            public DateTime Created
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("DoB")]
-            public DateTime DateOfBirth
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Assigned)]
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Name")]
-            public string Name
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("StatusId")]
-            public CustomerStatus Status
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Updated", allowInsert: false, allowUpdate: true)]
-            public DateTime? Updated
-            {
-                get;
-                set;
             }
         }
     }
