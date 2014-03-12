@@ -1,4 +1,4 @@
-﻿namespace MicroLite.Tests.Mapping
+﻿namespace MicroLite.Tests.Mapping.Inflection
 {
     using MicroLite.Mapping.Inflection;
     using Xunit;
