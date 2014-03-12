@@ -2,16 +2,21 @@
 {
     using System;
     using MicroLite.Listeners;
+    using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
     /// Unit tests for the <see cref="DbGeneratedListener"/> class.
     /// </summary>
-    public class DbGeneratedListenerTests
+    public class DbGeneratedListenerTests : UnitTest
     {
         [Fact]
         public void AfterInsertSetsIdentifierValue()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var customer = new Customer();
             int scalarResult = 4354;
 
@@ -24,6 +29,9 @@
         [Fact]
         public void AfterInsertSetsIdentifierValueConvertingItToThePropertyType()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var customer = new Customer();
             decimal scalarResult = 4354;
 
@@ -56,6 +64,9 @@
         [Fact]
         public void BeforeDeleteDoesNotThrowIfIdentifierSet()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var customer = new Customer
             {
                 Id = 1242534
@@ -64,6 +75,22 @@
             var listener = new DbGeneratedListener();
 
             listener.BeforeDelete(customer);
+        }
+
+        [Fact]
+        public void BeforeDeleteDoesNotThrowMicroLiteExceptionIfIdentifierNotSetAndIdentifierStrategyIsAssigned()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
+            var customer = new Customer
+            {
+                Id = 0
+            };
+
+            var listener = new DbGeneratedListener();
+
+            Assert.DoesNotThrow(() => listener.BeforeDelete(customer));
         }
 
         [Fact]
@@ -79,6 +106,9 @@
         [Fact]
         public void BeforeDeleteThrowsMicroLiteExceptionIfIdentifierNotSet()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var customer = new Customer
             {
                 Id = 0
@@ -94,6 +124,9 @@
         [Fact]
         public void BeforeInsertDoesNotThrowIfIdentifierNotSet()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var customer = new Customer
             {
                 Id = 0
@@ -117,6 +150,9 @@
         [Fact]
         public void BeforeInsertThrowsMicroLiteExceptionIfIdentifierAlreadySet()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var customer = new Customer
             {
                 Id = 1242534
@@ -132,6 +168,9 @@
         [Fact]
         public void BeforeUpdateDoesNotThrowIfIdentifierSet()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var customer = new Customer
             {
                 Id = 1242534
@@ -140,6 +179,22 @@
             var listener = new DbGeneratedListener();
 
             listener.BeforeUpdate(customer);
+        }
+
+        [Fact]
+        public void BeforeUpdateDoesNotThrowMicroLiteExceptionIfIdentifierNotSetAndIdentifierStrategyIsAssigned()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
+            var customer = new Customer
+            {
+                Id = 0
+            };
+
+            var listener = new DbGeneratedListener();
+
+            Assert.DoesNotThrow(() => listener.BeforeUpdate(customer));
         }
 
         [Fact]
@@ -155,6 +210,9 @@
         [Fact]
         public void BeforeUpdateThrowsMicroLiteExceptionIfIdentifierNotSet()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var customer = new Customer
             {
                 Id = 0
@@ -165,30 +223,6 @@
             var exception = Assert.Throws<MicroLiteException>(() => listener.BeforeUpdate(customer));
 
             Assert.Equal(Messages.IListener_IdentifierNotSetForUpdate, exception.Message);
-        }
-
-        [MicroLite.Mapping.Table("Sales", "Customers")]
-        private class Customer
-        {
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.DbGenerated)]
-            public int Id
-            {
-                get;
-                set;
-            }
-        }
-
-        [MicroLite.Mapping.Table("Sales", "Customers")]
-        private class CustomerWithAssigned
-        {
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(MicroLite.Mapping.IdentifierStrategy.Assigned)]
-            public int Id
-            {
-                get;
-                set;
-            }
         }
     }
 }
