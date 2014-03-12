@@ -4,6 +4,7 @@
     using System.Collections.ObjectModel;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
@@ -96,37 +97,6 @@
                 () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
             Assert.Equal(Messages.TableInfo_MultipleIdentifierColumns.FormatWith("Sales", "Customers"), exception.Message);
-        }
-
-        private class Customer
-        {
-            public Customer()
-            {
-            }
-
-            public DateTime Created
-            {
-                get;
-                set;
-            }
-
-            public Guid Id
-            {
-                get;
-                set;
-            }
-
-            public string Name
-            {
-                get;
-                set;
-            }
-
-            public DateTime? Updated
-            {
-                get;
-                set;
-            }
         }
     }
 }

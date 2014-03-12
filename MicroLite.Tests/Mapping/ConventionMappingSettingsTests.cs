@@ -2,6 +2,7 @@
 {
     using MicroLite.Mapping;
     using MicroLite.Mapping.Inflection;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
@@ -9,12 +10,6 @@
     /// </summary>
     public class ConventionMappingSettingsTests
     {
-        private enum CustomerStatus
-        {
-            New = 0,
-            Old = 1
-        }
-
         [Fact]
         public void Default_ReturnsNewInstanceEachTime()
         {
@@ -47,7 +42,7 @@
             [Fact]
             public void ResolveColumnNameReturnsPropertyNameIdIfEnum()
             {
-                var propertyInfo = typeof(Customer).GetProperty("CustomerStatus");
+                var propertyInfo = typeof(Customer).GetProperty("Status");
 
                 Assert.Equal("CustomerStatusId", this.settings.ResolveColumnName(propertyInfo));
             }
@@ -140,36 +135,6 @@
             public void UsePluralClassNameForTableNameIsSetToTrue()
             {
                 Assert.True(this.settings.UsePluralClassNameForTableName);
-            }
-        }
-
-        private class Customer
-        {
-            public CustomerStatus CustomerStatus
-            {
-                get;
-                set;
-            }
-
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            public string Name
-            {
-                get;
-                set;
-            }
-        }
-
-        private class Invoice
-        {
-            public int InvoiceId
-            {
-                get;
-                set;
             }
         }
     }

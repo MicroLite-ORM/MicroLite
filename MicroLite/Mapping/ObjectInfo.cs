@@ -287,7 +287,14 @@ namespace MicroLite.Mapping
         internal static void Reset()
         {
             mappingConvention = null;
-            objectInfos = new Dictionary<Type, IObjectInfo>();
+
+            objectInfos = new Dictionary<Type, IObjectInfo>
+            {
+#if !NET_3_5
+                { typeof(System.Dynamic.ExpandoObject), new ExpandoObjectInfo() },
+                { typeof(object), new ExpandoObjectInfo() }
+#endif
+            };
         }
 
         private static void VerifyType(Type forType)

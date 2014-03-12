@@ -7,7 +7,7 @@
     using Moq;
     using Xunit;
 
-    public class ExpandoObjectInfoTests
+    public class ExpandoObjectInfoTests : UnitTest
     {
         [Fact]
         public void CreateInstance()

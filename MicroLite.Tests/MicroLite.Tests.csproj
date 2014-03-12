@@ -70,6 +70,7 @@
     <Compile Include="DbEncryptedStringTests.cs" />
     <Compile Include="Dialect\MsSql\MsSqlCharactersTests.cs" />
     <Compile Include="Mapping\Inflection\InflectionServiceTests.cs" />
+    <Compile Include="TestEntities\Invoice.cs" />
     <Compile Include="UnitTest.cs" />
     <Compile Include="ObjectDeltaTests.cs" />
     <Compile Include="Builder\DeleteSqlBuilderTests.cs" />

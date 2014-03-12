@@ -4,25 +4,15 @@
     using System.Data;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Moq;
     using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="ObjectInfo" /> class.
     /// </summary>
-    public class ObjectInfoTests : IDisposable
+    public class ObjectInfoTests : UnitTest
     {
-        public ObjectInfoTests()
-        {
-            ObjectInfo.MappingConvention = new AttributeMappingConvention();
-        }
-
-        private enum CustomerStatus
-        {
-            Inactive = 0,
-            Active = 1
-        }
-
         [Fact]
         public void Constructor_ThrowsArgumentNullException_IfForTypeIsNull()
         {
@@ -36,7 +26,7 @@
         public void Constructor_ThrowsArgumentNullException_IfTableInfoIsNull()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new ObjectInfo(typeof(CustomerWithIntegerIdentifier), null));
+                () => new ObjectInfo(typeof(Customer), null));
 
             Assert.Equal("tableInfo", exception.ParamName);
         }
@@ -44,29 +34,24 @@
         [Fact]
         public void CreateInstance()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.FieldCount).Returns(2);
             mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
 
-            mockReader.Setup(x => x.GetName(0)).Returns("CustomerId");
-            mockReader.Setup(x => x.GetName(1)).Returns("StatusId");
+            mockReader.Setup(x => x.GetName(0)).Returns("Id");
+            mockReader.Setup(x => x.GetName(1)).Returns("CustomerStatusId");
 
             mockReader.Setup(x => x.GetInt32(0)).Returns(12345);
             mockReader.Setup(x => x.GetValue(1)).Returns(1);
 
-            var instance = objectInfo.CreateInstance(mockReader.Object) as CustomerWithIntegerIdentifier;
+            var instance = objectInfo.CreateInstance(mockReader.Object) as Customer;
 
             Assert.NotNull(instance);
-            Assert.IsType<CustomerWithIntegerIdentifier>(instance);
+            Assert.IsType<Customer>(instance);
             Assert.Equal(12345, instance.Id);
             Assert.Equal(CustomerStatus.Active, instance.Status);
-        }
-
-        public void Dispose()
-        {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
         }
 
         [Fact]
@@ -80,7 +65,7 @@
         [Fact]
         public void For_ReturnsSameObjectInfo_ForSameType()
         {
-            var forType = typeof(CustomerWithIntegerIdentifier);
+            var forType = typeof(Customer);
 
             var objectInfo1 = ObjectInfo.For(forType);
             var objectInfo2 = ObjectInfo.For(forType);
@@ -133,7 +118,7 @@
         [Fact]
         public void ForType_ReturnsTypePassedToConstructor()
         {
-            var forType = typeof(CustomerWithIntegerIdentifier);
+            var forType = typeof(Customer);
 
             var objectInfo = ObjectInfo.For(forType);
 
@@ -143,7 +128,7 @@
         [Fact]
         public void GetColumnInfo_ReturnsColumnInfo_IfColumnMapped()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
             var columnInfo = objectInfo.GetColumnInfo("Name");
 
             Assert.NotNull(columnInfo);
@@ -153,7 +138,7 @@
         [Fact]
         public void GetColumnInfo_ReturnsNull_IfColumnNotMapped()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
             Assert.Null(objectInfo.GetColumnInfo("Wibble"));
         }
@@ -161,9 +146,9 @@
         [Fact]
         public void GetIdentifierValue_ReturnsPropertyValueOfIdentifierProperty()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            var customer = new CustomerWithIntegerIdentifier
+            var customer = new Customer
             {
                 Id = 122323
             };
@@ -176,7 +161,7 @@
         [Fact]
         public void GetIdentifierValue_ThrowsArgumentNullException_IfInstanceIsNull()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
             var exception = Assert.Throws<ArgumentNullException>(
                 () => objectInfo.GetIdentifierValue(null));
@@ -187,7 +172,7 @@
         [Fact]
         public void GetIdentifierValue_ThrowsMappingException_IfInstanceIsIncorrectType()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
             var exception = Assert.Throws<MappingException>(
                 () => objectInfo.GetIdentifierValue(new CustomerWithGuidIdentifier()));
@@ -198,33 +183,72 @@
         }
 
         [Fact]
-        public void GetInsertValues_ReturnsPropertyValues()
+        public void GetInsertValues_ReturnsPropertyValues_WhenUsingAssigned()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
 
-            var customer = new CustomerWithIntegerIdentifier
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var customer = new Customer
             {
-                CreditLimit = 8822.22M,
-                DateOfBirth = new DateTime(1972, 12, 23),
-                Id = 122323,
-                Name = "Fred Flintstone",
-                Status = CustomerStatus.Active
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
             var values = objectInfo.GetInsertValues(customer);
 
-            Assert.Equal(5, values.Length);
-            Assert.Equal(customer.CreditLimit, values[0]);
-            Assert.Equal(customer.DateOfBirth, values[1]);
-            Assert.Equal(customer.Id, values[2]); // Id should be included because Id is Assigned.
+            Assert.Equal(7, values.Length);
+            Assert.Equal(customer.Created, values[0]);
+            Assert.Equal(customer.CreditLimit, values[1]);
+            Assert.Equal(customer.DateOfBirth, values[2]);
+            Assert.Equal(customer.Id, values[3]); // Id should be included as it's assigned.
+            Assert.Equal(customer.Name, values[4]);
+            Assert.Equal((int)customer.Status, values[5]);
+            Assert.Equal(customer.Website.ToString(), values[6]);
+        }
+
+        [Fact]
+        public void GetInsertValues_ReturnsPropertyValues_WhenUsingDbGenerated()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var customer = new Customer
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var values = objectInfo.GetInsertValues(customer);
+
+            Assert.Equal(6, values.Length);
+            Assert.Equal(customer.Created, values[0]);
+            Assert.Equal(customer.CreditLimit, values[1]);
+            Assert.Equal(customer.DateOfBirth, values[2]);
             Assert.Equal(customer.Name, values[3]);
             Assert.Equal((int)customer.Status, values[4]);
+            Assert.Equal(customer.Website.ToString(), values[5]);
         }
 
         [Fact]
         public void GetInsertValues_ThrowsMappingException_IfInstanceIsIncorrectType()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
             var exception = Assert.Throws<MappingException>(
                 () => objectInfo.GetInsertValues(new CustomerWithGuidIdentifier()));
@@ -235,33 +259,73 @@
         }
 
         [Fact]
-        public void GetUpdateValues_ReturnsPropertyValues()
+        public void GetUpdateValues_ReturnsPropertyValues_WhenUsingAssigned()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
 
-            var customer = new CustomerWithIntegerIdentifier
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var customer = new Customer
             {
-                CreditLimit = 8822.22M,
-                DateOfBirth = new DateTime(1972, 12, 23),
-                Id = 122323,
-                Name = "Fred Flintstone",
-                Status = CustomerStatus.Active
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
             var values = objectInfo.GetUpdateValues(customer);
 
-            Assert.Equal(5, values.Length);
+            Assert.Equal(7, values.Length);
             Assert.Equal(customer.CreditLimit, values[0]);
             Assert.Equal(customer.DateOfBirth, values[1]);
             Assert.Equal(customer.Name, values[2]);
             Assert.Equal((int)customer.Status, values[3]);
-            Assert.Equal(customer.Id, values[4]);
+            Assert.Equal(customer.Updated, values[4]);
+            Assert.Equal(customer.Website.ToString(), values[5]);
+            Assert.Equal(customer.Id, values[6]);
+        }
+
+        [Fact]
+        public void GetUpdateValues_ReturnsPropertyValues_WhenUsingDbGenerated()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var customer = new Customer
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var values = objectInfo.GetUpdateValues(customer);
+
+            Assert.Equal(7, values.Length);
+            Assert.Equal(customer.CreditLimit, values[0]);
+            Assert.Equal(customer.DateOfBirth, values[1]);
+            Assert.Equal(customer.Name, values[2]);
+            Assert.Equal((int)customer.Status, values[3]);
+            Assert.Equal(customer.Updated, values[4]);
+            Assert.Equal(customer.Website.ToString(), values[5]);
+            Assert.Equal(customer.Id, values[6]);
         }
 
         [Fact]
         public void GetUpdateValues_ThrowsMappingException_IfInstanceIsIncorrectType()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
             var exception = Assert.Throws<MappingException>(
                 () => objectInfo.GetUpdateValues(new CustomerWithGuidIdentifier()));
@@ -274,7 +338,7 @@
         [Fact]
         public void HasDefaultIdentifierValue_ThrowsArgumentNullException_IfInstanceIsNull()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
             var exception = Assert.Throws<ArgumentNullException>(
                 () => objectInfo.HasDefaultIdentifierValue(null));
@@ -285,7 +349,7 @@
         [Fact]
         public void HasDefaultIdentifierValue_ThrowsMappingException_IfInstanceIsIncorrectType()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
             var instance = new CustomerWithGuidIdentifier();
 
@@ -314,9 +378,9 @@
         [Fact]
         public void HasDefaultIdentifierValue_WhenIdentifierIsInteger()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            var customer = new CustomerWithIntegerIdentifier();
+            var customer = new Customer();
 
             customer.Id = 0;
             Assert.True(objectInfo.HasDefaultIdentifierValue(customer));
@@ -342,9 +406,9 @@
         [Fact]
         public void SetIdentifierValue_SetsPropertyValue()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            var customer = new CustomerWithIntegerIdentifier();
+            var customer = new Customer();
 
             objectInfo.SetIdentifierValue(customer, 122323);
 
@@ -361,19 +425,16 @@
             return objectInfo;
         }
 
-        private struct CustomerStruct
+        public struct CustomerStruct
         {
         }
 
-        private abstract class AbstractCustomer
+        public abstract class AbstractCustomer
         {
         }
 
-        [MicroLite.Mapping.Table("Sales", "Customers")]
-        private class CustomerWithGuidIdentifier
+        public class CustomerWithGuidIdentifier
         {
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
             public Guid Id
             {
                 get;
@@ -381,74 +442,19 @@
             }
         }
 
-        [MicroLite.Mapping.Table("Sales", "Customers")]
-        private class CustomerWithIntegerIdentifier
-        {
-            public CustomerWithIntegerIdentifier()
-            {
-            }
-
-            public int AgeInYears
-            {
-                get
-                {
-                    return DateTime.Today.Year - this.DateOfBirth.Year;
-                }
-            }
-
-            [MicroLite.Mapping.Column("CreditLimit")]
-            public Decimal? CreditLimit
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("DoB")]
-            public DateTime DateOfBirth
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Name")]
-            public string Name
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("StatusId")]
-            public CustomerStatus Status
-            {
-                get;
-                set;
-            }
-        }
-
-        private class CustomerWithNoDefaultConstructor
+        public class CustomerWithNoDefaultConstructor
         {
             public CustomerWithNoDefaultConstructor(string foo)
             {
             }
         }
 
-        private class CustomerWithNoIdentifier
+        public class CustomerWithNoIdentifier
         {
         }
 
-        [MicroLite.Mapping.Table("Sales", "Customers")]
-        private class CustomerWithStringIdentifier
+        public class CustomerWithStringIdentifier
         {
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)]
             public string Id
             {
                 get;
