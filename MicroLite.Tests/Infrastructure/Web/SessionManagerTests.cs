@@ -20,12 +20,6 @@
             }
 
             [Fact]
-            public void TheSessionShouldBeDisposed()
-            {
-                this.mockSession.Verify(x => x.Dispose(), Times.Once());
-            }
-
-            [Fact]
             public void TheCurrentTransactionShouldNotBeCommitted()
             {
                 this.mockSession.Verify(x => x.CurrentTransaction.Commit(), Times.Never());
@@ -35,6 +29,12 @@
             public void TheCurrentTransactionShouldNotBeRolledBack()
             {
                 this.mockSession.Verify(x => x.CurrentTransaction.Rollback(), Times.Never());
+            }
+
+            [Fact]
+            public void TheSessionShouldBeDisposed()
+            {
+                this.mockSession.Verify(x => x.Dispose(), Times.Once());
             }
         }
 
@@ -51,12 +51,6 @@
             }
 
             [Fact]
-            public void TheSessionShouldBeDisposed()
-            {
-                this.mockSession.Verify(x => x.Dispose(), Times.Once());
-            }
-
-            [Fact]
             public void TheCurrentTransactionShouldNotBeCommitted()
             {
                 this.mockSession.Verify(x => x.CurrentTransaction.Commit(), Times.Never());
@@ -66,6 +60,12 @@
             public void TheCurrentTransactionShouldNotBeRolledBack()
             {
                 this.mockSession.Verify(x => x.CurrentTransaction.Rollback(), Times.Once());
+            }
+
+            [Fact]
+            public void TheSessionShouldBeDisposed()
+            {
+                this.mockSession.Verify(x => x.Dispose(), Times.Once());
             }
         }
 
@@ -82,12 +82,6 @@
             }
 
             [Fact]
-            public void TheSessionShouldBeDisposed()
-            {
-                this.mockSession.Verify(x => x.Dispose(), Times.Once());
-            }
-
-            [Fact]
             public void TheCurrentTransactionShouldBeCommitted()
             {
                 this.mockSession.Verify(x => x.CurrentTransaction.Commit(), Times.Once());
@@ -97,6 +91,12 @@
             public void TheCurrentTransactionShouldNotBeRolledBack()
             {
                 this.mockSession.Verify(x => x.CurrentTransaction.Rollback(), Times.Never());
+            }
+
+            [Fact]
+            public void TheSessionShouldBeDisposed()
+            {
+                this.mockSession.Verify(x => x.Dispose(), Times.Once());
             }
         }
 
@@ -113,12 +113,6 @@
             }
 
             [Fact]
-            public void TheSessionShouldBeDisposed()
-            {
-                this.mockSession.Verify(x => x.Dispose(), Times.Once());
-            }
-
-            [Fact]
             public void TheCurrentTransactionShouldNotBeCommitted()
             {
                 this.mockSession.Verify(x => x.CurrentTransaction.Commit(), Times.Never());
@@ -128,6 +122,12 @@
             public void TheCurrentTransactionShouldNotBeRolledBack()
             {
                 this.mockSession.Verify(x => x.CurrentTransaction.Rollback(), Times.Never());
+            }
+
+            [Fact]
+            public void TheSessionShouldBeDisposed()
+            {
+                this.mockSession.Verify(x => x.Dispose(), Times.Once());
             }
         }
 
@@ -144,12 +144,6 @@
             }
 
             [Fact]
-            public void TheSessionShouldBeDisposed()
-            {
-                this.mockSession.Verify(x => x.Dispose(), Times.Once());
-            }
-
-            [Fact]
             public void TheCurrentTransactionShouldNotBeCommitted()
             {
                 this.mockSession.Verify(x => x.CurrentTransaction.Commit(), Times.Never());
@@ -159,6 +153,12 @@
             public void TheCurrentTransactionShouldNotBeRolledBack()
             {
                 this.mockSession.Verify(x => x.CurrentTransaction.Rollback(), Times.Never());
+            }
+
+            [Fact]
+            public void TheSessionShouldBeDisposed()
+            {
+                this.mockSession.Verify(x => x.Dispose(), Times.Once());
             }
         }
 

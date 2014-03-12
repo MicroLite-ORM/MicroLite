@@ -30,17 +30,17 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the operations which allow additional objects to be queried in a single database call.
+        /// Gets the current transaction or null if one has not been started.
         /// </summary>
-        IIncludeSession Include
+        ITransaction CurrentTransaction
         {
             get;
         }
 
         /// <summary>
-        /// Gets the current transaction or null if one has not been started.
+        /// Gets the operations which allow additional objects to be queried in a single database call.
         /// </summary>
-        ITransaction CurrentTransaction
+        IIncludeSession Include
         {
             get;
         }
