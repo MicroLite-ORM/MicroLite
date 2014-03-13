@@ -20,12 +20,11 @@
                 .WithParameter("@EndDate", DateTime.Today)
                 .ToSqlQuery();
 
+            Assert.Equal("EXEC GetCustomerInvoices @CustomerId, @StartDate, @EndDate", sqlQuery.CommandText);
             Assert.Equal(3, sqlQuery.Arguments.Count);
             Assert.Equal(7633245, sqlQuery.Arguments[0]);
             Assert.Equal(DateTime.Today.AddMonths(-3), sqlQuery.Arguments[1]);
             Assert.Equal(DateTime.Today, sqlQuery.Arguments[2]);
-
-            Assert.Equal("EXEC GetCustomerInvoices @CustomerId, @StartDate, @EndDate", sqlQuery.CommandText);
         }
     }
 }

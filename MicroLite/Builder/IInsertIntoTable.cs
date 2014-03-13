@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IInto.cs" company="MicroLite">
+// <copyright file="IInsertIntoTable.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,20 +17,20 @@ namespace MicroLite.Builder
     /// <summary>
     /// The interface which specifies the into method in the fluent insert sql builder syntax.
     /// </summary>
-    public interface IInto
+    public interface IInsertIntoTable
     {
         /// <summary>
         /// Specifies the table to perform the query against.
         /// </summary>
         /// <param name="tableName">The name of the table.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IInsertValue Into(string tableName);
+        IInsertColumn Into(string tableName);
 
         /// <summary>
         /// Specifies the type to perform the query against.
         /// </summary>
         /// <param name="forType">The type of object the query relates to.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IInsertValue Into(Type forType);
+        IInsertColumn Into(Type forType);
     }
 }

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IInsertValue.cs" company="MicroLite">
+// <copyright file="IInsertColumn.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,15 +13,15 @@
 namespace MicroLite.Builder
 {
     /// <summary>
-    /// The interface which specifies the value method in the fluent insert sql builder syntax.
+    /// The interface which specifies the column(s) method in the fluent insert sql builder syntax.
     /// </summary>
-    public interface IInsertValue : IToSqlQuery
+    public interface IInsertColumn : IInsertValue, IToSqlQuery
     {
         /// <summary>
-        /// Specifies the values to be inserted into the columns.
+        /// Specifies the columns in the table to have values inserted into.
         /// </summary>
-        /// <param name="columnValues">Values for the columns to be inserted.</param>
+        /// <param name="columnNames">Name of the columns to be inserted.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IToSqlQuery Values(params object[] columnValues);
+        IInsertValue Columns(params string[] columnNames);
     }
 }

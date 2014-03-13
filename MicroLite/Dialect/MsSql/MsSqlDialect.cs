@@ -38,6 +38,22 @@ namespace MicroLite.Dialect.MsSql
         {
         }
 
+        public override bool SupportsBatchedQueries
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override bool SupportsIdentity
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public override SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
         {
             if (sqlQueries == null)
@@ -56,8 +72,7 @@ namespace MicroLite.Dialect.MsSql
                     ? sqlQuery.CommandText
                     : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                stringBuilder.Append(commandText)
-                    .AppendLine(this.StatementSeparator);
+                stringBuilder.Append(commandText).AppendLine(this.StatementSeparator);
             }
 
             var combinedQuery = new SqlQuery(stringBuilder.ToString(0, stringBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());

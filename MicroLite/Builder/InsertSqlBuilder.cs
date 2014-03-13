@@ -16,7 +16,7 @@ namespace MicroLite.Builder
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class InsertSqlBuilder : SqlBuilder, IInto, IInsertValue
+    internal sealed class InsertSqlBuilder : SqlBuilderBase, IInsertIntoTable, IInsertColumn, IInsertValue
     {
         internal InsertSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)
@@ -24,62 +24,69 @@ namespace MicroLite.Builder
             this.InnerSql.Append("INSERT INTO ");
         }
 
-        public IInsertValue Into(IObjectInfo objectInfo)
+        public IInsertValue Columns(params string[] columnNames)
+        {
+            this.InnerSql.Append(" (");
+
+            if (columnNames != null)
+            {
+                for (int i = 0; i < columnNames.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        this.InnerSql.Append(", ");
+                    }
+
+                    this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnNames[i]));
+                }
+            }
+
+            this.InnerSql.Append(")");
+
+            return this;
+        }
+
+        public IInsertColumn Into(IObjectInfo objectInfo)
         {
             this.AppendTableName(objectInfo);
-            this.InnerSql.Append(" (");
 
             return this;
         }
 
-        public IInsertValue Into(string tableName)
+        public IInsertColumn Into(string tableName)
         {
             this.AppendTableName(tableName);
-            this.InnerSql.Append(" (");
 
             return this;
         }
 
-        public IInsertValue Into(Type forType)
+        public IInsertColumn Into(Type forType)
         {
             var objectInfo = ObjectInfo.For(forType);
 
             return this.Into(objectInfo);
         }
 
-        public override SqlQuery ToSqlQuery()
+        public IToSqlQuery Values(params object[] columnValues)
         {
-            return this.ToSqlQuery(string.Empty);
-        }
+            this.InnerSql.Append(" VALUES (");
 
-        public SqlQuery ToSqlQuery(string selectIdentity)
-        {
-            this.InnerSql.Append(") VALUES (");
-
-            for (int i = 0; i < this.Arguments.Count; i++)
+            if (columnValues != null)
             {
-                this.InnerSql.Append(this.SqlCharacters.GetParameterName(i));
-
-                if (i < this.Arguments.Count - 1)
+                for (int i = 0; i < columnValues.Length; i++)
                 {
-                    this.InnerSql.Append(", ");
+                    this.Arguments.Add(columnValues[i]);
+
+                    this.InnerSql.Append(this.SqlCharacters.GetParameterName(i));
+
+                    if (i < columnValues.Length - 1)
+                    {
+                        this.InnerSql.Append(", ");
+                    }
                 }
             }
 
-            this.InnerSql.Append(")").Append(selectIdentity);
-
-            return base.ToSqlQuery();
-        }
-
-        public IInsertValue Value(string columnName, object columnValue)
-        {
-            if (this.Arguments.Count > 0)
-            {
-                this.InnerSql.Append(", ");
-            }
-
-            this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnName));
-            this.Arguments.Add(columnValue);
+            this.InnerSql.Append(")");
 
             return this;
         }

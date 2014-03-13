@@ -16,7 +16,7 @@ namespace MicroLite.Builder
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class UpdateSqlBuilder : SqlBuilder, IUpdate, ISetOrWhere
+    internal sealed class UpdateSqlBuilder : SqlBuilderBase, IUpdate, ISetOrWhere
     {
         internal UpdateSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)

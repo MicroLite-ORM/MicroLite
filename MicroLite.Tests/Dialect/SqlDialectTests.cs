@@ -23,10 +23,7 @@
 
             using (var command = new System.Data.OleDb.OleDbCommand())
             {
-                var mockSqlCharacters = new Mock<SqlCharacters>();
-                mockSqlCharacters.CallBase = true;
-
-                var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
+                var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
                 mockSqlDialect.CallBase = true;
                 mockSqlDialect.Object.BuildCommand(command, sqlQuery);
 
@@ -59,10 +56,7 @@
 
             using (var command = new System.Data.OleDb.OleDbCommand())
             {
-                var mockSqlCharacters = new Mock<SqlCharacters>();
-                mockSqlCharacters.CallBase = true;
-
-                var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
+                var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
                 mockSqlDialect.CallBase = true;
                 mockSqlDialect.Object.BuildCommand(command, sqlQuery);
 
@@ -75,10 +69,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
 
-            var mockSqlCharacters = new Mock<SqlCharacters>();
-            mockSqlCharacters.CallBase = true;
-
-            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -92,10 +83,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [dbo].[Customers] ORDER BY [CustomerId] ASC");
 
-            var mockSqlCharacters = new Mock<SqlCharacters>();
-            mockSqlCharacters.CallBase = true;
-
-            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -109,10 +97,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ? ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
 
-            var mockSqlCharacters = new Mock<SqlCharacters>();
-            mockSqlCharacters.CallBase = true;
-
-            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -126,10 +111,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = ?", CustomerStatus.Active);
 
-            var mockSqlCharacters = new Mock<SqlCharacters>();
-            mockSqlCharacters.CallBase = true;
-
-            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
@@ -334,7 +316,7 @@
 
             var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
 
-            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?);", sqlQuery.CommandText);
+            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
@@ -346,7 +328,7 @@
             // Do a second query to check that the caching doesn't cause a problem.
             var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
 
-            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?);", sqlQuery.CommandText);
+            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
@@ -384,15 +366,21 @@
         }
 
         [Fact]
-        public void SupportsBatchedQueriesReturnsTrueByDefault()
+        public void SupportsBatchedQueriesReturnsFalseByDefault()
         {
-            var mockSqlCharacters = new Mock<SqlCharacters>();
-            mockSqlCharacters.CallBase = true;
-
-            var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
-            Assert.True(mockSqlDialect.Object.SupportsBatchedQueries);
+            Assert.False(mockSqlDialect.Object.SupportsBatchedQueries);
+        }
+
+        [Fact]
+        public void SupportsIdentityReturnsFalseByDefault()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            Assert.False(mockSqlDialect.Object.SupportsIdentity);
         }
 
         [Fact]

@@ -1,12 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="MicroLite.Builder.SqlBuilder">
-    <Position X="4.75" Y="0.5" Width="2.5" />
+    <Position X="0.5" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AEUAAEABAAAAAASAAAAAgQAAAAEgAAAAIAAAQAAAAAA=</HashCode>
+      <HashCode>AAQAAEAAAAAAAAQAAAAAAAAAAAEAAAAAAAAAQAAAAAA=</HashCode>
       <FileName>Builder\SqlBuilder.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Builder.SelectSqlBuilder">
     <Position X="5.75" Y="6.75" Width="2.5" />
@@ -45,6 +44,14 @@
     <TypeIdentifier>
       <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Builder\DeleteSqlBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MicroLite.Builder.SqlBuilderBase">
+    <Position X="5.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AEEAAAABAAAAAACAAAAAgAAAAAAgAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Builder\SqlBuilderBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

@@ -27,8 +27,8 @@
                 .Table("Table")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("UPDATE Table SET", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -40,8 +40,8 @@
                 .Table("Table")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("UPDATE [Table] SET", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -53,8 +53,8 @@
                 .Table(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("UPDATE Sales.Customers SET", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -66,8 +66,8 @@
                 .Table(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("UPDATE [Sales].[Customers] SET", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -82,12 +82,11 @@
                 .Where("Id", 100122)
                 .ToSqlQuery();
 
+            Assert.Equal("UPDATE Table SET Column1 = ?, Column2 = ? WHERE Id = ?", sqlQuery.CommandText);
             Assert.Equal(3, sqlQuery.Arguments.Count);
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
             Assert.Equal(12, sqlQuery.Arguments[1]);
             Assert.Equal(100122, sqlQuery.Arguments[2]);
-
-            Assert.Equal("UPDATE Table SET Column1 = ?, Column2 = ? WHERE Id = ?", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -102,12 +101,11 @@
                 .Where("Id", 100122)
                 .ToSqlQuery();
 
+            Assert.Equal("UPDATE [Table] SET [Column1] = @p0, [Column2] = @p1 WHERE [Id] = @p2", sqlQuery.CommandText);
             Assert.Equal(3, sqlQuery.Arguments.Count);
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
             Assert.Equal(12, sqlQuery.Arguments[1]);
             Assert.Equal(100122, sqlQuery.Arguments[2]);
-
-            Assert.Equal("UPDATE [Table] SET [Column1] = @p0, [Column2] = @p1 WHERE [Id] = @p2", sqlQuery.CommandText);
         }
     }
 }

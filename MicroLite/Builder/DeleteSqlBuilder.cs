@@ -16,7 +16,7 @@ namespace MicroLite.Builder
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class DeleteSqlBuilder : SqlBuilder, IDeleteFrom, IWhereEquals
+    internal sealed class DeleteSqlBuilder : SqlBuilderBase, IDeleteFrom, IWhereEquals
     {
         internal DeleteSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)

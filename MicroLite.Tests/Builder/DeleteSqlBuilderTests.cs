@@ -26,8 +26,8 @@
                 .From("Table")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("DELETE FROM Table", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -39,8 +39,8 @@
                 .From("Table")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("DELETE FROM [Table]", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -52,8 +52,8 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("DELETE FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -65,8 +65,8 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("DELETE FROM [Sales].[Customers]", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -79,10 +79,9 @@
                 .WhereEquals("Column1", "Foo")
                 .ToSqlQuery();
 
+            Assert.Equal("DELETE FROM Table WHERE Column1 = ?", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
-
-            Assert.Equal("DELETE FROM Table WHERE Column1 = ?", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -95,10 +94,9 @@
                 .WhereEquals("Column1", "Foo")
                 .ToSqlQuery();
 
+            Assert.Equal("DELETE FROM [Table] WHERE [Column1] = @p0", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
-
-            Assert.Equal("DELETE FROM [Table] WHERE [Column1] = @p0", sqlQuery.CommandText);
         }
     }
 }

@@ -56,11 +56,24 @@ namespace MicroLite.Dialect
         /// <summary>
         /// Gets a value indicating whether this SqlDialect supports batched queries.
         /// </summary>
+        /// <remarks>Returns false unless overridden.</remarks>
         public virtual bool SupportsBatchedQueries
         {
             get
             {
-                return true;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the SQL Dialect supports Identity or AutoIncrement columns.
+        /// </summary>
+        /// <remarks>Returns false unless overridden.</remarks>
+        public virtual bool SupportsIdentity
+        {
+            get
+            {
+                return false;
             }
         }
 
@@ -258,6 +271,19 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
+        /// Appends the select identity string to the sql builder.
+        /// </summary>
+        /// <param name="insertBuilder">The insert builder.</param>
+        /// <param name="objectInfo">The object information.</param>
+        protected virtual void AppendSelectIdentity(SqlBuilderBase insertBuilder, IObjectInfo objectInfo)
+        {
+            var selectIdentityString = this.GetSelectIdentityString(objectInfo);
+
+            insertBuilder.InnerSql.Append(this.StatementSeparator)
+                .Append(selectIdentityString);
+        }
+
+        /// <summary>
         /// Builds the delete SQL query.
         /// </summary>
         /// <param name="objectInfo">The object information.</param>
@@ -301,8 +327,8 @@ namespace MicroLite.Dialect
 
             if (!this.insertCommandCache.TryGetValue(objectInfo.ForType, out insertCommand))
             {
-                var insertSqlBuilder = new InsertSqlBuilder(this.SqlCharacters);
-                insertSqlBuilder.Into(objectInfo);
+                var counter = 0;
+                var insertColumns = new string[objectInfo.TableInfo.InsertColumnCount];
 
                 for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
                 {
@@ -310,13 +336,23 @@ namespace MicroLite.Dialect
 
                     if (columnInfo.AllowInsert)
                     {
-                        insertSqlBuilder.Value(columnInfo.ColumnName, null);
+                        insertColumns[counter++] = columnInfo.ColumnName;
                     }
                 }
 
-                var insertSqlQuery = objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
-                    ? insertSqlBuilder.ToSqlQuery(this.StatementSeparator + this.GetSelectIdentityString(objectInfo))
-                    : insertSqlBuilder.ToSqlQuery();
+                SqlQuery insertSqlQuery = null;
+
+                var insertSqlBuilder = new InsertSqlBuilder(this.SqlCharacters);
+                insertSqlBuilder.Into(objectInfo);
+                insertSqlBuilder.Columns(insertColumns);
+                insertSqlBuilder.Values(new object[objectInfo.TableInfo.InsertColumnCount]);
+
+                if (this.SupportsIdentity && objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
+                {
+                    this.AppendSelectIdentity(insertSqlBuilder, objectInfo);
+                }
+
+                insertSqlQuery = insertSqlBuilder.ToSqlQuery();
 
                 var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
                 newInsertCommandCache[objectInfo.ForType] = insertSqlQuery.CommandText;
@@ -428,6 +464,9 @@ namespace MicroLite.Dialect
         /// </summary>
         /// <param name="objectInfo">The object information for the type to return the select identity statement for.</param>
         /// <returns>The SQL command text to select the identity value for an inserted object.</returns>
-        protected abstract string GetSelectIdentityString(IObjectInfo objectInfo);
+        protected virtual string GetSelectIdentityString(IObjectInfo objectInfo)
+        {
+            return string.Empty;
+        }
     }
 }
