@@ -115,6 +115,17 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets the stored procedure invocation command.
+        /// </summary>
+        public virtual string StoredProcedureInvocationCommand
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
         public virtual bool SupportsNamedParameters

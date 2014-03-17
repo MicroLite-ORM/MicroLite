@@ -63,6 +63,17 @@ namespace MicroLite.Dialect.MsSql
         }
 
         /// <summary>
+        /// Gets the stored procedure invocation command.
+        /// </summary>
+        public override string StoredProcedureInvocationCommand
+        {
+            get
+            {
+                return "EXEC";
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
         public override bool SupportsNamedParameters

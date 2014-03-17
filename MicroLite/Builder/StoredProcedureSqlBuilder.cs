@@ -15,11 +15,12 @@ namespace MicroLite.Builder
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class StoredProcedureSqlBuilder : SqlBuilderBase, IWithParameter
     {
-        internal StoredProcedureSqlBuilder(string procedureName)
-            : base(SqlCharacters.Empty)
+        internal StoredProcedureSqlBuilder(SqlCharacters sqlCharacters, string procedureName)
+            : base(sqlCharacters)
         {
-            this.InnerSql.Append("EXEC ");
-            this.InnerSql.Append(procedureName);
+            this.InnerSql.Append(sqlCharacters.StoredProcedureInvocationCommand)
+                .Append(' ')
+                .Append(procedureName);
         }
 
         /// <summary>

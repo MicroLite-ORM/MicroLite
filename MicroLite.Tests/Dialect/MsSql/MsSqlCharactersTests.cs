@@ -33,6 +33,12 @@
         }
 
         [Fact]
+        public void StoredProcedureInvocationCommandReturnsExec()
+        {
+            Assert.Equal("EXEC", MsSqlCharacters.Instance.StoredProcedureInvocationCommand);
+        }
+
+        [Fact]
         public void SupportsNamedParametersReturnsTrue()
         {
             Assert.True(MsSqlCharacters.Instance.SupportsNamedParameters);

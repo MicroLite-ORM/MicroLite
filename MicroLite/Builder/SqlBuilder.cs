@@ -39,7 +39,7 @@ namespace MicroLite.Builder
         /// </example>
         public static IWithParameter Execute(string procedure)
         {
-            return new StoredProcedureSqlBuilder(procedure);
+            return new StoredProcedureSqlBuilder(SqlCharacters.Current, procedure);
         }
 
         /// <summary>
