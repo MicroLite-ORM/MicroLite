@@ -92,7 +92,7 @@ namespace MicroLite.Core
 
         protected void CommandCompleted()
         {
-            if (this.ConnectionScope == ConnectionScope.PerTransaction
+            if (this.connectionScope == ConnectionScope.PerTransaction
                 && this.currentTransaction == null
                 && this.Connection.State == ConnectionState.Open)
             {
@@ -107,7 +107,7 @@ namespace MicroLite.Core
 
         protected IDbCommand CreateCommand()
         {
-            if (this.ConnectionScope == ConnectionScope.PerTransaction
+            if (this.connectionScope == ConnectionScope.PerTransaction
                 && this.currentTransaction == null
                 && this.Connection.State == ConnectionState.Closed)
             {
