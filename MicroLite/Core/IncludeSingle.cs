@@ -14,7 +14,6 @@ namespace MicroLite.Core
 {
     using System;
     using System.Data;
-    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using MicroLite.TypeConverters;
 
@@ -40,7 +39,7 @@ namespace MicroLite.Core
         {
             if (reader.Read())
             {
-                if (resultType.IsNotEntityAndConvertible())
+                if (TypeConverter.IsNotEntityAndConvertible(resultType))
                 {
                     var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
 

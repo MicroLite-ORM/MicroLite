@@ -15,7 +15,6 @@ namespace MicroLite.Core
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using MicroLite.TypeConverters;
 
@@ -39,7 +38,7 @@ namespace MicroLite.Core
 
         internal override void BuildValue(IDataReader reader)
         {
-            if (resultType.IsNotEntityAndConvertible())
+            if (TypeConverter.IsNotEntityAndConvertible(resultType))
             {
                 var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
 

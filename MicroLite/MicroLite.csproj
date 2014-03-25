@@ -97,7 +97,6 @@
     <Compile Include="Builder\IWhereSingleColumn.cs" />
     <Compile Include="Builder\UpdateSqlBuilder.cs" />
     <Compile Include="SqlCharacters.cs" />
-    <Compile Include="FrameworkExtensions\TypeExtensions.cs" />
     <Compile Include="IAdvancedReadOnlySession.cs" />
     <Compile Include="Infrastructure\AppSettingSymmetricAlgorithmProvider.cs" />
     <Compile Include="DbEncryptedString.cs" />

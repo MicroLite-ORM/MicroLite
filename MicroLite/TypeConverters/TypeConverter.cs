@@ -66,5 +66,63 @@ namespace MicroLite.TypeConverters
 
             return null;
         }
+
+        /// <summary>
+        /// Determines whether the type is not an entity type and is a convertible type.
+        /// </summary>
+        /// <param name="type">The type to test.</param>
+        /// <returns>
+        /// true if the type is not an entity and can be converted.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if type is null.</exception>
+        public static bool IsNotEntityAndConvertible(Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (type.IsValueType || type == typeof(string))
+            {
+                return true;
+            }
+
+            for (int i = 0; i < Converters.Count; i++)
+            {
+                var typeConverter = Converters[i];
+
+                if (typeConverter.CanConvert(type))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Resolves the actual type.
+        /// </summary>
+        /// <param name="type">The type to resolve.</param>
+        /// <returns>
+        /// The actual type (e.g. the inner type if it is a nullable value).
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if type is null.</exception>
+        public static Type ResolveActualType(Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            var actualType = type;
+
+            if (type.IsGenericType)
+            {
+                actualType = Nullable.GetUnderlyingType(type);
+            }
+
+            return actualType;
+        }
     }
 }

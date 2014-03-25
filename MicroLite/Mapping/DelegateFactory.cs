@@ -16,7 +16,6 @@ namespace MicroLite.Mapping
     using System.Data;
     using System.Reflection;
     using System.Reflection.Emit;
-    using MicroLite.FrameworkExtensions;
     using MicroLite.TypeConverters;
 
     internal static class DelegateFactory
@@ -215,7 +214,7 @@ namespace MicroLite.Mapping
             for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
             {
                 var column = objectInfo.TableInfo.Columns[i];
-                var propertyType = column.PropertyInfo.PropertyType.ResolveActualType();
+                var propertyType = TypeConverter.ResolveActualType(column.PropertyInfo.PropertyType);
 
                 // case "{ColumnName}":
                 ilGenerator.MarkLabel(columnLabels[i]);
