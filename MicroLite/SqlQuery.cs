@@ -21,7 +21,7 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("{CommandText}")]
     public sealed class SqlQuery : IEquatable<SqlQuery>
     {
-        private static readonly object[] empty = new object[0];
+        private static readonly object[] emptyArguments = new object[0];
         private readonly object[] arguments;
         private readonly string commandText;
 
@@ -42,7 +42,7 @@ namespace MicroLite
         public SqlQuery(string commandText, params object[] arguments)
         {
             this.commandText = commandText;
-            this.arguments = arguments ?? SqlQuery.empty;
+            this.arguments = arguments ?? SqlQuery.emptyArguments;
             this.Timeout = 30;
         }
 
