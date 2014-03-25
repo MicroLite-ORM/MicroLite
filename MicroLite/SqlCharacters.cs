@@ -196,7 +196,8 @@ namespace MicroLite
                 return false;
             }
 
-            return sql.StartsWith(this.LeftDelimiter, StringComparison.Ordinal) && sql.EndsWith(this.RightDelimiter, StringComparison.Ordinal);
+            return sql.StartsWith(this.LeftDelimiter, StringComparison.OrdinalIgnoreCase)
+                && sql.EndsWith(this.RightDelimiter, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
