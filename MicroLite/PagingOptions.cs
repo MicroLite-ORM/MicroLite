@@ -20,6 +20,11 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("Count: {Count}, Offset: {Offset}")]
     public struct PagingOptions : IEquatable<PagingOptions>
     {
+        /// <summary>
+        /// A read-only instance of the <see cref="PagingOptions" /> structure whose count and offset are both zeros.
+        /// </summary>
+        public static readonly PagingOptions None = new PagingOptions(count: 0, offset: 0);
+
         private readonly int count;
         private readonly int offset;
 
@@ -32,17 +37,6 @@ namespace MicroLite
         {
             this.count = count;
             this.offset = offset;
-        }
-
-        /// <summary>
-        /// Gets the paging options for when no paging is required.
-        /// </summary>
-        public static PagingOptions None
-        {
-            get
-            {
-                return new PagingOptions(count: 0, offset: 0);
-            }
         }
 
         /// <summary>
