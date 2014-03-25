@@ -12,8 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
-    using System.Data;
     using MicroLite.Dialect;
+    using MicroLite.Driver;
     using MicroLite.Listeners;
     using MicroLite.Logging;
 
@@ -24,21 +24,22 @@ namespace MicroLite.Core
     internal sealed class SessionFactory : ISessionFactory
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private readonly object locker = new object();
-        private readonly SessionFactoryOptions sessionFactoryOptions;
+        private readonly string connectionName;
         private readonly ISqlDialect sqlDialect;
+        private readonly IDbDriver sqlDriver;
 
         internal SessionFactory(SessionFactoryOptions sessionFactoryOptions)
         {
-            this.sessionFactoryOptions = sessionFactoryOptions;
+            this.connectionName = sessionFactoryOptions.ConnectionName;
             this.sqlDialect = sessionFactoryOptions.SqlDialect;
+            this.sqlDriver = sessionFactoryOptions.SqlDriver;
         }
 
         public string ConnectionName
         {
             get
             {
-                return this.sessionFactoryOptions.ConnectionName;
+                return this.connectionName;
             }
         }
 
@@ -51,14 +52,12 @@ namespace MicroLite.Core
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This method is provided to create and return an ISession for the caller to use, it should not dispose of it, that is the responsibility of the caller.")]
         public IReadOnlySession OpenReadOnlySession(ConnectionScope connectionScope)
         {
-            var connection = this.GetNewConnectionWithConnectionString();
-
             if (log.IsDebug)
             {
                 log.Debug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.sqlDialect.GetType().Name);
             }
 
-            return new ReadOnlySession(connectionScope, connection, this.sqlDialect);
+            return new ReadOnlySession(connectionScope, this.sqlDialect, this.sqlDriver);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This method is provided to create and return an ISession for the caller to use, it should not dispose of it, that is the responsibility of the caller.")]
@@ -70,28 +69,12 @@ namespace MicroLite.Core
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This method is provided to create and return an ISession for the caller to use, it should not dispose of it, that is the responsibility of the caller.")]
         public ISession OpenSession(ConnectionScope connectionScope)
         {
-            var connection = this.GetNewConnectionWithConnectionString();
-
             if (log.IsDebug)
             {
                 log.Debug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.sqlDialect.GetType().Name);
             }
 
-            return new Session(connectionScope, connection, this.sqlDialect, Listener.Listeners);
-        }
-
-        private IDbConnection GetNewConnectionWithConnectionString()
-        {
-            IDbConnection connection;
-
-            lock (this.locker)
-            {
-                connection = this.sessionFactoryOptions.ProviderFactory.CreateConnection();
-            }
-
-            connection.ConnectionString = this.sessionFactoryOptions.ConnectionString;
-
-            return connection;
+            return new Session(connectionScope, this.sqlDialect, this.sqlDriver, Listener.Listeners);
         }
     }
 }

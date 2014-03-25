@@ -10,15 +10,15 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Dialect.MsSql
+namespace MicroLite.Dialect
 {
     /// <summary>
-    /// An implementation of SqlCharacters for MsSql.
+    /// The implementation of <see cref="SqlCharacters"/> for MsSql server.
     /// </summary>
     internal sealed class MsSqlCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of SqlCharacters for MsSql.
+        /// The single instance of <see cref="SqlCharacters"/> for MsSql.
         /// </summary>
         internal static readonly SqlCharacters Instance = new MsSqlCharacters();
 

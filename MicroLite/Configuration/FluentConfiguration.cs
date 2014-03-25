@@ -18,6 +18,7 @@ namespace MicroLite.Configuration
     using System.Linq;
     using MicroLite.Core;
     using MicroLite.Dialect;
+    using MicroLite.Driver;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
@@ -54,7 +55,7 @@ namespace MicroLite.Configuration
             }
         }
 
-        public ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, DbProviderFactory providerFactory)
+        public ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, IDbDriver dbDriver)
         {
             if (connectionName == null)
             {
@@ -66,9 +67,9 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("sqlDialect");
             }
 
-            if (providerFactory == null)
+            if (dbDriver == null)
             {
-                throw new ArgumentNullException("providerFactory");
+                throw new ArgumentNullException("dbDriver");
             }
 
             var configSection = ConfigurationManager.ConnectionStrings[connectionName];
@@ -80,9 +81,10 @@ namespace MicroLite.Configuration
             }
 
             this.options.ConnectionName = configSection.Name;
-            this.options.ConnectionString = configSection.ConnectionString;
-            this.options.ProviderFactory = providerFactory;
             this.options.SqlDialect = sqlDialect;
+            this.options.SqlDriver = dbDriver;
+            this.options.SqlDriver.ConnectionString = configSection.ConnectionString;
+            this.options.SqlDriver.DbProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
 
             return this;
         }

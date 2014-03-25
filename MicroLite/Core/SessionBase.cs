@@ -14,6 +14,7 @@ namespace MicroLite.Core
 {
     using System;
     using System.Data;
+    using MicroLite.Driver;
     using MicroLite.Logging;
 
     /// <summary>
@@ -23,24 +24,14 @@ namespace MicroLite.Core
     internal abstract class SessionBase : ISessionBase, IDisposable
     {
         protected static readonly ILog Log = LogManager.GetCurrentClassLog();
-        private readonly ConnectionScope connectionScope;
         private Transaction currentTransaction;
         private bool disposed;
 
-        protected SessionBase(ConnectionScope connectionScope, IDbConnection connection)
+        protected SessionBase(ConnectionScope connectionScope, IDbDriver dbDriver)
         {
-            this.connectionScope = connectionScope;
-            this.Connection = connection;
-
-            if (this.connectionScope == ConnectionScope.PerSession)
-            {
-                if (Log.IsDebug)
-                {
-                    Log.Debug(Messages.OpeningConnection);
-                }
-
-                this.Connection.Open();
-            }
+            this.Connection = dbDriver.GetConnection(connectionScope);
+            this.ConnectionScope = connectionScope;
+            this.DbDriver = dbDriver;
         }
 
         public IDbConnection Connection
@@ -51,10 +42,8 @@ namespace MicroLite.Core
 
         public ConnectionScope ConnectionScope
         {
-            get
-            {
-                return this.connectionScope;
-            }
+            get;
+            private set;
         }
 
         public ITransaction CurrentTransaction
@@ -63,6 +52,12 @@ namespace MicroLite.Core
             {
                 return this.currentTransaction;
             }
+        }
+
+        protected IDbDriver DbDriver
+        {
+            get;
+            private set;
         }
 
         public ITransaction BeginTransaction()
@@ -92,9 +87,9 @@ namespace MicroLite.Core
 
         protected void CommandCompleted()
         {
-            if (this.connectionScope == ConnectionScope.PerTransaction
-                && this.currentTransaction == null
-                && this.Connection.State == ConnectionState.Open)
+            if (this.ConnectionScope == ConnectionScope.PerTransaction
+                && this.Connection.State == ConnectionState.Open
+                && this.currentTransaction == null)
             {
                 if (Log.IsDebug)
                 {
@@ -105,11 +100,11 @@ namespace MicroLite.Core
             }
         }
 
-        protected IDbCommand CreateCommand()
+        protected IDbCommand CreateCommand(SqlQuery sqlQuery)
         {
-            if (this.connectionScope == ConnectionScope.PerTransaction
-                && this.currentTransaction == null
-                && this.Connection.State == ConnectionState.Closed)
+            if (this.ConnectionScope == ConnectionScope.PerTransaction
+                && this.Connection.State == ConnectionState.Closed
+                && this.currentTransaction == null)
             {
                 if (Log.IsDebug)
                 {
@@ -119,7 +114,8 @@ namespace MicroLite.Core
                 this.Connection.Open();
             }
 
-            var command = this.Connection.CreateCommand();
+            var command = this.DbDriver.BuildCommand(sqlQuery);
+            command.Connection = this.Connection;
 
             if (this.currentTransaction != null)
             {
@@ -146,7 +142,7 @@ namespace MicroLite.Core
                     this.currentTransaction = null;
                 }
 
-                if (this.connectionScope == ConnectionScope.PerSession)
+                if (this.ConnectionScope == ConnectionScope.PerSession)
                 {
                     if (Log.IsDebug)
                     {

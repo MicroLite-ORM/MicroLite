@@ -15,17 +15,13 @@ namespace MicroLite.Dialect
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text;
     using MicroLite.Builder;
-    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
 
     /// <summary>
     /// The base class for implementations of <see cref="ISqlDialect" />.
     /// </summary>
-    public abstract class SqlDialect : ISqlDialect
+    internal abstract class SqlDialect : ISqlDialect
     {
         private readonly SqlCharacters sqlCharacters;
         private Dictionary<Type, string> deleteCommandCache = new Dictionary<Type, string>();
@@ -54,18 +50,6 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets a value indicating whether this SqlDialect supports batched queries.
-        /// </summary>
-        /// <remarks>Returns false unless overridden.</remarks>
-        public virtual bool SupportsBatchedQueries
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Gets a value indicating whether the SQL Dialect supports Identity or AutoIncrement columns.
         /// </summary>
         /// <remarks>Returns false unless overridden.</remarks>
@@ -78,75 +62,6 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the character used to separate SQL statements.
-        /// </summary>
-        protected virtual string StatementSeparator
-        {
-            get
-            {
-                return ";";
-            }
-        }
-
-        /// <summary>
-        /// Builds the command using the values in the specified SqlQuery.
-        /// </summary>
-        /// <param name="command">The command to build.</param>
-        /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
-        /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
-        public virtual void BuildCommand(IDbCommand command, SqlQuery sqlQuery)
-        {
-            var parameterNames = this.sqlCharacters.SupportsNamedParameters
-                ? SqlUtility.GetParameterNames(sqlQuery.CommandText)
-                : Enumerable.Range(0, sqlQuery.Arguments.Count).Select(c => "Parameter" + c.ToString(CultureInfo.InvariantCulture)).ToArray();
-
-            if (parameterNames.Count != sqlQuery.Arguments.Count)
-            {
-                throw new MicroLiteException(Messages.SqlDialect_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
-            }
-
-            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
-            command.CommandTimeout = sqlQuery.Timeout;
-            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
-
-            for (int i = 0; i < parameterNames.Count; i++)
-            {
-                var parameterName = parameterNames[i];
-                var parameterValue = sqlQuery.Arguments[i];
-
-                this.AddParameter(command, parameterName, parameterValue);
-            }
-        }
-
-        /// <summary>
-        /// Combines the specified SQL queries into a single SqlQuery.
-        /// </summary>
-        /// <param name="sqlQueries">The SQL queries to be combined.</param>
-        /// <returns>
-        /// An <see cref="SqlQuery" /> containing the combined command text and arguments.
-        /// </returns>
-        public virtual SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
-        {
-            int argumentsCount = 0;
-            var sqlBuilder = new StringBuilder(sqlQueries.Sum(s => s.CommandText.Length));
-
-            foreach (var sqlQuery in sqlQueries)
-            {
-                argumentsCount += sqlQuery.Arguments.Count;
-
-                var commandText = SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
-
-                sqlBuilder.Append(commandText).AppendLine(this.StatementSeparator);
-            }
-
-            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
-            combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
-
-            return combinedQuery;
-        }
-
-        /// <summary>
         /// Creates an SqlQuery to count the number of records which would be returned by the specified SqlQuery.
         /// </summary>
         /// <param name="sqlQuery">The SQL query.</param>
@@ -155,6 +70,11 @@ namespace MicroLite.Dialect
         /// </returns>
         public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
         {
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
             var qualifiedTableName = SqlUtility.ReadTableName(sqlQuery.CommandText);
             var whereValue = SqlUtility.ReadWhereClause(sqlQuery.CommandText);
             var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
@@ -171,6 +91,11 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery CreateQuery(ObjectDelta objectDelta)
         {
+            if (objectDelta == null)
+            {
+                throw new ArgumentNullException("objectDelta");
+            }
+
             var objectInfo = ObjectInfo.For(objectDelta.ForType);
 
             var builder = new UpdateSqlBuilder(this.SqlCharacters)
@@ -199,6 +124,11 @@ namespace MicroLite.Dialect
         /// <exception cref="System.NotSupportedException">Thrown if the StatementType is not supported.</exception>
         public SqlQuery CreateQuery(StatementType statementType, object instance)
         {
+            if (instance == null)
+            {
+                throw new ArgumentNullException("instance");
+            }
+
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             switch (statementType)
@@ -245,6 +175,18 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
+        /// Creates an SqlQuery to select the identity of an inserted object if the database supports Identity or AutoIncrement.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        public virtual SqlQuery CreateSelectIdentityQuery(IObjectInfo objectInfo)
+        {
+            return new SqlQuery(string.Empty);
+        }
+
+        /// <summary>
         /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the paging options.
         /// </summary>
         /// <param name="sqlQuery">The SQL query.</param>
@@ -253,35 +195,6 @@ namespace MicroLite.Dialect
         /// A <see cref="SqlQuery" /> to return the paged results of the specified query.
         /// </returns>
         public abstract SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions);
-
-        /// <summary>
-        /// Add a parameter to the IDbCommand with the specified name and value.
-        /// </summary>
-        /// <param name="command">The command to add a parameter to.</param>
-        /// <param name="parameterName">The name for the parameter.</param>
-        /// <param name="parameterValue">The value for the parameter.</param>
-        protected virtual void AddParameter(IDbCommand command, string parameterName, object parameterValue)
-        {
-            var parameter = command.CreateParameter();
-            parameter.Direction = ParameterDirection.Input;
-            parameter.ParameterName = parameterName;
-            parameter.Value = parameterValue ?? DBNull.Value;
-
-            command.Parameters.Add(parameter);
-        }
-
-        /// <summary>
-        /// Appends the select identity string to the sql builder.
-        /// </summary>
-        /// <param name="insertBuilder">The insert builder.</param>
-        /// <param name="objectInfo">The object information.</param>
-        protected virtual void AppendSelectIdentity(SqlBuilderBase insertBuilder, IObjectInfo objectInfo)
-        {
-            var selectIdentityString = this.GetSelectIdentityString(objectInfo);
-
-            insertBuilder.InnerSql.Append(this.StatementSeparator)
-                .Append(selectIdentityString);
-        }
 
         /// <summary>
         /// Builds the delete SQL query.
@@ -340,19 +253,12 @@ namespace MicroLite.Dialect
                     }
                 }
 
-                SqlQuery insertSqlQuery = null;
-
                 var insertSqlBuilder = new InsertSqlBuilder(this.SqlCharacters);
                 insertSqlBuilder.Into(objectInfo);
                 insertSqlBuilder.Columns(insertColumns);
                 insertSqlBuilder.Values(new object[objectInfo.TableInfo.InsertColumnCount]);
 
-                if (this.SupportsIdentity && objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
-                {
-                    this.AppendSelectIdentity(insertSqlBuilder, objectInfo);
-                }
-
-                insertSqlQuery = insertSqlBuilder.ToSqlQuery();
+                var insertSqlQuery = insertSqlBuilder.ToSqlQuery();
 
                 var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
                 newInsertCommandCache[objectInfo.ForType] = insertSqlQuery.CommandText;
@@ -437,36 +343,6 @@ namespace MicroLite.Dialect
             var updateValues = objectInfo.GetUpdateValues(instance);
 
             return new SqlQuery(updateCommand, updateValues);
-        }
-
-        /// <summary>
-        /// Gets the command text.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The actual command text.</returns>
-        protected virtual string GetCommandText(string commandText)
-        {
-            return commandText;
-        }
-
-        /// <summary>
-        /// Gets the type of the command.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The CommandType for the specified command text.</returns>
-        protected virtual CommandType GetCommandType(string commandText)
-        {
-            return CommandType.Text;
-        }
-
-        /// <summary>
-        /// Gets the select identity string for the specified type.
-        /// </summary>
-        /// <param name="objectInfo">The object information for the type to return the select identity statement for.</param>
-        /// <returns>The SQL command text to select the identity value for an inserted object.</returns>
-        protected virtual string GetSelectIdentityString(IObjectInfo objectInfo)
-        {
-            return string.Empty;
         }
     }
 }

@@ -12,8 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Configuration
 {
-    using System.Data.Common;
     using MicroLite.Dialect;
+    using MicroLite.Driver;
 
     /// <summary>
     /// The interface which specifies the options for configuring the connection in the fluent configuration
@@ -27,11 +27,11 @@ namespace MicroLite.Configuration
         /// </summary>
         /// <param name="connectionName">The name of the connection string in the app config.</param>
         /// <param name="sqlDialect">The sql dialect to use for the connection.</param>
-        /// <param name="providerFactory">The provider factory to use for the connection.</param>
+        /// <param name="dbDriver">The db driver to use for the connection.</param>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
-        /// <remarks>This method should not be called by user code, rather it is the extension point for implementations of ISqlDialect.</remarks>
-        ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, DbProviderFactory providerFactory);
+        /// <remarks>This method should not be called by user code, rather it is the extension point used by the custom configuration extension method for a supported database type.</remarks>
+        ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, IDbDriver dbDriver);
     }
 }

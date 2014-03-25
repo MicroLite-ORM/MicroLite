@@ -4,6 +4,7 @@
     using System.Data.Common;
     using MicroLite.Configuration;
     using MicroLite.Dialect;
+    using MicroLite.Driver;
     using MicroLite.FrameworkExtensions;
     using Moq;
     using Xunit;
@@ -13,28 +14,34 @@
     /// </summary>
     public class FluentConfigurationTests
     {
-        public class WhenCallingCreateSessionFactory : IDisposable
+        public class WhenCallingCreateSessionFactory : UnitTest
         {
+            private readonly Mock<IDbDriver> mockDbDriver = new Mock<IDbDriver>();
+            private readonly Mock<ISqlDialect> mockSqlDialect = new Mock<ISqlDialect>();
             private readonly ISessionFactory sessionFactory;
             private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
             public WhenCallingCreateSessionFactory()
             {
-                this.ResetExternalDependencies();
+                this.mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
 
                 var fluentConfiguration = new FluentConfiguration();
 
-                var mockSqlDialect = new Mock<ISqlDialect>();
-                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
-
                 this.sessionFactory = fluentConfiguration
-                    .ForConnection("SqlConnection", mockSqlDialect.Object, new Mock<DbProviderFactory>().Object)
+                    .ForConnection("SqlConnection", this.mockSqlDialect.Object, this.mockDbDriver.Object)
                     .CreateSessionFactory();
             }
 
-            public void Dispose()
+            [Fact]
+            public void TheConnectionStringShouldBeSetOnTheDbDriver()
             {
-                this.ResetExternalDependencies();
+                this.mockDbDriver.VerifySet(x => x.ConnectionString = It.IsAny<string>());
+            }
+
+            [Fact]
+            public void TheDbProviderFactoryShouldBeSetOnTheDbDriver()
+            {
+                this.mockDbDriver.VerifySet(x => x.DbProviderFactory = It.IsAny<DbProviderFactory>());
             }
 
             [Fact]
@@ -48,37 +55,24 @@
             {
                 Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
             }
-
-            private void ResetExternalDependencies()
-            {
-                Configure.SessionFactories.Clear();
-                SqlCharacters.Current = null;
-            }
         }
 
-        public class WhenCallingCreateSessionFactory_MultipleTimesForTheSameConnection : IDisposable
+        public class WhenCallingCreateSessionFactory_MultipleTimesForTheSameConnection : UnitTest
         {
             private readonly ISessionFactory sessionFactory1;
             private readonly ISessionFactory sessionFactory2;
 
             public WhenCallingCreateSessionFactory_MultipleTimesForTheSameConnection()
             {
-                Configure.SessionFactories.Clear();
-
                 var fluentConfiguration = new FluentConfiguration();
 
                 this.sessionFactory1 = fluentConfiguration
-                    .ForConnection("SqlConnection", new Mock<ISqlDialect>().Object, new Mock<DbProviderFactory>().Object)
+                    .ForConnection("SqlConnection", new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object)
                     .CreateSessionFactory();
 
                 this.sessionFactory2 = fluentConfiguration
-                    .ForConnection("SqlConnection", new Mock<ISqlDialect>().Object, new Mock<DbProviderFactory>().Object)
+                    .ForConnection("SqlConnection", new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object)
                     .CreateSessionFactory();
-            }
-
-            public void Dispose()
-            {
-                Configure.SessionFactories.Clear();
             }
 
             [Fact]
@@ -96,7 +90,7 @@
                 var fluentConfiguration = new FluentConfiguration();
 
                 var exception = Assert.Throws<ConfigurationException>(
-                    () => fluentConfiguration.ForConnection("TestDB", new Mock<ISqlDialect>().Object, new Mock<DbProviderFactory>().Object));
+                    () => fluentConfiguration.ForConnection("TestDB", new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
 
                 Assert.Equal(Messages.FluentConfiguration_ConnectionNotFound.FormatWith("TestDB"), exception.Message);
             }
@@ -110,13 +104,13 @@
                 var fluentConfiguration = new FluentConfiguration();
 
                 var exception = Assert.Throws<ArgumentNullException>(
-                    () => fluentConfiguration.ForConnection(null, new Mock<ISqlDialect>().Object, new Mock<DbProviderFactory>().Object));
+                    () => fluentConfiguration.ForConnection(null, new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
 
                 Assert.Equal(exception.ParamName, "connectionName");
             }
         }
 
-        public class WhenCallingForConnection_AndTheDbProviderFactoryIsNull
+        public class WhenCallingForConnection_AndTheDbDriverIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
@@ -126,7 +120,7 @@
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection("SqlConnection", new Mock<ISqlDialect>().Object, null));
 
-                Assert.Equal(exception.ParamName, "providerFactory");
+                Assert.Equal(exception.ParamName, "dbDriver");
             }
         }
 
@@ -138,7 +132,7 @@
                 var fluentConfiguration = new FluentConfiguration();
 
                 var exception = Assert.Throws<ArgumentNullException>(
-                    () => fluentConfiguration.ForConnection("SqlConnection", null, new Mock<DbProviderFactory>().Object));
+                    () => fluentConfiguration.ForConnection("SqlConnection", null, new Mock<IDbDriver>().Object));
 
                 Assert.Equal(exception.ParamName, "sqlDialect");
             }

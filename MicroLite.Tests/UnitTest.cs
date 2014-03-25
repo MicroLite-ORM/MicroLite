@@ -2,12 +2,14 @@
 {
     using System;
     using System.Reflection;
+    using MicroLite.Configuration;
     using MicroLite.Mapping;
 
     public abstract class UnitTest : IDisposable
     {
         protected UnitTest()
         {
+            Configure.SessionFactories.Clear();
             ObjectInfo.Reset();
             SqlCharacters.Current = null;
         }
@@ -37,6 +39,7 @@
 
         public void Dispose()
         {
+            Configure.SessionFactories.Clear();
             ObjectInfo.Reset();
             SqlCharacters.Current = null;
 

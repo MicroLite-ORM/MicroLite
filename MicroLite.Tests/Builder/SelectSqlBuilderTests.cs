@@ -2,7 +2,7 @@
 {
     using System;
     using MicroLite.Builder;
-    using MicroLite.Dialect.MsSql;
+    using MicroLite.Dialect;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
     using Xunit;

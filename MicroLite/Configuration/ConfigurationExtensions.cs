@@ -13,12 +13,12 @@
 namespace MicroLite.Configuration
 {
     using System;
-    using System.Data.SqlClient;
-    using MicroLite.Dialect.MsSql;
+    using MicroLite.Dialect;
+    using MicroLite.Driver;
     using MicroLite.Mapping;
 
     /// <summary>
-    /// Extension methods for the MicroLite configuration API.
+    /// Extension methods for IConfigureExtensions.
     /// </summary>
     public static class ConfigurationExtensions
     {
@@ -39,7 +39,7 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("configureConnection");
             }
 
-            return configureConnection.ForConnection(connectionName, MsSqlDialect.Instance, SqlClientFactory.Instance);
+            return configureConnection.ForConnection(connectionName, new MsSqlDialect(), new MsDbDriver());
         }
 
         /// <summary>

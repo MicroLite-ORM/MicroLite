@@ -18,6 +18,7 @@ namespace MicroLite.Core
     using System.Globalization;
     using MicroLite.Builder;
     using MicroLite.Dialect;
+    using MicroLite.Driver;
 
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.
@@ -31,9 +32,9 @@ namespace MicroLite.Core
 
         internal ReadOnlySession(
             ConnectionScope connectionScope,
-            IDbConnection connection,
-            ISqlDialect sqlDialect)
-            : base(connectionScope, connection)
+            ISqlDialect sqlDialect,
+            IDbDriver sqlDriver)
+            : base(connectionScope, sqlDriver)
         {
             this.sqlDialect = sqlDialect;
         }
@@ -82,7 +83,7 @@ namespace MicroLite.Core
 
             try
             {
-                if (this.SqlDialect.SupportsBatchedQueries && this.queries.Count > 1)
+                if (this.DbDriver.SupportsBatchedQueries && this.queries.Count > 1)
                 {
                     this.ExecuteQueriesCombined();
                 }
@@ -231,14 +232,12 @@ namespace MicroLite.Core
 
         private void ExecuteQueriesCombined()
         {
-            var combinedSqlQuery = this.SqlDialect.Combine(this.queries);
+            var combinedSqlQuery = this.DbDriver.Combine(this.queries);
 
-            using (var command = this.CreateCommand())
+            using (var command = this.CreateCommand(combinedSqlQuery))
             {
                 try
                 {
-                    this.SqlDialect.BuildCommand(command, combinedSqlQuery);
-
                     using (var reader = command.ExecuteReader())
                     {
                         do
@@ -260,13 +259,12 @@ namespace MicroLite.Core
         {
             do
             {
-                using (var command = this.CreateCommand())
+                var sqlQuery = this.queries.Dequeue();
+
+                using (var command = this.CreateCommand(sqlQuery))
                 {
                     try
                     {
-                        var sqlQuery = this.queries.Dequeue();
-                        this.SqlDialect.BuildCommand(command, sqlQuery);
-
                         using (var reader = command.ExecuteReader())
                         {
                             var include = this.includes.Dequeue();

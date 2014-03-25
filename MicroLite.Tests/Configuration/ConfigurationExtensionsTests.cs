@@ -1,9 +1,9 @@
 ﻿namespace MicroLite.Tests.Configuration
 {
     using System;
-    using System.Data.SqlClient;
     using MicroLite.Configuration;
-    using MicroLite.Dialect.MsSql;
+    using MicroLite.Dialect;
+    using MicroLite.Driver;
     using MicroLite.Mapping;
     using Moq;
     using Xunit;
@@ -23,10 +23,10 @@
             }
 
             [Fact]
-            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbProviderFactory()
+            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
             {
                 this.mockConfigureConnection.Verify(
-                    x => x.ForConnection("TestConnection", MsSqlDialect.Instance, SqlClientFactory.Instance),
+                    x => x.ForConnection("TestConnection", It.IsAny<MsSqlDialect>(), It.IsAny<MsDbDriver>()),
                     Times.Once());
             }
         }

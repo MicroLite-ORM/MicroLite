@@ -12,8 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
-    using System.Data.Common;
     using MicroLite.Dialect;
+    using MicroLite.Driver;
 
     /// <summary>
     /// The class used to hold the options for configuring a session factory.
@@ -30,27 +30,18 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Gets or sets the connection string.
-        /// </summary>
-        internal string ConnectionString
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets or sets the provider factory.
-        /// </summary>
-        internal DbProviderFactory ProviderFactory
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Gets or sets the SqlDialect for the connection.
         /// </summary>
         internal ISqlDialect SqlDialect
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the SqlDriver for the connection.
+        /// </summary>
+        internal IDbDriver SqlDriver
         {
             get;
             set;

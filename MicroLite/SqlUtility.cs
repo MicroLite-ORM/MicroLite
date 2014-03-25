@@ -43,10 +43,11 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the parameter names from the specified SQL command text.
+        /// Gets the parameter names from the specified SQL command text or an empty list if the command text does not contain any named parameters.
         /// </summary>
         /// <param name="commandText">The SQL command text.</param>
         /// <returns>A list containing the parameter names in the SQL command text.</returns>
+        /// <remarks>Will return an empty list if the command text has no parameter names or the parameter names are all '?' (if the dialect does not support named parameters).</remarks>
         public static IList<string> GetParameterNames(string commandText)
         {
             if (commandText == null)

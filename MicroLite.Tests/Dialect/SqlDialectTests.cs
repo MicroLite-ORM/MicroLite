@@ -3,7 +3,6 @@
     using System;
     using System.Data;
     using MicroLite.Dialect;
-    using MicroLite.Dialect.MsSql;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
     using Moq;
@@ -14,56 +13,6 @@
     /// </summary>
     public class SqlDialectTests : UnitTest
     {
-        [Fact]
-        public void BuildCommandForSqlQueryWithSqlText()
-        {
-            var sqlQuery = new SqlQuery(
-                "SELECT * FROM [Table] WHERE [Table].[Id] = ? AND [Table].[Value1] = ? AND [Table].[Value2] = ?",
-                new object[] { 100, "hello", null });
-
-            using (var command = new System.Data.OleDb.OleDbCommand())
-            {
-                var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
-                mockSqlDialect.CallBase = true;
-                mockSqlDialect.Object.BuildCommand(command, sqlQuery);
-
-                Assert.Equal(sqlQuery.CommandText, command.CommandText);
-                Assert.Equal(CommandType.Text, command.CommandType);
-                Assert.Equal(3, command.Parameters.Count);
-
-                var parameter1 = (IDataParameter)command.Parameters[0];
-                Assert.Equal(ParameterDirection.Input, parameter1.Direction);
-                Assert.Equal("Parameter0", parameter1.ParameterName);
-                Assert.Equal(sqlQuery.Arguments[0], parameter1.Value);
-
-                var parameter2 = (IDataParameter)command.Parameters[1];
-                Assert.Equal(ParameterDirection.Input, parameter2.Direction);
-                Assert.Equal("Parameter1", parameter2.ParameterName);
-                Assert.Equal(sqlQuery.Arguments[1], parameter2.Value);
-
-                var parameter3 = (IDataParameter)command.Parameters[2];
-                Assert.Equal(ParameterDirection.Input, parameter3.Direction);
-                Assert.Equal("Parameter2", parameter3.ParameterName);
-                Assert.Equal(DBNull.Value, parameter3.Value);
-            }
-        }
-
-        [Fact]
-        public void BuildCommandSetsDbCommandTimeoutToSqlQueryTime()
-        {
-            var sqlQuery = new SqlQuery("SELECT * FROM [Table]");
-            sqlQuery.Timeout = 42; // Use an oddball time which shouldn't be a default anywhere.
-
-            using (var command = new System.Data.OleDb.OleDbCommand())
-            {
-                var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
-                mockSqlDialect.CallBase = true;
-                mockSqlDialect.Object.BuildCommand(command, sqlQuery);
-
-                Assert.Equal(sqlQuery.Timeout, command.CommandTimeout);
-            }
-        }
-
         [Fact]
         public void CountQueryNoWhereOrOrderBy()
         {
@@ -76,6 +25,18 @@
 
             Assert.Equal("SELECT COUNT(*) FROM Customers", countQuery.CommandText);
             Assert.Equal(0, countQuery.Arguments.Count);
+        }
+
+        [Fact]
+        public void CountQueryThrowsArgumentNullExceptionForNullSqlQuery()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => mockSqlDialect.Object.CountQuery(null));
+
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]
@@ -201,6 +162,45 @@
         }
 
         [Fact]
+        public void CreateQueryThrowsArgumentNullExceptionForNullInstance()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => mockSqlDialect.Object.CreateQuery(StatementType.Insert, null));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void CreateQueryThrowsArgumentNullExceptionForNullObjectDelta()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => mockSqlDialect.Object.CreateQuery(null));
+
+            Assert.Equal("objectDelta", exception.ParamName);
+        }
+
+        [Fact]
+        public void CreateSelectIdentityQueryReturnsSqlQueryWithEmptyCommandTextAndNoArguments()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var sqlQuery = mockSqlDialect.Object.CreateSelectIdentityQuery(ObjectInfo.For(typeof(Customer)));
+
+            Assert.Equal(string.Empty, sqlQuery.CommandText);
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+        }
+
+        [Fact]
         public void DeleteByIdentifierQuery()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
@@ -216,6 +216,15 @@
             Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(identifier, sqlQuery.Arguments[0]);
+
+            // Do a second query to check that the caching doesn't cause a problem.
+            identifier = 998866;
+
+            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Delete, typeof(Customer), identifier);
+
+            Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery2.CommandText);
+            Assert.Equal(1, sqlQuery2.Arguments.Count);
+            Assert.Equal(identifier, sqlQuery2.Arguments[0]);
         }
 
         [Fact]
@@ -244,6 +253,24 @@
             Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(customer.Id, sqlQuery.Arguments[0]);
+
+            // Do a second query to check that the caching doesn't cause a problem.
+            customer = new Customer
+            {
+                Created = new DateTime(2012, 08, 13),
+                CreditLimit = 6250.00M,
+                DateOfBirth = new System.DateTime(1984, 3, 11),
+                Id = 998866,
+                Name = "John Smith",
+                Status = CustomerStatus.Inactive,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com/about")
+            };
+            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Delete, customer);
+
+            Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery2.CommandText);
+            Assert.Equal(1, sqlQuery2.Arguments.Count);
+            Assert.Equal(customer.Id, sqlQuery2.Arguments[0]);
         }
 
         [Fact]
@@ -276,21 +303,32 @@
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
             Assert.Equal(customer.Id, sqlQuery.Arguments[3]);
             Assert.Equal(customer.Name, sqlQuery.Arguments[4]);
-            Assert.Equal(1, sqlQuery.Arguments[5]);
+            Assert.Equal((int)customer.Status, sqlQuery.Arguments[5]);
             Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[6]);
 
             // Do a second query to check that the caching doesn't cause a problem.
+            customer = new Customer
+            {
+                Created = new DateTime(2012, 08, 13),
+                CreditLimit = 6250.00M,
+                DateOfBirth = new System.DateTime(1984, 3, 11),
+                Id = 998866,
+                Name = "John Smith",
+                Status = CustomerStatus.Inactive,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com/about")
+            };
             var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
 
-            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?, ?)", sqlQuery.CommandText);
-            Assert.Equal(7, sqlQuery.Arguments.Count);
-            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
-            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
-            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
-            Assert.Equal(customer.Id, sqlQuery.Arguments[3]);
-            Assert.Equal(customer.Name, sqlQuery.Arguments[4]);
-            Assert.Equal(1, sqlQuery.Arguments[5]);
-            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[6]);
+            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?, ?)", sqlQuery2.CommandText);
+            Assert.Equal(7, sqlQuery2.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery2.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery2.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[2]);
+            Assert.Equal(customer.Id, sqlQuery2.Arguments[3]);
+            Assert.Equal(customer.Name, sqlQuery2.Arguments[4]);
+            Assert.Equal((int)customer.Status, sqlQuery2.Arguments[5]);
+            Assert.Equal("http://microliteorm.wordpress.com/about", sqlQuery2.Arguments[6]);
         }
 
         [Fact]
@@ -322,20 +360,31 @@
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
             Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
-            Assert.Equal(1, sqlQuery.Arguments[4]);
+            Assert.Equal((int)customer.Status, sqlQuery.Arguments[4]);
             Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
 
             // Do a second query to check that the caching doesn't cause a problem.
+            customer = new Customer
+            {
+                Created = new DateTime(2012, 08, 13),
+                CreditLimit = 6250.00M,
+                DateOfBirth = new System.DateTime(1984, 3, 11),
+                Id = 998866,
+                Name = "John Smith",
+                Status = CustomerStatus.Inactive,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com/about")
+            };
             var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
 
-            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?)", sqlQuery.CommandText);
-            Assert.Equal(6, sqlQuery.Arguments.Count);
-            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
-            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
-            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
-            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
-            Assert.Equal(1, sqlQuery.Arguments[4]);
-            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
+            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?)", sqlQuery2.CommandText);
+            Assert.Equal(6, sqlQuery2.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery2.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery2.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery2.Arguments[3]);
+            Assert.Equal((int)customer.Status, sqlQuery2.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/about", sqlQuery2.Arguments[5]);
         }
 
         [Fact]
@@ -354,24 +403,24 @@
             Assert.Equal("SELECT Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Updated, Website FROM Sales.Customers WHERE (Id = ?)", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(identifier, sqlQuery.Arguments[0]);
+
+            // Do a second query to check that the caching doesn't cause a problem.
+            identifier = 998866;
+
+            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Select, typeof(Customer), identifier);
+
+            Assert.Equal("SELECT Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Updated, Website FROM Sales.Customers WHERE (Id = ?)", sqlQuery2.CommandText);
+            Assert.Equal(1, sqlQuery2.Arguments.Count);
+            Assert.Equal(identifier, sqlQuery2.Arguments[0]);
         }
 
         [Fact]
         public void SqlCharactersPassedToConstructorAreExposed()
         {
-            var mockSqlDialect = new Mock<SqlDialect>(MsSqlCharacters.Instance);
-            mockSqlDialect.CallBase = true;
-
-            Assert.Same(MsSqlCharacters.Instance, mockSqlDialect.Object.SqlCharacters);
-        }
-
-        [Fact]
-        public void SupportsBatchedQueriesReturnsFalseByDefault()
-        {
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
-            Assert.False(mockSqlDialect.Object.SupportsBatchedQueries);
+            Assert.Same(SqlCharacters.Empty, mockSqlDialect.Object.SqlCharacters);
         }
 
         [Fact]
@@ -411,91 +460,34 @@
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[0]);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
             Assert.Equal(customer.Name, sqlQuery.Arguments[2]);
-            Assert.Equal(1, sqlQuery.Arguments[3]);
+            Assert.Equal((int)customer.Status, sqlQuery.Arguments[3]);
             Assert.Equal(customer.Updated, sqlQuery.Arguments[4]);
             Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
             Assert.Equal(customer.Id, sqlQuery.Arguments[6]);
 
             // Do a second query to check that the caching doesn't cause a problem.
+            customer = new Customer
+            {
+                Created = new DateTime(2012, 08, 13),
+                CreditLimit = 6250.00M,
+                DateOfBirth = new System.DateTime(1984, 3, 11),
+                Id = 998866,
+                Name = "John Smith",
+                Status = CustomerStatus.Inactive,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com/about")
+            };
             var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Update, customer);
 
-            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?, DateOfBirth = ?, Name = ?, CustomerStatusId = ?, Updated = ?, Website = ? WHERE Id = ?", sqlQuery.CommandText);
-            Assert.Equal(7, sqlQuery.Arguments.Count);
-            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[0]);
-            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
-            Assert.Equal(customer.Name, sqlQuery.Arguments[2]);
-            Assert.Equal(1, sqlQuery.Arguments[3]);
-            Assert.Equal(customer.Updated, sqlQuery.Arguments[4]);
-            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
-            Assert.Equal(customer.Id, sqlQuery.Arguments[6]);
-        }
-
-        public class WhenCallingCombine
-        {
-            private readonly SqlQuery combinedQuery;
-            private readonly SqlQuery sqlQuery1;
-            private readonly SqlQuery sqlQuery2;
-
-            public WhenCallingCombine()
-            {
-                this.sqlQuery1 = new SqlQuery("SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = ? AND \"Column2\" > ?", "Foo", 100);
-                this.sqlQuery1.Timeout = 38;
-
-                this.sqlQuery2 = new SqlQuery("SELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = ? OR ? IS NULL) AND \"Column2\" < ?", "Bar", -1);
-                this.sqlQuery2.Timeout = 42;
-
-                var mockSqlCharacters = new Mock<SqlCharacters>();
-                mockSqlCharacters.CallBase = true;
-
-                var mockSqlDialect = new Mock<SqlDialect>(mockSqlCharacters.Object);
-                mockSqlDialect.CallBase = true;
-
-                this.combinedQuery = mockSqlDialect.Object.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
-            }
-
-            [Fact]
-            public void TheCombinedArgumentsShouldContainTheFirstArgumentOfTheFirstQuery()
-            {
-                Assert.Equal(this.sqlQuery1.Arguments[0], this.combinedQuery.Arguments[0]);
-            }
-
-            [Fact]
-            public void TheCombinedArgumentsShouldContainTheFirstArgumentOfTheSecondQuery()
-            {
-                Assert.Equal(this.sqlQuery2.Arguments[0], this.combinedQuery.Arguments[2]);
-            }
-
-            [Fact]
-            public void TheCombinedArgumentsShouldContainTheNumberOfArgumentsInTheSourceQueries()
-            {
-                Assert.Equal(this.sqlQuery1.Arguments.Count + this.sqlQuery2.Arguments.Count, this.combinedQuery.Arguments.Count);
-            }
-
-            [Fact]
-            public void TheCombinedArgumentsShouldContainTheSecondArgumentOfTheFirstQuery()
-            {
-                Assert.Equal(this.sqlQuery1.Arguments[1], this.combinedQuery.Arguments[1]);
-            }
-
-            [Fact]
-            public void TheCombinedArgumentsShouldContainTheSecondArgumentOfTheSecondQuery()
-            {
-                Assert.Equal(this.sqlQuery2.Arguments[1], this.combinedQuery.Arguments[3]);
-            }
-
-            [Fact]
-            public void TheCombinedCommandTextShouldBeSeparatedUsingTheSelectSeparator()
-            {
-                Assert.Equal(
-                    "SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = ? AND \"Column2\" > ?;\r\nSELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = ? OR ? IS NULL) AND \"Column2\" < ?",
-                    this.combinedQuery.CommandText);
-            }
-
-            [Fact]
-            public void TheTimeoutShouldBeSetToTheLongestTimeoutOfTheSourceQueries()
-            {
-                Assert.Equal(this.sqlQuery2.Timeout, this.combinedQuery.Timeout);
-            }
+            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?, DateOfBirth = ?, Name = ?, CustomerStatusId = ?, Updated = ?, Website = ? WHERE Id = ?", sqlQuery2.CommandText);
+            Assert.Equal(7, sqlQuery2.Arguments.Count);
+            Assert.Equal(customer.CreditLimit, sqlQuery2.Arguments[0]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[1]);
+            Assert.Equal(customer.Name, sqlQuery2.Arguments[2]);
+            Assert.Equal((int)customer.Status, sqlQuery2.Arguments[3]);
+            Assert.Equal(customer.Updated, sqlQuery2.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/about", sqlQuery2.Arguments[5]);
+            Assert.Equal(customer.Id, sqlQuery2.Arguments[6]);
         }
     }
 }

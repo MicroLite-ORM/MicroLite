@@ -1,6 +1,6 @@
-﻿namespace MicroLite.Tests.Dialect.MsSql
+﻿namespace MicroLite.Tests.Dialect
 {
-    using MicroLite.Dialect.MsSql;
+    using MicroLite.Dialect;
     using Xunit;
 
     public class MsSqlCharactersTests

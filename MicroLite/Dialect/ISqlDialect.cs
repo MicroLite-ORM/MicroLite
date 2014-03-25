@@ -13,11 +13,11 @@
 namespace MicroLite.Dialect
 {
     using System;
-    using System.Collections.Generic;
     using System.Data;
+    using MicroLite.Mapping;
 
     /// <summary>
-    /// The interface for a class which builds an <see cref="SqlQuery"/> for a specific database.
+    /// The interface for a class which builds SqlQueries for a specific database dialect.
     /// </summary>
     public interface ISqlDialect
     {
@@ -28,29 +28,6 @@ namespace MicroLite.Dialect
         {
             get;
         }
-
-        /// <summary>
-        /// Gets a value indicating whether this SqlDialect supports batched queries.
-        /// </summary>
-        bool SupportsBatchedQueries
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Builds the command using the values in the specified SqlQuery.
-        /// </summary>
-        /// <param name="command">The command to build.</param>
-        /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
-        /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
-        void BuildCommand(IDbCommand command, SqlQuery sqlQuery);
-
-        /// <summary>
-        /// Combines the specified SQL queries into a single SqlQuery.
-        /// </summary>
-        /// <param name="sqlQueries">The SQL queries to be combined.</param>
-        /// <returns>An <see cref="SqlQuery" /> containing the combined command text and arguments.</returns>
-        SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries);
 
         /// <summary>
         /// Creates an SqlQuery to count the number of records which would be returned by the specified SqlQuery.
@@ -84,6 +61,13 @@ namespace MicroLite.Dialect
         /// <returns>The created <see cref="SqlQuery" />.</returns>
         /// <exception cref="NotSupportedException">Thrown if the statement type is not supported.</exception>
         SqlQuery CreateQuery(StatementType statementType, Type forType, object identifier);
+
+        /// <summary>
+        /// Creates an SqlQuery to select the identity of an inserted object if the database supports Identity or AutoIncrement.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <returns>The created <see cref="SqlQuery" />.</returns>
+        SqlQuery CreateSelectIdentityQuery(IObjectInfo objectInfo);
 
         /// <summary>
         /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the paging options.

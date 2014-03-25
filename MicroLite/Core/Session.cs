@@ -16,6 +16,7 @@ namespace MicroLite.Core
     using System.Collections.Generic;
     using System.Data;
     using MicroLite.Dialect;
+    using MicroLite.Driver;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Mapping;
@@ -31,10 +32,10 @@ namespace MicroLite.Core
 
         internal Session(
             ConnectionScope connectionScope,
-            IDbConnection connection,
             ISqlDialect sqlDialect,
+            IDbDriver sqlDriver,
             IList<IListener> listeners)
-            : base(connectionScope, connection, sqlDialect)
+            : base(connectionScope, sqlDialect, sqlDriver)
         {
             this.listeners = listeners;
         }
@@ -99,10 +100,8 @@ namespace MicroLite.Core
 
             try
             {
-                using (var command = this.CreateCommand())
+                using (var command = this.CreateCommand(sqlQuery))
                 {
-                    this.SqlDialect.BuildCommand(command, sqlQuery);
-
                     var result = command.ExecuteNonQuery();
 
                     this.CommandCompleted();
@@ -133,10 +132,8 @@ namespace MicroLite.Core
 
             try
             {
-                using (var command = this.CreateCommand())
+                using (var command = this.CreateCommand(sqlQuery))
                 {
-                    this.SqlDialect.BuildCommand(command, sqlQuery);
-
                     var result = command.ExecuteScalar();
 
                     this.CommandCompleted();
@@ -171,9 +168,23 @@ namespace MicroLite.Core
 
             this.listeners.Each(l => l.BeforeInsert(instance));
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Insert, instance);
+            object identifier = null;
 
-            var identifier = this.ExecuteScalar<object>(sqlQuery);
+            var objectInfo = ObjectInfo.For(instance.GetType());
+
+            var insertSqlQuery = this.SqlDialect.CreateQuery(StatementType.Insert, instance);
+            var selectIdSqlQuery = this.SqlDialect.CreateSelectIdentityQuery(objectInfo);
+
+            if (this.DbDriver.SupportsBatchedQueries)
+            {
+                var combined = this.DbDriver.Combine(insertSqlQuery, selectIdSqlQuery);
+                identifier = this.ExecuteScalar<object>(combined);
+            }
+            else
+            {
+                this.Execute(insertSqlQuery);
+                identifier = this.ExecuteScalar<object>(selectIdSqlQuery);
+            }
 
             this.listeners.Reverse(l => l.AfterInsert(instance, identifier));
         }

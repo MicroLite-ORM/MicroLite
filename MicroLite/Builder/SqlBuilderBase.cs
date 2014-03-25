@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Builder
 {
+    using System;
     using System.Collections.Generic;
     using System.Text;
     using MicroLite.Mapping;
@@ -85,6 +86,11 @@ namespace MicroLite.Builder
         /// <param name="objectInfo">The object information.</param>
         protected void AppendTableName(IObjectInfo objectInfo)
         {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
             if (!string.IsNullOrEmpty(objectInfo.TableInfo.Schema))
             {
                 this.InnerSql.Append(this.sqlCharacters.LeftDelimiter)
