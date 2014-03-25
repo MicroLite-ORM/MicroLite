@@ -21,7 +21,7 @@ namespace MicroLite.Builder
     /// The base class for classes which build an <see cref="SqlQuery" />.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    public abstract class SqlBuilderBase : IToSqlQuery
+    internal abstract class SqlBuilderBase : IToSqlQuery
     {
         private readonly List<object> arguments = new List<object>();
         private readonly StringBuilder innerSql = new StringBuilder(capacity: 128);
@@ -86,11 +86,6 @@ namespace MicroLite.Builder
         /// <param name="objectInfo">The object information.</param>
         protected void AppendTableName(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
-            {
-                throw new ArgumentNullException("objectInfo");
-            }
-
             if (!string.IsNullOrEmpty(objectInfo.TableInfo.Schema))
             {
                 this.InnerSql.Append(this.sqlCharacters.LeftDelimiter)
