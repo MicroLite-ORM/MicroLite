@@ -214,13 +214,13 @@
             }
         }
 
-        public class WhenCallingCombineWithAnIEnumerableSqlQuery
+        public class WhenCallingCombineWithAnIEnumerableSqlQueryNotUsingNamedParameters
         {
             private readonly SqlQuery combinedQuery;
             private readonly SqlQuery sqlQuery1;
             private readonly SqlQuery sqlQuery2;
 
-            public WhenCallingCombineWithAnIEnumerableSqlQuery()
+            public WhenCallingCombineWithAnIEnumerableSqlQueryNotUsingNamedParameters()
             {
                 this.sqlQuery1 = new SqlQuery("SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = ? AND \"Column2\" > ?", "Foo", 100);
                 this.sqlQuery1.Timeout = 38;
@@ -269,6 +269,71 @@
             {
                 Assert.Equal(
                     "SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = ? AND \"Column2\" > ?;\r\nSELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = ? OR ? IS NULL) AND \"Column2\" < ?",
+                    this.combinedQuery.CommandText);
+            }
+
+            [Fact]
+            public void TheTimeoutShouldBeSetToTheLongestTimeoutOfTheSourceQueries()
+            {
+                Assert.Equal(this.sqlQuery2.Timeout, this.combinedQuery.Timeout);
+            }
+        }
+
+        public class WhenCallingCombineWithAnIEnumerableSqlQueryUsingNamedParameters
+        {
+            private readonly SqlQuery combinedQuery;
+            private readonly SqlQuery sqlQuery1;
+            private readonly SqlQuery sqlQuery2;
+
+            public WhenCallingCombineWithAnIEnumerableSqlQueryUsingNamedParameters()
+            {
+                this.sqlQuery1 = new SqlQuery("SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = @p0 AND \"Column2\" > @p1", "Foo", 100);
+                this.sqlQuery1.Timeout = 38;
+
+                this.sqlQuery2 = new SqlQuery("SELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = @p0 OR @p0 IS NULL) AND \"Column2\" < @p1", "Bar", -1);
+                this.sqlQuery2.Timeout = 42;
+
+                var mockDbDriver = new Mock<DbDriver>();
+                mockDbDriver.CallBase = true;
+
+                this.combinedQuery = mockDbDriver.Object.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
+            }
+
+            [Fact]
+            public void TheCombinedArgumentsShouldContainTheFirstArgumentOfTheFirstQuery()
+            {
+                Assert.Equal(this.sqlQuery1.Arguments[0], this.combinedQuery.Arguments[0]);
+            }
+
+            [Fact]
+            public void TheCombinedArgumentsShouldContainTheFirstArgumentOfTheSecondQuery()
+            {
+                Assert.Equal(this.sqlQuery2.Arguments[0], this.combinedQuery.Arguments[2]);
+            }
+
+            [Fact]
+            public void TheCombinedArgumentsShouldContainTheNumberOfArgumentsInTheSourceQueries()
+            {
+                Assert.Equal(this.sqlQuery1.Arguments.Count + this.sqlQuery2.Arguments.Count, this.combinedQuery.Arguments.Count);
+            }
+
+            [Fact]
+            public void TheCombinedArgumentsShouldContainTheSecondArgumentOfTheFirstQuery()
+            {
+                Assert.Equal(this.sqlQuery1.Arguments[1], this.combinedQuery.Arguments[1]);
+            }
+
+            [Fact]
+            public void TheCombinedArgumentsShouldContainTheSecondArgumentOfTheSecondQuery()
+            {
+                Assert.Equal(this.sqlQuery2.Arguments[1], this.combinedQuery.Arguments[3]);
+            }
+
+            [Fact]
+            public void TheCombinedCommandTextShouldBeSeparatedUsingTheSelectSeparator()
+            {
+                Assert.Equal(
+                    "SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = @p0 AND \"Column2\" > @p1;\r\nSELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = @p2 OR @p2 IS NULL) AND \"Column2\" < @p3",
                     this.combinedQuery.CommandText);
             }
 
