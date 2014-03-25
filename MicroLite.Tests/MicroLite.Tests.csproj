@@ -71,10 +71,19 @@
     <Compile Include="Core\TransactionTests.cs" />
     <Compile Include="DbEncryptedStringTests.cs" />
     <Compile Include="Dialect\MsSqlCharactersTests.cs" />
+    <Compile Include="Dialect\MySqlCharactersTests.cs" />
+    <Compile Include="Dialect\MySqlDialectTests.cs" />
+    <Compile Include="Dialect\PostgreSqlCharactersTests.cs" />
+    <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
+    <Compile Include="Dialect\SQLiteCharactersTests.cs" />
+    <Compile Include="Dialect\SQLiteDialectTests.cs" />
     <Compile Include="Driver\DbDriverTests.cs" />
-    <Compile Include="Driver\MsDbDriverTests.cs">
+    <Compile Include="Driver\MsSqlDbDriverTests.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Driver\MySqlDbDriverTests.cs" />
+    <Compile Include="Driver\PostgreSqlDbDriverTests.cs" />
+    <Compile Include="Driver\SQLiteDbDriverTests.cs" />
     <Compile Include="Mapping\Inflection\InflectionServiceTests.cs" />
     <Compile Include="TestEntities\Invoice.cs" />
     <Compile Include="UnitTest.cs" />

@@ -39,7 +39,64 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("configureConnection");
             }
 
-            return configureConnection.ForConnection(connectionName, new MsSqlDialect(), new MsDbDriver());
+            return configureConnection.ForConnection(connectionName, new MsSqlDialect(), new MsSqlDbDriver());
+        }
+
+        /// <summary>
+        /// Configures a MySql connection using the connection string with the specified name
+        /// in the connection strings section of the app/web config.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name of the connection string in the app/web config.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
+        public static ICreateSessionFactory ForMySqlConnection(this IConfigureConnection configureConnection, string connectionName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, new MySqlDialect(), new MySqlDbDriver());
+        }
+
+        /// <summary>
+        /// Configures a PostgreSql connection using the connection string with the specified name
+        /// in the connection strings section of the app/web config.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name of the connection string in the app/web config.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
+        public static ICreateSessionFactory ForPostgreSqlConnection(this IConfigureConnection configureConnection, string connectionName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, new PostgreSqlDialect(), new PostgreSqlDbDriver());
+        }
+
+        /// <summary>
+        /// Configures an SQLite connection using the connection string with the specified name
+        /// in the connection strings section of the app/web config.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name of the connection string in the app/web config.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
+        public static ICreateSessionFactory ForSQLiteConnection(this IConfigureConnection configureConnection, string connectionName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, new SQLiteDialect(), new SQLiteDbDriver());
         }
 
         /// <summary>

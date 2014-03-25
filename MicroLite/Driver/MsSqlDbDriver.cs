@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="MsDbDriver.cs" company="MicroLite">
+// <copyright file="MsSqlDbDriver.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,12 +21,12 @@ namespace MicroLite.Driver
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for MsSql server.
     /// </summary>
-    internal sealed class MsDbDriver : DbDriver
+    internal sealed class MsSqlDbDriver : DbDriver
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="MsDbDriver" /> class.
+        /// Initialises a new instance of the <see cref="MsSqlDbDriver" /> class.
         /// </summary>
-        internal MsDbDriver()
+        internal MsSqlDbDriver()
         {
         }
 

@@ -5,15 +5,13 @@
     using System.Data.Common;
     using MicroLite.Driver;
     using MicroLite.FrameworkExtensions;
-    using MicroLite.Mapping;
-    using MicroLite.Tests.TestEntities;
     using Moq;
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="MsDbDriver"/> class.
+    /// Unit Tests for the <see cref="MsSqlDbDriver"/> class.
     /// </summary>
-    public class MsDbDriverTests : UnitTest
+    public class MsSqlDbDriverTests : UnitTest
     {
         /// <summary>
         /// Issue #6 - The argument count check needs to cater for the same argument being used twice.
@@ -28,7 +26,7 @@
             var mockDbProviderFactory = new Mock<DbProviderFactory>();
             mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.SqlClient.SqlCommand());
 
-            var dbDriver = new MsDbDriver();
+            var dbDriver = new MsSqlDbDriver();
             dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
 
             var command = dbDriver.BuildCommand(sqlQuery);
@@ -56,7 +54,7 @@
             var mockDbProviderFactory = new Mock<DbProviderFactory>();
             mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.SqlClient.SqlCommand());
 
-            var dbDriver = new MsDbDriver();
+            var dbDriver = new MsSqlDbDriver();
             dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
 
             var command = dbDriver.BuildCommand(sqlQuery);
@@ -77,7 +75,7 @@
             var mockDbProviderFactory = new Mock<DbProviderFactory>();
             mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.SqlClient.SqlCommand());
 
-            var dbDriver = new MsDbDriver();
+            var dbDriver = new MsSqlDbDriver();
             dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
 
             var command = dbDriver.BuildCommand(sqlQuery);
@@ -103,7 +101,7 @@
                 "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value] = @p1",
                 100);
 
-            var dbDriver = new MsDbDriver();
+            var dbDriver = new MsSqlDbDriver();
 
             var exception = Assert.Throws<MicroLiteException>(
                 () => dbDriver.BuildCommand(sqlQuery));
@@ -114,7 +112,7 @@
         [Fact]
         public void SupportsBatchedQueriesReturnsTrue()
         {
-            var dbDriver = new MsDbDriver();
+            var dbDriver = new MsSqlDbDriver();
 
             Assert.True(dbDriver.SupportsBatchedQueries);
         }
@@ -124,7 +122,7 @@
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
-                var dbDriver = new MsDbDriver();
+                var dbDriver = new MsSqlDbDriver();
 
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => dbDriver.Combine(null));
@@ -147,7 +145,7 @@
                 this.sqlQuery2 = new SqlQuery("SELECT [Column_1], [Column_2] FROM [dbo].[Table_2] WHERE ([Column_1] = @p0 OR @p0 IS NULL) AND [Column_2] < @p1", "Bar", -1);
                 this.sqlQuery2.Timeout = 42;
 
-                var dbDriver = new MsDbDriver();
+                var dbDriver = new MsSqlDbDriver();
 
                 this.combinedQuery = dbDriver.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
             }
@@ -211,7 +209,7 @@
                 this.sqlQuery1 = new SqlQuery("SELECT [Column1], [Column2], [Column3] FROM [dbo].[Table1] WHERE [Column1] = @p0 AND [Column2] > @p1", "Foo", 100);
                 this.sqlQuery2 = new SqlQuery("EXEC CustomersByStatus @StatusId", 2);
 
-                var dbDriver = new MsDbDriver();
+                var dbDriver = new MsSqlDbDriver();
 
                 this.combinedQuery = dbDriver.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
             }
