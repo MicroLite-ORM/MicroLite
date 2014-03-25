@@ -179,7 +179,7 @@ namespace MicroLite.Driver
 
             int argumentsCount = sqlQuery1.Arguments.Count + sqlQuery2.Arguments.Count;
 
-            var sqlBuilder = new StringBuilder(sqlQuery1.CommandText.Length + sqlQuery2.CommandText.Length);
+            var sqlBuilder = new StringBuilder(sqlQuery1.CommandText.Length + this.StatementSeparator.Length + sqlQuery2.CommandText.Length);
             sqlBuilder.Append(sqlQuery1.CommandText)
                 .AppendLine(this.StatementSeparator)
                 .Append(SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount));
