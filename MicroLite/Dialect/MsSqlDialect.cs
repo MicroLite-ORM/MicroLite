@@ -22,6 +22,8 @@ namespace MicroLite.Dialect
     /// </summary>
     internal sealed class MsSqlDialect : SqlDialect
     {
+        private static readonly SqlQuery selectIdentityQuery = new SqlQuery("SELECT SCOPE_IDENTITY()");
+
         /// <summary>
         /// Initialises a new instance of the <see cref="MsSqlDialect"/> class.
         /// </summary>
@@ -40,7 +42,7 @@ namespace MicroLite.Dialect
 
         public override SqlQuery CreateSelectIdentityQuery(IObjectInfo objectInfo)
         {
-            return new SqlQuery("SELECT SCOPE_IDENTITY()");
+            return selectIdentityQuery;
         }
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)

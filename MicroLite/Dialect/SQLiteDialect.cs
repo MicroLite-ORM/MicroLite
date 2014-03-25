@@ -21,6 +21,8 @@ namespace MicroLite.Dialect
     /// </summary>
     internal sealed class SQLiteDialect : SqlDialect
     {
+        private static readonly SqlQuery selectIdentityQuery = new SqlQuery("SELECT last_insert_rowid()");
+
         /// <summary>
         /// Initialises a new instance of the <see cref="SQLiteDialect"/> class.
         /// </summary>
@@ -39,7 +41,7 @@ namespace MicroLite.Dialect
 
         public override SqlQuery CreateSelectIdentityQuery(IObjectInfo objectInfo)
         {
-            return new SqlQuery("SELECT last_insert_rowid()");
+            return selectIdentityQuery;
         }
 
         /// <summary>
