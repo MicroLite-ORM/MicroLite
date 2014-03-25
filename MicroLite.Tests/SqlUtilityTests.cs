@@ -175,11 +175,19 @@ AND Age = ?";
         }
 
         [Fact]
-        public void ReNumberParametersNoExistingArguments()
+        public void ReNumberParametersNoExistingArgumentsWithAtPrefix()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", totalArgumentCount: 2);
 
             Assert.Equal("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersNoExistingArgumentsWithColonPrefix()
+        {
+            var commandText = SqlUtility.RenumberParameters("(Column1 = :p0 OR :p0 IS NULL) AND Column2 = :p1", totalArgumentCount: 2);
+
+            Assert.Equal("(Column1 = :p0 OR :p0 IS NULL) AND Column2 = :p1", commandText);
         }
 
         [Fact]
@@ -191,11 +199,19 @@ AND Age = ?";
         }
 
         [Fact]
-        public void ReNumberParametersWithExistingArguments()
+        public void ReNumberParametersWithExistingArgumentsWithAtPrefix()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", totalArgumentCount: 4);
 
             Assert.Equal("(Column1 = @p2 OR @p2 IS NULL) AND Column2 = @p3", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithColonPrefix()
+        {
+            var commandText = SqlUtility.RenumberParameters("(Column1 = :p0 OR :p0 IS NULL) AND Column2 = :p1", totalArgumentCount: 4);
+
+            Assert.Equal("(Column1 = :p2 OR :p2 IS NULL) AND Column2 = :p3", commandText);
         }
 
         public class WhenTheCommandTextIsOnASingleLineAndContainsOrderByButNoWhere
