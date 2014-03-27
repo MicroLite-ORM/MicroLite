@@ -1,7 +1,9 @@
 ﻿namespace MicroLite.Tests.TypeConverters
 {
     using System;
+    using System.Data;
     using MicroLite.TypeConverters;
+    using Moq;
     using Xunit;
 
     public class ObjectTypeConverterTests
@@ -44,22 +46,24 @@
             }
         }
 
-        public class WhenCallingConvertFromDbValue_AndPropertyTypeIsNull
+        public class WhenCallingConvertFromDbValue_AndTypeIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
                 var typeConverter = new ObjectTypeConverter();
-                var exception = Assert.Throws<ArgumentNullException>(() => typeConverter.ConvertFromDbValue(1, null));
 
-                Assert.Equal("propertyType", exception.ParamName);
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => typeConverter.ConvertFromDbValue(1, null));
+
+                Assert.Equal("type", exception.ParamName);
             }
         }
 
         public class WhenCallingConvertFromDbValue_ForANullableIntWithANonNullValue
         {
-            private object result;
-            private ITypeConverter typeConverter = new ObjectTypeConverter();
+            private readonly object result;
+            private readonly ITypeConverter typeConverter = new ObjectTypeConverter();
 
             public WhenCallingConvertFromDbValue_ForANullableIntWithANonNullValue()
             {
@@ -75,8 +79,8 @@
 
         public class WhenCallingConvertFromDbValue_ForANullableIntWithANullValue
         {
-            private object result;
-            private ITypeConverter typeConverter = new ObjectTypeConverter();
+            private readonly object result;
+            private readonly ITypeConverter typeConverter = new ObjectTypeConverter();
 
             public WhenCallingConvertFromDbValue_ForANullableIntWithANullValue()
             {
@@ -92,8 +96,8 @@
 
         public class WhenCallingConvertFromDbValue_WithAByteAndATypeOfInt
         {
-            private object result;
-            private ITypeConverter typeConverter = new ObjectTypeConverter();
+            private readonly object result;
+            private readonly ITypeConverter typeConverter = new ObjectTypeConverter();
 
             public WhenCallingConvertFromDbValue_WithAByteAndATypeOfInt()
             {
@@ -115,8 +119,8 @@
 
         public class WhenCallingConvertFromDbValue_WithALongAndATypeOfInt
         {
-            private object result;
-            private ITypeConverter typeConverter = new ObjectTypeConverter();
+            private readonly object result;
+            private readonly ITypeConverter typeConverter = new ObjectTypeConverter();
 
             public WhenCallingConvertFromDbValue_WithALongAndATypeOfInt()
             {
@@ -136,11 +140,131 @@
             }
         }
 
+        public class WhenCallingConvertFromDbValueWithReader_AndReaderIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionShouldBeThrown()
+            {
+                var typeConverter = new ObjectTypeConverter();
+
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => typeConverter.ConvertFromDbValue(null, 0, typeof(int)));
+
+                Assert.Equal("reader", exception.ParamName);
+            }
+        }
+
+        public class WhenCallingConvertFromDbValueWithReader_AndTypeIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionShouldBeThrown()
+            {
+                var typeConverter = new ObjectTypeConverter();
+
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => typeConverter.ConvertFromDbValue(new Mock<IDataReader>().Object, 0, null));
+
+                Assert.Equal("type", exception.ParamName);
+            }
+        }
+
+        public class WhenCallingConvertFromDbValueWithReader_ForANullableIntWithANonNullValue
+        {
+            private readonly Mock<IDataReader> mockReader = new Mock<IDataReader>();
+            private readonly object result;
+            private readonly ITypeConverter typeConverter = new ObjectTypeConverter();
+
+            public WhenCallingConvertFromDbValueWithReader_ForANullableIntWithANonNullValue()
+            {
+                this.mockReader.Setup(x => x[0]).Returns(1);
+
+                this.result = typeConverter.ConvertFromDbValue(this.mockReader.Object, 0, typeof(int?));
+            }
+
+            [Fact]
+            public void TheCorrectValueShouldBeReturned()
+            {
+                Assert.Equal(1, this.result);
+            }
+        }
+
+        public class WhenCallingConvertFromDbValueWithReader_ForANullableIntWithANullValue
+        {
+            private readonly Mock<IDataReader> mockReader = new Mock<IDataReader>();
+            private readonly object result;
+            private readonly ITypeConverter typeConverter = new ObjectTypeConverter();
+
+            public WhenCallingConvertFromDbValueWithReader_ForANullableIntWithANullValue()
+            {
+                this.mockReader.Setup(x => x.IsDBNull(0)).Returns(true);
+
+                this.result = typeConverter.ConvertFromDbValue(this.mockReader.Object, 0, typeof(int?));
+            }
+
+            [Fact]
+            public void NullShouldBeReturned()
+            {
+                Assert.Null(this.result);
+            }
+        }
+
+        public class WhenCallingConvertFromDbValueWithReader_WithAByteAndATypeOfInt
+        {
+            private readonly Mock<IDataReader> mockReader = new Mock<IDataReader>();
+            private readonly object result;
+            private readonly ITypeConverter typeConverter = new ObjectTypeConverter();
+
+            public WhenCallingConvertFromDbValueWithReader_WithAByteAndATypeOfInt()
+            {
+                this.mockReader.Setup(x => x[0]).Returns((byte)1);
+
+                this.result = typeConverter.ConvertFromDbValue(this.mockReader.Object, 0, typeof(int));
+            }
+
+            [Fact]
+            public void TheCorrectValueShouldBeReturned()
+            {
+                Assert.Equal(1, this.result);
+            }
+
+            [Fact]
+            public void TheResultShouldBeUpCast()
+            {
+                Assert.IsType<int>(this.result);
+            }
+        }
+
+        public class WhenCallingConvertFromDbValueWithReader_WithALongAndATypeOfInt
+        {
+            private readonly Mock<IDataReader> mockReader = new Mock<IDataReader>();
+            private readonly object result;
+            private readonly ITypeConverter typeConverter = new ObjectTypeConverter();
+
+            public WhenCallingConvertFromDbValueWithReader_WithALongAndATypeOfInt()
+            {
+                this.mockReader.Setup(x => x[0]).Returns((long)1);
+
+                this.result = typeConverter.ConvertFromDbValue(this.mockReader.Object, 0, typeof(int));
+            }
+
+            [Fact]
+            public void TheCorrectValueShouldBeReturned()
+            {
+                Assert.Equal(1, this.result);
+            }
+
+            [Fact]
+            public void TheResultShouldBeDownCast()
+            {
+                Assert.IsType<int>(this.result);
+            }
+        }
+
         public class WhenCallingConvertToDbValue
         {
-            private object result;
-            private ITypeConverter typeConverter = new ObjectTypeConverter();
-            private string value = "Foo";
+            private readonly object result;
+            private readonly ITypeConverter typeConverter = new ObjectTypeConverter();
+            private readonly string value = "Foo";
 
             public WhenCallingConvertToDbValue()
             {

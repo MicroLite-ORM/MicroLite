@@ -13,6 +13,8 @@
 namespace MicroLite.TypeConverters
 {
     using System;
+    using System.Data;
+    using System.IO;
     using System.Xml.Linq;
 
     /// <summary>
@@ -21,27 +23,30 @@ namespace MicroLite.TypeConverters
     public sealed class XDocumentTypeConverter : ITypeConverter
     {
         /// <summary>
-        /// Determines whether this type converter can convert values for the specified property type.
+        /// Determines whether this type converter can convert values for the specified type.
         /// </summary>
-        /// <param name="propertyType">The type of the property value to be converted.</param>
+        /// <param name="type">The type to check.</param>
         /// <returns>
-        ///   <c>true</c> if this instance can convert the specified property type; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanConvert(Type propertyType)
+        public bool CanConvert(Type type)
         {
-            return propertyType == typeof(XDocument);
+            return type == typeof(XDocument);
         }
 
         /// <summary>
-        /// Converts the specified database value into an instance of the property type.
+        /// Converts the specified database value into an instance of the specified type.
         /// </summary>
         /// <param name="value">The database value to be converted.</param>
-        /// <param name="propertyType">The property type to convert to.</param>
-        /// <returns>
-        /// An instance of the specified property type containing the specified value.
-        /// </returns>
-        public object ConvertFromDbValue(object value, Type propertyType)
+        /// <param name="type">The type to convert to.</param>
+        /// <returns>An instance of the specified type containing the specified value.</returns>
+        public object ConvertFromDbValue(object value, Type type)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
             if (value == null || value == DBNull.Value)
             {
                 return null;
@@ -53,14 +58,59 @@ namespace MicroLite.TypeConverters
         }
 
         /// <summary>
-        /// Converts the specified property value into an instance of the database value.
+        /// Converts value at the specified index in the IDataReader into an instance of the specified type.
         /// </summary>
-        /// <param name="value">The property value to be converted.</param>
-        /// <param name="propertyType">The property type to convert from.</param>
-        /// <returns>
-        /// An instance of the corresponding database type for the property type containing the property value.
-        /// </returns>
-        public object ConvertToDbValue(object value, Type propertyType)
+        /// <param name="reader">The IDataReader containing the results.</param>
+        /// <param name="index">The index of the record to read from the IDataReader.</param>
+        /// <param name="type">The type to convert result value to.</param>
+        /// <returns>An instance of the specified type containing the specified value.</returns>
+        public object ConvertFromDbValue(IDataReader reader, int index, Type type)
+        {
+            if (reader == null)
+            {
+                throw new ArgumentNullException("reader");
+            }
+
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (reader.IsDBNull(index))
+            {
+                return null;
+            }
+
+            var value = reader.GetString(index);
+            var document = XDocument.Parse(value);
+
+            return document;
+
+            ////var buffer = new byte[8040];
+
+            ////using (var stream = new MemoryStream(buffer))
+            ////{
+            ////    long offset = 0;
+            ////    long read;
+            ////    while ((read = reader.GetBytes(index, offset, buffer, 0, buffer.Length)) > 0)
+            ////    {
+            ////        offset += read;
+            ////        stream.Write(buffer, 0, (int)read); // push downstream
+            ////    }
+
+            ////    var document = XDocument.Load(stream);
+
+            ////    return document;
+            ////}
+        }
+
+        /// <summary>
+        /// Converts the specified value into an instance of the database value.
+        /// </summary>
+        /// <param name="value">The value to be converted.</param>
+        /// <param name="type">The type to convert from.</param>
+        /// <returns>An instance of the corresponding database type containing the value.</returns>
+        public object ConvertToDbValue(object value, Type type)
         {
             if (value == null)
             {

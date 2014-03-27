@@ -44,7 +44,7 @@ namespace MicroLite.Core
                 }
 
                 var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
-                this.value = (T)typeConverter.ConvertFromDbValue(reader[0], resultType);
+                this.value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
                 this.HasValue = true;
 
                 if (reader.Read())

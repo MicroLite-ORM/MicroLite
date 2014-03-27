@@ -66,6 +66,11 @@
                 throw new System.NotImplementedException();
             }
 
+            public object ConvertFromDbValue(System.Data.IDataReader reader, int index, System.Type type)
+            {
+                throw new System.NotImplementedException();
+            }
+
             public object ConvertToDbValue(object value, System.Type propertyType)
             {
                 throw new System.NotImplementedException();

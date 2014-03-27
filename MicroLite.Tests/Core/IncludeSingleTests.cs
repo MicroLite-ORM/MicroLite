@@ -170,7 +170,7 @@
 
             public WhenTheTypeIsAnEnum()
             {
-                this.mockReader.Setup(x => x[0]).Returns(1);
+                this.mockReader.Setup(x => x.GetInt32(0)).Returns(1);
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
                 var reader = this.mockReader.Object;
@@ -210,7 +210,7 @@
 
             public WhenTheTypeIsAnXDocument()
             {
-                this.mockReader.Setup(x => x[0]).Returns("<xml><element>text</element></xml>");
+                this.mockReader.Setup(x => x.GetString(0)).Returns("<xml><element>text</element></xml>");
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
                 var reader = this.mockReader.Object;

@@ -44,7 +44,7 @@ namespace MicroLite.Core
 
                 while (reader.Read())
                 {
-                    var value = (T)typeConverter.ConvertFromDbValue(reader[0], resultType);
+                    var value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
 
                     this.values.Add(value);
                 }

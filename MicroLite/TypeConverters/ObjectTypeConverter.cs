@@ -13,6 +13,7 @@
 namespace MicroLite.TypeConverters
 {
     using System;
+    using System.Data;
     using System.Globalization;
 
     /// <summary>
@@ -24,31 +25,28 @@ namespace MicroLite.TypeConverters
     internal sealed class ObjectTypeConverter : ITypeConverter
     {
         /// <summary>
-        /// Determines whether this type converter can convert values for the specified property type.
+        /// Determines whether this type converter can convert values for the specified type.
         /// </summary>
-        /// <param name="propertyType">The type of the property value to be converted.</param>
+        /// <param name="type">The type to check.</param>
         /// <returns>
-        ///   <c>true</c> if this instance can convert the specified property type; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanConvert(Type propertyType)
+        public bool CanConvert(Type type)
         {
             return true;
         }
 
         /// <summary>
-        /// Converts the specified database value into an instance of the property type.
+        /// Converts the specified database value into an instance of the specified type.
         /// </summary>
         /// <param name="value">The database value to be converted.</param>
-        /// <param name="propertyType">The property type to convert to.</param>
-        /// <returns>
-        /// An instance of the specified property type containing the specified value.
-        /// </returns>
-        /// <exception cref="System.ArgumentNullException">thrown if propertyType is null.</exception>
-        public object ConvertFromDbValue(object value, Type propertyType)
+        /// <param name="type">The type to convert to.</param>
+        /// <returns>An instance of the specified type containing the specified value.</returns>
+        public object ConvertFromDbValue(object value, Type type)
         {
-            if (propertyType == null)
+            if (type == null)
             {
-                throw new ArgumentNullException("propertyType");
+                throw new ArgumentNullException("type");
             }
 
             if (value == null || value == DBNull.Value)
@@ -56,7 +54,7 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            if (propertyType.IsValueType && propertyType.IsGenericType)
+            if (type.IsValueType && type.IsGenericType)
             {
                 ValueType converted = (ValueType)value;
 
@@ -64,21 +62,60 @@ namespace MicroLite.TypeConverters
             }
             else
             {
-                var converted = Convert.ChangeType(value, propertyType, CultureInfo.InvariantCulture);
+                var converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 
                 return converted;
             }
         }
 
         /// <summary>
-        /// Converts the specified property value into an instance of the database value.
+        /// Converts value at the specified index in the IDataReader into an instance of the specified type.
         /// </summary>
-        /// <param name="value">The property value to be converted.</param>
-        /// <param name="propertyType">The property type to convert from.</param>
-        /// <returns>
-        /// An instance of the corresponding database type for the property type containing the property value.
-        /// </returns>
-        public object ConvertToDbValue(object value, Type propertyType)
+        /// <param name="reader">The IDataReader containing the results.</param>
+        /// <param name="index">The index of the record to read from the IDataReader.</param>
+        /// <param name="type">The type to convert result value to.</param>
+        /// <returns>An instance of the specified type containing the specified value.</returns>
+        /// <exception cref="System.ArgumentNullException">thrown if propertyType is null.</exception>
+        public object ConvertFromDbValue(IDataReader reader, int index, Type type)
+        {
+            if (reader == null)
+            {
+                throw new ArgumentNullException("reader");
+            }
+
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (reader.IsDBNull(index))
+            {
+                return null;
+            }
+
+            var value = reader[index];
+
+            if (type.IsValueType && type.IsGenericType)
+            {
+                ValueType converted = (ValueType)value;
+
+                return converted;
+            }
+            else
+            {
+                var converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+
+                return converted;
+            }
+        }
+
+        /// <summary>
+        /// Converts the specified value into an instance of the database value.
+        /// </summary>
+        /// <param name="value">The value to be converted.</param>
+        /// <param name="type">The type to convert from.</param>
+        /// <returns>An instance of the corresponding database type containing the value.</returns>
+        public object ConvertToDbValue(object value, Type type)
         {
             return value;
         }

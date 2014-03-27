@@ -57,7 +57,7 @@
             public ForAnEnumTypeWhenBuildValueHasBeenCalledAndThereIsOneResult()
             {
                 this.mockReader.Setup(x => x.FieldCount).Returns(1);
-                this.mockReader.Setup(x => x[0]).Returns(1);
+                this.mockReader.Setup(x => x.GetInt32(0)).Returns(1);
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
                 this.include.BuildValue(this.mockReader.Object);
