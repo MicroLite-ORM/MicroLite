@@ -122,11 +122,11 @@ namespace MicroLite.Mapping
             ilGenerator.Emit(OpCodes.Newarr, typeof(object));
             ilGenerator.Emit(OpCodes.Stloc_1);
 
-            var index = EmitGetPropertyValues(objectInfo, ilGenerator, c => c.AllowUpdate);
+            EmitGetPropertyValues(objectInfo, ilGenerator, c => c.AllowUpdate);
 
             // values[values.Length - 1] = entity.{Id};
             ilGenerator.Emit(OpCodes.Ldloc_1);
-            ilGenerator.Emit(OpCodes.Ldc_I4, index++);
+            ilGenerator.Emit(OpCodes.Ldc_I4, objectInfo.TableInfo.UpdateColumnCount);
             ilGenerator.Emit(OpCodes.Ldloc_0);
             ilGenerator.Emit(OpCodes.Callvirt, objectInfo.TableInfo.IdentifierColumn.PropertyInfo.GetGetMethod());
 
@@ -331,7 +331,7 @@ namespace MicroLite.Mapping
             return setIdentifierValue;
         }
 
-        private static int EmitGetPropertyValues(IObjectInfo objectInfo, ILGenerator ilGenerator, Func<ColumnInfo, bool> allowColumn)
+        private static void EmitGetPropertyValues(IObjectInfo objectInfo, ILGenerator ilGenerator, Func<ColumnInfo, bool> allowColumn)
         {
             var index = 0;
 
@@ -383,8 +383,6 @@ namespace MicroLite.Mapping
                 // values[i] = value; OR values[i] = converted;
                 ilGenerator.Emit(OpCodes.Stelem_Ref);
             }
-
-            return index;
         }
     }
 }
