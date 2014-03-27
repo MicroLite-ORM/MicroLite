@@ -111,7 +111,7 @@ namespace MicroLite.TypeConverters
             var stringValue = reader.GetString(index);
 
 #if NET_3_5
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(stringValue))
 #else
             if (string.IsNullOrWhiteSpace(stringValue))
 #endif
