@@ -179,10 +179,10 @@ namespace MicroLite.Driver
 
             int argumentsCount = sqlQuery1.Arguments.Count + sqlQuery2.Arguments.Count;
 
-            var sqlBuilder = new StringBuilder(sqlQuery1.CommandText.Length + this.StatementSeparator.Length + sqlQuery2.CommandText.Length);
-            sqlBuilder.Append(sqlQuery1.CommandText)
-                .AppendLine(this.StatementSeparator)
-                .Append(SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount));
+            var commandText = sqlQuery1.CommandText
+                + this.StatementSeparator
+                + Environment.NewLine
+                + SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
 
             var arguments = new object[argumentsCount];
             Array.Copy(sqlQuery1.GetArgumentArray(), 0, arguments, 0, sqlQuery1.Arguments.Count);
@@ -192,7 +192,7 @@ namespace MicroLite.Driver
                 Array.Copy(sqlQuery2.GetArgumentArray(), 0, arguments, sqlQuery1.Arguments.Count, sqlQuery2.Arguments.Count);
             }
 
-            var combinedQuery = new SqlQuery(sqlBuilder.ToString(), arguments);
+            var combinedQuery = new SqlQuery(commandText, arguments);
             combinedQuery.Timeout = Math.Max(sqlQuery1.Timeout, sqlQuery2.Timeout);
 
             return combinedQuery;
