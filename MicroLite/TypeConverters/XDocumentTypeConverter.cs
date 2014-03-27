@@ -14,7 +14,6 @@ namespace MicroLite.TypeConverters
 {
     using System;
     using System.Data;
-    using System.IO;
     using System.Xml.Linq;
 
     /// <summary>
@@ -85,23 +84,6 @@ namespace MicroLite.TypeConverters
             var document = XDocument.Parse(value);
 
             return document;
-
-            ////var buffer = new byte[8040];
-
-            ////using (var stream = new MemoryStream(buffer))
-            ////{
-            ////    long offset = 0;
-            ////    long read;
-            ////    while ((read = reader.GetBytes(index, offset, buffer, 0, buffer.Length)) > 0)
-            ////    {
-            ////        offset += read;
-            ////        stream.Write(buffer, 0, (int)read); // push downstream
-            ////    }
-
-            ////    var document = XDocument.Load(stream);
-
-            ////    return document;
-            ////}
         }
 
         /// <summary>

@@ -15,7 +15,6 @@ namespace MicroLite.TypeConverters
     using System;
     using System.Data;
     using System.Globalization;
-    using MicroLite.FrameworkExtensions;
 
     /// <summary>
     /// An ITypeConverter which can convert Enum values to and from database values.
