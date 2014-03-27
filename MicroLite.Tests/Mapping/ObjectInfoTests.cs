@@ -32,26 +32,100 @@
         }
 
         [Fact]
-        public void CreateInstance()
+        public void CreateInstanceWithNullValues()
         {
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
             var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(2);
-            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
+            mockReader.Setup(x => x.FieldCount).Returns(8);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns((int i) =>
+            {
+                // CreditLimit, Updated and Website are null
+                return i == 2 || i == 6 || i == 7;
+            });
 
             mockReader.Setup(x => x.GetName(0)).Returns("Id");
-            mockReader.Setup(x => x.GetName(1)).Returns("CustomerStatusId");
-
             mockReader.Setup(x => x.GetInt32(0)).Returns(12345);
-            mockReader.Setup(x => x.GetValue(1)).Returns(1);
+
+            mockReader.Setup(x => x.GetName(1)).Returns("Created");
+            mockReader.Setup(x => x.GetDateTime(1)).Returns(new DateTime(2009, 4, 20));
+
+            mockReader.Setup(x => x.GetName(2)).Returns("CreditLimit"); // null
+
+            mockReader.Setup(x => x.GetName(3)).Returns("DateOfBirth");
+            mockReader.Setup(x => x.GetDateTime(3)).Returns(new DateTime(1972, 8, 14));
+
+            mockReader.Setup(x => x.GetName(4)).Returns("Name");
+            mockReader.Setup(x => x.GetString(4)).Returns("John Smith");
+
+            mockReader.Setup(x => x.GetName(5)).Returns("CustomerStatusId");
+            mockReader.Setup(x => x.GetInt32(5)).Returns(1);
+
+            mockReader.Setup(x => x.GetName(6)).Returns("Updated"); // null
+
+            mockReader.Setup(x => x.GetName(7)).Returns("Website"); // null
 
             var instance = objectInfo.CreateInstance(mockReader.Object) as Customer;
 
             Assert.NotNull(instance);
             Assert.IsType<Customer>(instance);
+
             Assert.Equal(12345, instance.Id);
+            Assert.Equal(new DateTime(2009, 4, 20), instance.Created);
+            Assert.Null(instance.CreditLimit);
+            Assert.Equal(new DateTime(1972, 8, 14), instance.DateOfBirth);
+            Assert.Equal("John Smith", instance.Name);
             Assert.Equal(CustomerStatus.Active, instance.Status);
+            Assert.Null(instance.Updated);
+            Assert.Null(instance.Website);
+        }
+
+        [Fact]
+        public void CreateInstanceWithoutNullValues()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(8);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
+
+            mockReader.Setup(x => x.GetName(0)).Returns("Id");
+            mockReader.Setup(x => x.GetInt32(0)).Returns(12345);
+
+            mockReader.Setup(x => x.GetName(1)).Returns("Created");
+            mockReader.Setup(x => x.GetDateTime(1)).Returns(new DateTime(2009, 4, 20));
+
+            mockReader.Setup(x => x.GetName(2)).Returns("CreditLimit");
+            mockReader.Setup(x => x.GetDecimal(2)).Returns(10250.00M);
+
+            mockReader.Setup(x => x.GetName(3)).Returns("DateOfBirth");
+            mockReader.Setup(x => x.GetDateTime(3)).Returns(new DateTime(1972, 8, 14));
+
+            mockReader.Setup(x => x.GetName(4)).Returns("Name");
+            mockReader.Setup(x => x.GetString(4)).Returns("John Smith");
+
+            mockReader.Setup(x => x.GetName(5)).Returns("CustomerStatusId");
+            mockReader.Setup(x => x.GetInt32(5)).Returns(1);
+
+            mockReader.Setup(x => x.GetName(6)).Returns("Updated");
+            mockReader.Setup(x => x.GetDateTime(6)).Returns(new DateTime(2014, 3, 27));
+
+            mockReader.Setup(x => x.GetName(7)).Returns("Website");
+            mockReader.Setup(x => x.GetString(7)).Returns("http://microliteorm.wordpress.com");
+
+            var instance = objectInfo.CreateInstance(mockReader.Object) as Customer;
+
+            Assert.NotNull(instance);
+            Assert.IsType<Customer>(instance);
+
+            Assert.Equal(new DateTime(2009, 4, 20), instance.Created);
+            Assert.Equal(10250.00M, instance.CreditLimit);
+            Assert.Equal(new DateTime(1972, 8, 14), instance.DateOfBirth);
+            Assert.Equal(12345, instance.Id);
+            Assert.Equal("John Smith", instance.Name);
+            Assert.Equal(CustomerStatus.Active, instance.Status);
+            Assert.Equal(new DateTime(2014, 3, 27), instance.Updated);
+            Assert.Equal(new Uri("http://microliteorm.wordpress.com"), instance.Website);
         }
 
         [Fact]
