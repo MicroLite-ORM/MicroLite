@@ -56,7 +56,7 @@ namespace MicroLite.Dialect
             int toRowNumber = pagingOptions.Offset + pagingOptions.Count;
 
             var arguments = new object[sqlQuery.Arguments.Count + 2];
-            sqlQuery.Arguments.CopyTo(arguments, 0);
+            Array.Copy(sqlQuery.GetArgumentArray(), 0, arguments, 0, sqlQuery.Arguments.Count);
             arguments[arguments.Length - 2] = fromRowNumber;
             arguments[arguments.Length - 1] = toRowNumber;
 
