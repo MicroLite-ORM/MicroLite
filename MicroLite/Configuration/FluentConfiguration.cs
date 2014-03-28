@@ -52,12 +52,13 @@ namespace MicroLite.Configuration
                     }
 
                     sessionFactory = new SessionFactory(this.options);
-                    SqlCharacters.Current = this.options.SqlDialect.SqlCharacters;
 
                     if (this.sessionFactoryCreated != null)
                     {
                         this.sessionFactoryCreated(sessionFactory);
                     }
+
+                    SqlCharacters.Current = this.options.SqlDialect.SqlCharacters;
 
                     Configure.SessionFactories.Add(sessionFactory);
                 }
@@ -93,9 +94,9 @@ namespace MicroLite.Configuration
 
             this.options.ConnectionName = configSection.Name;
             this.options.SqlDialect = sqlDialect;
-            this.options.SqlDriver = dbDriver;
-            this.options.SqlDriver.ConnectionString = configSection.ConnectionString;
-            this.options.SqlDriver.DbProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
+            this.options.DbDriver = dbDriver;
+            this.options.DbDriver.ConnectionString = configSection.ConnectionString;
+            this.options.DbDriver.DbProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
 
             return this;
         }

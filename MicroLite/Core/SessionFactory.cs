@@ -25,14 +25,14 @@ namespace MicroLite.Core
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly string connectionName;
+        private readonly IDbDriver dbDriver;
         private readonly ISqlDialect sqlDialect;
-        private readonly IDbDriver sqlDriver;
 
         internal SessionFactory(SessionFactoryOptions sessionFactoryOptions)
         {
             this.connectionName = sessionFactoryOptions.ConnectionName;
+            this.dbDriver = sessionFactoryOptions.DbDriver;
             this.sqlDialect = sessionFactoryOptions.SqlDialect;
-            this.sqlDriver = sessionFactoryOptions.SqlDriver;
         }
 
         public string ConnectionName
@@ -40,6 +40,14 @@ namespace MicroLite.Core
             get
             {
                 return this.connectionName;
+            }
+        }
+
+        public IDbDriver DbDriver
+        {
+            get
+            {
+                return this.dbDriver;
             }
         }
 
@@ -54,10 +62,10 @@ namespace MicroLite.Core
         {
             if (log.IsDebug)
             {
-                log.Debug(Messages.SessionFactory_CreatingReadOnlySession, this.ConnectionName, this.sqlDialect.GetType().Name);
+                log.Debug(Messages.SessionFactory_CreatingReadOnlySession, this.connectionName, this.sqlDialect.GetType().Name);
             }
 
-            return new ReadOnlySession(connectionScope, this.sqlDialect, this.sqlDriver);
+            return new ReadOnlySession(connectionScope, this.sqlDialect, this.dbDriver);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This method is provided to create and return an ISession for the caller to use, it should not dispose of it, that is the responsibility of the caller.")]
@@ -71,10 +79,10 @@ namespace MicroLite.Core
         {
             if (log.IsDebug)
             {
-                log.Debug(Messages.SessionFactory_CreatingSession, this.ConnectionName, this.sqlDialect.GetType().Name);
+                log.Debug(Messages.SessionFactory_CreatingSession, this.connectionName, this.sqlDialect.GetType().Name);
             }
 
-            return new Session(connectionScope, this.sqlDialect, this.sqlDriver, Listener.Listeners);
+            return new Session(connectionScope, this.sqlDialect, this.dbDriver, Listener.Listeners);
         }
     }
 }

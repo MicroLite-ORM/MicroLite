@@ -11,7 +11,7 @@
     /// </summary>
     public class SessionFactoryTests
     {
-        public class WhenCallingOpenReadOnlySession
+        public class WhenCallingOpenReadOnlySession : UnitTest
         {
             private readonly IReadOnlySession readOnlySession;
 
@@ -20,7 +20,7 @@
                 var options = new SessionFactoryOptions
                 {
                     ConnectionName = "SqlConnection",
-                    SqlDriver = new Mock<IDbDriver>().Object,
+                    DbDriver = new Mock<IDbDriver>().Object,
                     SqlDialect = new Mock<ISqlDialect>().Object
                 };
 
@@ -43,7 +43,7 @@
             }
         }
 
-        public class WhenCallingOpenReadOnlySession_MultipleTimes
+        public class WhenCallingOpenReadOnlySession_MultipleTimes : UnitTest
         {
             private readonly IReadOnlySession readOnlySession1;
             private readonly IReadOnlySession readOnlySession2;
@@ -53,7 +53,7 @@
                 var options = new SessionFactoryOptions
                 {
                     ConnectionName = "SqlConnection",
-                    SqlDriver = new Mock<IDbDriver>().Object,
+                    DbDriver = new Mock<IDbDriver>().Object,
                     SqlDialect = new Mock<ISqlDialect>().Object
                 };
 
@@ -70,7 +70,7 @@
             }
         }
 
-        public class WhenCallingOpenReadOnlySession_SpecifyingConnectionScope
+        public class WhenCallingOpenReadOnlySession_SpecifyingConnectionScope : UnitTest
         {
             private readonly IReadOnlySession readOnlySession;
 
@@ -82,7 +82,7 @@
                 var options = new SessionFactoryOptions
                 {
                     ConnectionName = "SqlConnection",
-                    SqlDriver = mockDbDriver.Object,
+                    DbDriver = mockDbDriver.Object,
                     SqlDialect = new Mock<ISqlDialect>().Object
                 };
 
@@ -98,7 +98,7 @@
             }
         }
 
-        public class WhenCallingOpenSession
+        public class WhenCallingOpenSession : UnitTest
         {
             private readonly ISession session;
 
@@ -107,7 +107,7 @@
                 var options = new SessionFactoryOptions
                 {
                     ConnectionName = "SqlConnection",
-                    SqlDriver = new Mock<IDbDriver>().Object,
+                    DbDriver = new Mock<IDbDriver>().Object,
                     SqlDialect = new Mock<ISqlDialect>().Object
                 };
 
@@ -130,7 +130,7 @@
             }
         }
 
-        public class WhenCallingOpenSession_MultipleTimes
+        public class WhenCallingOpenSession_MultipleTimes : UnitTest
         {
             private readonly ISession session1;
             private readonly ISession session2;
@@ -140,7 +140,7 @@
                 var options = new SessionFactoryOptions
                 {
                     ConnectionName = "SqlConnection",
-                    SqlDriver = new Mock<IDbDriver>().Object,
+                    DbDriver = new Mock<IDbDriver>().Object,
                     SqlDialect = new Mock<ISqlDialect>().Object
                 };
 
@@ -157,7 +157,7 @@
             }
         }
 
-        public class WhenCallingOpenSession_SpecifyingConnectionScope
+        public class WhenCallingOpenSession_SpecifyingConnectionScope : UnitTest
         {
             private readonly ISession session;
 
@@ -169,7 +169,7 @@
                 var options = new SessionFactoryOptions
                 {
                     ConnectionName = "SqlConnection",
-                    SqlDriver = mockDbDriver.Object,
+                    DbDriver = mockDbDriver.Object,
                     SqlDialect = new Mock<ISqlDialect>().Object
                 };
 
@@ -185,16 +185,18 @@
             }
         }
 
-        public class WhenCreated
+        public class WhenConstructed : UnitTest
         {
             private readonly SessionFactoryOptions options = new SessionFactoryOptions
             {
-                ConnectionName = "Northwind"
+                ConnectionName = "Northwind",
+                SqlDialect = new Mock<ISqlDialect>().Object,
+                DbDriver = new Mock<IDbDriver>().Object
             };
 
             private readonly SessionFactory sessionFactory;
 
-            public WhenCreated()
+            public WhenConstructed()
             {
                 this.sessionFactory = new SessionFactory(this.options);
             }
@@ -203,6 +205,12 @@
             public void ConnectionNameReturnsConnectionNameFromOptions()
             {
                 Assert.Equal(this.options.ConnectionName, this.sessionFactory.ConnectionName);
+            }
+
+            [Fact]
+            public void TheDbDriverPropertyReturnsDbDriverFromOptions()
+            {
+                Assert.Same(this.options.DbDriver, this.sessionFactory.DbDriver);
             }
         }
     }

@@ -30,18 +30,18 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Gets or sets the SqlDialect for the connection.
+        /// Gets or sets the DbDriver for the connection.
         /// </summary>
-        internal ISqlDialect SqlDialect
+        internal IDbDriver DbDriver
         {
             get;
             set;
         }
 
         /// <summary>
-        /// Gets or sets the SqlDriver for the connection.
+        /// Gets or sets the SqlDialect for the connection.
         /// </summary>
-        internal IDbDriver SqlDriver
+        internal ISqlDialect SqlDialect
         {
             get;
             set;
