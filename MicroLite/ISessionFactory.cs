@@ -36,28 +36,28 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Opens a new read only session to the database.
+        /// Opens a new read only session to the database using <see cref="ConnectionScope"/>.PerTransaction.
         /// </summary>
         /// <returns>A new read only session instance.</returns>
         IReadOnlySession OpenReadOnlySession();
 
         /// <summary>
-        /// Opens a new read only session to the database.
+        /// Opens a new read only session to the database using the specified <see cref="ConnectionScope"/>.
         /// </summary>
-        /// <param name="connectionScope">The connection scope.</param>
+        /// <param name="connectionScope">The connection scope to use for the session.</param>
         /// <returns>A new read only session instance.</returns>
         IReadOnlySession OpenReadOnlySession(ConnectionScope connectionScope);
 
         /// <summary>
-        /// Opens a new session to the database.
+        /// Opens a new session to the database using <see cref="ConnectionScope"/>.PerTransaction.
         /// </summary>
         /// <returns>A new session instance.</returns>
         ISession OpenSession();
 
         /// <summary>
-        /// Opens a new session to the database.
+        /// Opens a new session to the database using the specified <see cref="ConnectionScope"/>.
         /// </summary>
-        /// <param name="connectionScope">The connection scope.</param>
+        /// <param name="connectionScope">The connection scope to use for the session.</param>
         /// <returns>A new session instance.</returns>
         ISession OpenSession(ConnectionScope connectionScope);
     }

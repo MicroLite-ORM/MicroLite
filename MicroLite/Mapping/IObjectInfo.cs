@@ -42,6 +42,7 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="reader">The IDataReader containing the values to build the instance from.</param>
         /// <returns>A new instance of the type populated with the values from the specified IDataReader.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if reader is null.</exception>
         object CreateInstance(IDataReader reader);
 
         /// <summary>
@@ -56,31 +57,37 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
         /// <returns>The value of the identifier property.</returns>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         object GetIdentifierValue(object instance);
 
         /// <summary>
         /// Gets the insert values for the specified instance.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="instance">The instance to retrieve the values from.</param>
         /// <returns>An array of values to be used for the insert command.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         object[] GetInsertValues(object instance);
 
         /// <summary>
         /// Gets the update values for the specified instance.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="instance">The instance to retrieve the values from.</param>
         /// <returns>An array of values to be used for the update command.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         object[] GetUpdateValues(object instance);
 
         /// <summary>
         /// Determines whether the specified instance has the default identifier value.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="instance">The instance to verify.</param>
         /// <returns>
         ///   <c>true</c> if the instance has the default identifier value; otherwise, <c>false</c>.
         /// </returns>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         bool HasDefaultIdentifierValue(object instance);
 
         /// <summary>
@@ -88,7 +95,8 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="instance">The instance to set the value for.</param>
         /// <param name="identifier">The value to set as the identifier property.</param>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         void SetIdentifierValue(object instance, object identifier);
     }
 }

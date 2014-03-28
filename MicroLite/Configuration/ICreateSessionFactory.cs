@@ -22,6 +22,10 @@ namespace MicroLite.Configuration
         /// Creates the session factory for the configured connection.
         /// </summary>
         /// <returns>The session factory for the specified connection.</returns>
+        /// <remarks>
+        /// If set, Configure.OnSessionFactoryCreated will be called after the session factory is created.
+        /// The session factory will also be added to the SessionFactories collection.
+        /// </remarks>
         ISessionFactory CreateSessionFactory();
     }
 }

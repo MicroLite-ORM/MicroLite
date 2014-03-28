@@ -125,9 +125,7 @@ namespace MicroLite.Mapping
         /// <param name="forType">The type to get the object info for.</param>
         /// <returns>The <see cref="ObjectInfo" /> for the specified <see cref="Type" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if forType is null.</exception>
-        /// <exception cref="MicroLiteException">
-        /// Thrown if the specified type cannot be used with MicroLite.
-        /// </exception>
+        /// <exception cref="MicroLiteException">Thrown if the specified type cannot be used with MicroLite.</exception>
         public static IObjectInfo For(Type forType)
         {
             if (forType == null)
@@ -167,8 +165,14 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="reader">The IDataReader containing the values to build the instance from.</param>
         /// <returns>A new instance of the type populated with the values from the specified IDataReader.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if reader is null.</exception>
         public object CreateInstance(IDataReader reader)
         {
+            if (reader == null)
+            {
+                throw new ArgumentNullException("reader");
+            }
+
             if (log.IsDebug)
             {
                 log.Debug(Messages.ObjectInfo_CreatingInstance, this.forType.FullName);
@@ -208,9 +212,7 @@ namespace MicroLite.Mapping
         /// <param name="instance">The instance to retrieve the value from.</param>
         /// <returns>The value of the identifier property.</returns>
         /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
-        /// <exception cref="MicroLiteException">
-        /// Thrown if the instance is not of the correct type.
-        /// </exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public object GetIdentifierValue(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
@@ -223,8 +225,10 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Gets the insert values for the specified instance.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="instance">The instance to retrieve the values from.</param>
         /// <returns>An array of values to be used for the insert command.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public object[] GetInsertValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
@@ -237,8 +241,10 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Gets the update values for the specified instance.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="instance">The instance to retrieve the values from.</param>
         /// <returns>An array of values to be used for the update command.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public object[] GetUpdateValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
@@ -251,10 +257,12 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Determines whether the specified instance has the default identifier value.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="instance">The instance to verify.</param>
         /// <returns>
-        /// <c>true</c> if the instance has the default identifier value; otherwise, <c>false</c>.
+        ///   <c>true</c> if the instance has the default identifier value; otherwise, <c>false</c>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public bool HasDefaultIdentifierValue(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
@@ -271,6 +279,8 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="instance">The instance to set the value for.</param>
         /// <param name="identifier">The value to set as the identifier property.</param>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public void SetIdentifierValue(object instance, object identifier)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);

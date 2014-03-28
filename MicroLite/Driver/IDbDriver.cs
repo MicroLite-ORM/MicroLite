@@ -22,7 +22,7 @@ namespace MicroLite.Driver
     public interface IDbDriver
     {
         /// <summary>
-        /// Gets or sets the connection string.
+        /// Gets or sets the connection string of the database this Db Driver is connecting to.
         /// </summary>
         string ConnectionString
         {

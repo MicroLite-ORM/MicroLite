@@ -103,7 +103,7 @@ namespace MicroLite.Configuration
         /// Configures the MicroLite ORM Framework to use attribute based mapping instead of the default convention based mapping.
         /// </summary>
         /// <param name="configureExtensions">The interface to configure extensions.</param>
-        /// <returns>The configure extensions.</returns>
+        /// <returns>The interface which provides the extension points.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if configureExtensions is null.</exception>
         public static IConfigureExtensions WithAttributeBasedMapping(
             this IConfigureExtensions configureExtensions)
@@ -119,11 +119,11 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// Configures the MicroLite ORM Framework to use the default convention based mapping.
+        /// Configures the MicroLite ORM Framework to use custom convention settings for the default convention based mapping.
         /// </summary>
         /// <param name="configureExtensions">The interface to configure extensions.</param>
         /// <param name="settings">The settings for the convention mapping.</param>
-        /// <returns>The configure extensions.</returns>
+        /// <returns>The interface which provides the extension points.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if configureExtensions or settings is null.</exception>
         public static IConfigureExtensions WithConventionBasedMapping(
             this IConfigureExtensions configureExtensions,

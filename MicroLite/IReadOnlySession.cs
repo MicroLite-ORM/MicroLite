@@ -46,7 +46,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Begins the transaction with the default isolation level of the connection.
+        /// Begins a transaction using <see cref="IsolationLevel"/>.ReadCommitted.
         /// </summary>
         /// <returns>An <see cref="ITransaction"/> with the default isolation level of the connection.</returns>
         /// <remarks>It is a good idea to perform all insert/update/delete actions inside a transaction.</remarks>
@@ -67,7 +67,7 @@ namespace MicroLite
         ITransaction BeginTransaction();
 
         /// <summary>
-        /// Begins the transaction with the specified isolation level.
+        /// Begins the transaction with the specified <see cref="IsolationLevel"/>.
         /// </summary>
         /// <param name="isolationLevel">The isolation level to use for the transaction.</param>
         /// <returns>An <see cref="ITransaction"/> with the specified <see cref="IsolationLevel"/>.</returns>

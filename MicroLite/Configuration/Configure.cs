@@ -25,6 +25,7 @@ namespace MicroLite.Configuration
         /// <summary>
         /// Gets or sets a function which will be called when a session factory is created.
         /// </summary>
+        /// <remarks>This can be null, but if set will be called before the session factory is added to the SessionFactories collection.</remarks>
         public static Action<ISessionFactory> OnSessionFactoryCreated
         {
             get;
@@ -32,7 +33,7 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// Gets the session factories created by the configuration.
+        /// Gets the collection of session factories which have created by the configuration.
         /// </summary>
         public static ICollection<ISessionFactory> SessionFactories
         {
@@ -43,7 +44,7 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// Begins the process of specifying the extensions which should be used by MicroLite.
+        /// Begins the process of specifying the extensions which should be used by MicroLite ORM.
         /// </summary>
         /// <returns>The interface which provides the extension points.</returns>
         /// <remarks>Extensions should be configured before configuring any connections.</remarks>
@@ -54,7 +55,8 @@ namespace MicroLite.Configuration
         /// Configure
         ///     .Extensions()
         ///     .WithLog4Net() // To use log4net, install the MicroLite.Logging.Log4Net package (there is also an NLog package).
-        ///     .WithMvc(); // To use the MVC extensions, install the MicroLite.Extensions.Mvc package.
+        ///     .WithMvc() // To use the MVC extensions, install the MicroLite.Extensions.Mvc package.
+        ///     .WithWebApi(); // To use the WebApi extensions, install the MicroLite.Extensions.WebApi package.
         /// </code>
         /// </example>
         public static IConfigureExtensions Extensions()
@@ -67,20 +69,10 @@ namespace MicroLite.Configuration
         /// </summary>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <example>
-        /// Option 1: If your database is MsSql, specify ForMsSqlConnection which is included in the core package.
         /// <code>
         /// var sessionFactory = Configure
         ///     .Fluently()
-        ///     .ForMsConnection("TestDB")
-        ///     .CreateSessionFactory();
-        /// </code>
-        /// </example>
-        /// <example>
-        /// Option 2: Use an alternative SqlDialect which is supported by MicroLite (such as SQLite).
-        /// <code>
-        /// var sessionFactory = Configure
-        ///     .Fluently()
-        ///     .ForSQLiteConnection("TestDB") // To use an alternative database, install the MicroLite.Dialect package for the database.
+        ///     .ForMsSqlConnection("TestDB") // or ForMySqlConnection, ForPostgreSqlConnection or ForSQLiteConnection
         ///     .CreateSessionFactory();
         /// </code>
         /// </example>
