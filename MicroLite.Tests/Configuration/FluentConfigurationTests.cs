@@ -20,12 +20,16 @@
             private readonly Mock<ISqlDialect> mockSqlDialect = new Mock<ISqlDialect>();
             private readonly ISessionFactory sessionFactory;
             private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
+            private bool sessionFactoryCreatedCalled = false;
 
             public WhenCallingCreateSessionFactory()
             {
                 this.mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
 
-                var fluentConfiguration = new FluentConfiguration();
+                var fluentConfiguration = new FluentConfiguration((ISessionFactory s) =>
+                {
+                    this.sessionFactoryCreatedCalled = true;
+                });
 
                 this.sessionFactory = fluentConfiguration
                     .ForConnection("SqlConnection", this.mockSqlDialect.Object, this.mockDbDriver.Object)
@@ -45,6 +49,12 @@
             }
 
             [Fact]
+            public void TheSessionFactoryCreatedActionShouldBeCalled()
+            {
+                Assert.True(this.sessionFactoryCreatedCalled);
+            }
+
+            [Fact]
             public void TheSessionFactoryShouldBeAddedToTheSessionFactoriesProperty()
             {
                 Assert.Contains(this.sessionFactory, Configure.SessionFactories);
@@ -61,10 +71,14 @@
         {
             private readonly ISessionFactory sessionFactory1;
             private readonly ISessionFactory sessionFactory2;
+            private int sessionFactoryCreatedCount = 0;
 
             public WhenCallingCreateSessionFactory_MultipleTimesForTheSameConnection()
             {
-                var fluentConfiguration = new FluentConfiguration();
+                var fluentConfiguration = new FluentConfiguration((ISessionFactory s) =>
+                {
+                    this.sessionFactoryCreatedCount++;
+                });
 
                 this.sessionFactory1 = fluentConfiguration
                     .ForConnection("SqlConnection", new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object)
@@ -80,6 +94,12 @@
             {
                 Assert.Same(this.sessionFactory1, this.sessionFactory2);
             }
+
+            [Fact]
+            public void TheSessionFactoryCreatedActionShouldBeCalledOnce()
+            {
+                Assert.Equal(1, this.sessionFactoryCreatedCount);
+            }
         }
 
         public class WhenCallingForConnection_AndTheConnectionNameDoesNotExistInTheAppConfig
@@ -87,7 +107,7 @@
             [Fact]
             public void AMicroLiteConfigurationExceptionShouldBeThrown()
             {
-                var fluentConfiguration = new FluentConfiguration();
+                var fluentConfiguration = new FluentConfiguration(sessionFactoryCreated: null);
 
                 var exception = Assert.Throws<ConfigurationException>(
                     () => fluentConfiguration.ForConnection("TestDB", new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
@@ -101,7 +121,7 @@
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
-                var fluentConfiguration = new FluentConfiguration();
+                var fluentConfiguration = new FluentConfiguration(sessionFactoryCreated: null);
 
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection(null, new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
@@ -115,7 +135,7 @@
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
-                var fluentConfiguration = new FluentConfiguration();
+                var fluentConfiguration = new FluentConfiguration(sessionFactoryCreated: null);
 
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection("SqlConnection", new Mock<ISqlDialect>().Object, null));
@@ -129,7 +149,7 @@
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
-                var fluentConfiguration = new FluentConfiguration();
+                var fluentConfiguration = new FluentConfiguration(sessionFactoryCreated: null);
 
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection("SqlConnection", null, new Mock<IDbDriver>().Object));

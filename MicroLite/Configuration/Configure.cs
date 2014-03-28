@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Configuration
 {
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -20,6 +21,15 @@ namespace MicroLite.Configuration
     public static class Configure
     {
         private static readonly IList<ISessionFactory> sessionFactories = new List<ISessionFactory>();
+
+        /// <summary>
+        /// Gets or sets a function which will be called when a session factory is created.
+        /// </summary>
+        public static Action<ISessionFactory> OnSessionFactoryCreated
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets the session factories created by the configuration.
@@ -76,7 +86,7 @@ namespace MicroLite.Configuration
         /// </example>
         public static IConfigureConnection Fluently()
         {
-            return new FluentConfiguration();
+            return new FluentConfiguration(OnSessionFactoryCreated);
         }
     }
 }

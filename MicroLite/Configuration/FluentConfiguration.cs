@@ -30,6 +30,12 @@ namespace MicroLite.Configuration
         private static readonly object locker = new object();
         private readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly SessionFactoryOptions options = new SessionFactoryOptions();
+        private readonly Action<ISessionFactory> sessionFactoryCreated;
+
+        internal FluentConfiguration(Action<ISessionFactory> sessionFactoryCreated)
+        {
+            this.sessionFactoryCreated = sessionFactoryCreated;
+        }
 
         public ISessionFactory CreateSessionFactory()
         {
@@ -47,6 +53,11 @@ namespace MicroLite.Configuration
 
                     sessionFactory = new SessionFactory(this.options);
                     SqlCharacters.Current = this.options.SqlDialect.SqlCharacters;
+
+                    if (this.sessionFactoryCreated != null)
+                    {
+                        this.sessionFactoryCreated(sessionFactory);
+                    }
 
                     Configure.SessionFactories.Add(sessionFactory);
                 }

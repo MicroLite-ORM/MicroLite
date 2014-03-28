@@ -9,6 +9,7 @@
     {
         protected UnitTest()
         {
+            Configure.OnSessionFactoryCreated = null;
             Configure.SessionFactories.Clear();
             ObjectInfo.Reset();
             SqlCharacters.Current = null;
@@ -39,6 +40,7 @@
 
         public void Dispose()
         {
+            Configure.OnSessionFactoryCreated = null;
             Configure.SessionFactories.Clear();
             ObjectInfo.Reset();
             SqlCharacters.Current = null;
