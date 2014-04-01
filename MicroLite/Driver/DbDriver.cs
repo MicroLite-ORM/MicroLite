@@ -34,6 +34,7 @@ namespace MicroLite.Driver
         /// </summary>
         internal DbDriver()
         {
+            this.HandleStringsAsUnicode = true;
         }
 
         /// <summary>
@@ -49,6 +50,19 @@ namespace MicroLite.Driver
         /// Gets or sets the database provider factory.
         /// </summary>
         public DbProviderFactory DbProviderFactory
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to handle strings as unicode (defaults to true).
+        /// </summary>
+        /// <remarks>
+        /// Indicates whether strings should be handled as unicode (true by default)
+        /// e.g. for MS SQL - if true, strings will be treated as NVARCHAR; if false, strings will be treated as VARCHAR.
+        /// </remarks>
+        public bool HandleStringsAsUnicode
         {
             get;
             set;
@@ -233,6 +247,11 @@ namespace MicroLite.Driver
             parameter.Direction = ParameterDirection.Input;
             parameter.ParameterName = parameterName;
             parameter.Value = parameterValue ?? DBNull.Value;
+
+            if (parameterValue is string)
+            {
+                parameter.DbType = this.HandleStringsAsUnicode ? DbType.String : DbType.AnsiString;
+            }
 
             command.Parameters.Add(parameter);
         }
