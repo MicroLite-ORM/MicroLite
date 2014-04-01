@@ -41,7 +41,7 @@ if ($version)
 }
 
 # Run the psake build script to create the release binaries
-Import-Module (Join-Path $scriptPath packages\psake.4.3.1.0\tools\psake.psm1) -ErrorAction SilentlyContinue
+Import-Module (Join-Path $scriptPath packages\psake.4.3.2\tools\psake.psm1) -ErrorAction SilentlyContinue
 
 Invoke-psake (Join-Path $scriptPath default.ps1)
 
