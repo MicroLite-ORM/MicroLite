@@ -23,6 +23,7 @@ namespace MicroLite
     /// </summary>
     public static class SqlUtility
     {
+        private static readonly string[] emptyParameterNames = new string[0];
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace MicroLite
                 throw new ArgumentNullException("commandText");
             }
 
-            var firstParameterPosition = commandText.IndexOfAny(parameterIdentifiers, 0);
+            var firstParameterPosition = commandText.IndexOfAny(parameterIdentifiers);
 
             return firstParameterPosition;
         }
@@ -53,6 +54,11 @@ namespace MicroLite
             if (commandText == null)
             {
                 throw new ArgumentNullException("commandText");
+            }
+
+            if (GetFirstParameterPosition(commandText) == -1)
+            {
+                return emptyParameterNames;
             }
 
             var parameterNames = new List<string>();
