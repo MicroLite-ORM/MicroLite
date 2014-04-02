@@ -109,7 +109,9 @@ namespace MicroLite.Driver
 
             if (parameterNames.Count == 0 && sqlQuery.Arguments.Count > 0)
             {
-                parameterNames = Enumerable.Range(0, sqlQuery.Arguments.Count).Select(c => "Parameter" + c.ToString(CultureInfo.InvariantCulture)).ToArray();
+                parameterNames = Enumerable.Range(0, sqlQuery.Arguments.Count)
+                    .Select(c => "Parameter" + c.ToString(CultureInfo.InvariantCulture))
+                    .ToArray();
             }
 
             if (parameterNames.Count != sqlQuery.Arguments.Count)
