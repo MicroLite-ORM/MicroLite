@@ -39,7 +39,7 @@ namespace MicroLite.Builder
         /// Gets the arguments currently added to the sql builder.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Allowed in this instance, we want to make use of AddRange.")]
-        public List<object> Arguments
+        protected List<object> Arguments
         {
             get
             {
@@ -50,7 +50,7 @@ namespace MicroLite.Builder
         /// <summary>
         /// Gets the inner sql the sql builder.
         /// </summary>
-        public StringBuilder InnerSql
+        protected StringBuilder InnerSql
         {
             get
             {
@@ -61,7 +61,7 @@ namespace MicroLite.Builder
         /// <summary>
         /// Gets the SQL characters.
         /// </summary>
-        public SqlCharacters SqlCharacters
+        protected SqlCharacters SqlCharacters
         {
             get
             {
