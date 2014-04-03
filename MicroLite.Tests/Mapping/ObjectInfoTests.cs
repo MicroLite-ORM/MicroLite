@@ -489,6 +489,74 @@
             Assert.Equal(122323, customer.Id);
         }
 
+        [Fact]
+        public void VerifyInstanceForInsertDoesNotThrowMicroLiteException_WhenIdentifierStrategyAssigned_AndIdentifierSet()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
+            var customer = new Customer
+            {
+                Id = 147843
+            };
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            Assert.DoesNotThrow(() => objectInfo.VerifyInstanceForInsert(customer));
+        }
+
+        [Fact]
+        public void VerifyInstanceForInsertDoesNotThrowMicroLiteException_WhenIdentifierStrategyDbGenerated_AndIdentifierNotSet()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new Customer
+            {
+                Id = 0
+            };
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            Assert.DoesNotThrow(() => objectInfo.VerifyInstanceForInsert(customer));
+        }
+
+        [Fact]
+        public void VerifyInstanceForInsertThrowsMicroLiteException_WhenIdentifierStrategyAssigned_AndIdentifierNotSet()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
+            var customer = new Customer
+            {
+                Id = 0
+            };
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
+
+            Assert.Equal(Messages.AssignedListener_IdentifierNotSetForInsert, exception.Message);
+        }
+
+        [Fact]
+        public void VerifyInstanceForInsertThrowsMicroLiteException_WhenIdentifierStrategyDbGenerated_AndIdentifierSet()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new Customer
+            {
+                Id = 147843
+            };
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
+
+            Assert.Equal(Messages.IListener_IdentifierSetForInsert, exception.Message);
+        }
+
         /// <summary>
         /// A helper method required because you can't do typeof(dynamic).
         /// </summary>

@@ -59,6 +59,13 @@ namespace MicroLite.Core
 
             this.listeners.Each(l => l.BeforeDelete(instance));
 
+            var objectInfo = ObjectInfo.For(instance.GetType());
+
+            if (objectInfo.HasDefaultIdentifierValue(instance))
+            {
+                throw new MicroLiteException(Messages.IListener_IdentifierNotSetForDelete);
+            }
+
             var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, instance);
 
             var rowsAffected = this.Execute(sqlQuery);
@@ -168,12 +175,13 @@ namespace MicroLite.Core
 
             this.listeners.Each(l => l.BeforeInsert(instance));
 
-            object identifier = null;
-
             var objectInfo = ObjectInfo.For(instance.GetType());
+            objectInfo.VerifyInstanceForInsert(instance);
 
             var insertSqlQuery = this.SqlDialect.CreateQuery(StatementType.Insert, instance);
             var selectIdSqlQuery = this.SqlDialect.CreateSelectIdentityQuery(objectInfo);
+
+            object identifier = null;
 
             if (this.DbDriver.SupportsBatchedQueries)
             {
@@ -218,6 +226,13 @@ namespace MicroLite.Core
             }
 
             this.listeners.Each(l => l.BeforeUpdate(instance));
+
+            var objectInfo = ObjectInfo.For(instance.GetType());
+
+            if (objectInfo.HasDefaultIdentifierValue(instance))
+            {
+                throw new MicroLiteException(Messages.IListener_IdentifierNotSetForUpdate);
+            }
 
             var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Update, instance);
 

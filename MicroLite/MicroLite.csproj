@@ -121,7 +121,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\SessionFactoryOptions.cs" />
-    <Compile Include="Listeners\AssignedListener.cs" />
     <Compile Include="FrameworkExtensions\CollectionExtensions.cs">
       <SubType>Code</SubType>
     </Compile>

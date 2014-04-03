@@ -289,6 +289,32 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
+        /// Verifies the instance can be inserted.
+        /// </summary>
+        /// <param name="instance">The instance to verify.</param>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">
+        /// Thrown if the instance is not of the correct type or its state is invalid for the specified StatementType.
+        /// </exception>
+        public void VerifyInstanceForInsert(object instance)
+        {
+            if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
+            {
+                if (this.HasDefaultIdentifierValue(instance))
+                {
+                    throw new MicroLiteException(Messages.AssignedListener_IdentifierNotSetForInsert);
+                }
+            }
+            else if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
+            {
+                if (!this.HasDefaultIdentifierValue(instance))
+                {
+                    throw new MicroLiteException(Messages.IListener_IdentifierSetForInsert);
+                }
+            }
+        }
+
+        /// <summary>
         /// Resets the object info state, removing any cached object information and restoring the default mapping convention.
         /// </summary>
         /// <remarks>

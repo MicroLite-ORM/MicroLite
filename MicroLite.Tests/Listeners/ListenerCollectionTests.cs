@@ -31,14 +31,6 @@
             private readonly ListenerCollection collection = new ListenerCollection();
 
             [Fact]
-            public void ConstructorRegistersAssignedListener()
-            {
-                var listener = this.collection.OfType<AssignedListener>().SingleOrDefault();
-
-                Assert.NotNull(listener);
-            }
-
-            [Fact]
             public void ConstructorRegistersDbGeneratedListener()
             {
                 var listener = this.collection.OfType<DbGeneratedListener>().SingleOrDefault();
@@ -47,9 +39,9 @@
             }
 
             [Fact]
-            public void ThereShouldBe2RegisteredListeners()
+            public void ThereShouldBe1RegisteredListener()
             {
-                Assert.Equal(2, this.collection.Count);
+                Assert.Equal(1, this.collection.Count);
             }
         }
 

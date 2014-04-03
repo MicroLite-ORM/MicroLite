@@ -132,5 +132,16 @@
 
             Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
         }
+
+        [Fact]
+        public void VerifyInstanceStateThrowsNotSupportedException()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.VerifyInstanceForInsert(new ExpandoObject()));
+
+            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+        }
     }
 }

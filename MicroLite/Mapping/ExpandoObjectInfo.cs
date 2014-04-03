@@ -97,6 +97,11 @@ namespace MicroLite.Mapping
         {
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
         }
+
+        public void VerifyInstanceForInsert(object instance)
+        {
+            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+        }
     }
 
 #endif

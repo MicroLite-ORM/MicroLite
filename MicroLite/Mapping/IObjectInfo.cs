@@ -98,5 +98,15 @@ namespace MicroLite.Mapping
         /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         void SetIdentifierValue(object instance, object identifier);
+
+        /// <summary>
+        /// Verifies the instance can be inserted.
+        /// </summary>
+        /// <param name="instance">The instance to verify.</param>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">
+        /// Thrown if the instance is not of the correct type or its state is invalid for the specified StatementType.
+        /// </exception>
+        void VerifyInstanceForInsert(object instance);
     }
 }

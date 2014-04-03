@@ -33,7 +33,10 @@
         [Fact]
         public void DeleteInstanceInvokesListeners()
         {
-            var customer = new Customer();
+            var customer = new Customer
+            {
+                Id = 187224
+            };
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
@@ -149,7 +152,10 @@
         [Fact]
         public void DeleteInstanceThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
         {
-            var customer = new Customer();
+            var customer = new Customer
+            {
+                Id = 187224
+            };
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Throws<InvalidOperationException>();
@@ -175,6 +181,28 @@
 
             // Command should still be disposed.
             mockCommand.VerifyAll();
+        }
+
+        [Fact]
+        public void DeleteInstanceThrowsMicroLiteExceptionIfIdentifierNotSet()
+        {
+            var customer = new Customer
+            {
+                Id = 0
+            };
+
+            var mockDbDriver = new Mock<IDbDriver>();
+            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+
+            var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<ISqlDialect>().Object,
+                mockDbDriver.Object,
+                new IListener[0]);
+
+            var exception = Assert.Throws<MicroLiteException>(() => session.Delete(customer));
+
+            Assert.Equal(Messages.IListener_IdentifierNotSetForDelete, exception.Message);
         }
 
         [Fact]
@@ -726,7 +754,11 @@
         [Fact]
         public void UpdateInstanceBuildsAndExecutesQuery()
         {
-            var customer = new Customer();
+            var customer = new Customer
+            {
+                Id = 187224
+            };
+
             var sqlQuery = new SqlQuery("");
             var rowsAffected = 1;
 
@@ -757,7 +789,11 @@
         [Fact]
         public void UpdateInstanceInvokesListeners()
         {
-            var customer = new Customer();
+            var customer = new Customer
+            {
+                Id = 187224
+            };
+
             var sqlQuery = new SqlQuery("");
             var rowsAffected = 1;
 
@@ -796,7 +832,10 @@
         [Fact]
         public void UpdateInstanceReturnsFalseIfNoRecordsUpdated()
         {
-            var customer = new Customer();
+            var customer = new Customer
+            {
+                Id = 187224
+            };
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
@@ -825,7 +864,10 @@
         [Fact]
         public void UpdateInstanceReturnsTrueIfRecordUpdated()
         {
-            var customer = new Customer();
+            var customer = new Customer
+            {
+                Id = 187224
+            };
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
@@ -868,7 +910,11 @@
         [Fact]
         public void UpdateInstanceThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
         {
-            var customer = new Customer();
+            var customer = new Customer
+            {
+                Id = 187224
+            };
+
             var sqlQuery = new SqlQuery("");
 
             var mockCommand = new Mock<IDbCommand>();
@@ -895,6 +941,28 @@
 
             // Command should still be disposed.
             mockCommand.VerifyAll();
+        }
+
+        [Fact]
+        public void UpdateInstanceThrowsMicroLiteExceptionIfIdentifierNotSet()
+        {
+            var customer = new Customer
+            {
+                Id = 0
+            };
+
+            var mockDbDriver = new Mock<IDbDriver>();
+            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+
+            var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<ISqlDialect>().Object,
+                mockDbDriver.Object,
+                new IListener[0]);
+
+            var exception = Assert.Throws<MicroLiteException>(() => session.Update(customer));
+
+            Assert.Equal(Messages.IListener_IdentifierNotSetForUpdate, exception.Message);
         }
 
         [Fact]
