@@ -133,9 +133,6 @@ namespace MicroLite.Dialect
 
             switch (statementType)
             {
-                case StatementType.Delete:
-                    return this.BuildDeleteSqlQuery(objectInfo, objectInfo.GetIdentifierValue(instance));
-
                 case StatementType.Insert:
                     return this.BuildInsertSqlQuery(instance, objectInfo);
 

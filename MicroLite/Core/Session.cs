@@ -17,7 +17,6 @@ namespace MicroLite.Core
     using System.Data;
     using MicroLite.Dialect;
     using MicroLite.Driver;
-    using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Mapping;
     using MicroLite.TypeConverters;
@@ -69,7 +68,9 @@ namespace MicroLite.Core
                 throw new MicroLiteException(Messages.IListener_IdentifierNotSetForDelete);
             }
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, instance);
+            var identifier = objectInfo.GetIdentifierValue(instance);
+
+            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, objectInfo.ForType, identifier);
 
             var rowsAffected = this.Execute(sqlQuery);
 

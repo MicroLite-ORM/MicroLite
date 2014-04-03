@@ -228,52 +228,6 @@
         }
 
         [Fact]
-        public void DeleteInstanceQuery()
-        {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
-
-            var customer = new Customer
-            {
-                Created = new DateTime(2011, 12, 24),
-                CreditLimit = 10500.00M,
-                DateOfBirth = new System.DateTime(1975, 9, 18),
-                Id = 134875,
-                Name = "Joe Bloggs",
-                Status = CustomerStatus.Active,
-                Updated = DateTime.Now,
-                Website = new Uri("http://microliteorm.wordpress.com")
-            };
-
-            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
-            mockSqlDialect.CallBase = true;
-
-            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Delete, customer);
-
-            Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery.CommandText);
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(customer.Id, sqlQuery.Arguments[0]);
-
-            // Do a second query to check that the caching doesn't cause a problem.
-            customer = new Customer
-            {
-                Created = new DateTime(2012, 08, 13),
-                CreditLimit = 6250.00M,
-                DateOfBirth = new System.DateTime(1984, 3, 11),
-                Id = 998866,
-                Name = "John Smith",
-                Status = CustomerStatus.Inactive,
-                Updated = DateTime.Now,
-                Website = new Uri("http://microliteorm.wordpress.com/about")
-            };
-            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Delete, customer);
-
-            Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery2.CommandText);
-            Assert.Equal(1, sqlQuery2.Arguments.Count);
-            Assert.Equal(customer.Id, sqlQuery2.Arguments[0]);
-        }
-
-        [Fact]
         public void InsertInstanceQueryForIdentifierStrategyAssigned()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
