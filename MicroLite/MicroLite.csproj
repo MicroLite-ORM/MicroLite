@@ -120,7 +120,6 @@
     <Compile Include="Configuration\ICreateSessionFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\SessionFactoryOptions.cs" />
     <Compile Include="Listeners\DbGeneratedListener.cs">
       <SubType>Code</SubType>
     </Compile>

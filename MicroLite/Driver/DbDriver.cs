@@ -27,14 +27,15 @@ namespace MicroLite.Driver
     /// </summary>
     internal abstract class DbDriver : IDbDriver
     {
-        protected static readonly ILog Log = LogManager.GetCurrentClassLog();
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
+        private bool handleStringsAsUnicode;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="DbDriver" /> class.
         /// </summary>
-        internal DbDriver()
+        protected DbDriver()
         {
-            this.HandleStringsAsUnicode = true;
+            this.handleStringsAsUnicode = true;
         }
 
         /// <summary>
@@ -64,8 +65,15 @@ namespace MicroLite.Driver
         /// </remarks>
         public bool HandleStringsAsUnicode
         {
-            get;
-            set;
+            get
+            {
+                return this.handleStringsAsUnicode;
+            }
+
+            set
+            {
+                this.handleStringsAsUnicode = value;
+            }
         }
 
         /// <summary>
@@ -226,9 +234,9 @@ namespace MicroLite.Driver
 
             if (connectionScope == ConnectionScope.PerSession)
             {
-                if (Log.IsDebug)
+                if (log.IsDebug)
                 {
-                    Log.Debug(Messages.OpeningConnection);
+                    log.Debug(Messages.OpeningConnection);
                 }
 
                 connection.Open();

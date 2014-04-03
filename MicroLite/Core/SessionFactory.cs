@@ -28,11 +28,11 @@ namespace MicroLite.Core
         private readonly IDbDriver dbDriver;
         private readonly ISqlDialect sqlDialect;
 
-        internal SessionFactory(SessionFactoryOptions sessionFactoryOptions)
+        internal SessionFactory(string connectionName, IDbDriver dbDriver, ISqlDialect sqlDialect)
         {
-            this.connectionName = sessionFactoryOptions.ConnectionName;
-            this.dbDriver = sessionFactoryOptions.DbDriver;
-            this.sqlDialect = sessionFactoryOptions.SqlDialect;
+            this.connectionName = connectionName;
+            this.dbDriver = dbDriver;
+            this.sqlDialect = sqlDialect;
         }
 
         public string ConnectionName

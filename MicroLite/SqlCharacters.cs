@@ -21,9 +21,9 @@ namespace MicroLite
     /// </summary>
     public class SqlCharacters
     {
+        private static readonly SqlCharacters empty = new SqlCharacters();
         private static readonly char[] period = new[] { '.' };
         private static SqlCharacters current;
-        private static SqlCharacters empty = new SqlCharacters();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlCharacters"/> class.

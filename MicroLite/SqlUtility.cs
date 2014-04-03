@@ -273,32 +273,47 @@ namespace MicroLite
 
         private struct SegmentPositions
         {
-            public int FromIndex
+            private readonly int fromIndex;
+            private readonly int orderByIndex;
+            private readonly int whereIndex;
+
+            internal SegmentPositions(int fromIndex, int orderByIndex, int whereIndex)
             {
-                get;
-                set;
+                this.fromIndex = fromIndex;
+                this.orderByIndex = orderByIndex;
+                this.whereIndex = whereIndex;
             }
 
-            public int OrderByIndex
+            internal int FromIndex
             {
-                get;
-                set;
+                get
+                {
+                    return this.fromIndex;
+                }
             }
 
-            public int WhereIndex
+            internal int OrderByIndex
             {
-                get;
-                set;
+                get
+                {
+                    return this.orderByIndex;
+                }
+            }
+
+            internal int WhereIndex
+            {
+                get
+                {
+                    return this.whereIndex;
+                }
             }
 
             internal static SegmentPositions GetSegmentPositions(string commandText)
             {
-                var segmentPositions = new SegmentPositions
-                {
-                    FromIndex = commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase),
-                    OrderByIndex = commandText.IndexOf("ORDER BY", StringComparison.OrdinalIgnoreCase),
-                    WhereIndex = commandText.IndexOf("WHERE", StringComparison.OrdinalIgnoreCase)
-                };
+                var segmentPositions = new SegmentPositions(
+                    commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase),
+                    commandText.IndexOf("ORDER BY", StringComparison.OrdinalIgnoreCase),
+                    commandText.IndexOf("WHERE", StringComparison.OrdinalIgnoreCase));
 
                 return segmentPositions;
             }

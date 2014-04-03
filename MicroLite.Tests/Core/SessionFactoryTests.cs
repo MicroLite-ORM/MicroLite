@@ -17,14 +17,7 @@
 
             public WhenCallingOpenReadOnlySession()
             {
-                var options = new SessionFactoryOptions
-                {
-                    ConnectionName = "SqlConnection",
-                    DbDriver = new Mock<IDbDriver>().Object,
-                    SqlDialect = new Mock<ISqlDialect>().Object
-                };
-
-                var sessionFactory = new SessionFactory(options);
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
 
                 this.readOnlySession = sessionFactory.OpenReadOnlySession();
             }
@@ -50,14 +43,7 @@
 
             public WhenCallingOpenReadOnlySession_MultipleTimes()
             {
-                var options = new SessionFactoryOptions
-                {
-                    ConnectionName = "SqlConnection",
-                    DbDriver = new Mock<IDbDriver>().Object,
-                    SqlDialect = new Mock<ISqlDialect>().Object
-                };
-
-                var sessionFactory = new SessionFactory(options);
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
 
                 this.readOnlySession1 = sessionFactory.OpenReadOnlySession();
                 this.readOnlySession2 = sessionFactory.OpenReadOnlySession();
@@ -79,14 +65,7 @@
                 var mockDbDriver = new Mock<IDbDriver>();
                 mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
 
-                var options = new SessionFactoryOptions
-                {
-                    ConnectionName = "SqlConnection",
-                    DbDriver = mockDbDriver.Object,
-                    SqlDialect = new Mock<ISqlDialect>().Object
-                };
-
-                var sessionFactory = new SessionFactory(options);
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, new Mock<ISqlDialect>().Object);
 
                 this.readOnlySession = sessionFactory.OpenReadOnlySession(ConnectionScope.PerSession);
             }
@@ -104,14 +83,7 @@
 
             public WhenCallingOpenSession()
             {
-                var options = new SessionFactoryOptions
-                {
-                    ConnectionName = "SqlConnection",
-                    DbDriver = new Mock<IDbDriver>().Object,
-                    SqlDialect = new Mock<ISqlDialect>().Object
-                };
-
-                var sessionFactory = new SessionFactory(options);
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
 
                 this.session = sessionFactory.OpenSession();
             }
@@ -137,14 +109,7 @@
 
             public WhenCallingOpenSession_MultipleTimes()
             {
-                var options = new SessionFactoryOptions
-                {
-                    ConnectionName = "SqlConnection",
-                    DbDriver = new Mock<IDbDriver>().Object,
-                    SqlDialect = new Mock<ISqlDialect>().Object
-                };
-
-                var sessionFactory = new SessionFactory(options);
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
 
                 this.session1 = sessionFactory.OpenSession();
                 this.session2 = sessionFactory.OpenSession();
@@ -166,14 +131,7 @@
                 var mockDbDriver = new Mock<IDbDriver>();
                 mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
 
-                var options = new SessionFactoryOptions
-                {
-                    ConnectionName = "SqlConnection",
-                    DbDriver = mockDbDriver.Object,
-                    SqlDialect = new Mock<ISqlDialect>().Object
-                };
-
-                var sessionFactory = new SessionFactory(options);
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, new Mock<ISqlDialect>().Object);
 
                 this.session = sessionFactory.OpenSession(ConnectionScope.PerSession);
             }
@@ -187,30 +145,26 @@
 
         public class WhenConstructed : UnitTest
         {
-            private readonly SessionFactoryOptions options = new SessionFactoryOptions
-            {
-                ConnectionName = "Northwind",
-                SqlDialect = new Mock<ISqlDialect>().Object,
-                DbDriver = new Mock<IDbDriver>().Object
-            };
-
+            private readonly string connectionName = "Northwind";
+            private readonly IDbDriver dbDriver = new Mock<IDbDriver>().Object;
             private readonly SessionFactory sessionFactory;
+            private readonly ISqlDialect sqlDialect = new Mock<ISqlDialect>().Object;
 
             public WhenConstructed()
             {
-                this.sessionFactory = new SessionFactory(this.options);
+                this.sessionFactory = new SessionFactory(this.connectionName, this.dbDriver, this.sqlDialect);
             }
 
             [Fact]
             public void ConnectionNameReturnsConnectionNameFromOptions()
             {
-                Assert.Equal(this.options.ConnectionName, this.sessionFactory.ConnectionName);
+                Assert.Equal(this.connectionName, this.sessionFactory.ConnectionName);
             }
 
             [Fact]
             public void TheDbDriverPropertyReturnsDbDriverFromOptions()
             {
-                Assert.Same(this.options.DbDriver, this.sessionFactory.DbDriver);
+                Assert.Same(this.dbDriver, this.sessionFactory.DbDriver);
             }
         }
     }
