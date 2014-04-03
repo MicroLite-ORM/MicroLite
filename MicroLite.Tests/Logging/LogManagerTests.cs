@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests.Logging
 {
-    using System;
     using MicroLite.Logging;
     using Moq;
     using Xunit;
@@ -8,20 +7,8 @@
     /// <summary>
     /// Unit Tests for the <see cref="LogManager"/> class.
     /// </summary>
-    public class LogManagerTests : IDisposable
+    public class LogManagerTests : UnitTest
     {
-        public LogManagerTests()
-        {
-            // Ensure that the GetLogger method is cleared before each test.
-            LogManager.GetLogger = null;
-        }
-
-        public void Dispose()
-        {
-            // Ensure that the GetLogger method is cleared after all tests have been run.
-            LogManager.GetLogger = null;
-        }
-
         [Fact]
         public void GetCurrentClassLogReturnsLogIfGetLoggerSet()
         {

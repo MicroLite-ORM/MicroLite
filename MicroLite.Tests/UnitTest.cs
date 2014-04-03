@@ -3,6 +3,7 @@
     using System;
     using System.Reflection;
     using MicroLite.Configuration;
+    using MicroLite.Logging;
     using MicroLite.Mapping;
 
     public abstract class UnitTest : IDisposable
@@ -13,6 +14,7 @@
             Configure.SessionFactories.Clear();
             ObjectInfo.Reset();
             SqlCharacters.Current = null;
+            LogManager.GetLogger = null;
         }
 
         public static ConventionMappingSettings GetConventionMappingSettings(IdentifierStrategy identifierStrategy)
@@ -44,6 +46,7 @@
             Configure.SessionFactories.Clear();
             ObjectInfo.Reset();
             SqlCharacters.Current = null;
+            LogManager.GetLogger = null;
 
             this.OnDispose();
         }

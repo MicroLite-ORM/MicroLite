@@ -4,14 +4,8 @@
     using Moq;
     using Xunit;
 
-    public class SqlCharactersTests : IDisposable
+    public class SqlCharactersTests : UnitTest
     {
-        public SqlCharactersTests()
-        {
-            // Reset the SqlCharacters before tests have run.
-            SqlCharacters.Current = null;
-        }
-
         [Fact]
         public void CurrentReturnsDefaultSqlCharactersIfNotSet()
         {
@@ -41,12 +35,6 @@
             Assert.Equal("?", sqlCharacters.SqlParameter);
             Assert.Equal(string.Empty, sqlCharacters.StoredProcedureInvocationCommand);
             Assert.Equal(false, sqlCharacters.SupportsNamedParameters);
-        }
-
-        public void Dispose()
-        {
-            // Reset the SqlCharacters after tests have run.
-            SqlCharacters.Current = null;
         }
 
         [Fact]
