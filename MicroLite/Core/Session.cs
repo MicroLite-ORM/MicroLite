@@ -57,7 +57,10 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            this.listeners.Each(l => l.BeforeDelete(instance));
+            for (int i = 0; i < this.listeners.Count; i++)
+            {
+                this.listeners[i].BeforeDelete(instance);
+            }
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
@@ -70,7 +73,10 @@ namespace MicroLite.Core
 
             var rowsAffected = this.Execute(sqlQuery);
 
-            this.listeners.Reverse(l => l.AfterDelete(instance, rowsAffected));
+            for (int i = this.listeners.Count - 1; i >= 0; i--)
+            {
+                this.listeners[i].AfterDelete(instance, rowsAffected);
+            }
 
             return rowsAffected == 1;
         }
@@ -173,7 +179,10 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            this.listeners.Each(l => l.BeforeInsert(instance));
+            for (int i = 0; i < this.listeners.Count; i++)
+            {
+                this.listeners[i].BeforeInsert(instance);
+            }
 
             var objectInfo = ObjectInfo.For(instance.GetType());
             objectInfo.VerifyInstanceForInsert(instance);
@@ -194,7 +203,10 @@ namespace MicroLite.Core
                 identifier = this.ExecuteScalar<object>(selectIdSqlQuery);
             }
 
-            this.listeners.Reverse(l => l.AfterInsert(instance, identifier));
+            for (int i = this.listeners.Count - 1; i >= 0; i--)
+            {
+                this.listeners[i].AfterInsert(instance, identifier);
+            }
         }
 
         public void InsertOrUpdate(object instance)
@@ -225,7 +237,10 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            this.listeners.Each(l => l.BeforeUpdate(instance));
+            for (int i = 0; i < this.listeners.Count; i++)
+            {
+                this.listeners[i].BeforeUpdate(instance);
+            }
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
@@ -238,7 +253,10 @@ namespace MicroLite.Core
 
             var rowsAffected = this.Execute(sqlQuery);
 
-            this.listeners.Reverse(l => l.AfterUpdate(instance, rowsAffected));
+            for (int i = this.listeners.Count - 1; i >= 0; i--)
+            {
+                this.listeners[i].AfterUpdate(instance, rowsAffected);
+            }
 
             return rowsAffected == 1;
         }
