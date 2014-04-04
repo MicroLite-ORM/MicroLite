@@ -93,6 +93,11 @@ namespace MicroLite.Mapping
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
         }
 
+        public bool IsDefaultIdentifier(object identifier)
+        {
+            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+        }
+
         public void SetIdentifierValue(object instance, object identifier)
         {
             throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);

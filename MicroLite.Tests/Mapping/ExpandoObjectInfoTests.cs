@@ -112,6 +112,17 @@
         }
 
         [Fact]
+        public void IsDefaultIdentifierThrowsNotSupportedException()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.IsDefaultIdentifier(0));
+
+            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+        }
+
+        [Fact]
         public void SetIdentifierValueThrowsNotSupportedException()
         {
             var objectInfo = new ExpandoObjectInfo();

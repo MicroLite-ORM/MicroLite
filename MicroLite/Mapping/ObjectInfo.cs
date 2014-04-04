@@ -275,6 +275,20 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
+        /// Determines whether the specified identifier value is the default identifier value.
+        /// </summary>
+        /// <param name="identifier">The identifier value to verify.</param>
+        /// <returns>
+        /// True if the identifier is the default value, otherwise false.
+        /// </returns>
+        public bool IsDefaultIdentifier(object identifier)
+        {
+            bool isDefaultIdentifier = object.Equals(identifier, this.defaultIdentifierValue);
+
+            return isDefaultIdentifier;
+        }
+
+        /// <summary>
         /// Sets the property value for the object identifier to the supplied value.
         /// </summary>
         /// <param name="instance">The instance to set the value for.</param>

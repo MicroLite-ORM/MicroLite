@@ -478,6 +478,36 @@
         }
 
         [Fact]
+        public void IsDefaultIdentifier_WhenIdentifierIsGuid()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
+
+            Assert.True(objectInfo.IsDefaultIdentifier(Guid.Empty));
+
+            Assert.False(objectInfo.IsDefaultIdentifier(Guid.NewGuid()));
+        }
+
+        [Fact]
+        public void IsDefaultIdentifier_WhenIdentifierIsInteger()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            Assert.True(objectInfo.IsDefaultIdentifier(0));
+
+            Assert.False(objectInfo.IsDefaultIdentifier(18734));
+        }
+
+        [Fact]
+        public void IsDefaultIdentifier_WhenIdentifierIsString()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
+
+            Assert.True(objectInfo.IsDefaultIdentifier(null));
+
+            Assert.False(objectInfo.IsDefaultIdentifier("AFIK"));
+        }
+
+        [Fact]
         public void SetIdentifierValue_SetsPropertyValue()
         {
             var objectInfo = ObjectInfo.For(typeof(Customer));
