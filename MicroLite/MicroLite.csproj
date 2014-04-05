@@ -106,8 +106,6 @@
     <Compile Include="IIncludeSession.cs" />
     <Compile Include="Infrastructure\IHaveReadOnlySession.cs" />
     <Compile Include="Infrastructure\IHaveSession.cs" />
-    <Compile Include="Infrastructure\Web\ISessionManager.cs" />
-    <Compile Include="Infrastructure\Web\SessionManager.cs" />
     <Compile Include="Infrastructure\SymmetricAlgorithmProvider.cs" />
     <Compile Include="IReadOnlySession.cs" />
     <Compile Include="Mapping\ColumnAttribute.cs" />

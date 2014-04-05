@@ -93,7 +93,6 @@
     <Compile Include="Builder\UpdateSqlBuilderTests.cs" />
     <Compile Include="SqlCharactersTests.cs" />
     <Compile Include="Dialect\SqlDialectTests.cs" />
-    <Compile Include="Infrastructure\Web\SessionManagerTests.cs" />
     <Compile Include="Infrastructure\SymmetricAlgorithmProviderTests.cs" />
     <Compile Include="Mapping\ColumnAttributeTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
