@@ -32,6 +32,17 @@
         }
 
         [Fact]
+        public void CreateInstanceThrowsArgumentNullExceptionForNullReader()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.CreateInstance(null));
+
+            Assert.Equal("reader", exception.ParamName);
+        }
+
+        [Fact]
         public void CreateInstanceWithNullValues()
         {
             var objectInfo = ObjectInfo.For(typeof(Customer));

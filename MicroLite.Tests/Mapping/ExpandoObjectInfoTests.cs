@@ -49,6 +49,17 @@
         }
 
         [Fact]
+        public void CreateInstanceThrowsArgumentNullExceptionForNullReader()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.CreateInstance(null));
+
+            Assert.Equal("reader", exception.ParamName);
+        }
+
+        [Fact]
         public void ForTypeReturnsExpandoObject()
         {
             var objectInfo = new ExpandoObjectInfo();

@@ -13,6 +13,30 @@
     public class SqlDialectTests : UnitTest
     {
         [Fact]
+        public void BuildDeleteSqlQueryThrowsArgumentNullExceptionForNullObjectInfo()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => mockSqlDialect.Object.BuildDeleteSqlQuery(null, 12345));
+
+            Assert.Equal("objectInfo", exception.ParamName);
+        }
+
+        [Fact]
+        public void BuildInsertSqlQueryThrowsArgumentNullExceptionForNullObjectInfo()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => mockSqlDialect.Object.BuildInsertSqlQuery(null, new Customer()));
+
+            Assert.Equal("objectInfo", exception.ParamName);
+        }
+
+        [Fact]
         public void BuildSelectIdentitySqlQueryReturnsSqlQueryWithEmptyCommandTextAndNoArguments()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
@@ -25,6 +49,30 @@
 
             Assert.Equal(string.Empty, sqlQuery.CommandText);
             Assert.Equal(0, sqlQuery.Arguments.Count);
+        }
+
+        [Fact]
+        public void BuildSelectSqlQueryThrowsArgumentNullExceptionForNullObjectInfo()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => mockSqlDialect.Object.BuildSelectSqlQuery(null, 12345));
+
+            Assert.Equal("objectInfo", exception.ParamName);
+        }
+
+        [Fact]
+        public void BuildUpdateSqlQueryThrowsArgumentNullExceptionForNullObjectInfo()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => mockSqlDialect.Object.BuildUpdateSqlQuery(null, new Customer()));
+
+            Assert.Equal("objectInfo", exception.ParamName);
         }
 
         [Fact]
