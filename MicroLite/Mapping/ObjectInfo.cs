@@ -312,18 +312,18 @@ namespace MicroLite.Mapping
         /// </exception>
         public void VerifyInstanceForInsert(object instance)
         {
-            if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
-            {
-                if (this.HasDefaultIdentifierValue(instance))
-                {
-                    throw new MicroLiteException(Messages.AssignedListener_IdentifierNotSetForInsert);
-                }
-            }
-            else if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
+            if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
                 if (!this.HasDefaultIdentifierValue(instance))
                 {
                     throw new MicroLiteException(Messages.IListener_IdentifierSetForInsert);
+                }
+            }
+            else if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
+            {
+                if (this.HasDefaultIdentifierValue(instance))
+                {
+                    throw new MicroLiteException(Messages.AssignedListener_IdentifierNotSetForInsert);
                 }
             }
         }
