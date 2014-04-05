@@ -566,7 +566,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
 
-            Assert.Equal(Messages.AssignedListener_IdentifierNotSetForInsert, exception.Message);
+            Assert.Equal(Messages.ObjectInfo_IdentifierNotSetForInsert, exception.Message);
         }
 
         [Fact]
@@ -584,7 +584,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
 
-            Assert.Equal(Messages.IListener_IdentifierSetForInsert, exception.Message);
+            Assert.Equal(Messages.ObjectInfo_IdentifierSetForInsert, exception.Message);
         }
 
         /// <summary>

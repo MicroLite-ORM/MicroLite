@@ -202,7 +202,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => session.Delete(customer));
 
-            Assert.Equal(Messages.IListener_IdentifierNotSetForDelete, exception.Message);
+            Assert.Equal(Messages.Session_IdentifierNotSetForDelete, exception.Message);
         }
 
         [Fact]
@@ -962,7 +962,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => session.Update(customer));
 
-            Assert.Equal(Messages.IListener_IdentifierNotSetForUpdate, exception.Message);
+            Assert.Equal(Messages.Session_IdentifierNotSetForUpdate, exception.Message);
         }
 
         [Fact]

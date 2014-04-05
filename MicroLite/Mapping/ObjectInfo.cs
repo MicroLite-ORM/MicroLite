@@ -316,14 +316,14 @@ namespace MicroLite.Mapping
             {
                 if (!this.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.IListener_IdentifierSetForInsert);
+                    throw new MicroLiteException(Messages.ObjectInfo_IdentifierSetForInsert);
                 }
             }
             else if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
             {
                 if (this.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.AssignedListener_IdentifierNotSetForInsert);
+                    throw new MicroLiteException(Messages.ObjectInfo_IdentifierNotSetForInsert);
                 }
             }
         }

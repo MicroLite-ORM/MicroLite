@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SqlDialect_ArgumentsCountMismatch" xml:space="preserve">
+  <data name="DbDriver_ArgumentsCountMismatch" xml:space="preserve">
     <value>The number of parameters in the SQL statement and the number of specified parameter arguments should match. However '{0}' parameters used in the SQL statement and '{1}' parameter arguments were specified.</value>
   </data>
-  <data name="AssignedListener_IdentifierNotSetForInsert" xml:space="preserve">
+  <data name="ObjectInfo_IdentifierNotSetForInsert" xml:space="preserve">
     <value>The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted.</value>
   </data>
   <data name="FluentConfiguration_ConnectionNotFound" xml:space="preserve">
@@ -129,7 +129,7 @@
   <data name="FluentConfiguration_CreatingSessionFactory" xml:space="preserve">
     <value>Creating a session factory for connection named '{0}'</value>
   </data>
-  <data name="IListener_IdentifierNotSetForUpdate" xml:space="preserve">
+  <data name="Session_IdentifierNotSetForUpdate" xml:space="preserve">
     <value>The object does not have an identifier value set so it cannot be updated</value>
   </data>
   <data name="IListener_SettingIdentifierValue" xml:space="preserve">
@@ -140,9 +140,6 @@
   </data>
   <data name="ObjectInfo_CreatingInstance" xml:space="preserve">
     <value>Creating a new instance of '{0}'</value>
-  </data>
-  <data name="ObjectInfo_UnknownColumn" xml:space="preserve">
-    <value>The type '{0}' does not have a property mapped to the column name '{1}'</value>
   </data>
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
     <value>Creating the ObjectInfo for the type '{0}'</value>
@@ -219,26 +216,14 @@
   <data name="IncludeScalar_MultipleColumns" xml:space="preserve">
     <value>The scalar query should return a single row with a single column</value>
   </data>
-  <data name="IListener_IdentifierSetForInsert" xml:space="preserve">
+  <data name="ObjectInfo_IdentifierSetForInsert" xml:space="preserve">
     <value>The object already has an identifier value so it cannot be inserted</value>
   </data>
-  <data name="SqlDialect_StatementTypeNotSupported" xml:space="preserve">
-    <value>The sql dialect does not support the creation of an SqlQuery for the given statement type</value>
-  </data>
-  <data name="IListener_IdentifierNotSetForDelete" xml:space="preserve">
+  <data name="Session_IdentifierNotSetForDelete" xml:space="preserve">
     <value>The object does not have an identifier value set so it cannot be deleted</value>
   </data>
   <data name="SessionFactory_CreatingReadOnlySession" xml:space="preserve">
     <value>Creating a new read only session for connection '{0}' using '{1}'</value>
-  </data>
-  <data name="ObjectInfo_GettingPropertyValueForColumn" xml:space="preserve">
-    <value>Getting the value of '{0}.{1}' for the '{2}' column</value>
-  </data>
-  <data name="ObjectInfo_SettingPropertyValue" xml:space="preserve">
-    <value>Setting the property value of '{0}.{1}'</value>
-  </data>
-  <data name="ObjectInfo_ColumnNotMapped" xml:space="preserve">
-    <value>The column {0} is not mapped to a property on the {1} class</value>
   </data>
   <data name="ObjectInfo_TypeMismatch" xml:space="preserve">
     <value>The type of the object {0} does not match the type for the ObjectInfo {1}</value>
