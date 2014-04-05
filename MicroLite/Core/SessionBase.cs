@@ -149,7 +149,10 @@ namespace MicroLite.Core
                         Log.Debug(Messages.ClosingConnection);
                     }
 
-                    this.Connection.Close();
+                    if (this.Connection != null)
+                    {
+                        this.Connection.Close();
+                    }
                 }
 
                 if (this.Connection != null)
