@@ -67,7 +67,7 @@
   <Interface Name="MicroLite.ISessionFactory">
     <Position X="0.5" Y="0.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQgAEAAEA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAEAAAA=</HashCode>
       <FileName>ISessionFactory.cs</FileName>
     </TypeIdentifier>
   </Interface>

@@ -200,6 +200,8 @@
     <None Include="Core\_Includes.cd" />
     <None Include="Core\_Session.cd" />
     <None Include="Dialect\_Dialect.cd" />
+    <None Include="Dialect\_SqlCharacters.cd" />
+    <None Include="Driver\_Driver.cd" />
     <None Include="Listeners\_Listeners.cd" />
     <None Include="Logging\_Logging.cd" />
     <None Include="Mapping\Inflection\_Inflection.cd" />
