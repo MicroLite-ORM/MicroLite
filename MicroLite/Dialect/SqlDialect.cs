@@ -70,6 +70,11 @@ namespace MicroLite.Dialect
         /// </returns>
         public virtual SqlQuery BuildDeleteSqlQuery(IObjectInfo objectInfo, object identifier)
         {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
             string deleteCommand;
 
             if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out deleteCommand))
@@ -100,6 +105,11 @@ namespace MicroLite.Dialect
         /// </returns>
         public virtual SqlQuery BuildInsertSqlQuery(IObjectInfo objectInfo, object instance)
         {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
             string insertCommand;
 
             if (!this.insertCommandCache.TryGetValue(objectInfo.ForType, out insertCommand))
@@ -158,6 +168,11 @@ namespace MicroLite.Dialect
         /// </returns>
         public virtual SqlQuery BuildSelectSqlQuery(IObjectInfo objectInfo, object identifier)
         {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
             string selectCommand;
 
             if (!this.selectCommandCache.TryGetValue(objectInfo.ForType, out selectCommand))
@@ -188,6 +203,11 @@ namespace MicroLite.Dialect
         /// </returns>
         public virtual SqlQuery BuildUpdateSqlQuery(IObjectInfo objectInfo, object instance)
         {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
             string updateCommand;
 
             if (!this.updateCommandCache.TryGetValue(objectInfo.ForType, out updateCommand))
