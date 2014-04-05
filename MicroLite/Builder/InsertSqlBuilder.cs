@@ -46,13 +46,6 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IInsertColumn Into(IObjectInfo objectInfo)
-        {
-            this.AppendTableName(objectInfo);
-
-            return this;
-        }
-
         public IInsertColumn Into(string tableName)
         {
             this.AppendTableName(tableName);
@@ -87,6 +80,13 @@ namespace MicroLite.Builder
             }
 
             this.InnerSql.Append(")");
+
+            return this;
+        }
+
+        internal IInsertColumn Into(IObjectInfo objectInfo)
+        {
+            this.AppendTableName(objectInfo);
 
             return this;
         }

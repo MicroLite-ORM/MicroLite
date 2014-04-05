@@ -277,29 +277,6 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IWhereOrOrderBy From(IObjectInfo objectInfo)
-        {
-            if (this.InnerSql.Length == 8 && this.InnerSql[7].CompareTo('*') == 0)
-            {
-                this.InnerSql.Remove(7, 1);
-
-                for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
-                {
-                    if (i > 0)
-                    {
-                        this.InnerSql.Append(", ");
-                    }
-
-                    this.InnerSql.Append(this.SqlCharacters.EscapeSql(objectInfo.TableInfo.Columns[i].ColumnName));
-                }
-            }
-
-            this.InnerSql.Append(" FROM ");
-            this.AppendTableName(objectInfo);
-
-            return this;
-        }
-
         /// <summary>
         /// Specifies the table to perform the query against.
         /// </summary>
@@ -1263,6 +1240,29 @@ namespace MicroLite.Builder
 
             this.InnerSql.Append(" WHERE (").Append(renumberedPredicate).Append(")");
             this.addedWhere = true;
+
+            return this;
+        }
+
+        internal IWhereOrOrderBy From(IObjectInfo objectInfo)
+        {
+            if (this.InnerSql.Length == 8 && this.InnerSql[7].CompareTo('*') == 0)
+            {
+                this.InnerSql.Remove(7, 1);
+
+                for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        this.InnerSql.Append(", ");
+                    }
+
+                    this.InnerSql.Append(this.SqlCharacters.EscapeSql(objectInfo.TableInfo.Columns[i].ColumnName));
+                }
+            }
+
+            this.InnerSql.Append(" FROM ");
+            this.AppendTableName(objectInfo);
 
             return this;
         }

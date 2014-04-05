@@ -44,14 +44,6 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public ISetOrWhere Table(IObjectInfo objectInfo)
-        {
-            this.AppendTableName(objectInfo);
-            this.InnerSql.Append(" SET");
-
-            return this;
-        }
-
         public ISetOrWhere Table(string tableName)
         {
             this.AppendTableName(tableName);
@@ -75,6 +67,14 @@ namespace MicroLite.Builder
                 .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
 
             this.Arguments.Add(columnValue);
+
+            return this;
+        }
+
+        internal ISetOrWhere Table(IObjectInfo objectInfo)
+        {
+            this.AppendTableName(objectInfo);
+            this.InnerSql.Append(" SET");
 
             return this;
         }
