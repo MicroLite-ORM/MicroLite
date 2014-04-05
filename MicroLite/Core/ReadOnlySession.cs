@@ -14,11 +14,11 @@ namespace MicroLite.Core
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Globalization;
     using MicroLite.Builder;
     using MicroLite.Dialect;
     using MicroLite.Driver;
+    using MicroLite.Mapping;
 
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.
@@ -127,7 +127,9 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("identifier");
             }
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Select, typeof(T), identifier);
+            var objectInfo = ObjectInfo.For(typeof(T));
+
+            var sqlQuery = this.SqlDialect.BuildSelectSqlQuery(objectInfo, identifier);
 
             var include = this.Include.Single<T>(sqlQuery);
 

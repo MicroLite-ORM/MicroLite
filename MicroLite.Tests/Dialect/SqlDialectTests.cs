@@ -1,7 +1,6 @@
 ﻿namespace MicroLite.Tests.Dialect
 {
     using System;
-    using System.Data;
     using MicroLite.Dialect;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
@@ -13,6 +12,21 @@
     /// </summary>
     public class SqlDialectTests : UnitTest
     {
+        [Fact]
+        public void BuildSelectIdentitySqlQueryReturnsSqlQueryWithEmptyCommandTextAndNoArguments()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var sqlQuery = mockSqlDialect.Object.BuildSelectIdentitySqlQuery(ObjectInfo.For(typeof(Customer)));
+
+            Assert.Equal(string.Empty, sqlQuery.CommandText);
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+        }
+
         [Fact]
         public void CountQueryNoWhereOrOrderBy()
         {
@@ -82,30 +96,6 @@
         }
 
         [Fact]
-        public void CreateQueryForInstanceThrowsNotSupportedExceptionForStatementTypeBatch()
-        {
-            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
-            mockSqlDialect.CallBase = true;
-
-            var exception = Assert.Throws<NotSupportedException>(
-                () => mockSqlDialect.Object.CreateQuery(StatementType.Batch, new Customer()));
-
-            Assert.Equal(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
-        }
-
-        [Fact]
-        public void CreateQueryForInstanceThrowsNotSupportedExceptionForStatementTypeSelect()
-        {
-            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
-            mockSqlDialect.CallBase = true;
-
-            var exception = Assert.Throws<NotSupportedException>(
-                () => mockSqlDialect.Object.CreateQuery(StatementType.Select, new Customer()));
-
-            Assert.Equal(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
-        }
-
-        [Fact]
         public void CreateQueryForObjectDelta()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
@@ -126,49 +116,13 @@
         }
 
         [Fact]
-        public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeBatch()
-        {
-            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
-            mockSqlDialect.CallBase = true;
-
-            var exception = Assert.Throws<NotSupportedException>(
-                () => mockSqlDialect.Object.CreateQuery(StatementType.Batch, typeof(Customer), 123));
-
-            Assert.Equal(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
-        }
-
-        [Fact]
-        public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeInsert()
-        {
-            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
-            mockSqlDialect.CallBase = true;
-
-            var exception = Assert.Throws<NotSupportedException>(
-                () => mockSqlDialect.Object.CreateQuery(StatementType.Insert, typeof(Customer), 123));
-
-            Assert.Equal(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
-        }
-
-        [Fact]
-        public void CreateQueryForTypeThrowsNotSupportedExceptionForStatementTypeUpdate()
-        {
-            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
-            mockSqlDialect.CallBase = true;
-
-            var exception = Assert.Throws<NotSupportedException>(
-                () => mockSqlDialect.Object.CreateQuery(StatementType.Update, typeof(Customer), 123));
-
-            Assert.Equal(Messages.SqlDialect_StatementTypeNotSupported, exception.Message);
-        }
-
-        [Fact]
         public void CreateQueryThrowsArgumentNullExceptionForNullInstance()
         {
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
             var exception = Assert.Throws<ArgumentNullException>(
-                () => mockSqlDialect.Object.CreateQuery(StatementType.Insert, null));
+                () => mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), null));
 
             Assert.Equal("instance", exception.ParamName);
         }
@@ -186,21 +140,6 @@
         }
 
         [Fact]
-        public void CreateSelectIdentityQueryReturnsSqlQueryWithEmptyCommandTextAndNoArguments()
-        {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
-
-            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
-            mockSqlDialect.CallBase = true;
-
-            var sqlQuery = mockSqlDialect.Object.CreateSelectIdentityQuery(ObjectInfo.For(typeof(Customer)));
-
-            Assert.Equal(string.Empty, sqlQuery.CommandText);
-            Assert.Equal(0, sqlQuery.Arguments.Count);
-        }
-
-        [Fact]
         public void DeleteByIdentifierQuery()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
@@ -211,7 +150,7 @@
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
-            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Delete, typeof(Customer), identifier);
+            var sqlQuery = mockSqlDialect.Object.BuildDeleteSqlQuery(ObjectInfo.For(typeof(Customer)), identifier);
 
             Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
@@ -220,7 +159,7 @@
             // Do a second query to check that the caching doesn't cause a problem.
             identifier = 998866;
 
-            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Delete, typeof(Customer), identifier);
+            var sqlQuery2 = mockSqlDialect.Object.BuildDeleteSqlQuery(ObjectInfo.For(typeof(Customer)), identifier);
 
             Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery2.CommandText);
             Assert.Equal(1, sqlQuery2.Arguments.Count);
@@ -248,7 +187,7 @@
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
-            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
+            var sqlQuery = mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
             Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?, ?)", sqlQuery.CommandText);
             Assert.Equal(7, sqlQuery.Arguments.Count);
@@ -272,7 +211,7 @@
                 Updated = DateTime.Now,
                 Website = new Uri("http://microliteorm.wordpress.com/about")
             };
-            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
+            var sqlQuery2 = mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
             Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?, ?)", sqlQuery2.CommandText);
             Assert.Equal(7, sqlQuery2.Arguments.Count);
@@ -306,7 +245,7 @@
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
-            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
+            var sqlQuery = mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
             Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
@@ -329,7 +268,7 @@
                 Updated = DateTime.Now,
                 Website = new Uri("http://microliteorm.wordpress.com/about")
             };
-            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Insert, customer);
+            var sqlQuery2 = mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
             Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?)", sqlQuery2.CommandText);
             Assert.Equal(6, sqlQuery2.Arguments.Count);
@@ -352,7 +291,7 @@
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
-            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Select, typeof(Customer), identifier);
+            var sqlQuery = mockSqlDialect.Object.BuildSelectSqlQuery(ObjectInfo.For(typeof(Customer)), identifier);
 
             Assert.Equal("SELECT Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Updated, Website FROM Sales.Customers WHERE (Id = ?)", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
@@ -361,7 +300,7 @@
             // Do a second query to check that the caching doesn't cause a problem.
             identifier = 998866;
 
-            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Select, typeof(Customer), identifier);
+            var sqlQuery2 = mockSqlDialect.Object.BuildSelectSqlQuery(ObjectInfo.For(typeof(Customer)), identifier);
 
             Assert.Equal("SELECT Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Updated, Website FROM Sales.Customers WHERE (Id = ?)", sqlQuery2.CommandText);
             Assert.Equal(1, sqlQuery2.Arguments.Count);
@@ -407,7 +346,7 @@
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
-            var sqlQuery = mockSqlDialect.Object.CreateQuery(StatementType.Update, customer);
+            var sqlQuery = mockSqlDialect.Object.BuildUpdateSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
             Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?, DateOfBirth = ?, Name = ?, CustomerStatusId = ?, Updated = ?, Website = ? WHERE Id = ?", sqlQuery.CommandText);
             Assert.Equal(7, sqlQuery.Arguments.Count);
@@ -431,7 +370,8 @@
                 Updated = DateTime.Now,
                 Website = new Uri("http://microliteorm.wordpress.com/about")
             };
-            var sqlQuery2 = mockSqlDialect.Object.CreateQuery(StatementType.Update, customer);
+
+            var sqlQuery2 = mockSqlDialect.Object.BuildUpdateSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
             Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?, DateOfBirth = ?, Name = ?, CustomerStatusId = ?, Updated = ?, Website = ? WHERE Id = ?", sqlQuery2.CommandText);
             Assert.Equal(7, sqlQuery2.Arguments.Count);

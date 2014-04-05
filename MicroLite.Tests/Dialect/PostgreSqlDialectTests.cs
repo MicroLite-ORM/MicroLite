@@ -1,7 +1,6 @@
 ﻿namespace MicroLite.Tests.Dialect
 {
     using System;
-    using System.Data;
     using MicroLite.Dialect;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
@@ -13,11 +12,11 @@
     public class PostgreSqlDialectTests : UnitTest
     {
         [Fact]
-        public void CreateSelectIdentityQuery()
+        public void BuildSelectIdentitySqlQuery()
         {
             var sqlDialect = new PostgreSqlDialect();
 
-            var sqlQuery = sqlDialect.CreateSelectIdentityQuery(ObjectInfo.For(typeof(Customer)));
+            var sqlQuery = sqlDialect.BuildSelectIdentitySqlQuery(ObjectInfo.For(typeof(Customer)));
 
             Assert.Equal("SELECT lastval()", sqlQuery.CommandText);
             Assert.Equal(0, sqlQuery.Arguments.Count);
@@ -43,7 +42,7 @@
 
             var sqlDialect = new PostgreSqlDialect();
 
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
+            var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
             Assert.Equal("INSERT INTO \"Sales\".\"Customers\" (\"Created\", \"CreditLimit\", \"DateOfBirth\", \"Id\", \"Name\", \"CustomerStatusId\", \"Website\") VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6)", sqlQuery.CommandText);
             Assert.Equal(7, sqlQuery.Arguments.Count);
@@ -76,7 +75,7 @@
 
             var sqlDialect = new PostgreSqlDialect();
 
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
+            var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
             Assert.Equal("INSERT INTO \"Sales\".\"Customers\" (\"Created\", \"CreditLimit\", \"DateOfBirth\", \"Name\", \"CustomerStatusId\", \"Website\") VALUES (@p0, @p1, @p2, @p3, @p4, @p5)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);

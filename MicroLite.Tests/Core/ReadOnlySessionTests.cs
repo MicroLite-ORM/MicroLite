@@ -433,7 +433,7 @@
             var mockConnection = new Mock<IDbConnection>();
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), identifier)).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), identifier)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
@@ -470,7 +470,7 @@
             var mockConnection = new Mock<IDbConnection>();
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), identifier)).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), identifier)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
@@ -649,7 +649,7 @@
             public WhenExecutingMultipleQueriesAndTheSqlDialectUsedDoesNotSupportBatching()
             {
                 var mockSqlDialect = new Mock<ISqlDialect>();
-                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), It.IsAny<object>())).Returns(new SqlQuery(""));
+                mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), It.IsAny<object>())).Returns(new SqlQuery(""));
 
                 mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(false);
@@ -705,7 +705,7 @@
                 mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
                 var mockSqlDialect = new Mock<ISqlDialect>();
-                mockSqlDialect.Setup(x => x.CreateQuery(StatementType.Select, typeof(Customer), It.IsAny<object>())).Returns(new SqlQuery(""));
+                mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), It.IsAny<object>())).Returns(new SqlQuery(""));
 
                 mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);

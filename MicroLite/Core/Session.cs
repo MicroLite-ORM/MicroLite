@@ -14,7 +14,6 @@ namespace MicroLite.Core
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using MicroLite.Dialect;
     using MicroLite.Driver;
     using MicroLite.Listeners;
@@ -63,14 +62,14 @@ namespace MicroLite.Core
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.HasDefaultIdentifierValue(instance))
+            var identifier = objectInfo.GetIdentifierValue(instance);
+
+            if (objectInfo.IsDefaultIdentifier(identifier))
             {
                 throw new MicroLiteException(Messages.IListener_IdentifierNotSetForDelete);
             }
 
-            var identifier = objectInfo.GetIdentifierValue(instance);
-
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, objectInfo.ForType, identifier);
+            var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
 
             var rowsAffected = this.Execute(sqlQuery);
 
@@ -96,7 +95,9 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("identifier");
             }
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, type, identifier);
+            var objectInfo = ObjectInfo.For(type);
+
+            var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
 
             var rowsAffected = this.Execute(sqlQuery);
 
@@ -188,8 +189,8 @@ namespace MicroLite.Core
             var objectInfo = ObjectInfo.For(instance.GetType());
             objectInfo.VerifyInstanceForInsert(instance);
 
-            var insertSqlQuery = this.SqlDialect.CreateQuery(StatementType.Insert, instance);
-            var selectIdSqlQuery = this.SqlDialect.CreateSelectIdentityQuery(objectInfo);
+            var insertSqlQuery = this.SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
+            var selectIdSqlQuery = this.SqlDialect.BuildSelectIdentitySqlQuery(objectInfo);
 
             object identifier = null;
 
@@ -250,7 +251,7 @@ namespace MicroLite.Core
                 throw new MicroLiteException(Messages.IListener_IdentifierNotSetForUpdate);
             }
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Update, instance);
+            var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectInfo, instance);
 
             var rowsAffected = this.Execute(sqlQuery);
 
