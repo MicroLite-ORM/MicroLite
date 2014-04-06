@@ -529,7 +529,8 @@ warnif count > 0 from t in JustMyCode.Types where
   t.NbChildren ==0 && 
  !t.IsSealed && 
  !t.NameLike("Exception") &&
- !t.IsStatic 
+ !t.IsStatic &&
+ !t.IsAbstract
   // && !t.IsPublic <-- You might want to add this condition 
   //                    if you are developing a framework
   //                    with classes that are intended to be 
