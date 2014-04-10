@@ -88,7 +88,6 @@ namespace MicroLite.Driver
         /// </summary>
         /// <param name="connectionScope">The connection scope of the connection.</param>
         /// <returns>The IDbConnection for the database.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "A new connection should be returned every time.")]
         IDbConnection GetConnection(ConnectionScope connectionScope);
     }
 }
