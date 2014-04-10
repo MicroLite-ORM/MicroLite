@@ -638,7 +638,7 @@
                 var exception = Assert.Throws<MicroLiteException>(
                     () => session.Paged<Customer>(new SqlQuery(""), PagingOptions.None));
 
-                Assert.Equal(Messages.Session_PagingOptionsMustNotBeNone, exception.Message);
+                Assert.Equal(ExceptionMessages.Session_PagingOptionsMustNotBeNone, exception.Message);
             }
         }
 

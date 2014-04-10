@@ -73,6 +73,11 @@
     <Compile Include="Driver\MsSqlDbDriver.cs" />
     <Compile Include="Driver\DbDriver.cs" />
     <Compile Include="Driver\MySqlDbDriver.cs" />
+    <Compile Include="ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
     <Compile Include="Mapping\DelegateFactory.cs" />
     <Compile Include="Core\ISessionBase.cs" />
     <Compile Include="Core\Transaction.cs" />
@@ -152,10 +157,10 @@
     </Compile>
     <Compile Include="Infrastructure\ISymmetricAlgorithmProvider.cs" />
     <Compile Include="TypeConverters\TypeConverter.cs" />
-    <Compile Include="Messages.Designer.cs">
+    <Compile Include="LogMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Messages.resx</DependentUpon>
+      <DependentUpon>LogMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="PagingOptions.cs" />
     <Compile Include="Builder\IAndOrOrderBy.cs" />
@@ -212,9 +217,13 @@
     <None Include="_Session.cd" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Messages.resx">
+    <EmbeddedResource Include="ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LogMessages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

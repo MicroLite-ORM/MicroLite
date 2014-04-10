@@ -31,12 +31,12 @@ namespace MicroLite.Infrastructure
 
             if (string.IsNullOrEmpty(key))
             {
-                throw new MicroLiteException(Messages.AppSettingSymmetricAlgorithmProvider_MissingKey);
+                throw new MicroLiteException(ExceptionMessages.AppSettingSymmetricAlgorithmProvider_MissingKey);
             }
 
             if (string.IsNullOrEmpty(algorithm))
             {
-                throw new MicroLiteException(Messages.AppSettingSymmetricAlgorithmProvider_MissingAlgorithm);
+                throw new MicroLiteException(ExceptionMessages.AppSettingSymmetricAlgorithmProvider_MissingAlgorithm);
             }
 
             this.Configure(algorithm, Encoding.ASCII.GetBytes(key));

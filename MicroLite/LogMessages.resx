@@ -117,29 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DbDriver_ArgumentsCountMismatch" xml:space="preserve">
-    <value>The number of parameters in the SQL statement and the number of specified parameter arguments should match. However '{0}' parameters used in the SQL statement and '{1}' parameter arguments were specified.</value>
-  </data>
-  <data name="ObjectInfo_IdentifierNotSetForInsert" xml:space="preserve">
-    <value>The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted.</value>
-  </data>
-  <data name="FluentConfiguration_ConnectionNotFound" xml:space="preserve">
-    <value>No connection was found in the app.config with the name '{0}'</value>
-  </data>
   <data name="FluentConfiguration_CreatingSessionFactory" xml:space="preserve">
-    <value>Creating a session factory for connection named '{0}'</value>
-  </data>
-  <data name="Session_IdentifierNotSetForUpdate" xml:space="preserve">
-    <value>The object does not have an identifier value set so it cannot be updated</value>
+    <value>Creating a session factory for the connection named '{0}' using the '{1}' and '{2}'</value>
   </data>
   <data name="IListener_SettingIdentifierValue" xml:space="preserve">
     <value>Setting the identifier value for an instance of the type '{0}' to '{1}'</value>
-  </data>
-  <data name="PagingOptions_ResultsPerPageMustBeAtLeast1" xml:space="preserve">
-    <value>There must be at least 1 result per page</value>
-  </data>
-  <data name="ObjectInfo_CreatingInstance" xml:space="preserve">
-    <value>Creating a new instance of '{0}'</value>
   </data>
   <data name="ObjectInfo_CreatingObjectInfo" xml:space="preserve">
     <value>Creating the ObjectInfo for the type '{0}'</value>
@@ -153,11 +135,8 @@
   <data name="ObjectInfo_RetrievingObjectInfo" xml:space="preserve">
     <value>Retrieving the ObjectInfo for '{0}'</value>
   </data>
-  <data name="PagingOptions_PagesMustBeAtleastOne" xml:space="preserve">
-    <value>The first page which can be requested is page 1</value>
-  </data>
   <data name="SessionFactory_CreatingSession" xml:space="preserve">
-    <value>Creating a new session for connection '{0}' using '{1}'</value>
+    <value>Creating a new session for connection named '{0}'</value>
   </data>
   <data name="ClosingConnection" xml:space="preserve">
     <value>Closing the database connection</value>
@@ -167,12 +146,6 @@
   </data>
   <data name="AttributeMappingConvention_IgnoringProperty" xml:space="preserve">
     <value>The property '{0}.{1}' will not be mapped by MicroLite as it has no ColumnAttribute</value>
-  </data>
-  <data name="AttributeMappingConvention_NoTableAttribute" xml:space="preserve">
-    <value>The type '{0}' cannot be used by MicroLite as is not decorated with a TableAttribute</value>
-  </data>
-  <data name="TableInfo_NoIdentifierColumn" xml:space="preserve">
-    <value>No column has been mapped as the identifier for the table '{0}.{1}'</value>
   </data>
   <data name="Transaction_Committing" xml:space="preserve">
     <value>The Transaction is committing changes</value>
@@ -186,20 +159,8 @@
   <data name="Transaction_RollingBack" xml:space="preserve">
     <value>The Transaction is rolling back changes</value>
   </data>
-  <data name="ObjectInfo_TypeMustBeClass" xml:space="preserve">
-    <value>The type '{0}' is not a class and therefore cannot be used by the MicroLite ORM Framework</value>
-  </data>
-  <data name="ObjectInfo_TypeMustHaveDefaultConstructor" xml:space="preserve">
-    <value>The type '{0}' has no default (parameterless) constructor and therefore cannot be used by the MicroLite ORM Framework</value>
-  </data>
-  <data name="ObjectInfo_TypeMustNotBeAbstract" xml:space="preserve">
-    <value>The type '{0}' is abstract and therefore cannot be used by the MicroLite ORM Framework</value>
-  </data>
-  <data name="TableInfo_ColumnMappedMultipleTimes" xml:space="preserve">
-    <value>The column '{0}' has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute</value>
-  </data>
   <data name="ConfigureExtensions_UsingMappingConvention" xml:space="preserve">
-    <value>Using mapping convention '{0}'</value>
+    <value>Using '{0}' as the mapping convention.</value>
   </data>
   <data name="Transaction_Committed" xml:space="preserve">
     <value>The Transaction has successfully committed changes</value>
@@ -207,62 +168,20 @@
   <data name="Transaction_RolledBack" xml:space="preserve">
     <value>The Transaction has rolled back changes</value>
   </data>
-  <data name="Transaction_AlreadyCompleted" xml:space="preserve">
-    <value>The Transaction has been completed</value>
-  </data>
-  <data name="IncludeSingle_SingleResultExpected" xml:space="preserve">
-    <value>There are multiple records returned in the results list, the single query should return a single row only</value>
-  </data>
-  <data name="IncludeScalar_MultipleColumns" xml:space="preserve">
-    <value>The scalar query should return a single row with a single column</value>
-  </data>
-  <data name="ObjectInfo_IdentifierSetForInsert" xml:space="preserve">
-    <value>The object already has an identifier value so it cannot be inserted</value>
-  </data>
-  <data name="Session_IdentifierNotSetForDelete" xml:space="preserve">
-    <value>The object does not have an identifier value set so it cannot be deleted</value>
-  </data>
   <data name="SessionFactory_CreatingReadOnlySession" xml:space="preserve">
-    <value>Creating a new read only session for connection '{0}' using '{1}'</value>
-  </data>
-  <data name="ObjectInfo_TypeMismatch" xml:space="preserve">
-    <value>The type of the object {0} does not match the type for the ObjectInfo {1}</value>
-  </data>
-  <data name="PagingOptions_SkipMustBeZeroOrAbove" xml:space="preserve">
-    <value>It is not possible to skip less than 0 results</value>
-  </data>
-  <data name="PagingOptions_TakeMustBeZeroOrAbove" xml:space="preserve">
-    <value>At least 1 result must be returned</value>
+    <value>Creating a new read only session for connection named '{0}'</value>
   </data>
   <data name="Transaction_BeginTransactionWithIsolationLevel" xml:space="preserve">
     <value>Beginning a new Transaction with the IsolationLevel '{0}'.</value>
   </data>
-  <data name="Session_PagingOptionsMustNotBeNone" xml:space="preserve">
-    <value>The paging options must contain a count and offset, use the PagingOptions.ForPage or PagingOptions.SkipTake methods to specify the values</value>
-  </data>
   <data name="Transaction_RollingBackFailedCommit" xml:space="preserve">
     <value>Transaction rolling back changes from failed commit</value>
-  </data>
-  <data name="AppSettingSymmetricAlgorithmProvider_MissingAlgorithm" xml:space="preserve">
-    <value>The Encryption algorithm is missing, please add the following value to app.settings: &lt;add key="MicroLite.DbEncryptedString.SymmetricAlgorithm" value="AesManaged" /&gt; (see http://msdn.microsoft.com/en-us/library/System.Security.Cryptography.SymmetricAlgorithm(v=vs.110).aspx for the fully supported list of values)</value>
-  </data>
-  <data name="AppSettingSymmetricAlgorithmProvider_MissingKey" xml:space="preserve">
-    <value>The Encryption key is missing, please add the following value to app.settings: &lt;add key="MicroLite.DbEncryptedString.EncryptionKey" value="replace-with-your-encryption-key" /&gt;</value>
-  </data>
-  <data name="DbEncryptedStringTypeConverter_CipherTextInvalid" xml:space="preserve">
-    <value>The cipher text is invalid, it should contain 2 parts separated by an '@'</value>
-  </data>
-  <data name="ExpandoObjectInfo_NotSupportedReason" xml:space="preserve">
-    <value>The 'dynamic' type can only be used for queries where an SqlQuery is supplied, it cannot be used for select by identifier, insert, update or delete.</value>
   </data>
   <data name="ConventionMappingConvention_IgnoringProperty" xml:space="preserve">
     <value>The property '{0}.{1}' will not be mapped by MicroLite as the convention settings have specified it is ignored</value>
   </data>
   <data name="MappingConvention_PropertyNotGetAndSet" xml:space="preserve">
     <value>The property '{0}.{1}' will not be mapped by MicroLite as it does not have a public getter and setter.</value>
-  </data>
-  <data name="TableInfo_MultipleIdentifierColumns" xml:space="preserve">
-    <value>Multiple columns have been mapped as the identifier for the table '{0}.{1}'</value>
   </data>
   <data name="Session_ExecutingQueries" xml:space="preserve">
     <value>Executing '{0}' queries</value>

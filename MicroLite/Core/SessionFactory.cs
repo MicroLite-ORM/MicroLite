@@ -62,7 +62,7 @@ namespace MicroLite.Core
         {
             if (log.IsDebug)
             {
-                log.Debug(Messages.SessionFactory_CreatingReadOnlySession, this.connectionName, this.sqlDialect.GetType().Name);
+                log.Debug(LogMessages.SessionFactory_CreatingReadOnlySession, this.connectionName);
             }
 
             return new ReadOnlySession(connectionScope, this.sqlDialect, this.dbDriver);
@@ -79,7 +79,7 @@ namespace MicroLite.Core
         {
             if (log.IsDebug)
             {
-                log.Debug(Messages.SessionFactory_CreatingSession, this.connectionName, this.sqlDialect.GetType().Name);
+                log.Debug(LogMessages.SessionFactory_CreatingSession, this.connectionName);
             }
 
             return new Session(connectionScope, this.sqlDialect, this.dbDriver, Listener.Listeners);

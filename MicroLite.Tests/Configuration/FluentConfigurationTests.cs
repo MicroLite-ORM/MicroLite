@@ -112,7 +112,7 @@
                 var exception = Assert.Throws<ConfigurationException>(
                     () => fluentConfiguration.ForConnection("TestDB", new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
 
-                Assert.Equal(Messages.FluentConfiguration_ConnectionNotFound.FormatWith("TestDB"), exception.Message);
+                Assert.Equal(ExceptionMessages.FluentConfiguration_ConnectionNotFound.FormatWith("TestDB"), exception.Message);
             }
         }
 

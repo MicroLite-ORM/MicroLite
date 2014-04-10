@@ -39,7 +39,7 @@ namespace MicroLite.Configuration
 
             if (this.log.IsInfo)
             {
-                this.log.Info(Messages.ConfigureExtensions_UsingMappingConvention, mappingConvention.GetType().FullName);
+                this.log.Info(LogMessages.ConfigureExtensions_UsingMappingConvention, mappingConvention.GetType().FullName);
             }
 
             ObjectInfo.MappingConvention = mappingConvention;

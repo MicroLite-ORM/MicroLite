@@ -49,7 +49,7 @@
                 var exception = Assert.Throws<MicroLiteException>(
                     () => typeConverter.ConvertFromDbValue("foo", typeof(DbEncryptedString)));
 
-                Assert.Equal(Messages.DbEncryptedStringTypeConverter_CipherTextInvalid, exception.Message);
+                Assert.Equal(ExceptionMessages.DbEncryptedStringTypeConverter_CipherTextInvalid, exception.Message);
             }
         }
 
@@ -134,7 +134,7 @@
                 var exception = Assert.Throws<MicroLiteException>(
                     () => typeConverter.ConvertFromDbValue(mockReader.Object, 0, typeof(DbEncryptedString)));
 
-                Assert.Equal(Messages.DbEncryptedStringTypeConverter_CipherTextInvalid, exception.Message);
+                Assert.Equal(ExceptionMessages.DbEncryptedStringTypeConverter_CipherTextInvalid, exception.Message);
             }
         }
 

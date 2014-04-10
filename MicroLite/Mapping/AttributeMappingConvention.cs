@@ -37,12 +37,7 @@ namespace MicroLite.Mapping
 
             if (tableAttribute == null)
             {
-                if (this.log.IsFatal)
-                {
-                    this.log.Fatal(Messages.AttributeMappingConvention_NoTableAttribute, forType.FullName);
-                }
-
-                throw new MappingException(Messages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName));
+                throw new MappingException(ExceptionMessages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName));
             }
 
             var identifierStrategy = IdentifierStrategy.DbGenerated;
@@ -52,7 +47,7 @@ namespace MicroLite.Mapping
 
             if (this.log.IsDebug)
             {
-                this.log.Debug(Messages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
+                this.log.Debug(LogMessages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             }
 
             return new ObjectInfo(forType, tableInfo);
@@ -69,7 +64,7 @@ namespace MicroLite.Mapping
                 {
                     if (this.log.IsDebug)
                     {
-                        this.log.Debug(Messages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                        this.log.Debug(LogMessages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
                     }
 
                     continue;
@@ -81,7 +76,7 @@ namespace MicroLite.Mapping
                 {
                     if (this.log.IsDebug)
                     {
-                        this.log.Debug(Messages.AttributeMappingConvention_IgnoringProperty, forType.FullName, property.Name);
+                        this.log.Debug(LogMessages.AttributeMappingConvention_IgnoringProperty, forType.FullName, property.Name);
                     }
 
                     continue;
@@ -103,7 +98,7 @@ namespace MicroLite.Mapping
 
                 if (this.log.IsDebug)
                 {
-                    this.log.Debug(Messages.MappingConvention_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                    this.log.Debug(LogMessages.MappingConvention_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
                 }
 
                 columns.Add(columnInfo);

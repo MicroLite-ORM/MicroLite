@@ -144,7 +144,7 @@ namespace MicroLite.TypeConverters
 
             if (index == -1)
             {
-                throw new MicroLiteException(Messages.DbEncryptedStringTypeConverter_CipherTextInvalid);
+                throw new MicroLiteException(ExceptionMessages.DbEncryptedStringTypeConverter_CipherTextInvalid);
             }
 
             byte[] cipherBytes = Convert.FromBase64String(cipherText.Substring(0, index));

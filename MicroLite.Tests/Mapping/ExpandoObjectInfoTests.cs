@@ -75,7 +75,7 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => objectInfo.GetColumnInfo("Name"));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
@@ -86,7 +86,7 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => objectInfo.GetIdentifierValue(new ExpandoObject()));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
@@ -97,7 +97,7 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => objectInfo.GetInsertValues(new ExpandoObject()));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
@@ -108,7 +108,7 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => objectInfo.GetUpdateValues(new ExpandoObject()));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
@@ -119,7 +119,7 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => objectInfo.HasDefaultIdentifierValue(new ExpandoObject()));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
@@ -130,7 +130,7 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => objectInfo.IsDefaultIdentifier(0));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
@@ -141,7 +141,7 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => objectInfo.SetIdentifierValue(new ExpandoObject(), 1));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
@@ -152,7 +152,7 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => objectInfo.TableInfo);
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
@@ -163,7 +163,7 @@
             var exception = Assert.Throws<NotSupportedException>(
                 () => objectInfo.VerifyInstanceForInsert(new ExpandoObject()));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
     }
 }

@@ -268,7 +268,7 @@
             {
                 var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object));
 
-                Assert.Equal(Messages.IncludeScalar_MultipleColumns, exception.Message);
+                Assert.Equal(ExceptionMessages.IncludeScalar_MultipleColumns, exception.Message);
             }
         }
 
@@ -289,7 +289,7 @@
             {
                 var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object));
 
-                Assert.Equal(Messages.IncludeSingle_SingleResultExpected, exception.Message);
+                Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.Message);
             }
         }
     }

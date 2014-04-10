@@ -48,7 +48,7 @@ namespace MicroLite.Listeners
             {
                 if (log.IsDebug)
                 {
-                    log.Debug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
+                    log.Debug(LogMessages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
                 }
 
                 var propertyType = objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType;

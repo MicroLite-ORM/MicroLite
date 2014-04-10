@@ -40,7 +40,7 @@ namespace MicroLite.Core
             {
                 if (reader.FieldCount != 1)
                 {
-                    throw new MicroLiteException(Messages.IncludeScalar_MultipleColumns);
+                    throw new MicroLiteException(ExceptionMessages.IncludeScalar_MultipleColumns);
                 }
 
                 var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
@@ -49,7 +49,7 @@ namespace MicroLite.Core
 
                 if (reader.Read())
                 {
-                    throw new MicroLiteException(Messages.IncludeSingle_SingleResultExpected);
+                    throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }
             }
         }

@@ -174,7 +174,7 @@
                 () => ObjectInfo.For(typeof(AbstractCustomer)));
 
             Assert.Equal(
-                Messages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(typeof(AbstractCustomer).Name),
+                ExceptionMessages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(typeof(AbstractCustomer).Name),
                 exception.Message);
         }
 
@@ -185,7 +185,7 @@
                 () => ObjectInfo.For(typeof(CustomerWithNoDefaultConstructor)));
 
             Assert.Equal(
-                Messages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(typeof(CustomerWithNoDefaultConstructor).Name),
+                ExceptionMessages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(typeof(CustomerWithNoDefaultConstructor).Name),
                 exception.Message);
         }
 
@@ -196,7 +196,7 @@
                 () => ObjectInfo.For(typeof(CustomerStruct)));
 
             Assert.Equal(
-                Messages.ObjectInfo_TypeMustBeClass.FormatWith(typeof(CustomerStruct).Name),
+                ExceptionMessages.ObjectInfo_TypeMustBeClass.FormatWith(typeof(CustomerStruct).Name),
                 exception.Message);
         }
 
@@ -263,7 +263,7 @@
                 () => objectInfo.GetIdentifierValue(new CustomerWithGuidIdentifier()));
 
             Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                string.Format(ExceptionMessages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
                 exception.Message);
         }
 
@@ -339,7 +339,7 @@
                 () => objectInfo.GetInsertValues(new CustomerWithGuidIdentifier()));
 
             Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                string.Format(ExceptionMessages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
                 exception.Message);
         }
 
@@ -416,7 +416,7 @@
                 () => objectInfo.GetUpdateValues(new CustomerWithGuidIdentifier()));
 
             Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                string.Format(ExceptionMessages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
                 exception.Message);
         }
 
@@ -442,7 +442,7 @@
                 () => objectInfo.HasDefaultIdentifierValue(instance));
 
             Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                string.Format(ExceptionMessages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
                 exception.Message);
         }
 
@@ -577,7 +577,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
 
-            Assert.Equal(Messages.ObjectInfo_IdentifierNotSetForInsert, exception.Message);
+            Assert.Equal(ExceptionMessages.ObjectInfo_IdentifierNotSetForInsert, exception.Message);
         }
 
         [Fact]
@@ -595,7 +595,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
 
-            Assert.Equal(Messages.ObjectInfo_IdentifierSetForInsert, exception.Message);
+            Assert.Equal(ExceptionMessages.ObjectInfo_IdentifierSetForInsert, exception.Message);
         }
 
         /// <summary>

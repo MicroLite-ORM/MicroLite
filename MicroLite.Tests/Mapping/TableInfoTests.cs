@@ -67,7 +67,7 @@
             var exception = Assert.Throws<MappingException>(
                 () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
-            Assert.Equal(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith("Name"), exception.Message);
+            Assert.Equal(ExceptionMessages.TableInfo_ColumnMappedMultipleTimes.FormatWith("Name"), exception.Message);
         }
 
         [Fact]
@@ -81,7 +81,7 @@
             var exception = Assert.Throws<MappingException>(
                 () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
-            Assert.Equal(Messages.TableInfo_NoIdentifierColumn.FormatWith("Sales", "Customers"), exception.Message);
+            Assert.Equal(ExceptionMessages.TableInfo_NoIdentifierColumn.FormatWith("Sales", "Customers"), exception.Message);
         }
 
         [Fact]
@@ -96,7 +96,7 @@
             var exception = Assert.Throws<MappingException>(
                 () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
-            Assert.Equal(Messages.TableInfo_MultipleIdentifierColumns.FormatWith("Sales", "Customers"), exception.Message);
+            Assert.Equal(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith("Sales", "Customers"), exception.Message);
         }
     }
 }

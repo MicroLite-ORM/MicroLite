@@ -66,7 +66,7 @@ namespace MicroLite.Core
 
             if (objectInfo.IsDefaultIdentifier(identifier))
             {
-                throw new MicroLiteException(Messages.Session_IdentifierNotSetForDelete);
+                throw new MicroLiteException(ExceptionMessages.Session_IdentifierNotSetForDelete);
             }
 
             var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
@@ -131,7 +131,6 @@ namespace MicroLite.Core
             }
             catch (Exception e)
             {
-                Log.Error(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }
@@ -167,7 +166,6 @@ namespace MicroLite.Core
             }
             catch (Exception e)
             {
-                Log.Error(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }
@@ -248,7 +246,7 @@ namespace MicroLite.Core
 
             if (objectInfo.HasDefaultIdentifierValue(instance))
             {
-                throw new MicroLiteException(Messages.Session_IdentifierNotSetForUpdate);
+                throw new MicroLiteException(ExceptionMessages.Session_IdentifierNotSetForUpdate);
             }
 
             var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectInfo, instance);

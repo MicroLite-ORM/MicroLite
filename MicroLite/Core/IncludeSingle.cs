@@ -56,7 +56,7 @@ namespace MicroLite.Core
 
                 if (reader.Read())
                 {
-                    throw new MicroLiteException(Messages.IncludeSingle_SingleResultExpected);
+                    throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }
             }
         }

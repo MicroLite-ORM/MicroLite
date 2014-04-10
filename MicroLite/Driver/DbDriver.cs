@@ -124,7 +124,7 @@ namespace MicroLite.Driver
 
             if (parameterNames.Count != sqlQuery.Arguments.Count)
             {
-                throw new MicroLiteException(Messages.DbDriver_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
+                throw new MicroLiteException(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
             }
 
             var command = this.DbProviderFactory.CreateCommand();
@@ -236,7 +236,7 @@ namespace MicroLite.Driver
             {
                 if (log.IsDebug)
                 {
-                    log.Debug(Messages.OpeningConnection);
+                    log.Debug(LogMessages.OpeningConnection);
                 }
 
                 connection.Open();

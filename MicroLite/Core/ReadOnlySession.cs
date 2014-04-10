@@ -78,7 +78,7 @@ namespace MicroLite.Core
         {
             if (Log.IsDebug)
             {
-                Log.Debug(Messages.Session_ExecutingQueries, this.queries.Count.ToString(CultureInfo.InvariantCulture));
+                Log.Debug(LogMessages.Session_ExecutingQueries, this.queries.Count.ToString(CultureInfo.InvariantCulture));
             }
 
             try
@@ -99,7 +99,6 @@ namespace MicroLite.Core
             }
             catch (Exception e)
             {
-                Log.Error(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
             finally
@@ -199,7 +198,7 @@ namespace MicroLite.Core
 
             if (pagingOptions == PagingOptions.None)
             {
-                throw new MicroLiteException(Messages.Session_PagingOptionsMustNotBeNone);
+                throw new MicroLiteException(ExceptionMessages.Session_PagingOptionsMustNotBeNone);
             }
 
             var countSqlQuery = this.SqlDialect.CountQuery(sqlQuery);

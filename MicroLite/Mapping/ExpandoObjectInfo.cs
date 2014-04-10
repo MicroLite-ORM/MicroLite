@@ -18,13 +18,11 @@ namespace MicroLite.Mapping
     using System.Collections.Generic;
     using System.Data;
     using System.Dynamic;
-    using MicroLite.Logging;
 
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     internal sealed class ExpandoObjectInfo : IObjectInfo
     {
         private static readonly Type forType = typeof(ExpandoObject);
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
 
         public Type ForType
         {
@@ -38,7 +36,7 @@ namespace MicroLite.Mapping
         {
             get
             {
-                throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+                throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
             }
         }
 
@@ -47,11 +45,6 @@ namespace MicroLite.Mapping
             if (reader == null)
             {
                 throw new ArgumentNullException("reader");
-            }
-
-            if (log.IsDebug)
-            {
-                log.Debug(Messages.ObjectInfo_CreatingInstance, this.ForType.FullName);
             }
 
             var instance = new ExpandoObject();
@@ -70,42 +63,42 @@ namespace MicroLite.Mapping
 
         public ColumnInfo GetColumnInfo(string columnName)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         public object GetIdentifierValue(object instance)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         public object[] GetInsertValues(object instance)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         public object[] GetUpdateValues(object instance)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         public bool HasDefaultIdentifierValue(object instance)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         public bool IsDefaultIdentifier(object identifier)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         public void SetIdentifierValue(object instance, object identifier)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         public void VerifyInstanceForInsert(object instance)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
     }
 

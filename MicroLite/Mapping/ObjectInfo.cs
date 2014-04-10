@@ -133,6 +133,11 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("forType");
             }
 
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
+            }
+
             IObjectInfo objectInfo;
 
             if (!objectInfos.TryGetValue(forType, out objectInfo))
@@ -141,7 +146,7 @@ namespace MicroLite.Mapping
 
                 if (log.IsDebug)
                 {
-                    log.Debug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
+                    log.Debug(LogMessages.ObjectInfo_CreatingObjectInfo, forType.FullName);
                 }
 
                 objectInfo = MappingConvention.CreateObjectInfo(forType);
@@ -150,11 +155,6 @@ namespace MicroLite.Mapping
                 newObjectInfos[forType] = objectInfo;
 
                 objectInfos = newObjectInfos;
-            }
-
-            if (log.IsDebug)
-            {
-                log.Debug(Messages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
             }
 
             return objectInfo;
@@ -171,11 +171,6 @@ namespace MicroLite.Mapping
             if (reader == null)
             {
                 throw new ArgumentNullException("reader");
-            }
-
-            if (log.IsDebug)
-            {
-                log.Debug(Messages.ObjectInfo_CreatingInstance, this.forType.FullName);
             }
 
             var instance = this.instanceFactory(reader);
@@ -316,14 +311,14 @@ namespace MicroLite.Mapping
             {
                 if (!this.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.ObjectInfo_IdentifierSetForInsert);
+                    throw new MicroLiteException(ExceptionMessages.ObjectInfo_IdentifierSetForInsert);
                 }
             }
             else if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
             {
                 if (this.HasDefaultIdentifierValue(instance))
                 {
-                    throw new MicroLiteException(Messages.ObjectInfo_IdentifierNotSetForInsert);
+                    throw new MicroLiteException(ExceptionMessages.ObjectInfo_IdentifierNotSetForInsert);
                 }
             }
         }
@@ -349,25 +344,17 @@ namespace MicroLite.Mapping
 
         private static void VerifyType(Type forType)
         {
-            string message = null;
-
             if (!forType.IsClass)
             {
-                message = Messages.ObjectInfo_TypeMustBeClass.FormatWith(forType.Name);
+                throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustBeClass.FormatWith(forType.Name));
             }
             else if (forType.IsAbstract)
             {
-                message = Messages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(forType.Name);
+                throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(forType.Name));
             }
             else if (forType.GetConstructor(Type.EmptyTypes) == null)
             {
-                message = Messages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(forType.Name);
-            }
-
-            if (message != null)
-            {
-                log.Fatal(message);
-                throw new MappingException(message);
+                throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(forType.Name));
             }
         }
 
@@ -380,9 +367,7 @@ namespace MicroLite.Mapping
 
             if (instance.GetType() != this.ForType)
             {
-                var mesage = Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name);
-                log.Error(mesage);
-                throw new MappingException(mesage);
+                throw new MappingException(ExceptionMessages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
             }
         }
     }

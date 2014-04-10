@@ -49,7 +49,7 @@ namespace MicroLite.Mapping
 
             if (this.log.IsDebug)
             {
-                this.log.Debug(Messages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
+                this.log.Debug(LogMessages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             }
 
             return new ObjectInfo(forType, tableInfo);
@@ -66,7 +66,7 @@ namespace MicroLite.Mapping
                 {
                     if (this.log.IsDebug)
                     {
-                        this.log.Debug(Messages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                        this.log.Debug(LogMessages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
                     }
 
                     continue;
@@ -76,7 +76,7 @@ namespace MicroLite.Mapping
                 {
                     if (this.log.IsDebug)
                     {
-                        this.log.Debug(Messages.ConventionMappingConvention_IgnoringProperty, forType.Name, property.Name);
+                        this.log.Debug(LogMessages.ConventionMappingConvention_IgnoringProperty, forType.Name, property.Name);
                     }
 
                     continue;
@@ -93,7 +93,7 @@ namespace MicroLite.Mapping
 
                 if (this.log.IsDebug)
                 {
-                    this.log.Debug(Messages.MappingConvention_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                    this.log.Debug(LogMessages.MappingConvention_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
                 }
 
                 columns.Add(columnInfo);

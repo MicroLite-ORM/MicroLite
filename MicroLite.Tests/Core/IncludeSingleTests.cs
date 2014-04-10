@@ -119,7 +119,7 @@
                 var exception = Assert.Throws<MicroLiteException>(
                     () => this.include.BuildValue(this.mockReader.Object));
 
-                Assert.Equal(Messages.IncludeSingle_SingleResultExpected, exception.Message);
+                Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.Message);
             }
         }
 

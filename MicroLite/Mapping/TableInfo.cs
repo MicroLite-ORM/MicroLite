@@ -17,7 +17,6 @@ namespace MicroLite.Mapping
     using System.Collections.ObjectModel;
     using System.Linq;
     using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
 
     /// <summary>
     /// A class which contains information about a database table which a class is mapped to.
@@ -25,8 +24,6 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("{Schema}.{Name}")]
     public sealed class TableInfo
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
-
         private readonly IList<ColumnInfo> columns;
         private readonly ColumnInfo identifierColumn;
         private readonly IdentifierStrategy identifierStrategy;
@@ -163,22 +160,17 @@ namespace MicroLite.Mapping
 
             if (duplicatedColumn != null)
             {
-                log.Fatal(Messages.TableInfo_ColumnMappedMultipleTimes, duplicatedColumn.Key);
-                throw new MappingException(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
+                throw new MappingException(ExceptionMessages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
             }
 
             if (!this.columns.Any(c => c.IsIdentifier))
             {
-                var message = Messages.TableInfo_NoIdentifierColumn.FormatWith(this.schema, this.name);
-                log.Fatal(message);
-                throw new MappingException(message);
+                throw new MappingException(ExceptionMessages.TableInfo_NoIdentifierColumn.FormatWith(this.schema, this.name));
             }
 
             if (this.columns.Count(c => c.IsIdentifier) > 1)
             {
-                var message = Messages.TableInfo_MultipleIdentifierColumns.FormatWith(this.schema, this.name);
-                log.Fatal(message);
-                throw new MappingException(message);
+                throw new MappingException(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith(this.schema, this.name));
             }
         }
     }

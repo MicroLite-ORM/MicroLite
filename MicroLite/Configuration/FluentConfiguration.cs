@@ -50,7 +50,11 @@ namespace MicroLite.Configuration
                 {
                     if (this.log.IsDebug)
                     {
-                        this.log.Debug(Messages.FluentConfiguration_CreatingSessionFactory, this.chosenConnectionName);
+                        this.log.Debug(
+                            LogMessages.FluentConfiguration_CreatingSessionFactory,
+                            this.chosenConnectionName,
+                            this.chosenDbDriver.GetType().Name,
+                            this.chosenSqlDialect.GetType().Name);
                     }
 
                     sessionFactory = new SessionFactory(this.chosenConnectionName, this.chosenDbDriver, this.chosenSqlDialect);
@@ -90,8 +94,7 @@ namespace MicroLite.Configuration
 
             if (configSection == null)
             {
-                this.log.Fatal(Messages.FluentConfiguration_ConnectionNotFound, connectionName);
-                throw new ConfigurationException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
+                throw new ConfigurationException(ExceptionMessages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
 
             this.chosenConnectionName = configSection.Name;

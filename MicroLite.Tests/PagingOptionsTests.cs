@@ -93,7 +93,7 @@
                 var exception = Assert.Throws<ArgumentOutOfRangeException>(() => PagingOptions.ForPage(0, 10));
 
                 Assert.Equal("page", exception.ParamName);
-                Assert.True(exception.Message.StartsWith(Messages.PagingOptions_PagesMustBeAtleastOne));
+                Assert.True(exception.Message.StartsWith(ExceptionMessages.PagingOptions_PagesMustBeAtleastOne));
             }
         }
 
@@ -105,7 +105,7 @@
                 var exception = Assert.Throws<ArgumentOutOfRangeException>(() => PagingOptions.ForPage(5, 0));
 
                 Assert.Equal("resultsPerPage", exception.ParamName);
-                Assert.True(exception.Message.StartsWith(Messages.PagingOptions_ResultsPerPageMustBeAtLeast1));
+                Assert.True(exception.Message.StartsWith(ExceptionMessages.PagingOptions_ResultsPerPageMustBeAtLeast1));
             }
         }
 
@@ -243,7 +243,7 @@
                 var exception = Assert.Throws<ArgumentOutOfRangeException>(() => PagingOptions.SkipTake(-1, 10));
 
                 Assert.Equal("skip", exception.ParamName);
-                Assert.True(exception.Message.StartsWith(Messages.PagingOptions_SkipMustBeZeroOrAbove));
+                Assert.True(exception.Message.StartsWith(ExceptionMessages.PagingOptions_SkipMustBeZeroOrAbove));
             }
         }
 
@@ -255,7 +255,7 @@
                 var exception = Assert.Throws<ArgumentOutOfRangeException>(() => PagingOptions.SkipTake(10, 0));
 
                 Assert.Equal("take", exception.ParamName);
-                Assert.True(exception.Message.StartsWith(Messages.PagingOptions_TakeMustBeZeroOrAbove));
+                Assert.True(exception.Message.StartsWith(ExceptionMessages.PagingOptions_TakeMustBeZeroOrAbove));
             }
         }
     }

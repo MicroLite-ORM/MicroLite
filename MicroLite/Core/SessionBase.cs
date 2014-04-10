@@ -93,7 +93,7 @@ namespace MicroLite.Core
             {
                 if (Log.IsDebug)
                 {
-                    Log.Debug(Messages.ClosingConnection);
+                    Log.Debug(LogMessages.ClosingConnection);
                 }
 
                 this.Connection.Close();
@@ -108,7 +108,7 @@ namespace MicroLite.Core
             {
                 if (Log.IsDebug)
                 {
-                    Log.Debug(Messages.OpeningConnection);
+                    Log.Debug(LogMessages.OpeningConnection);
                 }
 
                 this.Connection.Open();
@@ -146,7 +146,7 @@ namespace MicroLite.Core
                 {
                     if (Log.IsDebug)
                     {
-                        Log.Debug(Messages.ClosingConnection);
+                        Log.Debug(LogMessages.ClosingConnection);
                     }
 
                     if (this.Connection != null)

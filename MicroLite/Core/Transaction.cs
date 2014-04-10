@@ -43,7 +43,7 @@ namespace MicroLite.Core
             {
                 if (log.IsDebug)
                 {
-                    log.Debug(Messages.OpeningConnection);
+                    log.Debug(LogMessages.OpeningConnection);
                 }
 
                 this.sessionBase.Connection.Open();
@@ -51,7 +51,7 @@ namespace MicroLite.Core
 
             if (log.IsDebug)
             {
-                log.Debug(Messages.Transaction_BeginTransactionWithIsolationLevel, isolationLevel.ToString());
+                log.Debug(LogMessages.Transaction_BeginTransactionWithIsolationLevel, isolationLevel.ToString());
             }
 
             this.transaction = this.sessionBase.Connection.BeginTransaction(isolationLevel);
@@ -90,7 +90,7 @@ namespace MicroLite.Core
             {
                 if (log.IsDebug)
                 {
-                    log.Debug(Messages.Transaction_Committing);
+                    log.Debug(LogMessages.Transaction_Committing);
                 }
 
                 this.transaction.Commit();
@@ -99,7 +99,7 @@ namespace MicroLite.Core
                 {
                     if (log.IsDebug)
                     {
-                        log.Debug(Messages.ClosingConnection);
+                        log.Debug(LogMessages.ClosingConnection);
                     }
 
                     this.sessionBase.Connection.Close();
@@ -110,14 +110,13 @@ namespace MicroLite.Core
 
                 if (log.IsDebug)
                 {
-                    log.Debug(Messages.Transaction_Committed);
+                    log.Debug(LogMessages.Transaction_Committed);
                 }
             }
             catch (Exception e)
             {
                 this.failed = true;
 
-                log.Error(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }
@@ -137,7 +136,7 @@ namespace MicroLite.Core
             {
                 if (log.IsDebug)
                 {
-                    log.Debug(Messages.Transaction_RollingBack);
+                    log.Debug(LogMessages.Transaction_RollingBack);
                 }
 
                 this.transaction.Rollback();
@@ -146,7 +145,7 @@ namespace MicroLite.Core
                 {
                     if (log.IsDebug)
                     {
-                        log.Debug(Messages.ClosingConnection);
+                        log.Debug(LogMessages.ClosingConnection);
                     }
 
                     this.sessionBase.Connection.Close();
@@ -157,14 +156,13 @@ namespace MicroLite.Core
 
                 if (log.IsDebug)
                 {
-                    log.Debug(Messages.Transaction_RolledBack);
+                    log.Debug(LogMessages.Transaction_RolledBack);
                 }
             }
             catch (Exception e)
             {
                 this.failed = true;
 
-                log.Error(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }
@@ -190,12 +188,12 @@ namespace MicroLite.Core
             {
                 if (this.IsActive)
                 {
-                    log.Warn(Messages.Transaction_DisposedUncommitted);
+                    log.Warn(LogMessages.Transaction_DisposedUncommitted);
                     this.Rollback();
                 }
                 else if (this.failed && !this.rolledBack)
                 {
-                    log.Warn(Messages.Transaction_RollingBackFailedCommit);
+                    log.Warn(LogMessages.Transaction_RollingBackFailedCommit);
                     this.Rollback();
                 }
 
@@ -206,7 +204,7 @@ namespace MicroLite.Core
 
                 if (log.IsDebug)
                 {
-                    log.Debug(Messages.Transaction_Disposed);
+                    log.Debug(LogMessages.Transaction_Disposed);
                 }
             }
         }
@@ -223,7 +221,7 @@ namespace MicroLite.Core
         {
             if (!this.IsActive)
             {
-                throw new InvalidOperationException(Messages.Transaction_AlreadyCompleted);
+                throw new InvalidOperationException(ExceptionMessages.Transaction_AlreadyCompleted);
             }
         }
 
@@ -231,7 +229,7 @@ namespace MicroLite.Core
         {
             if (this.rolledBack || this.committed)
             {
-                throw new InvalidOperationException(Messages.Transaction_AlreadyCompleted);
+                throw new InvalidOperationException(ExceptionMessages.Transaction_AlreadyCompleted);
             }
         }
     }

@@ -106,7 +106,7 @@
             var exception = Assert.Throws<MicroLiteException>(
                 () => dbDriver.BuildCommand(sqlQuery));
 
-            Assert.Equal(Messages.DbDriver_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
+            Assert.Equal(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
         }
 
         [Fact]
