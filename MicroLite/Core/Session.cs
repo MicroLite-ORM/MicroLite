@@ -209,25 +209,6 @@ namespace MicroLite.Core
             }
         }
 
-        public void InsertOrUpdate(object instance)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            var objectInfo = ObjectInfo.For(instance.GetType());
-
-            if (objectInfo.HasDefaultIdentifierValue(instance))
-            {
-                this.Insert(instance);
-            }
-            else
-            {
-                this.Update(instance);
-            }
-        }
-
         public bool Update(object instance)
         {
             this.ThrowIfDisposed();
