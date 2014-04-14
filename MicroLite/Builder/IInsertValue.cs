@@ -15,7 +15,7 @@ namespace MicroLite.Builder
     /// <summary>
     /// The interface which specifies the value method in the fluent insert sql builder syntax.
     /// </summary>
-    public interface IInsertValue : IToSqlQuery
+    public interface IInsertValue : IHideObjectMethods, IToSqlQuery
     {
         /// <summary>
         /// Specifies the values to be inserted into the columns.

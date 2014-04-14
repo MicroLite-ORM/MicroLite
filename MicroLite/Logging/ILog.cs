@@ -17,7 +17,7 @@ namespace MicroLite.Logging
     /// <summary>
     /// The interface for a framework independent logger.
     /// </summary>
-    public interface ILog
+    public interface ILog : IHideObjectMethods
     {
         /// <summary>
         /// Gets a value indicating whether the logger is logging debug statements.

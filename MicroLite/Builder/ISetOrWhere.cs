@@ -15,7 +15,7 @@ namespace MicroLite.Builder
     /// <summary>
     /// The interface which specifies the value method in the fluent update sql builder syntax.
     /// </summary>
-    public interface ISetOrWhere : IToSqlQuery
+    public interface ISetOrWhere : IHideObjectMethods, IToSqlQuery
     {
         /// <summary>
         /// Specifies the column in the table and the new value for it.

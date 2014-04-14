@@ -18,7 +18,7 @@ namespace MicroLite.TypeConverters
     /// <summary>
     /// The interface for a class which can convert between property type values and database values.
     /// </summary>
-    public interface ITypeConverter
+    public interface ITypeConverter : IHideObjectMethods
     {
         /// <summary>
         /// Determines whether this type converter can convert values for the specified type.

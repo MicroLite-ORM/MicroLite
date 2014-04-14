@@ -17,7 +17,7 @@ namespace MicroLite.Builder
     /// <summary>
     /// The interface which specifies the into method in the fluent insert sql builder syntax.
     /// </summary>
-    public interface IInsertIntoTable
+    public interface IInsertIntoTable : IHideObjectMethods
     {
         /// <summary>
         /// Specifies the table to perform the query against.

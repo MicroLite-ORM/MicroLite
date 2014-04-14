@@ -17,7 +17,7 @@ namespace MicroLite.Mapping
     /// <summary>
     /// The interface for a class which implements a mapping convention between a class and a table.
     /// </summary>
-    public interface IMappingConvention
+    public interface IMappingConvention : IHideObjectMethods
     {
         /// <summary>
         /// Creates the object info for the specified type.
