@@ -28,22 +28,6 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets a value indicating whether this transaction has been committed.
-        /// </summary>
-        bool WasCommitted
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether this transaction has been rolled back.
-        /// </summary>
-        bool WasRolledBack
-        {
-            get;
-        }
-
-        /// <summary>
         /// Commits the transaction, applying all changes made within the transaction scope.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if the transaction has been completed.</exception>

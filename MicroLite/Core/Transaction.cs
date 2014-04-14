@@ -65,22 +65,6 @@ namespace MicroLite.Core
             }
         }
 
-        public bool WasCommitted
-        {
-            get
-            {
-                return this.committed;
-            }
-        }
-
-        public bool WasRolledBack
-        {
-            get
-            {
-                return this.rolledBack;
-            }
-        }
-
         public void Commit()
         {
             this.ThrowIfDisposed();
@@ -94,17 +78,6 @@ namespace MicroLite.Core
                 }
 
                 this.transaction.Commit();
-
-                if (this.sessionBase.ConnectionScope == ConnectionScope.PerTransaction)
-                {
-                    if (log.IsDebug)
-                    {
-                        log.Debug(LogMessages.ClosingConnection);
-                    }
-
-                    this.sessionBase.Connection.Close();
-                }
-
                 this.sessionBase.TransactionCompleted();
                 this.committed = true;
 
@@ -140,17 +113,6 @@ namespace MicroLite.Core
                 }
 
                 this.transaction.Rollback();
-
-                if (this.sessionBase.ConnectionScope == ConnectionScope.PerTransaction)
-                {
-                    if (log.IsDebug)
-                    {
-                        log.Debug(LogMessages.ClosingConnection);
-                    }
-
-                    this.sessionBase.Connection.Close();
-                }
-
                 this.sessionBase.TransactionCompleted();
                 this.rolledBack = true;
 

@@ -58,27 +58,9 @@
             }
 
             [Fact]
-            public void TheConnectionShouldNotBeClosed()
-            {
-                this.mockConnection.Verify(x => x.Close(), Times.Never());
-            }
-
-            [Fact]
             public void TheTransactionShouldBeCommitted()
             {
                 this.mockTransaction.Verify(x => x.Commit(), Times.Once());
-            }
-
-            [Fact]
-            public void WasCommittedReturnsTrue()
-            {
-                Assert.True(this.transaction.WasCommitted);
-            }
-
-            [Fact]
-            public void WasRolledBackReturnsFalse()
-            {
-                Assert.False(this.transaction.WasRolledBack);
             }
         }
 
@@ -113,27 +95,9 @@
             }
 
             [Fact]
-            public void TheConnectionShouldBeClosed()
-            {
-                this.mockConnection.Verify(x => x.Close(), Times.Once());
-            }
-
-            [Fact]
             public void TheTransactionShouldBeCommitted()
             {
                 this.mockTransaction.Verify(x => x.Commit(), Times.Once());
-            }
-
-            [Fact]
-            public void WasCommittedReturnsTrue()
-            {
-                Assert.True(this.transaction.WasCommitted);
-            }
-
-            [Fact]
-            public void WasRolledBackReturnsFalse()
-            {
-                Assert.False(this.transaction.WasRolledBack);
             }
         }
 
@@ -238,18 +202,6 @@
             public void IsActiveReturnsFalse()
             {
                 Assert.False(this.transaction.IsActive);
-            }
-
-            [Fact]
-            public void WasCommittedReturnsFalse()
-            {
-                Assert.False(this.transaction.WasCommitted);
-            }
-
-            [Fact]
-            public void WasRolledBackReturnsFalse()
-            {
-                Assert.False(this.transaction.WasRolledBack);
             }
         }
 
@@ -418,27 +370,9 @@
             }
 
             [Fact]
-            public void TheConnectionShouldNotBeClosed()
-            {
-                this.mockConnection.Verify(x => x.Close(), Times.Never());
-            }
-
-            [Fact]
             public void TheTransactionShouldBeRolledback()
             {
                 this.mockTransaction.Verify(x => x.Rollback(), Times.Once());
-            }
-
-            [Fact]
-            public void WasCommittedReturnsFalse()
-            {
-                Assert.False(this.transaction.WasCommitted);
-            }
-
-            [Fact]
-            public void WasRolledBackReturnsTrue()
-            {
-                Assert.True(this.transaction.WasRolledBack);
             }
         }
 
@@ -473,27 +407,9 @@
             }
 
             [Fact]
-            public void TheConnectionShouldBeClosed()
-            {
-                this.mockConnection.Verify(x => x.Close(), Times.Once());
-            }
-
-            [Fact]
             public void TheTransactionShouldBeRolledback()
             {
                 this.mockTransaction.Verify(x => x.Rollback(), Times.Once());
-            }
-
-            [Fact]
-            public void WasCommittedReturnsFalse()
-            {
-                Assert.False(this.transaction.WasCommitted);
-            }
-
-            [Fact]
-            public void WasRolledBackReturnsTrue()
-            {
-                Assert.True(this.transaction.WasRolledBack);
             }
         }
 
@@ -599,18 +515,6 @@
             {
                 Assert.False(this.transaction.IsActive);
             }
-
-            [Fact]
-            public void WasCommittedReturnsFalse()
-            {
-                Assert.False(this.transaction.WasCommitted);
-            }
-
-            [Fact]
-            public void WasRolledBackReturnsFalse()
-            {
-                Assert.False(this.transaction.WasRolledBack);
-            }
         }
 
         public class WhenConstructed
@@ -636,18 +540,6 @@
             public void IsActiveReturnsTrue()
             {
                 Assert.True(this.transaction.IsActive);
-            }
-
-            [Fact]
-            public void WasCommittedReturnsFalse()
-            {
-                Assert.False(this.transaction.WasCommitted);
-            }
-
-            [Fact]
-            public void WasRolledBackReturnsFalse()
-            {
-                Assert.False(this.transaction.WasRolledBack);
             }
         }
 

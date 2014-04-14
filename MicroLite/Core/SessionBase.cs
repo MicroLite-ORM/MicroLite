@@ -82,6 +82,16 @@ namespace MicroLite.Core
 
         public void TransactionCompleted()
         {
+            if (this.ConnectionScope == ConnectionScope.PerTransaction)
+            {
+                if (Log.IsDebug)
+                {
+                    Log.Debug(LogMessages.ClosingConnection);
+                }
+
+                this.Connection.Close();
+            }
+
             this.currentTransaction = null;
         }
 

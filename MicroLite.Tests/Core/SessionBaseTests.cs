@@ -458,14 +458,15 @@
             }
         }
 
-        public class WhenCallingTransactionCompleted
+        public class WhenCallingTransactionCompleted_WithConnectionScopePerSession
         {
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
             private readonly SessionBase sessionBase;
 
-            public WhenCallingTransactionCompleted()
+            public WhenCallingTransactionCompleted_WithConnectionScopePerSession()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(new Mock<IDbConnection>().Object);
+                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerSession, mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -473,6 +474,43 @@
                 this.sessionBase = mockSessionBase.Object;
                 this.sessionBase.BeginTransaction();
                 this.sessionBase.TransactionCompleted();
+            }
+
+            [Fact]
+            public void TheConnectionIsNotClosed()
+            {
+                this.mockConnection.Verify(x => x.Close(), Times.Never());
+            }
+
+            [Fact]
+            public void TheCurrentTransactionIsSetToNull()
+            {
+                Assert.Null(this.sessionBase.CurrentTransaction);
+            }
+        }
+
+        public class WhenCallingTransactionCompleted_WithConnectionScopePerTransaction
+        {
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
+            private readonly SessionBase sessionBase;
+
+            public WhenCallingTransactionCompleted_WithConnectionScopePerTransaction()
+            {
+                var mockDbDriver = new Mock<IDbDriver>();
+                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
+
+                var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerTransaction, mockDbDriver.Object);
+                mockSessionBase.CallBase = true;
+
+                this.sessionBase = mockSessionBase.Object;
+                this.sessionBase.BeginTransaction();
+                this.sessionBase.TransactionCompleted();
+            }
+
+            [Fact]
+            public void TheConnectionIsClosed()
+            {
+                this.mockConnection.Verify(x => x.Close(), Times.Once());
             }
 
             [Fact]
