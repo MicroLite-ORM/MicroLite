@@ -225,7 +225,7 @@ namespace MicroLite.Dialect
                     }
                 }
 
-                updateSqlBuilder.Where(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectInfo.GetIdentifierValue(instance));
+                updateSqlBuilder.WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectInfo.GetIdentifierValue(instance));
 
                 var updateSqlQuery = updateSqlBuilder.ToSqlQuery();
 
@@ -287,7 +287,7 @@ namespace MicroLite.Dialect
             }
 
             var sqlQuery = builder
-                .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectDelta.Identifier)
+                .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectDelta.Identifier)
                 .ToSqlQuery();
 
             return sqlQuery;

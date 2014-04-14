@@ -79,7 +79,7 @@
                 .Table("Table")
                 .SetColumnValue("Column1", "Foo")
                 .SetColumnValue("Column2", 12)
-                .Where("Id", 100122)
+                .WhereEquals("Id", 100122)
                 .ToSqlQuery();
 
             Assert.Equal("UPDATE Table SET Column1 = ?, Column2 = ? WHERE Id = ?", sqlQuery.CommandText);
@@ -98,7 +98,7 @@
                 .Table("Table")
                 .SetColumnValue("Column1", "Foo")
                 .SetColumnValue("Column2", 12)
-                .Where("Id", 100122)
+                .WhereEquals("Id", 100122)
                 .ToSqlQuery();
 
             Assert.Equal("UPDATE [Table] SET [Column1] = @p0, [Column2] = @p1 WHERE [Id] = @p2", sqlQuery.CommandText);
