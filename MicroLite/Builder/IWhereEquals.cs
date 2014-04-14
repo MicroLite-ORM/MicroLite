@@ -23,6 +23,6 @@ namespace MicroLite.Builder
         /// <param name="columnName">The column name to use in the where clause.</param>
         /// <param name="comparisonValue">The value to compare with.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IWhereEquals WhereEquals(string columnName, object comparisonValue);
+        IToSqlQuery WhereEquals(string columnName, object comparisonValue);
     }
 }

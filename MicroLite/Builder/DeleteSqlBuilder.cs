@@ -38,7 +38,7 @@ namespace MicroLite.Builder
             return this.From(objectInfo);
         }
 
-        public IWhereEquals WhereEquals(string columnName, object comparisonValue)
+        public IToSqlQuery WhereEquals(string columnName, object comparisonValue)
         {
             this.InnerSql.Append(" WHERE ")
                 .Append(this.SqlCharacters.EscapeSql(columnName))
