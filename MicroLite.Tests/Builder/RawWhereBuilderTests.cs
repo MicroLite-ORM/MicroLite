@@ -5,6 +5,9 @@
     using Moq;
     using Xunit;
 
+    /// <summary>
+    /// Unit Tests for the <see cref="RawWhereBuilder"/> class.
+    /// </summary>
     public class RawWhereBuilderTests
     {
         [Fact]

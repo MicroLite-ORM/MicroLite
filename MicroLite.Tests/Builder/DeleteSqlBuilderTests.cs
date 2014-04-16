@@ -70,7 +70,7 @@
         }
 
         [Fact]
-        public void DeleteFromValues()
+        public void DeleteFromWhereEquals()
         {
             var sqlBuilder = new DeleteSqlBuilder(SqlCharacters.Empty);
 
@@ -85,7 +85,7 @@
         }
 
         [Fact]
-        public void DeleteFromValuesWithSqlCharacters()
+        public void DeleteFromWhereEqualsWithSqlCharacters()
         {
             var sqlBuilder = new DeleteSqlBuilder(MsSqlCharacters.Instance);
 

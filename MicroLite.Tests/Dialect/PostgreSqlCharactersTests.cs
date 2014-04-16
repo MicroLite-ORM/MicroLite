@@ -3,6 +3,9 @@
     using MicroLite.Dialect;
     using Xunit;
 
+    /// <summary>
+    /// Unit Tests for the <see cref="PostgreSqlCharacters"/> class.
+    /// </summary>
     public class PostgreSqlCharactersTests
     {
         [Fact]

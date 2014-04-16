@@ -49,7 +49,7 @@ namespace MicroLite.Builder
                 {
                     if (i > 0)
                     {
-                        this.InnerSql.Append(", ");
+                        this.InnerSql.Append(',');
                     }
 
                     this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
@@ -122,7 +122,7 @@ namespace MicroLite.Builder
 
             this.InnerSql.Append(" AND (")
                 .Append(renumberedPredicate)
-                .Append(")");
+                .Append(')');
 
             return this;
         }
@@ -171,7 +171,7 @@ namespace MicroLite.Builder
         {
             if (this.InnerSql.Length > 7)
             {
-                this.InnerSql.Append(", ");
+                this.InnerSql.Append(',');
             }
 
             this.InnerSql.Append("AVG(")
@@ -219,7 +219,7 @@ namespace MicroLite.Builder
                 .Append(lowerParam)
                 .Append(" AND ")
                 .Append(upperParam)
-                .Append(")");
+                .Append(')');
 
             return this;
         }
@@ -266,7 +266,7 @@ namespace MicroLite.Builder
         {
             if (this.InnerSql.Length > 7)
             {
-                this.InnerSql.Append(", ");
+                this.InnerSql.Append(',');
             }
 
             this.InnerSql.Append("COUNT(")
@@ -371,7 +371,7 @@ namespace MicroLite.Builder
             {
                 if (i > 0)
                 {
-                    this.InnerSql.Append(", ");
+                    this.InnerSql.Append(',');
                 }
 
                 this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
@@ -448,7 +448,7 @@ namespace MicroLite.Builder
             {
                 if (i > 0)
                 {
-                    this.InnerSql.Append(", ");
+                    this.InnerSql.Append(',');
                 }
 
                 this.InnerSql.Append(this.SqlCharacters.GetParameterName((this.Arguments.Count - args.Length) + i));
@@ -535,7 +535,7 @@ namespace MicroLite.Builder
 
             var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
 
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" = ").Append(parameter).Append(")");
+            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" = ").Append(parameter).Append(')');
 
             return this;
         }
@@ -568,7 +568,7 @@ namespace MicroLite.Builder
 
             var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
 
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" > ").Append(parameter).Append(")");
+            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" > ").Append(parameter).Append(')');
 
             return this;
         }
@@ -601,7 +601,7 @@ namespace MicroLite.Builder
 
             var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
 
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" >= ").Append(parameter).Append(")");
+            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" >= ").Append(parameter).Append(')');
 
             return this;
         }
@@ -634,7 +634,7 @@ namespace MicroLite.Builder
 
             var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
 
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" < ").Append(parameter).Append(")");
+            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" < ").Append(parameter).Append(')');
 
             return this;
         }
@@ -667,7 +667,7 @@ namespace MicroLite.Builder
 
             var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
 
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" <= ").Append(parameter).Append(")");
+            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" <= ").Append(parameter).Append(')');
 
             return this;
         }
@@ -700,7 +700,7 @@ namespace MicroLite.Builder
 
             var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
 
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" LIKE ").Append(parameter).Append(")");
+            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" LIKE ").Append(parameter).Append(')');
 
             return this;
         }
@@ -733,7 +733,7 @@ namespace MicroLite.Builder
 
             var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
 
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" <> ").Append(parameter).Append(")");
+            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" <> ").Append(parameter).Append(')');
 
             return this;
         }
@@ -818,7 +818,7 @@ namespace MicroLite.Builder
         {
             if (this.InnerSql.Length > 7)
             {
-                this.InnerSql.Append(", ");
+                this.InnerSql.Append(',');
             }
 
             this.InnerSql.Append("MAX(")
@@ -873,7 +873,7 @@ namespace MicroLite.Builder
         {
             if (this.InnerSql.Length > 7)
             {
-                this.InnerSql.Append(", ");
+                this.InnerSql.Append(',');
             }
 
             this.InnerSql.Append("MIN(")
@@ -921,7 +921,7 @@ namespace MicroLite.Builder
             {
                 if (i > 0)
                 {
-                    this.InnerSql.Append(", ");
+                    this.InnerSql.Append(',');
                 }
 
                 this.InnerSql.Append(this.SqlCharacters.GetParameterName((this.Arguments.Count - args.Length) + i));
@@ -1116,7 +1116,7 @@ namespace MicroLite.Builder
 
             var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
 
-            this.InnerSql.Append(" OR (").Append(renumberedPredicate).Append(")");
+            this.InnerSql.Append(" OR (").Append(renumberedPredicate).Append(')');
 
             return this;
         }
@@ -1165,7 +1165,7 @@ namespace MicroLite.Builder
         {
             if (this.InnerSql.Length > 7)
             {
-                this.InnerSql.Append(", ");
+                this.InnerSql.Append(',');
             }
 
             this.InnerSql.Append("SUM(")
@@ -1238,7 +1238,7 @@ namespace MicroLite.Builder
 
             var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
 
-            this.InnerSql.Append(" WHERE (").Append(renumberedPredicate).Append(")");
+            this.InnerSql.Append(" WHERE (").Append(renumberedPredicate).Append(')');
             this.addedWhere = true;
 
             return this;
@@ -1254,7 +1254,7 @@ namespace MicroLite.Builder
                 {
                     if (i > 0)
                     {
-                        this.InnerSql.Append(", ");
+                        this.InnerSql.Append(',');
                     }
 
                     this.InnerSql.Append(this.SqlCharacters.EscapeSql(objectInfo.TableInfo.Columns[i].ColumnName));
@@ -1274,7 +1274,7 @@ namespace MicroLite.Builder
                 throw new ArgumentNullException("column");
             }
 
-            this.InnerSql.Append(!this.addedOrder ? " ORDER BY " : ", ");
+            this.InnerSql.Append(!this.addedOrder ? " ORDER BY " : ",");
             this.InnerSql.Append(this.SqlCharacters.EscapeSql(column));
             this.InnerSql.Append(direction);
 
@@ -1288,13 +1288,13 @@ namespace MicroLite.Builder
                 throw new ArgumentNullException("columns");
             }
 
-            this.InnerSql.Append(!this.addedOrder ? " ORDER BY " : ", ");
+            this.InnerSql.Append(!this.addedOrder ? " ORDER BY " : ",");
 
             for (int i = 0; i < columns.Length; i++)
             {
                 if (i > 0)
                 {
-                    this.InnerSql.Append(", ");
+                    this.InnerSql.Append(',');
                 }
 
                 this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));

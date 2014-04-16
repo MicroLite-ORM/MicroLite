@@ -29,8 +29,8 @@ namespace MicroLite.Builder
         /// Specifies the where clause for the query.
         /// </summary>
         /// <param name="columnName">The column name to use in the where clause.</param>
-        /// <param name="columnValue">The new value for the query to match using.</param>
+        /// <param name="comparisonValue">The value to compare with.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IToSqlQuery WhereEquals(string columnName, object columnValue);
+        IToSqlQuery WhereEquals(string columnName, object comparisonValue);
     }
 }

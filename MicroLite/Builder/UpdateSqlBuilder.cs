@@ -28,11 +28,7 @@ namespace MicroLite.Builder
         {
             if (this.Arguments.Count > 0)
             {
-                this.InnerSql.Append(", ");
-            }
-            else
-            {
-                this.InnerSql.Append(" ");
+                this.InnerSql.Append(',');
             }
 
             this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnName))
@@ -47,7 +43,7 @@ namespace MicroLite.Builder
         public ISetOrWhere Table(string tableName)
         {
             this.AppendTableName(tableName);
-            this.InnerSql.Append(" SET");
+            this.InnerSql.Append(" SET ");
 
             return this;
         }
@@ -59,14 +55,14 @@ namespace MicroLite.Builder
             return this.Table(objectInfo);
         }
 
-        public IToSqlQuery WhereEquals(string columnName, object columnValue)
+        public IToSqlQuery WhereEquals(string columnName, object comparisonValue)
         {
             this.InnerSql.Append(" WHERE ")
                 .Append(this.SqlCharacters.EscapeSql(columnName))
                 .Append(" = ")
                 .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
 
-            this.Arguments.Add(columnValue);
+            this.Arguments.Add(comparisonValue);
 
             return this;
         }
@@ -74,7 +70,7 @@ namespace MicroLite.Builder
         internal ISetOrWhere Table(IObjectInfo objectInfo)
         {
             this.AppendTableName(objectInfo);
-            this.InnerSql.Append(" SET");
+            this.InnerSql.Append(" SET ");
 
             return this;
         }

@@ -34,14 +34,14 @@ namespace MicroLite.Builder
                 {
                     if (i > 0)
                     {
-                        this.InnerSql.Append(", ");
+                        this.InnerSql.Append(',');
                     }
 
                     this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnNames[i]));
                 }
             }
 
-            this.InnerSql.Append(")");
+            this.InnerSql.Append(')');
 
             return this;
         }
@@ -74,12 +74,12 @@ namespace MicroLite.Builder
 
                     if (i < columnValues.Length - 1)
                     {
-                        this.InnerSql.Append(", ");
+                        this.InnerSql.Append(',');
                     }
                 }
             }
 
-            this.InnerSql.Append(")");
+            this.InnerSql.Append(')');
 
             return this;
         }

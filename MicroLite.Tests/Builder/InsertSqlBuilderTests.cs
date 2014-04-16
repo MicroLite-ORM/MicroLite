@@ -18,7 +18,7 @@
         }
 
         [Fact]
-        public void InsertIntoColumns()
+        public void InsertIntoColumnsValues()
         {
             var sqlBuilder = new InsertSqlBuilder(SqlCharacters.Empty);
 
@@ -28,14 +28,14 @@
                 .Values("Foo", 12)
                 .ToSqlQuery();
 
-            Assert.Equal("INSERT INTO Table (Column1, Column2) VALUES (?, ?)", sqlQuery.CommandText);
+            Assert.Equal("INSERT INTO Table (Column1,Column2) VALUES (?,?)", sqlQuery.CommandText);
             Assert.Equal(2, sqlQuery.Arguments.Count);
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
             Assert.Equal(12, sqlQuery.Arguments[1]);
         }
 
         [Fact]
-        public void InsertIntoColumnsWithSqlCharacters()
+        public void InsertIntoColumnsValuesWithSqlCharacters()
         {
             var sqlBuilder = new InsertSqlBuilder(MsSqlCharacters.Instance);
 
@@ -45,7 +45,7 @@
                 .Values("Foo", 12)
                 .ToSqlQuery();
 
-            Assert.Equal("INSERT INTO [Table] ([Column1], [Column2]) VALUES (@p0, @p1)", sqlQuery.CommandText);
+            Assert.Equal("INSERT INTO [Table] ([Column1],[Column2]) VALUES (@p0,@p1)", sqlQuery.CommandText);
             Assert.Equal(2, sqlQuery.Arguments.Count);
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
             Assert.Equal(12, sqlQuery.Arguments[1]);

@@ -32,7 +32,7 @@
                 .AndWhere("Column3").Between(1, 10)
                 .ToSqlQuery();
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 IN (?, ?)) AND (Column3 BETWEEN ? AND ?)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 IN (?,?)) AND (Column3 BETWEEN ? AND ?)", sqlQuery.CommandText);
             Assert.Equal(4, sqlQuery.Arguments.Count);
             Assert.Equal("Opt1", sqlQuery.Arguments[0]);
             Assert.Equal("Opt2", sqlQuery.Arguments[1]);
@@ -49,7 +49,7 @@
                 .GroupBy("CustomerId", "Created")
                 .ToSqlQuery();
 
-            Assert.Equal("SELECT CustomerId FROM Customer GROUP BY CustomerId, Created", sqlQuery.CommandText);
+            Assert.Equal("SELECT CustomerId FROM Customer GROUP BY CustomerId,Created", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -122,7 +122,7 @@
                 .OrderByAscending("FirstName", "LastName")
                 .ToSqlQuery();
 
-            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY FirstName, LastName ASC", sqlQuery.CommandText);
+            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY FirstName,LastName ASC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -158,7 +158,7 @@
                 .OrderByDescending("FirstName", "LastName")
                 .ToSqlQuery();
 
-            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY FirstName, LastName DESC", sqlQuery.CommandText);
+            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY FirstName,LastName DESC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -193,13 +193,13 @@
             var sqlQuery = sqlBuilder
                 .Average("CreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT AVG(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT AVG(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -210,13 +210,13 @@
             var sqlQuery = sqlBuilder
                 .Average("CreditLimit", columnAlias: "AverageCreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT AVG(CreditLimit) AS AverageCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT AVG(CreditLimit) AS AverageCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -227,14 +227,14 @@
             var sqlQuery = sqlBuilder
                 .Average("CreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .GroupBy("CustomerStatusId")
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Id, AVG(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0) GROUP BY CustomerStatusId", sqlQuery.CommandText);
+            Assert.Equal("SELECT Id,AVG(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?) GROUP BY CustomerStatusId", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -269,7 +269,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT Column1, COUNT(Column2) AS Col2, MAX(Column3) AS Col3 FROM Table", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,COUNT(Column2) AS Col2,MAX(Column3) AS Col3 FROM Table", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -312,7 +312,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT CustomerStatusId, COUNT(Id) AS Id FROM Sales.Customers GROUP BY CustomerStatusId", sqlQuery.CommandText);
+            Assert.Equal("SELECT CustomerStatusId,COUNT(Id) AS Id FROM Sales.Customers GROUP BY CustomerStatusId", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -343,7 +343,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT Column1, Column2 FROM Table ORDER BY Column1, Column2 ASC", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1,Column2 ASC", sqlQuery.CommandText);
         }
 
         /// <summary>
@@ -361,7 +361,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT Column1, Column2 FROM Table ORDER BY Column1 ASC, Column2 DESC", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1 ASC,Column2 DESC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -375,7 +375,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT [Column1], [Column2] FROM [Table] ORDER BY [Column1], [Column2] ASC", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1],[Column2] FROM [Table] ORDER BY [Column1],[Column2] ASC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -389,7 +389,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT Column1, Column2 FROM Table ORDER BY Column1, Column2 DESC", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1,Column2 DESC", sqlQuery.CommandText);
         }
 
         /// <summary>
@@ -407,7 +407,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT Column1, Column2 FROM Table ORDER BY Column1 DESC, Column2 ASC", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1 DESC,Column2 ASC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -421,7 +421,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT [Column1], [Column2] FROM [Table] ORDER BY [Column1], [Column2] DESC", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1],[Column2] FROM [Table] ORDER BY [Column1],[Column2] DESC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -434,7 +434,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT Column1, Column2 FROM Table", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,Column2 FROM Table", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -447,7 +447,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT [Column1], [Column2] FROM [Table]", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1],[Column2] FROM [Table]", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -460,7 +460,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT Name, DateOfBirth FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Equal("SELECT Name,DateOfBirth FROM Sales.Customers", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -473,7 +473,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT [Name], [DateOfBirth] FROM [Sales].[Customers]", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Name],[DateOfBirth] FROM [Sales].[Customers]", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -486,7 +486,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Updated, Website FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Equal("SELECT Created,CreditLimit,DateOfBirth,Id,Name,CustomerStatusId,Updated,Website FROM Sales.Customers", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -499,7 +499,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT [Created], [CreditLimit], [DateOfBirth], [Id], [Name], [CustomerStatusId], [Updated], [Website] FROM [Sales].[Customers]", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website] FROM [Sales].[Customers]", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -515,7 +515,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1, Column2 FROM Table WHERE (Column1 = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,Column2 FROM Table WHERE (Column1 = @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -525,15 +525,15 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where("Column1 = @p0", "Foo")
-                .AndWhere("Column2 = @p0", "Bar")
+                .Where("Column1").IsEqualTo("Foo")
+                .AndWhere("Column2").IsEqualTo("Bar")
                 .ToSqlQuery();
 
             Assert.Equal(2, sqlQuery.Arguments.Count);
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
             Assert.Equal("Bar", sqlQuery.Arguments[1]);
 
-            Assert.Equal("SELECT Column1, Column2 FROM Table WHERE (Column1 = @p0) AND (Column2 = @p1)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,Column2 FROM Table WHERE (Column1 = ?) AND (Column2 = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -557,7 +557,7 @@
             Assert.Equal(3, sqlQuery.Arguments[5]);
             Assert.Equal(4, sqlQuery.Arguments[6]);
 
-            Assert.Equal("SELECT Column1, Column2, Column3 FROM Table WHERE (Column1 = @p0 OR @p0 IS NULL) AND (Column2 BETWEEN @p1 AND @p2) OR (Column3 IN (@p3, @p4, @p5, @p6))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,Column2,Column3 FROM Table WHERE (Column1 = @p0 OR @p0 IS NULL) AND (Column2 BETWEEN @p1 AND @p2) OR (Column3 IN (@p3, @p4, @p5, @p6))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -567,15 +567,15 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where("Column1 = @p0", "Foo")
-                .OrWhere("Column2 = @p0", "Bar")
+                .Where("Column1").IsEqualTo("Foo")
+                .OrWhere("Column2").IsEqualTo("Bar")
                 .ToSqlQuery();
 
             Assert.Equal(2, sqlQuery.Arguments.Count);
             Assert.Equal("Foo", sqlQuery.Arguments[0]);
             Assert.Equal("Bar", sqlQuery.Arguments[1]);
 
-            Assert.Equal("SELECT Column1, Column2 FROM Table WHERE (Column1 = @p0) OR (Column2 = @p1)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,Column2 FROM Table WHERE (Column1 = ?) OR (Column2 = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -586,13 +586,13 @@
             var sqlQuery = sqlBuilder
                 .Max("CreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT MAX(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT MAX(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -603,13 +603,13 @@
             var sqlQuery = sqlBuilder
                 .Max("CreditLimit", columnAlias: "MaxCreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT MAX(CreditLimit) AS MaxCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT MAX(CreditLimit) AS MaxCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -620,13 +620,13 @@
             var sqlQuery = sqlBuilder
                 .Max("CreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Id, MAX(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Id,MAX(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -654,13 +654,13 @@
             var sqlQuery = sqlBuilder
                 .Min("CreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT MIN(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT MIN(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -671,13 +671,13 @@
             var sqlQuery = sqlBuilder
                 .Min("CreditLimit", columnAlias: "MinCreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT MIN(CreditLimit) AS MinCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT MIN(CreditLimit) AS MinCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -688,13 +688,13 @@
             var sqlQuery = sqlBuilder
                 .Min("CreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Id, MIN(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Id,MIN(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -722,13 +722,13 @@
             var sqlQuery = sqlBuilder
                 .Sum("CreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT SUM(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT SUM(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -739,13 +739,13 @@
             var sqlQuery = sqlBuilder
                 .Sum("CreditLimit", columnAlias: "SumCreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT SUM(CreditLimit) AS SumCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT SUM(CreditLimit) AS SumCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -756,13 +756,13 @@
             var sqlQuery = sqlBuilder
                 .Sum("CreditLimit")
                 .From(typeof(Customer))
-                .Where("CustomerStatusId = @p0", CustomerStatus.Active)
+                .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Id, SUM(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = @p0)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Id,SUM(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -789,7 +789,7 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where("Column2 = ?", "FOO")
+                .Where("Column2").IsEqualTo("FOO")
                 .AndWhere("Column1")
                 .In(1, 2, 3)
                 .ToSqlQuery();
@@ -800,7 +800,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) AND (Column1 IN (?, ?, ?))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) AND (Column1 IN (?,?,?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -810,7 +810,7 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where("Column2 = @p0", "FOO")
+                .Where("Column2").IsEqualTo("FOO")
                 .AndWhere("Column1").In(1, 2, 3)
                 .ToSqlQuery();
 
@@ -820,7 +820,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
-            Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) AND ([Column1] IN (@p1, @p2, @p3))", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column2] = @p0) AND ([Column1] IN (@p1,@p2,@p3))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -870,7 +870,7 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where("Column2 = @p0", "FOO")
+                .Where("Column2").IsEqualTo("FOO")
                 .AndWhere("Column1").NotIn(1, 2, 3)
                 .ToSqlQuery();
 
@@ -880,7 +880,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
-            Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) AND ([Column1] NOT IN (@p1, @p2, @p3))", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column2] = @p0) AND ([Column1] NOT IN (@p1,@p2,@p3))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1249,9 +1249,9 @@
             var sqlQuery = sqlBuilder
                 .Sum("Total")
                 .From("Invoices")
-                .Where("OrderDate > @p0", new DateTime(2000, 1, 1))
+                .Where("OrderDate").IsGreaterThan(new DateTime(2000, 1, 1))
                 .GroupBy("Total")
-                .Having("SUM(Total) > @p0", 10000M)
+                .Having("SUM(Total) > ?", 10000M)
                 .OrderByDescending("OrderDate")
                 .ToSqlQuery();
 
@@ -1259,7 +1259,7 @@
             Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
             Assert.Equal(10000M, sqlQuery.Arguments[1]);
 
-            Assert.Equal("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (OrderDate > @p0) GROUP BY Total HAVING SUM(Total) > @p1 ORDER BY OrderDate DESC", sqlQuery.CommandText);
+            Assert.Equal("SELECT CustomerId,SUM(Total) AS Total FROM Invoices WHERE (OrderDate > ?) GROUP BY Total HAVING SUM(Total) > ? ORDER BY OrderDate DESC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1270,7 +1270,7 @@
             var sqlQuery = sqlBuilder
                 .Sum("Total")
                 .From("Invoices")
-                .Where("OrderDate > @p0", new DateTime(2000, 1, 1))
+                .Where("OrderDate").IsGreaterThan(new DateTime(2000, 1, 1))
                 .GroupBy("Total")
                 .OrderByDescending("OrderDate")
                 .ToSqlQuery();
@@ -1278,7 +1278,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT CustomerId, SUM(Total) AS Total FROM Invoices WHERE (OrderDate > @p0) GROUP BY Total ORDER BY OrderDate DESC", sqlQuery.CommandText);
+            Assert.Equal("SELECT CustomerId,SUM(Total) AS Total FROM Invoices WHERE (OrderDate > ?) GROUP BY Total ORDER BY OrderDate DESC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1289,7 +1289,7 @@
             var sqlQuery = sqlBuilder
                 .Sum("Total")
                 .From("Invoices")
-                .Where("OrderDate > @p0", new DateTime(2000, 1, 1))
+                .Where("OrderDate").IsGreaterThan(new DateTime(2000, 1, 1))
                 .GroupBy("Total")
                 .OrderByDescending("OrderDate")
                 .ToSqlQuery();
@@ -1297,7 +1297,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT [CustomerId], SUM([Total]) AS Total FROM [Invoices] WHERE (OrderDate > @p0) GROUP BY [Total] ORDER BY [OrderDate] DESC", sqlQuery.CommandText);
+            Assert.Equal("SELECT [CustomerId],SUM([Total]) AS Total FROM [Invoices] WHERE ([OrderDate] > @p0) GROUP BY [Total] ORDER BY [OrderDate] DESC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1316,7 +1316,7 @@
             Assert.Equal(2, sqlQuery.Arguments[1]);
             Assert.Equal(3, sqlQuery.Arguments[2]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (?, ?, ?))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (?,?,?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1335,7 +1335,7 @@
             Assert.Equal(2, sqlQuery.Arguments[1]);
             Assert.Equal(3, sqlQuery.Arguments[2]);
 
-            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] IN (@p0, @p1, @p2))", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] IN (@p0,@p1,@p2))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1373,7 +1373,7 @@
             Assert.Equal(2, sqlQuery.Arguments[1]);
             Assert.Equal(3, sqlQuery.Arguments[2]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (?, ?, ?))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (?,?,?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1391,7 +1391,7 @@
             Assert.Equal(2, sqlQuery.Arguments[1]);
             Assert.Equal(3, sqlQuery.Arguments[2]);
 
-            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT IN (@p0, @p1, @p2))", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT IN (@p0,@p1,@p2))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1419,7 +1419,7 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where("Column2 = ?", "FOO")
+                .Where("Column2").IsEqualTo("FOO")
                 .OrWhere("Column1")
                 .In(1, 2, 3)
                 .ToSqlQuery();
@@ -1430,7 +1430,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) OR (Column1 IN (?, ?, ?))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) OR (Column1 IN (?,?,?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1440,7 +1440,7 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where("Column2 = @p0", "FOO")
+                .Where("Column2").IsEqualTo("FOO")
                 .OrWhere("Column1").In(1, 2, 3)
                 .ToSqlQuery();
 
@@ -1450,7 +1450,7 @@
             Assert.Equal(2, sqlQuery.Arguments[2]);
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
-            Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) OR ([Column1] IN (@p1, @p2, @p3))", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column2] = @p0) OR ([Column1] IN (@p1,@p2,@p3))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1517,7 +1517,7 @@
                 .AndWhere("Column11").IsNull()
                 .ToSqlQuery();
 
-            Assert.Equal(@"SELECT Column1 FROM Table WHERE (Column2 IN (?, ?)) AND (Column3 = ?) AND (Column4 > ?) AND (Column5 >= ?) AND (Column6 < ?) AND (Column7 <= ?) AND (Column8 LIKE ?) AND (Column9 <> ?) AND (Column10 IS NOT NULL) AND (Column11 IS NULL)", sqlQuery.CommandText);
+            Assert.Equal(@"SELECT Column1 FROM Table WHERE (Column2 IN (?,?)) AND (Column3 = ?) AND (Column4 > ?) AND (Column5 >= ?) AND (Column6 < ?) AND (Column7 <= ?) AND (Column8 LIKE ?) AND (Column9 <> ?) AND (Column10 IS NOT NULL) AND (Column11 IS NULL)", sqlQuery.CommandText);
         }
 
         [Fact]

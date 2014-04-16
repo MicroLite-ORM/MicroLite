@@ -20,7 +20,8 @@ namespace MicroLite.Builder
         {
             this.InnerSql.Append(sqlCharacters.StoredProcedureInvocationCommand)
                 .Append(' ')
-                .Append(procedureName);
+                .Append(procedureName)
+                .Append(' ');
         }
 
         /// <summary>
@@ -44,12 +45,12 @@ namespace MicroLite.Builder
         {
             if (this.Arguments.Count > 0)
             {
-                this.InnerSql.Append(",");
+                this.InnerSql.Append(',');
             }
 
             this.Arguments.Add(arg);
 
-            this.InnerSql.Append(" ").Append(parameter);
+            this.InnerSql.Append(parameter);
 
             return this;
         }

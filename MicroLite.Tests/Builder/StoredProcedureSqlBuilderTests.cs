@@ -20,7 +20,7 @@
                 .WithParameter("@EndDate", DateTime.Today)
                 .ToSqlQuery();
 
-            Assert.Equal("INVOKE GetCustomerInvoices @CustomerId, @StartDate, @EndDate", sqlQuery.CommandText);
+            Assert.Equal("INVOKE GetCustomerInvoices @CustomerId,@StartDate,@EndDate", sqlQuery.CommandText);
             Assert.Equal(3, sqlQuery.Arguments.Count);
             Assert.Equal(7633245, sqlQuery.Arguments[0]);
             Assert.Equal(DateTime.Today.AddMonths(-3), sqlQuery.Arguments[1]);

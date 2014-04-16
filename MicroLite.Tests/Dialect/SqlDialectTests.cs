@@ -237,7 +237,7 @@
 
             var sqlQuery = mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?, ?)", sqlQuery.CommandText);
+            Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Id,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?,?)", sqlQuery.CommandText);
             Assert.Equal(7, sqlQuery.Arguments.Count);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
@@ -261,7 +261,7 @@
             };
             var sqlQuery2 = mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?, ?)", sqlQuery2.CommandText);
+            Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Id,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?,?)", sqlQuery2.CommandText);
             Assert.Equal(7, sqlQuery2.Arguments.Count);
             Assert.Equal(customer.Created, sqlQuery2.Arguments[0]);
             Assert.Equal(customer.CreditLimit, sqlQuery2.Arguments[1]);
@@ -295,7 +295,7 @@
 
             var sqlQuery = mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?)", sqlQuery.CommandText);
+            Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
@@ -318,7 +318,7 @@
             };
             var sqlQuery2 = mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            Assert.Equal("INSERT INTO Sales.Customers (Created, CreditLimit, DateOfBirth, Name, CustomerStatusId, Website) VALUES (?, ?, ?, ?, ?, ?)", sqlQuery2.CommandText);
+            Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?)", sqlQuery2.CommandText);
             Assert.Equal(6, sqlQuery2.Arguments.Count);
             Assert.Equal(customer.Created, sqlQuery2.Arguments[0]);
             Assert.Equal(customer.CreditLimit, sqlQuery2.Arguments[1]);
@@ -341,7 +341,7 @@
 
             var sqlQuery = mockSqlDialect.Object.BuildSelectSqlQuery(ObjectInfo.For(typeof(Customer)), identifier);
 
-            Assert.Equal("SELECT Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Updated, Website FROM Sales.Customers WHERE (Id = ?)", sqlQuery.CommandText);
+            Assert.Equal("SELECT Created,CreditLimit,DateOfBirth,Id,Name,CustomerStatusId,Updated,Website FROM Sales.Customers WHERE (Id = ?)", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(identifier, sqlQuery.Arguments[0]);
 
@@ -350,7 +350,7 @@
 
             var sqlQuery2 = mockSqlDialect.Object.BuildSelectSqlQuery(ObjectInfo.For(typeof(Customer)), identifier);
 
-            Assert.Equal("SELECT Created, CreditLimit, DateOfBirth, Id, Name, CustomerStatusId, Updated, Website FROM Sales.Customers WHERE (Id = ?)", sqlQuery2.CommandText);
+            Assert.Equal("SELECT Created,CreditLimit,DateOfBirth,Id,Name,CustomerStatusId,Updated,Website FROM Sales.Customers WHERE (Id = ?)", sqlQuery2.CommandText);
             Assert.Equal(1, sqlQuery2.Arguments.Count);
             Assert.Equal(identifier, sqlQuery2.Arguments[0]);
         }
@@ -396,7 +396,7 @@
 
             var sqlQuery = mockSqlDialect.Object.BuildUpdateSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?, DateOfBirth = ?, Name = ?, CustomerStatusId = ?, Updated = ?, Website = ? WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?,DateOfBirth = ?,Name = ?,CustomerStatusId = ?,Updated = ?,Website = ? WHERE Id = ?", sqlQuery.CommandText);
             Assert.Equal(7, sqlQuery.Arguments.Count);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[0]);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
@@ -421,7 +421,7 @@
 
             var sqlQuery2 = mockSqlDialect.Object.BuildUpdateSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?, DateOfBirth = ?, Name = ?, CustomerStatusId = ?, Updated = ?, Website = ? WHERE Id = ?", sqlQuery2.CommandText);
+            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?,DateOfBirth = ?,Name = ?,CustomerStatusId = ?,Updated = ?,Website = ? WHERE Id = ?", sqlQuery2.CommandText);
             Assert.Equal(7, sqlQuery2.Arguments.Count);
             Assert.Equal(customer.CreditLimit, sqlQuery2.Arguments[0]);
             Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[1]);

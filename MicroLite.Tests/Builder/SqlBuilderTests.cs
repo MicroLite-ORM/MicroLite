@@ -81,7 +81,7 @@
         {
             var sqlBuilder = SqlBuilder.Select("Id", "Name").From("Customers").ToSqlQuery();
 
-            Assert.Equal("SELECT Id, Name FROM Customers", sqlBuilder.ToString());
+            Assert.Equal("SELECT Id,Name FROM Customers", sqlBuilder.ToString());
         }
 
         [Fact]

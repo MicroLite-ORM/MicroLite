@@ -75,7 +75,7 @@ namespace MicroLite.Dialect
                 .Append("SELECT ")
                 .Append(selectStatement)
                 .Append(" FROM")
-                .AppendFormat(CultureInfo.InvariantCulture, " (SELECT {0}, ROW_NUMBER() OVER(ORDER BY {1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName)
+                .AppendFormat(CultureInfo.InvariantCulture, " (SELECT {0},ROW_NUMBER() OVER(ORDER BY {1}) AS RowNumber FROM {2}{3}) AS {4}", selectStatement, orderByClause, qualifiedTableName, whereClause, tableName)
                 .AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Length - 2), this.SqlCharacters.GetParameterName(arguments.Length - 1));
 
             return new SqlQuery(stringBuilder.ToString(), arguments);
