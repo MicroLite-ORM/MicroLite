@@ -10,6 +10,12 @@
     public class LogManagerTests : UnitTest
     {
         [Fact]
+        public void GetCurrentClassLogReturnsEmptyLogIfGetLoggerNotSet()
+        {
+            Assert.IsType<EmptyLog>(LogManager.GetCurrentClassLog());
+        }
+
+        [Fact]
         public void GetCurrentClassLogReturnsLogIfGetLoggerSet()
         {
             var log = new Mock<ILog>().Object;
@@ -25,12 +31,6 @@
             var logInstance = LogManager.GetCurrentClassLog();
 
             Assert.Same(log, logInstance);
-        }
-
-        [Fact]
-        public void GetCurrentClassLogReturnsNullLogIfGetLoggerNotSet()
-        {
-            Assert.IsType<NullLog>(LogManager.GetCurrentClassLog());
         }
     }
 }

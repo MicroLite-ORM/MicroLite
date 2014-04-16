@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="NullLog.cs" company="MicroLite">
+// <copyright file="EmptyLog.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +15,9 @@ namespace MicroLite.Logging
     using System;
 
     /// <summary>
-    /// An implementation of ILog which does returns false for all log levels and all methods are no-op.
+    /// An implementation of ILog which always returns false for all log levels and all methods are no-op.
     /// </summary>
-    internal sealed class NullLog : ILog
+    internal sealed class EmptyLog : ILog
     {
         public bool IsDebug
         {

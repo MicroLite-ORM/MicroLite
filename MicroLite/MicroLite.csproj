@@ -89,7 +89,7 @@
     <Compile Include="Core\ReadOnlySession.cs" />
     <Compile Include="Core\SessionBase.cs" />
     <Compile Include="Dialect\MsSqlCharacters.cs" />
-    <Compile Include="Logging\NullLog.cs" />
+    <Compile Include="Logging\EmptyLog.cs" />
     <Compile Include="Mapping\MappingException.cs" />
     <Compile Include="ObjectDelta.cs" />
     <Compile Include="Builder\DeleteSqlBuilder.cs" />
