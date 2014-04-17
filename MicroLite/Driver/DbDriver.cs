@@ -203,18 +203,19 @@ namespace MicroLite.Driver
 
             int argumentsCount = sqlQuery1.Arguments.Count + sqlQuery2.Arguments.Count;
 
-            var commandText = sqlQuery1.CommandText
-                + this.StatementSeparator
-                + Environment.NewLine
-                + SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
-
             var arguments = new object[argumentsCount];
+
             Array.Copy(sqlQuery1.GetArgumentArray(), 0, arguments, 0, sqlQuery1.Arguments.Count);
 
             if (sqlQuery2.Arguments.Count > 0)
             {
                 Array.Copy(sqlQuery2.GetArgumentArray(), 0, arguments, sqlQuery1.Arguments.Count, sqlQuery2.Arguments.Count);
             }
+
+            var commandText = sqlQuery1.CommandText
+                + this.StatementSeparator
+                + Environment.NewLine
+                + SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
 
             var combinedQuery = new SqlQuery(commandText, arguments);
             combinedQuery.Timeout = Math.Max(sqlQuery1.Timeout, sqlQuery2.Timeout);
