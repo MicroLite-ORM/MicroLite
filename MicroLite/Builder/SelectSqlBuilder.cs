@@ -1298,9 +1298,9 @@ namespace MicroLite.Builder
                 }
 
                 this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
+                this.InnerSql.Append(direction);
             }
 
-            this.InnerSql.Append(direction);
             this.addedOrder = true;
         }
     }

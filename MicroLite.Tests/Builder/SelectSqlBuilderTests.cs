@@ -122,7 +122,7 @@
                 .OrderByAscending("FirstName", "LastName")
                 .ToSqlQuery();
 
-            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY FirstName,LastName ASC", sqlQuery.CommandText);
+            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY FirstName ASC,LastName ASC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -158,7 +158,7 @@
                 .OrderByDescending("FirstName", "LastName")
                 .ToSqlQuery();
 
-            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY FirstName,LastName DESC", sqlQuery.CommandText);
+            Assert.Equal("SELECT CustomerId FROM Customer ORDER BY FirstName DESC,LastName DESC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -343,7 +343,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1,Column2 ASC", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1 ASC,Column2 ASC", sqlQuery.CommandText);
         }
 
         /// <summary>
@@ -375,7 +375,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT [Column1],[Column2] FROM [Table] ORDER BY [Column1],[Column2] ASC", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1],[Column2] FROM [Table] ORDER BY [Column1] ASC,[Column2] ASC", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -389,7 +389,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1,Column2 DESC", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1 DESC,Column2 DESC", sqlQuery.CommandText);
         }
 
         /// <summary>
@@ -421,7 +421,7 @@
                 .ToSqlQuery();
 
             Assert.Empty(sqlQuery.Arguments);
-            Assert.Equal("SELECT [Column1],[Column2] FROM [Table] ORDER BY [Column1],[Column2] DESC", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Column1],[Column2] FROM [Table] ORDER BY [Column1] DESC,[Column2] DESC", sqlQuery.CommandText);
         }
 
         [Fact]
