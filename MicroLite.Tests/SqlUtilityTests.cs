@@ -74,6 +74,16 @@
         }
 
         [Fact]
+        public void GetParameterNamesWithAtPrefixAndNoAdditionalPrefixCharacter()
+        {
+            var parameterNames = SqlUtility.GetParameterNames("SELECT * FROM TABLE WHERE Col1 = @0 AND (Col2 = @1 OR @1 IS NULL)");
+
+            Assert.NotNull(parameterNames);
+            Assert.Equal(2, parameterNames.Count);
+            Assert.Equal(new List<string> { "@0", "@1" }, parameterNames);
+        }
+
+        [Fact]
         public void GetParameterNamesWithColonPrefix()
         {
             var parameterNames = SqlUtility.GetParameterNames("SELECT * FROM TABLE WHERE Col1 = :p0 AND (Col2 = :p1 OR :p1 IS NULL)");
@@ -91,6 +101,16 @@
             Assert.NotNull(parameterNames);
             Assert.Equal(2, parameterNames.Count);
             Assert.Equal(new List<string> { ":param0", ":param1" }, parameterNames);
+        }
+
+        [Fact]
+        public void GetParameterNamesWithColonPrefixAndNoAdditionalPrefixCharacter()
+        {
+            var parameterNames = SqlUtility.GetParameterNames("SELECT * FROM TABLE WHERE Col1 = :0 AND (Col2 = :1 OR :1 IS NULL)");
+
+            Assert.NotNull(parameterNames);
+            Assert.Equal(2, parameterNames.Count);
+            Assert.Equal(new List<string> { ":0", ":1" }, parameterNames);
         }
 
         [Fact]
