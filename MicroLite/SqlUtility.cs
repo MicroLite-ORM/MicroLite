@@ -23,6 +23,7 @@ namespace MicroLite
     /// </summary>
     public static class SqlUtility
     {
+        private static readonly char[] digits = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         private static readonly string[] emptyParameterNames = new string[0];
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
 
@@ -257,7 +258,7 @@ namespace MicroLite
             }
 
             var argsAdded = 0;
-            var parameterPrefix = parameterNames[0].Substring(0, 2);
+            var parameterPrefix = parameterNames[0].Substring(0, parameterNames[0].IndexOfAny(digits));
 
             var predicateReWriter = new StringBuilder(sql);
 

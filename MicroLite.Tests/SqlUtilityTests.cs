@@ -223,11 +223,27 @@ AND Age = ?";
         }
 
         [Fact]
+        public void ReNumberParametersNoExistingArgumentsWithAtPrefixAndMoreThanPrefixCharacter()
+        {
+            var commandText = SqlUtility.RenumberParameters("(Column1 = @param0 OR @param0 IS NULL) AND Column2 = @param1", totalArgumentCount: 2);
+
+            Assert.Equal("(Column1 = @param0 OR @param0 IS NULL) AND Column2 = @param1", commandText);
+        }
+
+        [Fact]
         public void ReNumberParametersNoExistingArgumentsWithColonPrefix()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = :p0 OR :p0 IS NULL) AND Column2 = :p1", totalArgumentCount: 2);
 
             Assert.Equal("(Column1 = :p0 OR :p0 IS NULL) AND Column2 = :p1", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersNoExistingArgumentsWithColonPrefixAndMoreThanPrefixCharacter()
+        {
+            var commandText = SqlUtility.RenumberParameters("(Column1 = :param0 OR :param0 IS NULL) AND Column2 = :param1", totalArgumentCount: 2);
+
+            Assert.Equal("(Column1 = :param0 OR :param0 IS NULL) AND Column2 = :param1", commandText);
         }
 
         [Fact]
@@ -247,11 +263,27 @@ AND Age = ?";
         }
 
         [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithAtPrefixAndMoreThanPrefixCharacter()
+        {
+            var commandText = SqlUtility.RenumberParameters("(Column1 = @param0 OR @param0 IS NULL) AND Column2 = @param1", totalArgumentCount: 4);
+
+            Assert.Equal("(Column1 = @param2 OR @param2 IS NULL) AND Column2 = @param3", commandText);
+        }
+
+        [Fact]
         public void ReNumberParametersWithExistingArgumentsWithColonPrefix()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = :p0 OR :p0 IS NULL) AND Column2 = :p1", totalArgumentCount: 4);
 
             Assert.Equal("(Column1 = :p2 OR :p2 IS NULL) AND Column2 = :p3", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithColonPrefixAndMoreThanPrefixCharacter()
+        {
+            var commandText = SqlUtility.RenumberParameters("(Column1 = :param0 OR :param0 IS NULL) AND Column2 = :param1", totalArgumentCount: 4);
+
+            Assert.Equal("(Column1 = :param2 OR :param2 IS NULL) AND Column2 = :param3", commandText);
         }
 
         public class WhenTheCommandTextIsOnASingleLineAndContainsOrderByButNoWhere
