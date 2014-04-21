@@ -134,10 +134,13 @@ namespace MicroLite.Driver
 
             for (int i = 0; i < parameterNames.Count; i++)
             {
+                var parameter = command.CreateParameter();
                 var parameterName = parameterNames[i];
                 var parameterValue = sqlQuery.Arguments[i];
 
-                this.AddParameter(command, parameterName, parameterValue);
+                this.BuildParameter(parameter, parameterName, parameterValue);
+
+                command.Parameters.Add(parameter);
             }
 
             return command;
@@ -247,14 +250,13 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Add a parameter to the IDbCommand with the specified name and value.
+        /// Builds the the IDbDataParameter using the specified name and value.
         /// </summary>
-        /// <param name="command">The command to add a parameter to.</param>
+        /// <param name="parameter">The parameter to build.</param>
         /// <param name="parameterName">The name for the parameter.</param>
         /// <param name="parameterValue">The value for the parameter.</param>
-        protected virtual void AddParameter(IDbCommand command, string parameterName, object parameterValue)
+        protected virtual void BuildParameter(IDbDataParameter parameter, string parameterName, object parameterValue)
         {
-            var parameter = command.CreateParameter();
             parameter.Direction = ParameterDirection.Input;
             parameter.ParameterName = parameterName;
             parameter.Value = parameterValue ?? DBNull.Value;
@@ -263,8 +265,6 @@ namespace MicroLite.Driver
             {
                 parameter.DbType = this.HandleStringsAsUnicode ? DbType.String : DbType.AnsiString;
             }
-
-            command.Parameters.Add(parameter);
         }
 
         /// <summary>
