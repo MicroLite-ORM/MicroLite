@@ -127,12 +127,11 @@ namespace MicroLite.Dialect
                     }
                 }
 
-                var insertSqlBuilder = new InsertSqlBuilder(this.SqlCharacters);
-                insertSqlBuilder.Into(objectInfo);
-                insertSqlBuilder.Columns(insertColumns);
-                insertSqlBuilder.Values(new object[objectInfo.TableInfo.InsertColumnCount]);
-
-                var insertSqlQuery = insertSqlBuilder.ToSqlQuery();
+                var insertSqlQuery = new InsertSqlBuilder(this.SqlCharacters)
+                    .Into(objectInfo)
+                    .Columns(insertColumns)
+                    .Values(new object[objectInfo.TableInfo.InsertColumnCount])
+                    .ToSqlQuery();
 
                 var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
                 newInsertCommandCache[objectInfo.ForType] = insertSqlQuery.CommandText;
@@ -212,8 +211,8 @@ namespace MicroLite.Dialect
 
             if (!this.updateCommandCache.TryGetValue(objectInfo.ForType, out updateCommand))
             {
-                var updateSqlBuilder = new UpdateSqlBuilder(this.SqlCharacters);
-                updateSqlBuilder.Table(objectInfo);
+                var builder = new UpdateSqlBuilder(this.SqlCharacters)
+                    .Table(objectInfo);
 
                 for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
                 {
@@ -221,13 +220,12 @@ namespace MicroLite.Dialect
 
                     if (columnInfo.AllowUpdate)
                     {
-                        updateSqlBuilder.SetColumnValue(columnInfo.ColumnName, null);
+                        builder.SetColumnValue(columnInfo.ColumnName, null);
                     }
                 }
 
-                updateSqlBuilder.WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectInfo.GetIdentifierValue(instance));
-
-                var updateSqlQuery = updateSqlBuilder.ToSqlQuery();
+                var updateSqlQuery = builder.WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectInfo.GetIdentifierValue(instance))
+                    .ToSqlQuery();
 
                 var newUpdateCommandCache = new Dictionary<Type, string>(this.updateCommandCache);
                 newUpdateCommandCache[objectInfo.ForType] = updateSqlQuery.CommandText;
