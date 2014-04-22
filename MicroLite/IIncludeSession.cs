@@ -35,18 +35,23 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     // Tell the session to include all countries.
-        ///     var countries = session.Include.All&lt;Country&gt;();
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         // Tell the session to include all countries.
+        ///         var includeCountries = session.Include.All&lt;Country&gt;();
         ///
-        ///     // At this point, countries will point to an IIncludeMany&lt;Country&gt; which will have no values.
-        ///     // You can call include for multiple things, they will all be loaded in a single database call once
-        ///     // either ISession.Single, ISession.Fetch or ISession.Paged is called.
+        ///         // At this point, countries will point to an IIncludeMany&lt;Country&gt; which will have no values.
+        ///         // You can call include for multiple things, they will all be loaded in a single database call once
+        ///         // either ISession.Single, ISession.Fetch or ISession.Paged is called.
         ///
-        ///     // Load the customer.
-        ///     var customer = session.Single&lt;Customer&gt;(1792);
+        ///         // Load the customer.
+        ///         var customer = session.Single&lt;Customer&gt;(1792);
         ///
-        ///     // We can now acces the countries.
-        ///     this.View.CountryOptions = countries.Values;
+        ///         transaction.Commit();
+        ///
+        ///         // We can now acces the countries.
+        ///         var countryOptions = includeCountries.Values;
+        ///     }
         /// }
         /// </code>
         /// </example>
@@ -69,23 +74,30 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     // Query to fetch the invoices for the customer.
-        ///     var invoicesQuery = new SqlQuery("SELECT * FROM Invoices WHERE CustomerId = @p0", 1792);
-        ///
-        ///     // Tell the session to include the invoices.
-        ///     var invoices = session.Include.Many&lt;Invoice&gt;(invoicesQuery);
-        ///
-        ///     // At this point, invoices will point to an IIncludeMany&lt;Invoice&gt; which will have no values.
-        ///     // You can call include for multiple things, they will all be loaded in a single database call once
-        ///     // either ISession.Single, ISession.Fetch or ISession.Paged is called.
-        ///
-        ///     // Load the customer.
-        ///     var customer = session.Single&lt;Customer&gt;(1792);
-        ///
-        ///     // We can now acces the invoices for the customer
-        ///     foreach (var invoice in invoices.Values)
+        ///     using (var transaction = session.BeginTransaction())
         ///     {
-        ///         // ...
+        ///         // Query to fetch the invoices for the customer.
+        ///         var invoicesQuery = new SqlQuery("SELECT * FROM Invoices WHERE CustomerId = @p0", 1792);
+        ///
+        ///         // Tell the session to include the invoices.
+        ///         var includeInvoices = session.Include.Many&lt;Invoice&gt;(invoicesQuery);
+        ///
+        ///         // At this point, invoices will point to an IIncludeMany&lt;Invoice&gt; which will have no values.
+        ///         // You can call include for multiple things, they will all be loaded in a single database call once
+        ///         // either ISession.Single, ISession.Fetch or ISession.Paged is called.
+        ///
+        ///         // Load the customer.
+        ///         var customer = session.Single&lt;Customer&gt;(1792);
+        ///
+        ///         transaction.Commit();
+        ///
+        ///         // We can now acces the invoices.
+        ///         var invoices = includeInvoices.Values;
+        ///
+        ///         foreach (var invoice in invoices.Values)
+        ///         {
+        ///             // ...
+        ///         }
         ///     }
         /// }
         /// </code>
@@ -105,23 +117,28 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     // Query to count the invoices for the customer.
-        ///     var invoicesCountQuery = new SqlQuery("SELECT COUNT(InvoiceId) AS InvoiceCount FROM Invoices WHERE CustomerId = @p0", 1792);
-        ///
-        ///     // Tell the session to include the invoices count.
-        ///     var invoicesCount = session.Include.Scalar&lt;int&gt;(invoicesQuery);
-        ///
-        ///     // At this point, invoices will point to an IInclude&lt;int&gt; which will have it's default value of 0.
-        ///     // You can call include for multiple things, they will all be loaded in a single database call once
-        ///     // either ISession.Single, ISession.Fetch or ISession.Paged is called.
-        ///
-        ///     // Load the customer.
-        ///     var customer = session.Single&lt;Customer&gt;(1792);
-        ///
-        ///     // We can now acces the invoices count for the customer
-        ///     if (invoicesCount.Value > 0)
+        ///     using (var transaction = session.BeginTransaction())
         ///     {
-        ///         ...
+        ///         // Query to count the invoices for the customer.
+        ///         var invoicesCountQuery = new SqlQuery("SELECT COUNT(InvoiceId) AS InvoiceCount FROM Invoices WHERE CustomerId = @p0", 1792);
+        ///
+        ///         // Tell the session to include the invoices count.
+        ///         var includeInvoicesCount = session.Include.Scalar&lt;int&gt;(invoicesQuery);
+        ///
+        ///         // At this point, invoices will point to an IInclude&lt;int&gt; which will have it's default value of 0.
+        ///         // You can call include for multiple things, they will all be loaded in a single database call once
+        ///         // either ISession.Single, ISession.Fetch or ISession.Paged is called.
+        ///
+        ///         // Load the customer.
+        ///         var customer = session.Single&lt;Customer&gt;(1792);
+        ///
+        ///         transaction.Commit();
+        ///
+        ///         // We can now acces the invoices count for the customer.
+        ///         if (includeInvoicesCount.Value > 0)
+        ///         {
+        ///             ...
+        ///         }
         ///     }
         /// }
         /// </code>
@@ -142,21 +159,26 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     // Tell the session to include the customer.
-        ///     var includeCustomer = session.Include.Single&lt;Customer&gt;(3264);
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         // Tell the session to include the customer.
+        ///         var includeCustomer = session.Include.Single&lt;Customer&gt;(3264);
         ///
-        ///     // At this point, includeCustomer will point to an IInclude&lt;Customer&gt; which will have no value.
-        ///     // You can call include for multiple things, they will all be loaded in a single database call once
-        ///     // either ISession.Single, ISession.Fetch or ISession.Paged is called.
+        ///         // At this point, includeCustomer will point to an IInclude&lt;Customer&gt; which will have no value.
+        ///         // You can call include for multiple things, they will all be loaded in a single database call once
+        ///         // either ISession.Single, ISession.Fetch or ISession.Paged is called.
         ///
-        ///     // Query to fetch the invoices for the customer.
-        ///     var invoicesQuery = new SqlQuery("SELECT * FROM Invoices WHERE CustomerId = @p0", 3264);
+        ///         // Query to fetch the invoices for the customer.
+        ///         var invoicesQuery = new SqlQuery("SELECT * FROM Invoices WHERE CustomerId = @p0", 3264);
         ///
-        ///     // Load the invoices.
-        ///     var invoices = session.Fetch&lt;Invoice&gt;(query);
+        ///         // Load the invoices.
+        ///         var invoices = session.Fetch&lt;Invoice&gt;(query);
         ///
-        ///     // We can now acces the customer
-        ///     Console.WriteLine(includeCustomer.Value.Name);
+        ///         transaction.Commit();
+        ///
+        ///         // We can now acces the customer
+        ///         Console.WriteLine(includeCustomer.Value.Name);
+        ///     }
         /// }
         /// </code>
         /// </example>

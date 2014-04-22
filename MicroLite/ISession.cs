@@ -76,6 +76,7 @@ namespace MicroLite
         ///     using (var transaction = session.BeginTransaction())
         ///     {
         ///         session.Insert(customer);
+        ///
         ///         transaction.Commit();
         ///     }
         /// }
@@ -98,6 +99,7 @@ namespace MicroLite
         ///     using (var transaction = session.BeginTransaction())
         ///     {
         ///         session.Update(customer);
+        ///
         ///         transaction.Commit();
         ///     }
         /// }

@@ -22,7 +22,7 @@ namespace MicroLite
     public interface IAdvancedReadOnlySession : IHideObjectMethods
     {
         /// <summary>
-        /// Executes any pending queries which have been included.
+        /// Executes any pending queries which have been queued using the Include API.
         /// </summary>
         void ExecutePendingQueries();
     }

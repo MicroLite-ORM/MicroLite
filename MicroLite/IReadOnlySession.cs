@@ -110,9 +110,14 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     var query = new SqlQuery("SELECT * FROM Invoices WHERE CustomerId = @p0", 1324);
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         var query = new SqlQuery("SELECT * FROM Invoices WHERE CustomerId = @p0", 1324);
         ///
-        ///     var invoices = session.Fetch&lt;Invoice&gt;(query);
+        ///         var invoices = session.Fetch&lt;Invoice&gt;(query);
+        ///
+        ///         transaction.Commit();
+        ///     }
         /// }
         /// </code>
         /// </example>
@@ -132,9 +137,14 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     var query = new SqlQuery("SELECT * FROM Customers WHERE LastName = @p0", "Smith");
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         var query = new SqlQuery("SELECT * FROM Customers WHERE LastName = @p0", "Smith");
         ///
-        ///     var customers = session.Paged&lt;Customer&gt;(query, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
+        ///         var customers = session.Paged&lt;Customer&gt;(query, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
+        ///
+        ///         transaction.Commit();
+        ///     }
         /// }
         /// </code>
         /// </example>
@@ -154,7 +164,12 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     var customer = session.Single&lt;Customer&gt;(17867);
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         var customer = session.Single&lt;Customer&gt;(17867);
+        ///
+        ///         transaction.Commit();
+        ///     }
         /// }
         /// </code>
         /// </example>
@@ -174,10 +189,15 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     var query = new SqlQuery("SELECT * FROM Customers WHERE EmailAddress = @p0", "fred.flintstone@bedrock.com");
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         var query = new SqlQuery("SELECT * FROM Customers WHERE EmailAddress = @p0", "fred.flintstone@bedrock.com");
         ///
-        ///     // This overload is useful to retrieve a single object based upon a unique value which isn't it's identifier.
-        ///     var customer = session.Single&lt;Customer&gt;(query);
+        ///         // This overload is useful to retrieve a single object based upon a unique value which isn't it's identifier.
+        ///         var customer = session.Single&lt;Customer&gt;(query);
+        ///
+        ///         transaction.Commit();
+        ///     }
         /// }
         /// </code>
         /// </example>

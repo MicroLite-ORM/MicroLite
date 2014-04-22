@@ -13,18 +13,23 @@
 namespace MicroLite
 {
     /// <summary>
-    /// Defines the scope of a connection used by MicroLite.
+    /// Defines when a connection used by MicroLite is opened and closed.
     /// </summary>
     public enum ConnectionScope
     {
         /// <summary>
-        /// The connection should be opened at the start of a transaction and closed at the end of the transaction.
+        /// The connection should be opened when a transaction is started and closed when the transaction is completed (default).
         /// </summary>
+        /// <remarks>This is the default behaviour in 5.0 and the only available behaviour in 4.0 and earlier.</remarks>
         PerTransaction = 0,
 
         /// <summary>
-        /// The connection should be opened at the start of a session and closed at the end of the session.
+        /// The connection should be opened when a session is created and and closed when the session is disposed.
         /// </summary>
+        /// <remarks>
+        /// Use this option with caution, it exists mostly for use where opening a connection is expensive
+        /// and multiple transactions are to be used within a single session,
+        /// or for SQLite in memory databases which only persist data whilst a connection exists.</remarks>
         PerSession = 1
     }
 }
