@@ -29,6 +29,7 @@
                 var fluentConfiguration = new FluentConfiguration((ISessionFactory s) =>
                 {
                     this.sessionFactoryCreatedCalled = true;
+                    return s;
                 });
 
                 this.sessionFactory = fluentConfiguration
@@ -78,6 +79,7 @@
                 var fluentConfiguration = new FluentConfiguration((ISessionFactory s) =>
                 {
                     this.sessionFactoryCreatedCount++;
+                    return s;
                 });
 
                 this.sessionFactory1 = fluentConfiguration

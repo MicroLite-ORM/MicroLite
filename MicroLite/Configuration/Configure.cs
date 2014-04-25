@@ -25,8 +25,13 @@ namespace MicroLite.Configuration
         /// <summary>
         /// Gets or sets a function which will be called when a session factory is created.
         /// </summary>
-        /// <remarks>This can be null, but if set will be called before the session factory is added to the SessionFactories collection.</remarks>
-        public static Action<ISessionFactory> OnSessionFactoryCreated
+        /// <remarks>
+        /// This is null by default, but if set will be called:
+        /// - Input is the ISessionFactory which has been created before it is added to Configure.SessionFactories.
+        /// - Output is added to Configure.SessionFactories.
+        /// The purpose of the method is to allow the session factory to be wrapped for profiling.
+        /// </remarks>
+        public static Func<ISessionFactory, ISessionFactory> OnSessionFactoryCreated
         {
             get;
             set;
