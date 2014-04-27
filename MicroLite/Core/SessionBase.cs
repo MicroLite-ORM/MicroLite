@@ -154,13 +154,13 @@ namespace MicroLite.Core
 
                 if (this.ConnectionScope == ConnectionScope.PerSession)
                 {
-                    if (Log.IsDebug)
-                    {
-                        Log.Debug(LogMessages.ClosingConnection);
-                    }
-
                     if (this.Connection != null)
                     {
+                        if (Log.IsDebug)
+                        {
+                            Log.Debug(LogMessages.ClosingConnection);
+                        }
+
                         this.Connection.Close();
                     }
                 }
