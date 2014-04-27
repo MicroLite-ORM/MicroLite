@@ -46,20 +46,27 @@ namespace MicroLite.Driver
             }
 
             int argumentsCount = 0;
-            var stringBuilder = new StringBuilder(sqlQueries.Sum(s => s.CommandText.Length));
+            var sqlBuilder = new StringBuilder(sqlQueries.Sum(s => s.CommandText.Length));
 
             foreach (var sqlQuery in sqlQueries)
             {
                 argumentsCount += sqlQuery.Arguments.Count;
 
-                var commandText = sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
-                    ? sqlQuery.CommandText
-                    : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
+                if (sqlBuilder.Length == 0)
+                {
+                    sqlBuilder.Append(sqlQuery.CommandText).AppendLine(this.StatementSeparator);
+                }
+                else
+                {
+                    var commandText = sqlQuery.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
+                        ? sqlQuery.CommandText
+                        : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                stringBuilder.Append(commandText).AppendLine(this.StatementSeparator);
+                    sqlBuilder.Append(commandText).AppendLine(this.StatementSeparator);
+                }
             }
 
-            var combinedQuery = new SqlQuery(stringBuilder.ToString(0, stringBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
+            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
             combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
 
             return combinedQuery;
