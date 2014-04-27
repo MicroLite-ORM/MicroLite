@@ -7,8 +7,8 @@ _Headline Features_
 
 * It only references the .NET base class libraries (no dependencies outside the .NET framework itself).
 * It is built for .NET 3.5 client profile, .NET 4.0 client profile and .NET 4.5.
-* Extension support for logging via [log4net](https://github.com/TrevorPilley/MicroLite.Logging.Log4Net) or [NLog](https://github.com/TrevorPilley/MicroLite.Logging.NLog)
-* Extension support to quickly develop applications using [ASP.NET MVC](https://github.com/TrevorPilley/MicroLite.Extensions.Mvc/wiki) and [WebApi](https://github.com/TrevorPilley/MicroLite.Extensions.WebApi/wiki)
+* Extension support for logging via [log4net](https://github.com/TrevorPilley/MicroLite.Logging.Log4Net#microlitelogginglog4net) or [NLog](https://github.com/TrevorPilley/MicroLite.Logging.NLog#microliteloggingnlog)
+* Extension support to quickly develop applications using [ASP.NET MVC](https://github.com/TrevorPilley/MicroLite.Extensions.Mvc#microliteextensionsmvc) and [WebApi](https://github.com/TrevorPilley/MicroLite.Extensions.WebApi#microliteextensionswebapi)
 * Native support for Enum, Uri, and XDocument conversion
 * An extensible pipeline which allows 'plugging in' custom [Type Converters](http://microliteorm.wordpress.com/type-converters/) or [Session Listeners](http://microliteorm.wordpress.com/listeners/)
 * Easily managed by IOC containers
