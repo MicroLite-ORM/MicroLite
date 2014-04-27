@@ -67,18 +67,18 @@ namespace MicroLite.Dialect
         SqlQuery BuildUpdateSqlQuery(IObjectInfo objectInfo, object instance);
 
         /// <summary>
+        /// Builds an SqlQuery to update the database record based upon the values in the object delta.
+        /// </summary>
+        /// <param name="objectDelta">The object delta to create the query for.</param>
+        /// <returns>The created <see cref="SqlQuery"/>.</returns>
+        SqlQuery BuildUpdateSqlQuery(ObjectDelta objectDelta);
+
+        /// <summary>
         /// Creates an SqlQuery to count the number of records which would be returned by the specified SqlQuery.
         /// </summary>
         /// <param name="sqlQuery">The SQL query.</param>
         /// <returns>An <see cref="SqlQuery"/> to count the number of records which would be returned by the specified SqlQuery.</returns>
         SqlQuery CountQuery(SqlQuery sqlQuery);
-
-        /// <summary>
-        /// Creates an SqlQuery to perform an update based upon the values in the object delta.
-        /// </summary>
-        /// <param name="objectDelta">The object delta to create the query for.</param>
-        /// <returns>The created <see cref="SqlQuery"/>.</returns>
-        SqlQuery CreateQuery(ObjectDelta objectDelta);
 
         /// <summary>
         /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the paging options.

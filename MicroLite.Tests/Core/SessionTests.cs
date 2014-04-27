@@ -919,7 +919,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(objectDelta)).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(objectDelta)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
@@ -948,7 +948,7 @@
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CreateQuery(objectDelta)).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(objectDelta)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);

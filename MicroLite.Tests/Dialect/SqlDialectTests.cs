@@ -64,6 +64,38 @@
         }
 
         [Fact]
+        public void BuildUpdateSqlQueryForObjectDelta()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var objectDelta = new ObjectDelta(typeof(Customer), 1234);
+            objectDelta.AddChange("Name", "Fred Flintstone");
+
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var sqlQuery = mockSqlDialect.Object.BuildUpdateSqlQuery(objectDelta);
+
+            Assert.Equal("UPDATE Sales.Customers SET Name = ? WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+            Assert.Equal("Fred Flintstone", sqlQuery.Arguments[0]);
+            Assert.Equal(1234, sqlQuery.Arguments[1]);
+        }
+
+        [Fact]
+        public void BuildUpdateSqlQueryThrowsArgumentNullExceptionForNullObjectDelta()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => mockSqlDialect.Object.BuildUpdateSqlQuery(null));
+
+            Assert.Equal("objectDelta", exception.ParamName);
+        }
+
+        [Fact]
         public void BuildUpdateSqlQueryThrowsArgumentNullExceptionForNullObjectInfo()
         {
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
@@ -144,26 +176,6 @@
         }
 
         [Fact]
-        public void CreateQueryForObjectDelta()
-        {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
-
-            var objectDelta = new ObjectDelta(typeof(Customer), 1234);
-            objectDelta.AddChange("Name", "Fred Flintstone");
-
-            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
-            mockSqlDialect.CallBase = true;
-
-            var sqlQuery = mockSqlDialect.Object.CreateQuery(objectDelta);
-
-            Assert.Equal("UPDATE Sales.Customers SET Name = ? WHERE Id = ?", sqlQuery.CommandText);
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal("Fred Flintstone", sqlQuery.Arguments[0]);
-            Assert.Equal(1234, sqlQuery.Arguments[1]);
-        }
-
-        [Fact]
         public void CreateQueryThrowsArgumentNullExceptionForNullInstance()
         {
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
@@ -173,18 +185,6 @@
                 () => mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), null));
 
             Assert.Equal("instance", exception.ParamName);
-        }
-
-        [Fact]
-        public void CreateQueryThrowsArgumentNullExceptionForNullObjectDelta()
-        {
-            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
-            mockSqlDialect.CallBase = true;
-
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => mockSqlDialect.Object.CreateQuery(null));
-
-            Assert.Equal("objectDelta", exception.ParamName);
         }
 
         [Fact]

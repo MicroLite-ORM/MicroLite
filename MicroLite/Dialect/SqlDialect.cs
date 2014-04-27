@@ -240,34 +240,13 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Creates an SqlQuery to count the number of records which would be returned by the specified SqlQuery.
-        /// </summary>
-        /// <param name="sqlQuery">The SQL query.</param>
-        /// <returns>
-        /// An <see cref="SqlQuery" /> to count the number of records which would be returned by the specified SqlQuery.
-        /// </returns>
-        public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
-        {
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            var qualifiedTableName = SqlUtility.ReadTableName(sqlQuery.CommandText);
-            var whereValue = SqlUtility.ReadWhereClause(sqlQuery.CommandText);
-            var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
-
-            return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, sqlQuery.GetArgumentArray());
-        }
-
-        /// <summary>
         /// Creates an SqlQuery to perform an update based upon the values in the object delta.
         /// </summary>
         /// <param name="objectDelta">The object delta to create the query for.</param>
         /// <returns>
         /// The created <see cref="SqlQuery" />.
         /// </returns>
-        public SqlQuery CreateQuery(ObjectDelta objectDelta)
+        public SqlQuery BuildUpdateSqlQuery(ObjectDelta objectDelta)
         {
             if (objectDelta == null)
             {
@@ -289,6 +268,27 @@ namespace MicroLite.Dialect
                 .ToSqlQuery();
 
             return sqlQuery;
+        }
+
+        /// <summary>
+        /// Creates an SqlQuery to count the number of records which would be returned by the specified SqlQuery.
+        /// </summary>
+        /// <param name="sqlQuery">The SQL query.</param>
+        /// <returns>
+        /// An <see cref="SqlQuery" /> to count the number of records which would be returned by the specified SqlQuery.
+        /// </returns>
+        public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
+        {
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            var qualifiedTableName = SqlUtility.ReadTableName(sqlQuery.CommandText);
+            var whereValue = SqlUtility.ReadWhereClause(sqlQuery.CommandText);
+            var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
+
+            return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, sqlQuery.GetArgumentArray());
         }
 
         /// <summary>

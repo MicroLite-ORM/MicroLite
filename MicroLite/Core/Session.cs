@@ -251,7 +251,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("objectDelta");
             }
 
-            var sqlQuery = this.SqlDialect.CreateQuery(objectDelta);
+            var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectDelta);
 
             var rowsAffected = this.Execute(sqlQuery);
 
