@@ -85,6 +85,96 @@
             }
         }
 
+        public class WhenCallingBeginTransaction_AndTheTransactionScopeIsPerSession
+        {
+            private readonly IsolationLevel isolationLevel = IsolationLevel.Chaos;
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
+            private readonly Mock<IDbDriver> mockDbDriver = new Mock<IDbDriver>();
+            private readonly SessionBase sessionBase;
+            private readonly ITransaction transaction;
+
+            public WhenCallingBeginTransaction_AndTheTransactionScopeIsPerSession()
+            {
+                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(mockConnection.Object);
+
+                var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerSession, this.mockDbDriver.Object);
+                mockSessionBase.CallBase = true;
+
+                this.sessionBase = mockSessionBase.Object;
+                this.transaction = sessionBase.BeginTransaction(this.isolationLevel);
+            }
+
+            [Fact]
+            public void TheConnectionNotIsOpened()
+            {
+                this.mockConnection.Verify(x => x.Open(), Times.Never());
+            }
+
+            [Fact]
+            public void TheCurrentTransactionPropertyIsSetToTheReturnedTransaction()
+            {
+                Assert.Same(this.transaction, sessionBase.CurrentTransaction);
+            }
+
+            [Fact]
+            public void TheSpecifiedIsolationLevelIsUsed()
+            {
+                this.mockConnection.Verify(x => x.BeginTransaction(this.isolationLevel), Times.Once());
+            }
+
+            [Fact]
+            public void TheTransactionIsReturned()
+            {
+                Assert.NotNull(this.transaction);
+                Assert.IsType<Transaction>(this.transaction);
+            }
+        }
+
+        public class WhenCallingBeginTransaction_AndTheTransactionScopeIsPerTransaction
+        {
+            private readonly IsolationLevel isolationLevel = IsolationLevel.Chaos;
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
+            private readonly Mock<IDbDriver> mockDbDriver = new Mock<IDbDriver>();
+            private readonly SessionBase sessionBase;
+            private readonly ITransaction transaction;
+
+            public WhenCallingBeginTransaction_AndTheTransactionScopeIsPerTransaction()
+            {
+                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
+
+                var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerTransaction, this.mockDbDriver.Object);
+                mockSessionBase.CallBase = true;
+
+                this.sessionBase = mockSessionBase.Object;
+                this.transaction = sessionBase.BeginTransaction(this.isolationLevel);
+            }
+
+            [Fact]
+            public void TheConnectionIsOpened()
+            {
+                this.mockConnection.Verify(x => x.Open(), Times.Once());
+            }
+
+            [Fact]
+            public void TheCurrentTransactionPropertyIsSetToTheReturnedTransaction()
+            {
+                Assert.Same(this.transaction, sessionBase.CurrentTransaction);
+            }
+
+            [Fact]
+            public void TheSpecifiedIsolationLevelIsUsed()
+            {
+                this.mockConnection.Verify(x => x.BeginTransaction(this.isolationLevel), Times.Once());
+            }
+
+            [Fact]
+            public void TheTransactionIsReturned()
+            {
+                Assert.NotNull(this.transaction);
+                Assert.IsType<Transaction>(this.transaction);
+            }
+        }
+
         public class WhenCallingBeginTransaction_WithAnIsolationLevel
         {
             private readonly IsolationLevel isolationLevel = IsolationLevel.Chaos;

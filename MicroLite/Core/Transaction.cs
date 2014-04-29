@@ -39,16 +39,6 @@ namespace MicroLite.Core
         {
             this.sessionBase = sessionBase;
 
-            if (this.sessionBase.ConnectionScope == ConnectionScope.PerTransaction)
-            {
-                if (log.IsDebug)
-                {
-                    log.Debug(LogMessages.OpeningConnection);
-                }
-
-                this.sessionBase.Connection.Open();
-            }
-
             if (log.IsDebug)
             {
                 log.Debug(LogMessages.Transaction_BeginTransactionWithIsolationLevel, isolationLevel.ToString());

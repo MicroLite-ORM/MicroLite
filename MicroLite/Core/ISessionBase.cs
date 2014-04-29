@@ -28,14 +28,6 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Gets the connection scope.
-        /// </summary>
-        ConnectionScope ConnectionScope
-        {
-            get;
-        }
-
-        /// <summary>
         /// Informs the session that the Transaction has been completed.
         /// </summary>
         void TransactionCompleted();
