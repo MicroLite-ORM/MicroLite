@@ -72,6 +72,41 @@ namespace MicroLite.Driver
             return combinedQuery;
         }
 
+        public override SqlQuery Combine(SqlQuery sqlQuery1, SqlQuery sqlQuery2)
+        {
+            if (sqlQuery1 == null)
+            {
+                throw new ArgumentNullException("sqlQuery1");
+            }
+
+            if (sqlQuery2 == null)
+            {
+                throw new ArgumentNullException("sqlQuery2");
+            }
+
+            int argumentsCount = sqlQuery1.Arguments.Count + sqlQuery2.Arguments.Count;
+
+            var arguments = new object[argumentsCount];
+
+            Array.Copy(sqlQuery1.GetArgumentArray(), 0, arguments, 0, sqlQuery1.Arguments.Count);
+
+            if (sqlQuery2.Arguments.Count > 0)
+            {
+                Array.Copy(sqlQuery2.GetArgumentArray(), 0, arguments, sqlQuery1.Arguments.Count, sqlQuery2.Arguments.Count);
+            }
+
+            var query2CommandText = sqlQuery2.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
+                ? sqlQuery2.CommandText
+                : SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
+
+            var commandText = sqlQuery1.CommandText + this.StatementSeparator + Environment.NewLine + query2CommandText;
+
+            var combinedQuery = new SqlQuery(commandText, arguments);
+            combinedQuery.Timeout = Math.Max(sqlQuery1.Timeout, sqlQuery2.Timeout);
+
+            return combinedQuery;
+        }
+
         protected override string GetCommandText(string commandText)
         {
             if (commandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)
