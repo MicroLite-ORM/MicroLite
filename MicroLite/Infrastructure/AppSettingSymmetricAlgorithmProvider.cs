@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="AppSettingSymmetricAlgorithmProvider.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,12 +31,12 @@ namespace MicroLite.Infrastructure
 
             if (string.IsNullOrEmpty(key))
             {
-                throw new MicroLiteException(Messages.AppSettingSymmetricAlgorithmProvider_MissingKey);
+                throw new MicroLiteException(ExceptionMessages.AppSettingSymmetricAlgorithmProvider_MissingKey);
             }
 
             if (string.IsNullOrEmpty(algorithm))
             {
-                throw new MicroLiteException(Messages.AppSettingSymmetricAlgorithmProvider_MissingAlgorithm);
+                throw new MicroLiteException(ExceptionMessages.AppSettingSymmetricAlgorithmProvider_MissingAlgorithm);
             }
 
             this.Configure(algorithm, Encoding.ASCII.GetBytes(key));

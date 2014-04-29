@@ -1,10 +1,10 @@
-﻿namespace MicroLite.Tests.Mapping
+﻿namespace MicroLite.Tests.Mapping.Inflection
 {
     using MicroLite.Mapping.Inflection;
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="EnglishInflectionService"/> class.
+    /// Unit Tests for the <see cref="EnglishInflectionService" /> class.
     /// </summary>
     public class EnglishInflectionServiceTests
     {

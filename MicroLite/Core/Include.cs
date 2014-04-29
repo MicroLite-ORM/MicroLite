@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Include.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ namespace MicroLite.Core
     /// <summary>
     /// The base class for include implementations.
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}")]
     internal abstract class Include
     {
         /// <summary>
@@ -29,10 +30,9 @@ namespace MicroLite.Core
         }
 
         /// <summary>
-        /// Builds the included value from the results in the data reader using the supplied object builder.
+        /// Builds the included value from the results in the data reader.
         /// </summary>
         /// <param name="reader">The <see cref="IDataReader"/> containing the results.</param>
-        /// <param name="objectBuilder">The object builder to use to build the included value.</param>
-        internal abstract void BuildValue(IDataReader reader, IObjectBuilder objectBuilder);
+        internal abstract void BuildValue(IDataReader reader);
     }
 }

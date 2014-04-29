@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IReadOnlySession.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,6 +30,14 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets the current transaction or null if one has not been started.
+        /// </summary>
+        ITransaction CurrentTransaction
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets the operations which allow additional objects to be queried in a single database call.
         /// </summary>
         IIncludeSession Include
@@ -38,15 +46,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the current transaction or null if one has not been started.
-        /// </summary>
-        ITransaction Transaction
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Begins the transaction with the default isolation level of the connection.
+        /// Begins a transaction using <see cref="IsolationLevel"/>.ReadCommitted.
         /// </summary>
         /// <returns>An <see cref="ITransaction"/> with the default isolation level of the connection.</returns>
         /// <remarks>It is a good idea to perform all insert/update/delete actions inside a transaction.</remarks>
@@ -67,7 +67,7 @@ namespace MicroLite
         ITransaction BeginTransaction();
 
         /// <summary>
-        /// Begins the transaction with the specified isolation level.
+        /// Begins the transaction with the specified <see cref="IsolationLevel"/>.
         /// </summary>
         /// <param name="isolationLevel">The isolation level to use for the transaction.</param>
         /// <returns>An <see cref="ITransaction"/> with the specified <see cref="IsolationLevel"/>.</returns>
@@ -110,9 +110,14 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     var query = new SqlQuery("SELECT * FROM Invoices WHERE CustomerId = @p0", 1324);
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         var query = new SqlQuery("SELECT * FROM Invoices WHERE CustomerId = @p0", 1324);
         ///
-        ///     var invoices = session.Fetch&lt;Invoice&gt;(query);
+        ///         var invoices = session.Fetch&lt;Invoice&gt;(query);
+        ///
+        ///         transaction.Commit();
+        ///     }
         /// }
         /// </code>
         /// </example>
@@ -132,67 +137,18 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     var query = new SqlQuery("SELECT * FROM Customers WHERE LastName = @p0", "Smith");
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         var query = new SqlQuery("SELECT * FROM Customers WHERE LastName = @p0", "Smith");
         ///
-        ///     var customers = session.Paged&lt;Customer&gt;(query, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
+        ///         var customers = session.Paged&lt;Customer&gt;(query, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
+        ///
+        ///         transaction.Commit();
+        ///     }
         /// }
         /// </code>
         /// </example>
         PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions);
-
-#if !NET_3_5
-
-        /// <summary>
-        /// Executes the specified SQL query and returns the results as a list of dynamic objects.
-        /// </summary>
-        /// <param name="sqlQuery">The SQL query to execute.</param>
-        /// <returns>The results as a list of dynamic objects.</returns>
-        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if there is an error executing the command.</exception>
-        /// <remarks>This method is not available in the .net 3.5 build of MicroLite.</remarks>
-        /// <example>
-        /// <code>
-        /// using (var session = sessionFactory.OpenSession())
-        /// {
-        ///     // Create an ad-hoc query, this could select a number of columns accross multiple tables if desired.
-        ///     var query = new SqlQuery("SELECT Name, DoB FROM Customers");
-        ///
-        ///     // The results of the projection will be an IList&lt;dynamic&gt;
-        ///     var results = session.Advanced.Projection(query);
-        ///
-        ///     foreach (var item in results)
-        ///     {
-        ///         // The property names of each dynamic result will match (including case) the column names specified in the query.
-        ///         Console.WriteLine(item.Name);
-        ///         Console.WriteLine(item.DoB);
-        ///     }
-        /// }
-        /// </code>
-        /// <code>
-        /// using (var session = sessionFactory.OpenSession())
-        /// {
-        ///     var query = new SqlQuery(@"SELECT Customer.Name AS CustomerName, SUM(Invoices.InvoiceTotal) AS InvoiceTotal
-        ///         FROM Customers
-        ///         INNER JOIN Invoices ON Invoices.CustomerID = Customers.CustomerID
-        ///         GROUP BY Customers.Name
-        ///         ORDER BY InvoiceTotal DESC");
-        ///
-        ///     var results = session.Advanced.Projection(query);
-        ///
-        ///     foreach (var item in results)
-        ///     {
-        ///         // The property names of each dynamic result will match the column names specified in the query.
-        ///         Console.WriteLine(item.CustomerName);
-        ///         Console.WriteLine(item.InvoiceTotal);
-        ///     }
-        /// }
-        /// </code>
-        /// </example>
-        [Obsolete("MicroLite 4.0 introduced the ability to use dynamic with .Fetch(SqlQuery), .Single(SqlQuery) and .Paged(SqlQuery, PagingOptions). Any calls previously made to .Projection(SqlQuery) should be changed to call .Fetch(SqlQuery) instead to achieve the same result", error: false)]
-        IList<dynamic> Projection(SqlQuery sqlQuery);
-
-#endif
 
         /// <summary>
         /// Returns the instance of the specified type which corresponds to the row with the specified identifier
@@ -208,7 +164,12 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     var customer = session.Single&lt;Customer&gt;(17867);
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         var customer = session.Single&lt;Customer&gt;(17867);
+        ///
+        ///         transaction.Commit();
+        ///     }
         /// }
         /// </code>
         /// </example>
@@ -228,10 +189,15 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     var query = new SqlQuery("SELECT * FROM Customers WHERE EmailAddress = @p0", "fred.flintstone@bedrock.com");
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         var query = new SqlQuery("SELECT * FROM Customers WHERE EmailAddress = @p0", "fred.flintstone@bedrock.com");
         ///
-        ///     // This overload is useful to retrieve a single object based upon a unique value which isn't it's identifier.
-        ///     var customer = session.Single&lt;Customer&gt;(query);
+        ///         // This overload is useful to retrieve a single object based upon a unique value which isn't it's identifier.
+        ///         var customer = session.Single&lt;Customer&gt;(query);
+        ///
+        ///         transaction.Commit();
+        ///     }
         /// }
         /// </code>
         /// </example>

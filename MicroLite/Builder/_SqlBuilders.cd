@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MicroLite.Builder.SqlBuilder">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAEAAAAAAAAQAAAAAAAAAAAEAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Builder\SqlBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Builder.SelectSqlBuilder">
+    <Position X="5.75" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AzAAAACgAJAAAAAAFBBABEQEAAUAAAgIAADIEBAAgKQ=</HashCode>
+      <FileName>Builder\SelectSqlBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MicroLite.Builder.StoredProcedureSqlBuilder">
+    <Position X="8.75" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\StoredProcedureSqlBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MicroLite.Builder.InsertSqlBuilder">
+    <Position X="3" Y="5.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAEgAAAA=</HashCode>
+      <FileName>Builder\InsertSqlBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MicroLite.Builder.UpdateSqlBuilder">
+    <Position X="11.5" Y="5.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAQAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\UpdateSqlBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MicroLite.Builder.DeleteSqlBuilder">
+    <Position X="0.5" Y="5.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\DeleteSqlBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MicroLite.Builder.SqlBuilderBase">
+    <Position X="5.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AEEAAAABAAAAAACAAAAAgAAAAAAgAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Builder\SqlBuilderBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

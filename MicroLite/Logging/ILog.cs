@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ILog.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,8 +17,48 @@ namespace MicroLite.Logging
     /// <summary>
     /// The interface for a framework independent logger.
     /// </summary>
-    public interface ILog
+    public interface ILog : IHideObjectMethods
     {
+        /// <summary>
+        /// Gets a value indicating whether the logger is logging debug statements.
+        /// </summary>
+        bool IsDebug
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger is logging error statements.
+        /// </summary>
+        bool IsError
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger is logging fatal statements.
+        /// </summary>
+        bool IsFatal
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger is logging info statements.
+        /// </summary>
+        bool IsInfo
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the logger is logging warning statements.
+        /// </summary>
+        bool IsWarn
+        {
+            get;
+        }
+
         /// <summary>
         /// Writes the message to the log as a debug statement.
         /// </summary>

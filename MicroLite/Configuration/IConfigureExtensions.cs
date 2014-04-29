@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IConfigureExtensions.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ namespace MicroLite.Configuration
         void SetLogResolver(Func<string, ILog> logResolver);
 
         /// <summary>
-        /// Sets the mapping convention.
+        /// Specifies the mapping convention which should be used by MicroLite ORM to map classes to tables.
         /// </summary>
         /// <param name="mappingConvention">The mapping convention to use.</param>
         /// <exception cref="ArgumentNullException">Thrown if mappingConvention is null.</exception>

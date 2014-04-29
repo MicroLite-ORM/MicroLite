@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IObjectInfo.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,21 +13,13 @@
 namespace MicroLite.Mapping
 {
     using System;
+    using System.Data;
 
     /// <summary>
     /// The interface for a class which describes a type and the table it is mapped to.
     /// </summary>
-    public interface IObjectInfo
+    public interface IObjectInfo : IHideObjectMethods
     {
-        /// <summary>
-        /// Gets an object containing the default value for the type of identifier used by the type.
-        /// </summary>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
-        object DefaultIdentifierValue
-        {
-            get;
-        }
-
         /// <summary>
         /// Gets type the object info relates to.
         /// </summary>
@@ -46,62 +38,82 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Creates a new instance of the type.
+        /// Creates a new instance of the type populated with the values from the specified IDataReader.
         /// </summary>
-        /// <returns>A new instance of the type.</returns>
-        object CreateInstance();
+        /// <param name="reader">The IDataReader containing the values to build the instance from.</param>
+        /// <returns>A new instance of the type populated with the values from the specified IDataReader.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if reader is null.</exception>
+        object CreateInstance(IDataReader reader);
+
+        /// <summary>
+        /// Gets the column information for the column with the specified name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns>The ColumnInfo or null if no column is mapped for the object with the specified name.</returns>
+        ColumnInfo GetColumnInfo(string columnName);
 
         /// <summary>
         /// Gets the property value for the object identifier.
         /// </summary>
         /// <param name="instance">The instance to retrieve the value from.</param>
         /// <returns>The value of the identifier property.</returns>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         object GetIdentifierValue(object instance);
 
         /// <summary>
-        /// Gets the property value for the specified property on the specified instance.
+        /// Gets the insert values for the specified instance.
         /// </summary>
-        /// <param name="instance">The instance to retrieve the value from.</param>
-        /// <param name="propertyName">Name of the property to get the value for.</param>
-        /// <returns>The value of the property.</returns>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
-        object GetPropertyValue(object instance, string propertyName);
+        /// <param name="instance">The instance to retrieve the values from.</param>
+        /// <returns>An array of values to be used for the insert command.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
+        object[] GetInsertValues(object instance);
 
         /// <summary>
-        /// Gets the property value from the specified instance and converts it to the correct type for the specified column.
+        /// Gets the update values for the specified instance.
         /// </summary>
-        /// <param name="instance">The instance to retrieve the value from.</param>
-        /// <param name="columnName">Name of the column to get the value for.</param>
-        /// <returns>The column value of the property.</returns>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
-        object GetPropertyValueForColumn(object instance, string columnName);
+        /// <param name="instance">The instance to retrieve the values from.</param>
+        /// <returns>An array of values to be used for the update command.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
+        object[] GetUpdateValues(object instance);
 
         /// <summary>
         /// Determines whether the specified instance has the default identifier value.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="instance">The instance to verify.</param>
         /// <returns>
         ///   <c>true</c> if the instance has the default identifier value; otherwise, <c>false</c>.
         /// </returns>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         bool HasDefaultIdentifierValue(object instance);
 
         /// <summary>
-        /// Sets the property value for the specified property on the specified instance to the specified value.
+        /// Determines whether the specified identifier value is the default identifier value.
         /// </summary>
-        /// <param name="instance">The instance to set the property value on.</param>
-        /// <param name="propertyName">Name of the property to set the value for.</param>
-        /// <param name="value">The value to be set.</param>
-        /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
-        void SetPropertyValue(object instance, string propertyName, object value);
+        /// <param name="identifier">The identifier value to verify.</param>
+        /// <returns>True if the identifier is the default value, otherwise false.</returns>
+        bool IsDefaultIdentifier(object identifier);
 
         /// <summary>
-        /// Sets the property value of the property mapped to the specified column after converting it to the correct type for the property.
+        /// Sets the property value for the object identifier to the supplied value.
         /// </summary>
-        /// <param name="instance">The instance to set the property value on.</param>
-        /// <param name="columnName">The name of the column the property is mapped to.</param>
-        /// <param name="value">The value from the database column to set the property to.</param>
-        void SetPropertyValueForColumn(object instance, string columnName, object value);
+        /// <param name="instance">The instance to set the value for.</param>
+        /// <param name="identifier">The value to set as the identifier property.</param>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
+        void SetIdentifierValue(object instance, object identifier);
+
+        /// <summary>
+        /// Verifies the instance can be inserted.
+        /// </summary>
+        /// <param name="instance">The instance to verify.</param>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">
+        /// Thrown if the instance is not of the correct type or its state is invalid for the specified StatementType.
+        /// </exception>
+        void VerifyInstanceForInsert(object instance);
     }
 }

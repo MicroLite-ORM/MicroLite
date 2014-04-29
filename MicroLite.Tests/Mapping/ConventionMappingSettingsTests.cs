@@ -2,16 +2,74 @@
 {
     using MicroLite.Mapping;
     using MicroLite.Mapping.Inflection;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="ConventionMappingSettings"/> class.
+    /// Unit Tests for the <see cref="ConventionMappingSettings" /> class.
     /// </summary>
     public class ConventionMappingSettingsTests
     {
+        [Fact]
+        public void Default_ReturnsNewInstanceEachTime()
+        {
+            var settings1 = ConventionMappingSettings.Default;
+            var settings2 = ConventionMappingSettings.Default;
+
+            Assert.NotSame(settings1, settings2);
+        }
+
         public class WhenConstructed
         {
             private readonly ConventionMappingSettings settings = new ConventionMappingSettings();
+
+            [Fact]
+            public void IsIdentifierReturnsTrueIfPropertyNameIsClassId()
+            {
+                var propertyInfo = typeof(Invoice).GetProperty("InvoiceId");
+
+                Assert.True(this.settings.IsIdentifier(propertyInfo));
+            }
+
+            [Fact]
+            public void IsIdentifierReturnsTrueIfPropertyNameIsId()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Id");
+
+                Assert.True(this.settings.IsIdentifier(propertyInfo));
+            }
+
+            [Fact]
+            public void ResolveColumnNameReturnsPropertyNameIdIfEnum()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Status");
+
+                Assert.Equal("CustomerStatusId", this.settings.ResolveColumnName(propertyInfo));
+            }
+
+            [Fact]
+            public void ResolveColumnNameReturnsPropertyNameIfNotEnum()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Name");
+
+                Assert.Equal("Name", this.settings.ResolveColumnName(propertyInfo));
+            }
+
+            [Fact]
+            public void ResolveTableNameReturnsPluralTypeName()
+            {
+                var type = typeof(Customer);
+
+                Assert.Equal("Customers", this.settings.ResolveTableName(type));
+            }
+
+            [Fact]
+            public void ResolveTableSchemaReturnsNull()
+            {
+                var type = typeof(Customer);
+
+                Assert.Null(this.settings.ResolveTableSchema(type));
+            }
 
             [Fact]
             public void TheAllowInsertFunctionShouldBeSet()
@@ -23,12 +81,6 @@
             public void TheAllowUpdateFunctionShouldBeSet()
             {
                 Assert.NotNull(this.settings.AllowUpdate);
-            }
-
-            [Fact]
-            public void TheIdentifierStrategyIsSetToDbGenerated()
-            {
-                Assert.Equal(IdentifierStrategy.DbGenerated, this.settings.IdentifierStrategy);
             }
 
             [Fact]
@@ -62,9 +114,21 @@
             }
 
             [Fact]
-            public void TheTableSchemIsSetToNull()
+            public void TheResolveIdentifierStrategyFunctionShouldBeSet()
             {
-                Assert.Null(this.settings.TableSchema);
+                Assert.NotNull(this.settings.ResolveIdentifierStrategy);
+            }
+
+            [Fact]
+            public void TheResolveTableNameFunctionShouldBeSet()
+            {
+                Assert.NotNull(this.settings.ResolveTableName);
+            }
+
+            [Fact]
+            public void TheResolveTableSchemaFunctionShouldBeSet()
+            {
+                Assert.NotNull(this.settings.ResolveTableSchema);
             }
 
             [Fact]

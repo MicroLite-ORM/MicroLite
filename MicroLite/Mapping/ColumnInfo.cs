@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ColumnInfo.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ namespace MicroLite.Mapping
     /// <summary>
     /// A class which contains information about a database table column and the property it is mapped to.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Column {ColumnName}, Identifier:{IsIdentifier}, Insert:{AllowInsert}, Update:{AllowUpdate}")]
+    [System.Diagnostics.DebuggerDisplay("Column: {ColumnName}, Identifier: {IsIdentifier}, Insert: {AllowInsert}, Update: {AllowUpdate}")]
     public sealed class ColumnInfo
     {
         private readonly bool allowInsert;

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Session.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,30 +13,29 @@
 namespace MicroLite.Core
 {
     using System;
-    using System.Data;
-    using MicroLite.FrameworkExtensions;
+    using System.Collections.Generic;
+    using MicroLite.Dialect;
+    using MicroLite.Driver;
     using MicroLite.Listeners;
-    using MicroLite.Logging;
     using MicroLite.Mapping;
     using MicroLite.TypeConverters;
 
     /// <summary>
     /// The default implementation of <see cref="ISession"/>.
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("ConnectionScope: {ConnectionScope}")]
     internal sealed class Session : ReadOnlySession, ISession, IAdvancedSession
     {
-        private readonly IListener[] listeners;
+        private readonly IList<IListener> listeners;
 
         internal Session(
-            ISessionFactory sessionFactory,
-            IConnectionManager connectionManager,
-            IObjectBuilder objectBuilder,
-            IListener[] listeners)
-            : base(sessionFactory, connectionManager, objectBuilder)
+            ConnectionScope connectionScope,
+            ISqlDialect sqlDialect,
+            IDbDriver sqlDriver,
+            IList<IListener> listeners)
+            : base(connectionScope, sqlDialect, sqlDriver)
         {
             this.listeners = listeners;
-
-            Log.TryLogDebug(Messages.Session_Created);
         }
 
         public new IAdvancedSession Advanced
@@ -56,15 +55,28 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            this.listeners.Each(l => l.BeforeDelete(instance));
+            for (int i = 0; i < this.listeners.Count; i++)
+            {
+                this.listeners[i].BeforeDelete(instance);
+            }
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, instance);
+            var objectInfo = ObjectInfo.For(instance.GetType());
 
-            this.listeners.Each(l => l.BeforeDelete(instance, sqlQuery));
+            var identifier = objectInfo.GetIdentifierValue(instance);
+
+            if (objectInfo.IsDefaultIdentifier(identifier))
+            {
+                throw new MicroLiteException(ExceptionMessages.Session_IdentifierNotSetForDelete);
+            }
+
+            var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
 
             var rowsAffected = this.Execute(sqlQuery);
 
-            this.listeners.Reverse().Each(l => l.AfterDelete(instance, rowsAffected));
+            for (int i = this.listeners.Count - 1; i >= 0; i--)
+            {
+                this.listeners[i].AfterDelete(instance, rowsAffected);
+            }
 
             return rowsAffected == 1;
         }
@@ -83,7 +95,9 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("identifier");
             }
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Delete, type, identifier);
+            var objectInfo = ObjectInfo.For(type);
+
+            var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
 
             var rowsAffected = this.Execute(sqlQuery);
 
@@ -101,20 +115,22 @@ namespace MicroLite.Core
 
             try
             {
-                using (var command = this.ConnectionManager.CreateCommand())
+                using (var command = this.CreateCommand(sqlQuery))
                 {
-                    this.SqlDialect.BuildCommand(command, sqlQuery);
-
                     var result = command.ExecuteNonQuery();
 
-                    this.ConnectionManager.CommandCompleted(command);
+                    this.CommandCompleted();
 
                     return result;
                 }
             }
+            catch (MicroLiteException)
+            {
+                // Don't re-wrap MicroLite exceptions
+                throw;
+            }
             catch (Exception e)
             {
-                Log.TryLogError(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }
@@ -130,24 +146,26 @@ namespace MicroLite.Core
 
             try
             {
-                using (var command = this.ConnectionManager.CreateCommand())
+                using (var command = this.CreateCommand(sqlQuery))
                 {
-                    this.SqlDialect.BuildCommand(command, sqlQuery);
-
                     var result = command.ExecuteScalar();
 
-                    this.ConnectionManager.CommandCompleted(command);
+                    this.CommandCompleted();
 
                     var resultType = typeof(T);
-                    var typeConverter = TypeConverter.For(resultType);
+                    var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
                     var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
 
                     return converted;
                 }
             }
+            catch (MicroLiteException)
+            {
+                // Don't re-wrap MicroLite exceptions
+                throw;
+            }
             catch (Exception e)
             {
-                Log.TryLogError(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
         }
@@ -161,33 +179,33 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            this.listeners.Each(l => l.BeforeInsert(instance));
-
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Insert, instance);
-
-            this.listeners.Each(l => l.BeforeInsert(instance, sqlQuery));
-
-            var identifier = this.ExecuteScalar<object>(sqlQuery);
-
-            this.listeners.Reverse().Each(l => l.AfterInsert(instance, identifier));
-        }
-
-        public void InsertOrUpdate(object instance)
-        {
-            if (instance == null)
+            for (int i = 0; i < this.listeners.Count; i++)
             {
-                throw new ArgumentNullException("instance");
+                this.listeners[i].BeforeInsert(instance);
             }
 
             var objectInfo = ObjectInfo.For(instance.GetType());
+            objectInfo.VerifyInstanceForInsert(instance);
 
-            if (objectInfo.HasDefaultIdentifierValue(instance))
+            var insertSqlQuery = this.SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
+            var selectIdSqlQuery = this.SqlDialect.BuildSelectIdentitySqlQuery(objectInfo);
+
+            object identifier = null;
+
+            if (this.DbDriver.SupportsBatchedQueries)
             {
-                this.Insert(instance);
+                var combined = this.DbDriver.Combine(insertSqlQuery, selectIdSqlQuery);
+                identifier = this.ExecuteScalar<object>(combined);
             }
             else
             {
-                this.Update(instance);
+                this.Execute(insertSqlQuery);
+                identifier = this.ExecuteScalar<object>(selectIdSqlQuery);
+            }
+
+            for (int i = this.listeners.Count - 1; i >= 0; i--)
+            {
+                this.listeners[i].AfterInsert(instance, identifier);
             }
         }
 
@@ -200,15 +218,42 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            this.listeners.Each(l => l.BeforeUpdate(instance));
+            for (int i = 0; i < this.listeners.Count; i++)
+            {
+                this.listeners[i].BeforeUpdate(instance);
+            }
 
-            var sqlQuery = this.SqlDialect.CreateQuery(StatementType.Update, instance);
+            var objectInfo = ObjectInfo.For(instance.GetType());
 
-            this.listeners.Each(l => l.BeforeUpdate(instance, sqlQuery));
+            if (objectInfo.HasDefaultIdentifierValue(instance))
+            {
+                throw new MicroLiteException(ExceptionMessages.Session_IdentifierNotSetForUpdate);
+            }
+
+            var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectInfo, instance);
 
             var rowsAffected = this.Execute(sqlQuery);
 
-            this.listeners.Reverse().Each(l => l.AfterUpdate(instance, rowsAffected));
+            for (int i = this.listeners.Count - 1; i >= 0; i--)
+            {
+                this.listeners[i].AfterUpdate(instance, rowsAffected);
+            }
+
+            return rowsAffected == 1;
+        }
+
+        public bool Update(ObjectDelta objectDelta)
+        {
+            this.ThrowIfDisposed();
+
+            if (objectDelta == null)
+            {
+                throw new ArgumentNullException("objectDelta");
+            }
+
+            var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectDelta);
+
+            var rowsAffected = this.Execute(sqlQuery);
 
             return rowsAffected == 1;
         }

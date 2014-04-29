@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ObjectInfo.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,17 +14,9 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
-
-#if !NET_3_5
-
-    using System.Dynamic;
-
-#endif
-
-    using System.Linq;
+    using System.Data;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
-    using MicroLite.TypeConverters;
 
     /// <summary>
     /// The class which describes a type and the table it is mapped to.
@@ -33,26 +25,33 @@ namespace MicroLite.Mapping
     public sealed class ObjectInfo : IObjectInfo
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private static IMappingConvention mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+        private static IMappingConvention mappingConvention;
 
         private static IDictionary<Type, IObjectInfo> objectInfos = new Dictionary<Type, IObjectInfo>
         {
 #if !NET_3_5
-            { typeof(ExpandoObject), new ExpandoObjectInfo() },
+            { typeof(System.Dynamic.ExpandoObject), new ExpandoObjectInfo() },
             { typeof(object), new ExpandoObjectInfo() } // If the generic argument <dynamic> is used (in ISession.Fetch for example), typeof(T) will return object.
 #endif
         };
 
+        private readonly object defaultIdentifierValue;
         private readonly Type forType;
-        private readonly Dictionary<string, IPropertyAccessor> propertyAccessors; // key is property name.
+        private readonly Func<object, object> getIdentifierValue;
+        private readonly Func<object, object[]> getInsertValues;
+        private readonly Func<object, object[]> getUpdateValues;
+        private readonly Func<IDataReader, object> instanceFactory;
+        private readonly Action<object, object> setIdentifierValue;
         private readonly TableInfo tableInfo;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="ObjectInfo"/> class.
+        /// Initialises a new instance of the <see cref="ObjectInfo" /> class.
         /// </summary>
         /// <param name="forType">The type the object info relates to.</param>
         /// <param name="tableInfo">The table info.</param>
-        /// <exception cref="ArgumentNullException">Thrown if forType or tableInfo are null.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if forType or tableInfo are null.
+        /// </exception>
         public ObjectInfo(Type forType, TableInfo tableInfo)
         {
             if (forType == null)
@@ -65,30 +64,19 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("tableInfo");
             }
 
-            log.TryLogDebug(Messages.ObjectInfo_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             this.forType = forType;
             this.tableInfo = tableInfo;
-            this.propertyAccessors = new Dictionary<string, IPropertyAccessor>(this.tableInfo.Columns.Count);
 
-            foreach (var columnInfo in this.tableInfo.Columns)
+            if (this.tableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
             {
-                log.TryLogDebug(Messages.ObjectInfo_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
-                this.propertyAccessors.Add(columnInfo.PropertyInfo.Name, PropertyAccessor.Create(columnInfo.PropertyInfo));
-
-                if (columnInfo.IsIdentifier && columnInfo.PropertyInfo.PropertyType.IsValueType)
-                {
-                    this.DefaultIdentifierValue = (ValueType)Activator.CreateInstance(columnInfo.PropertyInfo.PropertyType);
-                }
+                this.defaultIdentifierValue = (ValueType)Activator.CreateInstance(this.tableInfo.IdentifierColumn.PropertyInfo.PropertyType);
             }
-        }
 
-        /// <summary>
-        /// Gets an object containing the default value for the type of identifier used by the type.
-        /// </summary>
-        public object DefaultIdentifierValue
-        {
-            get;
-            private set;
+            this.getIdentifierValue = DelegateFactory.CreateGetIdentifier(this);
+            this.getInsertValues = DelegateFactory.CreateGetInsertValues(this);
+            this.getUpdateValues = DelegateFactory.CreateGetUpdateValues(this);
+            this.instanceFactory = DelegateFactory.CreateInstanceFactory(this);
+            this.setIdentifierValue = DelegateFactory.CreateSetIdentifier(this);
         }
 
         /// <summary>
@@ -117,12 +105,17 @@ namespace MicroLite.Mapping
         {
             get
             {
-                return ObjectInfo.mappingConvention;
+                if (mappingConvention == null)
+                {
+                    mappingConvention = mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+                }
+
+                return mappingConvention;
             }
 
             set
             {
-                ObjectInfo.mappingConvention = value;
+                mappingConvention = value;
             }
         }
 
@@ -130,7 +123,7 @@ namespace MicroLite.Mapping
         /// Gets the object info for the specified type.
         /// </summary>
         /// <param name="forType">The type to get the object info for.</param>
-        /// <returns>The <see cref="ObjectInfo"/> for the specified <see cref="Type"/>.</returns>
+        /// <returns>The <see cref="ObjectInfo" /> for the specified <see cref="Type" />.</returns>
         /// <exception cref="ArgumentNullException">Thrown if forType is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the specified type cannot be used with MicroLite.</exception>
         public static IObjectInfo For(Type forType)
@@ -140,14 +133,23 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("forType");
             }
 
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
+            }
+
             IObjectInfo objectInfo;
 
             if (!objectInfos.TryGetValue(forType, out objectInfo))
             {
                 VerifyType(forType);
 
-                log.TryLogDebug(Messages.ObjectInfo_CreatingObjectInfo, forType.FullName);
-                objectInfo = ObjectInfo.MappingConvention.CreateObjectInfo(forType);
+                if (log.IsDebug)
+                {
+                    log.Debug(LogMessages.ObjectInfo_CreatingObjectInfo, forType.FullName);
+                }
+
+                objectInfo = MappingConvention.CreateObjectInfo(forType);
 
                 var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos);
                 newObjectInfos[forType] = objectInfo;
@@ -155,17 +157,48 @@ namespace MicroLite.Mapping
                 objectInfos = newObjectInfos;
             }
 
-            log.TryLogDebug(Messages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
             return objectInfo;
         }
 
         /// <summary>
-        /// Creates a new instance of the type.
+        /// Creates a new instance of the type populated with the values from the specified IDataReader.
         /// </summary>
-        /// <returns>A new instance of the type.</returns>
-        public object CreateInstance()
+        /// <param name="reader">The IDataReader containing the values to build the instance from.</param>
+        /// <returns>A new instance of the type populated with the values from the specified IDataReader.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if reader is null.</exception>
+        public object CreateInstance(IDataReader reader)
         {
-            return Activator.CreateInstance(this.forType);
+            if (reader == null)
+            {
+                throw new ArgumentNullException("reader");
+            }
+
+            var instance = this.instanceFactory(reader);
+
+            return instance;
+        }
+
+        /// <summary>
+        /// Gets the column information for the column with the specified name.
+        /// </summary>
+        /// <param name="columnName">Name of the column.</param>
+        /// <returns>
+        /// The ColumnInfo or null if no column is mapped for the object with the specified name.
+        /// </returns>
+        public ColumnInfo GetColumnInfo(string columnName)
+        {
+            ColumnInfo columnInfo = null;
+
+            for (int i = 0; i < this.tableInfo.Columns.Count; i++)
+            {
+                if (this.tableInfo.Columns[i].ColumnName == columnName)
+                {
+                    columnInfo = this.tableInfo.Columns[i];
+                    break;
+                }
+            }
+
+            return columnInfo;
         }
 
         /// <summary>
@@ -179,156 +212,149 @@ namespace MicroLite.Mapping
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var value = this.GetPropertyValueForColumn(instance, this.TableInfo.IdentifierColumn);
+            var value = this.getIdentifierValue(instance);
 
             return value;
         }
 
         /// <summary>
-        /// Gets the property value for the specified property on the specified instance.
+        /// Gets the insert values for the specified instance.
         /// </summary>
-        /// <param name="instance">The instance to retrieve the value from.</param>
-        /// <param name="propertyName">Name of the property to get the value for.</param>
-        /// <returns>The value of the property.</returns>
-        public object GetPropertyValue(object instance, string propertyName)
-        {
-            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
-
-            IPropertyAccessor propertyAccessor;
-
-            if (!this.propertyAccessors.TryGetValue(propertyName, out propertyAccessor))
-            {
-                log.TryLogError(Messages.ObjectInfo_UnknownProperty, this.ForType.Name, propertyName);
-                throw new MicroLiteException(Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName));
-            }
-
-            log.TryLogDebug(Messages.ObjectInfo_GettingPropertyValue, this.ForType.Name, propertyName);
-            var value = propertyAccessor.GetValue(instance);
-
-            return value;
-        }
-
-        /// <summary>
-        /// Gets the property value from the specified instance and converts it to the correct type for the specified column.
-        /// </summary>
-        /// <param name="instance">The instance to retrieve the value from.</param>
-        /// <param name="columnName">Name of the column to get the value for.</param>
-        /// <returns>The column value of the property.</returns>
+        /// <param name="instance">The instance to retrieve the values from.</param>
+        /// <returns>An array of values to be used for the insert command.</returns>
         /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        public object GetPropertyValueForColumn(object instance, string columnName)
+        public object[] GetInsertValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var columnInfo = this.TableInfo.Columns.SingleOrDefault(c => c.ColumnName == columnName);
+            var insertValues = this.getInsertValues(instance);
 
-            if (columnInfo == null)
-            {
-                log.TryLogError(Messages.ObjectInfo_ColumnNotMapped, columnName, this.ForType.Name);
-                throw new MicroLiteException(Messages.ObjectInfo_ColumnNotMapped.FormatWith(columnName, this.ForType.Name));
-            }
+            return insertValues;
+        }
 
-            log.TryLogDebug(Messages.ObjectInfo_GettingPropertyValueForColumn, this.ForType.Name, columnInfo.PropertyInfo.Name, columnName);
-            var value = this.propertyAccessors[columnInfo.PropertyInfo.Name].GetValue(instance);
+        /// <summary>
+        /// Gets the update values for the specified instance.
+        /// </summary>
+        /// <param name="instance">The instance to retrieve the values from.</param>
+        /// <returns>An array of values to be used for the update command.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
+        public object[] GetUpdateValues(object instance)
+        {
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
+            var updateValues = this.getUpdateValues(instance);
 
-            var converted = typeConverter.ConvertToDbValue(value, columnInfo.PropertyInfo.PropertyType);
-
-            return converted;
+            return updateValues;
         }
 
         /// <summary>
         /// Determines whether the specified instance has the default identifier value.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="instance">The instance to verify.</param>
         /// <returns>
         ///   <c>true</c> if the instance has the default identifier value; otherwise, <c>false</c>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public bool HasDefaultIdentifierValue(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var identifierValue = this.GetPropertyValue(instance, this.TableInfo.IdentifierProperty);
+            var identifierValue = this.getIdentifierValue(instance);
 
-            bool hasDefaultIdentifier = object.Equals(identifierValue, this.DefaultIdentifierValue);
+            bool hasDefaultIdentifier = object.Equals(identifierValue, this.defaultIdentifierValue);
 
             return hasDefaultIdentifier;
         }
 
         /// <summary>
-        /// Sets the property value for the specified property on the specified instance to the specified value.
+        /// Determines whether the specified identifier value is the default identifier value.
         /// </summary>
-        /// <param name="instance">The instance to set the property value on.</param>
-        /// <param name="propertyName">Name of the property to set the value for.</param>
-        /// <param name="value">The value to be set.</param>
-        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        public void SetPropertyValue(object instance, string propertyName, object value)
+        /// <param name="identifier">The identifier value to verify.</param>
+        /// <returns>
+        /// True if the identifier is the default value, otherwise false.
+        /// </returns>
+        public bool IsDefaultIdentifier(object identifier)
         {
-            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            bool isDefaultIdentifier = object.Equals(identifier, this.defaultIdentifierValue);
 
-            IPropertyAccessor propertyAccessor;
-
-            if (!this.propertyAccessors.TryGetValue(propertyName, out propertyAccessor))
-            {
-                log.TryLogError(Messages.ObjectInfo_UnknownProperty, this.ForType.Name, propertyName);
-                throw new MicroLiteException(Messages.ObjectInfo_UnknownProperty.FormatWith(this.ForType.Name, propertyName));
-            }
-
-            log.TryLogDebug(Messages.IObjectInfo_SettingPropertyValue, this.ForType.Name, propertyName);
-            propertyAccessor.SetValue(instance, value);
+            return isDefaultIdentifier;
         }
 
         /// <summary>
-        /// Sets the property value of the property mapped to the specified column after converting it to the correct type for the property.
+        /// Sets the property value for the object identifier to the supplied value.
         /// </summary>
-        /// <param name="instance">The instance to set the property value on.</param>
-        /// <param name="columnName">The name of the column the property is mapped to.</param>
-        /// <param name="value">The value from the database column to set the property to.</param>
+        /// <param name="instance">The instance to set the value for.</param>
+        /// <param name="identifier">The value to set as the identifier property.</param>
         /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        public void SetPropertyValueForColumn(object instance, string columnName, object value)
+        public void SetIdentifierValue(object instance, object identifier)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
 
-            var columnInfo = this.TableInfo.Columns.SingleOrDefault(c => c.ColumnName == columnName);
+            this.setIdentifierValue(instance, identifier);
+        }
 
-            if (columnInfo == null)
+        /// <summary>
+        /// Verifies the instance can be inserted.
+        /// </summary>
+        /// <param name="instance">The instance to verify.</param>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">
+        /// Thrown if the instance is not of the correct type or its state is invalid for the specified StatementType.
+        /// </exception>
+        public void VerifyInstanceForInsert(object instance)
+        {
+            if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
-                log.TryLogError(Messages.ObjectInfo_UnknownColumn, this.ForType.Name, columnName);
-                throw new MicroLiteException(Messages.ObjectInfo_UnknownColumn.FormatWith(this.ForType.Name, columnName));
+                if (!this.HasDefaultIdentifierValue(instance))
+                {
+                    throw new MicroLiteException(ExceptionMessages.ObjectInfo_IdentifierSetForInsert);
+                }
             }
+            else if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
+            {
+                if (this.HasDefaultIdentifierValue(instance))
+                {
+                    throw new MicroLiteException(ExceptionMessages.ObjectInfo_IdentifierNotSetForInsert);
+                }
+            }
+        }
 
-            var typeConverter = TypeConverter.For(columnInfo.PropertyInfo.PropertyType);
+        /// <summary>
+        /// Resets the object info state, removing any cached object information and restoring the default mapping convention.
+        /// </summary>
+        /// <remarks>
+        /// Makes it easier to unit test using different mapping conventions - should remain an internal method.
+        /// </remarks>
+        internal static void Reset()
+        {
+            mappingConvention = null;
 
-            var converted = typeConverter.ConvertFromDbValue(value, columnInfo.PropertyInfo.PropertyType);
-
-            log.TryLogDebug(Messages.IObjectInfo_SettingPropertyValue, this.ForType.Name, columnInfo.PropertyInfo.Name);
-            this.propertyAccessors[columnInfo.PropertyInfo.Name].SetValue(instance, converted);
+            objectInfos = new Dictionary<Type, IObjectInfo>
+            {
+#if !NET_3_5
+                { typeof(System.Dynamic.ExpandoObject), new ExpandoObjectInfo() },
+                { typeof(object), new ExpandoObjectInfo() }
+#endif
+            };
         }
 
         private static void VerifyType(Type forType)
         {
-            string message = null;
-
             if (!forType.IsClass)
             {
-                message = Messages.ObjectInfo_TypeMustBeClass.FormatWith(forType.Name);
+                throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustBeClass.FormatWith(forType.Name));
             }
             else if (forType.IsAbstract)
             {
-                message = Messages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(forType.Name);
+                throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(forType.Name));
             }
             else if (forType.GetConstructor(Type.EmptyTypes) == null)
             {
-                message = Messages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(forType.Name);
-            }
-
-            if (message != null)
-            {
-                log.TryLogFatal(message);
-                throw new MicroLiteException(message);
+                throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(forType.Name));
             }
         }
 
@@ -341,8 +367,7 @@ namespace MicroLite.Mapping
 
             if (instance.GetType() != this.ForType)
             {
-                log.TryLogError(Messages.ObjectInfo_TypeMismatch, instance.GetType().Name, this.ForType.Name);
-                throw new MicroLiteException(Messages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
+                throw new MappingException(ExceptionMessages.ObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
             }
         }
     }

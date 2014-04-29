@@ -2,10 +2,11 @@
 {
     using System;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="ColumnInfo"/> class.
+    /// Unit Tests for the <see cref="ColumnInfo" /> class.
     /// </summary>
     public class ColumnInfoTests
     {
@@ -43,19 +44,6 @@
                 () => new ColumnInfo("Name", null, false, true, true));
 
             Assert.Equal("propertyInfo", exception.ParamName);
-        }
-
-        private class Customer
-        {
-            public Customer()
-            {
-            }
-
-            public string Name
-            {
-                get;
-                set;
-            }
         }
     }
 }

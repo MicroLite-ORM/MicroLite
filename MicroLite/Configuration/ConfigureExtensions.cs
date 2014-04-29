@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ConfigureExtensions.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,14 +21,13 @@ namespace MicroLite.Configuration
     /// </summary>
     internal sealed class ConfigureExtensions : IConfigureExtensions
     {
-        private ILog log;
+        private ILog log = LogManager.GetCurrentClassLog();
 
         public void SetLogResolver(Func<string, ILog> logResolver)
         {
             LogManager.GetLogger = logResolver;
 
             this.log = LogManager.GetCurrentClassLog();
-            this.log.TryLogInfo(Messages.ConfigureExtensions_UsingLogger, logResolver != null && logResolver.Method != null ? logResolver.Method.ToString() : string.Empty);
         }
 
         public void SetMappingConvention(IMappingConvention mappingConvention)
@@ -38,7 +37,11 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("mappingConvention");
             }
 
-            this.log.TryLogInfo(Messages.ConfigureExtensions_UsingMappingConvention, mappingConvention.GetType().FullName);
+            if (this.log.IsInfo)
+            {
+                this.log.Info(LogMessages.ConfigureExtensions_UsingMappingConvention, mappingConvention.GetType().FullName);
+            }
+
             ObjectInfo.MappingConvention = mappingConvention;
         }
     }

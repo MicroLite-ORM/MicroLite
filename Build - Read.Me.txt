@@ -1,17 +1,16 @@
-Build scripts etc assume that the repository is checked out to C:\Source\GitHub\MicroLite\ if this is not the case, 
-you may not be able to run the build scripts or open the SandCastle or NDepend projects.
+Build scripts etc assume that the repository is checked out to C:\Source\GitHub\MicroLite\ if this is not the case, you may not be able to run the build scripts or open the SandCastle or NDepend projects.
 
 Requirements:
 
   - Visual Studio 2010 or later
   - .NET 4.5
-  - Sandcastle Help File Builder 1.9.7 (http://shfb.codeplex.com/)
-  - StyleCop version 4.7.45.0 - ensure that MSBuild integration is selected when installed (http://stylecop.codeplex.com/)
-  - Git (http://git-scm.com/download/win)
+  - StyleCop version 4.7.49 - ensure that MSBuild integration is selected when installed (http://stylecop.codeplex.com/)
+  - Git 1.9.0 (http://git-scm.com/download/win)
+  - Sandcastle Help File Builder 2014.04.21.0 (http://shfb.codeplex.com/)
 
 Optional:
 
-  - NDepend 4.1 or later
+  - NDepend 5.0 or later
 
 If running on a 64 bit machine, run the PowerShell (x86) executable otherwise the StyleCop.targets won't be found.
 

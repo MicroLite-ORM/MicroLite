@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Listener.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ namespace MicroLite.Listeners
     /// </remarks>
     public abstract class Listener : IListener
     {
-        private static readonly ListenerCollection collection = new ListenerCollection();
+        private static readonly ListenerCollection listeners = new ListenerCollection();
 
         /// <summary>
         /// Gets the listener collection which contains all listeners registered with the MicroLite ORM framework.
@@ -30,7 +30,7 @@ namespace MicroLite.Listeners
         {
             get
             {
-                return collection;
+                return listeners;
             }
         }
 
@@ -70,15 +70,6 @@ namespace MicroLite.Listeners
         }
 
         /// <summary>
-        /// Invoked before the SqlQuery to delete the record from the database is executed.
-        /// </summary>
-        /// <param name="instance">The instance to be deleted.</param>
-        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
-        public virtual void BeforeDelete(object instance, SqlQuery sqlQuery)
-        {
-        }
-
-        /// <summary>
         /// Invoked before the SqlQuery to insert the record into the database is created.
         /// </summary>
         /// <param name="instance">The instance to be inserted.</param>
@@ -87,28 +78,10 @@ namespace MicroLite.Listeners
         }
 
         /// <summary>
-        /// Invoked before the SqlQuery to insert the record into the database is executed.
-        /// </summary>
-        /// <param name="instance">The instance to be inserted.</param>
-        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
-        public virtual void BeforeInsert(object instance, SqlQuery sqlQuery)
-        {
-        }
-
-        /// <summary>
         /// Invoked before the SqlQuery to update the record in the database is created.
         /// </summary>
         /// <param name="instance">The instance to be updated.</param>
         public virtual void BeforeUpdate(object instance)
-        {
-        }
-
-        /// <summary>
-        /// Invoked before the SqlQuery to update the record in the database is executed.
-        /// </summary>
-        /// <param name="instance">The instance to be updated.</param>
-        /// <param name="sqlQuery">The SqlQuery to be executed.</param>
-        public virtual void BeforeUpdate(object instance, SqlQuery sqlQuery)
         {
         }
     }

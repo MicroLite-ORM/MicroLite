@@ -12,26 +12,17 @@
     /// </summary>
     public class ConfigureExtensionsTests
     {
-        public class WhenCallingSetLogResolver : IDisposable
+        public class WhenCallingSetLogResolver : UnitTest
         {
             private readonly Func<string, ILog> resolver = (s) =>
             {
-                return null;
+                return new EmptyLog();
             };
 
             public WhenCallingSetLogResolver()
             {
-                // Ensure that the GetLogger method is cleared before each test.
-                LogManager.GetLogger = null;
-
                 var configureExtensions = new ConfigureExtensions();
                 configureExtensions.SetLogResolver(this.resolver);
-            }
-
-            public void Dispose()
-            {
-                // Ensure that the GetLogger method is cleared after all tests have been run.
-                LogManager.GetLogger = null;
             }
 
             [Fact]
@@ -41,23 +32,14 @@
             }
         }
 
-        public class WhenCallingSetMappingConvention : IDisposable
+        public class WhenCallingSetMappingConvention : UnitTest
         {
             private readonly IMappingConvention mappingConvention = new Mock<IMappingConvention>().Object;
 
             public WhenCallingSetMappingConvention()
             {
-                // Ensure that the MappingConvention is cleared before each test.
-                ObjectInfo.MappingConvention = null;
-
                 var configureExtensions = new ConfigureExtensions();
                 configureExtensions.SetMappingConvention(this.mappingConvention);
-            }
-
-            public void Dispose()
-            {
-                // Ensure that the MappingConvention is set to the default after all tests have been run.
-                ObjectInfo.MappingConvention = new AttributeMappingConvention();
             }
 
             [Fact]

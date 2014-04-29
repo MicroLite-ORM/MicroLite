@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SqlQuery.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,30 +14,40 @@ namespace MicroLite
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
-    /// A class which represents a parameterised SQL query.
+    /// A class which represents an SQL command and its argument values.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{CommandText}")]
     public sealed class SqlQuery : IEquatable<SqlQuery>
     {
-        private readonly List<object> arguments = new List<object>();
+        private static readonly object[] emptyArguments = new object[0];
+        private readonly object[] arguments;
+        private readonly string commandText;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="SqlQuery"/> class with the specified command text and parameter values.
+        /// Initialises a new instance of the <see cref="SqlQuery"/> class with the specified command text and no argument values.
         /// </summary>
-        /// <param name="commandText">The SQL command text.</param>
-        /// <param name="arguments">The parameter values for the query.</param>
+        /// <param name="commandText">The SQL command text to be executed against the data source.</param>
+        public SqlQuery(string commandText)
+            : this(commandText, null)
+        {
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SqlQuery"/> class with the specified command text and argument values.
+        /// </summary>
+        /// <param name="commandText">The SQL command text to be executed against the data source.</param>
+        /// <param name="arguments">The argument values for the SQL command.</param>
         public SqlQuery(string commandText, params object[] arguments)
         {
-            this.CommandText = commandText;
-            this.arguments.AddRange(arguments ?? Enumerable.Empty<object>());
+            this.commandText = commandText;
+            this.arguments = arguments ?? SqlQuery.emptyArguments;
             this.Timeout = 30;
         }
 
         /// <summary>
-        /// Gets the parameter values of the SQL query.
+        /// Gets the argument values for the SQL command.
         /// </summary>
         public IList<object> Arguments
         {
@@ -48,17 +58,20 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets or sets the SQL statement execute against the data source.
+        /// Gets the SQL command text to be executed against the data source.
         /// </summary>
         public string CommandText
         {
-            get;
-            set;
+            get
+            {
+                return this.commandText;
+            }
         }
 
         /// <summary>
         /// Gets or sets the timeout in seconds for the query.
         /// </summary>
+        /// <remarks>Defaults to 30 seconds.</remarks>
         public int Timeout
         {
             get;
@@ -130,6 +143,15 @@ namespace MicroLite
         public override string ToString()
         {
             return this.CommandText;
+        }
+
+        /// <summary>
+        /// Gets the private argument array.
+        /// </summary>
+        /// <returns>The private argument array.</returns>
+        internal object[] GetArgumentArray()
+        {
+            return this.arguments;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SqlDialect.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,27 +14,19 @@ namespace MicroLite.Dialect
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using MicroLite.FrameworkExtensions;
+    using MicroLite.Builder;
     using MicroLite.Mapping;
 
     /// <summary>
     /// The base class for implementations of <see cref="ISqlDialect" />.
     /// </summary>
-    public abstract class SqlDialect : ISqlDialect
+    internal abstract class SqlDialect : ISqlDialect
     {
-        private static readonly Regex orderByRegex = new Regex("(?<=ORDER BY)(.+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex selectRegexGreedy = new Regex("SELECT(.+)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex selectRegexLazy = new Regex("SELECT(.+?)(?=FROM)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex tableNameRegexGreedy = new Regex("(?<=FROM)(.+)(?=WHERE)|(?<=FROM)(.+)(?=ORDER BY)|(?<=FROM)(.+)(?=WHERE)?|(?<=FROM)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex tableNameRegexLazy = new Regex("(?<=FROM)(.+?)(?=WHERE)|(?<=FROM)(.+?)(?=ORDER BY)|(?<=FROM)(.+?)(?=WHERE)?|(?<=FROM)(.+?)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static readonly Regex whereRegex = new Regex("(?<=WHERE)(.+)(?=ORDER BY)|(?<=WHERE)(.+)(?=ORDER BY)?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
-
         private readonly SqlCharacters sqlCharacters;
+        private Dictionary<Type, string> deleteCommandCache = new Dictionary<Type, string>();
+        private Dictionary<Type, string> insertCommandCache = new Dictionary<Type, string>();
+        private Dictionary<Type, string> selectCommandCache = new Dictionary<Type, string>();
+        private Dictionary<Type, string> updateCommandCache = new Dictionary<Type, string>();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlDialect"/> class.
@@ -46,7 +38,7 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets the SQL characters for the SQL dialect.
+        /// Gets the SQL characters used by the SQL dialect.
         /// </summary>
         public SqlCharacters SqlCharacters
         {
@@ -57,79 +49,225 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets a value indicating whether this SqlDialect supports batched queries.
+        /// Gets a value indicating whether the SQL Dialect supports Identity or AutoIncrement columns.
         /// </summary>
-        public virtual bool SupportsBatchedQueries
+        /// <remarks>Returns false unless overridden.</remarks>
+        public virtual bool SupportsIdentity
         {
             get
             {
-                return true;
+                return false;
             }
         }
 
         /// <summary>
-        /// Gets the select identity string.
+        /// Builds an SqlQuery to delete the database record with the specified identifier for the type specified by the IObjectInfo.
         /// </summary>
-        protected abstract string SelectIdentityString
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Builds the command using the values in the specified SqlQuery.
-        /// </summary>
-        /// <param name="command">The command to build.</param>
-        /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
-        /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
-        public virtual void BuildCommand(IDbCommand command, SqlQuery sqlQuery)
-        {
-            var parameterNames = this.sqlCharacters.SupportsNamedParameters
-                ? SqlUtility.GetParameterNames(sqlQuery.CommandText)
-                : Enumerable.Range(0, sqlQuery.Arguments.Count).Select(c => "Parameter" + c.ToString(CultureInfo.InvariantCulture)).ToArray();
-
-            if (parameterNames.Count != sqlQuery.Arguments.Count)
-            {
-                throw new MicroLiteException(Messages.SqlDialect_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
-            }
-
-            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
-            command.CommandTimeout = sqlQuery.Timeout;
-            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
-            this.AddParameters(command, sqlQuery, parameterNames);
-        }
-
-        /// <summary>
-        /// Combines the specified SQL queries into a single SqlQuery.
-        /// </summary>
-        /// <param name="sqlQueries">The SQL queries to be combined.</param>
+        /// <param name="objectInfo">The object information.</param>
+        /// <param name="identifier">The identifier of the instance to delete.</param>
         /// <returns>
-        /// The combined <see cref="SqlQuery" />.
+        /// The created <see cref="SqlQuery" />.
         /// </returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if sqlQueries is null.</exception>
-        public virtual SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
+        public virtual SqlQuery BuildDeleteSqlQuery(IObjectInfo objectInfo, object identifier)
         {
-            if (sqlQueries == null)
+            if (objectInfo == null)
             {
-                throw new ArgumentNullException("sqlQueries");
+                throw new ArgumentNullException("objectInfo");
             }
 
-            int argumentsCount = 0;
-            var sqlBuilder = new StringBuilder(sqlQueries.Sum(s => s.CommandText.Length));
+            string deleteCommand;
 
-            foreach (var sqlQuery in sqlQueries)
+            if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out deleteCommand))
             {
-                argumentsCount += sqlQuery.Arguments.Count;
+                var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
+                    .From(objectInfo)
+                    .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, identifier)
+                    .ToSqlQuery();
 
-                var commandText = SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
+                var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
+                newDeleteCommandCache[objectInfo.ForType] = deleteSqlQuery.CommandText;
 
-                sqlBuilder.AppendLine(commandText + this.sqlCharacters.StatementSeparator);
+                this.deleteCommandCache = newDeleteCommandCache;
+
+                return deleteSqlQuery;
             }
 
-            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
-            combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
+            return new SqlQuery(deleteCommand, identifier);
+        }
 
-            return combinedQuery;
+        /// <summary>
+        /// Builds an SqlQuery to insert a database record for the specified instance with the current property values of the instance.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <param name="instance">The instance to insert.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        public virtual SqlQuery BuildInsertSqlQuery(IObjectInfo objectInfo, object instance)
+        {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
+            string insertCommand;
+
+            if (!this.insertCommandCache.TryGetValue(objectInfo.ForType, out insertCommand))
+            {
+                var counter = 0;
+                var insertColumns = new string[objectInfo.TableInfo.InsertColumnCount];
+
+                for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
+                {
+                    var columnInfo = objectInfo.TableInfo.Columns[i];
+
+                    if (columnInfo.AllowInsert)
+                    {
+                        insertColumns[counter++] = columnInfo.ColumnName;
+                    }
+                }
+
+                var insertSqlQuery = new InsertSqlBuilder(this.SqlCharacters)
+                    .Into(objectInfo)
+                    .Columns(insertColumns)
+                    .Values(new object[objectInfo.TableInfo.InsertColumnCount])
+                    .ToSqlQuery();
+
+                var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
+                newInsertCommandCache[objectInfo.ForType] = insertSqlQuery.CommandText;
+                insertCommand = insertSqlQuery.CommandText;
+
+                this.insertCommandCache = newInsertCommandCache;
+            }
+
+            var insertValues = objectInfo.GetInsertValues(instance);
+
+            return new SqlQuery(insertCommand, insertValues);
+        }
+
+        /// <summary>
+        /// Builds an SqlQuery to select the identity of an inserted object if the database supports Identity or AutoIncrement.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        public virtual SqlQuery BuildSelectIdentitySqlQuery(IObjectInfo objectInfo)
+        {
+            return new SqlQuery(string.Empty);
+        }
+
+        /// <summary>
+        /// Builds an SqlQuery to select the database record with the specified identifier for the type specified by the IObjectInfo.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <param name="identifier">The identifier of the instance to select.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        public virtual SqlQuery BuildSelectSqlQuery(IObjectInfo objectInfo, object identifier)
+        {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
+            string selectCommand;
+
+            if (!this.selectCommandCache.TryGetValue(objectInfo.ForType, out selectCommand))
+            {
+                var selectSqlQuery = new SelectSqlBuilder(this.SqlCharacters)
+                    .From(objectInfo)
+                    .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(identifier)
+                    .ToSqlQuery();
+
+                var newSelectCommandCache = new Dictionary<Type, string>(this.selectCommandCache);
+                newSelectCommandCache[objectInfo.ForType] = selectSqlQuery.CommandText;
+
+                this.selectCommandCache = newSelectCommandCache;
+
+                return selectSqlQuery;
+            }
+
+            return new SqlQuery(selectCommand, identifier);
+        }
+
+        /// <summary>
+        /// Builds an SqlQuery to update the database record for the specified instance with the current property values of the instance.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <param name="instance">The instance to update.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        public virtual SqlQuery BuildUpdateSqlQuery(IObjectInfo objectInfo, object instance)
+        {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
+            string updateCommand;
+
+            if (!this.updateCommandCache.TryGetValue(objectInfo.ForType, out updateCommand))
+            {
+                var builder = new UpdateSqlBuilder(this.SqlCharacters)
+                    .Table(objectInfo);
+
+                for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
+                {
+                    var columnInfo = objectInfo.TableInfo.Columns[i];
+
+                    if (columnInfo.AllowUpdate)
+                    {
+                        builder.SetColumnValue(columnInfo.ColumnName, null);
+                    }
+                }
+
+                var updateSqlQuery = builder.WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectInfo.GetIdentifierValue(instance))
+                    .ToSqlQuery();
+
+                var newUpdateCommandCache = new Dictionary<Type, string>(this.updateCommandCache);
+                newUpdateCommandCache[objectInfo.ForType] = updateSqlQuery.CommandText;
+                updateCommand = updateSqlQuery.CommandText;
+
+                this.updateCommandCache = newUpdateCommandCache;
+            }
+
+            var updateValues = objectInfo.GetUpdateValues(instance);
+
+            return new SqlQuery(updateCommand, updateValues);
+        }
+
+        /// <summary>
+        /// Creates an SqlQuery to perform an update based upon the values in the object delta.
+        /// </summary>
+        /// <param name="objectDelta">The object delta to create the query for.</param>
+        /// <returns>
+        /// The created <see cref="SqlQuery" />.
+        /// </returns>
+        public SqlQuery BuildUpdateSqlQuery(ObjectDelta objectDelta)
+        {
+            if (objectDelta == null)
+            {
+                throw new ArgumentNullException("objectDelta");
+            }
+
+            var objectInfo = ObjectInfo.For(objectDelta.ForType);
+
+            var builder = new UpdateSqlBuilder(this.SqlCharacters)
+                .Table(objectInfo);
+
+            foreach (var change in objectDelta.Changes)
+            {
+                builder.SetColumnValue(change.Key, change.Value);
+            }
+
+            var sqlQuery = builder
+                .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectDelta.Identifier)
+                .ToSqlQuery();
+
+            return sqlQuery;
         }
 
         /// <summary>
@@ -141,135 +279,16 @@ namespace MicroLite.Dialect
         /// </returns>
         public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
         {
-            var qualifiedTableName = this.ReadTableName(sqlQuery.CommandText);
-            var whereValue = this.ReadWhereClause(sqlQuery.CommandText);
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            var qualifiedTableName = SqlUtility.ReadTableName(sqlQuery.CommandText);
+            var whereValue = SqlUtility.ReadWhereClause(sqlQuery.CommandText);
             var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
 
-            return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, sqlQuery.Arguments.ToArray());
-        }
-
-        /// <summary>
-        /// Creates an SqlQuery with the specified statement type for the specified instance.
-        /// </summary>
-        /// <param name="statementType">Type of the statement.</param>
-        /// <param name="instance">The instance to generate the SqlQuery for.</param>
-        /// <returns>
-        /// The created <see cref="SqlQuery" />.
-        /// </returns>
-        /// <exception cref="System.NotSupportedException">Thrown if the StatementType is not supported.</exception>
-        public virtual SqlQuery CreateQuery(StatementType statementType, object instance)
-        {
-            var forType = instance.GetType();
-            var objectInfo = ObjectInfo.For(forType);
-
-            switch (statementType)
-            {
-                case StatementType.Delete:
-                    var identifierValue = objectInfo.GetIdentifierValue(instance);
-
-                    return this.CreateQuery(StatementType.Delete, forType, identifierValue);
-
-                case StatementType.Insert:
-                    var insertValues = new List<object>(objectInfo.TableInfo.Columns.Count);
-
-                    var insertSqlBuilder = this.CreateSql(statementType, objectInfo);
-                    insertSqlBuilder.Append(" VALUES (");
-
-                    foreach (var column in objectInfo.TableInfo.Columns)
-                    {
-                        if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
-                            && column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
-                        {
-                            continue;
-                        }
-
-                        if (column.AllowInsert)
-                        {
-                            insertSqlBuilder.Append(this.sqlCharacters.GetParameterName(insertValues.Count));
-                            insertSqlBuilder.Append(", ");
-
-                            var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
-
-                            insertValues.Add(value);
-                        }
-                    }
-
-                    insertSqlBuilder.Remove(insertSqlBuilder.Length - 2, 2);
-                    insertSqlBuilder.Append(")");
-
-                    if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
-                    {
-                        insertSqlBuilder.Append(this.sqlCharacters.StatementSeparator);
-                        insertSqlBuilder.Append(this.SelectIdentityString);
-                    }
-
-                    return new SqlQuery(insertSqlBuilder.ToString(), insertValues.ToArray());
-
-                case StatementType.Update:
-                    var updateValues = new List<object>(objectInfo.TableInfo.Columns.Count);
-
-                    var updateSqlBuilder = this.CreateSql(StatementType.Update, objectInfo);
-
-                    foreach (var column in objectInfo.TableInfo.Columns)
-                    {
-                        if (column.AllowUpdate
-                            && !column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
-                        {
-                            updateSqlBuilder.AppendFormat(
-                                        " {0} = {1},",
-                                        this.sqlCharacters.EscapeSql(column.ColumnName),
-                                        this.sqlCharacters.GetParameterName(updateValues.Count));
-
-                            var value = objectInfo.GetPropertyValueForColumn(instance, column.ColumnName);
-
-                            updateValues.Add(value);
-                        }
-                    }
-
-                    updateSqlBuilder.Remove(updateSqlBuilder.Length - 1, 1);
-
-                    updateSqlBuilder.AppendFormat(
-                        " WHERE {0} = {1}",
-                        this.sqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
-                        this.sqlCharacters.GetParameterName(updateValues.Count));
-
-                    updateValues.Add(objectInfo.GetIdentifierValue(instance));
-
-                    return new SqlQuery(updateSqlBuilder.ToString(), updateValues.ToArray());
-
-                default:
-                    throw new NotSupportedException(Messages.SqlDialect_StatementTypeNotSupported);
-            }
-        }
-
-        /// <summary>
-        /// Creates an SqlQuery with the specified statement type for the specified type and identifier.
-        /// </summary>
-        /// <param name="statementType">Type of the statement.</param>
-        /// <param name="forType">The type of object to create the query for.</param>
-        /// <param name="identifier">The identifier of the instance to create the query for.</param>
-        /// <returns>
-        /// The created <see cref="SqlQuery" />.
-        /// </returns>
-        /// <exception cref="System.NotSupportedException">Thrown if the StatementType is not supported.</exception>
-        public virtual SqlQuery CreateQuery(StatementType statementType, Type forType, object identifier)
-        {
-            switch (statementType)
-            {
-                case StatementType.Delete:
-                    var objectInfo = ObjectInfo.For(forType);
-
-                    var sqlBuilder = this.CreateSql(statementType, objectInfo);
-                    sqlBuilder.AppendFormat(
-                        " WHERE {0} = {1}",
-                        this.sqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn),
-                        this.sqlCharacters.GetParameterName(0));
-
-                    return new SqlQuery(sqlBuilder.ToString(), identifier);
-
-                default:
-                    throw new NotSupportedException(Messages.SqlDialect_StatementTypeNotSupported);
-            }
+            return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, sqlQuery.GetArgumentArray());
         }
 
         /// <summary>
@@ -281,178 +300,5 @@ namespace MicroLite.Dialect
         /// A <see cref="SqlQuery" /> to return the paged results of the specified query.
         /// </returns>
         public abstract SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions);
-
-        /// <summary>
-        /// Adds the parameters.
-        /// </summary>
-        /// <param name="command">The command.</param>
-        /// <param name="sqlQuery">The SQL query.</param>
-        /// <param name="parameterNames">The parameter names.</param>
-        protected virtual void AddParameters(IDbCommand command, SqlQuery sqlQuery, IList<string> parameterNames)
-        {
-            for (int i = 0; i < parameterNames.Count; i++)
-            {
-                var parameterName = parameterNames[i];
-
-                var parameter = command.CreateParameter();
-                parameter.Direction = ParameterDirection.Input;
-                parameter.ParameterName = parameterName;
-                parameter.Value = sqlQuery.Arguments[i] ?? DBNull.Value;
-
-                command.Parameters.Add(parameter);
-            }
-        }
-
-        /// <summary>
-        /// Appends the name of the table.
-        /// </summary>
-        /// <param name="sqlBuilder">The SQL builder.</param>
-        /// <param name="objectInfo">The object info.</param>
-        protected void AppendTableName(StringBuilder sqlBuilder, IObjectInfo objectInfo)
-        {
-            var schema = !string.IsNullOrEmpty(objectInfo.TableInfo.Schema)
-                ? objectInfo.TableInfo.Schema
-                : string.Empty;
-
-            if (!string.IsNullOrEmpty(schema))
-            {
-                sqlBuilder.Append(this.sqlCharacters.LeftDelimiter);
-                sqlBuilder.Append(schema);
-                sqlBuilder.Append(this.sqlCharacters.RightDelimiter);
-                sqlBuilder.Append('.');
-            }
-
-            sqlBuilder.Append(this.sqlCharacters.LeftDelimiter);
-            sqlBuilder.Append(objectInfo.TableInfo.Name);
-            sqlBuilder.Append(this.sqlCharacters.RightDelimiter);
-        }
-
-        /// <summary>
-        /// Gets the command text.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The actual command text.</returns>
-        protected virtual string GetCommandText(string commandText)
-        {
-            return commandText;
-        }
-
-        /// <summary>
-        /// Gets the type of the command.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The CommandType for the specified command text.</returns>
-        protected virtual CommandType GetCommandType(string commandText)
-        {
-            return CommandType.Text;
-        }
-
-        /// <summary>
-        /// Reads the order by clause from the specified command text excluding the ORDER BY keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The columns in the order by list.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
-        protected string ReadOrderBy(string commandText)
-        {
-            return orderByRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-        }
-
-        /// <summary>
-        /// Reads the select clause from the specified command text including the SELECT keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The columns in the select list.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
-        protected string ReadSelectList(string commandText)
-        {
-            string selectList;
-
-            selectList = selectRegexLazy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-            if (selectList.Length == 0)
-            {
-                selectList = selectRegexGreedy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-            }
-
-            return selectList;
-        }
-
-        /// <summary>
-        /// Reads the name of the table the sql query is targeting.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The name of the table the sql query is targeting.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
-        protected string ReadTableName(string commandText)
-        {
-            string tableName;
-
-            tableName = tableNameRegexLazy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-            if (tableName.Length == 0)
-            {
-                tableName = tableNameRegexGreedy.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-            }
-
-            return tableName;
-        }
-
-        /// <summary>
-        /// Reads the where clause from the specified command text excluding the WHERE keyword.
-        /// </summary>
-        /// <param name="commandText">The command text.</param>
-        /// <returns>The where clause without the WHERE keyword.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Intentionally left as an instance method so that it's easily discoverable from subclasses.")]
-        protected string ReadWhereClause(string commandText)
-        {
-            return whereRegex.Match(commandText).Groups[0].Value.Replace(Environment.NewLine, string.Empty).Trim();
-        }
-
-        private StringBuilder CreateSql(StatementType statementType, IObjectInfo objectInfo)
-        {
-            var sqlBuilder = new StringBuilder(capacity: 120);
-
-            switch (statementType)
-            {
-                case StatementType.Delete:
-                    sqlBuilder.Append("DELETE FROM ");
-                    this.AppendTableName(sqlBuilder, objectInfo);
-
-                    break;
-
-                case StatementType.Insert:
-                    sqlBuilder.Append("INSERT INTO ");
-                    this.AppendTableName(sqlBuilder, objectInfo);
-                    sqlBuilder.Append(" (");
-
-                    foreach (var column in objectInfo.TableInfo.Columns)
-                    {
-                        if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated
-                            && column.ColumnName.Equals(objectInfo.TableInfo.IdentifierColumn))
-                        {
-                            continue;
-                        }
-
-                        if (column.AllowInsert)
-                        {
-                            sqlBuilder.Append(this.sqlCharacters.EscapeSql(column.ColumnName));
-                            sqlBuilder.Append(", ");
-                        }
-                    }
-
-                    sqlBuilder.Remove(sqlBuilder.Length - 2, 2);
-                    sqlBuilder.Append(")");
-
-                    break;
-
-                case StatementType.Update:
-                    sqlBuilder.Append("UPDATE ");
-                    this.AppendTableName(sqlBuilder, objectInfo);
-                    sqlBuilder.Append(" SET");
-
-                    break;
-            }
-
-            return sqlBuilder;
-        }
     }
 }

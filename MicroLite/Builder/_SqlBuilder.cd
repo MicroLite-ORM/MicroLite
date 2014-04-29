@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Interface Name="MicroLite.Builder.IAndOrOrderBy">
+    <Position X="2.25" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Builder\IAndOrOrderBy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IFunctionOrFrom">
+    <Position X="8" Y="6.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAABAAAAAAEAAAAAQAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Builder\IFunctionOrFrom.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IGroupBy">
+    <Position X="1.25" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\IGroupBy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IOrderBy">
+    <Position X="4" Y="2.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Builder\IOrderBy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IToSqlQuery">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Builder\IToSqlQuery.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IWhereOrOrderBy">
+    <Position X="2.25" Y="7.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\IWhereOrOrderBy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IWithParameter">
+    <Position X="7" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\IWithParameter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IDeleteFrom">
+    <Position X="12.5" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\IDeleteFrom.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IWhereSingleColumn">
+    <Position X="5.5" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAABAAAAAAAQAAAgIAADIEBAAgCA=</HashCode>
+      <FileName>Builder\IWhereSingleColumn.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IHavingOrOrderBy">
+    <Position X="9" Y="2.25" Width="1.5" />
+    <InheritanceLine Type="MicroLite.Builder.IOrderBy" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.25" Y="2.25" />
+        <Point X="5.25" Y="2.062" />
+        <Point X="9.75" Y="2.062" />
+        <Point X="9.75" Y="2.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\IHavingOrOrderBy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IInsertIntoTable">
+    <Position X="10.5" Y="6.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Builder\IInsertIntoTable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IInsertValue">
+    <Position X="10.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Builder\IInsertValue.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.ISetOrWhere">
+    <Position X="13" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\ISetOrWhere.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IUpdate">
+    <Position X="10.5" Y="7.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\IUpdate.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IWhereEquals">
+    <Position X="15" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\IWhereEquals.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.ISelectFrom" Collapsed="true">
+    <Position X="8.25" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Builder\ISelectFrom.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IInsertColumn">
+    <Position X="11" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Builder\IInsertColumn.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

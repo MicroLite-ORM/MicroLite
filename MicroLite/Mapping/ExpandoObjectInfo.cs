@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ExpandoObjectInfo.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,22 +16,13 @@ namespace MicroLite.Mapping
 
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Dynamic;
-    using MicroLite.Logging;
 
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     internal sealed class ExpandoObjectInfo : IObjectInfo
     {
         private static readonly Type forType = typeof(ExpandoObject);
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
-
-        public object DefaultIdentifierValue
-        {
-            get
-            {
-                throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
-            }
-        }
 
         public Type ForType
         {
@@ -45,46 +36,69 @@ namespace MicroLite.Mapping
         {
             get
             {
-                throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+                throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
             }
         }
 
-        public object CreateInstance()
+        public object CreateInstance(IDataReader reader)
         {
-            return new ExpandoObject();
+            if (reader == null)
+            {
+                throw new ArgumentNullException("reader");
+            }
+
+            var instance = new ExpandoObject();
+            var dictionary = (IDictionary<string, object>)instance;
+
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                var columnName = reader.GetName(i);
+                var value = reader.IsDBNull(i) ? null : reader.GetValue(i);
+
+                dictionary[columnName] = value;
+            }
+
+            return instance;
+        }
+
+        public ColumnInfo GetColumnInfo(string columnName)
+        {
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         public object GetIdentifierValue(object instance)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
-        public object GetPropertyValue(object instance, string propertyName)
+        public object[] GetInsertValues(object instance)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
-        public object GetPropertyValueForColumn(object instance, string columnName)
+        public object[] GetUpdateValues(object instance)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         public bool HasDefaultIdentifierValue(object instance)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
-        public void SetPropertyValue(object instance, string propertyName, object value)
+        public bool IsDefaultIdentifier(object identifier)
         {
-            throw new NotSupportedException(Messages.ExpandoObjectInfo_NotSupportedReason);
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
-        public void SetPropertyValueForColumn(object instance, string columnName, object value)
+        public void SetIdentifierValue(object instance, object identifier)
         {
-            var dictionary = (IDictionary<string, object>)instance;
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
+        }
 
-            log.TryLogDebug(Messages.IObjectInfo_SettingPropertyValue, this.ForType.Name, columnName);
-            dictionary.Add(columnName, value == DBNull.Value ? null : value);
+        public void VerifyInstanceForInsert(object instance)
+        {
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
     }
 

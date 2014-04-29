@@ -4,19 +4,14 @@
     using System.Linq;
     using System.Reflection;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="ConventionMappingConvention"/> class.
+    /// Unit Tests for the <see cref="ConventionMappingConvention" /> class.
     /// </summary>
     public class ConventionMappingConventionTests
     {
-        private enum CustomerStatus
-        {
-            Inactive = 0,
-            Active = 1
-        }
-
         public class WhenCallingCreateObjectInfoAndTypeIsNull
         {
             [Fact]
@@ -31,38 +26,22 @@
             }
         }
 
-        public class WhenNotUsingDefaultSettings
+        public class WhenNotUsingDefaultSettings : UnitTest
         {
             private readonly IObjectInfo objectInfo;
 
             public WhenNotUsingDefaultSettings()
             {
-                var mappingConvention = new ConventionMappingConvention(new ConventionMappingSettings
+                var settings = UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned);
+                settings.Ignore = (PropertyInfo propertyInfo) =>
                 {
-                    AllowInsert = (PropertyInfo propertyInfo) =>
-                    {
-                        return propertyInfo.Name != "Updated";
-                    },
-                    AllowUpdate = (PropertyInfo propertyInfo) =>
-                    {
-                        return propertyInfo.Name != "Created";
-                    },
-                    IdentifierStrategy = IdentifierStrategy.Assigned,
-                    Ignore = (PropertyInfo propertyInfo) =>
-                    {
-                        return propertyInfo.Name == "NonPersistedValue";
-                    },
-                    TableSchema = "Sales",
-                    UsePluralClassNameForTableName = false
-                });
+                    return propertyInfo.Name == "Website";
+                };
+                settings.UsePluralClassNameForTableName = false;
+
+                var mappingConvention = new ConventionMappingConvention(settings);
 
                 this.objectInfo = mappingConvention.CreateObjectInfo(typeof(Customer));
-            }
-
-            [Fact]
-            public void AgeInYearsShouldNotBeMapped()
-            {
-                Assert.False(this.objectInfo.TableInfo.Columns.Any(x => x.ColumnName == "AgeInYears"));
             }
 
             [Fact]
@@ -72,15 +51,57 @@
             }
 
             [Fact]
+            public void TheCreatedColumnShouldBeSet()
+            {
+                Assert.Equal(typeof(Customer).GetProperty("Created"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").PropertyInfo);
+            }
+
+            [Fact]
             public void TheCreatedColumnShouldNotAllowUpdate()
             {
                 Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").AllowUpdate);
             }
 
             [Fact]
+            public void TheCreatedColumnShouldNotBeIdentifier()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").IsIdentifier);
+            }
+
+            [Fact]
             public void TheCreatedPropertyShouldBeMapped()
             {
                 Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Created"));
+            }
+
+            [Fact]
+            public void TheCreditLimitColumnShouldAllowInsert()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").AllowInsert);
+            }
+
+            [Fact]
+            public void TheCreditLimitColumnShouldAllowUpdate()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").AllowUpdate);
+            }
+
+            [Fact]
+            public void TheCreditLimitColumnShouldBeSet()
+            {
+                Assert.Equal(typeof(Customer).GetProperty("CreditLimit"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").PropertyInfo);
+            }
+
+            [Fact]
+            public void TheCreditLimitColumnShouldNotBeIdentifier()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").IsIdentifier);
+            }
+
+            [Fact]
+            public void TheCreditLimitPropertyShouldBeMapped()
+            {
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "CreditLimit"));
             }
 
             [Fact]
@@ -134,13 +155,7 @@
             [Fact]
             public void TheIdentifierColumnShouldBeSet()
             {
-                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn);
-            }
-
-            [Fact]
-            public void TheIdentifierPropertyShouldBeSet()
-            {
-                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
+                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn.ColumnName);
             }
 
             [Fact]
@@ -192,15 +207,9 @@
             }
 
             [Fact]
-            public void TheNonPersistedValuePropertyShouldNotBeMapped()
+            public void ThereShouldBe7Columns()
             {
-                Assert.Null(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "NonPersistedValue"));
-            }
-
-            [Fact]
-            public void ThereShouldBe6Columns()
-            {
-                Assert.Equal(6, this.objectInfo.TableInfo.Columns.Count());
+                Assert.Equal(7, this.objectInfo.TableInfo.Columns.Count());
             }
 
             [Fact]
@@ -252,9 +261,21 @@
             }
 
             [Fact]
+            public void TheUpdatedColumnShouldBeSet()
+            {
+                Assert.Equal(typeof(Customer).GetProperty("Updated"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").PropertyInfo);
+            }
+
+            [Fact]
             public void TheUpdatedColumnShouldNotAllowInsert()
             {
                 Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").AllowInsert);
+            }
+
+            [Fact]
+            public void TheUpdatedColumnShouldNotBeIdentifier()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").IsIdentifier);
             }
 
             [Fact]
@@ -262,9 +283,15 @@
             {
                 Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Updated"));
             }
+
+            [Fact]
+            public void TheWebsitePropertyShouldNotBeMapped()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Website"));
+            }
         }
 
-        public class WhenTheClassIdentifierIsPrefixedWithTheClassName
+        public class WhenTheClassIdentifierIsPrefixedWithTheClassName : UnitTest
         {
             private readonly IObjectInfo objectInfo;
 
@@ -272,7 +299,10 @@
             {
                 var mappingConvention = new ConventionMappingConvention(new ConventionMappingSettings
                 {
-                    IdentifierStrategy = IdentifierStrategy.Assigned,
+                    ResolveIdentifierStrategy = (Type type) =>
+                    {
+                        return IdentifierStrategy.Assigned;
+                    },
                     UsePluralClassNameForTableName = false
                 });
 
@@ -282,13 +312,7 @@
             [Fact]
             public void TheIdentifierColumnShouldBeSet()
             {
-                Assert.Equal("InvoiceId", this.objectInfo.TableInfo.IdentifierColumn);
-            }
-
-            [Fact]
-            public void TheIdentifierPropertyShouldBeSet()
-            {
-                Assert.Equal("InvoiceId", this.objectInfo.TableInfo.IdentifierProperty);
+                Assert.Equal("InvoiceId", this.objectInfo.TableInfo.IdentifierColumn.ColumnName);
             }
 
             [Fact]
@@ -304,51 +328,7 @@
             }
         }
 
-        public class WhenTheResolveIdentifierColumnNameFunctionIsOverridden
-        {
-            private readonly IObjectInfo objectInfo;
-
-            public WhenTheResolveIdentifierColumnNameFunctionIsOverridden()
-            {
-                var mappingConvention = new ConventionMappingConvention(new ConventionMappingSettings
-                {
-                    IdentifierStrategy = IdentifierStrategy.Assigned,
-                    ResolveIdentifierColumnName = (PropertyInfo propertyInfo) =>
-                    {
-                        return propertyInfo.DeclaringType.Name + "Id";
-                    },
-                    UsePluralClassNameForTableName = false
-                });
-
-                this.objectInfo = mappingConvention.CreateObjectInfo(typeof(Customer));
-            }
-
-            [Fact]
-            public void TheIdentifierColumnShouldBeSet()
-            {
-                Assert.Equal("CustomerId", this.objectInfo.TableInfo.IdentifierColumn);
-            }
-
-            [Fact]
-            public void TheIdentifierPropertyShouldBeSet()
-            {
-                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
-            }
-
-            [Fact]
-            public void TheIdPropertyShouldBeMapped()
-            {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "CustomerId"));
-            }
-
-            [Fact]
-            public void TheIdShouldBeIdentifier()
-            {
-                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerId").IsIdentifier);
-            }
-        }
-
-        public class WhenUsingDefaultSettings
+        public class WhenUsingDefaultSettings : UnitTest
         {
             private readonly IObjectInfo objectInfo;
 
@@ -357,12 +337,6 @@
                 var mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
 
                 this.objectInfo = mappingConvention.CreateObjectInfo(typeof(Customer));
-            }
-
-            [Fact]
-            public void AgeInYearsShouldNotBeMapped()
-            {
-                Assert.False(this.objectInfo.TableInfo.Columns.Any(x => x.ColumnName == "AgeInYears"));
             }
 
             [Fact]
@@ -378,9 +352,51 @@
             }
 
             [Fact]
+            public void TheCreatedColumnShouldBeSet()
+            {
+                Assert.Equal(typeof(Customer).GetProperty("Created"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").PropertyInfo);
+            }
+
+            [Fact]
+            public void TheCreatedColumnShouldNotBeIdentifier()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").IsIdentifier);
+            }
+
+            [Fact]
             public void TheCreatedPropertyShouldBeMapped()
             {
                 Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Created"));
+            }
+
+            [Fact]
+            public void TheCreditLimitColumnShouldAllowInsert()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").AllowInsert);
+            }
+
+            [Fact]
+            public void TheCreditLimitColumnShouldAllowUpdate()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").AllowUpdate);
+            }
+
+            [Fact]
+            public void TheCreditLimitColumnShouldBeSet()
+            {
+                Assert.Equal(typeof(Customer).GetProperty("CreditLimit"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").PropertyInfo);
+            }
+
+            [Fact]
+            public void TheCreditLimitColumnShouldNotBeIdentifier()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").IsIdentifier);
+            }
+
+            [Fact]
+            public void TheCreditLimitPropertyShouldBeMapped()
+            {
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "CreditLimit"));
             }
 
             [Fact]
@@ -414,15 +430,15 @@
             }
 
             [Fact]
-            public void TheIdColumnShouldAllowInsert()
-            {
-                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowInsert);
-            }
-
-            [Fact]
             public void TheIdColumnShouldBeSet()
             {
                 Assert.Equal(typeof(Customer).GetProperty("Id"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").PropertyInfo);
+            }
+
+            [Fact]
+            public void TheIdColumnShouldNotAllowInsert()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").AllowInsert);
             }
 
             [Fact]
@@ -434,13 +450,7 @@
             [Fact]
             public void TheIdentifierColumnShouldBeSet()
             {
-                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn);
-            }
-
-            [Fact]
-            public void TheIdentifierPropertyShouldBeSet()
-            {
-                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierProperty);
+                Assert.Equal("Id", this.objectInfo.TableInfo.IdentifierColumn.ColumnName);
             }
 
             [Fact]
@@ -492,15 +502,9 @@
             }
 
             [Fact]
-            public void TheNonPersistedValuePropertyShouldBeMapped()
+            public void ThereShouldBe8Columns()
             {
-                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "NonPersistedValue"));
-            }
-
-            [Fact]
-            public void ThereShouldBe7Columns()
-            {
-                Assert.Equal(7, this.objectInfo.TableInfo.Columns.Count());
+                Assert.Equal(8, this.objectInfo.TableInfo.Columns.Count());
             }
 
             [Fact]
@@ -558,75 +562,51 @@
             }
 
             [Fact]
+            public void TheUpdatedColumnShouldBeSet()
+            {
+                Assert.Equal(typeof(Customer).GetProperty("Updated"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").PropertyInfo);
+            }
+
+            [Fact]
+            public void TheUpdatedColumnShouldNotBeIdentifier()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").IsIdentifier);
+            }
+
+            [Fact]
             public void TheUpdatedPropertyShouldBeMapped()
             {
                 Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Updated"));
             }
-        }
 
-        private class Customer
-        {
-            public Customer()
+            [Fact]
+            public void TheWebsiteColumnShouldAllowInsert()
             {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Website").AllowInsert);
             }
 
-            public int AgeInYears
+            [Fact]
+            public void TheWebsiteColumnShouldAllowUpdate()
             {
-                get
-                {
-                    return DateTime.Today.Year - this.DateOfBirth.Year;
-                }
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Website").AllowUpdate);
             }
 
-            public DateTime Created
+            [Fact]
+            public void TheWebsiteColumnShouldBeSet()
             {
-                get;
-                set;
+                Assert.Equal(typeof(Customer).GetProperty("Website"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Website").PropertyInfo);
             }
 
-            public DateTime DateOfBirth
+            [Fact]
+            public void TheWebsiteColumnShouldNotBeIdentifier()
             {
-                get;
-                set;
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Website").IsIdentifier);
             }
 
-            public int Id
+            [Fact]
+            public void TheWebsitePropertyShouldBeMapped()
             {
-                get;
-                set;
-            }
-
-            public string Name
-            {
-                get;
-                set;
-            }
-
-            public string NonPersistedValue
-            {
-                get;
-                set;
-            }
-
-            public CustomerStatus Status
-            {
-                get;
-                set;
-            }
-
-            public DateTime Updated
-            {
-                get;
-                set;
-            }
-        }
-
-        private class Invoice
-        {
-            public int InvoiceId
-            {
-                get;
-                set;
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Website"));
             }
         }
     }

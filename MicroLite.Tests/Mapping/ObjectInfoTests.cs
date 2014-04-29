@@ -1,37 +1,20 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
     using System;
+    using System.Data;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
+    using Moq;
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="ObjectInfo"/> class.
+    /// Unit Tests for the <see cref="ObjectInfo" /> class.
     /// </summary>
-    public class ObjectInfoTests : IDisposable
+    public class ObjectInfoTests : UnitTest
     {
-        public ObjectInfoTests()
-        {
-            ObjectInfo.MappingConvention = new AttributeMappingConvention();
-        }
-
-        private enum CustomerStatus
-        {
-            Inactive = 0,
-            Active = 1
-        }
-
         [Fact]
-        public void ConstructorThrowsArgumentNullExceptionForNullForTableInfo()
-        {
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => new ObjectInfo(typeof(CustomerWithIntegerIdentifier), null));
-
-            Assert.Equal("tableInfo", exception.ParamName);
-        }
-
-        [Fact]
-        public void ConstructorThrowsArgumentNullExceptionForNullForType()
+        public void Constructor_ThrowsArgumentNullException_IfForTypeIsNull()
         {
             var exception = Assert.Throws<ArgumentNullException>(
                 () => new ObjectInfo(null, null));
@@ -40,46 +23,124 @@
         }
 
         [Fact]
-        public void CreateInstance()
+        public void Constructor_ThrowsArgumentNullException_IfTableInfoIsNull()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new ObjectInfo(typeof(Customer), null));
 
-            var instance = objectInfo.CreateInstance();
-
-            Assert.IsType<CustomerWithIntegerIdentifier>(instance);
+            Assert.Equal("tableInfo", exception.ParamName);
         }
 
         [Fact]
-        public void DefaultIdentifierValueIsSetCorrectlyForGuid()
+        public void CreateInstanceThrowsArgumentNullExceptionForNullReader()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            Assert.Equal(Guid.Empty, objectInfo.DefaultIdentifierValue);
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.CreateInstance(null));
+
+            Assert.Equal("reader", exception.ParamName);
         }
 
         [Fact]
-        public void DefaultIdentifierValueIsSetCorrectlyForInteger()
+        public void CreateInstanceWithNullValues()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            Assert.Equal(0, objectInfo.DefaultIdentifierValue);
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(8);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns((int i) =>
+            {
+                // CreditLimit, Updated and Website are null
+                return i == 2 || i == 6 || i == 7;
+            });
+
+            mockReader.Setup(x => x.GetName(0)).Returns("Id");
+            mockReader.Setup(x => x.GetInt32(0)).Returns(12345);
+
+            mockReader.Setup(x => x.GetName(1)).Returns("Created");
+            mockReader.Setup(x => x.GetDateTime(1)).Returns(new DateTime(2009, 4, 20));
+
+            mockReader.Setup(x => x.GetName(2)).Returns("CreditLimit"); // null
+
+            mockReader.Setup(x => x.GetName(3)).Returns("DateOfBirth");
+            mockReader.Setup(x => x.GetDateTime(3)).Returns(new DateTime(1972, 8, 14));
+
+            mockReader.Setup(x => x.GetName(4)).Returns("Name");
+            mockReader.Setup(x => x.GetString(4)).Returns("John Smith");
+
+            mockReader.Setup(x => x.GetName(5)).Returns("CustomerStatusId");
+            mockReader.Setup(x => x.GetInt32(5)).Returns(1);
+
+            mockReader.Setup(x => x.GetName(6)).Returns("Updated"); // null
+
+            mockReader.Setup(x => x.GetName(7)).Returns("Website"); // null
+
+            var instance = objectInfo.CreateInstance(mockReader.Object) as Customer;
+
+            Assert.NotNull(instance);
+            Assert.IsType<Customer>(instance);
+
+            Assert.Equal(12345, instance.Id);
+            Assert.Equal(new DateTime(2009, 4, 20), instance.Created);
+            Assert.Null(instance.CreditLimit);
+            Assert.Equal(new DateTime(1972, 8, 14), instance.DateOfBirth);
+            Assert.Equal("John Smith", instance.Name);
+            Assert.Equal(CustomerStatus.Active, instance.Status);
+            Assert.Null(instance.Updated);
+            Assert.Null(instance.Website);
         }
 
         [Fact]
-        public void DefaultIdentifierValueIsSetCorrectlyForString()
+        public void CreateInstanceWithoutNullValues()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            Assert.Null(objectInfo.DefaultIdentifierValue);
-        }
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(8);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
 
-        public void Dispose()
-        {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+            mockReader.Setup(x => x.GetName(0)).Returns("Id");
+            mockReader.Setup(x => x.GetInt32(0)).Returns(12345);
+
+            mockReader.Setup(x => x.GetName(1)).Returns("Created");
+            mockReader.Setup(x => x.GetDateTime(1)).Returns(new DateTime(2009, 4, 20));
+
+            mockReader.Setup(x => x.GetName(2)).Returns("CreditLimit");
+            mockReader.Setup(x => x.GetDecimal(2)).Returns(10250.00M);
+
+            mockReader.Setup(x => x.GetName(3)).Returns("DateOfBirth");
+            mockReader.Setup(x => x.GetDateTime(3)).Returns(new DateTime(1972, 8, 14));
+
+            mockReader.Setup(x => x.GetName(4)).Returns("Name");
+            mockReader.Setup(x => x.GetString(4)).Returns("John Smith");
+
+            mockReader.Setup(x => x.GetName(5)).Returns("CustomerStatusId");
+            mockReader.Setup(x => x.GetInt32(5)).Returns(1);
+
+            mockReader.Setup(x => x.GetName(6)).Returns("Updated");
+            mockReader.Setup(x => x.GetDateTime(6)).Returns(new DateTime(2014, 3, 27));
+
+            mockReader.Setup(x => x.GetName(7)).Returns("Website");
+            mockReader.Setup(x => x.GetString(7)).Returns("http://microliteorm.wordpress.com");
+
+            var instance = objectInfo.CreateInstance(mockReader.Object) as Customer;
+
+            Assert.NotNull(instance);
+            Assert.IsType<Customer>(instance);
+
+            Assert.Equal(new DateTime(2009, 4, 20), instance.Created);
+            Assert.Equal(10250.00M, instance.CreditLimit);
+            Assert.Equal(new DateTime(1972, 8, 14), instance.DateOfBirth);
+            Assert.Equal(12345, instance.Id);
+            Assert.Equal("John Smith", instance.Name);
+            Assert.Equal(CustomerStatus.Active, instance.Status);
+            Assert.Equal(new DateTime(2014, 3, 27), instance.Updated);
+            Assert.Equal(new Uri("http://microliteorm.wordpress.com"), instance.Website);
         }
 
         [Fact]
-        public void ForReturnsExpandoObjectInfoForTypeOfDynamic()
+        public void For_ReturnsExpandoObjectInfo_ForTypeOfDynamic()
         {
             var objectInfo = ObjectInfoHelper<dynamic>();
 
@@ -87,9 +148,9 @@
         }
 
         [Fact]
-        public void ForReturnsSameObjectInfoForSameType()
+        public void For_ReturnsSameObjectInfo_ForSameType()
         {
-            var forType = typeof(CustomerWithIntegerIdentifier);
+            var forType = typeof(Customer);
 
             var objectInfo1 = ObjectInfo.For(forType);
             var objectInfo2 = ObjectInfo.For(forType);
@@ -98,50 +159,51 @@
         }
 
         [Fact]
-        public void ForThrowsArgumentNullExceptonForNullForType()
+        public void For_ThrowsArgumentNullExceptonForNullForType()
         {
-            var exception = Assert.Throws<ArgumentNullException>(() => ObjectInfo.For(null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => ObjectInfo.For(null));
 
             Assert.Equal("forType", exception.ParamName);
         }
 
         [Fact]
-        public void ForThrowsMicroLiteExceptionIfAbstractClass()
+        public void For_ThrowsMappingException_IfAbstractClass()
         {
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => ObjectInfo.For(typeof(AbstractCustomer)));
 
             Assert.Equal(
-                Messages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(typeof(AbstractCustomer).Name),
+                ExceptionMessages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(typeof(AbstractCustomer).Name),
                 exception.Message);
         }
 
         [Fact]
-        public void ForThrowsMicroLiteExceptionIfNoDefaultConstructor()
+        public void For_ThrowsMappingException_IfNoDefaultConstructor()
         {
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => ObjectInfo.For(typeof(CustomerWithNoDefaultConstructor)));
 
             Assert.Equal(
-                Messages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(typeof(CustomerWithNoDefaultConstructor).Name),
+                ExceptionMessages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(typeof(CustomerWithNoDefaultConstructor).Name),
                 exception.Message);
         }
 
         [Fact]
-        public void ForThrowsMicroLiteExceptionIfNotClass()
+        public void For_ThrowsMicroLiteException_IfNotClass()
         {
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => ObjectInfo.For(typeof(CustomerStruct)));
 
             Assert.Equal(
-                Messages.ObjectInfo_TypeMustBeClass.FormatWith(typeof(CustomerStruct).Name),
+                ExceptionMessages.ObjectInfo_TypeMustBeClass.FormatWith(typeof(CustomerStruct).Name),
                 exception.Message);
         }
 
         [Fact]
-        public void ForTypeReturnsTypePassedToConstructor()
+        public void ForType_ReturnsTypePassedToConstructor()
         {
-            var forType = typeof(CustomerWithIntegerIdentifier);
+            var forType = typeof(Customer);
 
             var objectInfo = ObjectInfo.For(forType);
 
@@ -149,11 +211,29 @@
         }
 
         [Fact]
-        public void GetIdentifierValueReturnsPropertyValue()
+        public void GetColumnInfo_ReturnsColumnInfo_IfColumnMapped()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+            var columnInfo = objectInfo.GetColumnInfo("Name");
 
-            var customer = new CustomerWithIntegerIdentifier
+            Assert.NotNull(columnInfo);
+            Assert.Equal("Name", columnInfo.ColumnName);
+        }
+
+        [Fact]
+        public void GetColumnInfo_ReturnsNull_IfColumnNotMapped()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            Assert.Null(objectInfo.GetColumnInfo("Wibble"));
+        }
+
+        [Fact]
+        public void GetIdentifierValue_ReturnsPropertyValueOfIdentifierProperty()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var customer = new Customer
             {
                 Id = 122323
             };
@@ -164,157 +244,210 @@
         }
 
         [Fact]
-        public void GetIdentifierValueThrowsArgumentNullExceptionForNullInstance()
+        public void GetIdentifierValue_ThrowsArgumentNullException_IfInstanceIsNull()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetIdentifierValue(null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.GetIdentifierValue(null));
 
             Assert.Equal("instance", exception.ParamName);
         }
 
         [Fact]
-        public void GetIdentifierValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        public void GetIdentifierValue_ThrowsMappingException_IfInstanceIsIncorrectType()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => objectInfo.GetIdentifierValue(new CustomerWithGuidIdentifier()));
 
             Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                string.Format(ExceptionMessages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
                 exception.Message);
         }
 
         [Fact]
-        public void GetPropertyValueForColumnConvertsPropertyValueToDbValue()
+        public void GetInsertValues_ReturnsPropertyValues_WhenUsingAssigned()
         {
-            var instance = new CustomerWithIntegerIdentifier
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var customer = new Customer
             {
-                Status = CustomerStatus.Active
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var values = objectInfo.GetInsertValues(customer);
 
-            var value = objectInfo.GetPropertyValueForColumn(instance, "StatusId");
-
-            Assert.Equal(1, value);
+            Assert.Equal(7, values.Length);
+            Assert.Equal(customer.Created, values[0]);
+            Assert.Equal(customer.CreditLimit, values[1]);
+            Assert.Equal(customer.DateOfBirth, values[2]);
+            Assert.Equal(customer.Id, values[3]); // Id should be included as it's assigned.
+            Assert.Equal(customer.Name, values[4]);
+            Assert.Equal((int)customer.Status, values[5]);
+            Assert.Equal(customer.Website.ToString(), values[6]);
         }
 
         [Fact]
-        public void GetPropertyValueForColumnThrowsArgumentNullExceptionForNullInstance()
+        public void GetInsertValues_ReturnsPropertyValues_WhenUsingDbGenerated()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
 
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetPropertyValueForColumn(null, "Name"));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            Assert.Equal("instance", exception.ParamName);
-        }
-
-        [Fact]
-        public void GetPropertyValueForColumnThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var exception = Assert.Throws<MicroLiteException>(
-                () => objectInfo.GetPropertyValueForColumn(new CustomerWithGuidIdentifier(), "Name"));
-
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
-                exception.Message);
-        }
-
-        [Fact]
-        public void GetPropertyValueForColumnThrowsMicroLiteExceptionIfInvalidColumnName()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var exception = Assert.Throws<MicroLiteException>(
-                () => objectInfo.GetPropertyValueForColumn(new CustomerWithIntegerIdentifier(), "UnknownColumn"));
-
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_ColumnNotMapped, "UnknownColumn", objectInfo.ForType.Name),
-                exception.Message);
-        }
-
-        [Fact]
-        public void GetPropertyValueReturnsPropertyValue()
-        {
-            var instance = new CustomerWithIntegerIdentifier
+            var customer = new Customer
             {
-                Status = CustomerStatus.Active
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var values = objectInfo.GetInsertValues(customer);
 
-            var value = objectInfo.GetPropertyValue(instance, "Status");
-
-            Assert.Equal(CustomerStatus.Active, value);
+            Assert.Equal(6, values.Length);
+            Assert.Equal(customer.Created, values[0]);
+            Assert.Equal(customer.CreditLimit, values[1]);
+            Assert.Equal(customer.DateOfBirth, values[2]);
+            Assert.Equal(customer.Name, values[3]);
+            Assert.Equal((int)customer.Status, values[4]);
+            Assert.Equal(customer.Website.ToString(), values[5]);
         }
 
         [Fact]
-        public void GetPropertyValueThrowsArgumentNullExceptionForNullInstance()
+        public void GetInsertValues_ThrowsMappingException_IfInstanceIsIncorrectType()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.GetPropertyValue(null, "Name"));
+            var exception = Assert.Throws<MappingException>(
+                () => objectInfo.GetInsertValues(new CustomerWithGuidIdentifier()));
+
+            Assert.Equal(
+                string.Format(ExceptionMessages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void GetUpdateValues_ReturnsPropertyValues_WhenUsingAssigned()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var customer = new Customer
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var values = objectInfo.GetUpdateValues(customer);
+
+            Assert.Equal(7, values.Length);
+            Assert.Equal(customer.CreditLimit, values[0]);
+            Assert.Equal(customer.DateOfBirth, values[1]);
+            Assert.Equal(customer.Name, values[2]);
+            Assert.Equal((int)customer.Status, values[3]);
+            Assert.Equal(customer.Updated, values[4]);
+            Assert.Equal(customer.Website.ToString(), values[5]);
+            Assert.Equal(customer.Id, values[6]);
+        }
+
+        [Fact]
+        public void GetUpdateValues_ReturnsPropertyValues_WhenUsingDbGenerated()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var customer = new Customer
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var values = objectInfo.GetUpdateValues(customer);
+
+            Assert.Equal(7, values.Length);
+            Assert.Equal(customer.CreditLimit, values[0]);
+            Assert.Equal(customer.DateOfBirth, values[1]);
+            Assert.Equal(customer.Name, values[2]);
+            Assert.Equal((int)customer.Status, values[3]);
+            Assert.Equal(customer.Updated, values[4]);
+            Assert.Equal(customer.Website.ToString(), values[5]);
+            Assert.Equal(customer.Id, values[6]);
+        }
+
+        [Fact]
+        public void GetUpdateValues_ThrowsMappingException_IfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<MappingException>(
+                () => objectInfo.GetUpdateValues(new CustomerWithGuidIdentifier()));
+
+            Assert.Equal(
+                string.Format(ExceptionMessages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void HasDefaultIdentifierValue_ThrowsArgumentNullException_IfInstanceIsNull()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.HasDefaultIdentifierValue(null));
 
             Assert.Equal("instance", exception.ParamName);
         }
 
         [Fact]
-        public void GetPropertyValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        public void HasDefaultIdentifierValue_ThrowsMappingException_IfInstanceIsIncorrectType()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var exception = Assert.Throws<MicroLiteException>(
-                () => objectInfo.GetPropertyValue(new CustomerWithGuidIdentifier(), "Name"));
-
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
-                exception.Message);
-        }
-
-        [Fact]
-        public void GetPropertyValueThrowsMicroLiteExceptionIfInvalidPropertyName()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var exception = Assert.Throws<MicroLiteException>(
-                () => objectInfo.GetPropertyValue(new CustomerWithIntegerIdentifier(), "UnknownProperty"));
-
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_UnknownProperty, objectInfo.ForType.Name, "UnknownProperty"),
-                exception.Message);
-        }
-
-        [Fact]
-        public void HasDefaultIdentifierValueThrowsArgumentNullExceptionForNullInstance()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
-
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.HasDefaultIdentifierValue(null));
-
-            Assert.Equal("instance", exception.ParamName);
-        }
-
-        [Fact]
-        public void HasDefaultIdentifierValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
-        {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
             var instance = new CustomerWithGuidIdentifier();
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => objectInfo.HasDefaultIdentifierValue(instance));
 
             Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                string.Format(ExceptionMessages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
                 exception.Message);
         }
 
         [Fact]
-        public void HasDefaultIdentifierValueWhenIdentifierIsGuid()
+        public void HasDefaultIdentifierValue_WhenIdentifierIsGuid()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
 
@@ -328,11 +461,11 @@
         }
 
         [Fact]
-        public void HasDefaultIdentifierValueWhenIdentifierIsInteger()
+        public void HasDefaultIdentifierValue_WhenIdentifierIsInteger()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            var customer = new CustomerWithIntegerIdentifier();
+            var customer = new Customer();
 
             customer.Id = 0;
             Assert.True(objectInfo.HasDefaultIdentifierValue(customer));
@@ -342,7 +475,7 @@
         }
 
         [Fact]
-        public void HasDefaultIdentifierValueWhenIdentifierIsString()
+        public void HasDefaultIdentifierValue_WhenIdentifierIsString()
         {
             var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
 
@@ -356,105 +489,113 @@
         }
 
         [Fact]
-        public void SetPropertyValueForColumnSetsPropertyValue()
+        public void IsDefaultIdentifier_WhenIdentifierIsGuid()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithGuidIdentifier));
 
-            var instance = new CustomerWithIntegerIdentifier();
+            Assert.True(objectInfo.IsDefaultIdentifier(Guid.Empty));
 
-            objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1);
-
-            Assert.Equal(CustomerStatus.Active, instance.Status);
+            Assert.False(objectInfo.IsDefaultIdentifier(Guid.NewGuid()));
         }
 
         [Fact]
-        public void SetPropertyValueForColumnThrowsAnExceptionForUnknownColumn()
+        public void IsDefaultIdentifier_WhenIdentifierIsInteger()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            var instance = new CustomerWithIntegerIdentifier();
+            Assert.True(objectInfo.IsDefaultIdentifier(0));
 
-            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetPropertyValueForColumn(instance, "UnknownColumn", 1));
-
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_UnknownColumn, objectInfo.ForType.Name, "UnknownColumn"),
-                exception.Message);
+            Assert.False(objectInfo.IsDefaultIdentifier(18734));
         }
 
         [Fact]
-        public void SetPropertyValueForColumnThrowsArgumentNullExceptionForNullInstance()
+        public void IsDefaultIdentifier_WhenIdentifierIsString()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithStringIdentifier));
 
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.SetPropertyValueForColumn(null, "StatusId", 1));
+            Assert.True(objectInfo.IsDefaultIdentifier(null));
 
-            Assert.Equal("instance", exception.ParamName);
+            Assert.False(objectInfo.IsDefaultIdentifier("AFIK"));
         }
 
         [Fact]
-        public void SetPropertyValueForColumnThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        public void SetIdentifierValue_SetsPropertyValue()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            var instance = new CustomerWithGuidIdentifier();
+            var customer = new Customer();
 
-            var exception = Assert.Throws<MicroLiteException>(
-                () => objectInfo.SetPropertyValueForColumn(instance, "StatusId", 1));
+            objectInfo.SetIdentifierValue(customer, 122323);
 
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
-                exception.Message);
+            Assert.Equal(122323, customer.Id);
         }
 
         [Fact]
-        public void SetPropertyValueSetsPropertyValue()
+        public void VerifyInstanceForInsertDoesNotThrowMicroLiteException_WhenIdentifierStrategyAssigned_AndIdentifierSet()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
 
-            var instance = new CustomerWithIntegerIdentifier();
+            var customer = new Customer
+            {
+                Id = 147843
+            };
 
-            objectInfo.SetPropertyValue(instance, "Status", CustomerStatus.Active);
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            Assert.Equal(CustomerStatus.Active, instance.Status);
+            Assert.DoesNotThrow(() => objectInfo.VerifyInstanceForInsert(customer));
         }
 
         [Fact]
-        public void SetPropertyValueThrowsAnExceptionForUnknownProperty()
+        public void VerifyInstanceForInsertDoesNotThrowMicroLiteException_WhenIdentifierStrategyDbGenerated_AndIdentifierNotSet()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
 
-            var instance = new CustomerWithIntegerIdentifier();
+            var customer = new Customer
+            {
+                Id = 0
+            };
 
-            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetPropertyValue(instance, "UnknownProperty", CustomerStatus.Active));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_UnknownProperty, objectInfo.ForType.Name, "UnknownProperty"),
-                exception.Message);
+            Assert.DoesNotThrow(() => objectInfo.VerifyInstanceForInsert(customer));
         }
 
         [Fact]
-        public void SetPropertyValueThrowsArgumentNullExceptionForNullInstance()
+        public void VerifyInstanceForInsertThrowsMicroLiteException_WhenIdentifierStrategyAssigned_AndIdentifierNotSet()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
 
-            var exception = Assert.Throws<ArgumentNullException>(() => objectInfo.SetPropertyValue(null, "Status", CustomerStatus.Active));
+            var customer = new Customer
+            {
+                Id = 0
+            };
 
-            Assert.Equal("instance", exception.ParamName);
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
+
+            Assert.Equal(ExceptionMessages.ObjectInfo_IdentifierNotSetForInsert, exception.Message);
         }
 
         [Fact]
-        public void SetPropertyValueThrowsMicroLiteExceptionIfInstanceIsIncorrectType()
+        public void VerifyInstanceForInsertThrowsMicroLiteException_WhenIdentifierStrategyDbGenerated_AndIdentifierSet()
         {
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithIntegerIdentifier));
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
 
-            var instance = new CustomerWithGuidIdentifier();
+            var customer = new Customer
+            {
+                Id = 147843
+            };
 
-            var exception = Assert.Throws<MicroLiteException>(
-                () => objectInfo.SetPropertyValue(instance, "Status", CustomerStatus.Active));
+            var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            Assert.Equal(
-                string.Format(Messages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
-                exception.Message);
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
+
+            Assert.Equal(ExceptionMessages.ObjectInfo_IdentifierSetForInsert, exception.Message);
         }
 
         /// <summary>
@@ -467,19 +608,16 @@
             return objectInfo;
         }
 
-        private struct CustomerStruct
+        public struct CustomerStruct
         {
         }
 
-        private abstract class AbstractCustomer
+        public abstract class AbstractCustomer
         {
         }
 
-        [MicroLite.Mapping.Table("Sales", "Customers")]
-        private class CustomerWithGuidIdentifier
+        public class CustomerWithGuidIdentifier
         {
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
             public Guid Id
             {
                 get;
@@ -487,74 +625,19 @@
             }
         }
 
-        [MicroLite.Mapping.Table("Sales", "Customers")]
-        private class CustomerWithIntegerIdentifier
-        {
-            public CustomerWithIntegerIdentifier()
-            {
-            }
-
-            public int AgeInYears
-            {
-                get
-                {
-                    return DateTime.Today.Year - this.DateOfBirth.Year;
-                }
-            }
-
-            [MicroLite.Mapping.Column("CreditLimit")]
-            public Decimal? CreditLimit
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("DoB")]
-            public DateTime DateOfBirth
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)] // Don't use default or we can't prove we read it correctly.
-            public int Id
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("Name")]
-            public string Name
-            {
-                get;
-                set;
-            }
-
-            [MicroLite.Mapping.Column("StatusId")]
-            public CustomerStatus Status
-            {
-                get;
-                set;
-            }
-        }
-
-        private class CustomerWithNoDefaultConstructor
+        public class CustomerWithNoDefaultConstructor
         {
             public CustomerWithNoDefaultConstructor(string foo)
             {
             }
         }
 
-        private class CustomerWithNoIdentifier
+        public class CustomerWithNoIdentifier
         {
         }
 
-        [MicroLite.Mapping.Table("Sales", "Customers")]
-        private class CustomerWithStringIdentifier
+        public class CustomerWithStringIdentifier
         {
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.Assigned)]
             public string Id
             {
                 get;

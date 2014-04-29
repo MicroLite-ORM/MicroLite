@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IAdvancedReadOnlySession.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,15 +22,7 @@ namespace MicroLite
     public interface IAdvancedReadOnlySession : IHideObjectMethods
     {
         /// <summary>
-        /// Gets the session factory used to create this session.
-        /// </summary>
-        ISessionFactory SessionFactory
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Executes any pending queries which have been included.
+        /// Executes any pending queries which have been queued using the Include API.
         /// </summary>
         void ExecutePendingQueries();
     }

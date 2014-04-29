@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="MicroLite Rules" Description="MicroLite Custom Rules." ToolsVersion="10.0">
+<RuleSet Name="MicroLite Rules" Description="MicroLite Custom Rules." ToolsVersion="11.0">
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1000" Action="Error" />
@@ -21,6 +21,7 @@
     <Rule Id="CA1017" Action="Error" />
     <Rule Id="CA1018" Action="Error" />
     <Rule Id="CA1019" Action="Error" />
+    <Rule Id="CA1020" Action="None" />
     <Rule Id="CA1021" Action="Error" />
     <Rule Id="CA1023" Action="Error" />
     <Rule Id="CA1024" Action="Error" />
@@ -88,7 +89,6 @@
     <Rule Id="CA1415" Action="Error" />
     <Rule Id="CA1500" Action="Error" />
     <Rule Id="CA1501" Action="Error" />
-    <Rule Id="CA1502" Action="Error" />
     <Rule Id="CA1504" Action="Error" />
     <Rule Id="CA1505" Action="Error" />
     <Rule Id="CA1506" Action="Error" />
@@ -219,6 +219,5 @@
     <Rule Id="CA2240" Action="Error" />
     <Rule Id="CA2241" Action="Error" />
     <Rule Id="CA2242" Action="Error" />
-    <Rule Id="CA2243" Action="Error" />
   </Rules>
 </RuleSet>

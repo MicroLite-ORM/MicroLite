@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IAdvancedSession.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,25 +34,13 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the delete command.</exception>
         /// <example>
         /// <code>
-        /// bool deleted = false;
-        ///
         /// using (var session = sessionFactory.OpenSession())
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
-        ///         try
-        ///         {
-        ///             deleted = session.Advanced.Delete(typeof(Customer), identifier: 12823);
+        ///         bool wasDeleted = session.Advanced.Delete(type: typeof(Customer), identifier: 12823);
         ///
-        ///             transaction.Commit();
-        ///         }
-        ///         catch
-        ///         {
-        ///             deleted = false;
-        ///
-        ///             transaction.Rollback();
-        ///             // Log or throw the exception.
-        ///         }
+        ///         transaction.Commit();
         ///     }
         /// }
         /// </code>
@@ -71,9 +59,14 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     var query = new SqlQuery("UPDATE Customers SET Locked = 0 WHERE Locked = 1");
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         var query = new SqlQuery("UPDATE Customers SET Locked = @p0 WHERE Locked = @p1", 0, 1);
         ///
-        ///     int unlocked = session.Advanced.Execute(query);
+        ///         int unlockedRowCount = session.Advanced.Execute(query);
+        ///
+        ///         transaction.Commit();
+        ///     }
         /// }
         /// </code>
         /// </example>
@@ -92,13 +85,42 @@ namespace MicroLite
         /// <code>
         /// using (var session = sessionFactory.OpenSession())
         /// {
-        ///     // Create a query which returns a single result.
-        ///     var query = new SqlQuery("SELECT COUNT(CustomerId) FROM Customers");
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         // Create a query which returns a single result.
+        ///         var query = new SqlQuery("SELECT COUNT(CustomerId) FROM Customers");
         ///
-        ///     int customerCount = session.Advanced.ExecuteScalar&lt;int&gt;(query);
+        ///         int customerCount = session.Advanced.ExecuteScalar&lt;int&gt;(query);
+        ///
+        ///         transaction.Commit();
+        ///     }
         /// }
         /// </code>
         /// </example>
         T ExecuteScalar<T>(SqlQuery sqlQuery);
+
+        /// <summary>
+        /// Performs a partial update on a table row based upon the values specified in the object delta.
+        /// </summary>
+        /// <param name="objectDelta">The object delta containing the changes to be applied.</param>
+        /// <returns>true if the object was updated successfully; otherwise false.</returns>
+        /// <example>
+        /// <code>
+        /// using (var session = sessionFactory.OpenSession())
+        /// {
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         // Create an ObjectDelta which only updates specific properties:
+        ///         var objectDelta = new ObjectDelta(type: typeof(Customer), identifier: 12823);
+        ///         objectDelta.AddChange(propertyName: "Locked", newValue: 0); // Add as many or few changes as required.
+        ///
+        ///         bool wasUpdated = session.Advanced.Update(objectDelta);
+        ///
+        ///         transaction.Commit();
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        bool Update(ObjectDelta objectDelta);
     }
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="DbEncryptedStringTypeConverter.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,16 +13,17 @@
 namespace MicroLite.TypeConverters
 {
     using System;
+    using System.Data;
     using System.IO;
     using System.Security.Cryptography;
     using MicroLite.Infrastructure;
 
     /// <summary>
-    /// An ITypeConverter which can encrypt and decrypt the stored database value.
+    /// An ITypeConverter which can encrypt and decrypt a string which ensures that the cypher text is stored in the database but the
+    /// clear text is used in the object.
     /// </summary>
-    public sealed class DbEncryptedStringTypeConverter : TypeConverter
+    public sealed class DbEncryptedStringTypeConverter : ITypeConverter
     {
-        private const char Separator = '@';
         private readonly ISymmetricAlgorithmProvider algorithmProvider;
 
         /// <summary>
@@ -40,27 +41,30 @@ namespace MicroLite.TypeConverters
         }
 
         /// <summary>
-        /// Determines whether this type converter can convert values for the specified property type.
+        /// Determines whether this type converter can convert values for the specified type.
         /// </summary>
-        /// <param name="propertyType">The type of the property value to be converted.</param>
+        /// <param name="type">The type to check.</param>
         /// <returns>
-        ///   <c>true</c> if this instance can convert the specified property type; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.
         /// </returns>
-        public override bool CanConvert(Type propertyType)
+        public bool CanConvert(Type type)
         {
-            return propertyType == typeof(DbEncryptedString);
+            return type == typeof(DbEncryptedString);
         }
 
         /// <summary>
-        /// Converts the specified database value into an instance of the property type.
+        /// Converts the specified database value into an instance of the specified type.
         /// </summary>
         /// <param name="value">The database value to be converted.</param>
-        /// <param name="propertyType">The property type to convert to.</param>
-        /// <returns>
-        /// An instance of the specified property type containing the specified value.
-        /// </returns>
-        public override object ConvertFromDbValue(object value, Type propertyType)
+        /// <param name="type">The type to convert to.</param>
+        /// <returns>An instance of the specified type containing the specified value.</returns>
+        public object ConvertFromDbValue(object value, Type type)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
             if (value == DBNull.Value)
             {
                 return (DbEncryptedString)null;
@@ -68,7 +72,11 @@ namespace MicroLite.TypeConverters
 
             var stringValue = (string)value;
 
+#if NET_3_5
             if (string.IsNullOrEmpty(stringValue))
+#else
+            if (string.IsNullOrWhiteSpace(stringValue))
+#endif
             {
                 return (DbEncryptedString)stringValue;
             }
@@ -77,14 +85,50 @@ namespace MicroLite.TypeConverters
         }
 
         /// <summary>
-        /// Converts the specified property value into an instance of the database value.
+        /// Converts value at the specified index in the IDataReader into an instance of the specified type.
         /// </summary>
-        /// <param name="value">The property value to be converted.</param>
-        /// <param name="propertyType">The property type to convert from.</param>
-        /// <returns>
-        /// An instance of the corresponding database type for the property type containing the property value.
-        /// </returns>
-        public override object ConvertToDbValue(object value, Type propertyType)
+        /// <param name="reader">The IDataReader containing the results.</param>
+        /// <param name="index">The index of the record to read from the IDataReader.</param>
+        /// <param name="type">The type to convert result value to.</param>
+        /// <returns>An instance of the specified type containing the specified value.</returns>
+        public object ConvertFromDbValue(IDataReader reader, int index, Type type)
+        {
+            if (reader == null)
+            {
+                throw new ArgumentNullException("reader");
+            }
+
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (reader.IsDBNull(index))
+            {
+                return (DbEncryptedString)null;
+            }
+
+            var stringValue = reader.GetString(index);
+
+#if NET_3_5
+            if (string.IsNullOrEmpty(stringValue))
+#else
+            if (string.IsNullOrWhiteSpace(stringValue))
+#endif
+            {
+                return (DbEncryptedString)stringValue;
+            }
+
+            return (DbEncryptedString)this.Decrypt(stringValue);
+        }
+
+        /// <summary>
+        /// Converts the specified value into an instance of the database value.
+        /// </summary>
+        /// <param name="value">The value to be converted.</param>
+        /// <param name="type">The type to convert from.</param>
+        /// <returns>An instance of the corresponding database type containing the value.</returns>
+        public object ConvertToDbValue(object value, Type type)
         {
             if (value == null || string.IsNullOrEmpty(value.ToString()))
             {
@@ -96,15 +140,15 @@ namespace MicroLite.TypeConverters
 
         private string Decrypt(string cipherText)
         {
-            var parts = cipherText.Split(Separator);
+            var index = cipherText.IndexOf('@');
 
-            if (parts.Length != 2)
+            if (index == -1)
             {
-                throw new MicroLiteException(Messages.DbEncryptedStringTypeConverter_CipherTextInvalid);
+                throw new MicroLiteException(ExceptionMessages.DbEncryptedStringTypeConverter_CipherTextInvalid);
             }
 
-            byte[] cipherBytes = Convert.FromBase64String(parts[0]);
-            byte[] ivBytes = Convert.FromBase64String(parts[1]);
+            byte[] cipherBytes = Convert.FromBase64String(cipherText.Substring(0, index));
+            byte[] ivBytes = Convert.FromBase64String(cipherText.Substring(index + 1, cipherText.Length - (index + 1)));
 
             using (var algorithm = this.algorithmProvider.CreateAlgorithm())
             {
@@ -171,7 +215,7 @@ namespace MicroLite.TypeConverters
                 }
             }
 
-            return Convert.ToBase64String(cipherBytes) + Separator + Convert.ToBase64String(ivBytes);
+            return Convert.ToBase64String(cipherBytes) + "@" + Convert.ToBase64String(ivBytes);
         }
     }
 }

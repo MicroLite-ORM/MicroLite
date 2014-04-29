@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests
 {
-    using System.Collections.Generic;
     using Xunit;
 
     /// <summary>
@@ -9,20 +8,21 @@
     public class SqlQueryTests
     {
         [Fact]
-        public void ConstructorSetsArgumentsToEmptyListIfNoneSpecified()
+        public void ConstructorSetsArgumentsToEmptyArrayIfNoneSpecified()
         {
             var sqlQuery = new SqlQuery(string.Empty);
 
             Assert.NotNull(sqlQuery.Arguments);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
         public void ConstructorSetsProperties()
         {
             var commandText = "SELECT * FROM Table WHERE Id = @p0";
-            var parameters = new List<object> { 10 };
+            var parameters = new object[] { 10 };
 
-            var sqlQuery = new SqlQuery(commandText, parameters.ToArray());
+            var sqlQuery = new SqlQuery(commandText, parameters);
 
             Assert.Equal(commandText, sqlQuery.CommandText);
             Assert.Equal(parameters, sqlQuery.Arguments);
@@ -77,6 +77,16 @@
             var sqlQuery2 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", 10);
 
             Assert.True(sqlQuery1.Equals(sqlQuery2));
+        }
+
+        [Fact]
+        public void GetArgumentArrayReturnsInnerArgumentArray()
+        {
+            var args = new[] { new object() };
+
+            var sqlQuery = new SqlQuery(string.Empty, args);
+
+            Assert.ReferenceEquals(args, sqlQuery.GetArgumentArray());
         }
 
         [Fact]

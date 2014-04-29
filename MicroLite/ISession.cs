@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ISession.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -76,33 +76,13 @@ namespace MicroLite
         ///     using (var transaction = session.BeginTransaction())
         ///     {
         ///         session.Insert(customer);
+        ///
         ///         transaction.Commit();
         ///     }
         /// }
         /// </code>
         /// </example>
         void Insert(object instance);
-
-        /// <summary>
-        /// Performs an insert or update in the database depending on whether the object is considered new (e.g. it has no identifier set).
-        /// </summary>
-        /// <param name="instance">The instance to persist the values for.</param>
-        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if the specified instance is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if there is an error executing the update command.</exception>
-        /// <example>
-        /// <code>
-        /// using (var session = sessionFactory.OpenSession())
-        /// {
-        ///     using (var transaction = session.BeginTransaction())
-        ///     {
-        ///         session.InsertOrUpdate(customer);
-        ///         transaction.Commit();
-        ///     }
-        /// }
-        /// </code>
-        /// </example>
-        void InsertOrUpdate(object instance);
 
         /// <summary>
         /// Updates the database record for the specified instance with the current property values.
@@ -119,6 +99,7 @@ namespace MicroLite
         ///     using (var transaction = session.BeginTransaction())
         ///     {
         ///         session.Update(customer);
+        ///
         ///         transaction.Commit();
         ///     }
         /// }

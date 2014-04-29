@@ -43,8 +43,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.1.1308.2321\lib\net40\Moq.dll</HintPath>
+    <Reference Include="Moq, Version=4.2.1402.2112, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,73 +55,79 @@
     <Reference Include="xunit">
       <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
     </Reference>
-    <Reference Include="xunit.runner.msbuild">
-      <HintPath>..\packages\xunit.1.9.1\lib\net20\xunit.runner.msbuild.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.runner.tdnet">
-      <HintPath>..\packages\xunit.1.9.1\lib\net20\xunit.runner.tdnet.dll</HintPath>
-    </Reference>
-    <Reference Include="xunit.runner.utility">
-      <HintPath>..\packages\xunit.1.9.1\lib\net20\xunit.runner.utility.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ConfigurationExtensionsTests.cs" />
     <Compile Include="Configuration\FluentConfigurationTests.cs" />
-    <Compile Include="Core\AdoTransactionTests.cs" />
     <Compile Include="Core\IncludeManyTests.cs" />
     <Compile Include="Core\IncludeScalarTests.cs" />
     <Compile Include="Core\IncludeSingleTests.cs" />
     <Compile Include="Core\ReadOnlySessionTests.cs" />
+    <Compile Include="Core\SessionBaseTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\SessionFactoryTests.cs" />
+    <Compile Include="Core\SessionTests.cs" />
+    <Compile Include="Core\TransactionTests.cs" />
     <Compile Include="DbEncryptedStringTests.cs" />
+    <Compile Include="Dialect\MsSqlCharactersTests.cs" />
+    <Compile Include="Dialect\MySqlCharactersTests.cs" />
     <Compile Include="Dialect\MySqlDialectTests.cs" />
+    <Compile Include="Dialect\PostgreSqlCharactersTests.cs" />
     <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
+    <Compile Include="Dialect\SQLiteCharactersTests.cs" />
+    <Compile Include="Dialect\SQLiteDialectTests.cs" />
+    <Compile Include="Driver\DbDriverTests.cs" />
+    <Compile Include="Driver\MsSqlDbDriverTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Driver\MySqlDbDriverTests.cs" />
+    <Compile Include="Driver\PostgreSqlDbDriverTests.cs" />
+    <Compile Include="Driver\SQLiteDbDriverTests.cs" />
+    <Compile Include="Mapping\Inflection\InflectionServiceTests.cs" />
+    <Compile Include="TestEntities\Invoice.cs" />
+    <Compile Include="UnitTest.cs" />
+    <Compile Include="ObjectDeltaTests.cs" />
+    <Compile Include="Builder\DeleteSqlBuilderTests.cs" />
+    <Compile Include="Builder\InsertSqlBuilderTests.cs" />
+    <Compile Include="Builder\UpdateSqlBuilderTests.cs" />
     <Compile Include="SqlCharactersTests.cs" />
     <Compile Include="Dialect\SqlDialectTests.cs" />
-    <Compile Include="Dialect\SQLiteDialectTests.cs" />
-    <Compile Include="GuidGeneratorTests.cs" />
-    <Compile Include="Infrastructure\Web\SessionManagerTests.cs" />
     <Compile Include="Infrastructure\SymmetricAlgorithmProviderTests.cs" />
-    <Compile Include="Listeners\GuidCombListenerTests.cs" />
     <Compile Include="Mapping\ColumnAttributeTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
-    <Compile Include="Listeners\AssignedListenerTests.cs" />
-    <Compile Include="Core\ConnectionManagerTests.cs" />
-    <Compile Include="Listeners\GuidListenerTests.cs" />
     <Compile Include="Listeners\DbGeneratedListenerTests.cs" />
-    <Compile Include="Core\ObjectBuilderTests.cs" />
-    <Compile Include="Core\SessionFactoryTests.cs" />
-    <Compile Include="Core\SessionTests.cs" />
     <Compile Include="Dialect\MsSqlDialectTests.cs" />
     <Compile Include="Listeners\ListenerCollectionTests.cs" />
     <Compile Include="Mapping\ColumnInfoTests.cs" />
     <Compile Include="Mapping\ConventionMappingConventionTests.cs" />
     <Compile Include="Mapping\ConventionMappingSettingsTests.cs" />
     <Compile Include="Mapping\ExpandoObjectInfoTests.cs" />
-    <Compile Include="Query\RawWhereBuilderTests.cs" />
-    <Compile Include="Query\SelectSqlBuilderTests.cs" />
-    <Compile Include="Query\StoredProcedureSqlBuilderTests.cs" />
+    <Compile Include="Builder\RawWhereBuilderTests.cs" />
+    <Compile Include="Builder\SelectSqlBuilderTests.cs" />
+    <Compile Include="Builder\StoredProcedureSqlBuilderTests.cs" />
+    <Compile Include="TestEntities\Customer.cs" />
+    <Compile Include="TestEntities\CustomerStatus.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverterTests.cs" />
     <Compile Include="TypeConverters\EnumTypeConverterTests.cs" />
     <Compile Include="Mapping\IdentifierAttributeTests.cs" />
-    <Compile Include="Logging\LogExtensionsTests.cs" />
     <Compile Include="Logging\LogManagerTests.cs" />
     <Compile Include="Mapping\Inflection\EnglishInflectionServiceTests.cs" />
     <Compile Include="Mapping\ObjectInfoTests.cs" />
     <Compile Include="Mapping\AttributeMappingConventionTests.cs" />
     <Compile Include="TypeConverters\ObjectTypeConverterTests.cs" />
-    <Compile Include="Mapping\PropertyAccessorTests.cs" />
     <Compile Include="Mapping\TableInfoTests.cs" />
     <Compile Include="TypeConverters\TypeConverterCollectionTests.cs" />
     <Compile Include="TypeConverters\TypeConverterTests.cs" />
     <Compile Include="PagedResultTests.cs" />
     <Compile Include="PagingOptionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\SqlBuilderTests.cs" />
+    <Compile Include="Builder\SqlBuilderTests.cs" />
     <Compile Include="SqlQueryTests.cs" />
     <Compile Include="Mapping\TableAttributeTests.cs" />
     <Compile Include="SqlUtilityTests.cs" />
+    <Compile Include="TypeConverters\UriTypeConverterTests.cs" />
     <Compile Include="TypeConverters\XDocumentTypeConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>

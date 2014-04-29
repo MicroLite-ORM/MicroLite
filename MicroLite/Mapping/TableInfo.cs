@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="TableInfo.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,24 +14,23 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
 
     /// <summary>
-    /// A class which contains information about a database table .
+    /// A class which contains information about a database table which a class is mapped to.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{Schema}.{Name}")]
     public sealed class TableInfo
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
-
         private readonly IList<ColumnInfo> columns;
-        private readonly string identifierColumn;
-        private readonly string identifierProperty;
+        private readonly ColumnInfo identifierColumn;
         private readonly IdentifierStrategy identifierStrategy;
+        private readonly int insertColumnCount;
         private readonly string name;
         private readonly string schema;
+        private readonly int updateColumnCount;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="TableInfo"/> class.
@@ -41,7 +40,7 @@ namespace MicroLite.Mapping
         /// <param name="name">The name of the table.</param>
         /// <param name="schema">The name of the schema the table exists within.</param>
         /// <exception cref="ArgumentNullException">Thrown if columns or name are null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if no identifier column is specified.</exception>
+        /// <exception cref="MappingException">Thrown if no there is a problem with the column mappings.</exception>
         public TableInfo(
             IList<ColumnInfo> columns,
             IdentifierStrategy identifierStrategy,
@@ -58,18 +57,17 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("name");
             }
 
+            this.columns = new ReadOnlyCollection<ColumnInfo>(columns);
             this.identifierStrategy = identifierStrategy;
             this.name = name;
             this.schema = schema;
 
-            this.ValidateColumns(columns);
+            this.ValidateColumns();
 
-            this.columns = new System.Collections.ObjectModel.ReadOnlyCollection<ColumnInfo>(columns);
+            this.identifierColumn = columns.Single(c => c.IsIdentifier);
 
-            var identifierColumnInfo = columns.Single(c => c.IsIdentifier);
-
-            this.identifierColumn = identifierColumnInfo.ColumnName;
-            this.identifierProperty = identifierColumnInfo.PropertyInfo.Name;
+            this.insertColumnCount = columns.Count(c => c.AllowInsert);
+            this.updateColumnCount = columns.Count(c => c.AllowUpdate);
         }
 
         /// <summary>
@@ -84,24 +82,13 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the name of the column that is the table identifier column (primary key).
+        /// Gets the ColumnInfo of the column that is the table identifier column (primary key).
         /// </summary>
-        public string IdentifierColumn
+        public ColumnInfo IdentifierColumn
         {
             get
             {
                 return this.identifierColumn;
-            }
-        }
-
-        /// <summary>
-        /// Gets the name of the property that is the object identifier property mapped to the table identifier column.
-        /// </summary>
-        public string IdentifierProperty
-        {
-            get
-            {
-                return this.identifierProperty;
             }
         }
 
@@ -113,6 +100,17 @@ namespace MicroLite.Mapping
             get
             {
                 return this.identifierStrategy;
+            }
+        }
+
+        /// <summary>
+        /// Gets the number of columns which can be inserted.
+        /// </summary>
+        public int InsertColumnCount
+        {
+            get
+            {
+                return this.insertColumnCount;
             }
         }
 
@@ -138,9 +136,20 @@ namespace MicroLite.Mapping
             }
         }
 
-        private void ValidateColumns(IEnumerable<ColumnInfo> mappedColumns)
+        /// <summary>
+        /// Gets the number of columns which can be updated.
+        /// </summary>
+        public int UpdateColumnCount
         {
-            var duplicatedColumn = mappedColumns
+            get
+            {
+                return this.updateColumnCount;
+            }
+        }
+
+        private void ValidateColumns()
+        {
+            var duplicatedColumn = this.columns
                 .GroupBy(c => c.ColumnName)
                 .Select(x => new
                 {
@@ -151,14 +160,17 @@ namespace MicroLite.Mapping
 
             if (duplicatedColumn != null)
             {
-                log.TryLogFatal(Messages.TableInfo_ColumnMappedMultipleTimes, duplicatedColumn.Key);
-                throw new MicroLiteException(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
+                throw new MappingException(ExceptionMessages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
             }
 
-            if (!mappedColumns.Any(c => c.IsIdentifier))
+            if (!this.columns.Any(c => c.IsIdentifier))
             {
-                log.TryLogFatal(Messages.TableInfo_NoIdentifierColumn, this.schema, this.name);
-                throw new MicroLiteException(Messages.TableInfo_NoIdentifierColumn.FormatWith(this.schema, this.name));
+                throw new MappingException(ExceptionMessages.TableInfo_NoIdentifierColumn.FormatWith(this.schema, this.name));
+            }
+
+            if (this.columns.Count(c => c.IsIdentifier) > 1)
+            {
+                throw new MappingException(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith(this.schema, this.name));
             }
         }
     }

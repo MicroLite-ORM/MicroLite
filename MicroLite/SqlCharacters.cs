@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SqlCharacters.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,82 +19,59 @@ namespace MicroLite
     /// <summary>
     /// A class containing the SQL characters for an SQL Dialect.
     /// </summary>
-    public abstract class SqlCharacters
+    public class SqlCharacters
     {
-        private static SqlCharacters empty;
-        private static SqlCharacters msSql;
-        private static SqlCharacters mySql;
-        private static SqlCharacters postgreSql;
-        private static SqlCharacters sqlite;
+        private static readonly SqlCharacters empty = new SqlCharacters();
+        private static readonly char[] period = new[] { '.' };
+        private static SqlCharacters current;
 
         /// <summary>
-        /// Gets an Empty set of SqlCharacters.
+        /// Initialises a new instance of the <see cref="SqlCharacters"/> class.
+        /// </summary>
+        protected SqlCharacters()
+        {
+        }
+
+        /// <summary>
+        /// Gets or sets the current SqlCharacters or Empty if not otherwise specified.
+        /// </summary>
+        public static SqlCharacters Current
+        {
+            get
+            {
+                return current ?? empty;
+            }
+
+            set
+            {
+                current = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets an Empty set of SqlCharacters which does not support named parameters or escaping of values.
         /// </summary>
         public static SqlCharacters Empty
         {
             get
             {
-                return empty ?? (empty = new EmptySqlCharacters());
+                return empty;
             }
         }
 
         /// <summary>
-        /// Gets the SqlCharacters for MS SQL.
-        /// </summary>
-        public static SqlCharacters MsSql
-        {
-            get
-            {
-                return msSql ?? (msSql = new MsSqlCharacters());
-            }
-        }
-
-        /// <summary>
-        /// Gets the SqlCharacters for MySql.
-        /// </summary>
-        public static SqlCharacters MySql
-        {
-            get
-            {
-                return mySql ?? (mySql = new MySqlCharacters());
-            }
-        }
-
-        /// <summary>
-        /// Gets the SqlCharacters for PostgreSql.
-        /// </summary>
-        public static SqlCharacters PostgreSql
-        {
-            get
-            {
-                return postgreSql ?? (postgreSql = new PostgreSqlCharacters());
-            }
-        }
-
-        /// <summary>
-        /// Gets the SqlCharacters for SQLite.
-        /// </summary>
-        public static SqlCharacters SQLite
-        {
-            get
-            {
-                return sqlite ?? (sqlite = new SQLiteCharacters());
-            }
-        }
-
-        /// <summary>
-        /// Gets the left delimiter character.
+        /// Gets a string containing the delimiter used on the left hand side to escape an SQL value.
         /// </summary>
         public virtual string LeftDelimiter
         {
             get
             {
-                return "\"";
+                return string.Empty;
             }
         }
 
         /// <summary>
-        /// Gets the wildcard for use in like statements.
+        /// Gets a string containing the wildcard value for use in LIKE statements.
         /// </summary>
         public virtual string LikeWildcard
         {
@@ -105,18 +82,18 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the right delimiter character.
+        /// Gets a string containing the delimiter used on the right hand side to escape an SQL value.
         /// </summary>
         public virtual string RightDelimiter
         {
             get
             {
-                return "\"";
+                return string.Empty;
             }
         }
 
         /// <summary>
-        /// Gets the wildcard for use in select statements.
+        /// Gets a string containing the wildcard value for use in SELECT statements.
         /// </summary>
         public virtual string SelectWildcard
         {
@@ -127,7 +104,7 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the SQL parameter.
+        /// Gets a string containing the parameter value for use in parameterised statements.
         /// </summary>
         public virtual string SqlParameter
         {
@@ -138,13 +115,13 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the character used to separate SQL statements.
+        /// Gets the stored procedure invocation command.
         /// </summary>
-        public virtual string StatementSeparator
+        public virtual string StoredProcedureInvocationCommand
         {
             get
             {
-                return ";";
+                return string.Empty;
             }
         }
 
@@ -176,7 +153,12 @@ namespace MicroLite
                 return sql;
             }
 
-            var sqlPieces = sql.Split('.');
+            if (!sql.Contains('.'))
+            {
+                return this.LeftDelimiter + sql + this.RightDelimiter;
+            }
+
+            var sqlPieces = sql.Split(period);
 
 #if NET_3_5
             return string.Join(".", sqlPieces.Select(s => this.LeftDelimiter + s + this.RightDelimiter).ToArray());
@@ -189,7 +171,7 @@ namespace MicroLite
         /// Gets the name of the parameter for the specified position.
         /// </summary>
         /// <param name="position">The parameter position.</param>
-        /// <returns>The nape of the parameter for the specified position.</returns>
+        /// <returns>The name of the parameter for the specified position.</returns>
         public string GetParameterName(int position)
         {
             if (this.SupportsNamedParameters)
@@ -214,134 +196,8 @@ namespace MicroLite
                 return false;
             }
 
-            return sql.StartsWith(this.LeftDelimiter, StringComparison.Ordinal) && sql.EndsWith(this.RightDelimiter, StringComparison.Ordinal);
-        }
-
-        private sealed class EmptySqlCharacters : SqlCharacters
-        {
-            public override string LeftDelimiter
-            {
-                get
-                {
-                    return string.Empty;
-                }
-            }
-
-            public override string RightDelimiter
-            {
-                get
-                {
-                    return string.Empty;
-                }
-            }
-        }
-
-        private sealed class MsSqlCharacters : SqlCharacters
-        {
-            public override string LeftDelimiter
-            {
-                get
-                {
-                    return "[";
-                }
-            }
-
-            public override string RightDelimiter
-            {
-                get
-                {
-                    return "]";
-                }
-            }
-
-            public override string SqlParameter
-            {
-                get
-                {
-                    return "@";
-                }
-            }
-
-            public override bool SupportsNamedParameters
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class MySqlCharacters : SqlCharacters
-        {
-            public override string LeftDelimiter
-            {
-                get
-                {
-                    return "`";
-                }
-            }
-
-            public override string RightDelimiter
-            {
-                get
-                {
-                    return "`";
-                }
-            }
-
-            public override string SqlParameter
-            {
-                get
-                {
-                    return "@";
-                }
-            }
-
-            public override bool SupportsNamedParameters
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class PostgreSqlCharacters : SqlCharacters
-        {
-            public override string SqlParameter
-            {
-                get
-                {
-                    return ":";
-                }
-            }
-
-            public override bool SupportsNamedParameters
-            {
-                get
-                {
-                    return true;
-                }
-            }
-        }
-
-        private sealed class SQLiteCharacters : SqlCharacters
-        {
-            public override string SqlParameter
-            {
-                get
-                {
-                    return "@";
-                }
-            }
-
-            public override bool SupportsNamedParameters
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            return sql.StartsWith(this.LeftDelimiter, StringComparison.OrdinalIgnoreCase)
+                && sql.EndsWith(this.RightDelimiter, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

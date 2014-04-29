@@ -2,6 +2,8 @@
 {
     using System;
     using MicroLite.Configuration;
+    using MicroLite.Dialect;
+    using MicroLite.Driver;
     using MicroLite.Mapping;
     using Moq;
     using Xunit;
@@ -21,18 +23,21 @@
             }
 
             [Fact]
-            public void SetMappingConventionIsCalledWithAnInstanceOfAttributeMappingConvention()
+            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
             {
-                this.mockConfigureConnection.Verify(x => x.ForConnection("TestConnection", "MicroLite.Dialect.MsSqlDialect"), Times.Once());
+                this.mockConfigureConnection.Verify(
+                    x => x.ForConnection("TestConnection", It.IsAny<MsSqlDialect>(), It.IsAny<MsSqlDbDriver>()),
+                    Times.Once());
             }
         }
 
-        public class WhenCallingForMsSqlConnectionAndTheConfigureConnectionIsNull
+        public class WhenCallingForMsSqlConnection_AndTheConfigureConnectionIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()
             {
-                var exception = Assert.Throws<ArgumentNullException>(() => ConfigurationExtensions.ForMsSqlConnection(null, "TestConnection"));
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => ConfigurationExtensions.ForMsSqlConnection(null, "TestConnection"));
 
                 Assert.Equal("configureConnection", exception.ParamName);
             }
@@ -48,18 +53,21 @@
             }
 
             [Fact]
-            public void SetMappingConventionIsCalledWithAnInstanceOfAttributeMappingConvention()
+            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
             {
-                this.mockConfigureConnection.Verify(x => x.ForConnection("TestConnection", "MicroLite.Dialect.MySqlDialect"), Times.Once());
+                this.mockConfigureConnection.Verify(
+                    x => x.ForConnection("TestConnection", It.IsAny<MySqlDialect>(), It.IsAny<MySqlDbDriver>()),
+                    Times.Once());
             }
         }
 
-        public class WhenCallingForMySqlConnectionAndTheConfigureConnectionIsNull
+        public class WhenCallingForMySqlConnection_AndTheConfigureConnectionIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()
             {
-                var exception = Assert.Throws<ArgumentNullException>(() => ConfigurationExtensions.ForMySqlConnection(null, "TestConnection"));
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => ConfigurationExtensions.ForMySqlConnection(null, "TestConnection"));
 
                 Assert.Equal("configureConnection", exception.ParamName);
             }
@@ -75,18 +83,21 @@
             }
 
             [Fact]
-            public void SetMappingConventionIsCalledWithAnInstanceOfAttributeMappingConvention()
+            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
             {
-                this.mockConfigureConnection.Verify(x => x.ForConnection("TestConnection", "MicroLite.Dialect.PostgreSqlDialect"), Times.Once());
+                this.mockConfigureConnection.Verify(
+                    x => x.ForConnection("TestConnection", It.IsAny<PostgreSqlDialect>(), It.IsAny<PostgreSqlDbDriver>()),
+                    Times.Once());
             }
         }
 
-        public class WhenCallingForPostgreSqlConnectionAndTheConfigureConnectionIsNull
+        public class WhenCallingForPostgreSqlConnection_AndTheConfigureConnectionIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()
             {
-                var exception = Assert.Throws<ArgumentNullException>(() => ConfigurationExtensions.ForPostgreSqlConnection(null, "TestConnection"));
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => ConfigurationExtensions.ForPostgreSqlConnection(null, "TestConnection"));
 
                 Assert.Equal("configureConnection", exception.ParamName);
             }
@@ -102,18 +113,21 @@
             }
 
             [Fact]
-            public void SetMappingConventionIsCalledWithAnInstanceOfAttributeMappingConvention()
+            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
             {
-                this.mockConfigureConnection.Verify(x => x.ForConnection("TestConnection", "MicroLite.Dialect.SQLiteDialect"), Times.Once());
+                this.mockConfigureConnection.Verify(
+                    x => x.ForConnection("TestConnection", It.IsAny<SQLiteDialect>(), It.IsAny<SQLiteDbDriver>()),
+                    Times.Once());
             }
         }
 
-        public class WhenCallingForSQLiteConnectionAndTheConfigureConnectionIsNull
+        public class WhenCallingForSQLiteConnection_AndTheConfigureConnectionIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()
             {
-                var exception = Assert.Throws<ArgumentNullException>(() => ConfigurationExtensions.ForSQLiteConnection(null, "TestConnection"));
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => ConfigurationExtensions.ForSQLiteConnection(null, "TestConnection"));
 
                 Assert.Equal("configureConnection", exception.ParamName);
             }
@@ -135,7 +149,7 @@
             }
         }
 
-        public class WhenCallingWithAttributeBasedMappingAndTheConfigureExtensionsIsNull
+        public class WhenCallingWithAttributeBasedMapping_AndTheConfigureExtensionsIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()
@@ -162,7 +176,7 @@
             }
         }
 
-        public class WhenCallingWithConventionBasedMappingAndTheConfigureExtensionsIsNull
+        public class WhenCallingWithConventionBasedMapping_AndTheConfigureExtensionsIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()
@@ -173,7 +187,7 @@
             }
         }
 
-        public class WhenCallingWithConventionBasedMappingAndTheSettingsAreNull
+        public class WhenCallingWithConventionBasedMapping_AndTheSettingsAreNull
         {
             [Fact]
             public void AnArgumentNullExceptionIsThrown()

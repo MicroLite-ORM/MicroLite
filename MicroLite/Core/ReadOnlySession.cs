@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ReadOnlySession.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,33 +14,29 @@ namespace MicroLite.Core
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
+    using System.Globalization;
+    using MicroLite.Builder;
     using MicroLite.Dialect;
-    using MicroLite.Logging;
+    using MicroLite.Driver;
     using MicroLite.Mapping;
-    using MicroLite.Query;
 
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.
     /// </summary>
-    internal class ReadOnlySession : IReadOnlySession, IIncludeSession, IAdvancedReadOnlySession
+    [System.Diagnostics.DebuggerDisplay("ConnectionScope: {ConnectionScope}")]
+    internal class ReadOnlySession : SessionBase, IReadOnlySession, IIncludeSession, IAdvancedReadOnlySession
     {
-        protected static readonly ILog Log = LogManager.GetCurrentClassLog();
-        private readonly IConnectionManager connectionManager;
         private readonly Queue<Include> includes = new Queue<Include>();
-        private readonly IObjectBuilder objectBuilder;
         private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
-        private readonly ISessionFactory sessionFactory;
-        private bool disposed;
+        private readonly ISqlDialect sqlDialect;
 
         internal ReadOnlySession(
-            ISessionFactory sessionFactory,
-            IConnectionManager connectionManager,
-            IObjectBuilder objectBuilder)
+            ConnectionScope connectionScope,
+            ISqlDialect sqlDialect,
+            IDbDriver sqlDriver)
+            : base(connectionScope, sqlDriver)
         {
-            this.sessionFactory = sessionFactory;
-            this.connectionManager = connectionManager;
-            this.objectBuilder = objectBuilder;
+            this.sqlDialect = sqlDialect;
         }
 
         public IAdvancedReadOnlySession Advanced
@@ -59,41 +55,17 @@ namespace MicroLite.Core
             }
         }
 
-        public ISessionFactory SessionFactory
-        {
-            get
-            {
-                return this.sessionFactory;
-            }
-        }
-
-        public ITransaction Transaction
-        {
-            get
-            {
-                return this.ConnectionManager.CurrentTransaction;
-            }
-        }
-
-        protected IConnectionManager ConnectionManager
-        {
-            get
-            {
-                return this.connectionManager;
-            }
-        }
-
         protected ISqlDialect SqlDialect
         {
             get
             {
-                return this.sessionFactory.SqlDialect;
+                return this.sqlDialect;
             }
         }
 
         public IIncludeMany<T> All<T>() where T : class, new()
         {
-            var sqlQuery = (new SelectSqlBuilder(this.SqlDialect.SqlCharacters, "*"))
+            var sqlQuery = new SelectSqlBuilder(this.SqlDialect.SqlCharacters)
                 .From(typeof(T))
                 .ToSqlQuery();
 
@@ -102,29 +74,16 @@ namespace MicroLite.Core
             return include;
         }
 
-        public ITransaction BeginTransaction()
-        {
-            return this.BeginTransaction(IsolationLevel.ReadCommitted);
-        }
-
-        public ITransaction BeginTransaction(IsolationLevel isolationLevel)
-        {
-            this.ThrowIfDisposed();
-
-            return this.ConnectionManager.BeginTransaction(isolationLevel);
-        }
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         public void ExecutePendingQueries()
         {
+            if (Log.IsDebug)
+            {
+                Log.Debug(LogMessages.Session_ExecutingQueries, this.queries.Count.ToString(CultureInfo.InvariantCulture));
+            }
+
             try
             {
-                if (this.SqlDialect.SupportsBatchedQueries)
+                if (this.DbDriver.SupportsBatchedQueries && this.queries.Count > 1)
                 {
                     this.ExecuteQueriesCombined();
                 }
@@ -140,7 +99,6 @@ namespace MicroLite.Core
             }
             catch (Exception e)
             {
-                Log.TryLogError(e.Message, e);
                 throw new MicroLiteException(e.Message, e);
             }
             finally
@@ -170,10 +128,7 @@ namespace MicroLite.Core
 
             var objectInfo = ObjectInfo.For(typeof(T));
 
-            var sqlQuery = (new SelectSqlBuilder(this.SqlDialect.SqlCharacters, "*"))
-                .From(objectInfo.ForType)
-                .Where(objectInfo.TableInfo.IdentifierColumn).IsEqualTo(identifier)
-                .ToSqlQuery();
+            var sqlQuery = this.SqlDialect.BuildSelectSqlQuery(objectInfo, identifier);
 
             var include = this.Include.Single<T>(sqlQuery);
 
@@ -243,7 +198,7 @@ namespace MicroLite.Core
 
             if (pagingOptions == PagingOptions.None)
             {
-                throw new MicroLiteException(Messages.Session_PagingOptionsMustNotBeNone);
+                throw new MicroLiteException(ExceptionMessages.Session_PagingOptionsMustNotBeNone);
             }
 
             var countSqlQuery = this.SqlDialect.CountQuery(sqlQuery);
@@ -258,15 +213,6 @@ namespace MicroLite.Core
 
             return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
         }
-
-#if !NET_3_5
-
-        public IList<dynamic> Projection(SqlQuery sqlQuery)
-        {
-            return this.Fetch<dynamic>(sqlQuery);
-        }
-
-#endif
 
         public IInclude<T> Scalar<T>(SqlQuery sqlQuery)
         {
@@ -285,48 +231,27 @@ namespace MicroLite.Core
             return include;
         }
 
-        protected void Dispose(bool disposing)
-        {
-            if (disposing && !this.disposed)
-            {
-                this.ConnectionManager.Dispose();
-
-                Log.TryLogDebug(Messages.Session_Disposed);
-                this.disposed = true;
-            }
-        }
-
-        protected void ThrowIfDisposed()
-        {
-            if (this.disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().Name);
-            }
-        }
-
         private void ExecuteQueriesCombined()
         {
-            var sqlQuery = this.queries.Count == 1 ? this.queries.Peek() : this.SqlDialect.Combine(this.queries);
+            var combinedSqlQuery = this.DbDriver.Combine(this.queries);
 
-            using (var command = this.ConnectionManager.CreateCommand())
+            using (var command = this.CreateCommand(combinedSqlQuery))
             {
                 try
                 {
-                    this.SqlDialect.BuildCommand(command, sqlQuery);
-
                     using (var reader = command.ExecuteReader())
                     {
                         do
                         {
                             var include = this.includes.Dequeue();
-                            include.BuildValue(reader, this.objectBuilder);
+                            include.BuildValue(reader);
                         }
                         while (reader.NextResult());
                     }
                 }
                 finally
                 {
-                    this.connectionManager.CommandCompleted(command);
+                    this.CommandCompleted();
                 }
             }
         }
@@ -335,22 +260,21 @@ namespace MicroLite.Core
         {
             do
             {
-                using (var command = this.ConnectionManager.CreateCommand())
+                var sqlQuery = this.queries.Dequeue();
+
+                using (var command = this.CreateCommand(sqlQuery))
                 {
                     try
                     {
-                        var sqlQuery = this.queries.Dequeue();
-                        this.SqlDialect.BuildCommand(command, sqlQuery);
-
                         using (var reader = command.ExecuteReader())
                         {
                             var include = this.includes.Dequeue();
-                            include.BuildValue(reader, this.objectBuilder);
+                            include.BuildValue(reader);
                         }
                     }
                     finally
                     {
-                        this.connectionManager.CommandCompleted(command);
+                        this.CommandCompleted();
                     }
                 }
             }

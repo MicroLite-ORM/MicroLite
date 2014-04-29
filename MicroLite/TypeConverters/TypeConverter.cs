@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="TypeConverter.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,14 +13,14 @@
 namespace MicroLite.TypeConverters
 {
     using System;
-    using System.Linq;
 
     /// <summary>
-    /// The base class for any implementation of <see cref="ITypeConverter"/>.
+    /// A class which allows access to <see cref="ITypeConverter"/>s.
     /// </summary>
-    public abstract class TypeConverter : ITypeConverter
+    public static class TypeConverter
     {
-        private static readonly TypeConverterCollection collection = new TypeConverterCollection();
+        private static readonly TypeConverterCollection converters = new TypeConverterCollection();
+        private static readonly ITypeConverter defaultConverter = new ObjectTypeConverter();
 
         /// <summary>
         /// Gets the type converter collection which contains all type converters registered with the MicroLite ORM framework.
@@ -29,7 +29,18 @@ namespace MicroLite.TypeConverters
         {
             get
             {
-                return collection;
+                return converters;
+            }
+        }
+
+        /// <summary>
+        /// Gets the default type converter which can be used if there is no specific type converter for a given type.
+        /// </summary>
+        public static ITypeConverter Default
+        {
+            get
+            {
+                return defaultConverter;
             }
         }
 
@@ -37,17 +48,66 @@ namespace MicroLite.TypeConverters
         /// Gets the <see cref="ITypeConverter"/> for the specified type.
         /// </summary>
         /// <param name="type">The type to get the converter for.</param>
-        /// <returns>The <see cref="ITypeConverter"/> for the specified type.</returns>
+        /// <returns>The <see cref="ITypeConverter"/> for the specified type, or null if no specific type converter exists for the type.</returns>
+        /// <remarks>
+        /// If For returns null, the TypeConverter.Default can be used.
+        /// </remarks>
         public static ITypeConverter For(Type type)
         {
-            return Converters.First(c => c.CanConvert(type));
+            for (int i = 0; i < Converters.Count; i++)
+            {
+                var typeConverter = Converters[i];
+
+                if (typeConverter.CanConvert(type))
+                {
+                    return typeConverter;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
-        /// Resolves the actual type. If the type is generic (as it would be for a nullable struct) it returns the inner type.
+        /// Determines whether the type is not an entity type and is a convertible type.
+        /// </summary>
+        /// <param name="type">The type to test.</param>
+        /// <returns>
+        /// true if the type is not an entity and can be converted.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if type is null.</exception>
+        public static bool IsNotEntityAndConvertible(Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (type.IsValueType || type == typeof(string))
+            {
+                return true;
+            }
+
+            for (int i = 0; i < Converters.Count; i++)
+            {
+                var typeConverter = Converters[i];
+
+                if (typeConverter.CanConvert(type))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Resolves the actual type.
         /// </summary>
         /// <param name="type">The type to resolve.</param>
-        /// <returns>The actual type.</returns>
+        /// <returns>
+        /// The actual type (e.g. the inner type if it is a nullable value).
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if type is null.</exception>
         public static Type ResolveActualType(Type type)
         {
             if (type == null)
@@ -55,36 +115,14 @@ namespace MicroLite.TypeConverters
                 throw new ArgumentNullException("type");
             }
 
-            return type.IsGenericType ? type.GetGenericArguments()[0] : type;
+            var actualType = type;
+
+            if (type.IsGenericType)
+            {
+                actualType = Nullable.GetUnderlyingType(type);
+            }
+
+            return actualType;
         }
-
-        /// <summary>
-        /// Determines whether this type converter can convert values for the specified property type.
-        /// </summary>
-        /// <param name="propertyType">The type of the property value to be converted.</param>
-        /// <returns>
-        ///   <c>true</c> if this instance can convert the specified property type; otherwise, <c>false</c>.
-        /// </returns>
-        public abstract bool CanConvert(Type propertyType);
-
-        /// <summary>
-        /// Converts the specified database value into an instance of the property type.
-        /// </summary>
-        /// <param name="value">The database value to be converted.</param>
-        /// <param name="propertyType">The property type to convert to.</param>
-        /// <returns>
-        /// An instance of the specified property type containing the specified value.
-        /// </returns>
-        public abstract object ConvertFromDbValue(object value, Type propertyType);
-
-        /// <summary>
-        /// Converts the specified property value into an instance of the database value.
-        /// </summary>
-        /// <param name="value">The property value to be converted.</param>
-        /// <param name="propertyType">The property type to convert from.</param>
-        /// <returns>
-        /// An instance of the corresponding database type for the property type containing the property value.
-        /// </returns>
-        public abstract object ConvertToDbValue(object value, Type propertyType);
     }
 }

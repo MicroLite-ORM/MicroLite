@@ -1,68 +1,104 @@
 ﻿namespace MicroLite.Tests.Dialect
 {
     using System;
-    using System.Data;
     using MicroLite.Dialect;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
     /// Unit Tests for the <see cref="MySqlDialect"/> class.
     /// </summary>
-    public class MySqlDialectTests : IDisposable
+    public class MySqlDialectTests : UnitTest
     {
-        public MySqlDialectTests()
+        [Fact]
+        public void BuildSelectIdentitySqlQuery()
         {
-            // The tests in this suite all use attribute mapping for the test.
-            ObjectInfo.MappingConvention = new AttributeMappingConvention();
-        }
+            var sqlDialect = new MySqlDialect();
 
-        private enum CustomerStatus
-        {
-            Inactive = 0,
-            Active = 1
-        }
+            var sqlQuery = sqlDialect.BuildSelectIdentitySqlQuery(ObjectInfo.For(typeof(Customer)));
 
-        public void Dispose()
-        {
-            // Reset the mapping convention after tests have run.
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+            Assert.Equal("SELECT LAST_INSERT_ID()", sqlQuery.CommandText);
+            Assert.Equal(0, sqlQuery.Arguments.Count);
         }
 
         [Fact]
-        public void InsertQueryForDbGeneratedInstance()
+        public void InsertInstanceQueryForIdentifierStrategyAssigned()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
             var customer = new Customer
             {
-                Created = DateTime.Now,
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
                 DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
                 Name = "Joe Bloggs",
-                Status = CustomerStatus.Active
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
             var sqlDialect = new MySqlDialect();
 
-            var sqlQuery = sqlDialect.CreateQuery(StatementType.Insert, customer);
+            var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            Assert.Equal("INSERT INTO `Customers` (`Created`, `DoB`, `Name`, `StatusId`) VALUES (@p0, @p1, @p2, @p3);SELECT LAST_INSERT_ID()", sqlQuery.CommandText);
+            Assert.Equal("INSERT INTO `Sales`.`Customers` (`Created`,`CreditLimit`,`DateOfBirth`,`Id`,`Name`,`CustomerStatusId`,`Website`) VALUES (@p0,@p1,@p2,@p3,@p4,@p5,@p6)", sqlQuery.CommandText);
+            Assert.Equal(7, sqlQuery.Arguments.Count);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
-            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
-            Assert.Equal(customer.Name, sqlQuery.Arguments[2]);
-            Assert.Equal((int)customer.Status, sqlQuery.Arguments[3]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[3]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[4]);
+            Assert.Equal(1, sqlQuery.Arguments[5]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[6]);
+        }
+
+        [Fact]
+        public void InsertInstanceQueryForIdentifierStrategyDbGenerated()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new Customer
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var sqlDialect = new MySqlDialect();
+
+            var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
+
+            Assert.Equal("INSERT INTO `Sales`.`Customers` (`Created`,`CreditLimit`,`DateOfBirth`,`Name`,`CustomerStatusId`,`Website`) VALUES (@p0,@p1,@p2,@p3,@p4,@p5)", sqlQuery.CommandText);
+            Assert.Equal(6, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
+            Assert.Equal(1, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
         }
 
         [Fact]
         public void PageNonQualifiedQuery()
         {
-            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers");
 
             var sqlDialect = new MySqlDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT CustomerId, Name, DoB, StatusId FROM Customers LIMIT @p0,@p1", paged.CommandText);
-            Assert.Equal(0, paged.Arguments[0]);////, "The first argument should be the number of records to skip");
-            Assert.Equal(25, paged.Arguments[1]);////, "The second argument should be the number of records to return");
+            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers LIMIT @p0,@p1", paged.CommandText);
+            Assert.Equal(0, paged.Arguments[0]);
+            Assert.Equal(25, paged.Arguments[1]);
         }
 
         [Fact]
@@ -75,183 +111,215 @@
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT * FROM Customers LIMIT @p0,@p1", paged.CommandText);
-            Assert.Equal(0, paged.Arguments[0]);////, "The first argument should be the number of records to skip");
-            Assert.Equal(25, paged.Arguments[1]);////, "The second argument should be the number of records to return");
+            Assert.Equal(0, paged.Arguments[0]);
+            Assert.Equal(25, paged.Arguments[1]);
+        }
+
+        [Fact]
+        public void PageQueryThrowsArgumentNullExceptionForNullSqlCharacters()
+        {
+            var sqlDialect = new MySqlDialect();
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlDialect.PageQuery(null, PagingOptions.None));
         }
 
         [Fact]
         public void PageWithMultiWhereAndMultiOrderByMultiLine()
         {
             var sqlQuery = new SqlQuery(@"SELECT
- ""CustomerId"",
- ""Name"",
- ""DoB"",
- ""StatusId""
+ CustomerId,
+ Name,
+ DateOfBirth,
+ CustomerStatusId
  FROM
- ""Customers""
+ Customers
  WHERE
- (""StatusId"" = @p0 AND ""DoB"" > @p1)
+ (CustomerStatusId = @p0 AND DoB > @p1)
  ORDER BY
- ""Name"" ASC,
- ""DoB"" ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
+ Name ASC,
+ DoB ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
 
             var sqlDialect = new MySqlDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" WHERE (\"StatusId\" = @p0 AND \"DoB\" > @p1) ORDER BY \"Name\" ASC, \"DoB\" ASC LIMIT @p2,@p3", paged.CommandText);
-            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);////, "The first argument should be the first argument from the original query");
-            Assert.Equal(sqlQuery.Arguments[1], paged.Arguments[1]);////, "The second argument should be the second argument from the original query");
-            Assert.Equal(0, paged.Arguments[2]);////, "The third argument should be the number of records to skip");
-            Assert.Equal(25, paged.Arguments[3]);////, "The fourth argument should be the number of records to return");
+            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE (CustomerStatusId = @p0 AND DoB > @p1) ORDER BY Name ASC, DoB ASC LIMIT @p2,@p3", paged.CommandText);
+            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
+            Assert.Equal(sqlQuery.Arguments[1], paged.Arguments[1]);
+            Assert.Equal(0, paged.Arguments[2]);
+            Assert.Equal(25, paged.Arguments[3]);
         }
 
         [Fact]
         public void PageWithNoWhereButOrderBy()
         {
-            var sqlQuery = new SqlQuery("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" ORDER BY \"CustomerId\" ASC");
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers ORDER BY CustomerId ASC");
 
             var sqlDialect = new MySqlDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT \"CustomerId\", \"Name\", \"DoB\", \"StatusId\" FROM \"Customers\" ORDER BY \"CustomerId\" ASC LIMIT @p0,@p1", paged.CommandText);
-            Assert.Equal(0, paged.Arguments[0]);////, "The first argument should be the number of records to skip");
-            Assert.Equal(25, paged.Arguments[1]);////, "The second argument should be the number of records to return");
+            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers ORDER BY CustomerId ASC LIMIT @p0,@p1", paged.CommandText);
+            Assert.Equal(0, paged.Arguments[0]);
+            Assert.Equal(25, paged.Arguments[1]);
         }
 
         [Fact]
         public void PageWithNoWhereOrOrderByFirstResultsPage()
         {
-            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\"");
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers");
 
             var sqlDialect = new MySqlDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT @p0,@p1", paged.CommandText);
-            Assert.Equal(0, paged.Arguments[0]);////, "The first argument should be the number of records to skip");
-            Assert.Equal(25, paged.Arguments[1]);////, "The second argument should be the number of records to return");
+            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers LIMIT @p0,@p1", paged.CommandText);
+            Assert.Equal(0, paged.Arguments[0]);
+            Assert.Equal(25, paged.Arguments[1]);
         }
 
         [Fact]
         public void PageWithNoWhereOrOrderBySecondResultsPage()
         {
-            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\"");
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers");
 
             var sqlDialect = new MySqlDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 25));
 
-            Assert.Equal("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" LIMIT @p0,@p1", paged.CommandText);
-            Assert.Equal(25, paged.Arguments[0]);////, "The first argument should be the number of records to skip");
-            Assert.Equal(25, paged.Arguments[1]);////, "The second argument should be the number of records to return");
+            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers LIMIT @p0,@p1", paged.CommandText);
+            Assert.Equal(25, paged.Arguments[0]);
+            Assert.Equal(25, paged.Arguments[1]);
         }
 
         [Fact]
         public void PageWithWhereAndOrderBy()
         {
-            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 ORDER BY\"Name\" ASC", CustomerStatus.Active);
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0 ORDER BY Name ASC", CustomerStatus.Active);
 
             var sqlDialect = new MySqlDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 ORDER BY\"Name\" ASC LIMIT @p1,@p2", paged.CommandText);
-            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);////, "The first argument should be the first argument from the original query");
-            Assert.Equal(0, paged.Arguments[1]);////, "The second argument should be the number of records to skip");
-            Assert.Equal(25, paged.Arguments[2]);////, "The third argument should be the number of records to return");
+            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0 ORDER BY Name ASC LIMIT @p1,@p2", paged.CommandText);
+            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
+            Assert.Equal(0, paged.Arguments[1]);
+            Assert.Equal(25, paged.Arguments[2]);
         }
 
         [Fact]
         public void PageWithWhereAndOrderByMultiLine()
         {
             var sqlQuery = new SqlQuery(@"SELECT
-""CustomerId"",
-""Name"",
-""DoB"",
-""StatusId""
+ CustomerId,
+ Name,
+ DateOfBirth,
+ CustomerStatusId
  FROM
- ""Customers""
+ Customers
  WHERE
-""StatusId"" = @p0
+ CustomerStatusId = @p0
  ORDER BY
-""Name"" ASC", new object[] { CustomerStatus.Active });
+ Name ASC", new object[] { CustomerStatus.Active });
 
             var sqlDialect = new MySqlDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 ORDER BY\"Name\" ASC LIMIT @p1,@p2", paged.CommandText);
-            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);////, "The first argument should be the first argument from the original query");
-            Assert.Equal(0, paged.Arguments[1]);////, "The second argument should be the number of records to skip");
-            Assert.Equal(25, paged.Arguments[2]);////, "The third argument should be the number of records to return");
+            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0 ORDER BY Name ASC LIMIT @p1,@p2", paged.CommandText);
+            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
+            Assert.Equal(0, paged.Arguments[1]);
+            Assert.Equal(25, paged.Arguments[2]);
         }
 
         [Fact]
         public void PageWithWhereButNoOrderBy()
         {
-            var sqlQuery = new SqlQuery("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0", CustomerStatus.Active);
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0", CustomerStatus.Active);
 
             var sqlDialect = new MySqlDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT\"CustomerId\",\"Name\",\"DoB\",\"StatusId\" FROM \"Customers\" WHERE\"StatusId\" = @p0 LIMIT @p1,@p2", paged.CommandText);
-            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);////, "The first argument should be the first argument from the original query");
-            Assert.Equal(0, paged.Arguments[1]);////, "The second argument should be the number of records to skip");
-            Assert.Equal(25, paged.Arguments[2]);////, "The third argument should be the number of records to return");
+            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0 LIMIT @p1,@p2", paged.CommandText);
+            Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
+            Assert.Equal(0, paged.Arguments[1]);
+            Assert.Equal(25, paged.Arguments[2]);
         }
 
-        [MicroLite.Mapping.Table("Customers")]
-        private class Customer
+        [Fact]
+        public void SupportsIdentityReturnsTrue()
         {
-            public Customer()
-            {
-            }
+            var sqlDialect = new MySqlDialect();
 
-            [MicroLite.Mapping.Column("Created", allowInsert: true, allowUpdate: false)]
-            public DateTime Created
-            {
-                get;
-                set;
-            }
+            Assert.True(sqlDialect.SupportsIdentity);
+        }
 
-            [MicroLite.Mapping.Column("DoB")]
-            public DateTime DateOfBirth
-            {
-                get;
-                set;
-            }
+        [Fact]
+        public void UpdateInstanceQueryForIdentifierStrategyAssigned()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
 
-            [MicroLite.Mapping.Column("CustomerId")]
-            [MicroLite.Mapping.Identifier(IdentifierStrategy.DbGenerated)]
-            public int Id
+            var customer = new Customer
             {
-                get;
-                set;
-            }
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
 
-            [MicroLite.Mapping.Column("Name")]
-            public string Name
-            {
-                get;
-                set;
-            }
+            var sqlDialect = new MySqlDialect();
 
-            [MicroLite.Mapping.Column("StatusId")]
-            public CustomerStatus Status
-            {
-                get;
-                set;
-            }
+            var sqlQuery = sqlDialect.BuildUpdateSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            [MicroLite.Mapping.Column("Updated", allowInsert: false, allowUpdate: true)]
-            public DateTime? Updated
+            Assert.Equal("UPDATE `Sales`.`Customers` SET `CreditLimit` = @p0,`DateOfBirth` = @p1,`Name` = @p2,`CustomerStatusId` = @p3,`Updated` = @p4,`Website` = @p5 WHERE `Id` = @p6", sqlQuery.CommandText);
+            Assert.Equal(7, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[2]);
+            Assert.Equal(1, sqlQuery.Arguments[3]);
+            Assert.Equal(customer.Updated, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[6]);
+        }
+
+        [Fact]
+        public void UpdateInstanceQueryForIdentifierStrategyDbGenerated()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new Customer
             {
-                get;
-                set;
-            }
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var sqlDialect = new MySqlDialect();
+
+            var sqlQuery = sqlDialect.BuildUpdateSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
+
+            Assert.Equal("UPDATE `Sales`.`Customers` SET `CreditLimit` = @p0,`DateOfBirth` = @p1,`Name` = @p2,`CustomerStatusId` = @p3,`Updated` = @p4,`Website` = @p5 WHERE `Id` = @p6", sqlQuery.CommandText);
+            Assert.Equal(7, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[2]);
+            Assert.Equal(1, sqlQuery.Arguments[3]);
+            Assert.Equal(customer.Updated, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[6]);
         }
     }
 }

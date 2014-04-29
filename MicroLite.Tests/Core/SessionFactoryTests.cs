@@ -1,7 +1,8 @@
 ﻿namespace MicroLite.Tests.Core
 {
-    using System.Data.Common;
     using MicroLite.Core;
+    using MicroLite.Dialect;
+    using MicroLite.Driver;
     using Moq;
     using Xunit;
 
@@ -10,179 +11,160 @@
     /// </summary>
     public class SessionFactoryTests
     {
-        public class WhenCallingOpenReadOnlySession
+        public class WhenCallingOpenReadOnlySession : UnitTest
         {
-            private readonly Mock<DbConnection> mockConnection = new Mock<DbConnection>();
-            private readonly Mock<DbProviderFactory> mockFactory = new Mock<DbProviderFactory>();
-            private readonly SessionFactoryOptions options;
             private readonly IReadOnlySession readOnlySession;
-            private readonly SessionFactory sessionFactory;
 
             public WhenCallingOpenReadOnlySession()
             {
-                this.mockConnection.SetupProperty(x => x.ConnectionString);
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
 
-                this.mockFactory.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-
-                this.options = new SessionFactoryOptions
-                {
-                    ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
-                    ProviderFactory = mockFactory.Object,
-                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
-                };
-
-                this.sessionFactory = new SessionFactory(this.options);
-                this.readOnlySession = this.sessionFactory.OpenReadOnlySession();
+                this.readOnlySession = sessionFactory.OpenReadOnlySession();
             }
 
             [Fact]
-            public void ANewConnectionShouldBeCreated()
+            public void AReadOnlySessionIsReturned()
             {
-                this.mockFactory.Verify(x => x.CreateConnection(), Times.Once());
+                Assert.NotNull(this.readOnlySession);
+                Assert.IsType<ReadOnlySession>(this.readOnlySession);
             }
 
             [Fact]
-            public void TheConnectionStringShouldBeSetOnTheConnection()
+            public void TheConnectionScopeOfTheSessionIsPerTransactionByDefault()
             {
-                this.mockConnection.VerifySet(x => x.ConnectionString = this.options.ConnectionString, Times.Once());
-            }
-
-            [Fact]
-            public void TheSessionFactoryShouldBePassed()
-            {
-                Assert.Same(this.sessionFactory, this.readOnlySession.Advanced.SessionFactory);
+                Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.readOnlySession).ConnectionScope);
             }
         }
 
-        public class WhenCallingOpenSession
+        public class WhenCallingOpenReadOnlySession_MultipleTimes : UnitTest
         {
-            private readonly Mock<DbConnection> mockConnection = new Mock<DbConnection>();
-            private readonly Mock<DbProviderFactory> mockFactory = new Mock<DbProviderFactory>();
-            private readonly SessionFactoryOptions options;
+            private readonly IReadOnlySession readOnlySession1;
+            private readonly IReadOnlySession readOnlySession2;
+
+            public WhenCallingOpenReadOnlySession_MultipleTimes()
+            {
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
+
+                this.readOnlySession1 = sessionFactory.OpenReadOnlySession();
+                this.readOnlySession2 = sessionFactory.OpenReadOnlySession();
+            }
+
+            [Fact]
+            public void ANewSessionIsReturnedEachTime()
+            {
+                Assert.NotSame(this.readOnlySession1, this.readOnlySession2);
+            }
+        }
+
+        public class WhenCallingOpenReadOnlySession_SpecifyingConnectionScope : UnitTest
+        {
+            private readonly IReadOnlySession readOnlySession;
+
+            public WhenCallingOpenReadOnlySession_SpecifyingConnectionScope()
+            {
+                var mockDbDriver = new Mock<IDbDriver>();
+                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
+
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, new Mock<ISqlDialect>().Object);
+
+                this.readOnlySession = sessionFactory.OpenReadOnlySession(ConnectionScope.PerSession);
+            }
+
+            [Fact]
+            public void TheConnectionScopeOfTheSessionIsSetCorrectly()
+            {
+                Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.readOnlySession).ConnectionScope);
+            }
+        }
+
+        public class WhenCallingOpenSession : UnitTest
+        {
+            private readonly ISession session;
 
             public WhenCallingOpenSession()
             {
-                this.mockConnection.SetupProperty(x => x.ConnectionString);
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
 
-                this.mockFactory.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-
-                this.options = new SessionFactoryOptions
-                {
-                    ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
-                    ProviderFactory = mockFactory.Object,
-                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
-                };
-
-                var sessionFactory = new SessionFactory(this.options);
-                sessionFactory.OpenSession();
+                this.session = sessionFactory.OpenSession();
             }
 
             [Fact]
-            public void ANewConnectionShouldBeCreated()
+            public void ASessionIsReturned()
             {
-                this.mockFactory.Verify(x => x.CreateConnection(), Times.Once());
+                Assert.NotNull(this.session);
+                Assert.IsType<Session>(this.session);
             }
 
             [Fact]
-            public void TheConnectionStringShouldBeSetOnTheConnection()
+            public void TheConnectionScopeOfTheSessionIsPerTransactionByDefault()
             {
-                this.mockConnection.VerifySet(x => x.ConnectionString = this.options.ConnectionString, Times.Once());
+                Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.session).ConnectionScope);
             }
         }
 
-        public class WhenCallingReadOnlySessionMultipleTimes
+        public class WhenCallingOpenSession_MultipleTimes : UnitTest
         {
-            private readonly Mock<DbConnection> mockConnection = new Mock<DbConnection>();
-            private readonly Mock<DbProviderFactory> mockFactory = new Mock<DbProviderFactory>();
-            private readonly SessionFactoryOptions options;
-            private readonly IReadOnlySession session1;
-            private readonly IReadOnlySession session2;
-
-            public WhenCallingReadOnlySessionMultipleTimes()
-            {
-                this.mockConnection.SetupProperty(x => x.ConnectionString);
-
-                this.mockFactory.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-
-                this.options = new SessionFactoryOptions
-                {
-                    ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
-                    ProviderFactory = mockFactory.Object,
-                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
-                };
-
-                var sessionFactory = new SessionFactory(this.options);
-
-                this.session1 = sessionFactory.OpenReadOnlySession();
-                this.session2 = sessionFactory.OpenReadOnlySession();
-            }
-
-            [Fact]
-            public void ANewSessionShouldBeOpenedEachTime()
-            {
-                Assert.NotSame(this.session1, this.session2);
-            }
-        }
-
-        public class WhenCallingSessionMultipleTimes
-        {
-            private readonly Mock<DbConnection> mockConnection = new Mock<DbConnection>();
-            private readonly Mock<DbProviderFactory> mockFactory = new Mock<DbProviderFactory>();
-            private readonly SessionFactoryOptions options;
             private readonly ISession session1;
             private readonly ISession session2;
 
-            public WhenCallingSessionMultipleTimes()
+            public WhenCallingOpenSession_MultipleTimes()
             {
-                this.mockConnection.SetupProperty(x => x.ConnectionString);
-
-                this.mockFactory.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-
-                this.options = new SessionFactoryOptions
-                {
-                    ConnectionString = "Data Source=localhost;Initial Catalog=TestDB;",
-                    ProviderFactory = mockFactory.Object,
-                    SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
-                };
-
-                var sessionFactory = new SessionFactory(this.options);
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
 
                 this.session1 = sessionFactory.OpenSession();
                 this.session2 = sessionFactory.OpenSession();
             }
 
             [Fact]
-            public void ANewSessionShouldBeOpenedEachTime()
+            public void ANewSessionIsReturnedEachTime()
             {
                 Assert.NotSame(this.session1, this.session2);
             }
         }
 
-        public class WhenCreated
+        public class WhenCallingOpenSession_SpecifyingConnectionScope : UnitTest
         {
-            private readonly SessionFactoryOptions options = new SessionFactoryOptions
-            {
-                ConnectionName = "Northwind",
-                SqlDialectType = typeof(MicroLite.Dialect.MsSqlDialect)
-            };
+            private readonly ISession session;
 
+            public WhenCallingOpenSession_SpecifyingConnectionScope()
+            {
+                var mockDbDriver = new Mock<IDbDriver>();
+                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
+
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, new Mock<ISqlDialect>().Object);
+
+                this.session = sessionFactory.OpenSession(ConnectionScope.PerSession);
+            }
+
+            [Fact]
+            public void TheConnectionScopeOfTheSessionIsSetCorrectly()
+            {
+                Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.session).ConnectionScope);
+            }
+        }
+
+        public class WhenConstructed : UnitTest
+        {
+            private readonly string connectionName = "Northwind";
+            private readonly IDbDriver dbDriver = new Mock<IDbDriver>().Object;
             private readonly SessionFactory sessionFactory;
+            private readonly ISqlDialect sqlDialect = new Mock<ISqlDialect>().Object;
 
-            public WhenCreated()
+            public WhenConstructed()
             {
-                this.sessionFactory = new SessionFactory(this.options);
+                this.sessionFactory = new SessionFactory(this.connectionName, this.dbDriver, this.sqlDialect);
             }
 
             [Fact]
             public void ConnectionNameReturnsConnectionNameFromOptions()
             {
-                Assert.Equal(this.options.ConnectionName, this.sessionFactory.ConnectionName);
+                Assert.Equal(this.connectionName, this.sessionFactory.ConnectionName);
             }
 
             [Fact]
-            public void SqlDialectReturnsSqlDialectFromOptions()
+            public void TheDbDriverPropertyReturnsDbDriverFromOptions()
             {
-                Assert.IsType(options.SqlDialectType, sessionFactory.SqlDialect);
+                Assert.Same(this.dbDriver, this.sessionFactory.DbDriver);
             }
         }
     }

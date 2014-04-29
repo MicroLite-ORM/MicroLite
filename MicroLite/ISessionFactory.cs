@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ISessionFactory.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
-    using MicroLite.Dialect;
+    using MicroLite.Driver;
 
     /// <summary>
     /// The interface which specifies the factory options for creating <see cref="ISession"/>s.
@@ -28,23 +28,37 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the SQL dialect used by the session factory.
+        /// Gets the DB driver used by the session factory.
         /// </summary>
-        ISqlDialect SqlDialect
+        IDbDriver DbDriver
         {
             get;
         }
 
         /// <summary>
-        /// Opens a new read only session to the database.
+        /// Opens a new read only session to the database using <see cref="ConnectionScope"/>.PerTransaction.
         /// </summary>
         /// <returns>A new read only session instance.</returns>
         IReadOnlySession OpenReadOnlySession();
 
         /// <summary>
-        /// Opens a new session to the database.
+        /// Opens a new read only session to the database using the specified <see cref="ConnectionScope"/>.
+        /// </summary>
+        /// <param name="connectionScope">The connection scope to use for the session.</param>
+        /// <returns>A new read only session instance.</returns>
+        IReadOnlySession OpenReadOnlySession(ConnectionScope connectionScope);
+
+        /// <summary>
+        /// Opens a new session to the database using <see cref="ConnectionScope"/>.PerTransaction.
         /// </summary>
         /// <returns>A new session instance.</returns>
         ISession OpenSession();
+
+        /// <summary>
+        /// Opens a new session to the database using the specified <see cref="ConnectionScope"/>.
+        /// </summary>
+        /// <param name="connectionScope">The connection scope to use for the session.</param>
+        /// <returns>A new session instance.</returns>
+        ISession OpenSession(ConnectionScope connectionScope);
     }
 }

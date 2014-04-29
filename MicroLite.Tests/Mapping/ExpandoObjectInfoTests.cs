@@ -1,30 +1,62 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
     using System;
+    using System.Data;
     using System.Dynamic;
     using MicroLite.Mapping;
+    using Moq;
     using Xunit;
 
-    public class ExpandoObjectInfoTests
+    public class ExpandoObjectInfoTests : UnitTest
     {
         [Fact]
         public void CreateInstance()
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var instance = objectInfo.CreateInstance();
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(2);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
 
+            mockReader.Setup(x => x.GetName(0)).Returns("Id");
+            mockReader.Setup(x => x.GetName(1)).Returns("Name");
+
+            mockReader.Setup(x => x.GetValue(0)).Returns(12345);
+            mockReader.Setup(x => x.GetValue(1)).Returns("Fred Flintstone");
+
+            var instance = (dynamic)objectInfo.CreateInstance(mockReader.Object);
+
+            Assert.NotNull(instance);
             Assert.IsType<ExpandoObject>(instance);
+            Assert.Equal(12345, instance.Id);
+            Assert.Equal("Fred Flintstone", instance.Name);
         }
 
         [Fact]
-        public void DefaultIdentifierValueThrowsNotSupportedException()
+        public void CreateInstanceSetsPropertyValueToNullIfPassedDBNull()
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.DefaultIdentifierValue);
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(1);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(true);
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            mockReader.Setup(x => x.GetName(0)).Returns("Name");
+
+            var instance = (dynamic)objectInfo.CreateInstance(mockReader.Object);
+
+            Assert.Null(instance.Name);
+        }
+
+        [Fact]
+        public void CreateInstanceThrowsArgumentNullExceptionForNullReader()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.CreateInstance(null));
+
+            Assert.Equal("reader", exception.ParamName);
         }
 
         [Fact]
@@ -36,33 +68,47 @@
         }
 
         [Fact]
+        public void GetColumnInfoThrowsNotSupportedException()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.GetColumnInfo("Name"));
+
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
+        }
+
+        [Fact]
         public void GetIdentifierValueThrowsNotSupportedException()
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.GetIdentifierValue(new ExpandoObject()));
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.GetIdentifierValue(new ExpandoObject()));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
-        public void GetPropertyValueForColumnThrowsNotSupportedException()
+        public void GetInsertValuesThrowsNotSupportedException()
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.GetPropertyValueForColumn(new ExpandoObject(), "foo"));
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.GetInsertValues(new ExpandoObject()));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
-        public void GetPropertyValueThrowsNotSupportedException()
+        public void GetUpdateValuesThrowsNotSupportedException()
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.GetPropertyValue(new ExpandoObject(), "foo"));
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.GetUpdateValues(new ExpandoObject()));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
@@ -70,45 +116,32 @@
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.HasDefaultIdentifierValue(new ExpandoObject()));
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.HasDefaultIdentifierValue(new ExpandoObject()));
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
-        public void SetPropertyValueForColumnSetsPropertyValue()
+        public void IsDefaultIdentifierThrowsNotSupportedException()
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var instance = (dynamic)objectInfo.CreateInstance();
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.IsDefaultIdentifier(0));
 
-            objectInfo.SetPropertyValueForColumn(instance, "Id", 12345);
-            objectInfo.SetPropertyValueForColumn(instance, "Name", "Fred Flintstone");
-
-            Assert.Equal(12345, instance.Id);
-            Assert.Equal("Fred Flintstone", instance.Name);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
-        public void SetPropertyValueForColumnSetsPropertyValueToNullIfPassedDBNull()
+        public void SetIdentifierValueThrowsNotSupportedException()
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var instance = (dynamic)objectInfo.CreateInstance();
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.SetIdentifierValue(new ExpandoObject(), 1));
 
-            objectInfo.SetPropertyValueForColumn(instance, "Name", DBNull.Value);
-
-            Assert.Null(instance.Name);
-        }
-
-        [Fact]
-        public void SetPropertyValueThrowsNotSupportedException()
-        {
-            var objectInfo = new ExpandoObjectInfo();
-
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.SetPropertyValue(new ExpandoObject(), "Name", "foo"));
-
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
         [Fact]
@@ -116,9 +149,21 @@
         {
             var objectInfo = new ExpandoObjectInfo();
 
-            var exception = Assert.Throws<NotSupportedException>(() => objectInfo.TableInfo);
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.TableInfo);
 
-            Assert.Equal(exception.Message, Messages.ExpandoObjectInfo_NotSupportedReason);
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
+        }
+
+        [Fact]
+        public void VerifyInstanceStateThrowsNotSupportedException()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var exception = Assert.Throws<NotSupportedException>(
+                () => objectInfo.VerifyInstanceForInsert(new ExpandoObject()));
+
+            Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
     }
 }

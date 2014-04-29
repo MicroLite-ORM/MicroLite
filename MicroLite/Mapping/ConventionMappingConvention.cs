@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ConventionMappingConvention.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,12 +28,6 @@ namespace MicroLite.Mapping
 
         internal ConventionMappingConvention(ConventionMappingSettings settings)
         {
-            this.log.TryLogInfo(
-                Messages.ConventionMappingConvention_Configuration,
-                settings.UsePluralClassNameForTableName.ToString(),
-                settings.TableSchema ?? "null",
-                settings.IdentifierStrategy.ToString());
-
             this.settings = settings;
         }
 
@@ -44,18 +38,24 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("forType");
             }
 
-            var columns = this.CreateColumnInfos(forType);
+            var identifierStrategy = this.settings.ResolveIdentifierStrategy(forType);
+            var columns = this.CreateColumnInfos(forType, identifierStrategy);
 
             var tableInfo = new TableInfo(
                 columns,
-                this.settings.IdentifierStrategy,
-                this.settings.UsePluralClassNameForTableName ? this.settings.InflectionService.ToPlural(forType.Name) : forType.Name,
-                this.settings.TableSchema);
+                identifierStrategy,
+                this.settings.ResolveTableName(forType),
+                this.settings.ResolveTableSchema(forType));
+
+            if (this.log.IsDebug)
+            {
+                this.log.Debug(LogMessages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
+            }
 
             return new ObjectInfo(forType, tableInfo);
         }
 
-        private List<ColumnInfo> CreateColumnInfos(Type forType)
+        private List<ColumnInfo> CreateColumnInfos(Type forType, IdentifierStrategy identifierStrategy)
         {
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var columns = new List<ColumnInfo>(properties.Length);
@@ -64,13 +64,21 @@ namespace MicroLite.Mapping
             {
                 if (!property.CanRead || !property.CanWrite)
                 {
-                    this.log.TryLogDebug(Messages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                    if (this.log.IsDebug)
+                    {
+                        this.log.Debug(LogMessages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                    }
+
                     continue;
                 }
 
                 if (this.settings.Ignore(property))
                 {
-                    this.log.TryLogDebug(Messages.ConventionMappingConvention_IgnoringProperty, forType.Name, property.Name);
+                    if (this.log.IsDebug)
+                    {
+                        this.log.Debug(LogMessages.ConventionMappingConvention_IgnoringProperty, forType.Name, property.Name);
+                    }
+
                     continue;
                 }
 
@@ -80,8 +88,13 @@ namespace MicroLite.Mapping
                        columnName: isIdentifier ? this.settings.ResolveIdentifierColumnName(property) : this.settings.ResolveColumnName(property),
                        propertyInfo: property,
                        isIdentifier: isIdentifier,
-                       allowInsert: isIdentifier ? true : this.settings.AllowInsert(property),
+                       allowInsert: isIdentifier ? identifierStrategy != IdentifierStrategy.DbGenerated : this.settings.AllowInsert(property),
                        allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property));
+
+                if (this.log.IsDebug)
+                {
+                    this.log.Debug(LogMessages.MappingConvention_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                }
 
                 columns.Add(columnInfo);
             }

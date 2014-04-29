@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Configure.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Configuration
 {
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -22,7 +23,22 @@ namespace MicroLite.Configuration
         private static readonly IList<ISessionFactory> sessionFactories = new List<ISessionFactory>();
 
         /// <summary>
-        /// Gets the session factories created by the configuration.
+        /// Gets or sets a function which will be called when a session factory is created.
+        /// </summary>
+        /// <remarks>
+        /// This is null by default, but if set will be called:
+        /// - Input is the ISessionFactory which has been created before it is added to Configure.SessionFactories.
+        /// - Output is added to Configure.SessionFactories.
+        /// The purpose of the method is to allow the session factory to be wrapped for profiling.
+        /// </remarks>
+        public static Func<ISessionFactory, ISessionFactory> OnSessionFactoryCreated
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets the collection of session factories which have created by the configuration.
         /// </summary>
         public static ICollection<ISessionFactory> SessionFactories
         {
@@ -33,7 +49,7 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// Begins the process of specifying the extensions which should be used by MicroLite.
+        /// Begins the process of specifying the extensions which should be used by MicroLite ORM.
         /// </summary>
         /// <returns>The interface which provides the extension points.</returns>
         /// <remarks>Extensions should be configured before configuring any connections.</remarks>
@@ -43,8 +59,9 @@ namespace MicroLite.Configuration
         /// <code>
         /// Configure
         ///     .Extensions()
-        ///     .WithLog4Net() // To use log4net, install the MicroLite.Extensions.Log4Net package (there is also an NLog package).
-        ///     .WithMvc(); // To use the MVC extensions, install the MicroLite.Extensions.Mvc package.
+        ///     .WithLog4Net() // To use log4net, install the MicroLite.Logging.Log4Net package (there is also an NLog package).
+        ///     .WithMvc() // To use the MVC extensions, install the MicroLite.Extensions.Mvc package.
+        ///     .WithWebApi(); // To use the WebApi extensions, install the MicroLite.Extensions.WebApi package.
         /// </code>
         /// </example>
         public static IConfigureExtensions Extensions()
@@ -57,26 +74,16 @@ namespace MicroLite.Configuration
         /// </summary>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <example>
-        /// Option 1: Use the default SqlDialect which is MicroLite.Dialect.MsSqlDialect.
         /// <code>
         /// var sessionFactory = Configure
         ///     .Fluently()
-        ///     .ForConnection("TestDB")
-        ///     .CreateSessionFactory();
-        /// </code>
-        /// </example>
-        /// <example>
-        /// Option 2: Use an alternative SqlDialect which is supported by MicroLite (such as SQLite).
-        /// <code>
-        /// var sessionFactory = Configure
-        ///     .Fluently()
-        ///     .ForConnection("TestDB", "MicroLite.Dialect.SQLiteDialect")
+        ///     .ForMsSqlConnection("TestDB") // or ForMySqlConnection, ForPostgreSqlConnection or ForSQLiteConnection
         ///     .CreateSessionFactory();
         /// </code>
         /// </example>
         public static IConfigureConnection Fluently()
         {
-            return new FluentConfiguration();
+            return new FluentConfiguration(OnSessionFactoryCreated);
         }
     }
 }

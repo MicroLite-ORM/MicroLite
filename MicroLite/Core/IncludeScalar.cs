@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IncludeScalar.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ namespace MicroLite.Core
     /// The default implementation of <see cref="IInclude&lt;T&gt;"/> for scalar results.
     /// </summary>
     /// <typeparam name="T">The type of object to be included.</typeparam>
+    [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}")]
     internal sealed class IncludeScalar<T> : Include, IInclude<T>
     {
         private static readonly Type resultType = typeof(T);
@@ -33,22 +34,22 @@ namespace MicroLite.Core
             }
         }
 
-        internal override void BuildValue(IDataReader reader, IObjectBuilder objectBuilder)
+        internal override void BuildValue(IDataReader reader)
         {
             if (reader.Read())
             {
                 if (reader.FieldCount != 1)
                 {
-                    throw new MicroLiteException(Messages.IncludeScalar_MultipleColumns);
+                    throw new MicroLiteException(ExceptionMessages.IncludeScalar_MultipleColumns);
                 }
 
-                var typeConverter = TypeConverter.For(resultType);
-                this.value = (T)typeConverter.ConvertFromDbValue(reader[0], resultType);
+                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                this.value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
                 this.HasValue = true;
 
                 if (reader.Read())
                 {
-                    throw new MicroLiteException(Messages.IncludeSingle_SingleResultExpected);
+                    throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }
             }
         }

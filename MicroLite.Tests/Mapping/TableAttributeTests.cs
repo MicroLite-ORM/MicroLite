@@ -4,7 +4,7 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="TableAttribute"/> class.
+    /// Unit Tests for the <see cref="TableAttribute" /> class.
     /// </summary>
     public class TableAttributeTests
     {

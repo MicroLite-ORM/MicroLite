@@ -12,18 +12,16 @@ $nuSpec = "$scriptPath\$projectName.nuspec"
 $nuGetPackage = "$buildDir\$projectName.$version.nupkg"
 $date = Get-Date
 $gitDir = $scriptPath + "\.git"
-$commit = git --git-dir $gitDir log -1 --pretty=format:%h
+$commit = git --git-dir $gitDir rev-list HEAD --count
 
 function UpdateAssemblyInfoFiles ([string] $buildVersion)
 {
 	$assemblyVersionPattern = 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
 	$fileVersionPattern = 'AssemblyFileVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
 	$infoVersionPattern = 'AssemblyInformationalVersion\("[0-9]+(\.([0-9]+|\*)){1,3}(.*)"\)'
-	$copyrightPattern = 'AssemblyCopyright\(".+"\)'
 	$assemblyVersion = 'AssemblyVersion("' + $buildVersion.SubString(0, 3) + '.0.0")';
 	$fileVersion = 'AssemblyFileVersion("' + $buildVersion.SubString(0, 5) + '.0")';
-	$infoVersion = 'AssemblyInformationalVersion("' + $buildVersion + ' (' + $commit + ')")';
-	$copyright = 'AssemblyCopyright("Copyright 2012-' + $date.Year + ' MicroLite Project Contributors all rights reserved.")';
+	$infoVersion = 'AssemblyInformationalVersion("' + $buildVersion.SubString(0, 5) + '.' + $commit + '")';
 	
 	Get-ChildItem $scriptPath -r -filter AssemblyInfo.cs | ForEach-Object {
 		$filename = $_.Directory.ToString() + '\' + $_.Name
@@ -32,8 +30,7 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 		(Get-Content $filename) | ForEach-Object {
 			% {$_ -replace $assemblyVersionPattern, $assemblyVersion } |
 			% {$_ -replace $fileVersionPattern, $fileVersion } |
-			% {$_ -replace $infoVersionPattern, $infoVersion } |
-			% {$_ -replace $copyrightPattern, $copyright }
+			% {$_ -replace $infoVersionPattern, $infoVersion }
 		} | Set-Content $filename -Encoding UTF8
 	}
 }
@@ -44,7 +41,7 @@ if ($version)
 }
 
 # Run the psake build script to create the release binaries
-Import-Module (Join-Path $scriptPath packages\psake.4.2.0.1\tools\psake.psm1) -ErrorAction SilentlyContinue
+Import-Module (Join-Path $scriptPath packages\psake.4.3.2\tools\psake.psm1) -ErrorAction SilentlyContinue
 
 Invoke-psake (Join-Path $scriptPath default.ps1)
 

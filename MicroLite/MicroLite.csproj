@@ -15,6 +15,7 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
+    <CodeAnalysisCulture>en-GB</CodeAnalysisCulture>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,34 +56,64 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder\IInsertColumn.cs" />
+    <Compile Include="Builder\SqlBuilderBase.cs" />
     <Compile Include="Configuration\ConfigurationExtensions.cs" />
     <Compile Include="Configuration\FluentConfiguration.cs" />
-    <Compile Include="Core\AdoTransaction.cs" />
+    <Compile Include="Configuration\ConfigurationException.cs" />
+    <Compile Include="ConnectionScope.cs" />
+    <Compile Include="Dialect\MySqlCharacters.cs" />
+    <Compile Include="Dialect\MySqlDialect.cs" />
+    <Compile Include="Dialect\PostgreSqlCharacters.cs" />
+    <Compile Include="Dialect\PostgreSqlDialect.cs" />
+    <Compile Include="Dialect\SQLiteCharacters.cs" />
+    <Compile Include="Dialect\SQLiteDialect.cs" />
+    <Compile Include="Driver\SQLiteDbDriver.cs" />
+    <Compile Include="Driver\PostgreSqlDbDriver.cs" />
+    <Compile Include="Driver\IDbDriver.cs" />
+    <Compile Include="Driver\MsSqlDbDriver.cs" />
+    <Compile Include="Driver\DbDriver.cs" />
+    <Compile Include="Driver\MySqlDbDriver.cs" />
+    <Compile Include="ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Mapping\DelegateFactory.cs" />
+    <Compile Include="Core\ISessionBase.cs" />
+    <Compile Include="Core\Transaction.cs" />
     <Compile Include="Core\Include.cs" />
     <Compile Include="Core\IncludeMany.cs" />
     <Compile Include="Core\IncludeScalar.cs" />
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ReadOnlySession.cs" />
+    <Compile Include="Core\SessionBase.cs" />
+    <Compile Include="Dialect\MsSqlCharacters.cs" />
+    <Compile Include="Logging\EmptyLog.cs" />
+    <Compile Include="Mapping\MappingException.cs" />
+    <Compile Include="ObjectDelta.cs" />
+    <Compile Include="Builder\DeleteSqlBuilder.cs" />
+    <Compile Include="Builder\IDeleteFrom.cs" />
+    <Compile Include="Builder\IInsertValue.cs" />
+    <Compile Include="Builder\IInsertIntoTable.cs" />
+    <Compile Include="Builder\InsertSqlBuilder.cs" />
+    <Compile Include="Builder\ISetOrWhere.cs" />
+    <Compile Include="Builder\IUpdate.cs" />
+    <Compile Include="Builder\IWhereEquals.cs" />
+    <Compile Include="Builder\IWhereSingleColumn.cs" />
+    <Compile Include="Builder\UpdateSqlBuilder.cs" />
     <Compile Include="SqlCharacters.cs" />
-    <Compile Include="FrameworkExtensions\TypeExtensions.cs" />
     <Compile Include="IAdvancedReadOnlySession.cs" />
     <Compile Include="Infrastructure\AppSettingSymmetricAlgorithmProvider.cs" />
     <Compile Include="DbEncryptedString.cs" />
-    <Compile Include="Dialect\MySqlDialect.cs" />
-    <Compile Include="Dialect\PostgreSqlDialect.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />
-    <Compile Include="Dialect\SQLiteDialect.cs" />
-    <Compile Include="GuidGenerator.cs" />
     <Compile Include="IInclude.cs" />
     <Compile Include="IIncludeMany.cs" />
     <Compile Include="IIncludeSession.cs" />
     <Compile Include="Infrastructure\IHaveReadOnlySession.cs" />
     <Compile Include="Infrastructure\IHaveSession.cs" />
-    <Compile Include="Infrastructure\Web\ISessionManager.cs" />
-    <Compile Include="Infrastructure\Web\SessionManager.cs" />
     <Compile Include="Infrastructure\SymmetricAlgorithmProvider.cs" />
     <Compile Include="IReadOnlySession.cs" />
-    <Compile Include="Listeners\GuidCombListener.cs" />
     <Compile Include="Mapping\ColumnAttribute.cs" />
     <Compile Include="Configuration\Configure.cs" />
     <Compile Include="Configuration\ConfigureExtensions.cs" />
@@ -93,21 +124,11 @@
     <Compile Include="Configuration\ICreateSessionFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\SessionFactoryOptions.cs" />
-    <Compile Include="Listeners\AssignedListener.cs" />
-    <Compile Include="Core\ConnectionManager.cs" />
-    <Compile Include="FrameworkExtensions\CollectionExtensions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Core\IConnectionManager.cs" />
-    <Compile Include="Listeners\GuidListener.cs" />
     <Compile Include="Listeners\DbGeneratedListener.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\IObjectBuilder.cs" />
     <Compile Include="Dialect\ISqlDialect.cs" />
     <Compile Include="FrameworkExtensions\MemberInfoExtensions.cs" />
-    <Compile Include="Core\ObjectBuilder.cs" />
     <Compile Include="Core\Session.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -123,59 +144,56 @@
     <Compile Include="Mapping\Inflection\EnglishInflectionService.cs" />
     <Compile Include="Mapping\Inflection\IInflectionService.cs" />
     <Compile Include="Mapping\IObjectInfo.cs" />
-    <Compile Include="Query\RawWhereBuilder.cs" />
-    <Compile Include="Query\SelectSqlBuilder.cs" />
-    <Compile Include="Query\StoredProcedureSqlBuilder.cs" />
+    <Compile Include="Builder\RawWhereBuilder.cs" />
+    <Compile Include="Builder\SelectSqlBuilder.cs" />
+    <Compile Include="Builder\StoredProcedureSqlBuilder.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverter.cs" />
     <Compile Include="TypeConverters\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
     <Compile Include="Mapping\Inflection\InflectionService.cs" />
-    <Compile Include="Mapping\IPropertyAccessor.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
     <Compile Include="Mapping\AttributeMappingConvention.cs" />
-    <Compile Include="Mapping\PropertyAccessor.cs" />
     <Compile Include="Mapping\TableInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Infrastructure\ISymmetricAlgorithmProvider.cs" />
     <Compile Include="TypeConverters\TypeConverter.cs" />
-    <Compile Include="Messages.Designer.cs">
+    <Compile Include="LogMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Messages.resx</DependentUpon>
+      <DependentUpon>LogMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="PagingOptions.cs" />
-    <Compile Include="Query\IAndOrOrderBy.cs" />
+    <Compile Include="Builder\IAndOrOrderBy.cs" />
     <Compile Include="Mapping\IdentifierAttribute.cs" />
     <Compile Include="Mapping\IdentifierStrategy.cs" />
-    <Compile Include="Query\IFrom.cs" />
-    <Compile Include="Query\IFunctionOrFrom.cs" />
+    <Compile Include="Builder\ISelectFrom.cs" />
+    <Compile Include="Builder\IFunctionOrFrom.cs" />
     <Compile Include="IHideObjectMethods.cs" />
     <Compile Include="Listeners\IListener.cs" />
-    <Compile Include="Query\IGroupBy.cs" />
-    <Compile Include="Query\IHavingOrOrderBy.cs" />
-    <Compile Include="Query\IOrderBy.cs" />
+    <Compile Include="Builder\IGroupBy.cs" />
+    <Compile Include="Builder\IHavingOrOrderBy.cs" />
+    <Compile Include="Builder\IOrderBy.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
-    <Compile Include="Query\IToSqlQuery.cs" />
+    <Compile Include="Builder\IToSqlQuery.cs" />
     <Compile Include="ITransaction.cs" />
-    <Compile Include="Query\IWhereSingleColumn.cs" />
-    <Compile Include="Query\IWhereOrOrderBy.cs" />
+    <Compile Include="Builder\IWhereOrOrderBy.cs" />
     <Compile Include="Listeners\Listener.cs" />
-    <Compile Include="Query\IWithParameter.cs" />
+    <Compile Include="Builder\IWithParameter.cs" />
     <Compile Include="Logging\ILog.cs" />
-    <Compile Include="Logging\LogExtensions.cs" />
     <Compile Include="Logging\LogManager.cs" />
     <Compile Include="MicroLiteException.cs" />
     <Compile Include="PagedResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\SqlBuilder.cs" />
+    <Compile Include="Builder\SqlBuilder.cs" />
     <Compile Include="SqlQuery.cs" />
     <Compile Include="Mapping\TableAttribute.cs" />
     <Compile Include="SqlUtility.cs" />
     <Compile Include="TypeConverters\ITypeConverter.cs" />
     <Compile Include="TypeConverters\ObjectTypeConverter.cs" />
     <Compile Include="TypeConverters\TypeConverterCollection.cs" />
+    <Compile Include="TypeConverters\UriTypeConverter.cs" />
     <Compile Include="TypeConverters\XDocumentTypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -186,21 +204,27 @@
     <None Include="Core\_Includes.cd" />
     <None Include="Core\_Session.cd" />
     <None Include="Dialect\_Dialect.cd" />
+    <None Include="Dialect\_SqlCharacters.cd" />
+    <None Include="Driver\_Driver.cd" />
     <None Include="Listeners\_Listeners.cd" />
     <None Include="Logging\_Logging.cd" />
     <None Include="Mapping\Inflection\_Inflection.cd" />
     <None Include="Mapping\_MappingAttributes.cd" />
     <None Include="Mapping\_MappingConvention.cd" />
     <None Include="Mapping\_ObjectInfo.cd" />
-    <None Include="Query\_SqlBuilders.cd" />
+    <None Include="Builder\_SqlBuilders.cd" />
     <None Include="TypeConverters\_TypeConverters.cd" />
-    <None Include="Query\_SqlBuilder.cd" />
+    <None Include="Builder\_SqlBuilder.cd" />
     <None Include="_Session.cd" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Messages.resx">
+    <EmbeddedResource Include="ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LogMessages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
@@ -209,6 +233,7 @@
       <Link>CustomDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(ProgramFiles)\MSBuild\StyleCop\v4.7\StyleCop.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

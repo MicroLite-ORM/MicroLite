@@ -1,82 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="MicroLite.Dialect.SQLiteDialect">
-    <Position X="6.5" Y="7.75" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAQAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Dialect\SQLiteDialect.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MicroLite.Dialect.MsSqlDialect">
-    <Position X="3.5" Y="7.75" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAQAAQAAAAAAAAAgAAAAAAAAAAAAAAAABAAAACAA=</HashCode>
-      <FileName>Dialect\MsSqlDialect.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="MicroLite.Dialect.SqlDialect">
-    <Position X="8" Y="0.5" Width="2.25" />
+    <Position X="4.25" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AEkAQQQBUAAAQgAEAAkAAACIAAABgQAAAAABBAAACQA=</HashCode>
+      <HashCode>AAsACQABAAAAAAAACAAwAASAAAEAABAAAAAQAAAAAAA=</HashCode>
       <FileName>Dialect\SqlDialect.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="MicroLite.Dialect.PostgreSqlDialect">
-    <Position X="9.5" Y="7.75" Width="2.25" />
+  <Class Name="MicroLite.Dialect.MsSqlDialect">
+    <Position X="0.5" Y="6" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAQAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Dialect\PostgreSqlDialect.cs</FileName>
+      <HashCode>AAAACQAAAAAAAIAACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dialect\MsSqlDialect.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Dialect.MySqlDialect">
-    <Position X="12.5" Y="7.75" Width="2.25" />
+    <Position X="6" Y="6" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAQAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAACQAAAAAAAIAACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dialect\MySqlDialect.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MicroLite.Dialect.SqlCharacters">
-    <Position X="0.5" Y="0.5" Width="2.25" />
-    <Compartments>
-      <Compartment Name="Nested Types" Collapsed="false" />
-    </Compartments>
-    <NestedTypes>
-      <Class Name="MicroLite.Dialect.SqlCharacters.EmptySqlCharacters">
-        <TypeIdentifier>
-          <NewMemberFileName>Dialect\SqlCharacters.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-      <Class Name="MicroLite.Dialect.SqlCharacters.MsSqlCharacters">
-        <TypeIdentifier>
-          <NewMemberFileName>Dialect\SqlCharacters.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-      <Class Name="MicroLite.Dialect.SqlCharacters.MySqlCharacters">
-        <TypeIdentifier>
-          <NewMemberFileName>Dialect\SqlCharacters.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-      <Class Name="MicroLite.Dialect.SqlCharacters.PostgreSqlCharacters">
-        <TypeIdentifier>
-          <NewMemberFileName>Dialect\SqlCharacters.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-      <Class Name="MicroLite.Dialect.SqlCharacters.SQLiteCharacters">
-        <TypeIdentifier>
-          <NewMemberFileName>Dialect\SqlCharacters.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
+  <Class Name="MicroLite.Dialect.PostgreSqlDialect">
+    <Position X="3.25" Y="6" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAoAAAiEACAIBgIAAAACAAgAAgAAIAAAAAAQABA=</HashCode>
-      <FileName>Dialect\SqlCharacters.cs</FileName>
+      <HashCode>AAAACQAAAAAAAIAACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dialect\PostgreSqlDialect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Dialect.SQLiteDialect">
+    <Position X="8.75" Y="6" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAACQAAAAAAAIAACAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Dialect\SQLiteDialect.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="MicroLite.Dialect.ISqlDialect">
-    <Position X="3.5" Y="0.5" Width="2.25" />
+    <Position X="0.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAgAAQABAAAAAAAAAAEAAACAAAAAAAAAAAABAAAAAQA=</HashCode>
+      <HashCode>AAoAAQABAAAAAAAACAAwAASAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dialect\ISqlDialect.cs</FileName>
     </TypeIdentifier>
   </Interface>

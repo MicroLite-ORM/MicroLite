@@ -4,10 +4,11 @@
     using System.Collections.ObjectModel;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
+    using MicroLite.Tests.TestEntities;
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="TableInfo"/> class.
+    /// Unit Tests for the <see cref="TableInfo" /> class.
     /// </summary>
     public class TableInfoTests
     {
@@ -17,20 +18,23 @@
             var columns = new ReadOnlyCollection<ColumnInfo>(new[]
             {
                 new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true),
-                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, true)
+                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, false),
+                new ColumnInfo("Created", typeof(Customer).GetProperty("Created"), false, true, false),
+                new ColumnInfo("Updated", typeof(Customer).GetProperty("Updated"), false, false, true)
             });
-            var identifierStrategy = IdentifierStrategy.Guid;
+            var identifierStrategy = IdentifierStrategy.Assigned;
             var name = "Customers";
             var schema = "Sales";
 
             var tableInfo = new TableInfo(columns, identifierStrategy, name, schema);
 
             Assert.Equal(columns, tableInfo.Columns);
-            Assert.Equal(columns[1].ColumnName, tableInfo.IdentifierColumn);
-            Assert.Equal(columns[1].PropertyInfo.Name, tableInfo.IdentifierProperty);
+            Assert.Equal(columns[1].ColumnName, tableInfo.IdentifierColumn.ColumnName);
             Assert.Equal(identifierStrategy, tableInfo.IdentifierStrategy);
             Assert.Equal(name, tableInfo.Name);
             Assert.Equal(schema, tableInfo.Schema);
+            Assert.Equal(3, tableInfo.InsertColumnCount);
+            Assert.Equal(2, tableInfo.UpdateColumnCount);
         }
 
         [Fact]
@@ -60,10 +64,10 @@
                 new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true)
             };
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
-            Assert.Equal(Messages.TableInfo_ColumnMappedMultipleTimes.FormatWith("Name"), exception.Message);
+            Assert.Equal(ExceptionMessages.TableInfo_ColumnMappedMultipleTimes.FormatWith("Name"), exception.Message);
         }
 
         [Fact]
@@ -74,29 +78,25 @@
                 new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true)
             };
 
-            var exception = Assert.Throws<MicroLiteException>(
+            var exception = Assert.Throws<MappingException>(
                 () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
-            Assert.Equal(Messages.TableInfo_NoIdentifierColumn.FormatWith("Sales", "Customers"), exception.Message);
+            Assert.Equal(ExceptionMessages.TableInfo_NoIdentifierColumn.FormatWith("Sales", "Customers"), exception.Message);
         }
 
-        private class Customer
+        [Fact]
+        public void ConstructorThrowsMicroLiteExceptionMultipleNoColumnsAreIdentifierColumn()
         {
-            public Customer()
+            var columns = new[]
             {
-            }
+                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, true),
+                new ColumnInfo("Id", typeof(Customer).GetProperty("Id"), true, true, true)
+            };
 
-            public Guid Id
-            {
-                get;
-                set;
-            }
+            var exception = Assert.Throws<MappingException>(
+                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
 
-            public string Name
-            {
-                get;
-                set;
-            }
+            Assert.Equal(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith("Sales", "Customers"), exception.Message);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="FluentConfiguration.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ namespace MicroLite.Configuration
     using System.Linq;
     using MicroLite.Core;
     using MicroLite.Dialect;
+    using MicroLite.Driver;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
@@ -28,26 +29,42 @@ namespace MicroLite.Configuration
     {
         private static readonly object locker = new object();
         private readonly ILog log = LogManager.GetCurrentClassLog();
-        private readonly SessionFactoryOptions options = new SessionFactoryOptions();
+        private readonly Func<ISessionFactory, ISessionFactory> sessionFactoryCreated;
+        private string chosenConnectionName;
+        private IDbDriver chosenDbDriver;
+        private ISqlDialect chosenSqlDialect;
 
-        /// <summary>
-        /// Creates the session factory for the configured connection.
-        /// </summary>
-        /// <returns>
-        /// The session factory for the specified connection.
-        /// </returns>
+        internal FluentConfiguration(Func<ISessionFactory, ISessionFactory> sessionFactoryCreated)
+        {
+            this.sessionFactoryCreated = sessionFactoryCreated;
+        }
+
         public ISessionFactory CreateSessionFactory()
         {
             lock (locker)
             {
                 var sessionFactory =
-                    Configure.SessionFactories.SingleOrDefault(s => s.ConnectionName == this.options.ConnectionName);
+                    Configure.SessionFactories.SingleOrDefault(s => s.ConnectionName == this.chosenConnectionName);
 
                 if (sessionFactory == null)
                 {
-                    this.log.TryLogDebug(Messages.FluentConfiguration_CreatingSessionFactory, this.options.ConnectionName);
-                    sessionFactory = new SessionFactory(this.options);
-                    MicroLite.Query.SqlBuilder.SqlCharacters = sessionFactory.SqlDialect.SqlCharacters;
+                    if (this.log.IsDebug)
+                    {
+                        this.log.Debug(
+                            LogMessages.FluentConfiguration_CreatingSessionFactory,
+                            this.chosenConnectionName,
+                            this.chosenDbDriver.GetType().Name,
+                            this.chosenSqlDialect.GetType().Name);
+                    }
+
+                    sessionFactory = new SessionFactory(this.chosenConnectionName, this.chosenDbDriver, this.chosenSqlDialect);
+
+                    if (this.sessionFactoryCreated != null)
+                    {
+                        sessionFactory = this.sessionFactoryCreated(sessionFactory);
+                    }
+
+                    SqlCharacters.Current = this.chosenSqlDialect.SqlCharacters;
 
                     Configure.SessionFactories.Add(sessionFactory);
                 }
@@ -56,66 +73,37 @@ namespace MicroLite.Configuration
             }
         }
 
-        /// <summary>
-        /// Specifies the name of the connection string in the app config and the sql dialect to be used.
-        /// </summary>
-        /// <param name="connectionName">The name of the connection string in the app config.</param>
-        /// <param name="sqlDialect">The name of the sql dialect to use for the connection.</param>
-        /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if connectionName is null.</exception>
-        /// <exception cref="MicroLiteException">Thrown if the connection is not found in the app config.</exception>
-        /// <exception cref="System.NotSupportedException">Thrown if the provider name or sql dialect is not supported.</exception>
-        public ICreateSessionFactory ForConnection(string connectionName, string sqlDialect)
+        public ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, IDbDriver dbDriver)
         {
             if (connectionName == null)
             {
                 throw new ArgumentNullException("connectionName");
             }
 
-            this.log.TryLogDebug(Messages.FluentConfiguration_ReadingConnection, connectionName);
+            if (sqlDialect == null)
+            {
+                throw new ArgumentNullException("sqlDialect");
+            }
+
+            if (dbDriver == null)
+            {
+                throw new ArgumentNullException("dbDriver");
+            }
+
             var configSection = ConfigurationManager.ConnectionStrings[connectionName];
 
             if (configSection == null)
             {
-                this.log.TryLogFatal(Messages.FluentConfiguration_ConnectionNotFound, connectionName);
-                throw new MicroLiteException(Messages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
+                throw new ConfigurationException(ExceptionMessages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
 
-            var sqlDialectType = this.GetSqlDialectType(sqlDialect);
+            this.chosenConnectionName = configSection.Name;
+            this.chosenSqlDialect = sqlDialect;
+            this.chosenDbDriver = dbDriver;
+            this.chosenDbDriver.ConnectionString = configSection.ConnectionString;
+            this.chosenDbDriver.DbProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
 
-            try
-            {
-                this.options.ConnectionName = configSection.Name;
-                this.options.ConnectionString = configSection.ConnectionString;
-                this.options.ProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
-                this.options.SqlDialectType = sqlDialectType;
-
-                return this;
-            }
-            catch (Exception e)
-            {
-                this.log.TryLogFatal(e.Message, e);
-                throw new MicroLiteException(e.Message, e);
-            }
-        }
-
-        private Type GetSqlDialectType(string sqlDialect)
-        {
-            var sqlDialectType = Type.GetType(sqlDialect, throwOnError: false);
-
-            if (sqlDialectType == null)
-            {
-                this.log.TryLogFatal(Messages.FluentConfiguration_DialectNotSupported.FormatWith(sqlDialect));
-                throw new NotSupportedException(Messages.FluentConfiguration_DialectNotSupported.FormatWith(sqlDialect));
-            }
-
-            if (!typeof(ISqlDialect).IsAssignableFrom(sqlDialectType))
-            {
-                this.log.TryLogFatal(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith(sqlDialect));
-                throw new NotSupportedException(Messages.FluentConfiguration_DialectMustImplementISqlDialect.FormatWith(sqlDialect));
-            }
-
-            return sqlDialectType;
+            return this;
         }
     }
 }

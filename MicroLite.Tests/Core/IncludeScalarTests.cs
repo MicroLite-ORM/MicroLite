@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Data;
     using MicroLite.Core;
+    using MicroLite.Tests.TestEntities;
     using Moq;
     using Xunit;
 
@@ -11,25 +12,19 @@
     /// </summary>
     public class IncludeScalarTests
     {
-        private enum Status
-        {
-            New = 0,
-            Saved = 1
-        }
-
         /// <summary>
         /// Issue #172 - Cannot use Session.Include.Scalar to return an enum
         /// </summary>
         public class ForAnEnumTypeWhenBuildValueHasBeenCalledAndThereAreNoResults
         {
-            private IncludeScalar<Status> include = new IncludeScalar<Status>();
+            private IncludeScalar<CustomerStatus> include = new IncludeScalar<CustomerStatus>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
             public ForAnEnumTypeWhenBuildValueHasBeenCalledAndThereAreNoResults()
             {
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -47,7 +42,7 @@
             [Fact]
             public void ValueShouldBeDefaultValue()
             {
-                Assert.Equal(default(Status), this.include.Value);
+                Assert.Equal(default(CustomerStatus), this.include.Value);
             }
         }
 
@@ -56,16 +51,16 @@
         /// </summary>
         public class ForAnEnumTypeWhenBuildValueHasBeenCalledAndThereIsOneResult
         {
-            private IncludeScalar<Status> include = new IncludeScalar<Status>();
+            private IncludeScalar<CustomerStatus> include = new IncludeScalar<CustomerStatus>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
             public ForAnEnumTypeWhenBuildValueHasBeenCalledAndThereIsOneResult()
             {
                 this.mockReader.Setup(x => x.FieldCount).Returns(1);
-                this.mockReader.Setup(x => x[0]).Returns(1);
+                this.mockReader.Setup(x => x.GetInt32(0)).Returns(1);
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -83,7 +78,7 @@
             [Fact]
             public void ValueShouldBeSetToTheResult()
             {
-                Assert.Equal(Status.Saved, this.include.Value);
+                Assert.Equal(CustomerStatus.Active, this.include.Value);
             }
         }
 
@@ -96,7 +91,7 @@
             {
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -129,7 +124,7 @@
                 this.mockReader.Setup(x => x[0]).Returns("Foo");
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -181,7 +176,7 @@
             {
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -214,7 +209,7 @@
                 this.mockReader.Setup(x => x[0]).Returns(10);
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-                this.include.BuildValue(this.mockReader.Object, new Mock<IObjectBuilder>().Object);
+                this.include.BuildValue(this.mockReader.Object);
             }
 
             [Fact]
@@ -271,9 +266,9 @@
             [Fact]
             public void BuildValueShouldThrowAMicroLiteException()
             {
-                var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object, null));
+                var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object));
 
-                Assert.Equal(Messages.IncludeScalar_MultipleColumns, exception.Message);
+                Assert.Equal(ExceptionMessages.IncludeScalar_MultipleColumns, exception.Message);
             }
         }
 
@@ -292,9 +287,9 @@
             [Fact]
             public void BuildValueShouldThrowAMicroLiteException()
             {
-                var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object, null));
+                var exception = Assert.Throws<MicroLiteException>(() => include.BuildValue(mockReader.Object));
 
-                Assert.Equal(Messages.IncludeSingle_SingleResultExpected, exception.Message);
+                Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.Message);
             }
         }
     }

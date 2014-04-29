@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="DbEncryptedString.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ namespace MicroLite
     /// and decrypted after being read from the database.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{value}")]
-    public sealed class DbEncryptedString : IEquatable<DbEncryptedString>
+    public sealed class DbEncryptedString : IEquatable<DbEncryptedString>, IEquatable<string>
     {
         private readonly string value;
 
@@ -59,7 +59,12 @@ namespace MicroLite
         {
             var dbEncryptedString = obj as DbEncryptedString;
 
-            return this.Equals(dbEncryptedString);
+            if (dbEncryptedString != null)
+            {
+                return this.Equals(dbEncryptedString);
+            }
+
+            return this.Equals(obj as string);
         }
 
         /// <summary>
@@ -76,7 +81,19 @@ namespace MicroLite
                 return false;
             }
 
-            return this.value == other.value;
+            return this.Equals(other.value);
+        }
+
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
+        /// </returns>
+        public bool Equals(string other)
+        {
+            return this.value == other;
         }
 
         /// <summary>
@@ -87,6 +104,11 @@ namespace MicroLite
         /// </returns>
         public override int GetHashCode()
         {
+            if (this.value == null)
+            {
+                return 0;
+            }
+
             return this.value.GetHashCode();
         }
 

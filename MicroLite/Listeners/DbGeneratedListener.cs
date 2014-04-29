@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="DbGeneratedListener.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
 namespace MicroLite.Listeners
 {
     using System;
+    using System.Globalization;
     using MicroLite.Logging;
     using MicroLite.Mapping;
 
@@ -45,76 +46,22 @@ namespace MicroLite.Listeners
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
-                log.TryLogDebug(Messages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
-                objectInfo.SetPropertyValueForColumn(instance, objectInfo.TableInfo.IdentifierColumn, executeScalarResult);
-            }
-        }
-
-        /// <summary>
-        /// Invoked before the SqlQuery to delete the record from the database is created.
-        /// </summary>
-        /// <param name="instance">The instance to be deleted.</param>
-        /// <exception cref="MicroLiteException">Thrown if the identifier value for the object has not been set.</exception>
-        public override void BeforeDelete(object instance)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            var objectInfo = ObjectInfo.For(instance.GetType());
-
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
-            {
-                if (objectInfo.HasDefaultIdentifierValue(instance))
+                if (log.IsDebug)
                 {
-                    throw new MicroLiteException(Messages.IListener_IdentifierNotSetForDelete);
+                    log.Debug(LogMessages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
                 }
-            }
-        }
 
-        /// <summary>
-        /// Invoked before the SqlQuery to insert the record into the database is created.
-        /// </summary>
-        /// <param name="instance">The instance to be inserted.</param>
-        /// <exception cref="MicroLiteException">Thrown if the identifier value for the object has already been set.</exception>
-        public override void BeforeInsert(object instance)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
+                var propertyType = objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType;
 
-            var objectInfo = ObjectInfo.For(instance.GetType());
-
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
-            {
-                if (!objectInfo.HasDefaultIdentifierValue(instance))
+                if (executeScalarResult.GetType() != propertyType)
                 {
-                    throw new MicroLiteException(Messages.IListener_IdentifierSetForInsert);
+                    var converted = Convert.ChangeType(executeScalarResult, propertyType, CultureInfo.InvariantCulture);
+
+                    objectInfo.SetIdentifierValue(instance, converted);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Invoked before the SqlQuery to update the record in the database is created.
-        /// </summary>
-        /// <param name="instance">The instance to be updated.</param>
-        /// <exception cref="MicroLiteException">Thrown if the identifier value for the object has not been set.</exception>
-        public override void BeforeUpdate(object instance)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException("instance");
-            }
-
-            var objectInfo = ObjectInfo.For(instance.GetType());
-
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
-            {
-                if (objectInfo.HasDefaultIdentifierValue(instance))
+                else
                 {
-                    throw new MicroLiteException(Messages.IListener_IdentifierNotSetForUpdate);
+                    objectInfo.SetIdentifierValue(instance, executeScalarResult);
                 }
             }
         }

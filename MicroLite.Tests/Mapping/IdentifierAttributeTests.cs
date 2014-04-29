@@ -4,7 +4,7 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="IdentifierAttribute"/> class.
+    /// Unit Tests for the <see cref="IdentifierAttribute" /> class.
     /// </summary>
     public class IdentifierAttributeTests
     {

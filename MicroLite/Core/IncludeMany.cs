@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IncludeMany.cs" company="MicroLite">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@ namespace MicroLite.Core
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using MicroLite.TypeConverters;
 
@@ -23,6 +22,7 @@ namespace MicroLite.Core
     /// The default implementation of <see cref="IIncludeMany&lt;T&gt;"/>.
     /// </summary>
     /// <typeparam name="T">The type of object to be included.</typeparam>
+    [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}")]
     internal sealed class IncludeMany<T> : Include, IIncludeMany<T>
     {
         private static readonly Type resultType = typeof(T);
@@ -36,15 +36,15 @@ namespace MicroLite.Core
             }
         }
 
-        internal override void BuildValue(IDataReader reader, IObjectBuilder objectBuilder)
+        internal override void BuildValue(IDataReader reader)
         {
-            if (resultType.IsNotEntityAndConvertible())
+            if (TypeConverter.IsNotEntityAndConvertible(resultType))
             {
-                var typeConverter = TypeConverter.For(resultType);
+                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
 
                 while (reader.Read())
                 {
-                    var value = (T)typeConverter.ConvertFromDbValue(reader[0], resultType);
+                    var value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
 
                     this.values.Add(value);
                 }
@@ -55,9 +55,9 @@ namespace MicroLite.Core
 
                 while (reader.Read())
                 {
-                    var value = objectBuilder.BuildInstance<T>(objectInfo, reader);
+                    var instance = (T)objectInfo.CreateInstance(reader);
 
-                    this.values.Add(value);
+                    this.values.Add(instance);
                 }
             }
 
