@@ -374,7 +374,7 @@
             [Fact]
             public void TheTransactionIsNotSetOnTheCommand()
             {
-                this.mockCommand.VerifySet(x => x.Transaction = It.IsAny<IDbTransaction>(), Times.Never());
+                this.mockCommand.VerifySet(x => x.Transaction = It.IsNotNull<IDbTransaction>(), Times.Never());
             }
         }
 
@@ -457,7 +457,7 @@
             [Fact]
             public void TheTransactionIsNotSetOnTheCommand()
             {
-                this.mockCommand.VerifySet(x => x.Transaction = It.IsAny<IDbTransaction>(), Times.Never());
+                this.mockCommand.VerifySet(x => x.Transaction = It.IsNotNull<IDbTransaction>(), Times.Never());
             }
         }
 
