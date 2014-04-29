@@ -190,6 +190,17 @@
         }
 
         [Fact]
+        public void For_ThrowsMappingException_IfNonPublicClass()
+        {
+            var exception = Assert.Throws<MappingException>(
+                () => ObjectInfo.For(typeof(InternalCustomer)));
+
+            Assert.Equal(
+                ExceptionMessages.ObjectInfo_TypeMustBePublic.FormatWith(typeof(InternalCustomer).Name),
+                exception.Message);
+        }
+
+        [Fact]
         public void For_ThrowsMicroLiteException_IfNotClass()
         {
             var exception = Assert.Throws<MappingException>(
@@ -639,6 +650,15 @@
         public class CustomerWithStringIdentifier
         {
             public string Id
+            {
+                get;
+                set;
+            }
+        }
+
+        internal class InternalCustomer
+        {
+            public int Id
             {
                 get;
                 set;

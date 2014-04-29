@@ -156,6 +156,9 @@
   <data name="ObjectInfo_TypeMustBeClass" xml:space="preserve">
     <value>The type '{0}' is not a class and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>
+  <data name="ObjectInfo_TypeMustBePublic" xml:space="preserve">
+    <value>The type '{0}' cannot be used by the MicroLite ORM Framework unless it is declared 'public'</value>
+  </data>
   <data name="ObjectInfo_TypeMustHaveDefaultConstructor" xml:space="preserve">
     <value>The type '{0}' has no default (parameterless) constructor and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>

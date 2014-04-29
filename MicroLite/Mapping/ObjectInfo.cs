@@ -352,6 +352,10 @@ namespace MicroLite.Mapping
             {
                 throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(forType.Name));
             }
+            else if (!forType.IsPublic && !forType.IsNestedPublic)
+            {
+                throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustBePublic.FormatWith(forType.Name));
+            }
             else if (forType.GetConstructor(Type.EmptyTypes) == null)
             {
                 throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(forType.Name));
