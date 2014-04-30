@@ -65,6 +65,7 @@ namespace MicroLite
             var parameterNames = new List<string>();
 
             var startIndex = 0;
+            var startsWithParameter = false;
 
             for (int i = 0; i < commandText.Length; i++)
             {
@@ -73,8 +74,9 @@ namespace MicroLite
                 if (character == '@' || character == ':')
                 {
                     startIndex = i;
+                    startsWithParameter = i == 0;
                 }
-                else if (startIndex > 0 && !char.IsLetterOrDigit(character) && character != '_')
+                else if ((startsWithParameter || startIndex > 0) && !char.IsLetterOrDigit(character) && character != '_')
                 {
                     var length = i - startIndex;
 
@@ -87,7 +89,7 @@ namespace MicroLite
 
                     startIndex = 0;
                 }
-                else if (startIndex > 0 && i == commandText.Length - 1)
+                else if ((startsWithParameter || startIndex > 0) && i == commandText.Length - 1)
                 {
                     var length = commandText.Length - startIndex;
 

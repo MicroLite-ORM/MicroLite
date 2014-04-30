@@ -84,6 +84,16 @@
         }
 
         [Fact]
+        public void GetParameterNamesWithAtPrefixWherePredicateOnlyContainsSingleParameter()
+        {
+            var parameterNames = SqlUtility.GetParameterNames("@p0");
+
+            Assert.NotNull(parameterNames);
+            Assert.Equal(1, parameterNames.Count);
+            Assert.Equal(new List<string> { "@p0" }, parameterNames);
+        }
+
+        [Fact]
         public void GetParameterNamesWithColonPrefix()
         {
             var parameterNames = SqlUtility.GetParameterNames("SELECT * FROM TABLE WHERE Col1 = :p0 AND (Col2 = :p1 OR :p1 IS NULL)");
@@ -111,6 +121,16 @@
             Assert.NotNull(parameterNames);
             Assert.Equal(2, parameterNames.Count);
             Assert.Equal(new List<string> { ":0", ":1" }, parameterNames);
+        }
+
+        [Fact]
+        public void GetParameterNamesWithColonPrefixWherePredicateOnlyContainsSingleParameter()
+        {
+            var parameterNames = SqlUtility.GetParameterNames(":p0");
+
+            Assert.NotNull(parameterNames);
+            Assert.Equal(1, parameterNames.Count);
+            Assert.Equal(new List<string> { ":p0" }, parameterNames);
         }
 
         [Fact]
