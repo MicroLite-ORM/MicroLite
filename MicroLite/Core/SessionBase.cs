@@ -40,18 +40,18 @@ namespace MicroLite.Core
             private set;
         }
 
-        public ConnectionScope ConnectionScope
-        {
-            get;
-            private set;
-        }
-
         public ITransaction CurrentTransaction
         {
             get
             {
                 return this.currentTransaction;
             }
+        }
+
+        internal ConnectionScope ConnectionScope
+        {
+            get;
+            private set;
         }
 
         protected IDbDriver DbDriver
@@ -68,6 +68,16 @@ namespace MicroLite.Core
         public ITransaction BeginTransaction(IsolationLevel isolationLevel)
         {
             this.ThrowIfDisposed();
+
+            if (this.ConnectionScope == ConnectionScope.PerTransaction)
+            {
+                if (Log.IsDebug)
+                {
+                    Log.Debug(LogMessages.OpeningConnection);
+                }
+
+                this.Connection.Open();
+            }
 
             this.currentTransaction = new Transaction(this, isolationLevel);
 

@@ -218,7 +218,7 @@
             }
         }
 
-        public class WhenCallingCombineAndTheFirstSqlQueryIsNull
+        public class WhenCallingCombine_AndTheFirstSqlQueryIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
@@ -233,7 +233,7 @@
             }
         }
 
-        public class WhenCallingCombineAndTheSecondSqlQueryIsNull
+        public class WhenCallingCombine_AndTheSecondSqlQueryIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
@@ -248,7 +248,7 @@
             }
         }
 
-        public class WhenCallingCombineWithAnIEnumerableAndTheSourceQueriesIsNull
+        public class WhenCallingCombine_WithAnIEnumerable_AndTheSourceQueriesIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
@@ -263,13 +263,13 @@
             }
         }
 
-        public class WhenCallingCombineWithAnIEnumerableSqlQueryNotUsingNamedParameters
+        public class WhenCallingCombine_WithAnIEnumerableSqlQueryNotUsingNamedParameters
         {
             private readonly SqlQuery combinedQuery;
             private readonly SqlQuery sqlQuery1;
             private readonly SqlQuery sqlQuery2;
 
-            public WhenCallingCombineWithAnIEnumerableSqlQueryNotUsingNamedParameters()
+            public WhenCallingCombine_WithAnIEnumerableSqlQueryNotUsingNamedParameters()
             {
                 this.sqlQuery1 = new SqlQuery("SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = ? AND \"Column2\" > ?", "Foo", 100);
                 this.sqlQuery1.Timeout = 38;
@@ -328,13 +328,13 @@
             }
         }
 
-        public class WhenCallingCombineWithAnIEnumerableSqlQueryUsingNamedParameters
+        public class WhenCallingCombine_WithAnIEnumerableSqlQueryUsingNamedParameters
         {
             private readonly SqlQuery combinedQuery;
             private readonly SqlQuery sqlQuery1;
             private readonly SqlQuery sqlQuery2;
 
-            public WhenCallingCombineWithAnIEnumerableSqlQueryUsingNamedParameters()
+            public WhenCallingCombine_WithAnIEnumerableSqlQueryUsingNamedParameters()
             {
                 this.sqlQuery1 = new SqlQuery("SELECT \"Column1\", \"Column2\", \"Column3\" FROM \"Table1\" WHERE \"Column1\" = @p0 AND \"Column2\" > @p1", "Foo", 100);
                 this.sqlQuery1.Timeout = 38;

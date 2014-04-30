@@ -178,6 +178,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The type &apos;{0}&apos; cannot be used by the MicroLite ORM Framework unless it is declared &apos;public&apos;.
+        /// </summary>
+        internal static string ObjectInfo_TypeMustBePublic {
+            get {
+                return ResourceManager.GetString("ObjectInfo_TypeMustBePublic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type &apos;{0}&apos; has no default (parameterless) constructor and therefore cannot be used by the MicroLite ORM Framework.
         /// </summary>
         internal static string ObjectInfo_TypeMustHaveDefaultConstructor {

@@ -348,11 +348,18 @@ namespace MicroLite.Mapping
             {
                 throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustBeClass.FormatWith(forType.Name));
             }
-            else if (forType.IsAbstract)
+
+            if (forType.IsAbstract)
             {
                 throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustNotBeAbstract.FormatWith(forType.Name));
             }
-            else if (forType.GetConstructor(Type.EmptyTypes) == null)
+
+            if (!forType.IsPublic && !forType.IsNestedPublic)
+            {
+                throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustBePublic.FormatWith(forType.Name));
+            }
+
+            if (forType.GetConstructor(Type.EmptyTypes) == null)
             {
                 throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(forType.Name));
             }

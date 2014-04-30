@@ -27,55 +27,17 @@
             Assert.DoesNotThrow(() => transaction.Dispose());
         }
 
-        public class WhenCallingCommit_AndTheConnectionScopeIsPerSession
+        public class WhenCallingCommit
         {
             private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
             private readonly Mock<ISessionBase> mockSessionBase = new Mock<ISessionBase>();
             private readonly Mock<IDbTransaction> mockTransaction = new Mock<IDbTransaction>();
             private readonly Transaction transaction;
 
-            public WhenCallingCommit_AndTheConnectionScopeIsPerSession()
+            public WhenCallingCommit()
             {
                 this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(this.mockTransaction.Object);
 
-                this.mockSessionBase.Setup(x => x.ConnectionScope).Returns(ConnectionScope.PerSession);
-                this.mockSessionBase.Setup(x => x.Connection).Returns(this.mockConnection.Object);
-
-                this.transaction = new Transaction(this.mockSessionBase.Object, IsolationLevel.ReadCommitted);
-                this.transaction.Commit();
-            }
-
-            [Fact]
-            public void IsActiveReturnsFalse()
-            {
-                Assert.False(this.transaction.IsActive);
-            }
-
-            [Fact]
-            public void SessionTransactionCompletedShouldBeCalled()
-            {
-                this.mockSessionBase.Verify(x => x.TransactionCompleted(), Times.Once());
-            }
-
-            [Fact]
-            public void TheTransactionShouldBeCommitted()
-            {
-                this.mockTransaction.Verify(x => x.Commit(), Times.Once());
-            }
-        }
-
-        public class WhenCallingCommit_AndTheConnectionScopeIsPerTransaction
-        {
-            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
-            private readonly Mock<ISessionBase> mockSessionBase = new Mock<ISessionBase>();
-            private readonly Mock<IDbTransaction> mockTransaction = new Mock<IDbTransaction>();
-            private readonly Transaction transaction;
-
-            public WhenCallingCommit_AndTheConnectionScopeIsPerTransaction()
-            {
-                this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(this.mockTransaction.Object);
-
-                this.mockSessionBase.Setup(x => x.ConnectionScope).Returns(ConnectionScope.PerTransaction);
                 this.mockSessionBase.Setup(x => x.Connection).Returns(this.mockConnection.Object);
 
                 this.transaction = new Transaction(this.mockSessionBase.Object, IsolationLevel.ReadCommitted);
@@ -184,7 +146,6 @@
 
                 this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(this.mockTransaction.Object);
 
-                this.mockSessionBase.Setup(x => x.ConnectionScope).Returns(ConnectionScope.PerSession);
                 this.mockSessionBase.Setup(x => x.Connection).Returns(this.mockConnection.Object);
 
                 this.transaction = new Transaction(this.mockSessionBase.Object, IsolationLevel.ReadCommitted);
@@ -339,55 +300,17 @@
             }
         }
 
-        public class WhenCallingRollback_AndTheConnectionScopeIsPerSession
+        public class WhenCallingRollback
         {
             private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
             private readonly Mock<ISessionBase> mockSessionBase = new Mock<ISessionBase>();
             private readonly Mock<IDbTransaction> mockTransaction = new Mock<IDbTransaction>();
             private readonly Transaction transaction;
 
-            public WhenCallingRollback_AndTheConnectionScopeIsPerSession()
+            public WhenCallingRollback()
             {
                 this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(this.mockTransaction.Object);
 
-                this.mockSessionBase.Setup(x => x.ConnectionScope).Returns(ConnectionScope.PerSession);
-                this.mockSessionBase.Setup(x => x.Connection).Returns(this.mockConnection.Object);
-
-                this.transaction = new Transaction(this.mockSessionBase.Object, IsolationLevel.ReadCommitted);
-                this.transaction.Rollback();
-            }
-
-            [Fact]
-            public void IsActiveReturnsFalse()
-            {
-                Assert.False(this.transaction.IsActive);
-            }
-
-            [Fact]
-            public void SessionTransactionCompletedShouldBeCalled()
-            {
-                this.mockSessionBase.Verify(x => x.TransactionCompleted(), Times.Once());
-            }
-
-            [Fact]
-            public void TheTransactionShouldBeRolledback()
-            {
-                this.mockTransaction.Verify(x => x.Rollback(), Times.Once());
-            }
-        }
-
-        public class WhenCallingRollback_AndTheConnectionScopeIsPerTransaction
-        {
-            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
-            private readonly Mock<ISessionBase> mockSessionBase = new Mock<ISessionBase>();
-            private readonly Mock<IDbTransaction> mockTransaction = new Mock<IDbTransaction>();
-            private readonly Transaction transaction;
-
-            public WhenCallingRollback_AndTheConnectionScopeIsPerTransaction()
-            {
-                this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(this.mockTransaction.Object);
-
-                this.mockSessionBase.Setup(x => x.ConnectionScope).Returns(ConnectionScope.PerTransaction);
                 this.mockSessionBase.Setup(x => x.Connection).Returns(this.mockConnection.Object);
 
                 this.transaction = new Transaction(this.mockSessionBase.Object, IsolationLevel.ReadCommitted);
@@ -496,7 +419,6 @@
 
                 this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(this.mockTransaction.Object);
 
-                this.mockSessionBase.Setup(x => x.ConnectionScope).Returns(ConnectionScope.PerSession);
                 this.mockSessionBase.Setup(x => x.Connection).Returns(this.mockConnection.Object);
 
                 this.transaction = new Transaction(this.mockSessionBase.Object, IsolationLevel.ReadCommitted);
@@ -540,46 +462,6 @@
             public void IsActiveReturnsTrue()
             {
                 Assert.True(this.transaction.IsActive);
-            }
-        }
-
-        public class WhenConstructed_AndTheTransactionScopeIsPerSession
-        {
-            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
-            private readonly Mock<ISessionBase> mockSessionBase = new Mock<ISessionBase>();
-
-            public WhenConstructed_AndTheTransactionScopeIsPerSession()
-            {
-                this.mockSessionBase.Setup(x => x.Connection).Returns(this.mockConnection.Object);
-                this.mockSessionBase.Setup(x => x.ConnectionScope).Returns(ConnectionScope.PerSession);
-
-                var transaction = new Transaction(mockSessionBase.Object, IsolationLevel.ReadCommitted);
-            }
-
-            [Fact]
-            public void TheConnectionNotIsOpened()
-            {
-                this.mockConnection.Verify(x => x.Open(), Times.Never());
-            }
-        }
-
-        public class WhenConstructed_AndTheTransactionScopeIsPerTransaction
-        {
-            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
-            private readonly Mock<ISessionBase> mockSessionBase = new Mock<ISessionBase>();
-
-            public WhenConstructed_AndTheTransactionScopeIsPerTransaction()
-            {
-                this.mockSessionBase.Setup(x => x.Connection).Returns(this.mockConnection.Object);
-                this.mockSessionBase.Setup(x => x.ConnectionScope).Returns(ConnectionScope.PerTransaction);
-
-                var transaction = new Transaction(mockSessionBase.Object, IsolationLevel.ReadCommitted);
-            }
-
-            [Fact]
-            public void TheConnectionIsOpened()
-            {
-                this.mockConnection.Verify(x => x.Open(), Times.Once());
             }
         }
     }

@@ -40,13 +40,13 @@
             [Fact]
             public void TheConnectionStringShouldBeSetOnTheDbDriver()
             {
-                this.mockDbDriver.VerifySet(x => x.ConnectionString = It.IsAny<string>());
+                this.mockDbDriver.VerifySet(x => x.ConnectionString = It.IsNotNull<string>());
             }
 
             [Fact]
             public void TheDbProviderFactoryShouldBeSetOnTheDbDriver()
             {
-                this.mockDbDriver.VerifySet(x => x.DbProviderFactory = It.IsAny<DbProviderFactory>());
+                this.mockDbDriver.VerifySet(x => x.DbProviderFactory = It.IsNotNull<DbProviderFactory>());
             }
 
             [Fact]

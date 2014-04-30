@@ -26,7 +26,7 @@
             public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
             {
                 this.mockConfigureConnection.Verify(
-                    x => x.ForConnection("TestConnection", It.IsAny<MsSqlDialect>(), It.IsAny<MsSqlDbDriver>()),
+                    x => x.ForConnection("TestConnection", It.IsNotNull<MsSqlDialect>(), It.IsNotNull<MsSqlDbDriver>()),
                     Times.Once());
             }
         }
@@ -56,7 +56,7 @@
             public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
             {
                 this.mockConfigureConnection.Verify(
-                    x => x.ForConnection("TestConnection", It.IsAny<MySqlDialect>(), It.IsAny<MySqlDbDriver>()),
+                    x => x.ForConnection("TestConnection", It.IsNotNull<MySqlDialect>(), It.IsNotNull<MySqlDbDriver>()),
                     Times.Once());
             }
         }
@@ -86,7 +86,7 @@
             public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
             {
                 this.mockConfigureConnection.Verify(
-                    x => x.ForConnection("TestConnection", It.IsAny<PostgreSqlDialect>(), It.IsAny<PostgreSqlDbDriver>()),
+                    x => x.ForConnection("TestConnection", It.IsNotNull<PostgreSqlDialect>(), It.IsNotNull<PostgreSqlDbDriver>()),
                     Times.Once());
             }
         }
@@ -116,7 +116,7 @@
             public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
             {
                 this.mockConfigureConnection.Verify(
-                    x => x.ForConnection("TestConnection", It.IsAny<SQLiteDialect>(), It.IsAny<SQLiteDbDriver>()),
+                    x => x.ForConnection("TestConnection", It.IsNotNull<SQLiteDialect>(), It.IsNotNull<SQLiteDbDriver>()),
                     Times.Once());
             }
         }
@@ -145,7 +145,7 @@
             [Fact]
             public void SetMappingConventionIsCalledWithAnInstanceOfAttributeMappingConvention()
             {
-                this.mockConfigureExtensions.Verify(x => x.SetMappingConvention(It.IsAny<AttributeMappingConvention>()), Times.Once());
+                this.mockConfigureExtensions.Verify(x => x.SetMappingConvention(It.IsNotNull<AttributeMappingConvention>()), Times.Once());
             }
         }
 
@@ -172,7 +172,7 @@
             [Fact]
             public void SetMappingConventionIsCalledWithAnInstanceOfConventionMappingConvention()
             {
-                this.mockConfigureExtensions.Verify(x => x.SetMappingConvention(It.IsAny<ConventionMappingConvention>()), Times.Once());
+                this.mockConfigureExtensions.Verify(x => x.SetMappingConvention(It.IsNotNull<ConventionMappingConvention>()), Times.Once());
             }
         }
 
