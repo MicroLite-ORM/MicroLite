@@ -144,6 +144,9 @@
   <data name="Include_SingleRecordExpected" xml:space="preserve">
     <value>Multiple records have been returned by the query, the query should return a single row only.</value>
   </data>
+  <data name="ObjectDelta_MustContainAtLeastOneChange" xml:space="preserve">
+    <value>An ObjectDelta must contain at least one change, ensure that you have called AddChange with the property name and new value for each property you wish to update</value>
+  </data>
   <data name="ObjectInfo_IdentifierNotSetForInsert" xml:space="preserve">
     <value>The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted.</value>
   </data>
