@@ -251,6 +251,11 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("objectDelta");
             }
 
+            if (objectDelta.ChangeCount == 0)
+            {
+                throw new MicroLiteException(ExceptionMessages.ObjectDelta_MustContainAtLeastOneChange);
+            }
+
             var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectDelta);
 
             var rowsAffected = this.Execute(sqlQuery);

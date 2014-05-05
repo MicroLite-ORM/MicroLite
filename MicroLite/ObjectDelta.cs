@@ -37,6 +37,17 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets the number of changes in the delta.
+        /// </summary>
+        public int ChangeCount
+        {
+            get
+            {
+                return this.changes.Count;
+            }
+        }
+
+        /// <summary>
         /// Gets the changes contained in the delta.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Ignored.")]

@@ -142,6 +142,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An ObjectDelta must contain at least one change, ensure that you have called AddChange with the property name and new value for each property you wish to update.
+        /// </summary>
+        internal static string ObjectDelta_MustContainAtLeastOneChange {
+            get {
+                return ResourceManager.GetString("ObjectDelta_MustContainAtLeastOneChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted..
         /// </summary>
         internal static string ObjectInfo_IdentifierNotSetForInsert {

@@ -16,6 +16,12 @@
             }
 
             [Fact]
+            public void ChangeCountShouldReturnTheCorrectNumberOfChanges()
+            {
+                Assert.Equal(1, this.objectDelta.ChangeCount);
+            }
+
+            [Fact]
             public void ChangesShouldContainTheChange()
             {
                 var change = this.objectDelta.Changes.Single();
@@ -31,6 +37,12 @@
             public WhenConstructed()
             {
                 this.objectDelta = new ObjectDelta(typeof(Customer), 1332);
+            }
+
+            [Fact]
+            public void ChangeCountShouldReturnZero()
+            {
+                Assert.Equal(0, this.objectDelta.ChangeCount);
             }
 
             [Fact]

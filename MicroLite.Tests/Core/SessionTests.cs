@@ -981,6 +981,22 @@
         }
 
         [Fact]
+        public void UpdateObjectDeltaThrowsMicroLiteExceptionIfItContainsNoChanges()
+        {
+            var objectDelta = new ObjectDelta(typeof(Customer), 1234);
+
+            var session = new Session(
+                ConnectionScope.PerTransaction,
+                new Mock<ISqlDialect>().Object,
+                new Mock<IDbDriver>().Object,
+                new IListener[0]);
+
+            var exception = Assert.Throws<MicroLiteException>(() => session.Update(objectDelta));
+
+            Assert.Equal(ExceptionMessages.ObjectDelta_MustContainAtLeastOneChange, exception.Message);
+        }
+
+        [Fact]
         public void UpdateObjectDeltaThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new Session(
