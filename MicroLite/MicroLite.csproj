@@ -66,8 +66,11 @@
     <Compile Include="Dialect\MySqlDialect.cs" />
     <Compile Include="Dialect\PostgreSqlCharacters.cs" />
     <Compile Include="Dialect\PostgreSqlDialect.cs" />
+    <Compile Include="Dialect\SqlServerCeCharacters.cs" />
+    <Compile Include="Dialect\SqlServerCeDialect.cs" />
     <Compile Include="Dialect\SQLiteCharacters.cs" />
     <Compile Include="Dialect\SQLiteDialect.cs" />
+    <Compile Include="Driver\SqlServerCeDbDriver.cs" />
     <Compile Include="Driver\SQLiteDbDriver.cs" />
     <Compile Include="Driver\PostgreSqlDbDriver.cs" />
     <Compile Include="Driver\IDbDriver.cs" />

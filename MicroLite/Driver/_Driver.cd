@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="MicroLite.Driver.DbDriver">
-    <Position X="4.5" Y="0.5" Width="2" />
+    <Position X="5" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAIAAAAQAAAICAAAAEACAACAAAQAAAAACABABAACQA=</HashCode>
+      <HashCode>AAAIAAAAQAAAICAAAAEACAAAgAAQAAAAACABABAACQA=</HashCode>
       <FileName>Driver\DbDriver.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -16,24 +16,31 @@
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Driver.MySqlDbDriver">
-    <Position X="3" Y="5.5" Width="2" />
+    <Position X="2.75" Y="5.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
       <FileName>Driver\MySqlDbDriver.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Driver.PostgreSqlDbDriver">
-    <Position X="5.5" Y="5.5" Width="2" />
+    <Position X="5" Y="5.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
       <FileName>Driver\PostgreSqlDbDriver.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Driver.SQLiteDbDriver">
-    <Position X="8" Y="5.5" Width="2" />
+    <Position X="7.25" Y="5.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
       <FileName>Driver\SQLiteDbDriver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Driver.SqlServerCeDbDriver">
+    <Position X="9.5" Y="5.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Driver\SqlServerCeDbDriver.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="MicroLite.Driver.IDbDriver">

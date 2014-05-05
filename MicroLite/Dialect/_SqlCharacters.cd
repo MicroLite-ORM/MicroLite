@@ -8,31 +8,38 @@
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Dialect.MySqlCharacters">
-    <Position X="3.75" Y="5.75" Width="2.75" />
+    <Position X="3.5" Y="5.75" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAgAAAGAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
       <FileName>Dialect\MySqlCharacters.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Dialect.PostgreSqlCharacters">
-    <Position X="7" Y="5.75" Width="2.75" />
+    <Position X="6.5" Y="5.75" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAgAAAGAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
       <FileName>Dialect\PostgreSqlCharacters.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Dialect.SQLiteCharacters">
-    <Position X="10.25" Y="5.75" Width="2.25" />
+    <Position X="9.5" Y="5.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAgAAACAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
       <FileName>Dialect\SQLiteCharacters.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.SqlCharacters">
-    <Position X="5" Y="0.5" Width="2.75" />
+    <Position X="6.5" Y="0.5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAgAAAGAAAAAAAKAQAACiAgAAAAAIgAAAgAQABA=</HashCode>
       <FileName>SqlCharacters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Dialect.SqlServerCeCharacters">
+    <Position X="12" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAACAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
+      <FileName>Dialect\SqlServerCeCharacters.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

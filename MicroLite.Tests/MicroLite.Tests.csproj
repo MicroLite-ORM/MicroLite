@@ -75,6 +75,8 @@
     <Compile Include="Dialect\MySqlDialectTests.cs" />
     <Compile Include="Dialect\PostgreSqlCharactersTests.cs" />
     <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
+    <Compile Include="Dialect\SqlServerCeCharactersTests.cs" />
+    <Compile Include="Dialect\SqlServerCeDialectTests.cs" />
     <Compile Include="Dialect\SQLiteCharactersTests.cs" />
     <Compile Include="Dialect\SQLiteDialectTests.cs" />
     <Compile Include="Driver\DbDriverTests.cs" />
@@ -83,6 +85,7 @@
     </Compile>
     <Compile Include="Driver\MySqlDbDriverTests.cs" />
     <Compile Include="Driver\PostgreSqlDbDriverTests.cs" />
+    <Compile Include="Driver\SqlServerCeDbDriverTests.cs" />
     <Compile Include="Driver\SQLiteDbDriverTests.cs" />
     <Compile Include="Mapping\Inflection\InflectionServiceTests.cs" />
     <Compile Include="TestEntities\Invoice.cs" />
