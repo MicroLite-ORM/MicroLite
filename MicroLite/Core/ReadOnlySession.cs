@@ -233,7 +233,9 @@ namespace MicroLite.Core
 
         private void ExecuteQueriesCombined()
         {
-            var combinedSqlQuery = this.DbDriver.Combine(this.queries);
+            var combinedSqlQuery = this.queries.Count == 2
+                ? this.DbDriver.Combine(this.queries.Dequeue(), this.queries.Dequeue())
+                : this.DbDriver.Combine(this.queries);
 
             using (var command = this.CreateCommand(combinedSqlQuery))
             {
