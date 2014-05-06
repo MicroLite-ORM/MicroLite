@@ -12,7 +12,7 @@
     public class SQLiteDialectTests : UnitTest
     {
         [Fact]
-        public void CreateSelectIdentityQuery()
+        public void BuildSelectIdentitySqlQuery()
         {
             var sqlDialect = new SQLiteDialect();
 

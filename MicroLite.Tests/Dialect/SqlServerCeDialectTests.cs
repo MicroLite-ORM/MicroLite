@@ -12,7 +12,7 @@
     public class SqlServerCeDialectTests : UnitTest
     {
         [Fact]
-        public void CreateSelectIdentityQuery()
+        public void BuildSelectIdentitySqlQuery()
         {
             var sqlDialect = new SqlServerCeDialect();
 
