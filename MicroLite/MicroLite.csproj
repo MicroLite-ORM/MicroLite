@@ -62,6 +62,8 @@
     <Compile Include="Configuration\FluentConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationException.cs" />
     <Compile Include="ConnectionScope.cs" />
+    <Compile Include="Dialect\FirebirdSqlCharacters.cs" />
+    <Compile Include="Dialect\FirebirdSqlDialect.cs" />
     <Compile Include="Dialect\MySqlCharacters.cs" />
     <Compile Include="Dialect\MySqlDialect.cs" />
     <Compile Include="Dialect\PostgreSqlCharacters.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="Dialect\SqlServerCeDialect.cs" />
     <Compile Include="Dialect\SQLiteCharacters.cs" />
     <Compile Include="Dialect\SQLiteDialect.cs" />
+    <Compile Include="Driver\FirebirdDbDriver.cs" />
     <Compile Include="Driver\SqlServerCeDbDriver.cs" />
     <Compile Include="Driver\SQLiteDbDriver.cs" />
     <Compile Include="Driver\PostgreSqlDbDriver.cs" />
@@ -206,7 +209,7 @@
     <None Include="Configuration\_Configuration.cd" />
     <None Include="Core\_Includes.cd" />
     <None Include="Core\_Session.cd" />
-    <None Include="Dialect\_Dialect.cd" />
+    <None Include="Dialect\_SqlDialect.cd" />
     <None Include="Dialect\_SqlCharacters.cd" />
     <None Include="Driver\_Driver.cd" />
     <None Include="Listeners\_Listeners.cd" />

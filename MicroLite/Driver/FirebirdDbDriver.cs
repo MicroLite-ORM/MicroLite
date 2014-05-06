@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SQLiteDbDriver.cs" company="MicroLite">
+// <copyright file="FirebirdDbDriver.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,23 +13,15 @@
 namespace MicroLite.Driver
 {
     /// <summary>
-    /// The implementation of <see cref="IDbDriver"/> for SQLite.
+    /// The implementation of <see cref="IDbDriver"/> for Firebird.
     /// </summary>
-    internal sealed class SQLiteDbDriver : DbDriver
+    internal sealed class FirebirdDbDriver : DbDriver
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="SQLiteDbDriver" /> class.
+        /// Initialises a new instance of the <see cref="FirebirdDbDriver" /> class.
         /// </summary>
-        internal SQLiteDbDriver()
+        internal FirebirdDbDriver()
         {
-        }
-
-        public override bool SupportsBatchedQueries
-        {
-            get
-            {
-                return true;
-            }
         }
     }
 }

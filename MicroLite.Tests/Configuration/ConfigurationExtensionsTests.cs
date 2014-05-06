@@ -13,6 +13,36 @@
     /// </summary>
     public class ConfigurationExtensionsTests
     {
+        public class WhenCallingForFirebirdConnection
+        {
+            private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();
+
+            public WhenCallingForFirebirdConnection()
+            {
+                ConfigurationExtensions.ForFirebirdConnection(this.mockConfigureConnection.Object, "TestConnection");
+            }
+
+            [Fact]
+            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
+            {
+                this.mockConfigureConnection.Verify(
+                    x => x.ForConnection("TestConnection", It.IsNotNull<FirebirdSqlDialect>(), It.IsNotNull<FirebirdDbDriver>()),
+                    Times.Once());
+            }
+        }
+
+        public class WhenCallingForFirebirdConnection_AndTheConfigureConnectionIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionIsThrown()
+            {
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => ConfigurationExtensions.ForFirebirdConnection(null, "TestConnection"));
+
+                Assert.Equal("configureConnection", exception.ParamName);
+            }
+        }
+
         public class WhenCallingForMsSqlConnection
         {
             private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();

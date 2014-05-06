@@ -70,6 +70,8 @@
     <Compile Include="Core\SessionTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
     <Compile Include="DbEncryptedStringTests.cs" />
+    <Compile Include="Dialect\FirebirdSqlCharactersTests.cs" />
+    <Compile Include="Dialect\FirebirdSqlDialectTests.cs" />
     <Compile Include="Dialect\MsSqlCharactersTests.cs" />
     <Compile Include="Dialect\MySqlCharactersTests.cs" />
     <Compile Include="Dialect\MySqlDialectTests.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Dialect\SQLiteCharactersTests.cs" />
     <Compile Include="Dialect\SQLiteDialectTests.cs" />
     <Compile Include="Driver\DbDriverTests.cs" />
+    <Compile Include="Driver\FirebirdDbDriverTests.cs" />
     <Compile Include="Driver\MsSqlDbDriverTests.cs">
       <SubType>Code</SubType>
     </Compile>
