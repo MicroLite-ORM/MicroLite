@@ -7,7 +7,7 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="SQLiteDialect"/> class.
+    /// Unit Tests for the <see cref="SqlServerCeDialect"/> class.
     /// </summary>
     public class SqlServerCeDialectTests : UnitTest
     {
