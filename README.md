@@ -13,7 +13,7 @@ _Headline Features_
 * Easily managed by IOC containers
 * Interface based API which makes unit testing easy
 
-_Supported .NET Framework Versions_
+## Supported .NET Framework Versions
 
 The NuGet Package contains binaries compiled against:
 
@@ -21,7 +21,7 @@ The NuGet Package contains binaries compiled against:
 * .NET 4.0 (Client Profile)
 * .NET 4.5
 
-_SQL Support_
+## SQL Support
 
 * Microsoft SQL Server 2005 or newer
 * SQLite 3.7.14 or newer (_older versions may work but are un-tested_)
