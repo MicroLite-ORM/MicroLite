@@ -284,8 +284,10 @@ namespace MicroLite.Dialect
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            var qualifiedTableName = SqlUtility.ReadTableName(sqlQuery.CommandText);
-            var whereValue = SqlUtility.ReadWhereClause(sqlQuery.CommandText);
+            var sqlString = SqlString.Parse(sqlQuery.CommandText, Clauses.From | Clauses.Where);
+
+            var qualifiedTableName = sqlString.From;
+            var whereValue = sqlString.Where;
             var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
 
             return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, sqlQuery.GetArgumentArray());

@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Builder\IInsertColumn.cs" />
     <Compile Include="Builder\SqlBuilderBase.cs" />
+    <Compile Include="Clauses.cs" />
     <Compile Include="Configuration\ConfigurationExtensions.cs" />
     <Compile Include="Configuration\FluentConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationException.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Builder\RawWhereBuilder.cs" />
     <Compile Include="Builder\SelectSqlBuilder.cs" />
     <Compile Include="Builder\StoredProcedureSqlBuilder.cs" />
+    <Compile Include="SqlString.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverter.cs" />
     <Compile Include="TypeConverters\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />

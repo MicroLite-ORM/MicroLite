@@ -91,6 +91,7 @@
     <Compile Include="Driver\SqlServerCeDbDriverTests.cs" />
     <Compile Include="Driver\SQLiteDbDriverTests.cs" />
     <Compile Include="Mapping\Inflection\InflectionServiceTests.cs" />
+    <Compile Include="SqlStringTests.cs" />
     <Compile Include="TestEntities\Invoice.cs" />
     <Compile Include="UnitTest.cs" />
     <Compile Include="ObjectDeltaTests.cs" />
