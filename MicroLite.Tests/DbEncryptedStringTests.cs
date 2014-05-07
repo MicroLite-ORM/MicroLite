@@ -147,30 +147,6 @@
             }
         }
 
-        public class WhenCallingGetHashCode
-        {
-            [Fact]
-            public void TheHashCodeOfTheInnerStringShouldBeReturned()
-            {
-                var value = "12334552233";
-                var dbEncryptedString = (DbEncryptedString)value;
-
-                Assert.Equal(value.GetHashCode(), dbEncryptedString.GetHashCode());
-            }
-        }
-
-        public class WhenCallingToString
-        {
-            [Fact]
-            public void TheInnerStringShouldBeReturned()
-            {
-                var value = "12334552233";
-                var dbEncryptedString = (DbEncryptedString)value;
-
-                Assert.Equal(value, dbEncryptedString.ToString());
-            }
-        }
-
         public class WhenCastFromAnEmptyString
         {
             private DbEncryptedString encryptedString;
@@ -182,10 +158,22 @@
             }
 
             [Fact]
+            public void GetHashCodeShouldMatchTheHashCodeOfStringEmpty()
+            {
+                Assert.Equal(string.Empty.GetHashCode(), this.encryptedString.GetHashCode());
+            }
+
+            [Fact]
             public void TheValueShouldBeEmpty()
             {
                 string actual = this.encryptedString;
                 Assert.Equal(this.source, actual);
+            }
+
+            [Fact]
+            public void ToStringShouldReturnTheOriginalValue()
+            {
+                Assert.Equal(this.source, this.encryptedString.ToString());
             }
         }
 
@@ -200,16 +188,9 @@
             }
 
             [Fact]
-            public void GetHashCodeShouldReturnSero()
-            {
-                Assert.Equal(0, this.encryptedString.GetHashCode());
-            }
-
-            [Fact]
             public void TheValueShouldBeNull()
             {
-                string actual = this.encryptedString;
-                Assert.Null(actual);
+                Assert.Null(this.encryptedString);
             }
         }
 
@@ -224,10 +205,22 @@
             }
 
             [Fact]
+            public void GetHashCodeShouldMatchTheHashCodeOfTheSourceString()
+            {
+                Assert.Equal(this.source.GetHashCode(), this.encryptedString.GetHashCode());
+            }
+
+            [Fact]
             public void TheValueShouldMatch()
             {
                 string actual = this.encryptedString;
                 Assert.Equal(this.source, actual);
+            }
+
+            [Fact]
+            public void ToStringShouldReturnTheOriginalValue()
+            {
+                Assert.Equal(this.source, this.encryptedString.ToString());
             }
         }
     }
