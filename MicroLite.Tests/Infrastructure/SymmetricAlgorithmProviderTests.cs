@@ -31,7 +31,11 @@
             {
                 var algorithmProvider = new TestSymmetricAlgorithmProvider();
 
+#if!NET_3_5
                 var exception = Assert.Throws<ArgumentNullException>(() => algorithmProvider.CallBaseConfigure("AesManaged", null));
+#else
+                var exception = Assert.Throws<ArgumentNullException>(() => algorithmProvider.CallBaseConfigure("Rijndael", null));
+#endif
 
                 Assert.Equal("algorithmKey", exception.ParamName);
             }
@@ -45,20 +49,32 @@
 
             public WhenCallingCreateAlgorithm()
             {
+#if!NET_3_5
                 this.algorithmProvider.CallBaseConfigure("AesManaged", this.key);
+#else
+                this.algorithmProvider.CallBaseConfigure("Rijndael", this.key);
+#endif
 
                 this.symmetricAlgorithm = this.algorithmProvider.CreateAlgorithm();
             }
 
             public void Dispose()
             {
+#if!NET_3_5
                 this.symmetricAlgorithm.Dispose();
+#else
+                ((IDisposable)this.symmetricAlgorithm).Dispose();
+#endif
             }
 
             [Fact]
             public void TheAlgorithmShouldBeTheSpecifiedType()
             {
+#if!NET_3_5
                 Assert.IsType<AesManaged>(this.symmetricAlgorithm);
+#else
+                Assert.IsType<RijndaelManaged>(this.symmetricAlgorithm);
+#endif
             }
 
             [Fact]
