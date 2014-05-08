@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A693D0A7-1347-4FAA-9CB4-67E6C1C084A2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MicroLite.Tests</RootNamespace>
+    <AssemblyName>MicroLite.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_4_0</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NET_4_0</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\MicroLite.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Moq, Version=4.2.1402.2112, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="xunit">
+      <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\ConfigurationExtensionsTests.cs" />
+    <Compile Include="Configuration\FluentConfigurationTests.cs" />
+    <Compile Include="Core\IncludeManyTests.cs" />
+    <Compile Include="Core\IncludeScalarTests.cs" />
+    <Compile Include="Core\IncludeSingleTests.cs" />
+    <Compile Include="Core\ReadOnlySessionTests.cs" />
+    <Compile Include="Core\SessionBaseTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\SessionFactoryTests.cs" />
+    <Compile Include="Core\SessionTests.cs" />
+    <Compile Include="Core\TransactionTests.cs" />
+    <Compile Include="DbEncryptedStringTests.cs" />
+    <Compile Include="Dialect\FirebirdSqlCharactersTests.cs" />
+    <Compile Include="Dialect\FirebirdSqlDialectTests.cs" />
+    <Compile Include="Dialect\MsSqlCharactersTests.cs" />
+    <Compile Include="Dialect\MySqlCharactersTests.cs" />
+    <Compile Include="Dialect\MySqlDialectTests.cs" />
+    <Compile Include="Dialect\PostgreSqlCharactersTests.cs" />
+    <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
+    <Compile Include="Dialect\SqlServerCeCharactersTests.cs" />
+    <Compile Include="Dialect\SqlServerCeDialectTests.cs" />
+    <Compile Include="Dialect\SQLiteCharactersTests.cs" />
+    <Compile Include="Dialect\SQLiteDialectTests.cs" />
+    <Compile Include="Driver\DbDriverTests.cs" />
+    <Compile Include="Driver\FirebirdDbDriverTests.cs" />
+    <Compile Include="Driver\MsSqlDbDriverTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Driver\MySqlDbDriverTests.cs" />
+    <Compile Include="Driver\PostgreSqlDbDriverTests.cs" />
+    <Compile Include="Driver\SqlServerCeDbDriverTests.cs" />
+    <Compile Include="Driver\SQLiteDbDriverTests.cs" />
+    <Compile Include="Mapping\Inflection\InflectionServiceTests.cs" />
+    <Compile Include="SqlStringTests.cs" />
+    <Compile Include="TestEntities\Invoice.cs" />
+    <Compile Include="UnitTest.cs" />
+    <Compile Include="ObjectDeltaTests.cs" />
+    <Compile Include="Builder\DeleteSqlBuilderTests.cs" />
+    <Compile Include="Builder\InsertSqlBuilderTests.cs" />
+    <Compile Include="Builder\UpdateSqlBuilderTests.cs" />
+    <Compile Include="SqlCharactersTests.cs" />
+    <Compile Include="Dialect\SqlDialectTests.cs" />
+    <Compile Include="Infrastructure\SymmetricAlgorithmProviderTests.cs" />
+    <Compile Include="Mapping\ColumnAttributeTests.cs" />
+    <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
+    <Compile Include="Configuration\ConfigureTests.cs" />
+    <Compile Include="Listeners\DbGeneratedListenerTests.cs" />
+    <Compile Include="Dialect\MsSqlDialectTests.cs" />
+    <Compile Include="Listeners\ListenerCollectionTests.cs" />
+    <Compile Include="Mapping\ColumnInfoTests.cs" />
+    <Compile Include="Mapping\ConventionMappingConventionTests.cs" />
+    <Compile Include="Mapping\ConventionMappingSettingsTests.cs" />
+    <Compile Include="Mapping\ExpandoObjectInfoTests.cs" />
+    <Compile Include="Builder\RawWhereBuilderTests.cs" />
+    <Compile Include="Builder\SelectSqlBuilderTests.cs" />
+    <Compile Include="Builder\StoredProcedureSqlBuilderTests.cs" />
+    <Compile Include="TestEntities\Customer.cs" />
+    <Compile Include="TestEntities\CustomerStatus.cs" />
+    <Compile Include="TypeConverters\DbEncryptedStringTypeConverterTests.cs" />
+    <Compile Include="TypeConverters\EnumTypeConverterTests.cs" />
+    <Compile Include="Mapping\IdentifierAttributeTests.cs" />
+    <Compile Include="Logging\LogManagerTests.cs" />
+    <Compile Include="Mapping\Inflection\EnglishInflectionServiceTests.cs" />
+    <Compile Include="Mapping\ObjectInfoTests.cs" />
+    <Compile Include="Mapping\AttributeMappingConventionTests.cs" />
+    <Compile Include="TypeConverters\ObjectTypeConverterTests.cs" />
+    <Compile Include="Mapping\TableInfoTests.cs" />
+    <Compile Include="TypeConverters\TypeConverterCollectionTests.cs" />
+    <Compile Include="TypeConverters\TypeConverterTests.cs" />
+    <Compile Include="PagedResultTests.cs" />
+    <Compile Include="PagingOptionsTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Builder\SqlBuilderTests.cs" />
+    <Compile Include="SqlQueryTests.cs" />
+    <Compile Include="Mapping\TableAttributeTests.cs" />
+    <Compile Include="SqlUtilityTests.cs" />
+    <Compile Include="TypeConverters\UriTypeConverterTests.cs" />
+    <Compile Include="TypeConverters\XDocumentTypeConverterTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MicroLite\MicroLite.NET40.csproj">
+      <Project>{3DEF63F2-C78B-461C-AC94-410BC45098AA}</Project>
+      <Name>MicroLite</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\MicroLite.snk">
+      <Link>MicroLite.snk</Link>
+    </None>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
