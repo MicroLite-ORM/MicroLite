@@ -110,7 +110,17 @@ namespace MicroLite.Core
 
         public IList<T> Fetch<T>(SqlQuery sqlQuery)
         {
-            var include = this.Include.Many<T>(sqlQuery);
+            this.ThrowIfDisposed();
+
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            var include = new IncludeMany<T>();
+
+            this.includes.Enqueue(include);
+            this.queries.Enqueue(sqlQuery);
 
             this.ExecutePendingQueries();
 
@@ -119,8 +129,6 @@ namespace MicroLite.Core
 
         IInclude<T> IIncludeSession.Single<T>(object identifier)
         {
-            this.ThrowIfDisposed();
-
             if (identifier == null)
             {
                 throw new ArgumentNullException("identifier");
@@ -137,8 +145,6 @@ namespace MicroLite.Core
 
         IInclude<T> IIncludeSession.Single<T>(SqlQuery sqlQuery)
         {
-            this.ThrowIfDisposed();
-
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
@@ -154,6 +160,13 @@ namespace MicroLite.Core
 
         T IReadOnlySession.Single<T>(object identifier)
         {
+            this.ThrowIfDisposed();
+
+            if (identifier == null)
+            {
+                throw new ArgumentNullException("identifier");
+            }
+
             var include = this.Include.Single<T>(identifier);
 
             this.ExecutePendingQueries();
@@ -163,7 +176,17 @@ namespace MicroLite.Core
 
         T IReadOnlySession.Single<T>(SqlQuery sqlQuery)
         {
-            var include = this.Include.Single<T>(sqlQuery);
+            this.ThrowIfDisposed();
+
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            var include = new IncludeSingle<T>();
+
+            this.includes.Enqueue(include);
+            this.queries.Enqueue(sqlQuery);
 
             this.ExecutePendingQueries();
 
@@ -172,8 +195,6 @@ namespace MicroLite.Core
 
         public IIncludeMany<T> Many<T>(SqlQuery sqlQuery)
         {
-            this.ThrowIfDisposed();
-
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
@@ -201,11 +222,17 @@ namespace MicroLite.Core
                 throw new MicroLiteException(ExceptionMessages.Session_PagingOptionsMustNotBeNone);
             }
 
-            var countSqlQuery = this.SqlDialect.CountQuery(sqlQuery);
-            var pagedSqlQuery = this.SqlDialect.PageQuery(sqlQuery, pagingOptions);
+            var includeCount = new IncludeScalar<int>();
+            this.includes.Enqueue(includeCount);
 
-            var includeCount = this.Include.Scalar<int>(countSqlQuery);
-            var includeMany = this.Include.Many<T>(pagedSqlQuery);
+            var countSqlQuery = this.SqlDialect.CountQuery(sqlQuery);
+            this.queries.Enqueue(countSqlQuery);
+
+            var includeMany = new IncludeMany<T>();
+            this.includes.Enqueue(includeMany);
+
+            var pagedSqlQuery = this.SqlDialect.PageQuery(sqlQuery, pagingOptions);
+            this.queries.Enqueue(pagedSqlQuery);
 
             this.ExecutePendingQueries();
 
@@ -216,8 +243,6 @@ namespace MicroLite.Core
 
         public IInclude<T> Scalar<T>(SqlQuery sqlQuery)
         {
-            this.ThrowIfDisposed();
-
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
