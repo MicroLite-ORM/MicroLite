@@ -23,10 +23,10 @@ The NuGet Package contains binaries compiled against:
 
 ## SQL Support
 
-* Microsoft SQL Server 2005 or newer
-* SQLite 3.7.14 or newer (_older versions may work but are have not been tested_)
-* PostgreSQL 9.2 or newer (_older versions may work but are have not been tested_)
-* MySql 5.5 or newer (_older versions may work but are have not been tested_)
+* [Microsoft SQL Server](https://github.com/TrevorPilley/MicroLite/wiki/Microsoft-SQL-Server) 2005 or newer
+* [MySql](https://github.com/TrevorPilley/MicroLite/wiki/MySql) 5.5 or newer
+* [SQLite](https://github.com/TrevorPilley/MicroLite/wiki/PostgreSQL) 3.7 or newer
+* [PostgreSQL](https://github.com/TrevorPilley/MicroLite/wiki/SQLite) 9.2 or newer
 
 To find out more, head over to the [Getting Started](https://github.com/TrevorPilley/MicroLite/wiki/Getting-Started) guide on the wiki and see how easy it is to use!
 
