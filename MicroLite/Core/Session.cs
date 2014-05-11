@@ -187,20 +187,28 @@ namespace MicroLite.Core
             var objectInfo = ObjectInfo.For(instance.GetType());
             objectInfo.VerifyInstanceForInsert(instance);
 
-            var insertSqlQuery = this.SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
-            var selectIdSqlQuery = this.SqlDialect.BuildSelectIdentitySqlQuery(objectInfo);
-
             object identifier = null;
 
-            if (this.DbDriver.SupportsBatchedQueries)
+            var insertSqlQuery = this.SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
+
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
             {
-                var combined = this.DbDriver.Combine(insertSqlQuery, selectIdSqlQuery);
-                identifier = this.ExecuteScalar<object>(combined);
+                this.Execute(insertSqlQuery);
             }
             else
             {
-                this.Execute(insertSqlQuery);
-                identifier = this.ExecuteScalar<object>(selectIdSqlQuery);
+                var selectIdSqlQuery = this.SqlDialect.BuildSelectIdentitySqlQuery(objectInfo);
+
+                if (this.DbDriver.SupportsBatchedQueries)
+                {
+                    var combined = this.DbDriver.Combine(insertSqlQuery, selectIdSqlQuery);
+                    identifier = this.ExecuteScalar<object>(combined);
+                }
+                else
+                {
+                    this.Execute(insertSqlQuery);
+                    identifier = this.ExecuteScalar<object>(selectIdSqlQuery);
+                }
             }
 
             for (int i = this.listeners.Count - 1; i >= 0; i--)
