@@ -29,7 +29,10 @@ namespace MicroLite.Listeners
         /// Invoked after the SqlQuery to insert the record for the instance has been executed.
         /// </summary>
         /// <param name="instance">The instance which has been inserted.</param>
-        /// <param name="executeScalarResult">The execute scalar result.</param>
+        /// <param name="executeScalarResult">The execute scalar result (the identifier value returned by the database
+        /// or null if the identifier is <see cref="IdentifierStrategy" />.Assigned.</param>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null or IdentifierStrategy is DbGenerated
+        /// and executeScalarResult is null.</exception>
         public override void AfterInsert(object instance, object executeScalarResult)
         {
             if (instance == null)
@@ -37,15 +40,15 @@ namespace MicroLite.Listeners
                 throw new ArgumentNullException("instance");
             }
 
-            if (executeScalarResult == null)
-            {
-                throw new ArgumentNullException("executeScalarResult");
-            }
-
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
+                if (executeScalarResult == null)
+                {
+                    throw new ArgumentNullException("executeScalarResult");
+                }
+
                 if (log.IsDebug)
                 {
                     log.Debug(LogMessages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());

@@ -12,6 +12,17 @@
     public class DbGeneratedListenerTests : UnitTest
     {
         [Fact]
+        public void AfterInsertDoesNotThrowArgumentNullExceptionForNullExecuteScalarResultIfIdentifierStrategyAssigned()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
+            var listener = new DbGeneratedListener();
+
+            Assert.DoesNotThrow(() => listener.AfterInsert(new Customer(), null));
+        }
+
+        [Fact]
         public void AfterInsertSetsIdentifierValue()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
@@ -42,8 +53,11 @@
         }
 
         [Fact]
-        public void AfterInsertThrowsArgumentNullExceptionForNullExecuteScalarResult()
+        public void AfterInsertThrowsArgumentNullExceptionForNullExecuteScalarResultIfIdentifierStrategyDbGenerated()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var listener = new DbGeneratedListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.AfterInsert(new Customer(), null));
