@@ -514,16 +514,16 @@
 
             var insertSqlQuery = new SqlQuery("INSERT");
 
-            var mockInsertCommand = new Mock<IDbCommand>();
-            mockInsertCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
-            mockInsertCommand.As<IDisposable>().Setup(x => x.Dispose());
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(insertSqlQuery);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
-            mockDbDriver.Setup(x => x.BuildCommand(insertSqlQuery)).Returns(mockInsertCommand.Object);
+            mockDbDriver.Setup(x => x.BuildCommand(insertSqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -537,11 +537,47 @@
             mockSqlDialect.Verify(x => x.BuildSelectIdentitySqlQuery(It.IsAny<IObjectInfo>()), Times.Never());
 
             mockDbDriver.VerifyAll();
-            mockInsertCommand.VerifyAll();
+            mockCommand.VerifyAll();
         }
 
         [Fact]
-        public void InsertBuildsAndExecutesCombinedQueriesIfIdentifierStrategyDbGeneratedAndTheDbDriverSupportsBatchedQueries()
+        public void InsertBuildsAndExecutesAnInsertCommandOnlyIfIdentifierStrategyDbGeneratedAndSqlDialectDoesNotSupportIdentity()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new Customer();
+            var insertSqlQuery = new SqlQuery("INSERT");
+            object identifier = 23543;
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteScalar()).Returns(identifier);
+            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(insertSqlQuery);
+
+            var mockDbDriver = new Mock<IDbDriver>();
+            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.BuildCommand(insertSqlQuery)).Returns(mockCommand.Object);
+
+            var session = new Session(
+                ConnectionScope.PerTransaction,
+                mockSqlDialect.Object,
+                mockDbDriver.Object,
+                new IListener[0]);
+
+            session.Insert(customer);
+
+            mockSqlDialect.Verify(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer), Times.Once());
+            mockSqlDialect.Verify(x => x.BuildSelectIdentitySqlQuery(It.IsAny<IObjectInfo>()), Times.Never());
+
+            mockDbDriver.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Fact]
+        public void InsertBuildsAndExecutesCombinedQueriesIfIdentifierStrategyDbGeneratedSqlDialectSupportsIdentityAndTheDbDriverSupportsBatchedQueries()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
@@ -559,6 +595,7 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(insertSqlQuery);
             mockSqlDialect.Setup(x => x.BuildSelectIdentitySqlQuery(It.IsNotNull<IObjectInfo>())).Returns(selectIdSqlQuery);
+            mockSqlDialect.Setup(x => x.SupportsIdentity).Returns(true);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
@@ -580,7 +617,7 @@
         }
 
         [Fact]
-        public void InsertBuildsAndExecutesIndividualQueriesIfIdentifierStrategyDbGeneratedTheDbDriverDoesNotSupportBatchedQueries()
+        public void InsertBuildsAndExecutesIndividualQueriesIfIdentifierStrategyDbGeneratedSqlDialectSupportsIdentityTheDbDriverDoesNotSupportBatchedQueries()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
@@ -601,6 +638,7 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(insertSqlQuery);
             mockSqlDialect.Setup(x => x.BuildSelectIdentitySqlQuery(It.IsNotNull<IObjectInfo>())).Returns(selectIdSqlQuery);
+            mockSqlDialect.Setup(x => x.SupportsIdentity).Returns(true);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);

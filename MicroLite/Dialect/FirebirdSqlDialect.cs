@@ -33,18 +33,8 @@ namespace MicroLite.Dialect
         {
             get
             {
-                return true;
+                return false;
             }
-        }
-
-        public override SqlQuery BuildSelectIdentitySqlQuery(IObjectInfo objectInfo)
-        {
-            if (objectInfo == null)
-            {
-                throw new ArgumentNullException("objectInfo");
-            }
-
-            return new SqlQuery("RETURNING " + objectInfo.TableInfo.IdentifierColumn.ColumnName);
         }
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
@@ -67,6 +57,18 @@ namespace MicroLite.Dialect
                 .Append(this.SqlCharacters.GetParameterName(arguments.Length - 1));
 
             return new SqlQuery(stringBuilder.ToString(), arguments);
+        }
+
+        protected override string BuildInsertCommandText(IObjectInfo objectInfo)
+        {
+            var commandText = base.BuildInsertCommandText(objectInfo);
+
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
+            {
+                commandText += " RETURNING " + objectInfo.TableInfo.IdentifierColumn.ColumnName;
+            }
+
+            return commandText;
         }
     }
 }

@@ -18,18 +18,8 @@
 
             var sqlQuery = sqlDialect.BuildSelectIdentitySqlQuery(ObjectInfo.For(typeof(Customer)));
 
-            Assert.Equal("RETURNING Id", sqlQuery.CommandText);
+            Assert.Equal(string.Empty, sqlQuery.CommandText);
             Assert.Equal(0, sqlQuery.Arguments.Count);
-        }
-
-        [Fact]
-        public void BuildSelectIdentitySqlQueryThrowsArgumentNullException()
-        {
-            var sqlDialect = new FirebirdSqlDialect();
-
-            var exception = Assert.Throws<ArgumentNullException>(() => sqlDialect.BuildSelectIdentitySqlQuery(null));
-
-            Assert.Equal("objectInfo", exception.ParamName);
         }
 
         [Fact]
@@ -87,7 +77,7 @@
 
             var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            Assert.Equal("INSERT INTO \"Sales\".\"Customers\" (\"Created\",\"CreditLimit\",\"DateOfBirth\",\"Name\",\"CustomerStatusId\",\"Website\") VALUES (@p0,@p1,@p2,@p3,@p4,@p5)", sqlQuery.CommandText);
+            Assert.Equal("INSERT INTO \"Sales\".\"Customers\" (\"Created\",\"CreditLimit\",\"DateOfBirth\",\"Name\",\"CustomerStatusId\",\"Website\") VALUES (@p0,@p1,@p2,@p3,@p4,@p5) RETURNING Id", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
@@ -259,11 +249,11 @@
         }
 
         [Fact]
-        public void SupportsIdentityReturnsTrue()
+        public void SupportsIdentityReturnsFalse()
         {
             var sqlDialect = new FirebirdSqlDialect();
 
-            Assert.True(sqlDialect.SupportsIdentity);
+            Assert.False(sqlDialect.SupportsIdentity);
         }
 
         [Fact]
