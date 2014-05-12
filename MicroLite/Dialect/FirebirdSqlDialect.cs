@@ -57,7 +57,7 @@ namespace MicroLite.Dialect
             var arguments = new object[sqlQuery.Arguments.Count + 2];
             Array.Copy(sqlQuery.GetArgumentArray(), 0, arguments, 0, sqlQuery.Arguments.Count);
             arguments[arguments.Length - 2] = pagingOptions.Offset + 1;
-            arguments[arguments.Length - 1] = (pagingOptions.Offset + 1) + pagingOptions.Count;
+            arguments[arguments.Length - 1] = pagingOptions.Offset + pagingOptions.Count;
 
             var stringBuilder = new StringBuilder(sqlQuery.CommandText)
                 .Replace(Environment.NewLine, string.Empty)

@@ -108,7 +108,7 @@
 
             Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers ROWS @p0 TO @p1", paged.CommandText);
             Assert.Equal(1, paged.Arguments[0]);
-            Assert.Equal(26, paged.Arguments[1]);
+            Assert.Equal(25, paged.Arguments[1]);
         }
 
         [Fact]
@@ -122,7 +122,7 @@
 
             Assert.Equal("SELECT * FROM Customers ROWS @p0 TO @p1", paged.CommandText);
             Assert.Equal(1, paged.Arguments[0]);
-            Assert.Equal(26, paged.Arguments[1]);
+            Assert.Equal(25, paged.Arguments[1]);
         }
 
         [Fact]
@@ -158,7 +158,7 @@
             Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
             Assert.Equal(sqlQuery.Arguments[1], paged.Arguments[1]);
             Assert.Equal(1, paged.Arguments[2]);
-            Assert.Equal(26, paged.Arguments[3]);
+            Assert.Equal(25, paged.Arguments[3]);
         }
 
         [Fact]
@@ -172,7 +172,7 @@
 
             Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers ORDER BY CustomerId ASC ROWS @p0 TO @p1", paged.CommandText);
             Assert.Equal(1, paged.Arguments[0]);
-            Assert.Equal(26, paged.Arguments[1]);
+            Assert.Equal(25, paged.Arguments[1]);
         }
 
         [Fact]
@@ -186,7 +186,7 @@
 
             Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers ROWS @p0 TO @p1", paged.CommandText);
             Assert.Equal(1, paged.Arguments[0]);
-            Assert.Equal(26, paged.Arguments[1]);
+            Assert.Equal(25, paged.Arguments[1]);
         }
 
         [Fact]
@@ -200,7 +200,7 @@
 
             Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers ROWS @p0 TO @p1", paged.CommandText);
             Assert.Equal(26, paged.Arguments[0]);
-            Assert.Equal(51, paged.Arguments[1]);
+            Assert.Equal(50, paged.Arguments[1]);
         }
 
         [Fact]
@@ -215,7 +215,7 @@
             Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0 ORDER BY Name ASC ROWS @p1 TO @p2", paged.CommandText);
             Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
             Assert.Equal(1, paged.Arguments[1]);
-            Assert.Equal(26, paged.Arguments[2]);
+            Assert.Equal(25, paged.Arguments[2]);
         }
 
         [Fact]
@@ -240,7 +240,7 @@
             Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0 ORDER BY Name ASC ROWS @p1 TO @p2", paged.CommandText);
             Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
             Assert.Equal(1, paged.Arguments[1]);
-            Assert.Equal(26, paged.Arguments[2]);
+            Assert.Equal(25, paged.Arguments[2]);
         }
 
         [Fact]
@@ -255,7 +255,7 @@
             Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0 ROWS @p1 TO @p2", paged.CommandText);
             Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
             Assert.Equal(1, paged.Arguments[1]);
-            Assert.Equal(26, paged.Arguments[2]);
+            Assert.Equal(25, paged.Arguments[2]);
         }
 
         [Fact]
