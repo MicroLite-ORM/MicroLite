@@ -19,7 +19,7 @@ namespace MicroLite.Core
     /// <summary>
     /// The default implementation of <see cref="ITransaction"/>.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Active: {IsActive}, Committed: {WasCommitted}, RolledBack: {WasRolledBack}")]
+    [System.Diagnostics.DebuggerDisplay("Active: {IsActive}, Committed: {committed}, RolledBack: {rolledBack}")]
     internal sealed class Transaction : ITransaction
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
