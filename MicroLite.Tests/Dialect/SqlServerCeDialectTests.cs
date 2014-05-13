@@ -90,13 +90,13 @@
         [Fact]
         public void PageNonQualifiedQuery()
         {
-            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers");
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers ORDER BY CustomerId");
 
             var sqlDialect = new SqlServerCeDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", paged.CommandText);
+            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers ORDER BY CustomerId OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", paged.CommandText);
             Assert.Equal(0, paged.Arguments[0]);
             Assert.Equal(25, paged.Arguments[1]);
         }
@@ -104,13 +104,13 @@
         [Fact]
         public void PageNonQualifiedWildcardQuery()
         {
-            var sqlQuery = new SqlQuery("SELECT * FROM Customers");
+            var sqlQuery = new SqlQuery("SELECT * FROM Customers ORDER BY CustomerId");
 
             var sqlDialect = new SqlServerCeDialect();
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT * FROM Customers OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", paged.CommandText);
+            Assert.Equal("SELECT * FROM Customers ORDER BY CustomerId OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", paged.CommandText);
             Assert.Equal(0, paged.Arguments[0]);
             Assert.Equal(25, paged.Arguments[1]);
         }
@@ -122,6 +122,19 @@
 
             var exception = Assert.Throws<ArgumentNullException>(
                 () => sqlDialect.PageQuery(null, PagingOptions.None));
+        }
+
+        [Fact]
+        public void PageThrowsMicroLiteExceptionIfNoOrderByClause()
+        {
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers");
+
+            var sqlDialect = new SqlServerCeDialect();
+
+            var exception = Assert.Throws<MicroLiteException>(
+                () => sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25)));
+
+            Assert.Equal(ExceptionMessages.SqlServerCeDialect_PagedRequiresOrderBy, exception.Message);
         }
 
         [Fact]
@@ -166,35 +179,7 @@
         }
 
         [Fact]
-        public void PageWithNoWhereOrOrderByFirstResultsPage()
-        {
-            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers");
-
-            var sqlDialect = new SqlServerCeDialect();
-
-            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
-
-            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", paged.CommandText);
-            Assert.Equal(0, paged.Arguments[0]);
-            Assert.Equal(25, paged.Arguments[1]);
-        }
-
-        [Fact]
-        public void PageWithNoWhereOrOrderBySecondResultsPage()
-        {
-            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers");
-
-            var sqlDialect = new SqlServerCeDialect();
-
-            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 25));
-
-            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", paged.CommandText);
-            Assert.Equal(25, paged.Arguments[0]);
-            Assert.Equal(25, paged.Arguments[1]);
-        }
-
-        [Fact]
-        public void PageWithWhereAndOrderBy()
+        public void PageWithWhereAndOrderByFirstResultsPage()
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0 ORDER BY Name ASC", CustomerStatus.Active);
 
@@ -234,17 +219,17 @@
         }
 
         [Fact]
-        public void PageWithWhereButNoOrderBy()
+        public void PageWithWhereAndOrderBySecondResultsPage()
         {
-            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0", CustomerStatus.Active);
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0 ORDER BY Name ASC", CustomerStatus.Active);
 
             var sqlDialect = new SqlServerCeDialect();
 
-            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 25));
 
-            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0 OFFSET @p1 ROWS FETCH NEXT @p2 ROWS ONLY", paged.CommandText);
+            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers WHERE CustomerStatusId = @p0 ORDER BY Name ASC OFFSET @p1 ROWS FETCH NEXT @p2 ROWS ONLY", paged.CommandText);
             Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
-            Assert.Equal(0, paged.Arguments[1]);
+            Assert.Equal(25, paged.Arguments[1]);
             Assert.Equal(25, paged.Arguments[2]);
         }
 
