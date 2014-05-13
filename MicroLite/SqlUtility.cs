@@ -73,6 +73,13 @@ namespace MicroLite
 
                 if (character == '@' || character == ':')
                 {
+                    // Ignore @@ as we would have for SELECT @@Identity
+                    if ((i < commandText.Length && commandText[i + 1] == '@')
+                        || (i > 0 && commandText[i - 1] == '@'))
+                    {
+                        continue;
+                    }
+
                     startIndex = i;
                     startsWithParameter = i == 0;
                 }
