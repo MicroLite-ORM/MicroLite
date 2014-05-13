@@ -105,8 +105,7 @@ namespace MicroLite.Driver
         /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
         /// <returns>An IDbCommand with the CommandText, CommandType, Timeout and Parameters set.</returns>
         /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
-        public virtual IDbCommand BuildCommand(SqlQuery sqlQuery)
+        public IDbCommand BuildCommand(SqlQuery sqlQuery)
         {
             if (sqlQuery == null)
             {
@@ -127,10 +126,7 @@ namespace MicroLite.Driver
                 throw new MicroLiteException(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
             }
 
-            var command = this.DbProviderFactory.CreateCommand();
-            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
-            command.CommandTimeout = sqlQuery.Timeout;
-            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
+            var command = this.CreateCommand(sqlQuery);
 
             for (int i = 0; i < parameterNames.Count; i++)
             {
@@ -265,6 +261,23 @@ namespace MicroLite.Driver
             {
                 parameter.DbType = this.HandleStringsAsUnicode ? DbType.String : DbType.AnsiString;
             }
+        }
+
+        /// <summary>
+        /// Creates an IDbCommand command using the values in the specified SqlQuery.
+        /// </summary>
+        /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
+        /// <returns>An IDbCommand with the CommandText, CommandType and Timeout set.</returns>
+        /// <remarks>The parameters should not be added at this point, they are handled by BuildParameter.</remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
+        protected virtual IDbCommand CreateCommand(SqlQuery sqlQuery)
+        {
+            var command = this.DbProviderFactory.CreateCommand();
+            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
+            command.CommandTimeout = sqlQuery.Timeout;
+            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
+
+            return command;
         }
 
         /// <summary>

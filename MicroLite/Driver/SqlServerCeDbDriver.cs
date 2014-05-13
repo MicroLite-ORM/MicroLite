@@ -12,6 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Driver
 {
+    using System.Data;
+
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for SQL Server Compact Edition.
     /// </summary>
@@ -22,6 +24,22 @@ namespace MicroLite.Driver
         /// </summary>
         internal SqlServerCeDbDriver()
         {
+        }
+
+        /// <summary>
+        /// Creates an IDbCommand command using the values in the specified SqlQuery.
+        /// </summary>
+        /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
+        /// <returns>An IDbCommand with the CommandText and CommandType set.</returns>
+        /// <remarks>SQL Server Compact Edition doesn't support command timeout so it is not set.</remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
+        protected override IDbCommand CreateCommand(SqlQuery sqlQuery)
+        {
+            var command = this.DbProviderFactory.CreateCommand();
+            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
+            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
+
+            return command;
         }
     }
 }
