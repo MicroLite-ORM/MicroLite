@@ -9,7 +9,7 @@ _Headline Features_
 * Extension support for logging via [log4net](https://github.com/TrevorPilley/MicroLite.Logging.Log4Net#microlitelogginglog4net) or [NLog](https://github.com/TrevorPilley/MicroLite.Logging.NLog#microliteloggingnlog)
 * Extension support to quickly develop applications using [ASP.NET MVC](https://github.com/TrevorPilley/MicroLite.Extensions.Mvc#microliteextensionsmvc) and [WebApi](https://github.com/TrevorPilley/MicroLite.Extensions.WebApi#microliteextensionswebapi)
 * Native support for Enum, Uri, and XDocument conversion
-* An extensible pipeline which allows 'plugging in' custom [Type Converters](http://microliteorm.wordpress.com/type-converters/) or [Session Listeners](http://microliteorm.wordpress.com/listeners/)
+* An extensible pipeline which allows 'plugging in' custom [Type Converters](http://microliteorm.wordpress.com/type-converters/) or [Session Listeners](https://github.com/TrevorPilley/MicroLite/wiki/Listeners)
 * Easily managed by IOC containers
 * Interface based API which makes unit testing easy
 
