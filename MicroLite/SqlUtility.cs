@@ -32,7 +32,10 @@ namespace MicroLite
         /// Gets the position of the first parameter in the specified SQL command text.
         /// </summary>
         /// <param name="commandText">The SQL command text.</param>
-        /// <returns>The position of the first parameter in the command text or -1 if no parameters are found.</returns>
+        /// <returns>
+        /// The position of the first parameter in the command text or -1 if no parameters are found.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown if commandText is null.</exception>
         public static int GetFirstParameterPosition(string commandText)
         {
             if (commandText == null)
@@ -46,11 +49,18 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the parameter names from the specified SQL command text or an empty list if the command text does not contain any named parameters.
+        /// Gets the parameter names from the specified SQL command text or an empty list if the command text does not
+        /// contain any named parameters.
         /// </summary>
         /// <param name="commandText">The SQL command text.</param>
-        /// <returns>A list containing the parameter names in the SQL command text.</returns>
-        /// <remarks>Will return an empty list if the command text has no parameter names or the parameter names are all '?' (if the dialect does not support named parameters).</remarks>
+        /// <returns>
+        /// A list containing the parameter names in the SQL command text.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown if commandText is null.</exception>
+        /// <remarks>
+        /// Will return an empty list if the command text has no parameter names or the parameter names are all '?'
+        /// (if the dialect does not support named parameters).
+        /// </remarks>
         public static IList<string> GetParameterNames(string commandText)
         {
             if (commandText == null)

@@ -141,6 +141,7 @@ namespace MicroLite
         /// </summary>
         /// <param name="sql">The SQL to be escaped.</param>
         /// <returns>The escaped SQL.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if sql is null.</exception>
         public string EscapeSql(string sql)
         {
             if (sql == null)
