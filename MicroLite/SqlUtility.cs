@@ -25,6 +25,7 @@ namespace MicroLite
     {
         private static readonly char[] digits = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         private static readonly string[] emptyParameterNames = new string[0];
+        private static readonly char[] namedParameterIdentifiers = new[] { '@', ':' };
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
 
         /// <summary>
@@ -64,49 +65,41 @@ namespace MicroLite
 
             var parameterNames = new List<string>();
 
-            var startIndex = 0;
-            var startsWithParameter = false;
+            var startIndex = commandText.IndexOfAny(namedParameterIdentifiers);
 
-            for (int i = 0; i < commandText.Length; i++)
+            while (startIndex > -1)
             {
-                var character = commandText[i];
-
-                if (character == '@' || character == ':')
+                // Ignore @@ as we would have for SELECT @@Identity
+                if ((startIndex < commandText.Length && commandText[startIndex + 1] == '@')
+                    || (startIndex > 0 && commandText[startIndex - 1] == '@'))
                 {
-                    // Ignore @@ as we would have for SELECT @@Identity
-                    if ((i < commandText.Length && commandText[i + 1] == '@')
-                        || (i > 0 && commandText[i - 1] == '@'))
-                    {
-                        continue;
-                    }
-
-                    startIndex = i;
-                    startsWithParameter = i == 0;
+                    startIndex = commandText.IndexOfAny(namedParameterIdentifiers, startIndex + 1);
+                    continue;
                 }
-                else if ((startsWithParameter || startIndex > 0) && !char.IsLetterOrDigit(character) && character != '_')
+
+                var endIndex = commandText.Length;
+
+                for (int i = startIndex + 1; i < commandText.Length; i++)
                 {
-                    var length = i - startIndex;
+                    var character = commandText[i];
 
-                    var parameter = commandText.Substring(startIndex, length);
-
-                    if (!parameterNames.Contains(parameter))
+                    if (!char.IsLetterOrDigit(character) && character != '_')
                     {
-                        parameterNames.Add(parameter);
-                    }
-
-                    startIndex = 0;
-                }
-                else if ((startsWithParameter || startIndex > 0) && i == commandText.Length - 1)
-                {
-                    var length = commandText.Length - startIndex;
-
-                    var parameter = commandText.Substring(startIndex, length);
-
-                    if (!parameterNames.Contains(parameter))
-                    {
-                        parameterNames.Add(parameter);
+                        endIndex = i;
+                        break;
                     }
                 }
+
+                var length = endIndex - startIndex;
+
+                var parameter = commandText.Substring(startIndex, length);
+
+                if (!parameterNames.Contains(parameter))
+                {
+                    parameterNames.Add(parameter);
+                }
+
+                startIndex = commandText.IndexOfAny(namedParameterIdentifiers, startIndex + 1);
             }
 
             return parameterNames;
@@ -117,12 +110,31 @@ namespace MicroLite
         /// </summary>
         /// <param name="commandText">The SQL command text.</param>
         /// <returns>The ORDER BY clause without the ORDER BY keyword, or an empty string if there is no ORDER BY clause.</returns>
-        [Obsolete("This method has been supseceeded by the new SqlString class and its Parse method, please use that instead. This method will be removed in MicroLite 6.0", error: false)]
         public static string ReadOrderByClause(string commandText)
         {
-            var sqlString = SqlString.Parse(commandText, Clauses.OrderBy);
+            if (string.IsNullOrEmpty(commandText))
+            {
+                return string.Empty;
+            }
 
-            return sqlString.OrderBy;
+            var segmentPositions = SegmentPositions.GetSegmentPositions(commandText);
+
+            if (segmentPositions.OrderByIndex == -1)
+            {
+                return string.Empty;
+            }
+
+            var startIndex = segmentPositions.OrderByIndex + 8; // Remove the ORDER BY keyword
+            var length = commandText.Length - startIndex;
+
+            var segment = commandText.Substring(startIndex, length).Trim();
+
+            if (segment.Contains(Environment.NewLine))
+            {
+                segment = segment.Replace(Environment.NewLine, " ");
+            }
+
+            return segment;
         }
 
         /// <summary>
@@ -130,12 +142,31 @@ namespace MicroLite
         /// </summary>
         /// <param name="commandText">The SQL command text.</param>
         /// <returns>The SELECT clause without the SELECT keyword, or an empty string if there is no SELECT clause.</returns>
-        [Obsolete("This method has been supseceeded by the new SqlString class and its Parse method, please use that instead. This method will be removed in MicroLite 6.0", error: false)]
         public static string ReadSelectClause(string commandText)
         {
-            var sqlString = SqlString.Parse(commandText, Clauses.Select);
+            if (string.IsNullOrEmpty(commandText))
+            {
+                return string.Empty;
+            }
 
-            return sqlString.Select;
+            var segmentPositions = SegmentPositions.GetSegmentPositions(commandText);
+
+            if (segmentPositions.FromIndex < 6)
+            {
+                return string.Empty;
+            }
+
+            var startIndex = 6; // Remove the SELECT keyword
+            var length = segmentPositions.FromIndex - startIndex;
+
+            var segment = commandText.Substring(startIndex, length).Trim();
+
+            if (segment.Contains(Environment.NewLine))
+            {
+                segment = segment.Replace(Environment.NewLine, " ");
+            }
+
+            return segment;
         }
 
         /// <summary>
@@ -143,12 +174,40 @@ namespace MicroLite
         /// </summary>
         /// <param name="commandText">The SQL command text.</param>
         /// <returns>The name of the table the sql query is targeting.</returns>
-        [Obsolete("This method has been supseceeded by the new SqlString class and its Parse method, please use that instead. This method will be removed in MicroLite 6.0", error: false)]
         public static string ReadTableName(string commandText)
         {
-            var sqlString = SqlString.Parse(commandText, Clauses.From);
+            if (string.IsNullOrEmpty(commandText))
+            {
+                return string.Empty;
+            }
 
-            return sqlString.From;
+            var segmentPositions = SegmentPositions.GetSegmentPositions(commandText);
+
+            if (segmentPositions.FromIndex == -1)
+            {
+                return string.Empty;
+            }
+
+            var startIndex = segmentPositions.FromIndex + 4; // Start after the FROM keyword.
+            var length = commandText.Length - startIndex;
+
+            if (segmentPositions.WhereIndex != -1)
+            {
+                length = segmentPositions.WhereIndex - startIndex;
+            }
+            else if (segmentPositions.OrderByIndex != -1)
+            {
+                length = segmentPositions.OrderByIndex - startIndex;
+            }
+
+            var segment = commandText.Substring(startIndex, length).Trim();
+
+            if (segment.Contains(Environment.NewLine))
+            {
+                segment = segment.Replace(Environment.NewLine, " ");
+            }
+
+            return segment;
         }
 
         /// <summary>
@@ -156,12 +215,33 @@ namespace MicroLite
         /// </summary>
         /// <param name="commandText">The SQL command text.</param>
         /// <returns>The WHERE clause without the WHERE keyword, or an empty string if there is no WHERE clause.</returns>
-        [Obsolete("This method has been supseceeded by the new SqlString class and its Parse method, please use that instead. This method will be removed in MicroLite 6.0", error: false)]
         public static string ReadWhereClause(string commandText)
         {
-            var sqlString = SqlString.Parse(commandText, Clauses.Where);
+            if (string.IsNullOrEmpty(commandText))
+            {
+                return string.Empty;
+            }
 
-            return sqlString.Where;
+            var segmentPositions = SegmentPositions.GetSegmentPositions(commandText);
+
+            if (segmentPositions.WhereIndex == -1)
+            {
+                return string.Empty;
+            }
+
+            var startIndex = segmentPositions.WhereIndex + 5; // Start after the WHERE keyword.
+            var length = segmentPositions.OrderByIndex != -1
+                ? segmentPositions.OrderByIndex - startIndex
+                : commandText.Length - startIndex;
+
+            var segment = commandText.Substring(startIndex, length).Trim();
+
+            if (segment.Contains(Environment.NewLine))
+            {
+                segment = segment.Replace(Environment.NewLine, " ");
+            }
+
+            return segment;
         }
 
         /// <summary>
@@ -192,6 +272,54 @@ namespace MicroLite
             }
 
             return predicateReWriter.ToString();
+        }
+
+        private struct SegmentPositions
+        {
+            private readonly int fromIndex;
+            private readonly int orderByIndex;
+            private readonly int whereIndex;
+
+            internal SegmentPositions(int fromIndex, int orderByIndex, int whereIndex)
+            {
+                this.fromIndex = fromIndex;
+                this.orderByIndex = orderByIndex;
+                this.whereIndex = whereIndex;
+            }
+
+            internal int FromIndex
+            {
+                get
+                {
+                    return this.fromIndex;
+                }
+            }
+
+            internal int OrderByIndex
+            {
+                get
+                {
+                    return this.orderByIndex;
+                }
+            }
+
+            internal int WhereIndex
+            {
+                get
+                {
+                    return this.whereIndex;
+                }
+            }
+
+            internal static SegmentPositions GetSegmentPositions(string commandText)
+            {
+                var segmentPositions = new SegmentPositions(
+                    commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase),
+                    commandText.IndexOf("ORDER BY", StringComparison.OrdinalIgnoreCase),
+                    commandText.IndexOf("WHERE", StringComparison.OrdinalIgnoreCase));
+
+                return segmentPositions;
+            }
         }
     }
 }
