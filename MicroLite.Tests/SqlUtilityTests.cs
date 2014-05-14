@@ -53,6 +53,19 @@
             Assert.Throws<ArgumentNullException>(() => SqlUtility.GetParameterNames(null));
         }
 
+        /// <summary>
+        /// #309 - Invalid SQL produced by SqlBuilder when the predicate starts with an identifier
+        /// </summary>
+        [Fact]
+        public void GetParameterNamesWhereTextStartsWithIdentifierAndContainsFurtherText()
+        {
+            var parameterNames = SqlUtility.GetParameterNames("@p0 IS NOT NULL AND [FirstName] LIKE @p0");
+
+            Assert.NotNull(parameterNames);
+            Assert.Equal(1, parameterNames.Count);
+            Assert.Equal(new List<string> { "@p0" }, parameterNames);
+        }
+
         [Fact]
         public void GetParameterNamesWithAtPrefix()
         {

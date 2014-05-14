@@ -25,6 +25,7 @@ namespace MicroLite
     {
         private static readonly char[] digits = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         private static readonly string[] emptyParameterNames = new string[0];
+        private static readonly char[] namedParameterIdentifiers = new[] { '@', ':' };
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
 
         /// <summary>
@@ -64,42 +65,33 @@ namespace MicroLite
 
             var parameterNames = new List<string>();
 
-            var startIndex = 0;
-            var startsWithParameter = false;
+            var startIndex = commandText.IndexOfAny(namedParameterIdentifiers);
 
-            for (int i = 0; i < commandText.Length; i++)
+            while (startIndex > -1)
             {
-                var character = commandText[i];
+                var endIndex = commandText.Length;
 
-                if (character == '@' || character == ':')
+                for (int i = startIndex + 1; i < commandText.Length; i++)
                 {
-                    startIndex = i;
-                    startsWithParameter = i == 0;
-                }
-                else if ((startsWithParameter || startIndex > 0) && !char.IsLetterOrDigit(character) && character != '_')
-                {
-                    var length = i - startIndex;
+                    var character = commandText[i];
 
-                    var parameter = commandText.Substring(startIndex, length);
-
-                    if (!parameterNames.Contains(parameter))
+                    if (!char.IsLetterOrDigit(character) && character != '_')
                     {
-                        parameterNames.Add(parameter);
-                    }
-
-                    startIndex = 0;
-                }
-                else if ((startsWithParameter || startIndex > 0) && i == commandText.Length - 1)
-                {
-                    var length = commandText.Length - startIndex;
-
-                    var parameter = commandText.Substring(startIndex, length);
-
-                    if (!parameterNames.Contains(parameter))
-                    {
-                        parameterNames.Add(parameter);
+                        endIndex = i;
+                        break;
                     }
                 }
+
+                var length = endIndex - startIndex;
+
+                var parameter = commandText.Substring(startIndex, length);
+
+                if (!parameterNames.Contains(parameter))
+                {
+                    parameterNames.Add(parameter);
+                }
+
+                startIndex = commandText.IndexOfAny(namedParameterIdentifiers, startIndex + 1);
             }
 
             return parameterNames;
