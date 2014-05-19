@@ -6,7 +6,7 @@
     <authors>Trevor Pilley and MicroLite Project Contributors</authors>
     <owners>Trevor Pilley</owners>
     <description>MicroLite ORM is a micro Object Relational Mapper for the .NET framework designed for ease of use, testability and extensibility.</description>
-    <releaseNotes>See https://github.com/TrevorPilley/MicroLite/releases for a summary of changes made in this release of the package.</releaseNotes>
+    <releaseNotes>See https://github.com/TrevorPilley/MicroLite/releases for a summary of changes made in this release.</releaseNotes>
     <language>en-GB</language>
     <projectUrl>http://microliteorm.wordpress.com/</projectUrl>
     <licenseUrl>http://microliteorm.wordpress.com/license/</licenseUrl>
