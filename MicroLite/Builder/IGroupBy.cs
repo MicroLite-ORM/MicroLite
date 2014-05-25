@@ -22,6 +22,17 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="column">The column to group by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// <code>
+        /// var sqlQuery = SqlBuilder
+        ///     .Select("CustomerId")
+        ///     .Max("Total")
+        ///     .From(typeof(Invoice))
+        ///     .GroupBy("CustomerId")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId
+        /// </example>
         IHavingOrOrderBy GroupBy(string column);
 
         /// <summary>
@@ -29,6 +40,17 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columns">The columns to group by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// <code>
+        /// var sqlQuery = SqlBuilder
+        ///     .Select("CustomerId, OrderDate")
+        ///     .Max("Total")
+        ///     .From(typeof(Invoice))
+        ///     .GroupBy("CustomerId, OrderDate")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT CustomerId, OrderDate, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId, OrderDate
+        /// </example>
         IHavingOrOrderBy GroupBy(params string[] columns);
     }
 }

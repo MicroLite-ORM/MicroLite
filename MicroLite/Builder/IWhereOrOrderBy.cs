@@ -22,6 +22,16 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columnName">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify a column to be used with the BETWEEN or IN keywords.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     ...
+        /// </code>
+        /// </example>
         IWhereSingleColumn Where(string columnName);
 
         /// <summary>
@@ -30,6 +40,28 @@ namespace MicroLite.Builder
         /// <param name="predicate">The predicate.</param>
         /// <param name="args">The args.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// Adds the first predicate to the query.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("LastName = @p0", "Smith")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0)
+        /// </example>
+        /// <example>
+        /// You can refer to the same parameter multiple times
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("LastName = @p0 OR @p0 IS NULL", lastName)
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR @p0 IS NULL)
+        /// </example>
         IAndOrOrderBy Where(string predicate, params object[] args);
     }
 }

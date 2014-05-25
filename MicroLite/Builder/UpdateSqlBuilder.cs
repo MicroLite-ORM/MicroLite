@@ -18,6 +18,10 @@ namespace MicroLite.Builder
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class UpdateSqlBuilder : SqlBuilderBase, IUpdate, ISetOrWhere
     {
+        /// <summary>
+        /// Initialises a new instance of the <see cref="UpdateSqlBuilder"/> class with the starting command text 'UPDATE '.
+        /// </summary>
+        /// <param name="sqlCharacters">The SQL characters.</param>
         internal UpdateSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)
         {

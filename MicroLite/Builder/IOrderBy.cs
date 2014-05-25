@@ -22,6 +22,16 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="column">The column to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .OrderByAscending("CustomerId")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Would generate SELECT [Columns] FROM Customers ORDER BY CustomerId ASC
+        /// </example>
         IOrderBy OrderByAscending(string column);
 
         /// <summary>
@@ -29,6 +39,16 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columns">The columns to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .OrderByDescending("FirstName", "LastName")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Would generate SELECT [Columns] FROM Customers ORDER BY FirstName, LastName ASC
+        /// </example>
         IOrderBy OrderByAscending(params string[] columns);
 
         /// <summary>
@@ -36,6 +56,16 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="column">The column to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .OrderByDescending("CustomerId")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Would generate SELECT [Columns] FROM Customers ORDER BY CustomerId DESC
+        /// </example>
         IOrderBy OrderByDescending(string column);
 
         /// <summary>
@@ -43,6 +73,16 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columns">The columns to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .OrderByDescending("FirstName", "LastName")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Would generate SELECT [Columns] FROM Customers ORDER BY FirstName, LastName DESC
+        /// </example>
         IOrderBy OrderByDescending(params string[] columns);
     }
 }

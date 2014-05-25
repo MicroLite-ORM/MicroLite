@@ -24,6 +24,11 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="tableName">The name of the table.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// <code>
+        /// var query = SqlBuilder.Select("Col1", "Col2").From("Customers")... // Add remainder of query
+        /// </code>
+        /// </example>
         IWhereOrOrderBy From(string tableName);
 
         /// <summary>
@@ -31,6 +36,12 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="forType">The type of object the query relates to.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// If the select criteria is * then all mapped columns will be used in the select list instead, otherwise the specified columns will be used.
+        /// <code>
+        /// var query = SqlBuilder.Select("Col1", "Col2").From(typeof(Customer))... // Add remainder of query
+        /// </code>
+        /// </example>
         /// <remarks>Results in all columns being named if the select list is 'SELECT *'.</remarks>
         IWhereOrOrderBy From(Type forType);
     }

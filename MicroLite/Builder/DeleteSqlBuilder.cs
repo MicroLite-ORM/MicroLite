@@ -18,6 +18,10 @@ namespace MicroLite.Builder
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class DeleteSqlBuilder : SqlBuilderBase, IDeleteFrom, IWhereEquals
     {
+        /// <summary>
+        /// Initialises a new instance of the <see cref="DeleteSqlBuilder"/> class with the starting command text 'DELETE FROM '.
+        /// </summary>
+        /// <param name="sqlCharacters">The SQL characters.</param>
         internal DeleteSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)
         {
