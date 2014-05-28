@@ -28,9 +28,9 @@ namespace MicroLite.Builder
             this.InnerSql.Append("DELETE FROM ");
         }
 
-        public IWhereEquals From(string tableName)
+        public IWhereEquals From(string table)
         {
-            this.AppendTableName(tableName);
+            this.AppendTableName(table);
 
             return this;
         }
@@ -42,10 +42,10 @@ namespace MicroLite.Builder
             return this.From(objectInfo);
         }
 
-        public IToSqlQuery WhereEquals(string columnName, object comparisonValue)
+        public IToSqlQuery WhereEquals(string column, object comparisonValue)
         {
             this.InnerSql.Append(" WHERE ")
-                .Append(this.SqlCharacters.EscapeSql(columnName))
+                .Append(this.SqlCharacters.EscapeSql(column))
                 .Append(" = ")
                 .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
 

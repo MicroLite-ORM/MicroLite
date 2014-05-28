@@ -50,9 +50,9 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IInsertColumn Into(string tableName)
+        public IInsertColumn Into(string table)
         {
-            this.AppendTableName(tableName);
+            this.AppendTableName(table);
 
             return this;
         }

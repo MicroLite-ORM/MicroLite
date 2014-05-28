@@ -3,6 +3,7 @@
     using System;
     using MicroLite.Builder;
     using MicroLite.Dialect;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
     using Xunit;
@@ -16,6 +17,72 @@
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+        }
+
+        [Fact]
+        public void AndWhereThrowsArgumentExceptionForEmptyColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.AndWhere(""));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"), exception.Message);
+        }
+
+        [Fact]
+        public void AndWhereThrowsArgumentExceptionForEmptyPredicate()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.AndWhere("", new object()));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"), exception.Message);
+        }
+
+        [Fact]
+        public void AndWhereThrowsArgumentExceptionForNullColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.AndWhere(null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"), exception.Message);
+        }
+
+        [Fact]
+        public void AndWhereThrowsArgumentExceptionForNullPredicate()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.AndWhere(null, new object()));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"), exception.Message);
+        }
+
+        [Fact]
+        public void AverageThrowsArgumentExceptionForNullColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Average(null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"), exception.Message);
+        }
+
+        [Fact]
+        public void AverageThrowsArgumentExceptionForNullColumnAlias()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Average("Column", null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"), exception.Message);
         }
 
         /// <summary>
@@ -38,6 +105,61 @@
             Assert.Equal("Opt2", sqlQuery.Arguments[1]);
             Assert.Equal(1, sqlQuery.Arguments[2]);
             Assert.Equal(10, sqlQuery.Arguments[3]);
+        }
+
+        [Fact]
+        public void BetweenThrowsArgumentExceptionForNullLower()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.Between(null, 10));
+
+            Assert.Equal("lower", exception.ParamName);
+        }
+
+        [Fact]
+        public void BetweenThrowsArgumentExceptionForNullUpper()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.Between(1, null));
+
+            Assert.Equal("upper", exception.ParamName);
+        }
+
+        [Fact]
+        public void CountThrowsArgumentExceptionForNullColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Count(null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"), exception.Message);
+        }
+
+        [Fact]
+        public void CountThrowsArgumentExceptionForNullColumnAlias()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Count("Column", null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"), exception.Message);
+        }
+
+        [Fact]
+        public void FromThrowsArgumentExceptionForEmptyTableName()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.From(""));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("table"), exception.Message);
         }
 
         [Fact]
@@ -69,8 +191,19 @@
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
 
-            Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").GroupBy((string)null));
+            Assert.Throws<ArgumentException>(() => sqlBuilder.From("Customer").GroupBy((string)null));
             Assert.Throws<ArgumentNullException>(() => sqlBuilder.From("Customer").GroupBy((string[])null));
+        }
+
+        [Fact]
+        public void HavingThrowsArgumentExceptionForEmptyPredicate()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Having("", new object()));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"), exception.Message);
         }
 
         [Fact]
@@ -79,7 +212,7 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
 
             var exception = Assert.Throws<ArgumentNullException>(
-                () => sqlBuilder.From("").Where("").In((object[])(object[])null));
+                () => sqlBuilder.From("Customer").Where("Column").In((object[])(object[])null));
 
             Assert.Equal("args", exception.ParamName);
         }
@@ -90,9 +223,53 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
 
             var exception = Assert.Throws<ArgumentNullException>(
-                () => sqlBuilder.From("").Where("").In((SqlQuery)null));
+                () => sqlBuilder.From("Customer").Where("Column").In((SqlQuery)null));
 
             Assert.Equal("subQuery", exception.ParamName);
+        }
+
+        [Fact]
+        public void MaxThrowsArgumentExceptionForNullColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Max(null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"), exception.Message);
+        }
+
+        [Fact]
+        public void MaxThrowsArgumentExceptionForNullColumnAlias()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Max("Column", null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"), exception.Message);
+        }
+
+        [Fact]
+        public void MinThrowsArgumentExceptionForNullColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Min(null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"), exception.Message);
+        }
+
+        [Fact]
+        public void MinThrowsArgumentExceptionForNullColumnAlias()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Min("Column", null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"), exception.Message);
         }
 
         [Fact]
@@ -142,8 +319,11 @@
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
 
-            Assert.Throws<ArgumentNullException>(
+            Assert.Throws<ArgumentException>(
                 () => sqlBuilder.From("Customer").OrderByAscending((string)null));
+
+            Assert.Throws<ArgumentException>(
+                () => sqlBuilder.From("Customer").OrderByAscending(""));
 
             Assert.Throws<ArgumentNullException>(
                 () => sqlBuilder.From("Customer").OrderByAscending((string[])null));
@@ -178,11 +358,58 @@
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
 
-            Assert.Throws<ArgumentNullException>(
+            Assert.Throws<ArgumentException>(
                 () => sqlBuilder.From("Customer").OrderByDescending((string)null));
+
+            Assert.Throws<ArgumentException>(
+                () => sqlBuilder.From("Customer").OrderByDescending(string.Empty));
 
             Assert.Throws<ArgumentNullException>(
                 () => sqlBuilder.From("Customer").OrderByDescending((string[])null));
+        }
+
+        [Fact]
+        public void OrWhereThrowsArgumentExceptionForEmptyColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.OrWhere(""));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"), exception.Message);
+        }
+
+        [Fact]
+        public void OrWhereThrowsArgumentExceptionForEmptyPredicate()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.OrWhere("", new object()));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"), exception.Message);
+        }
+
+        [Fact]
+        public void OrWhereThrowsArgumentExceptionForNullColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.OrWhere(null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"), exception.Message);
+        }
+
+        [Fact]
+        public void OrWhereThrowsArgumentExceptionForNullPredicate()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.OrWhere(null, new object()));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"), exception.Message);
         }
 
         [Fact]
@@ -1518,6 +1745,28 @@
                 .ToSqlQuery();
 
             Assert.Equal(@"SELECT Column1 FROM Table WHERE (Column2 IN (?,?)) AND (Column3 = ?) AND (Column4 > ?) AND (Column5 >= ?) AND (Column6 < ?) AND (Column7 <= ?) AND (Column8 LIKE ?) AND (Column9 <> ?) AND (Column10 IS NOT NULL) AND (Column11 IS NULL)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SumThrowsArgumentExceptionForNullColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Sum(null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"), exception.Message);
+        }
+
+        [Fact]
+        public void SumThrowsArgumentExceptionForNullColumnAlias()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Sum("Column", null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"), exception.Message);
         }
 
         [Fact]

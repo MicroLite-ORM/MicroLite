@@ -22,6 +22,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="value">The argument value.</param>
+        /// <exception cref="System.ArgumentException">Thrown if predicate is null or empty.</exception>
         /// <returns>
         /// The next step in the fluent sql builder.
         /// </returns>

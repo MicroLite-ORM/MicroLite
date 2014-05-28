@@ -123,6 +123,9 @@
   <data name="AppSettingSymmetricAlgorithmProvider_MissingKey" xml:space="preserve">
     <value>The Encryption key is missing, please add the following value to app.settings: &lt;add key="MicroLite.DbEncryptedString.EncryptionKey" value="replace-with-your-encryption-key" /&gt;</value>
   </data>
+  <data name="ArgumentNullOrEmpty" xml:space="preserve">
+    <value>The {0} must be specified</value>
+  </data>
   <data name="AttributeMappingConvention_NoTableAttribute" xml:space="preserve">
     <value>The type '{0}' cannot be used by MicroLite as is not decorated with a TableAttribute for further information about using the Attribute base Mapping, see the wiki or blog</value>
   </data>

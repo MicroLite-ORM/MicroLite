@@ -24,6 +24,7 @@ namespace MicroLite.Builder
         /// <param name="lower">The inclusive lower value.</param>
         /// <param name="upper">The inclusive upper value.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if lower or upper is null.</exception>
         /// <example>
         /// This method allows us to specify that a column is filtered with the results being between the 2 specified values.
         /// <code>
@@ -43,6 +44,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="args">The Arguments to filter the column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if args is null.</exception>
         /// <example>
         /// This method allows us to specify that a column is filtered with the results being in the specified values.
         /// <code>
@@ -63,6 +65,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="subQuery">The sub query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if subQuery is null.</exception>
         /// <example>
         /// This method allows us to specify that a column is filtered with the results being in the specified values.
         /// <code>
@@ -238,6 +241,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="args">The Arguments to filter the column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if args is null.</exception>
         /// <example>
         /// This method allows us to specify that a column is filtered with the results being in the specified values.
         /// <code>
@@ -258,6 +262,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="subQuery">The sub query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if subQuery is null.</exception>
         /// <example>
         /// This method allows us to specify that a column is filtered with the results being in the specified values.
         /// <code>

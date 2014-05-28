@@ -22,6 +22,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="column">The column to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if column is null or empty.</exception>
         /// <example>
         /// <code>
         /// var query = SqlBuilder
@@ -39,6 +40,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columns">The columns to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columns is null.</exception>
         /// <example>
         /// <code>
         /// var query = SqlBuilder
@@ -56,6 +58,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="column">The column to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if column is null or empty.</exception>
         /// <example>
         /// <code>
         /// var query = SqlBuilder
@@ -73,6 +76,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columns">The columns to order by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columns is null.</exception>
         /// <example>
         /// <code>
         /// var query = SqlBuilder

@@ -79,6 +79,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The {0} must be specified.
+        /// </summary>
+        internal static string ArgumentNullOrEmpty {
+            get {
+                return ResourceManager.GetString("ArgumentNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type &apos;{0}&apos; cannot be used by MicroLite as is not decorated with a TableAttribute for further information about using the Attribute base Mapping, see the wiki or blog.
         /// </summary>
         internal static string AttributeMappingConvention_NoTableAttribute {

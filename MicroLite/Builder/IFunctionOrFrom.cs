@@ -22,6 +22,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columnName is null or empty.</exception>
         /// <example>
         /// A simple query to find the average order total for a customer. By default, the result will be aliased as the column name.
         /// <code>
@@ -42,6 +43,7 @@ namespace MicroLite.Builder
         /// <param name="columnName">The column to query.</param>
         /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columnName or columnAlias is null or empty.</exception>
         /// <example>
         /// A simple query to find the average order total for a customer. We can specify a custom column alias if required.
         /// <code>
@@ -61,6 +63,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columnName is null or empty.</exception>
         /// <example>
         /// A simple query to find the number of customers. By default, the result will be aliased as the column name.
         /// <code>
@@ -80,6 +83,7 @@ namespace MicroLite.Builder
         /// <param name="columnName">The column to query.</param>
         /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columnName or columnAlias is null or empty.</exception>
         /// <example>
         /// A simple query to find the number of customers. We can specify a custom column alias if required.
         /// <code>
@@ -98,6 +102,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columnName is null or empty.</exception>
         /// <example>
         /// A simple query to find the max order total for a customer. By default, the result will be aliased as the column name.
         /// <code>
@@ -118,6 +123,7 @@ namespace MicroLite.Builder
         /// <param name="columnName">The column to query.</param>
         /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columnName or columnAlias is null or empty.</exception>
         /// <example>
         /// A simple query to find the max order total for a customer. We can specify a custom column alias if required.
         /// <code>
@@ -137,6 +143,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columnName is null or empty.</exception>
         /// <example>
         /// A simple query to find the min order total for a customer. By default, the result will be aliased as the column name.
         /// <code>
@@ -157,6 +164,7 @@ namespace MicroLite.Builder
         /// <param name="columnName">The column to query.</param>
         /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columnName or columnAlias is null or empty.</exception>
         /// <example>
         /// A simple query to find the min order total for a customer. We can specify a custom column alias if required.
         /// <code>
@@ -176,6 +184,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columnName">The column to query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columnName is null or empty.</exception>
         /// <example>
         /// A simple query to find the total order total for a customer. By default, the result will be aliased as the column name.
         /// <code>
@@ -196,6 +205,7 @@ namespace MicroLite.Builder
         /// <param name="columnName">The column to query.</param>
         /// <param name="columnAlias">The alias in the result set for the calculated column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columnName or columnAlias is null or empty.</exception>
         /// <example>
         /// A simple query to find the total order total for a customer. We can specify a custom column alias if required.
         /// <code>

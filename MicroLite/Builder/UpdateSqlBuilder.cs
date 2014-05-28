@@ -59,10 +59,10 @@ namespace MicroLite.Builder
             return this.Table(objectInfo);
         }
 
-        public IToSqlQuery WhereEquals(string columnName, object comparisonValue)
+        public IToSqlQuery WhereEquals(string column, object comparisonValue)
         {
             this.InnerSql.Append(" WHERE ")
-                .Append(this.SqlCharacters.EscapeSql(columnName))
+                .Append(this.SqlCharacters.EscapeSql(column))
                 .Append(" = ")
                 .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
 

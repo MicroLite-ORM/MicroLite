@@ -13,6 +13,7 @@
 namespace MicroLite.Builder
 {
     using System;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
@@ -57,16 +58,26 @@ namespace MicroLite.Builder
             }
         }
 
-        public IWhereSingleColumn AndWhere(string columnName)
+        public IWhereSingleColumn AndWhere(string column)
         {
+            if (string.IsNullOrEmpty(column))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
+            }
+
             this.operand = " AND";
-            this.whereColumnName = this.SqlCharacters.EscapeSql(columnName);
+            this.whereColumnName = this.SqlCharacters.EscapeSql(column);
 
             return this;
         }
 
         public IAndOrOrderBy AndWhere(string predicate, params object[] args)
         {
+            if (string.IsNullOrEmpty(predicate))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
+            }
+
             this.Arguments.AddRange(args);
 
             var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
@@ -85,6 +96,16 @@ namespace MicroLite.Builder
 
         public IFunctionOrFrom Average(string columnName, string columnAlias)
         {
+            if (string.IsNullOrEmpty(columnName))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"));
+            }
+
+            if (string.IsNullOrEmpty(columnAlias))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
+            }
+
             if (this.InnerSql.Length > 7)
             {
                 this.InnerSql.Append(',');
@@ -100,6 +121,16 @@ namespace MicroLite.Builder
 
         public IAndOrOrderBy Between(object lower, object upper)
         {
+            if (lower == null)
+            {
+                throw new ArgumentNullException("lower");
+            }
+
+            if (upper == null)
+            {
+                throw new ArgumentNullException("upper");
+            }
+
             if (!string.IsNullOrEmpty(this.operand))
             {
                 this.InnerSql.Append(this.operand);
@@ -129,6 +160,16 @@ namespace MicroLite.Builder
 
         public IFunctionOrFrom Count(string columnName, string columnAlias)
         {
+            if (string.IsNullOrEmpty(columnName))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"));
+            }
+
+            if (string.IsNullOrEmpty(columnAlias))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
+            }
+
             if (this.InnerSql.Length > 7)
             {
                 this.InnerSql.Append(',');
@@ -142,10 +183,15 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IWhereOrOrderBy From(string tableName)
+        public IWhereOrOrderBy From(string table)
         {
+            if (string.IsNullOrEmpty(table))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("table"));
+            }
+
             this.InnerSql.Append(" FROM ");
-            this.AppendTableName(tableName);
+            this.AppendTableName(table);
 
             return this;
         }
@@ -159,9 +205,9 @@ namespace MicroLite.Builder
 
         public IHavingOrOrderBy GroupBy(string column)
         {
-            if (column == null)
+            if (string.IsNullOrEmpty(column))
             {
-                throw new ArgumentNullException("column");
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
             }
 
             this.InnerSql.Append(" GROUP BY ");
@@ -194,6 +240,11 @@ namespace MicroLite.Builder
 
         public IOrderBy Having(string predicate, object value)
         {
+            if (string.IsNullOrEmpty(predicate))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
+            }
+
             this.Arguments.Add(value);
 
             var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
@@ -402,6 +453,16 @@ namespace MicroLite.Builder
 
         public IFunctionOrFrom Max(string columnName, string columnAlias)
         {
+            if (string.IsNullOrEmpty(columnName))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"));
+            }
+
+            if (string.IsNullOrEmpty(columnAlias))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
+            }
+
             if (this.InnerSql.Length > 7)
             {
                 this.InnerSql.Append(',');
@@ -422,6 +483,16 @@ namespace MicroLite.Builder
 
         public IFunctionOrFrom Min(string columnName, string columnAlias)
         {
+            if (string.IsNullOrEmpty(columnName))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"));
+            }
+
+            if (string.IsNullOrEmpty(columnAlias))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
+            }
+
             if (this.InnerSql.Length > 7)
             {
                 this.InnerSql.Append(',');
@@ -515,16 +586,26 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IWhereSingleColumn OrWhere(string columnName)
+        public IWhereSingleColumn OrWhere(string column)
         {
+            if (string.IsNullOrEmpty(column))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
+            }
+
             this.operand = " OR";
-            this.whereColumnName = this.SqlCharacters.EscapeSql(columnName);
+            this.whereColumnName = this.SqlCharacters.EscapeSql(column);
 
             return this;
         }
 
         public IAndOrOrderBy OrWhere(string predicate, params object[] args)
         {
+            if (string.IsNullOrEmpty(predicate))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
+            }
+
             this.Arguments.AddRange(args);
 
             var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
@@ -541,6 +622,16 @@ namespace MicroLite.Builder
 
         public IFunctionOrFrom Sum(string columnName, string columnAlias)
         {
+            if (string.IsNullOrEmpty(columnName))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"));
+            }
+
+            if (string.IsNullOrEmpty(columnAlias))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
+            }
+
             if (this.InnerSql.Length > 7)
             {
                 this.InnerSql.Append(',');
@@ -554,9 +645,14 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IWhereSingleColumn Where(string columnName)
+        public IWhereSingleColumn Where(string column)
         {
-            this.whereColumnName = this.SqlCharacters.EscapeSql(columnName);
+            if (string.IsNullOrEmpty(column))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
+            }
+
+            this.whereColumnName = this.SqlCharacters.EscapeSql(column);
 
             if (!this.addedWhere)
             {
@@ -569,6 +665,11 @@ namespace MicroLite.Builder
 
         public IAndOrOrderBy Where(string predicate, params object[] args)
         {
+            if (string.IsNullOrEmpty(predicate))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
+            }
+
             this.Arguments.AddRange(args);
 
             var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
@@ -604,9 +705,9 @@ namespace MicroLite.Builder
 
         private void AddOrder(string column, string direction)
         {
-            if (column == null)
+            if (string.IsNullOrEmpty(column))
             {
-                throw new ArgumentNullException("column");
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
             }
 
             this.InnerSql.Append(!this.addedOrder ? " ORDER BY " : ",");

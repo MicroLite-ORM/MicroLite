@@ -22,6 +22,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="column">The column to group by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if column is null or empty.</exception>
         /// <example>
         /// <code>
         /// var sqlQuery = SqlBuilder
@@ -40,6 +41,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="columns">The columns to group by.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if columns is null.</exception>
         /// <example>
         /// <code>
         /// var sqlQuery = SqlBuilder

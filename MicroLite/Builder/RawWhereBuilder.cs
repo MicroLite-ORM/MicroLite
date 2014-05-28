@@ -78,8 +78,11 @@ namespace MicroLite.Builder
         /// <summary>
         /// Applies the predicate defined in this predicate builder to the result of SqlBuilder.Select().From().
         /// </summary>
-        /// <param name="selectFrom">The result of the <see cref="SqlBuilder"/> select from method call.</param>
-        /// <returns>The <see cref="IAndOrOrderBy"/> which is returned by the SqlBuilder after applying the Where clause.</returns>
+        /// <param name="selectFrom">The result of the <see cref="SqlBuilder" /> select from method call.</param>
+        /// <returns>
+        /// The <see cref="IAndOrOrderBy" /> which is returned by the SqlBuilder after applying the Where clause.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">thrown if selectFrom is null.</exception>
         public IAndOrOrderBy ApplyTo(IWhereOrOrderBy selectFrom)
         {
             if (selectFrom == null)

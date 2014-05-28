@@ -20,8 +20,9 @@ namespace MicroLite.Builder
         /// <summary>
         /// Specifies the where clause for the query.
         /// </summary>
-        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <param name="column">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if column is null or empty.</exception>
         /// <example>
         /// This method allows us to specify a column to be used with the BETWEEN or IN keywords.
         /// <code>
@@ -32,7 +33,7 @@ namespace MicroLite.Builder
         ///     ...
         /// </code>
         /// </example>
-        IWhereSingleColumn Where(string columnName);
+        IWhereSingleColumn Where(string column);
 
         /// <summary>
         /// Specifies the where clause for the query.
@@ -40,6 +41,7 @@ namespace MicroLite.Builder
         /// <param name="predicate">The predicate.</param>
         /// <param name="args">The args.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if predicate is null or empty.</exception>
         /// <example>
         /// Adds the first predicate to the query.
         /// <code>

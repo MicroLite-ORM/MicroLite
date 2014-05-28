@@ -20,8 +20,9 @@ namespace MicroLite.Builder
         /// <summary>
         /// Adds a column as an AND to the where clause of the query.
         /// </summary>
-        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <param name="column">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if column is null or empty.</exception>
         /// <example>
         /// This method allows us to specify a column to be used with the BETWEEN or IN keywords which is added to the query as an AND.
         /// <code>
@@ -33,7 +34,7 @@ namespace MicroLite.Builder
         ///     ...
         /// </code>
         /// </example>
-        IWhereSingleColumn AndWhere(string columnName);
+        IWhereSingleColumn AndWhere(string column);
 
         /// <summary>
         /// Adds a predicate as an AND to the where clause of the query.
@@ -41,6 +42,7 @@ namespace MicroLite.Builder
         /// <param name="predicate">The predicate.</param>
         /// <param name="args">The args.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if predicate is null or empty.</exception>
         /// <example>
         /// Adds the an additional predicate to the query as an AND.
         /// <code>
@@ -73,8 +75,9 @@ namespace MicroLite.Builder
         /// <summary>
         /// Adds a column as an OR to the where clause of the query.
         /// </summary>
-        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <param name="column">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if column is null or empty.</exception>
         /// <example>
         /// This method allows us to specify a column to be used with the BETWEEN or IN keywords which is added to the query as an OR.
         /// <code>
@@ -86,7 +89,7 @@ namespace MicroLite.Builder
         ///     ...
         /// </code>
         /// </example>
-        IWhereSingleColumn OrWhere(string columnName);
+        IWhereSingleColumn OrWhere(string column);
 
         /// <summary>
         /// Adds a predicate as an OR to the where clause of the query.
@@ -94,6 +97,7 @@ namespace MicroLite.Builder
         /// <param name="predicate">The predicate.</param>
         /// <param name="args">The args.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if predicate is null or empty.</exception>
         /// <example>
         /// Adds the an additional predicate to the query as an OR.
         /// <code>
