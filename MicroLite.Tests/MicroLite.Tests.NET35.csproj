@@ -12,10 +12,9 @@
     <AssemblyName>MicroLite.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -63,9 +62,7 @@
     <Compile Include="Core\IncludeScalarTests.cs" />
     <Compile Include="Core\IncludeSingleTests.cs" />
     <Compile Include="Core\ReadOnlySessionTests.cs" />
-    <Compile Include="Core\SessionBaseTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Core\SessionBaseTests.cs" />
     <Compile Include="Core\SessionFactoryTests.cs" />
     <Compile Include="Core\SessionTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
@@ -83,9 +80,7 @@
     <Compile Include="Dialect\SQLiteDialectTests.cs" />
     <Compile Include="Driver\DbDriverTests.cs" />
     <Compile Include="Driver\FirebirdDbDriverTests.cs" />
-    <Compile Include="Driver\MsSqlDbDriverTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Driver\MsSqlDbDriverTests.cs" />
     <Compile Include="Driver\MySqlDbDriverTests.cs" />
     <Compile Include="Driver\PostgreSqlDbDriverTests.cs" />
     <Compile Include="Driver\SqlServerCeDbDriverTests.cs" />
