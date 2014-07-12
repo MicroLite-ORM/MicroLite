@@ -28,6 +28,14 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
+        /// Gets a value indicating whether the SQL Dialect supports Identity or AutoIncrement columns.
+        /// </summary>
+        bool SupportsIdentity
+        {
+            get;
+        }
+
+        /// <summary>
         /// Builds an SqlQuery to delete the database record with the specified identifier for the type specified by the IObjectInfo.
         /// </summary>
         /// <param name="objectInfo">The object information.</param>

@@ -159,7 +159,7 @@
             [Fact]
             public void ValuesShouldContainTheResultOfTheTypeConversion()
             {
-                Assert.Equal(Guid.Parse("97FE0200-8F79-4C3B-8CD4-BE97705868EC"), this.include.Value);
+                Assert.Equal(new Guid("97FE0200-8F79-4C3B-8CD4-BE97705868EC"), this.include.Value);
             }
         }
 

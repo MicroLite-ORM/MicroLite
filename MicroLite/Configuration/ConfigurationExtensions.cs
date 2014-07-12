@@ -23,6 +23,25 @@ namespace MicroLite.Configuration
     public static class ConfigurationExtensions
     {
         /// <summary>
+        /// Configures a Firebird connection using the connection string with the specified name
+        /// in the connection strings section of the app/web config.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name of the connection string in the app/web config.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
+        public static ICreateSessionFactory ForFirebirdConnection(this IConfigureConnection configureConnection, string connectionName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, new FirebirdSqlDialect(), new FirebirdDbDriver());
+        }
+
+        /// <summary>
         /// Configures a MsSql connection using the connection string with the specified name
         /// in the connection strings section of the app/web config.
         /// </summary>
@@ -97,6 +116,27 @@ namespace MicroLite.Configuration
             }
 
             return configureConnection.ForConnection(connectionName, new SQLiteDialect(), new SQLiteDbDriver());
+        }
+
+        /// <summary>
+        /// Configures a SQL Server Compact Edition connection using the connection string with the specified name
+        /// in the connection strings section of the app/web config.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name of the connection string in the app/web config.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Ce", Justification = "More consistent with the style in this class (we haven't capitalised the s in Ms or y in My)")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "Ce", Justification = "More consistent with the style in this class (we haven't capitalised the s in Ms or y in My)")]
+        public static ICreateSessionFactory ForSqlServerCeConnection(this IConfigureConnection configureConnection, string connectionName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, new SqlServerCeDialect(), new SqlServerCeDbDriver());
         }
 
         /// <summary>

@@ -1,20 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3DEF63F2-C78B-461C-AC94-410BC45098AA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MicroLite</RootNamespace>
     <AssemblyName>MicroLite</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
     <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
+    <TargetFrameworkProfile />
     <CodeAnalysisCulture>en-GB</CodeAnalysisCulture>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -22,23 +20,25 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;NET_4_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\MicroLite.XML</DocumentationFile>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\MicroLite.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisAdditionalOptions>/assemblyCompareMode:StrongNameIgnoringVersion</CodeAnalysisAdditionalOptions>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET_4_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\MicroLite.XML</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>..\MicroLite.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisAdditionalOptions>/assemblyCompareMode:StrongNameIgnoringVersion</CodeAnalysisAdditionalOptions>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -58,16 +58,23 @@
   <ItemGroup>
     <Compile Include="Builder\IInsertColumn.cs" />
     <Compile Include="Builder\SqlBuilderBase.cs" />
+    <Compile Include="Clauses.cs" />
     <Compile Include="Configuration\ConfigurationExtensions.cs" />
     <Compile Include="Configuration\FluentConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationException.cs" />
     <Compile Include="ConnectionScope.cs" />
+    <Compile Include="Dialect\FirebirdSqlCharacters.cs" />
+    <Compile Include="Dialect\FirebirdSqlDialect.cs" />
     <Compile Include="Dialect\MySqlCharacters.cs" />
     <Compile Include="Dialect\MySqlDialect.cs" />
     <Compile Include="Dialect\PostgreSqlCharacters.cs" />
     <Compile Include="Dialect\PostgreSqlDialect.cs" />
+    <Compile Include="Dialect\SqlServerCeCharacters.cs" />
+    <Compile Include="Dialect\SqlServerCeDialect.cs" />
     <Compile Include="Dialect\SQLiteCharacters.cs" />
     <Compile Include="Dialect\SQLiteDialect.cs" />
+    <Compile Include="Driver\FirebirdDbDriver.cs" />
+    <Compile Include="Driver\SqlServerCeDbDriver.cs" />
     <Compile Include="Driver\SQLiteDbDriver.cs" />
     <Compile Include="Driver\PostgreSqlDbDriver.cs" />
     <Compile Include="Driver\IDbDriver.cs" />
@@ -117,21 +124,13 @@
     <Compile Include="Mapping\ColumnAttribute.cs" />
     <Compile Include="Configuration\Configure.cs" />
     <Compile Include="Configuration\ConfigureExtensions.cs" />
-    <Compile Include="Configuration\IConfigureConnection.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Configuration\IConfigureConnection.cs" />
     <Compile Include="Configuration\IConfigureExtensions.cs" />
-    <Compile Include="Configuration\ICreateSessionFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Listeners\DbGeneratedListener.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Configuration\ICreateSessionFactory.cs" />
+    <Compile Include="Listeners\DbGeneratedListener.cs" />
     <Compile Include="Dialect\ISqlDialect.cs" />
     <Compile Include="FrameworkExtensions\MemberInfoExtensions.cs" />
-    <Compile Include="Core\Session.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Core\Session.cs" />
     <Compile Include="Core\SessionFactory.cs" />
     <Compile Include="Dialect\MsSqlDialect.cs" />
     <Compile Include="FrameworkExtensions\StringExtensions.cs" />
@@ -147,15 +146,14 @@
     <Compile Include="Builder\RawWhereBuilder.cs" />
     <Compile Include="Builder\SelectSqlBuilder.cs" />
     <Compile Include="Builder\StoredProcedureSqlBuilder.cs" />
+    <Compile Include="SqlString.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverter.cs" />
     <Compile Include="TypeConverters\EnumTypeConverter.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
     <Compile Include="Mapping\Inflection\InflectionService.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
     <Compile Include="Mapping\AttributeMappingConvention.cs" />
-    <Compile Include="Mapping\TableInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Mapping\TableInfo.cs" />
     <Compile Include="Infrastructure\ISymmetricAlgorithmProvider.cs" />
     <Compile Include="TypeConverters\TypeConverter.cs" />
     <Compile Include="LogMessages.Designer.cs">
@@ -203,7 +201,7 @@
     <None Include="Configuration\_Configuration.cd" />
     <None Include="Core\_Includes.cd" />
     <None Include="Core\_Session.cd" />
-    <None Include="Dialect\_Dialect.cd" />
+    <None Include="Dialect\_SqlDialect.cd" />
     <None Include="Dialect\_SqlCharacters.cd" />
     <None Include="Driver\_Driver.cd" />
     <None Include="Listeners\_Listeners.cd" />

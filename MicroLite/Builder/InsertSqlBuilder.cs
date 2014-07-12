@@ -18,6 +18,10 @@ namespace MicroLite.Builder
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class InsertSqlBuilder : SqlBuilderBase, IInsertIntoTable, IInsertColumn, IInsertValue
     {
+        /// <summary>
+        /// Initialises a new instance of the <see cref="InsertSqlBuilder"/> class with the starting command text 'INSERT INTO '.
+        /// </summary>
+        /// <param name="sqlCharacters">The SQL characters.</param>
         internal InsertSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)
         {
@@ -46,9 +50,9 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IInsertColumn Into(string tableName)
+        public IInsertColumn Into(string table)
         {
-            this.AppendTableName(tableName);
+            this.AppendTableName(table);
 
             return this;
         }

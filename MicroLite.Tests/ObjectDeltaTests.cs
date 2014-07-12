@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests
 {
+    using System;
     using System.Linq;
     using MicroLite.Tests.TestEntities;
     using Xunit;
@@ -61,6 +62,28 @@
             public void IdentifierIsSet()
             {
                 Assert.Equal(1332, this.objectDelta.Identifier);
+            }
+        }
+
+        public class WhenConstructedWithNullIdentifier
+        {
+            [Fact]
+            public void AnArgumentNullExceptionIsThrown()
+            {
+                var exception = Assert.Throws<ArgumentNullException>(() => new ObjectDelta(typeof(Customer), null));
+
+                Assert.Equal("identifier", exception.ParamName);
+            }
+        }
+
+        public class WhenConstructedWithNullType
+        {
+            [Fact]
+            public void AnArgumentNullExceptionIsThrown()
+            {
+                var exception = Assert.Throws<ArgumentNullException>(() => new ObjectDelta(null, 1332));
+
+                Assert.Equal("forType", exception.ParamName);
             }
         }
     }

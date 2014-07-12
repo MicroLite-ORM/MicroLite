@@ -51,6 +51,7 @@ namespace MicroLite.Mapping
 
             if (objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
             {
+                // value = (object)identifier;
                 ilGenerator.Emit(OpCodes.Box, objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType);
             }
 
@@ -228,6 +229,7 @@ namespace MicroLite.Mapping
 
                     if (column.PropertyInfo.PropertyType.IsGenericType)
                     {
+                        // This is for nullable<T> (e.g. Int?)
                         ilGenerator.Emit(OpCodes.Newobj, column.PropertyInfo.PropertyType.GetConstructor(new[] { actualPropertyType }));
                     }
 
@@ -264,14 +266,16 @@ namespace MicroLite.Mapping
 
                     if (actualPropertyType.IsValueType)
                     {
+                        // converted = ({PropertyType})converted;
                         ilGenerator.Emit(OpCodes.Unbox_Any, actualPropertyType);
                     }
                     else
                     {
+                        // converted = ({PropertyType})converted;
                         ilGenerator.Emit(OpCodes.Castclass, actualPropertyType);
                     }
 
-                    // entity.{Property} = ({propertyType})converted;
+                    // entity.{Property} = converted;
                     ilGenerator.EmitCall(OpCodes.Callvirt, column.PropertyInfo.GetSetMethod(), null);
                 }
 
@@ -324,6 +328,7 @@ namespace MicroLite.Mapping
 
             if (objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
             {
+                // value = ({PropertyType})value;
                 ilGenerator.Emit(OpCodes.Unbox_Any, objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType);
             }
 
@@ -375,6 +380,7 @@ namespace MicroLite.Mapping
 
                 if (column.PropertyInfo.PropertyType.IsValueType)
                 {
+                    // value = (object)value;
                     ilGenerator.Emit(OpCodes.Box, column.PropertyInfo.PropertyType);
                 }
 

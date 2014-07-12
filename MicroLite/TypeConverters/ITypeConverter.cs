@@ -35,6 +35,7 @@ namespace MicroLite.TypeConverters
         /// <param name="value">The database value to be converted.</param>
         /// <param name="type">The type to convert to.</param>
         /// <returns>An instance of the specified type containing the specified value.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if type is null.</exception>
         object ConvertFromDbValue(object value, Type type);
 
         /// <summary>
@@ -44,6 +45,7 @@ namespace MicroLite.TypeConverters
         /// <param name="index">The index of the record to read from the IDataReader.</param>
         /// <param name="type">The type to convert result value to.</param>
         /// <returns>An instance of the specified type containing the specified value.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if reader or type is null.</exception>
         object ConvertFromDbValue(IDataReader reader, int index, Type type);
 
         /// <summary>
@@ -52,6 +54,7 @@ namespace MicroLite.TypeConverters
         /// <param name="value">The value to be converted.</param>
         /// <param name="type">The type to convert from.</param>
         /// <returns>An instance of the corresponding database type containing the value.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if type is null.</exception>
         object ConvertToDbValue(object value, Type type);
     }
 }

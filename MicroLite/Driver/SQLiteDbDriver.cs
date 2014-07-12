@@ -13,7 +13,7 @@
 namespace MicroLite.Driver
 {
     /// <summary>
-    /// The implementation of <see cref="IDbDriver"/> for SQLite server.
+    /// The implementation of <see cref="IDbDriver"/> for SQLite.
     /// </summary>
     internal sealed class SQLiteDbDriver : DbDriver
     {

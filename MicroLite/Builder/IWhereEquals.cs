@@ -20,9 +20,9 @@ namespace MicroLite.Builder
         /// <summary>
         /// Specifies that the specified column contains a value which is equal to the specified comparisonValue.
         /// </summary>
-        /// <param name="columnName">The column name to use in the where clause.</param>
+        /// <param name="column">The column name to use in the where clause.</param>
         /// <param name="comparisonValue">The value to compare with.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IToSqlQuery WhereEquals(string columnName, object comparisonValue);
+        IToSqlQuery WhereEquals(string column, object comparisonValue);
     }
 }

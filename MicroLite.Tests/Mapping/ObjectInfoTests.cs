@@ -139,6 +139,7 @@
             Assert.Equal(new Uri("http://microliteorm.wordpress.com"), instance.Website);
         }
 
+#if !NET_3_5
         [Fact]
         public void For_ReturnsExpandoObjectInfo_ForTypeOfDynamic()
         {
@@ -146,6 +147,7 @@
 
             Assert.IsType<ExpandoObjectInfo>(objectInfo);
         }
+#endif
 
         [Fact]
         public void For_ReturnsSameObjectInfo_ForSameType()

@@ -191,24 +191,31 @@ namespace MicroLite.Core
 
             var insertSqlQuery = this.SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
-                this.Execute(insertSqlQuery);
-            }
-            else
-            {
-                var selectIdSqlQuery = this.SqlDialect.BuildSelectIdentitySqlQuery(objectInfo);
-
-                if (this.DbDriver.SupportsBatchedQueries)
+                if (this.SqlDialect.SupportsIdentity)
                 {
-                    var combined = this.DbDriver.Combine(insertSqlQuery, selectIdSqlQuery);
-                    identifier = this.ExecuteScalar<object>(combined);
+                    var selectIdSqlQuery = this.SqlDialect.BuildSelectIdentitySqlQuery(objectInfo);
+
+                    if (this.DbDriver.SupportsBatchedQueries)
+                    {
+                        var combined = this.DbDriver.Combine(insertSqlQuery, selectIdSqlQuery);
+                        identifier = this.ExecuteScalar<object>(combined);
+                    }
+                    else
+                    {
+                        this.Execute(insertSqlQuery);
+                        identifier = this.ExecuteScalar<object>(selectIdSqlQuery);
+                    }
                 }
                 else
                 {
-                    this.Execute(insertSqlQuery);
-                    identifier = this.ExecuteScalar<object>(selectIdSqlQuery);
+                    identifier = this.ExecuteScalar<object>(insertSqlQuery);
                 }
+            }
+            else if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
+            {
+                this.Execute(insertSqlQuery);
             }
 
             for (int i = this.listeners.Count - 1; i >= 0; i--)

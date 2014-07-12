@@ -35,7 +35,7 @@ namespace MicroLite
         /// <returns>A DbEncryptedString containing the value of the specified string.</returns>
         public static implicit operator DbEncryptedString(string value)
         {
-            return new DbEncryptedString(value);
+            return value == null ? null : new DbEncryptedString(value);
         }
 
         /// <summary>
@@ -93,6 +93,11 @@ namespace MicroLite
         /// </returns>
         public bool Equals(string other)
         {
+            if (other == null)
+            {
+                return false;
+            }
+
             return this.value == other;
         }
 
@@ -104,11 +109,6 @@ namespace MicroLite
         /// </returns>
         public override int GetHashCode()
         {
-            if (this.value == null)
-            {
-                return 0;
-            }
-
             return this.value.GetHashCode();
         }
 

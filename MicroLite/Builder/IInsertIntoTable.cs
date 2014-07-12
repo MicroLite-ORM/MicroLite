@@ -22,9 +22,9 @@ namespace MicroLite.Builder
         /// <summary>
         /// Specifies the table to perform the query against.
         /// </summary>
-        /// <param name="tableName">The name of the table.</param>
+        /// <param name="table">The name of the table.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IInsertColumn Into(string tableName);
+        IInsertColumn Into(string table);
 
         /// <summary>
         /// Specifies the type to perform the query against.

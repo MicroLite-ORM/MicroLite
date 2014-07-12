@@ -13,6 +13,36 @@
     /// </summary>
     public class ConfigurationExtensionsTests
     {
+        public class WhenCallingForFirebirdConnection
+        {
+            private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();
+
+            public WhenCallingForFirebirdConnection()
+            {
+                ConfigurationExtensions.ForFirebirdConnection(this.mockConfigureConnection.Object, "TestConnection");
+            }
+
+            [Fact]
+            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
+            {
+                this.mockConfigureConnection.Verify(
+                    x => x.ForConnection("TestConnection", It.IsNotNull<FirebirdSqlDialect>(), It.IsNotNull<FirebirdDbDriver>()),
+                    Times.Once());
+            }
+        }
+
+        public class WhenCallingForFirebirdConnection_AndTheConfigureConnectionIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionIsThrown()
+            {
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => ConfigurationExtensions.ForFirebirdConnection(null, "TestConnection"));
+
+                Assert.Equal("configureConnection", exception.ParamName);
+            }
+        }
+
         public class WhenCallingForMsSqlConnection
         {
             private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();
@@ -128,6 +158,36 @@
             {
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => ConfigurationExtensions.ForSQLiteConnection(null, "TestConnection"));
+
+                Assert.Equal("configureConnection", exception.ParamName);
+            }
+        }
+
+        public class WhenCallingForSqlServerCeConnection
+        {
+            private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();
+
+            public WhenCallingForSqlServerCeConnection()
+            {
+                ConfigurationExtensions.ForSqlServerCeConnection(this.mockConfigureConnection.Object, "TestConnection");
+            }
+
+            [Fact]
+            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
+            {
+                this.mockConfigureConnection.Verify(
+                    x => x.ForConnection("TestConnection", It.IsNotNull<SqlServerCeDialect>(), It.IsNotNull<SqlServerCeDbDriver>()),
+                    Times.Once());
+            }
+        }
+
+        public class WhenCallingForSqlServerCeConnection_AndTheConfigureConnectionIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionIsThrown()
+            {
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => ConfigurationExtensions.ForSqlServerCeConnection(null, "TestConnection"));
 
                 Assert.Equal("configureConnection", exception.ParamName);
             }

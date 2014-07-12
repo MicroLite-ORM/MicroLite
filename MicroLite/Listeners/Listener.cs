@@ -48,7 +48,7 @@ namespace MicroLite.Listeners
         /// </summary>
         /// <param name="instance">The instance which has been inserted.</param>
         /// <param name="executeScalarResult">The execute scalar result (the identifier value returned by the database
-        /// or null if the identifier is <see cref="IdentifierStrategy" />.Assigned.</param>
+        /// or null if the identifier is <see cref="MicroLite.Mapping.IdentifierStrategy" />.Assigned.</param>
         public virtual void AfterInsert(object instance, object executeScalarResult)
         {
         }

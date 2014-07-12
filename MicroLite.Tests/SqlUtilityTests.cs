@@ -48,6 +48,14 @@
         }
 
         [Fact]
+        public void GetParameterNamesShouldNotMatchAtAtIdentifier()
+        {
+            var parameterNames = SqlUtility.GetParameterNames("SELECT @@IDENTITY");
+
+            Assert.Empty(parameterNames);
+        }
+
+        [Fact]
         public void GetParameterNamesThrowsArgumentNullExceptionForNullCommandText()
         {
             Assert.Throws<ArgumentNullException>(() => SqlUtility.GetParameterNames(null));

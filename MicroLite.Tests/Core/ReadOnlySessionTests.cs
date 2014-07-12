@@ -140,6 +140,22 @@
         }
 
         [Fact]
+        public void IncludeManyThrowsArgumentNullExceptionForNullSqlQuery()
+        {
+            var session = new ReadOnlySession(
+                ConnectionScope.PerTransaction,
+                new Mock<ISqlDialect>().Object,
+                new Mock<IDbDriver>().Object);
+
+            SqlQuery sqlQuery = null;
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.Include.Many<Customer>(sqlQuery));
+
+            Assert.Equal("sqlQuery", exception.ParamName);
+        }
+
+        [Fact]
         public void IncludeReturnsSameSessionByDifferentInterface()
         {
             var session = new ReadOnlySession(
@@ -209,19 +225,35 @@
         }
 
         [Fact]
-        public void IncludeScalarThrowsObjectDisposedExceptionIfDisposed()
+        public void IncludeSingleThrowsArgumentNullExceptionForNullIdentifier()
         {
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
 
-            using (session)
-            {
-            }
+            object identifier = null;
 
-            Assert.Throws<ObjectDisposedException>(
-                () => session.Include.Scalar<int>(new SqlQuery("")));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.Include.Single<Customer>(identifier));
+
+            Assert.Equal("identifier", exception.ParamName);
+        }
+
+        [Fact]
+        public void IncludeSingleThrowsArgumentNullExceptionForNullSqlQuery()
+        {
+            var session = new ReadOnlySession(
+                ConnectionScope.PerTransaction,
+                new Mock<ISqlDialect>().Object,
+                new Mock<IDbDriver>().Object);
+
+            SqlQuery sqlQuery = null;
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.Include.Single<Customer>(sqlQuery));
+
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]

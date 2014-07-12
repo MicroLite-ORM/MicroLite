@@ -68,7 +68,7 @@ namespace MicroLite.Dialect
         /// <returns>
         /// The created <see cref="SqlQuery" />.
         /// </returns>
-        public virtual SqlQuery BuildDeleteSqlQuery(IObjectInfo objectInfo, object identifier)
+        public SqlQuery BuildDeleteSqlQuery(IObjectInfo objectInfo, object identifier)
         {
             if (objectInfo == null)
             {
@@ -103,7 +103,7 @@ namespace MicroLite.Dialect
         /// <returns>
         /// The created <see cref="SqlQuery" />.
         /// </returns>
-        public virtual SqlQuery BuildInsertSqlQuery(IObjectInfo objectInfo, object instance)
+        public SqlQuery BuildInsertSqlQuery(IObjectInfo objectInfo, object instance)
         {
             if (objectInfo == null)
             {
@@ -114,28 +114,11 @@ namespace MicroLite.Dialect
 
             if (!this.insertCommandCache.TryGetValue(objectInfo.ForType, out insertCommand))
             {
-                var counter = 0;
-                var insertColumns = new string[objectInfo.TableInfo.InsertColumnCount];
-
-                for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
-                {
-                    var columnInfo = objectInfo.TableInfo.Columns[i];
-
-                    if (columnInfo.AllowInsert)
-                    {
-                        insertColumns[counter++] = columnInfo.ColumnName;
-                    }
-                }
-
-                var insertSqlQuery = new InsertSqlBuilder(this.SqlCharacters)
-                    .Into(objectInfo)
-                    .Columns(insertColumns)
-                    .Values(new object[objectInfo.TableInfo.InsertColumnCount])
-                    .ToSqlQuery();
+                var commandText = this.BuildInsertCommandText(objectInfo);
 
                 var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
-                newInsertCommandCache[objectInfo.ForType] = insertSqlQuery.CommandText;
-                insertCommand = insertSqlQuery.CommandText;
+                newInsertCommandCache[objectInfo.ForType] = commandText;
+                insertCommand = commandText;
 
                 this.insertCommandCache = newInsertCommandCache;
             }
@@ -165,7 +148,7 @@ namespace MicroLite.Dialect
         /// <returns>
         /// The created <see cref="SqlQuery" />.
         /// </returns>
-        public virtual SqlQuery BuildSelectSqlQuery(IObjectInfo objectInfo, object identifier)
+        public SqlQuery BuildSelectSqlQuery(IObjectInfo objectInfo, object identifier)
         {
             if (objectInfo == null)
             {
@@ -200,7 +183,7 @@ namespace MicroLite.Dialect
         /// <returns>
         /// The created <see cref="SqlQuery" />.
         /// </returns>
-        public virtual SqlQuery BuildUpdateSqlQuery(IObjectInfo objectInfo, object instance)
+        public SqlQuery BuildUpdateSqlQuery(IObjectInfo objectInfo, object instance)
         {
             if (objectInfo == null)
             {
@@ -277,15 +260,17 @@ namespace MicroLite.Dialect
         /// <returns>
         /// An <see cref="SqlQuery" /> to count the number of records which would be returned by the specified SqlQuery.
         /// </returns>
-        public virtual SqlQuery CountQuery(SqlQuery sqlQuery)
+        public SqlQuery CountQuery(SqlQuery sqlQuery)
         {
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            var qualifiedTableName = SqlUtility.ReadTableName(sqlQuery.CommandText);
-            var whereValue = SqlUtility.ReadWhereClause(sqlQuery.CommandText);
+            var sqlString = SqlString.Parse(sqlQuery.CommandText, Clauses.From | Clauses.Where);
+
+            var qualifiedTableName = sqlString.From;
+            var whereValue = sqlString.Where;
             var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
 
             return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, sqlQuery.GetArgumentArray());
@@ -300,5 +285,36 @@ namespace MicroLite.Dialect
         /// A <see cref="SqlQuery" /> to return the paged results of the specified query.
         /// </returns>
         public abstract SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions);
+
+        /// <summary>
+        /// Builds the command text to insert a database record for the specified <see cref="IObjectInfo"/>.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <returns>
+        /// The created command text.
+        /// </returns>
+        protected virtual string BuildInsertCommandText(IObjectInfo objectInfo)
+        {
+            var counter = 0;
+            var insertColumns = new string[objectInfo.TableInfo.InsertColumnCount];
+
+            for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
+            {
+                var columnInfo = objectInfo.TableInfo.Columns[i];
+
+                if (columnInfo.AllowInsert)
+                {
+                    insertColumns[counter++] = columnInfo.ColumnName;
+                }
+            }
+
+            var insertSqlQuery = new InsertSqlBuilder(this.SqlCharacters)
+                .Into(objectInfo)
+                .Columns(insertColumns)
+                .Values(new object[objectInfo.TableInfo.InsertColumnCount])
+                .ToSqlQuery();
+
+            return insertSqlQuery.CommandText;
+        }
     }
 }

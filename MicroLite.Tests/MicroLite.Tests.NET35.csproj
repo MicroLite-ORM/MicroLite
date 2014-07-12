@@ -10,18 +10,18 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MicroLite.Tests</RootNamespace>
     <AssemblyName>MicroLite.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET_3_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -30,7 +30,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET_3_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -42,10 +42,9 @@
     <AssemblyOriginatorKeyFile>..\MicroLite.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Moq, Version=4.2.1402.2112, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
+      <HintPath>..\packages\Moq.4.2.1402.2112\lib\net35\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,28 +62,31 @@
     <Compile Include="Core\IncludeScalarTests.cs" />
     <Compile Include="Core\IncludeSingleTests.cs" />
     <Compile Include="Core\ReadOnlySessionTests.cs" />
-    <Compile Include="Core\SessionBaseTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Core\SessionBaseTests.cs" />
     <Compile Include="Core\SessionFactoryTests.cs" />
     <Compile Include="Core\SessionTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
     <Compile Include="DbEncryptedStringTests.cs" />
+    <Compile Include="Dialect\FirebirdSqlCharactersTests.cs" />
+    <Compile Include="Dialect\FirebirdSqlDialectTests.cs" />
     <Compile Include="Dialect\MsSqlCharactersTests.cs" />
     <Compile Include="Dialect\MySqlCharactersTests.cs" />
     <Compile Include="Dialect\MySqlDialectTests.cs" />
     <Compile Include="Dialect\PostgreSqlCharactersTests.cs" />
     <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
+    <Compile Include="Dialect\SqlServerCeCharactersTests.cs" />
+    <Compile Include="Dialect\SqlServerCeDialectTests.cs" />
     <Compile Include="Dialect\SQLiteCharactersTests.cs" />
     <Compile Include="Dialect\SQLiteDialectTests.cs" />
     <Compile Include="Driver\DbDriverTests.cs" />
-    <Compile Include="Driver\MsSqlDbDriverTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Driver\FirebirdDbDriverTests.cs" />
+    <Compile Include="Driver\MsSqlDbDriverTests.cs" />
     <Compile Include="Driver\MySqlDbDriverTests.cs" />
     <Compile Include="Driver\PostgreSqlDbDriverTests.cs" />
+    <Compile Include="Driver\SqlServerCeDbDriverTests.cs" />
     <Compile Include="Driver\SQLiteDbDriverTests.cs" />
     <Compile Include="Mapping\Inflection\InflectionServiceTests.cs" />
+    <Compile Include="SqlStringTests.cs" />
     <Compile Include="TestEntities\Invoice.cs" />
     <Compile Include="UnitTest.cs" />
     <Compile Include="ObjectDeltaTests.cs" />
@@ -131,19 +133,18 @@
     <Compile Include="TypeConverters\XDocumentTypeConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MicroLite\MicroLite.csproj">
-      <Project>{3DEF63F2-C78B-461C-AC94-410BC45098AA}</Project>
-      <Name>MicroLite</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\MicroLite.snk">
       <Link>MicroLite.snk</Link>
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MicroLite\MicroLite.NET35.csproj">
+      <Project>{3def63f2-c78b-461c-ac94-410bc45098aa}</Project>
+      <Name>MicroLite.NET35</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

@@ -18,6 +18,10 @@ namespace MicroLite.Builder
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class UpdateSqlBuilder : SqlBuilderBase, IUpdate, ISetOrWhere
     {
+        /// <summary>
+        /// Initialises a new instance of the <see cref="UpdateSqlBuilder"/> class with the starting command text 'UPDATE '.
+        /// </summary>
+        /// <param name="sqlCharacters">The SQL characters.</param>
         internal UpdateSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)
         {
@@ -55,10 +59,10 @@ namespace MicroLite.Builder
             return this.Table(objectInfo);
         }
 
-        public IToSqlQuery WhereEquals(string columnName, object comparisonValue)
+        public IToSqlQuery WhereEquals(string column, object comparisonValue)
         {
             this.InnerSql.Append(" WHERE ")
-                .Append(this.SqlCharacters.EscapeSql(columnName))
+                .Append(this.SqlCharacters.EscapeSql(column))
                 .Append(" = ")
                 .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
 

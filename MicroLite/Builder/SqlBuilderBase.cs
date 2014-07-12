@@ -99,17 +99,17 @@ namespace MicroLite.Builder
         /// <summary>
         /// Appends the table name to the inner sql.
         /// </summary>
-        /// <param name="tableName">The name of the table.</param>
-        protected void AppendTableName(string tableName)
+        /// <param name="table">The name of the table.</param>
+        protected void AppendTableName(string table)
         {
-            if (this.sqlCharacters.IsEscaped(tableName))
+            if (this.sqlCharacters.IsEscaped(table))
             {
-                this.innerSql.Append(tableName);
+                this.innerSql.Append(table);
             }
             else
             {
                 this.InnerSql.Append(this.sqlCharacters.LeftDelimiter)
-                    .Append(tableName)
+                    .Append(table)
                     .Append(this.sqlCharacters.RightDelimiter);
             }
         }

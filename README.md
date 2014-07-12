@@ -9,11 +9,11 @@ _Headline Features_
 * Extension support for logging via [log4net](https://github.com/TrevorPilley/MicroLite.Logging.Log4Net#microlitelogginglog4net) or [NLog](https://github.com/TrevorPilley/MicroLite.Logging.NLog#microliteloggingnlog)
 * Extension support to quickly develop applications using [ASP.NET MVC](https://github.com/TrevorPilley/MicroLite.Extensions.Mvc#microliteextensionsmvc) and [WebApi](https://github.com/TrevorPilley/MicroLite.Extensions.WebApi#microliteextensionswebapi)
 * Native support for Enum, Uri, and XDocument conversion
-* An extensible pipeline which allows 'plugging in' custom [Type Converters](http://microliteorm.wordpress.com/type-converters/) or [Session Listeners](http://microliteorm.wordpress.com/listeners/)
+* An extensible pipeline which allows 'plugging in' custom [Type Converters](https://github.com/TrevorPilley/MicroLite/wiki/Type-Converters) or [Session Listeners](https://github.com/TrevorPilley/MicroLite/wiki/Listeners)
 * Easily managed by IOC containers
 * Interface based API which makes unit testing easy
 
-_Supported .NET Framework Versions_
+## Supported .NET Framework Versions
 
 The NuGet Package contains binaries compiled against:
 
@@ -21,12 +21,12 @@ The NuGet Package contains binaries compiled against:
 * .NET 4.0 (Client Profile)
 * .NET 4.5
 
-_SQL Support_
+## SQL Support
 
-* Microsoft SQL Server 2005 or newer
-* SQLite 3.7.14 or newer (_older versions may work but are un-tested_)
-* PostgreSQL 9.2 or newer (_older versions may work but are un-tested_)
-* MySql 5.5 or newer (_older versions may work but are un-tested_)
+* [Microsoft SQL Server](https://github.com/TrevorPilley/MicroLite/wiki#configuring-the-connection) 2005 or newer
+* [MySql](https://github.com/TrevorPilley/MicroLite/wiki/Using-MySql) 5.5 or newer
+* [SQLite](https://github.com/TrevorPilley/MicroLite/wiki/Using-PostgreSQL) 3.7 or newer
+* [PostgreSQL](https://github.com/TrevorPilley/MicroLite/wiki/Using-SQLite) 9.2 or newer
 
 To find out more, head over to the [Getting Started](https://github.com/TrevorPilley/MicroLite/wiki/Getting-Started) guide on the wiki and see how easy it is to use!
 
