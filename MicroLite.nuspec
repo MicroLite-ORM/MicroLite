@@ -12,7 +12,7 @@
     <licenseUrl>http://microliteorm.wordpress.com/license/</licenseUrl>
     <copyright>Copyright 2012 - 2014 Project Contributors</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <tags>MicroORM ORM SqlBuilder POCO MsSql SQLite MySql PostgreSql Database</tags>
+    <tags>MicroORM ORM SqlBuilder POCO MsSql SQLite MySql PostgreSql SqlServerCE Firebird Database</tags>
   </metadata>
   <files>
     <file src="..\build\3.5\MicroLite.dll" target="lib\net35-client" />
