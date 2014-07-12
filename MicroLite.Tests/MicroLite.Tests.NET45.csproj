@@ -134,19 +134,18 @@
     <Compile Include="TypeConverters\XDocumentTypeConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MicroLite\MicroLite.NET45.csproj">
-      <Project>{3DEF63F2-C78B-461C-AC94-410BC45098AA}</Project>
-      <Name>MicroLite</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\MicroLite.snk">
       <Link>MicroLite.snk</Link>
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MicroLite\MicroLite.NET45.csproj">
+      <Project>{3def63f2-c78b-461c-ac94-410bc45098aa}</Project>
+      <Name>MicroLite.NET45</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
