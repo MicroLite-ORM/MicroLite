@@ -83,7 +83,7 @@ namespace MicroLite.Mapping
             ilGenerator.Emit(OpCodes.Newarr, typeof(object));
             ilGenerator.Emit(OpCodes.Stloc_1);
 
-            EmitGetPropertyValues(objectInfo, ilGenerator, c => c.AllowInsert);
+            EmitGetPropertyValues(ilGenerator, objectInfo, c => c.AllowInsert);
 
             // return values;
             ilGenerator.Emit(OpCodes.Ldloc_1);
@@ -118,7 +118,7 @@ namespace MicroLite.Mapping
             ilGenerator.Emit(OpCodes.Newarr, typeof(object));
             ilGenerator.Emit(OpCodes.Stloc_1);
 
-            EmitGetPropertyValues(objectInfo, ilGenerator, c => c.AllowUpdate);
+            EmitGetPropertyValues(ilGenerator, objectInfo, c => c.AllowUpdate);
 
             // values[values.Length - 1] = entity.{Id};
             ilGenerator.Emit(OpCodes.Ldloc_1);
@@ -331,7 +331,7 @@ namespace MicroLite.Mapping
             return setIdentifierValue;
         }
 
-        private static void EmitGetPropertyValues(IObjectInfo objectInfo, ILGenerator ilGenerator, Func<ColumnInfo, bool> allowColumn)
+        private static void EmitGetPropertyValues(ILGenerator ilGenerator, IObjectInfo objectInfo, Func<ColumnInfo, bool> allowColumn)
         {
             var index = 0;
 
