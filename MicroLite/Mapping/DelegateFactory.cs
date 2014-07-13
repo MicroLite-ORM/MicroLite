@@ -38,15 +38,11 @@ namespace MicroLite.Mapping
 
             var ilGenerator = dynamicMethod.GetILGenerator();
 
-            ilGenerator.DeclareLocal(objectInfo.ForType); // loc_0
-
             // var instance = ({ForType})arg_0;
             ilGenerator.Emit(OpCodes.Ldarg_0);
             ilGenerator.Emit(OpCodes.Castclass, objectInfo.ForType);
-            ilGenerator.Emit(OpCodes.Stloc_0);
 
             // var identifier = instance.Id;
-            ilGenerator.Emit(OpCodes.Ldloc_0);
             ilGenerator.Emit(OpCodes.Callvirt, objectInfo.TableInfo.IdentifierColumn.PropertyInfo.GetGetMethod());
 
             if (objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
@@ -161,7 +157,6 @@ namespace MicroLite.Mapping
             ilGenerator.DeclareLocal(typeof(object));         // loc_2 - object converted
             ilGenerator.DeclareLocal(typeof(int));            // loc_3 - int i
             ilGenerator.DeclareLocal(typeof(string));         // loc, 4 - string columnName
-            ilGenerator.DeclareLocal(typeof(string));         // loc, 5 - string columnName (copy, not sure why this is needed but it doesn't work without it)
 
             var isDBNull = ilGenerator.DefineLabel();
             var getColumnName = ilGenerator.DefineLabel();
@@ -193,8 +188,6 @@ namespace MicroLite.Mapping
             ilGenerator.EmitCall(OpCodes.Callvirt, dataRecordGetName, null);
             ilGenerator.Emit(OpCodes.Stloc_S, 4);
             ilGenerator.Emit(OpCodes.Ldloc_S, 4);
-            ilGenerator.Emit(OpCodes.Dup);
-            ilGenerator.Emit(OpCodes.Stloc_S, 5);
             ilGenerator.Emit(OpCodes.Brfalse, incrementIndex);
 
             for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
@@ -203,7 +196,7 @@ namespace MicroLite.Mapping
                 columnLabels[i] = ilGenerator.DefineLabel();
 
                 // case "{PropertyName}"
-                ilGenerator.Emit(OpCodes.Ldloc_S, 5);
+                ilGenerator.Emit(OpCodes.Ldloc_S, 4);
                 ilGenerator.Emit(OpCodes.Ldstr, column.ColumnName);
                 ilGenerator.Emit(OpCodes.Call, stringEquals);
                 ilGenerator.Emit(OpCodes.Brtrue, columnLabels[i]);
@@ -315,15 +308,11 @@ namespace MicroLite.Mapping
 
             var ilGenerator = dynamicMethod.GetILGenerator();
 
-            ilGenerator.DeclareLocal(objectInfo.ForType);   // loc_0
-
             // var instance = ({ForType})arg_0;
             ilGenerator.Emit(OpCodes.Ldarg_0);
             ilGenerator.Emit(OpCodes.Castclass, objectInfo.ForType);
-            ilGenerator.Emit(OpCodes.Stloc_0);
 
             // var value = arg_1;
-            ilGenerator.Emit(OpCodes.Ldloc_0);
             ilGenerator.Emit(OpCodes.Ldarg_1);
 
             if (objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
