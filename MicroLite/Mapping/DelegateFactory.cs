@@ -71,7 +71,6 @@ namespace MicroLite.Mapping
 
             ilGenerator.DeclareLocal(objectInfo.ForType);     // loc_0
             ilGenerator.DeclareLocal(typeof(object[]));       // loc_1
-            ilGenerator.DeclareLocal(typeof(ITypeConverter)); // loc_2
 
             // var instance = ({ForType})arg_0;
             ilGenerator.Emit(OpCodes.Ldarg_0);
@@ -106,7 +105,6 @@ namespace MicroLite.Mapping
 
             ilGenerator.DeclareLocal(objectInfo.ForType);     // loc_0
             ilGenerator.DeclareLocal(typeof(object[]));       // loc_1
-            ilGenerator.DeclareLocal(typeof(ITypeConverter)); // loc_2
 
             // var instance = ({ForType})arg_0;
             ilGenerator.Emit(OpCodes.Ldarg_0);
@@ -344,6 +342,9 @@ namespace MicroLite.Mapping
                     continue;
                 }
 
+                ilGenerator.Emit(OpCodes.Ldloc_1);
+                ilGenerator.Emit(OpCodes.Ldc_I4, index++);
+
                 var hasTypeConverter = TypeConverter.For(column.PropertyInfo.PropertyType) != null;
 
                 if (hasTypeConverter)
@@ -352,15 +353,6 @@ namespace MicroLite.Mapping
                     ilGenerator.Emit(OpCodes.Ldtoken, column.PropertyInfo.PropertyType);
                     ilGenerator.EmitCall(OpCodes.Call, typeGetTypeFromHandleMethod, null);
                     ilGenerator.EmitCall(OpCodes.Call, typeConverterForMethod, null);
-                    ilGenerator.Emit(OpCodes.Stloc_2);
-                }
-
-                ilGenerator.Emit(OpCodes.Ldloc_1);
-                ilGenerator.Emit(OpCodes.Ldc_I4, index++);
-
-                if (hasTypeConverter)
-                {
-                    ilGenerator.Emit(OpCodes.Ldloc_2);
                 }
 
                 // var value = entity.{PropertyName};
