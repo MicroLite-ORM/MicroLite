@@ -21,7 +21,7 @@ namespace MicroLite.Core
     /// The default implementation of <see cref="IInclude&lt;T&gt;"/> for mapped objects.
     /// </summary>
     /// <typeparam name="T">The type of object to be included.</typeparam>
-    [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}")]
+    [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}, Value: {Value}")]
     internal sealed class IncludeSingle<T> : Include, IInclude<T>
     {
         private static readonly Type resultType = typeof(T);

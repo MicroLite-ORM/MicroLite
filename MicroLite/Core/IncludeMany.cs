@@ -22,7 +22,7 @@ namespace MicroLite.Core
     /// The default implementation of <see cref="IIncludeMany&lt;T&gt;"/>.
     /// </summary>
     /// <typeparam name="T">The type of object to be included.</typeparam>
-    [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}")]
+    [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}, Value: {Value}")]
     internal sealed class IncludeMany<T> : Include, IIncludeMany<T>
     {
         private static readonly Type resultType = typeof(T);
