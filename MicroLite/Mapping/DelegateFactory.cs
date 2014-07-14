@@ -153,7 +153,6 @@ namespace MicroLite.Mapping
             ilGenerator.DeclareLocal(objectInfo.ForType);     // loc_0 - {Type} instance = null;
             ilGenerator.DeclareLocal(typeof(int));            // loc_1 - int i
             ilGenerator.DeclareLocal(typeof(string));         // loc_2 - string columnName
-            ilGenerator.DeclareLocal(typeof(object));         // loc_3 - object converted
 
             var isDBNull = ilGenerator.DefineLabel();
             var getColumnName = ilGenerator.DefineLabel();
@@ -228,6 +227,8 @@ namespace MicroLite.Mapping
                 }
                 else
                 {
+                    ilGenerator.Emit(OpCodes.Ldloc_0);
+
                     if (TypeConverter.For(column.PropertyInfo.PropertyType) != null)
                     {
                         // typeConverter = TypeConverter.For(propertyType);
@@ -248,9 +249,6 @@ namespace MicroLite.Mapping
                     ilGenerator.Emit(OpCodes.Ldtoken, column.PropertyInfo.PropertyType);
                     ilGenerator.EmitCall(OpCodes.Call, typeGetTypeFromHandleMethod, null);
                     ilGenerator.EmitCall(OpCodes.Callvirt, convertFromDbValueMethod, null);
-                    ilGenerator.Emit(OpCodes.Stloc_3);
-                    ilGenerator.Emit(OpCodes.Ldloc_0);
-                    ilGenerator.Emit(OpCodes.Ldloc_3);
 
                     if (actualPropertyType.IsValueType)
                     {
