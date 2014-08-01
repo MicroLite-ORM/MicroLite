@@ -422,6 +422,22 @@ namespace MicroLite.Builder
             return this;
         }
 
+        public IAndOrOrderBy IsNotLike(object comparisonValue)
+        {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.InnerSql.Append(this.operand);
+            }
+
+            this.Arguments.Add(comparisonValue);
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" NOT LIKE ").Append(parameter).Append(')');
+
+            return this;
+        }
+
         public IAndOrOrderBy IsNotNull()
         {
             if (!string.IsNullOrEmpty(this.operand))

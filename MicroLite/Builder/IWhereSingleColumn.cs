@@ -193,11 +193,11 @@ namespace MicroLite.Builder
         /// var query = SqlBuilder
         ///     .Select("*")
         ///     .From(typeof(Customer))
-        ///     .Where("DateRegistered")
-        ///     .IsLike(new DateTime(2000, 1, 1))
+        ///     .Where("LastName")
+        ///     .IsLike("Smi%")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered LIKE @p0)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (LastName LIKE @p0)
         /// </example>
         IAndOrOrderBy IsLike(object comparisonValue);
 
@@ -219,6 +219,25 @@ namespace MicroLite.Builder
         /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<>--> @p0)
         /// </example>
         IAndOrOrderBy IsNotEqualTo(object comparisonValue);
+
+        /// <summary>
+        /// Uses the specified argument to filter the column.
+        /// </summary>
+        /// <param name="comparisonValue">The value to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results not being like the specified comparisonValue.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("LastName")
+        ///     .IsNotLike("Smi%")
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (LastName NOT LIKE @p0)
+        /// </example>
+        IAndOrOrderBy IsNotLike(object comparisonValue);
 
         /// <summary>
         /// Specifies that the specified column contains a value which is not null.
