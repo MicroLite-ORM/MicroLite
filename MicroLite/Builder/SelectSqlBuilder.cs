@@ -522,6 +522,40 @@ namespace MicroLite.Builder
             return this;
         }
 
+        public IAndOrOrderBy NotBetween(object lower, object upper)
+        {
+            if (lower == null)
+            {
+                throw new ArgumentNullException("lower");
+            }
+
+            if (upper == null)
+            {
+                throw new ArgumentNullException("upper");
+            }
+
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.InnerSql.Append(this.operand);
+            }
+
+            this.Arguments.Add(lower);
+            this.Arguments.Add(upper);
+
+            var lowerParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 2);
+            var upperParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.Append(" (")
+                .Append(this.whereColumnName)
+                .Append(" NOT BETWEEN ")
+                .Append(lowerParam)
+                .Append(" AND ")
+                .Append(upperParam)
+                .Append(')');
+
+            return this;
+        }
+
         public IAndOrOrderBy NotIn(params object[] args)
         {
             if (args == null)

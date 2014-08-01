@@ -258,6 +258,27 @@ namespace MicroLite.Builder
         /// <summary>
         /// Uses the specified Arguments to filter the column.
         /// </summary>
+        /// <param name="lower">The inclusive lower value.</param>
+        /// <param name="upper">The inclusive upper value.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if lower or upper is null.</exception>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results not being between the 2 specified values.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("DateRegistered")
+        ///     .NotBetween(new DateTime(2000, 1, 1), new DateTime(2009, 12, 31))
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered NOT BETWEEN @p0 AND @p1)
+        /// </example>
+        IAndOrOrderBy NotBetween(object lower, object upper);
+
+        /// <summary>
+        /// Uses the specified Arguments to filter the column.
+        /// </summary>
         /// <param name="args">The Arguments to filter the column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if args is null.</exception>

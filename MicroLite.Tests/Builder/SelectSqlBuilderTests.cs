@@ -273,6 +273,28 @@
         }
 
         [Fact]
+        public void NotBetweenThrowsArgumentExceptionForNullLower()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.NotBetween(null, 10));
+
+            Assert.Equal("lower", exception.ParamName);
+        }
+
+        [Fact]
+        public void NotBetweenThrowsArgumentExceptionForNullUpper()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.NotBetween(1, null));
+
+            Assert.Equal("upper", exception.ParamName);
+        }
+
+        [Fact]
         public void NotInThrowsArgumentNullExceptionForNullArgs()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
@@ -1131,7 +1153,7 @@
         }
 
         [Fact]
-        public void SelectWhereBetweenUsing()
+        public void SelectWhereBetween()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
 
@@ -1149,7 +1171,7 @@
         }
 
         [Fact]
-        public void SelectWhereBetweenUsingWithSqlCharacters()
+        public void SelectWhereBetweenWithSqlCharacters()
         {
             var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
@@ -1616,6 +1638,42 @@
             Assert.Equal(1024, sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (SELECT Id FROM Table WHERE Column = @p0))", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereNotBetween()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1")
+                   .NotBetween(1, 10)
+                   .ToSqlQuery();
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+            Assert.Equal(1, sqlQuery.Arguments[0]);
+            Assert.Equal(10, sqlQuery.Arguments[1]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT BETWEEN ? AND ?)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereNotBetweenWithSqlCharacters()
+        {
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1")
+                   .NotBetween(1, 10)
+                   .ToSqlQuery();
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+            Assert.Equal(1, sqlQuery.Arguments[0]);
+            Assert.Equal(10, sqlQuery.Arguments[1]);
+
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
         }
 
         [Fact]
