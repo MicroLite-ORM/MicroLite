@@ -17,7 +17,7 @@ namespace MicroLite.Builder
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class SelectSqlBuilder : SqlBuilderBase, ISelectFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IWhereSingleColumn, IHavingOrOrderBy
+    internal sealed class SelectSqlBuilder : SqlBuilderBase, ISelectFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IWhereSingleColumn, IHavingOrOrderBy, IWhereExists
     {
         private bool addedOrder = false;
         private bool addedWhere = false;
@@ -120,6 +120,13 @@ namespace MicroLite.Builder
         public IFunctionOrFrom Count(string columnName, string columnAlias)
         {
             this.AddFunctionCall("COUNT", columnName, columnAlias);
+
+            return this;
+        }
+
+        public IAndOrOrderBy Exists(SqlQuery subQuery)
+        {
+            this.AddExists(subQuery, negate: false);
 
             return this;
         }
@@ -324,6 +331,13 @@ namespace MicroLite.Builder
             return this;
         }
 
+        public IAndOrOrderBy NotExists(SqlQuery subQuery)
+        {
+            this.AddExists(subQuery, negate: true);
+
+            return this;
+        }
+
         public IAndOrOrderBy NotIn(params object[] args)
         {
             this.AddIn(args, negate: true);
@@ -405,6 +419,17 @@ namespace MicroLite.Builder
         public IFunctionOrFrom Sum(string columnName, string columnAlias)
         {
             this.AddFunctionCall("SUM", columnName, columnAlias);
+
+            return this;
+        }
+
+        public IWhereExists Where()
+        {
+            if (!this.addedWhere)
+            {
+                this.InnerSql.Append(" WHERE");
+                this.addedWhere = true;
+            }
 
             return this;
         }
@@ -498,6 +523,23 @@ namespace MicroLite.Builder
                 .Append(" AND ")
                 .Append(upperParam)
                 .Append(')');
+        }
+
+        private void AddExists(SqlQuery subQuery, bool negate)
+        {
+            if (subQuery == null)
+            {
+                throw new ArgumentNullException("subQuery");
+            }
+
+            this.Arguments.AddRange(subQuery.Arguments);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+
+            this.InnerSql.Append(negate ? " NOT" : string.Empty)
+                .Append(" EXISTS (")
+                .Append(renumberedPredicate)
+                .Append(")");
         }
 
         private void AddFunctionCall(string functionName, string columnName, string columnAlias)

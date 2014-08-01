@@ -20,6 +20,22 @@ namespace MicroLite.Builder
         /// <summary>
         /// Specifies the where clause for the query.
         /// </summary>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify a sub query for the EXISTS keyword.
+        /// <code>
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where()
+        ///     ...
+        /// </code>
+        /// </example>
+        IWhereExists Where();
+
+        /// <summary>
+        /// Specifies the where clause for the query.
+        /// </summary>
         /// <param name="column">The column name to use in the where clause.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentException">Thrown if column is null or empty.</exception>

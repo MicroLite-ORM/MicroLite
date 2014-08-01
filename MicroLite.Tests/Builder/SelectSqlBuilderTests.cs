@@ -152,6 +152,17 @@
         }
 
         [Fact]
+        public void ExistsThrowArgumentNullExceptionForNullSqlQuery()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").Where().Exists(null));
+
+            Assert.Equal("subQuery", exception.ParamName);
+        }
+
+        [Fact]
         public void FromThrowsArgumentExceptionForEmptyTableName()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
@@ -292,6 +303,17 @@
                 () => sqlBuilder.NotBetween(1, null));
 
             Assert.Equal("upper", exception.ParamName);
+        }
+
+        [Fact]
+        public void NotExistsThrowArgumentNullExceptionForNullSqlQuery()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").Where().NotExists(null));
+
+            Assert.Equal("subQuery", exception.ParamName);
         }
 
         [Fact]
@@ -1525,6 +1547,25 @@
         }
 
         [Fact]
+        public void SelectWhereExistsSqlQuery()
+        {
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where()
+                .Exists(subQuery)
+                .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(1024, sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE EXISTS (SELECT Id FROM Table WHERE Column = ?)", sqlQuery.CommandText);
+        }
+
+        [Fact]
         public void SelectWhereGroupByHavingOrderBy()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
@@ -1624,7 +1665,7 @@
         [Fact]
         public void SelectWhereInSqlQuery()
         {
-            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = @p0", 1024);
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
 
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
 
@@ -1637,7 +1678,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1024, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (SELECT Id FROM Table WHERE Column = @p0))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1674,6 +1715,25 @@
             Assert.Equal(10, sqlQuery.Arguments[1]);
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereNotExistsSqlQuery()
+        {
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where()
+                .NotExists(subQuery)
+                .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(1024, sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE NOT EXISTS (SELECT Id FROM Table WHERE Column = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1716,7 +1776,7 @@
         [Fact]
         public void SelectWhereNotInSqlQuery()
         {
-            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = @p0", 1024);
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
 
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
 
@@ -1728,7 +1788,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1024, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (SELECT Id FROM Table WHERE Column = @p0))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
         }
 
         [Fact]
