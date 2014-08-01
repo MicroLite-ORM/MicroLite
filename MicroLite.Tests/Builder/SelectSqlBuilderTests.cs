@@ -152,6 +152,28 @@
         }
 
         [Fact]
+        public void DistinctThrowsArgumentExceptionForNullColumnName()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.Distinct((string)null));
+
+            Assert.Equal("columnName", exception.ParamName);
+        }
+
+        [Fact]
+        public void DistinctThrowsArgumentExceptionForNullColumns()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.Distinct((string[])null));
+
+            Assert.Equal("columns", exception.ParamName);
+        }
+
+        [Fact]
         public void ExistsThrowArgumentNullExceptionForNullSqlQuery()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
@@ -601,6 +623,51 @@
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT COUNT([Id]) AS Id FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectDistinctColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
+
+            var sqlQuery = sqlBuilder
+                .Distinct("CreditLimit")
+                .From(typeof(Customer))
+                .ToSqlQuery();
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+
+            Assert.Equal("SELECT DISTINCT CreditLimit FROM Sales.Customers", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectDistinctColumnsWithSqlCharacters()
+        {
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
+
+            var sqlQuery = sqlBuilder
+                .Distinct("CreditLimit", "DateOfBirth")
+                .From(typeof(Customer))
+                .ToSqlQuery();
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+
+            Assert.Equal("SELECT DISTINCT [CreditLimit],[DateOfBirth] FROM [Sales].[Customers]", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectDistinctColumnWithSqlCharacters()
+        {
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
+
+            var sqlQuery = sqlBuilder
+                .Distinct("CreditLimit")
+                .From(typeof(Customer))
+                .ToSqlQuery();
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+
+            Assert.Equal("SELECT DISTINCT [CreditLimit] FROM [Sales].[Customers]", sqlQuery.CommandText);
         }
 
         [Fact]

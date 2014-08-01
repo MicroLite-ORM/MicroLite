@@ -140,6 +140,40 @@ namespace MicroLite.Builder
             return this;
         }
 
+        public IFunctionOrFrom Distinct(string columnName)
+        {
+            if (columnName == null)
+            {
+                throw new ArgumentNullException("columnName");
+            }
+
+            this.InnerSql.Append("DISTINCT ").Append(this.SqlCharacters.EscapeSql(columnName));
+
+            return this;
+        }
+
+        public IFunctionOrFrom Distinct(params string[] columns)
+        {
+            if (columns == null)
+            {
+                throw new ArgumentNullException("columns");
+            }
+
+            this.InnerSql.Append("DISTINCT ");
+
+            for (int i = 0; i < columns.Length; i++)
+            {
+                if (i > 0)
+                {
+                    this.InnerSql.Append(',');
+                }
+
+                this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
+            }
+
+            return this;
+        }
+
         public IAndOrOrderBy Exists(SqlQuery subQuery)
         {
             this.AddExists(subQuery, negate: false);
