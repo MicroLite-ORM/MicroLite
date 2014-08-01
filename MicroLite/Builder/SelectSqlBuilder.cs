@@ -38,6 +38,22 @@ namespace MicroLite.Builder
         /// Initialises a new instance of the <see cref="SelectSqlBuilder"/> class with an optional list of columns to select.
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters.</param>
+        /// <param name="column">The column.</param>
+        internal SelectSqlBuilder(SqlCharacters sqlCharacters, string column)
+            : base(sqlCharacters)
+        {
+            this.InnerSql.Append("SELECT ");
+
+            if (column != null)
+            {
+                this.InnerSql.Append(this.SqlCharacters.EscapeSql(column));
+            }
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SelectSqlBuilder"/> class with an optional list of columns to select.
+        /// </summary>
+        /// <param name="sqlCharacters">The SQL characters.</param>
         /// <param name="columns">The columns.</param>
         internal SelectSqlBuilder(SqlCharacters sqlCharacters, params string[] columns)
             : base(sqlCharacters)

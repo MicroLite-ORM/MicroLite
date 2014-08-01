@@ -459,7 +459,7 @@
         [Fact]
         public void SelectAverage()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Average("CreditLimit")
@@ -476,7 +476,7 @@
         [Fact]
         public void SelectAverageWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Average("CreditLimit", columnAlias: "AverageCreditLimit")
@@ -511,7 +511,7 @@
         [Fact]
         public void SelectAverageWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Average("CreditLimit")
@@ -546,7 +546,7 @@
         [Fact]
         public void SelectCount()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Count("Id")
@@ -560,7 +560,7 @@
         [Fact]
         public void SelectCountWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Count("Id", columnAlias: "CustomerCount")
@@ -589,7 +589,7 @@
         [Fact]
         public void SelectCountWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Count("Id")
@@ -852,7 +852,7 @@
         [Fact]
         public void SelectMax()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Max("CreditLimit")
@@ -869,7 +869,7 @@
         [Fact]
         public void SelectMaxWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Max("CreditLimit", columnAlias: "MaxCreditLimit")
@@ -903,7 +903,7 @@
         [Fact]
         public void SelectMaxWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Max("CreditLimit")
@@ -920,7 +920,7 @@
         [Fact]
         public void SelectMin()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Min("CreditLimit")
@@ -937,7 +937,7 @@
         [Fact]
         public void SelectMinWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Min("CreditLimit", columnAlias: "MinCreditLimit")
@@ -971,7 +971,7 @@
         [Fact]
         public void SelectMinWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Min("CreditLimit")
@@ -988,7 +988,7 @@
         [Fact]
         public void SelectSum()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Sum("CreditLimit")
@@ -1005,7 +1005,7 @@
         [Fact]
         public void SelectSumWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Sum("CreditLimit", columnAlias: "SumCreditLimit")
@@ -1039,7 +1039,7 @@
         [Fact]
         public void SelectSumWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Sum("CreditLimit")

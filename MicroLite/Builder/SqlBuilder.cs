@@ -63,7 +63,7 @@ namespace MicroLite.Builder
         /// </example>
         public static IFunctionOrFrom Select()
         {
-            return new SelectSqlBuilder(SqlCharacters.Current, null);
+            return new SelectSqlBuilder(SqlCharacters.Current, (string)null);
         }
 
         /// <summary>
