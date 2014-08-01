@@ -15,7 +15,6 @@ namespace MicroLite.Builder
     /// <summary>
     /// The interface which specifies the where in method in the fluent sql builder syntax.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "OrIn", Justification = "In this case we mean OR/IN.")]
     public interface IWhereSingleColumn : IHideObjectMethods
     {
         /// <summary>
@@ -294,7 +293,6 @@ namespace MicroLite.Builder
         /// </code>
         /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 NOT IN (@p0, @p1, @p2))
         /// </example>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
         IAndOrOrderBy NotIn(params object[] args);
 
         /// <summary>
@@ -321,7 +319,6 @@ namespace MicroLite.Builder
         /// </code>
         /// Will generate SELECT {Columns} FROM Invoices WHERE (CustomerId NOT IN (SELECT CustomerId FROM Customers WHERE Age > @p0))
         /// </example>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
         IAndOrOrderBy NotIn(SqlQuery subQuery);
     }
 }
