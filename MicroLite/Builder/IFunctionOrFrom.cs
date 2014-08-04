@@ -100,7 +100,7 @@ namespace MicroLite.Builder
         /// <summary>
         /// Selects the distinct values in the specified column.
         /// </summary>
-        /// <param name="columnName">The column to be included in the query.</param>
+        /// <param name="column">The column to be included in the query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentException">Thrown if columnName is null or empty.</exception>
         /// <example>
@@ -115,7 +115,7 @@ namespace MicroLite.Builder
         /// </code>
         /// Will generate SELECT DISTINCT Total FROM Invoices WHERE (CustomerId = @p0)
         /// </example>
-        IFunctionOrFrom Distinct(string columnName);
+        IFunctionOrFrom Distinct(string column);
 
         /// <summary>
         /// Selects the distinct values in the specified columns.

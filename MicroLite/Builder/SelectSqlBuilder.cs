@@ -140,14 +140,14 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IFunctionOrFrom Distinct(string columnName)
+        public IFunctionOrFrom Distinct(string column)
         {
-            if (columnName == null)
+            if (string.IsNullOrEmpty(column))
             {
-                throw new ArgumentNullException("columnName");
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
             }
 
-            this.InnerSql.Append("DISTINCT ").Append(this.SqlCharacters.EscapeSql(columnName));
+            this.InnerSql.Append("DISTINCT ").Append(this.SqlCharacters.EscapeSql(column));
 
             return this;
         }

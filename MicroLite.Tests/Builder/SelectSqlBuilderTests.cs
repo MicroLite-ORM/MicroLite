@@ -156,10 +156,10 @@
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
 
-            var exception = Assert.Throws<ArgumentNullException>(
+            var exception = Assert.Throws<ArgumentException>(
                 () => sqlBuilder.Distinct((string)null));
 
-            Assert.Equal("columnName", exception.ParamName);
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"), exception.Message);
         }
 
         [Fact]
