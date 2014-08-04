@@ -1995,5 +1995,27 @@
 
             Assert.Equal("SELECT *", sqlBuilder.ToSqlQuery().CommandText);
         }
+
+        [Fact]
+        public void WhereThrowsArgumentExceptionForNullColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Where(null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"), exception.Message);
+        }
+
+        [Fact]
+        public void WhereThrowsArgumentExceptionForNullPredicate()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Where(null, new object[0]));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"), exception.Message);
+        }
     }
 }
