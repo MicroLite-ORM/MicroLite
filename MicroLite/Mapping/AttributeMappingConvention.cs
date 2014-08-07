@@ -93,7 +93,7 @@ namespace MicroLite.Mapping
                     columnName: columnAttribute.Name,
                     propertyInfo: property,
                     isIdentifier: identifierAttribute != null,
-                    allowInsert: identifierAttribute != null ? identifierStrategy != IdentifierStrategy.DbGenerated : columnAttribute.AllowInsert,
+                    allowInsert: identifierAttribute != null ? identifierStrategy == IdentifierStrategy.Assigned : columnAttribute.AllowInsert,
                     allowUpdate: identifierAttribute != null ? false : columnAttribute.AllowUpdate);
 
                 if (this.log.IsDebug)
