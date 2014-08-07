@@ -54,7 +54,7 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Initialises a new instance of the <see cref="TableAttribute"/> class.
         /// </summary>
-        /// <param name="schema">The database schema the table exists within (e.g. 'dbo').</param>
+        /// <param name="schema">The database schema the table exists within (e.g. 'dbo'); otherwise null.</param>
         /// <param name="name">The name of the table.</param>
         public TableAttribute(string schema, string name)
         {
@@ -74,7 +74,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the schema the table exists within.
+        /// Gets the database schema the table exists within (e.g. 'dbo'); otherwise null.
         /// </summary>
         public string Schema
         {

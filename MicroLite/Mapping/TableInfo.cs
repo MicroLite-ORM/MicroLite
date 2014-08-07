@@ -38,7 +38,7 @@ namespace MicroLite.Mapping
         /// <param name="columns">The columns that are mapped for the table.</param>
         /// <param name="identifierStrategy">The identifier strategy used by the table.</param>
         /// <param name="name">The name of the table.</param>
-        /// <param name="schema">The name of the schema the table exists within.</param>
+        /// <param name="schema">The database schema the table exists within (e.g. 'dbo'); otherwise null.</param>
         /// <exception cref="ArgumentNullException">Thrown if columns or name are null.</exception>
         /// <exception cref="MappingException">Thrown if no there is a problem with the column mappings.</exception>
         public TableInfo(
@@ -115,7 +115,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the name of the table.
+        /// Gets the database schema the table exists within (e.g. 'dbo'); otherwise null.
         /// </summary>
         public string Name
         {
