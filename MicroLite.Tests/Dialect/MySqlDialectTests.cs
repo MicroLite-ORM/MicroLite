@@ -12,11 +12,11 @@
     public class MySqlDialectTests : UnitTest
     {
         [Fact]
-        public void BuildSelectIdentitySqlQuery()
+        public void BuildSelectInsertIdSqlQuery()
         {
             var sqlDialect = new MySqlDialect();
 
-            var sqlQuery = sqlDialect.BuildSelectIdentitySqlQuery(ObjectInfo.For(typeof(Customer)));
+            var sqlQuery = sqlDialect.BuildSelectInsertIdSqlQuery(ObjectInfo.For(typeof(Customer)));
 
             Assert.Equal("SELECT LAST_INSERT_ID()", sqlQuery.CommandText);
             Assert.Equal(0, sqlQuery.Arguments.Count);

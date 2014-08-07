@@ -193,25 +193,7 @@ namespace MicroLite.Core
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
-                if (this.SqlDialect.SupportsIdentity)
-                {
-                    var selectIdSqlQuery = this.SqlDialect.BuildSelectIdentitySqlQuery(objectInfo);
-
-                    if (this.DbDriver.SupportsBatchedQueries)
-                    {
-                        var combined = this.DbDriver.Combine(insertSqlQuery, selectIdSqlQuery);
-                        identifier = this.ExecuteScalar<object>(combined);
-                    }
-                    else
-                    {
-                        this.Execute(insertSqlQuery);
-                        identifier = this.ExecuteScalar<object>(selectIdSqlQuery);
-                    }
-                }
-                else
-                {
-                    identifier = this.ExecuteScalar<object>(insertSqlQuery);
-                }
+                identifier = this.InsertReturningIdentifier(objectInfo, insertSqlQuery);
             }
             else if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
             {
@@ -276,6 +258,33 @@ namespace MicroLite.Core
             var rowsAffected = this.Execute(sqlQuery);
 
             return rowsAffected == 1;
+        }
+
+        private object InsertReturningIdentifier(IObjectInfo objectInfo, SqlQuery insertSqlQuery)
+        {
+            object identifier = null;
+
+            if (this.SqlDialect.SupportsIdentity)
+            {
+                var selectInsertIdSqlQuery = this.SqlDialect.BuildSelectInsertIdSqlQuery(objectInfo);
+
+                if (this.DbDriver.SupportsBatchedQueries)
+                {
+                    var combined = this.DbDriver.Combine(insertSqlQuery, selectInsertIdSqlQuery);
+                    identifier = this.ExecuteScalar<object>(combined);
+                }
+                else
+                {
+                    this.Execute(insertSqlQuery);
+                    identifier = this.ExecuteScalar<object>(selectInsertIdSqlQuery);
+                }
+            }
+            else
+            {
+                identifier = this.ExecuteScalar<object>(insertSqlQuery);
+            }
+
+            return identifier;
         }
     }
 }

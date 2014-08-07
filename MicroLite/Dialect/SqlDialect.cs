@@ -135,7 +135,7 @@ namespace MicroLite.Dialect
         /// <returns>
         /// The created <see cref="SqlQuery" />.
         /// </returns>
-        public virtual SqlQuery BuildSelectIdentitySqlQuery(IObjectInfo objectInfo)
+        public virtual SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
         {
             return new SqlQuery(string.Empty);
         }

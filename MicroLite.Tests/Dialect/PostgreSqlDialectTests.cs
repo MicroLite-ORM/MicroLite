@@ -12,11 +12,11 @@
     public class PostgreSqlDialectTests : UnitTest
     {
         [Fact]
-        public void BuildSelectIdentitySqlQuery()
+        public void BuildSelectInsertIdSqlQuery()
         {
             var sqlDialect = new PostgreSqlDialect();
 
-            var sqlQuery = sqlDialect.BuildSelectIdentitySqlQuery(ObjectInfo.For(typeof(Customer)));
+            var sqlQuery = sqlDialect.BuildSelectInsertIdSqlQuery(ObjectInfo.For(typeof(Customer)));
 
             Assert.Equal("SELECT lastval()", sqlQuery.CommandText);
             Assert.Equal(0, sqlQuery.Arguments.Count);

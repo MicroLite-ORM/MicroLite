@@ -29,14 +29,6 @@ namespace MicroLite.Dialect
         {
         }
 
-        public override bool SupportsIdentity
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
             if (sqlQuery == null)

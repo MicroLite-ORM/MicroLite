@@ -37,7 +37,7 @@
         }
 
         [Fact]
-        public void BuildSelectIdentitySqlQueryReturnsSqlQueryWithEmptyCommandTextAndNoArguments()
+        public void BuildSelectInsertIdSqlQueryReturnsSqlQueryWithEmptyCommandTextAndNoArguments()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
@@ -45,7 +45,7 @@
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
-            var sqlQuery = mockSqlDialect.Object.BuildSelectIdentitySqlQuery(ObjectInfo.For(typeof(Customer)));
+            var sqlQuery = mockSqlDialect.Object.BuildSelectInsertIdSqlQuery(ObjectInfo.For(typeof(Customer)));
 
             Assert.Equal(string.Empty, sqlQuery.CommandText);
             Assert.Equal(0, sqlQuery.Arguments.Count);

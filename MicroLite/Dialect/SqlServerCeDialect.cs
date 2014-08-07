@@ -39,7 +39,7 @@ namespace MicroLite.Dialect
             }
         }
 
-        public override SqlQuery BuildSelectIdentitySqlQuery(IObjectInfo objectInfo)
+        public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
         {
             return selectIdentityQuery;
         }
