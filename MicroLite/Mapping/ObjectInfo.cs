@@ -26,15 +26,7 @@ namespace MicroLite.Mapping
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
         private static IMappingConvention mappingConvention;
-
-        private static IDictionary<Type, IObjectInfo> objectInfos = new Dictionary<Type, IObjectInfo>
-        {
-#if !NET_3_5
-            { typeof(System.Dynamic.ExpandoObject), new ExpandoObjectInfo() },
-            { typeof(object), new ExpandoObjectInfo() } // If the generic argument <dynamic> is used (in ISession.Fetch for example), typeof(T) will return object.
-#endif
-        };
-
+        private static IDictionary<Type, IObjectInfo> objectInfos = GetObjectInfos();
         private readonly object defaultIdentifierValue;
         private readonly Type forType;
         private readonly Func<object, object> getIdentifierValue;
@@ -332,14 +324,20 @@ namespace MicroLite.Mapping
         internal static void Reset()
         {
             mappingConvention = null;
+            objectInfos = GetObjectInfos();
+        }
 
-            objectInfos = new Dictionary<Type, IObjectInfo>
-            {
+        private static Dictionary<Type, IObjectInfo> GetObjectInfos()
+        {
+            var dictionary = new Dictionary<Type, IObjectInfo>();
+
 #if !NET_3_5
-                { typeof(System.Dynamic.ExpandoObject), new ExpandoObjectInfo() },
-                { typeof(object), new ExpandoObjectInfo() }
+            var expandoObjectInfo = new ExpandoObjectInfo();
+            dictionary.Add(typeof(System.Dynamic.ExpandoObject), expandoObjectInfo);
+            dictionary.Add(typeof(object), expandoObjectInfo); // If the generic argument <dynamic> is used (in ISession.Fetch for example), typeof(T) will return object.
 #endif
-            };
+
+            return dictionary;
         }
 
         private static void VerifyType(Type forType)
