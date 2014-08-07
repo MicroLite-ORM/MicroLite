@@ -24,14 +24,17 @@ namespace MicroLite.Core
     internal sealed class IncludeScalar<T> : Include, IInclude<T>
     {
         private static readonly Type resultType = typeof(T);
-        private T value;
+        private Action<IInclude<T>> callback;
 
         public T Value
         {
-            get
-            {
-                return this.value;
-            }
+            get;
+            private set;
+        }
+
+        public void OnLoad(Action<IInclude<T>> action)
+        {
+            this.callback = action;
         }
 
         internal override void BuildValue(IDataReader reader)
@@ -44,12 +47,18 @@ namespace MicroLite.Core
                 }
 
                 var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
-                this.value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
+
+                this.Value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
                 this.HasValue = true;
 
                 if (reader.Read())
                 {
                     throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
+                }
+
+                if (this.callback != null)
+                {
+                    this.callback(this);
                 }
             }
         }
