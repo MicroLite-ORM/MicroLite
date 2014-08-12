@@ -34,9 +34,14 @@ namespace MicroLite.TypeConverters
         /// </returns>
         public bool CanConvert(Type type)
         {
+            if (type.IsEnum)
+            {
+                return true;
+            }
+
             var actualType = TypeConverter.ResolveActualType(type);
 
-            return actualType.IsEnum;
+            return actualType != null ? actualType.IsEnum : false;
         }
 
         /// <summary>
