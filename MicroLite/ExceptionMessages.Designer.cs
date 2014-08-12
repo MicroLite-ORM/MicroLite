@@ -178,6 +178,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No column has been mapped as the identifier for the table &apos;{0}.{1}&apos;, as a result it cannot be used for Select by Id, Insert, Update or Delete calls.
+        /// </summary>
+        internal static string ObjectInfo_NoIdentifierColumn {
+            get {
+                return ResourceManager.GetString("ObjectInfo_NoIdentifierColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The type of the object {0} does not match the type for the ObjectInfo {1}.
         /// </summary>
         internal static string ObjectInfo_TypeMismatch {
@@ -309,15 +318,6 @@ namespace MicroLite {
         internal static string TableInfo_MultipleIdentifierColumns {
             get {
                 return ResourceManager.GetString("TableInfo_MultipleIdentifierColumns", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No column has been mapped as the identifier for the table &apos;{0}.{1}&apos;.
-        /// </summary>
-        internal static string TableInfo_NoIdentifierColumn {
-            get {
-                return ResourceManager.GetString("TableInfo_NoIdentifierColumn", resourceCulture);
             }
         }
         

@@ -140,6 +140,7 @@
         }
 
 #if !NET_3_5
+
         [Fact]
         public void For_ReturnsExpandoObjectInfo_ForTypeOfDynamic()
         {
@@ -147,6 +148,7 @@
 
             Assert.IsType<ExpandoObjectInfo>(objectInfo);
         }
+
 #endif
 
         [Fact]
@@ -281,6 +283,21 @@
         }
 
         [Fact]
+        public void GetIdentifierValueThrowsMicroLiteException_WhenNoIdentifierMapped()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new CustomerWithNoIdentifier();
+
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithNoIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.GetIdentifierValue(customer));
+
+            Assert.Equal(ExceptionMessages.ObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentivesier"), exception.Message);
+        }
+
+        [Fact]
         public void GetInsertValues_ReturnsPropertyValues_WhenUsingAssigned()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
@@ -354,6 +371,21 @@
             Assert.Equal(
                 string.Format(ExceptionMessages.ObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
                 exception.Message);
+        }
+
+        [Fact]
+        public void GetInsertValuesThrowsMicroLiteException_WhenNoIdentifierMapped()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new CustomerWithNoIdentifier();
+
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithNoIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.GetInsertValues(customer));
+
+            Assert.Equal(ExceptionMessages.ObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentivesier"), exception.Message);
         }
 
         [Fact]
@@ -434,6 +466,21 @@
         }
 
         [Fact]
+        public void GetUpdateValuesThrowsMicroLiteException_WhenNoIdentifierMapped()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new CustomerWithNoIdentifier();
+
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithNoIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.GetUpdateValues(customer));
+
+            Assert.Equal(ExceptionMessages.ObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentivesier"), exception.Message);
+        }
+
+        [Fact]
         public void HasDefaultIdentifierValue_ThrowsArgumentNullException_IfInstanceIsNull()
         {
             var objectInfo = ObjectInfo.For(typeof(Customer));
@@ -499,6 +546,21 @@
 
             customer.Id = "AFIK";
             Assert.False(objectInfo.HasDefaultIdentifierValue(customer));
+        }
+
+        [Fact]
+        public void HasDefaultIdentifierValueThrowsMicroLiteException_WhenNoIdentifierMapped()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new CustomerWithNoIdentifier();
+
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithNoIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.HasDefaultIdentifierValue(customer));
+
+            Assert.Equal(ExceptionMessages.ObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentivesier"), exception.Message);
         }
 
         [Fact]
@@ -609,6 +671,21 @@
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
 
             Assert.Equal(ExceptionMessages.ObjectInfo_IdentifierSetForInsert, exception.Message);
+        }
+
+        [Fact]
+        public void VerifyInstanceForInsertThrowsMicroLiteException_WhenNoIdentifierMapped()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new CustomerWithNoIdentifier();
+
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithNoIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
+
+            Assert.Equal(ExceptionMessages.ObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentivesier"), exception.Message);
         }
 
         /// <summary>

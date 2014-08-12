@@ -59,16 +59,20 @@ namespace MicroLite.Mapping
             this.forType = forType;
             this.tableInfo = tableInfo;
 
-            if (this.tableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
+            if (this.tableInfo.IdentifierColumn != null && this.tableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
             {
                 this.defaultIdentifierValue = (ValueType)Activator.CreateInstance(this.tableInfo.IdentifierColumn.PropertyInfo.PropertyType);
             }
 
-            this.getIdentifierValue = DelegateFactory.CreateGetIdentifier(this);
-            this.getInsertValues = DelegateFactory.CreateGetInsertValues(this);
-            this.getUpdateValues = DelegateFactory.CreateGetUpdateValues(this);
+            if (this.tableInfo.IdentifierColumn != null)
+            {
+                this.getIdentifierValue = DelegateFactory.CreateGetIdentifier(this);
+                this.getInsertValues = DelegateFactory.CreateGetInsertValues(this);
+                this.getUpdateValues = DelegateFactory.CreateGetUpdateValues(this);
+                this.setIdentifierValue = DelegateFactory.CreateSetIdentifier(this);
+            }
+
             this.instanceFactory = DelegateFactory.CreateInstanceFactory(this);
-            this.setIdentifierValue = DelegateFactory.CreateSetIdentifier(this);
         }
 
         /// <summary>
@@ -203,6 +207,7 @@ namespace MicroLite.Mapping
         public object GetIdentifierValue(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            this.VerifyIdentifierMapped();
 
             var value = this.getIdentifierValue(instance);
 
@@ -219,6 +224,7 @@ namespace MicroLite.Mapping
         public object[] GetInsertValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            this.VerifyIdentifierMapped();
 
             var insertValues = this.getInsertValues(instance);
 
@@ -235,6 +241,7 @@ namespace MicroLite.Mapping
         public object[] GetUpdateValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            this.VerifyIdentifierMapped();
 
             var updateValues = this.getUpdateValues(instance);
 
@@ -253,6 +260,7 @@ namespace MicroLite.Mapping
         public bool HasDefaultIdentifierValue(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            this.VerifyIdentifierMapped();
 
             var identifierValue = this.getIdentifierValue(instance);
 
@@ -299,6 +307,8 @@ namespace MicroLite.Mapping
         /// </exception>
         public void VerifyInstanceForInsert(object instance)
         {
+            this.VerifyIdentifierMapped();
+
             if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
             {
                 if (!this.HasDefaultIdentifierValue(instance))
@@ -360,6 +370,15 @@ namespace MicroLite.Mapping
             if (forType.GetConstructor(Type.EmptyTypes) == null)
             {
                 throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(forType.Name));
+            }
+        }
+
+        private void VerifyIdentifierMapped()
+        {
+            if (this.tableInfo.IdentifierColumn == null)
+            {
+                throw new MicroLiteException(
+                    ExceptionMessages.ObjectInfo_NoIdentifierColumn.FormatWith(this.tableInfo.Schema ?? string.Empty, this.tableInfo.Name));
             }
         }
 

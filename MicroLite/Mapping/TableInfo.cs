@@ -64,7 +64,7 @@ namespace MicroLite.Mapping
 
             this.ValidateColumns();
 
-            this.identifierColumn = columns.Single(c => c.IsIdentifier);
+            this.identifierColumn = columns.SingleOrDefault(c => c.IsIdentifier);
 
             this.insertColumnCount = columns.Count(c => c.AllowInsert);
             this.updateColumnCount = columns.Count(c => c.AllowUpdate);
@@ -161,11 +161,6 @@ namespace MicroLite.Mapping
             if (duplicatedColumn != null)
             {
                 throw new MappingException(ExceptionMessages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
-            }
-
-            if (!this.columns.Any(c => c.IsIdentifier))
-            {
-                throw new MappingException(ExceptionMessages.TableInfo_NoIdentifierColumn.FormatWith(this.schema, this.name));
             }
 
             if (this.columns.Count(c => c.IsIdentifier) > 1)

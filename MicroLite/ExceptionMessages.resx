@@ -156,6 +156,9 @@
   <data name="ObjectInfo_IdentifierSetForInsert" xml:space="preserve">
     <value>The object already has an identifier value so it cannot be inserted</value>
   </data>
+  <data name="ObjectInfo_NoIdentifierColumn" xml:space="preserve">
+    <value>No column has been mapped as the identifier for the table '{0}.{1}', as a result it cannot be used for Select by Id, Insert, Update or Delete calls</value>
+  </data>
   <data name="ObjectInfo_TypeMismatch" xml:space="preserve">
     <value>The type of the object {0} does not match the type for the ObjectInfo {1}</value>
   </data>
@@ -200,9 +203,6 @@
   </data>
   <data name="TableInfo_MultipleIdentifierColumns" xml:space="preserve">
     <value>Multiple columns have been mapped as the identifier for the table '{0}.{1}'</value>
-  </data>
-  <data name="TableInfo_NoIdentifierColumn" xml:space="preserve">
-    <value>No column has been mapped as the identifier for the table '{0}.{1}'</value>
   </data>
   <data name="Transaction_AlreadyCompleted" xml:space="preserve">
     <value>The Transaction has been completed</value>
