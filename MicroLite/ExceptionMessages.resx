@@ -207,4 +207,10 @@
   <data name="Transaction_AlreadyCompleted" xml:space="preserve">
     <value>The Transaction has been completed</value>
   </data>
+  <data name="TupleObjectInfo_NotSupportedReason" xml:space="preserve">
+    <value>Tuple types can only be used for queries where an SqlQuery is supplied, it cannot be used for select by identifier, insert, update or delete.</value>
+  </data>
+  <data name="TupleObjectInfo_TupleNotSupported" xml:space="preserve">
+    <value>Only Tuple&lt;T1&gt; through to Tuple&lt;T1,T2,T3,T4,T5,T6,T7&gt; are supported.</value>
+  </data>
 </root>

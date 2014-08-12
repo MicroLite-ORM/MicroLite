@@ -329,5 +329,23 @@ namespace MicroLite {
                 return ResourceManager.GetString("Transaction_AlreadyCompleted", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tuple types can only be used for queries where an SqlQuery is supplied, it cannot be used for select by identifier, insert, update or delete..
+        /// </summary>
+        internal static string TupleObjectInfo_NotSupportedReason {
+            get {
+                return ResourceManager.GetString("TupleObjectInfo_NotSupportedReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only Tuple&lt;T1&gt; through to Tuple&lt;T1,T2,T3,T4,T5,T6,T7&gt; are supported..
+        /// </summary>
+        internal static string TupleObjectInfo_TupleNotSupported {
+            get {
+                return ResourceManager.GetString("TupleObjectInfo_TupleNotSupported", resourceCulture);
+            }
+        }
     }
 }

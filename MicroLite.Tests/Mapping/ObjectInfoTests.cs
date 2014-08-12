@@ -162,6 +162,66 @@
             Assert.Same(objectInfo1, objectInfo2);
         }
 
+#if !NET_3_5
+
+        [Fact]
+        public void For_ReturnsTupleObjectInfo_ForTypeOfTupleT1()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Tuple<int>));
+
+            Assert.IsType<TupleObjectInfo>(objectInfo);
+        }
+
+        [Fact]
+        public void For_ReturnsTupleObjectInfo_ForTypeOfTupleT2()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Tuple<int, string>));
+
+            Assert.IsType<TupleObjectInfo>(objectInfo);
+        }
+
+        [Fact]
+        public void For_ReturnsTupleObjectInfo_ForTypeOfTupleT3()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Tuple<int, string, DateTime>));
+
+            Assert.IsType<TupleObjectInfo>(objectInfo);
+        }
+
+        [Fact]
+        public void For_ReturnsTupleObjectInfo_ForTypeOfTupleT4()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Tuple<int, string, DateTime, bool>));
+
+            Assert.IsType<TupleObjectInfo>(objectInfo);
+        }
+
+        [Fact]
+        public void For_ReturnsTupleObjectInfo_ForTypeOfTupleT5()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Tuple<int, string, DateTime, bool, decimal>));
+
+            Assert.IsType<TupleObjectInfo>(objectInfo);
+        }
+
+        [Fact]
+        public void For_ReturnsTupleObjectInfo_ForTypeOfTupleT6()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Tuple<int, string, DateTime, bool, decimal, double>));
+
+            Assert.IsType<TupleObjectInfo>(objectInfo);
+        }
+
+        [Fact]
+        public void For_ReturnsTupleObjectInfo_ForTypeOfTupleT7()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Tuple<int, string, DateTime, bool, decimal, double, Guid>));
+
+            Assert.IsType<TupleObjectInfo>(objectInfo);
+        }
+
+#endif
+
         [Fact]
         public void For_ThrowsArgumentNullExceptonForNullForType()
         {

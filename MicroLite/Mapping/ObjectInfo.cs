@@ -138,6 +138,16 @@ namespace MicroLite.Mapping
 
             if (!objectInfos.TryGetValue(forType, out objectInfo))
             {
+                if (forType.IsGenericType)
+                {
+                    var forGenericType = forType.GetGenericTypeDefinition();
+
+                    if (objectInfos.TryGetValue(forGenericType, out objectInfo))
+                    {
+                        return objectInfo;
+                    }
+                }
+
                 VerifyType(forType);
 
                 if (log.IsDebug)
@@ -345,6 +355,15 @@ namespace MicroLite.Mapping
             var expandoObjectInfo = new ExpandoObjectInfo();
             dictionary.Add(typeof(System.Dynamic.ExpandoObject), expandoObjectInfo);
             dictionary.Add(typeof(object), expandoObjectInfo); // If the generic argument <dynamic> is used (in ISession.Fetch for example), typeof(T) will return object.
+
+            var tupleObjectInfo = new TupleObjectInfo();
+            dictionary.Add(typeof(Tuple<>), tupleObjectInfo);
+            dictionary.Add(typeof(Tuple<,>), tupleObjectInfo);
+            dictionary.Add(typeof(Tuple<,,>), tupleObjectInfo);
+            dictionary.Add(typeof(Tuple<,,,>), tupleObjectInfo);
+            dictionary.Add(typeof(Tuple<,,,,>), tupleObjectInfo);
+            dictionary.Add(typeof(Tuple<,,,,,>), tupleObjectInfo);
+            dictionary.Add(typeof(Tuple<,,,,,,>), tupleObjectInfo);
 #endif
 
             return dictionary;
