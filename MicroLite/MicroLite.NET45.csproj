@@ -99,6 +99,7 @@
     <Compile Include="Dialect\MsSqlCharacters.cs" />
     <Compile Include="Logging\EmptyLog.cs" />
     <Compile Include="Mapping\MappingException.cs" />
+    <Compile Include="Mapping\PocoObjectInfo.cs" />
     <Compile Include="Mapping\TupleObjectInfo.cs" />
     <Compile Include="ObjectDelta.cs" />
     <Compile Include="Builder\DeleteSqlBuilder.cs" />

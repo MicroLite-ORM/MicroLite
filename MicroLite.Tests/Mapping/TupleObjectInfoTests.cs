@@ -5,7 +5,6 @@
     using System;
     using System.Data;
     using MicroLite.Mapping;
-    using MicroLite.Tests.TestEntities;
     using Moq;
     using Xunit;
 

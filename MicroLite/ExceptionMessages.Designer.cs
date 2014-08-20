@@ -160,42 +160,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted..
-        /// </summary>
-        internal static string ObjectInfo_IdentifierNotSetForInsert {
-            get {
-                return ResourceManager.GetString("ObjectInfo_IdentifierNotSetForInsert", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted.
-        /// </summary>
-        internal static string ObjectInfo_IdentifierSetForInsert {
-            get {
-                return ResourceManager.GetString("ObjectInfo_IdentifierSetForInsert", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No column has been mapped as the identifier for the table &apos;{0}.{1}&apos;, as a result it cannot be used for Select by Id, Insert, Update or Delete calls.
-        /// </summary>
-        internal static string ObjectInfo_NoIdentifierColumn {
-            get {
-                return ResourceManager.GetString("ObjectInfo_NoIdentifierColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The type of the object {0} does not match the type for the ObjectInfo {1}.
-        /// </summary>
-        internal static string ObjectInfo_TypeMismatch {
-            get {
-                return ResourceManager.GetString("ObjectInfo_TypeMismatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The type &apos;{0}&apos; is not a class and therefore cannot be used by the MicroLite ORM Framework.
         /// </summary>
         internal static string ObjectInfo_TypeMustBeClass {
@@ -264,6 +228,42 @@ namespace MicroLite {
         internal static string PagingOptions_TakeMustBeZeroOrAbove {
             get {
                 return ResourceManager.GetString("PagingOptions_TakeMustBeZeroOrAbove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted..
+        /// </summary>
+        internal static string PocoObjectInfo_IdentifierNotSetForInsert {
+            get {
+                return ResourceManager.GetString("PocoObjectInfo_IdentifierNotSetForInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted.
+        /// </summary>
+        internal static string PocoObjectInfo_IdentifierSetForInsert {
+            get {
+                return ResourceManager.GetString("PocoObjectInfo_IdentifierSetForInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No column has been mapped as the identifier for the table &apos;{0}.{1}&apos;, as a result it cannot be used for Select by Id, Insert, Update or Delete calls.
+        /// </summary>
+        internal static string PocoObjectInfo_NoIdentifierColumn {
+            get {
+                return ResourceManager.GetString("PocoObjectInfo_NoIdentifierColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type of the object {0} does not match the type for the ObjectInfo {1}.
+        /// </summary>
+        internal static string PocoObjectInfo_TypeMismatch {
+            get {
+                return ResourceManager.GetString("PocoObjectInfo_TypeMismatch", resourceCulture);
             }
         }
         

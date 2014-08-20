@@ -52,7 +52,7 @@ namespace MicroLite.Mapping
                 this.log.Debug(LogMessages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             }
 
-            return new ObjectInfo(forType, tableInfo);
+            return new PocoObjectInfo(forType, tableInfo);
         }
 
         private List<ColumnInfo> CreateColumnInfos(Type forType, IdentifierStrategy identifierStrategy)

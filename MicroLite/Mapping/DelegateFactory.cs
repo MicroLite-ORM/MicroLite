@@ -29,7 +29,7 @@ namespace MicroLite.Mapping
         private static readonly MethodInfo typeConverterForMethod = typeof(TypeConverter).GetMethod("For", new[] { typeof(Type) });
         private static readonly MethodInfo typeGetTypeFromHandleMethod = typeof(Type).GetMethod("GetTypeFromHandle");
 
-        internal static Func<object, object> CreateGetIdentifier(ObjectInfo objectInfo)
+        internal static Func<object, object> CreateGetIdentifier(PocoObjectInfo objectInfo)
         {
             var dynamicMethod = new DynamicMethod(
                 name: "MicroLite" + objectInfo.ForType.Name + "GetIdentifier",
