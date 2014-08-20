@@ -52,13 +52,10 @@ namespace MicroLite.Dialect
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            int fromRowNumber = pagingOptions.Offset + 1;
-            int toRowNumber = pagingOptions.Offset + pagingOptions.Count;
-
             var arguments = new object[sqlQuery.Arguments.Count + 2];
             Array.Copy(sqlQuery.ArgumentsArray, 0, arguments, 0, sqlQuery.Arguments.Count);
-            arguments[arguments.Length - 2] = fromRowNumber;
-            arguments[arguments.Length - 1] = toRowNumber;
+            arguments[arguments.Length - 2] = pagingOptions.Offset + 1;
+            arguments[arguments.Length - 1] = pagingOptions.Offset + pagingOptions.Count;
 
             var sqlString = SqlString.Parse(sqlQuery.CommandText, Clauses.Select | Clauses.From | Clauses.Where | Clauses.OrderBy);
 
@@ -66,11 +63,8 @@ namespace MicroLite.Dialect
             var position = qualifiedTableName.LastIndexOf('.') + 1;
             var tableName = position > 0 ? qualifiedTableName.Substring(position, qualifiedTableName.Length - position) : qualifiedTableName;
 
-            var whereValue = sqlString.Where;
-            var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
-
-            var orderByValue = sqlString.OrderBy;
-            var orderByClause = !string.IsNullOrEmpty(orderByValue) ? orderByValue : "(SELECT NULL)";
+            var whereClause = !string.IsNullOrEmpty(sqlString.Where) ? " WHERE " + sqlString.Where : string.Empty;
+            var orderByClause = !string.IsNullOrEmpty(sqlString.OrderBy) ? sqlString.OrderBy : "(SELECT NULL)";
 
             var stringBuilder = new StringBuilder(sqlQuery.CommandText.Length * 2)
                 .Append("SELECT ")
