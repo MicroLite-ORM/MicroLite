@@ -2352,6 +2352,9 @@ warnif count > 0 from m in Application.Methods where
   ( ( !m.IsStatic && m.ChangesObjectState) ||
     (  m.IsStatic && m.ChangesTypeState) )
 
+// Ignore resource files
+&& !m.ParentType.NameLike("Messages")
+
 let fieldsAssigned = m.FieldsAssigned
 
 select new { m, m.NbLinesOfCode, fieldsAssigned  }
