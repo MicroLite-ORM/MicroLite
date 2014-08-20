@@ -17,7 +17,7 @@ namespace MicroLite.Builder
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class SelectSqlBuilder : SqlBuilderBase, ISelectFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IWhereSingleColumn, IHavingOrOrderBy
+    internal sealed class SelectSqlBuilder : SqlBuilderBase, ISelectFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IWhereSingleColumn, IHavingOrOrderBy, IWhereExists
     {
         private bool addedOrder = false;
         private bool addedWhere = false;
@@ -32,6 +32,22 @@ namespace MicroLite.Builder
             : base(sqlCharacters)
         {
             this.InnerSql.Append("SELECT *");
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="SelectSqlBuilder"/> class with an optional list of columns to select.
+        /// </summary>
+        /// <param name="sqlCharacters">The SQL characters.</param>
+        /// <param name="column">The column.</param>
+        internal SelectSqlBuilder(SqlCharacters sqlCharacters, string column)
+            : base(sqlCharacters)
+        {
+            this.InnerSql.Append("SELECT ");
+
+            if (column != null)
+            {
+                this.InnerSql.Append(this.SqlCharacters.EscapeSql(column));
+            }
         }
 
         /// <summary>
@@ -91,94 +107,76 @@ namespace MicroLite.Builder
 
         public IFunctionOrFrom Average(string columnName)
         {
-            return this.Average(columnName, columnName);
+            this.AddFunctionCall("AVG", columnName, columnName);
+
+            return this;
         }
 
         public IFunctionOrFrom Average(string columnName, string columnAlias)
         {
-            if (string.IsNullOrEmpty(columnName))
-            {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"));
-            }
-
-            if (string.IsNullOrEmpty(columnAlias))
-            {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
-            }
-
-            if (this.InnerSql.Length > 7)
-            {
-                this.InnerSql.Append(',');
-            }
-
-            this.InnerSql.Append("AVG(")
-                .Append(this.SqlCharacters.EscapeSql(columnName))
-                .Append(") AS ")
-                .Append(columnAlias);
+            this.AddFunctionCall("AVG", columnName, columnAlias);
 
             return this;
         }
 
         public IAndOrOrderBy Between(object lower, object upper)
         {
-            if (lower == null)
-            {
-                throw new ArgumentNullException("lower");
-            }
-
-            if (upper == null)
-            {
-                throw new ArgumentNullException("upper");
-            }
-
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
-
-            this.Arguments.Add(lower);
-            this.Arguments.Add(upper);
-
-            var lowerParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 2);
-            var upperParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
-
-            this.InnerSql.Append(" (")
-                .Append(this.whereColumnName)
-                .Append(" BETWEEN ")
-                .Append(lowerParam)
-                .Append(" AND ")
-                .Append(upperParam)
-                .Append(')');
+            this.AddBetween(lower, upper, negate: false);
 
             return this;
         }
 
         public IFunctionOrFrom Count(string columnName)
         {
-            return this.Count(columnName, columnName);
+            this.AddFunctionCall("COUNT", columnName, columnName);
+
+            return this;
         }
 
         public IFunctionOrFrom Count(string columnName, string columnAlias)
         {
-            if (string.IsNullOrEmpty(columnName))
+            this.AddFunctionCall("COUNT", columnName, columnAlias);
+
+            return this;
+        }
+
+        public IFunctionOrFrom Distinct(string column)
+        {
+            if (string.IsNullOrEmpty(column))
             {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"));
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
             }
 
-            if (string.IsNullOrEmpty(columnAlias))
+            this.InnerSql.Append("DISTINCT ").Append(this.SqlCharacters.EscapeSql(column));
+
+            return this;
+        }
+
+        public IFunctionOrFrom Distinct(params string[] columns)
+        {
+            if (columns == null)
             {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
+                throw new ArgumentNullException("columns");
             }
 
-            if (this.InnerSql.Length > 7)
+            this.InnerSql.Append("DISTINCT ");
+
+            for (int i = 0; i < columns.Length; i++)
             {
-                this.InnerSql.Append(',');
+                if (i > 0)
+                {
+                    this.InnerSql.Append(',');
+                }
+
+                this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
             }
 
-            this.InnerSql.Append("COUNT(")
-                .Append(this.SqlCharacters.EscapeSql(columnName))
-                .Append(") AS ")
-                .Append(columnAlias);
+            return this;
+        }
+
+        public IAndOrOrderBy Exists(SqlQuery subQuery)
+        {
+            this.AddExists(subQuery, negate: false);
 
             return this;
         }
@@ -256,168 +254,70 @@ namespace MicroLite.Builder
 
         public IAndOrOrderBy In(params object[] args)
         {
-            if (args == null)
-            {
-                throw new ArgumentNullException("args");
-            }
-
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
-
-            this.Arguments.AddRange(args);
-
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" IN (");
-
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (i > 0)
-                {
-                    this.InnerSql.Append(',');
-                }
-
-                this.InnerSql.Append(this.SqlCharacters.GetParameterName((this.Arguments.Count - args.Length) + i));
-            }
-
-            this.InnerSql.Append("))");
+            this.AddIn(args, negate: false);
 
             return this;
         }
 
         public IAndOrOrderBy In(SqlQuery subQuery)
         {
-            if (subQuery == null)
-            {
-                throw new ArgumentNullException("subQuery");
-            }
-
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
-
-            this.Arguments.AddRange(subQuery.Arguments);
-
-            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
-
-            this.InnerSql.Append(" (")
-                .Append(this.whereColumnName)
-                .Append(" IN (")
-                .Append(renumberedPredicate)
-                .Append("))");
+            this.AddIn(subQuery, negate: false);
 
             return this;
         }
 
         public IAndOrOrderBy IsEqualTo(object comparisonValue)
         {
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
-
-            this.Arguments.Add(comparisonValue);
-
-            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
-
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" = ").Append(parameter).Append(')');
+            this.AddWithComparisonOperator(comparisonValue, " = ");
 
             return this;
         }
 
         public IAndOrOrderBy IsGreaterThan(object comparisonValue)
         {
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
-
-            this.Arguments.Add(comparisonValue);
-
-            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
-
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" > ").Append(parameter).Append(')');
+            this.AddWithComparisonOperator(comparisonValue, " > ");
 
             return this;
         }
 
         public IAndOrOrderBy IsGreaterThanOrEqualTo(object comparisonValue)
         {
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
-
-            this.Arguments.Add(comparisonValue);
-
-            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
-
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" >= ").Append(parameter).Append(')');
+            this.AddWithComparisonOperator(comparisonValue, " >= ");
 
             return this;
         }
 
         public IAndOrOrderBy IsLessThan(object comparisonValue)
         {
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
-
-            this.Arguments.Add(comparisonValue);
-
-            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
-
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" < ").Append(parameter).Append(')');
+            this.AddWithComparisonOperator(comparisonValue, " < ");
 
             return this;
         }
 
         public IAndOrOrderBy IsLessThanOrEqualTo(object comparisonValue)
         {
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
-
-            this.Arguments.Add(comparisonValue);
-
-            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
-
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" <= ").Append(parameter).Append(')');
+            this.AddWithComparisonOperator(comparisonValue, " <= ");
 
             return this;
         }
 
         public IAndOrOrderBy IsLike(object comparisonValue)
         {
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
-
-            this.Arguments.Add(comparisonValue);
-
-            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
-
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" LIKE ").Append(parameter).Append(')');
+            this.AddLike(comparisonValue, negate: false);
 
             return this;
         }
 
         public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
         {
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
+            this.AddWithComparisonOperator(comparisonValue, " <> ");
 
-            this.Arguments.Add(comparisonValue);
+            return this;
+        }
 
-            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
-
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" <> ").Append(parameter).Append(')');
+        public IAndOrOrderBy IsNotLike(object comparisonValue)
+        {
+            this.AddLike(comparisonValue, negate: true);
 
             return this;
         }
@@ -448,112 +348,56 @@ namespace MicroLite.Builder
 
         public IFunctionOrFrom Max(string columnName)
         {
-            return this.Max(columnName, columnName);
+            this.AddFunctionCall("MAX", columnName, columnName);
+
+            return this;
         }
 
         public IFunctionOrFrom Max(string columnName, string columnAlias)
         {
-            if (string.IsNullOrEmpty(columnName))
-            {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"));
-            }
-
-            if (string.IsNullOrEmpty(columnAlias))
-            {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
-            }
-
-            if (this.InnerSql.Length > 7)
-            {
-                this.InnerSql.Append(',');
-            }
-
-            this.InnerSql.Append("MAX(")
-                .Append(this.SqlCharacters.EscapeSql(columnName))
-                .Append(") AS ")
-                .Append(columnAlias);
+            this.AddFunctionCall("MAX", columnName, columnAlias);
 
             return this;
         }
 
         public IFunctionOrFrom Min(string columnName)
         {
-            return this.Min(columnName, columnName);
+            this.AddFunctionCall("MIN", columnName, columnName);
+
+            return this;
         }
 
         public IFunctionOrFrom Min(string columnName, string columnAlias)
         {
-            if (string.IsNullOrEmpty(columnName))
-            {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"));
-            }
+            this.AddFunctionCall("MIN", columnName, columnAlias);
 
-            if (string.IsNullOrEmpty(columnAlias))
-            {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
-            }
+            return this;
+        }
 
-            if (this.InnerSql.Length > 7)
-            {
-                this.InnerSql.Append(',');
-            }
+        public IAndOrOrderBy NotBetween(object lower, object upper)
+        {
+            this.AddBetween(lower, upper, negate: true);
 
-            this.InnerSql.Append("MIN(")
-                .Append(this.SqlCharacters.EscapeSql(columnName))
-                .Append(") AS ")
-                .Append(columnAlias);
+            return this;
+        }
+
+        public IAndOrOrderBy NotExists(SqlQuery subQuery)
+        {
+            this.AddExists(subQuery, negate: true);
 
             return this;
         }
 
         public IAndOrOrderBy NotIn(params object[] args)
         {
-            if (args == null)
-            {
-                throw new ArgumentNullException("args");
-            }
-
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
-
-            this.Arguments.AddRange(args);
-
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" NOT IN (");
-
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (i > 0)
-                {
-                    this.InnerSql.Append(',');
-                }
-
-                this.InnerSql.Append(this.SqlCharacters.GetParameterName((this.Arguments.Count - args.Length) + i));
-            }
-
-            this.InnerSql.Append("))");
+            this.AddIn(args, negate: true);
 
             return this;
         }
 
         public IAndOrOrderBy NotIn(SqlQuery subQuery)
         {
-            if (subQuery == null)
-            {
-                throw new ArgumentNullException("subQuery");
-            }
-
-            if (!string.IsNullOrEmpty(this.operand))
-            {
-                this.InnerSql.Append(this.operand);
-            }
-
-            this.Arguments.AddRange(subQuery.Arguments);
-
-            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
-
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(" NOT IN (").Append(renumberedPredicate).Append("))");
+            this.AddIn(subQuery, negate: true);
 
             return this;
         }
@@ -617,30 +461,25 @@ namespace MicroLite.Builder
 
         public IFunctionOrFrom Sum(string columnName)
         {
-            return this.Sum(columnName, columnName);
+            this.AddFunctionCall("SUM", columnName, columnName);
+
+            return this;
         }
 
         public IFunctionOrFrom Sum(string columnName, string columnAlias)
         {
-            if (string.IsNullOrEmpty(columnName))
-            {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"));
-            }
+            this.AddFunctionCall("SUM", columnName, columnAlias);
 
-            if (string.IsNullOrEmpty(columnAlias))
-            {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
-            }
+            return this;
+        }
 
-            if (this.InnerSql.Length > 7)
+        public IWhereExists Where()
+        {
+            if (!this.addedWhere)
             {
-                this.InnerSql.Append(',');
+                this.InnerSql.Append(" WHERE");
+                this.addedWhere = true;
             }
-
-            this.InnerSql.Append("SUM(")
-                .Append(this.SqlCharacters.EscapeSql(columnName))
-                .Append(") AS ")
-                .Append(columnAlias);
 
             return this;
         }
@@ -703,6 +542,155 @@ namespace MicroLite.Builder
             return this;
         }
 
+        private void AddBetween(object lower, object upper, bool negate)
+        {
+            if (lower == null)
+            {
+                throw new ArgumentNullException("lower");
+            }
+
+            if (upper == null)
+            {
+                throw new ArgumentNullException("upper");
+            }
+
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.InnerSql.Append(this.operand);
+            }
+
+            this.Arguments.Add(lower);
+            this.Arguments.Add(upper);
+
+            var lowerParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 2);
+            var upperParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.Append(" (")
+                .Append(this.whereColumnName)
+                .Append(negate ? " NOT" : string.Empty)
+                .Append(" BETWEEN ")
+                .Append(lowerParam)
+                .Append(" AND ")
+                .Append(upperParam)
+                .Append(')');
+        }
+
+        private void AddExists(SqlQuery subQuery, bool negate)
+        {
+            if (subQuery == null)
+            {
+                throw new ArgumentNullException("subQuery");
+            }
+
+            this.Arguments.AddRange(subQuery.Arguments);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+
+            this.InnerSql.Append(negate ? " NOT" : string.Empty)
+                .Append(" EXISTS (")
+                .Append(renumberedPredicate)
+                .Append(")");
+        }
+
+        private void AddFunctionCall(string functionName, string columnName, string columnAlias)
+        {
+            if (string.IsNullOrEmpty(columnName))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnName"));
+            }
+
+            if (string.IsNullOrEmpty(columnAlias))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
+            }
+
+            if (this.InnerSql.Length > 7)
+            {
+                this.InnerSql.Append(',');
+            }
+
+            this.InnerSql.Append(functionName)
+                .Append('(')
+                .Append(this.SqlCharacters.EscapeSql(columnName))
+                .Append(") AS ")
+                .Append(columnAlias);
+        }
+
+        private void AddIn(object[] args, bool negate)
+        {
+            if (args == null)
+            {
+                throw new ArgumentNullException("args");
+            }
+
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.InnerSql.Append(this.operand);
+            }
+
+            this.Arguments.AddRange(args);
+
+            this.InnerSql.Append(" (")
+                .Append(this.whereColumnName)
+                .Append(negate ? " NOT" : string.Empty)
+                .Append(" IN (");
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (i > 0)
+                {
+                    this.InnerSql.Append(',');
+                }
+
+                this.InnerSql.Append(this.SqlCharacters.GetParameterName((this.Arguments.Count - args.Length) + i));
+            }
+
+            this.InnerSql.Append("))");
+        }
+
+        private void AddIn(SqlQuery subQuery, bool negate)
+        {
+            if (subQuery == null)
+            {
+                throw new ArgumentNullException("subQuery");
+            }
+
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.InnerSql.Append(this.operand);
+            }
+
+            this.Arguments.AddRange(subQuery.Arguments);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+
+            this.InnerSql.Append(" (")
+                .Append(this.whereColumnName)
+                .Append(negate ? " NOT" : string.Empty)
+                .Append(" IN (")
+                .Append(renumberedPredicate)
+                .Append("))");
+        }
+
+        private void AddLike(object comparisonValue, bool negate)
+        {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.InnerSql.Append(this.operand);
+            }
+
+            this.Arguments.Add(comparisonValue);
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.Append(" (")
+                .Append(this.whereColumnName)
+                .Append(negate ? " NOT" : string.Empty)
+                .Append(" LIKE ")
+                .Append(parameter)
+                .Append(')');
+        }
+
         private void AddOrder(string column, string direction)
         {
             if (string.IsNullOrEmpty(column))
@@ -738,6 +726,20 @@ namespace MicroLite.Builder
             }
 
             this.addedOrder = true;
+        }
+
+        private void AddWithComparisonOperator(object comparisonValue, string comparisonOperator)
+        {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.InnerSql.Append(this.operand);
+            }
+
+            this.Arguments.Add(comparisonValue);
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(comparisonOperator).Append(parameter).Append(')');
         }
     }
 }

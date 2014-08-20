@@ -12,11 +12,11 @@
     public class FirebirdSqlDialectTests : UnitTest
     {
         [Fact]
-        public void BuildSelectIdentitySqlQuery()
+        public void BuildSelectInsertIdSqlQuery()
         {
             var sqlDialect = new FirebirdSqlDialect();
 
-            var sqlQuery = sqlDialect.BuildSelectIdentitySqlQuery(ObjectInfo.For(typeof(Customer)));
+            var sqlQuery = sqlDialect.BuildSelectInsertIdSqlQuery(ObjectInfo.For(typeof(Customer)));
 
             Assert.Equal(string.Empty, sqlQuery.CommandText);
             Assert.Equal(0, sqlQuery.Arguments.Count);

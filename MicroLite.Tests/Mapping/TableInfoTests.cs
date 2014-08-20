@@ -13,7 +13,7 @@
     public class TableInfoTests
     {
         [Fact]
-        public void ConstructorSetsPropertyValues()
+        public void ConstructorSetsPropertyValuesWithIdentifierMapped()
         {
             var columns = new ReadOnlyCollection<ColumnInfo>(new[]
             {
@@ -34,6 +34,30 @@
             Assert.Equal(name, tableInfo.Name);
             Assert.Equal(schema, tableInfo.Schema);
             Assert.Equal(3, tableInfo.InsertColumnCount);
+            Assert.Equal(2, tableInfo.UpdateColumnCount);
+        }
+
+        [Fact]
+        public void ConstructorSetsPropertyValuesWithoutIdentifierMapped()
+        {
+            var columns = new ReadOnlyCollection<ColumnInfo>(new[]
+            {
+                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true),
+                new ColumnInfo("Created", typeof(Customer).GetProperty("Created"), false, true, false),
+                new ColumnInfo("Updated", typeof(Customer).GetProperty("Updated"), false, false, true)
+            });
+            var identifierStrategy = IdentifierStrategy.Assigned;
+            var name = "Customers";
+            var schema = "Sales";
+
+            var tableInfo = new TableInfo(columns, identifierStrategy, name, schema);
+
+            Assert.Equal(columns, tableInfo.Columns);
+            Assert.Null(tableInfo.IdentifierColumn);
+            Assert.Equal(identifierStrategy, tableInfo.IdentifierStrategy);
+            Assert.Equal(name, tableInfo.Name);
+            Assert.Equal(schema, tableInfo.Schema);
+            Assert.Equal(2, tableInfo.InsertColumnCount);
             Assert.Equal(2, tableInfo.UpdateColumnCount);
         }
 
@@ -71,21 +95,7 @@
         }
 
         [Fact]
-        public void ConstructorThrowsMicroLiteExceptionIfNoColumnsAreIdentifierColumn()
-        {
-            var columns = new[]
-            {
-                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true)
-            };
-
-            var exception = Assert.Throws<MappingException>(
-                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "Customers", schema: "Sales"));
-
-            Assert.Equal(ExceptionMessages.TableInfo_NoIdentifierColumn.FormatWith("Sales", "Customers"), exception.Message);
-        }
-
-        [Fact]
-        public void ConstructorThrowsMicroLiteExceptionMultipleNoColumnsAreIdentifierColumn()
+        public void ConstructorThrowsMicroLiteExceptionMultipleColumnsAreIdentifierColumn()
         {
             var columns = new[]
             {

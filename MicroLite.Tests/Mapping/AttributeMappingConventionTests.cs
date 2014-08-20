@@ -121,13 +121,25 @@
         }
 
         [Fact]
-        public void TableInfoHasCorrectProperties()
+        public void TableInfoHasCorrectPropertiesForAssigned()
         {
             var mappingConvention = new AttributeMappingConvention();
             var objectInfo = mappingConvention.CreateObjectInfo(typeof(AssignedCustomer));
 
             Assert.Equal("CustomerId", objectInfo.TableInfo.IdentifierColumn.ColumnName);
             Assert.Equal(IdentifierStrategy.Assigned, objectInfo.TableInfo.IdentifierStrategy);
+            Assert.Equal("Customers", objectInfo.TableInfo.Name);
+            Assert.Equal("Sales", objectInfo.TableInfo.Schema);
+        }
+
+        [Fact]
+        public void TableInfoHasCorrectPropertiesForDbGenerated()
+        {
+            var mappingConvention = new AttributeMappingConvention();
+            var objectInfo = mappingConvention.CreateObjectInfo(typeof(DbGeneratedCustomer));
+
+            Assert.Equal("CustomerId", objectInfo.TableInfo.IdentifierColumn.ColumnName);
+            Assert.Equal(IdentifierStrategy.DbGenerated, objectInfo.TableInfo.IdentifierStrategy);
             Assert.Equal("Customers", objectInfo.TableInfo.Name);
             Assert.Equal("Sales", objectInfo.TableInfo.Schema);
         }

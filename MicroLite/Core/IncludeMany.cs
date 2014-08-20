@@ -22,11 +22,12 @@ namespace MicroLite.Core
     /// The default implementation of <see cref="IIncludeMany&lt;T&gt;"/>.
     /// </summary>
     /// <typeparam name="T">The type of object to be included.</typeparam>
-    [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}")]
+    [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}, Values: {Values}")]
     internal sealed class IncludeMany<T> : Include, IIncludeMany<T>
     {
         private static readonly Type resultType = typeof(T);
         private readonly IList<T> values = new List<T>();
+        private Action<IIncludeMany<T>> callback;
 
         public IList<T> Values
         {
@@ -34,6 +35,11 @@ namespace MicroLite.Core
             {
                 return this.values;
             }
+        }
+
+        public void OnLoad(Action<IIncludeMany<T>> action)
+        {
+            this.callback = action;
         }
 
         internal override void BuildValue(IDataReader reader)
@@ -62,6 +68,11 @@ namespace MicroLite.Core
             }
 
             this.HasValue = this.values.Count > 0;
+
+            if (this.callback != null)
+            {
+                this.callback(this);
+            }
         }
     }
 }

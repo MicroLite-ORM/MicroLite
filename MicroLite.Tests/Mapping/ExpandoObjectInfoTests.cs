@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
 #if !NET_3_5
+
     using System;
     using System.Data;
     using System.Dynamic;
@@ -167,5 +168,6 @@
             Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
     }
+
 #endif
 }

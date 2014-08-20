@@ -80,6 +80,47 @@
             }
         }
 
+        public class WhenBuildValueHasBeenCalledAndThereIsACallbackRegistered
+        {
+            private bool callbackCalled = false;
+            private IncludeMany<Customer> include = new IncludeMany<Customer>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public WhenBuildValueHasBeenCalledAndThereIsACallbackRegistered()
+            {
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                var reader = this.mockReader.Object;
+
+                this.include.OnLoad(inc => callbackCalled = object.ReferenceEquals(inc, this.include));
+                this.include.BuildValue(reader);
+            }
+
+            [Fact]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.True(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheCallbackShouldBeCalled()
+            {
+                Assert.True(this.callbackCalled);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void ValuesShouldNotBeEmpty()
+            {
+                Assert.NotEmpty(this.include.Values);
+            }
+        }
+
         public class WhenBuildValueHasNotBeenCalled
         {
             private IncludeMany<Customer> include = new IncludeMany<Customer>();

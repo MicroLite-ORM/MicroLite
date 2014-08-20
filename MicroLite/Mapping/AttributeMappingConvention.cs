@@ -50,7 +50,7 @@ namespace MicroLite.Mapping
                 this.log.Debug(LogMessages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             }
 
-            return new ObjectInfo(forType, tableInfo);
+            return new PocoObjectInfo(forType, tableInfo);
         }
 
         private List<ColumnInfo> CreateColumnInfos(Type forType, ref IdentifierStrategy identifierStrategy)
@@ -93,7 +93,7 @@ namespace MicroLite.Mapping
                     columnName: columnAttribute.Name,
                     propertyInfo: property,
                     isIdentifier: identifierAttribute != null,
-                    allowInsert: identifierAttribute != null ? identifierStrategy != IdentifierStrategy.DbGenerated : columnAttribute.AllowInsert,
+                    allowInsert: identifierAttribute != null ? identifierStrategy == IdentifierStrategy.Assigned : columnAttribute.AllowInsert,
                     allowUpdate: identifierAttribute != null ? false : columnAttribute.AllowUpdate);
 
                 if (this.log.IsDebug)

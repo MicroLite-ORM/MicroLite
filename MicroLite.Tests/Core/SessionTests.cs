@@ -534,7 +534,7 @@
             session.Insert(customer);
 
             mockSqlDialect.Verify(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer), Times.Once());
-            mockSqlDialect.Verify(x => x.BuildSelectIdentitySqlQuery(It.IsAny<IObjectInfo>()), Times.Never());
+            mockSqlDialect.Verify(x => x.BuildSelectInsertIdSqlQuery(It.IsAny<IObjectInfo>()), Times.Never());
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
@@ -570,7 +570,7 @@
             session.Insert(customer);
 
             mockSqlDialect.Verify(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer), Times.Once());
-            mockSqlDialect.Verify(x => x.BuildSelectIdentitySqlQuery(It.IsAny<IObjectInfo>()), Times.Never());
+            mockSqlDialect.Verify(x => x.BuildSelectInsertIdSqlQuery(It.IsAny<IObjectInfo>()), Times.Never());
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
@@ -594,7 +594,7 @@
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(insertSqlQuery);
-            mockSqlDialect.Setup(x => x.BuildSelectIdentitySqlQuery(It.IsNotNull<IObjectInfo>())).Returns(selectIdSqlQuery);
+            mockSqlDialect.Setup(x => x.BuildSelectInsertIdSqlQuery(It.IsNotNull<IObjectInfo>())).Returns(selectIdSqlQuery);
             mockSqlDialect.Setup(x => x.SupportsIdentity).Returns(true);
 
             var mockDbDriver = new Mock<IDbDriver>();
@@ -637,7 +637,7 @@
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(insertSqlQuery);
-            mockSqlDialect.Setup(x => x.BuildSelectIdentitySqlQuery(It.IsNotNull<IObjectInfo>())).Returns(selectIdSqlQuery);
+            mockSqlDialect.Setup(x => x.BuildSelectInsertIdSqlQuery(It.IsNotNull<IObjectInfo>())).Returns(selectIdSqlQuery);
             mockSqlDialect.Setup(x => x.SupportsIdentity).Returns(true);
 
             var mockDbDriver = new Mock<IDbDriver>();
@@ -671,7 +671,7 @@
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(new SqlQuery(""));
-            mockSqlDialect.Setup(x => x.BuildSelectIdentitySqlQuery(It.IsNotNull<IObjectInfo>())).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildSelectInsertIdSqlQuery(It.IsNotNull<IObjectInfo>())).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
@@ -724,7 +724,7 @@
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(new SqlQuery(""));
-            mockSqlDialect.Setup(x => x.BuildSelectIdentitySqlQuery(It.IsNotNull<IObjectInfo>())).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildSelectInsertIdSqlQuery(It.IsNotNull<IObjectInfo>())).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);

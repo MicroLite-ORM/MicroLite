@@ -88,11 +88,11 @@ namespace MicroLite.Driver
 
             var arguments = new object[argumentsCount];
 
-            Array.Copy(sqlQuery1.GetArgumentArray(), 0, arguments, 0, sqlQuery1.Arguments.Count);
+            Array.Copy(sqlQuery1.ArgumentsArray, 0, arguments, 0, sqlQuery1.Arguments.Count);
 
             if (sqlQuery2.Arguments.Count > 0)
             {
-                Array.Copy(sqlQuery2.GetArgumentArray(), 0, arguments, sqlQuery1.Arguments.Count, sqlQuery2.Arguments.Count);
+                Array.Copy(sqlQuery2.ArgumentsArray, 0, arguments, sqlQuery1.Arguments.Count, sqlQuery2.Arguments.Count);
             }
 
             var query2CommandText = sqlQuery2.CommandText.StartsWith("EXEC", StringComparison.OrdinalIgnoreCase)

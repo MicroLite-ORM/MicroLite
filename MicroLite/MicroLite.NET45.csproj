@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builder\IInsertColumn.cs" />
+    <Compile Include="Builder\IWhereExists.cs" />
     <Compile Include="Builder\SqlBuilderBase.cs" />
     <Compile Include="Clauses.cs" />
     <Compile Include="Configuration\ConfigurationExtensions.cs" />
@@ -98,6 +99,8 @@
     <Compile Include="Dialect\MsSqlCharacters.cs" />
     <Compile Include="Logging\EmptyLog.cs" />
     <Compile Include="Mapping\MappingException.cs" />
+    <Compile Include="Mapping\PocoObjectInfo.cs" />
+    <Compile Include="Mapping\TupleObjectInfo.cs" />
     <Compile Include="ObjectDelta.cs" />
     <Compile Include="Builder\DeleteSqlBuilder.cs" />
     <Compile Include="Builder\IDeleteFrom.cs" />

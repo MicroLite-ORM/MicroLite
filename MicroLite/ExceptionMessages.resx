@@ -150,15 +150,6 @@
   <data name="ObjectDelta_MustContainAtLeastOneChange" xml:space="preserve">
     <value>An ObjectDelta must contain at least one change, ensure that you have called AddChange with the property name and new value for each property you wish to update</value>
   </data>
-  <data name="ObjectInfo_IdentifierNotSetForInsert" xml:space="preserve">
-    <value>The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted.</value>
-  </data>
-  <data name="ObjectInfo_IdentifierSetForInsert" xml:space="preserve">
-    <value>The object already has an identifier value so it cannot be inserted</value>
-  </data>
-  <data name="ObjectInfo_TypeMismatch" xml:space="preserve">
-    <value>The type of the object {0} does not match the type for the ObjectInfo {1}</value>
-  </data>
   <data name="ObjectInfo_TypeMustBeClass" xml:space="preserve">
     <value>The type '{0}' is not a class and therefore cannot be used by the MicroLite ORM Framework</value>
   </data>
@@ -183,6 +174,18 @@
   <data name="PagingOptions_TakeMustBeZeroOrAbove" xml:space="preserve">
     <value>At least 1 result must be returned</value>
   </data>
+  <data name="PocoObjectInfo_IdentifierNotSetForInsert" xml:space="preserve">
+    <value>The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted.</value>
+  </data>
+  <data name="PocoObjectInfo_IdentifierSetForInsert" xml:space="preserve">
+    <value>The object already has an identifier value so it cannot be inserted</value>
+  </data>
+  <data name="PocoObjectInfo_NoIdentifierColumn" xml:space="preserve">
+    <value>No column has been mapped as the identifier for the table '{0}.{1}', as a result it cannot be used for Select by Id, Insert, Update or Delete calls</value>
+  </data>
+  <data name="PocoObjectInfo_TypeMismatch" xml:space="preserve">
+    <value>The type of the object {0} does not match the type for the ObjectInfo {1}</value>
+  </data>
   <data name="Session_IdentifierNotSetForDelete" xml:space="preserve">
     <value>The object does not have an identifier value set so it cannot be deleted</value>
   </data>
@@ -201,10 +204,13 @@
   <data name="TableInfo_MultipleIdentifierColumns" xml:space="preserve">
     <value>Multiple columns have been mapped as the identifier for the table '{0}.{1}'</value>
   </data>
-  <data name="TableInfo_NoIdentifierColumn" xml:space="preserve">
-    <value>No column has been mapped as the identifier for the table '{0}.{1}'</value>
-  </data>
   <data name="Transaction_AlreadyCompleted" xml:space="preserve">
     <value>The Transaction has been completed</value>
+  </data>
+  <data name="TupleObjectInfo_NotSupportedReason" xml:space="preserve">
+    <value>Tuple types can only be used for queries where an SqlQuery is supplied, it cannot be used for select by identifier, insert, update or delete.</value>
+  </data>
+  <data name="TupleObjectInfo_TupleNotSupported" xml:space="preserve">
+    <value>Only Tuple&lt;T1&gt; through to Tuple&lt;T1,T2,T3,T4,T5,T6,T7&gt; are supported.</value>
   </data>
 </root>

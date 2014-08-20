@@ -52,11 +52,11 @@ namespace MicroLite.Dialect
         SqlQuery BuildInsertSqlQuery(IObjectInfo objectInfo, object instance);
 
         /// <summary>
-        /// Builds an SqlQuery to select the identity of an inserted object if the database supports Identity or AutoIncrement.
+        /// Builds an SqlQuery to select the id of an inserted object if the database has generated the identifier.
         /// </summary>
         /// <param name="objectInfo">The object information.</param>
         /// <returns>The created <see cref="SqlQuery" />.</returns>
-        SqlQuery BuildSelectIdentitySqlQuery(IObjectInfo objectInfo);
+        SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo);
 
         /// <summary>
         /// Builds an SqlQuery to select the database record with the specified identifier for the type specified by the IObjectInfo.

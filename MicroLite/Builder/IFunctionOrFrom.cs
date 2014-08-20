@@ -98,6 +98,46 @@ namespace MicroLite.Builder
         IFunctionOrFrom Count(string columnName, string columnAlias);
 
         /// <summary>
+        /// Selects the distinct values in the specified column.
+        /// </summary>
+        /// <param name="column">The column to be included in the query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columnName is null or empty.</exception>
+        /// <example>
+        /// A simple query to find the distinct order totals for a customer.
+        /// <code>
+        /// var sqlQuery = SqlBuilder
+        ///     .Select()
+        ///     .Distinct("Total")
+        ///     .From(typeof(Invoice))
+        ///     .Where("CustomerId = @p0", 1022)
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT DISTINCT Total FROM Invoices WHERE (CustomerId = @p0)
+        /// </example>
+        IFunctionOrFrom Distinct(string column);
+
+        /// <summary>
+        /// Selects the distinct values in the specified columns.
+        /// </summary>
+        /// <param name="columns">The columns to be included in the query.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentException">Thrown if columns is null.</exception>
+        /// <example>
+        /// A simple query to find the distinct order totals and dates for a customer.
+        /// <code>
+        /// var sqlQuery = SqlBuilder
+        ///     .Select()
+        ///     .Distinct("Total", "Date")
+        ///     .From(typeof(Invoice))
+        ///     .Where("CustomerId = @p0", 1022)
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT DISTINCT Total, Date FROM Invoices WHERE (CustomerId = @p0)
+        /// </example>
+        IFunctionOrFrom Distinct(params string[] columns);
+
+        /// <summary>
         /// Selects the maximum value in the specified column.
         /// </summary>
         /// <param name="columnName">The column to query.</param>

@@ -51,13 +51,11 @@ namespace MicroLite.Core
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This is a factory method, it's purpose is to create and return an IReadOnlySession for the caller to use. Disposal of the IReadOnlySession is the responsibility of the caller.")]
         public IReadOnlySession OpenReadOnlySession()
         {
             return this.OpenReadOnlySession(ConnectionScope.PerTransaction);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This is a factory method, it's purpose is to create and return an IReadOnlySession for the caller to use. Disposal of the IReadOnlySession is the responsibility of the caller.")]
         public IReadOnlySession OpenReadOnlySession(ConnectionScope connectionScope)
         {
             if (log.IsDebug)
@@ -68,13 +66,11 @@ namespace MicroLite.Core
             return new ReadOnlySession(connectionScope, this.sqlDialect, this.dbDriver);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This is a factory method, it's purpose is to create and return an IReadOnlySession for the caller to use. Disposal of the ISession is the responsibility of the caller.")]
         public ISession OpenSession()
         {
             return this.OpenSession(ConnectionScope.PerTransaction);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "This is a factory method, it's purpose is to create and return an IReadOnlySession for the caller to use. Disposal of the ISession is the responsibility of the caller.")]
         public ISession OpenSession(ConnectionScope connectionScope)
         {
             if (log.IsDebug)

@@ -79,6 +79,17 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Gets the private argument array.
+        /// </summary>
+        internal object[] ArgumentsArray
+        {
+            get
+            {
+                return this.arguments;
+            }
+        }
+
+        /// <summary>
         /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
         /// </summary>
         /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
@@ -143,15 +154,6 @@ namespace MicroLite
         public override string ToString()
         {
             return this.CommandText;
-        }
-
-        /// <summary>
-        /// Gets the private argument array.
-        /// </summary>
-        /// <returns>The private argument array.</returns>
-        internal object[] GetArgumentArray()
-        {
-            return this.arguments;
         }
     }
 }

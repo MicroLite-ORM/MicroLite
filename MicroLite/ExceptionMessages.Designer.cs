@@ -160,33 +160,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted..
-        /// </summary>
-        internal static string ObjectInfo_IdentifierNotSetForInsert {
-            get {
-                return ResourceManager.GetString("ObjectInfo_IdentifierNotSetForInsert", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted.
-        /// </summary>
-        internal static string ObjectInfo_IdentifierSetForInsert {
-            get {
-                return ResourceManager.GetString("ObjectInfo_IdentifierSetForInsert", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The type of the object {0} does not match the type for the ObjectInfo {1}.
-        /// </summary>
-        internal static string ObjectInfo_TypeMismatch {
-            get {
-                return ResourceManager.GetString("ObjectInfo_TypeMismatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The type &apos;{0}&apos; is not a class and therefore cannot be used by the MicroLite ORM Framework.
         /// </summary>
         internal static string ObjectInfo_TypeMustBeClass {
@@ -259,6 +232,42 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The object cannot be inserted as it does not have an identifier value set and the identifier strategy specifies that it should be assigned before being inserted..
+        /// </summary>
+        internal static string PocoObjectInfo_IdentifierNotSetForInsert {
+            get {
+                return ResourceManager.GetString("PocoObjectInfo_IdentifierNotSetForInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object already has an identifier value so it cannot be inserted.
+        /// </summary>
+        internal static string PocoObjectInfo_IdentifierSetForInsert {
+            get {
+                return ResourceManager.GetString("PocoObjectInfo_IdentifierSetForInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No column has been mapped as the identifier for the table &apos;{0}.{1}&apos;, as a result it cannot be used for Select by Id, Insert, Update or Delete calls.
+        /// </summary>
+        internal static string PocoObjectInfo_NoIdentifierColumn {
+            get {
+                return ResourceManager.GetString("PocoObjectInfo_NoIdentifierColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type of the object {0} does not match the type for the ObjectInfo {1}.
+        /// </summary>
+        internal static string PocoObjectInfo_TypeMismatch {
+            get {
+                return ResourceManager.GetString("PocoObjectInfo_TypeMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The object does not have an identifier value set so it cannot be deleted.
         /// </summary>
         internal static string Session_IdentifierNotSetForDelete {
@@ -313,20 +322,29 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No column has been mapped as the identifier for the table &apos;{0}.{1}&apos;.
-        /// </summary>
-        internal static string TableInfo_NoIdentifierColumn {
-            get {
-                return ResourceManager.GetString("TableInfo_NoIdentifierColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The Transaction has been completed.
         /// </summary>
         internal static string Transaction_AlreadyCompleted {
             get {
                 return ResourceManager.GetString("Transaction_AlreadyCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tuple types can only be used for queries where an SqlQuery is supplied, it cannot be used for select by identifier, insert, update or delete..
+        /// </summary>
+        internal static string TupleObjectInfo_NotSupportedReason {
+            get {
+                return ResourceManager.GetString("TupleObjectInfo_NotSupportedReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only Tuple&lt;T1&gt; through to Tuple&lt;T1,T2,T3,T4,T5,T6,T7&gt; are supported..
+        /// </summary>
+        internal static string TupleObjectInfo_TupleNotSupported {
+            get {
+                return ResourceManager.GetString("TupleObjectInfo_TupleNotSupported", resourceCulture);
             }
         }
     }

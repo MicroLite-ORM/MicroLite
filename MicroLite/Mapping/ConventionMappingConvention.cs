@@ -52,7 +52,7 @@ namespace MicroLite.Mapping
                 this.log.Debug(LogMessages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             }
 
-            return new ObjectInfo(forType, tableInfo);
+            return new PocoObjectInfo(forType, tableInfo);
         }
 
         private List<ColumnInfo> CreateColumnInfos(Type forType, IdentifierStrategy identifierStrategy)
@@ -88,7 +88,7 @@ namespace MicroLite.Mapping
                        columnName: isIdentifier ? this.settings.ResolveIdentifierColumnName(property) : this.settings.ResolveColumnName(property),
                        propertyInfo: property,
                        isIdentifier: isIdentifier,
-                       allowInsert: isIdentifier ? identifierStrategy != IdentifierStrategy.DbGenerated : this.settings.AllowInsert(property),
+                       allowInsert: isIdentifier ? identifierStrategy == IdentifierStrategy.Assigned : this.settings.AllowInsert(property),
                        allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property));
 
                 if (this.log.IsDebug)

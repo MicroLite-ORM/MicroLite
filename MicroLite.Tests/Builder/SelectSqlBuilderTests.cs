@@ -152,6 +152,39 @@
         }
 
         [Fact]
+        public void DistinctThrowsArgumentExceptionForNullColumnName()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Distinct((string)null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"), exception.Message);
+        }
+
+        [Fact]
+        public void DistinctThrowsArgumentExceptionForNullColumns()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.Distinct((string[])null));
+
+            Assert.Equal("columns", exception.ParamName);
+        }
+
+        [Fact]
+        public void ExistsThrowArgumentNullExceptionForNullSqlQuery()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").Where().Exists(null));
+
+            Assert.Equal("subQuery", exception.ParamName);
+        }
+
+        [Fact]
         public void FromThrowsArgumentExceptionForEmptyTableName()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
@@ -270,6 +303,39 @@
                 () => sqlBuilder.Min("Column", null));
 
             Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"), exception.Message);
+        }
+
+        [Fact]
+        public void NotBetweenThrowsArgumentExceptionForNullLower()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.NotBetween(null, 10));
+
+            Assert.Equal("lower", exception.ParamName);
+        }
+
+        [Fact]
+        public void NotBetweenThrowsArgumentExceptionForNullUpper()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.NotBetween(1, null));
+
+            Assert.Equal("upper", exception.ParamName);
+        }
+
+        [Fact]
+        public void NotExistsThrowArgumentNullExceptionForNullSqlQuery()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").Where().NotExists(null));
+
+            Assert.Equal("subQuery", exception.ParamName);
         }
 
         [Fact]
@@ -415,7 +481,7 @@
         [Fact]
         public void SelectAverage()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Average("CreditLimit")
@@ -432,7 +498,7 @@
         [Fact]
         public void SelectAverageWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Average("CreditLimit", columnAlias: "AverageCreditLimit")
@@ -467,7 +533,7 @@
         [Fact]
         public void SelectAverageWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Average("CreditLimit")
@@ -502,7 +568,7 @@
         [Fact]
         public void SelectCount()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Count("Id")
@@ -516,7 +582,7 @@
         [Fact]
         public void SelectCountWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Count("Id", columnAlias: "CustomerCount")
@@ -545,7 +611,7 @@
         [Fact]
         public void SelectCountWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Count("Id")
@@ -557,6 +623,51 @@
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT COUNT([Id]) AS Id FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectDistinctColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
+
+            var sqlQuery = sqlBuilder
+                .Distinct("CreditLimit")
+                .From(typeof(Customer))
+                .ToSqlQuery();
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+
+            Assert.Equal("SELECT DISTINCT CreditLimit FROM Sales.Customers", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectDistinctColumnsWithSqlCharacters()
+        {
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
+
+            var sqlQuery = sqlBuilder
+                .Distinct("CreditLimit", "DateOfBirth")
+                .From(typeof(Customer))
+                .ToSqlQuery();
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+
+            Assert.Equal("SELECT DISTINCT [CreditLimit],[DateOfBirth] FROM [Sales].[Customers]", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectDistinctColumnWithSqlCharacters()
+        {
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
+
+            var sqlQuery = sqlBuilder
+                .Distinct("CreditLimit")
+                .From(typeof(Customer))
+                .ToSqlQuery();
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+
+            Assert.Equal("SELECT DISTINCT [CreditLimit] FROM [Sales].[Customers]", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -808,7 +919,7 @@
         [Fact]
         public void SelectMax()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Max("CreditLimit")
@@ -825,7 +936,7 @@
         [Fact]
         public void SelectMaxWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Max("CreditLimit", columnAlias: "MaxCreditLimit")
@@ -859,7 +970,7 @@
         [Fact]
         public void SelectMaxWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Max("CreditLimit")
@@ -876,7 +987,7 @@
         [Fact]
         public void SelectMin()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Min("CreditLimit")
@@ -893,7 +1004,7 @@
         [Fact]
         public void SelectMinWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Min("CreditLimit", columnAlias: "MinCreditLimit")
@@ -927,7 +1038,7 @@
         [Fact]
         public void SelectMinWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Min("CreditLimit")
@@ -944,7 +1055,7 @@
         [Fact]
         public void SelectSum()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Sum("CreditLimit")
@@ -961,7 +1072,7 @@
         [Fact]
         public void SelectSumWithAlias()
         {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, null);
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Sum("CreditLimit", columnAlias: "SumCreditLimit")
@@ -995,7 +1106,7 @@
         [Fact]
         public void SelectSumWithSqlCharacters()
         {
-            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, null);
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, (string)null);
 
             var sqlQuery = sqlBuilder
                 .Sum("CreditLimit")
@@ -1131,7 +1242,7 @@
         }
 
         [Fact]
-        public void SelectWhereBetweenUsing()
+        public void SelectWhereBetween()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
 
@@ -1149,7 +1260,7 @@
         }
 
         [Fact]
-        public void SelectWhereBetweenUsingWithSqlCharacters()
+        public void SelectWhereBetweenWithSqlCharacters()
         {
             var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
@@ -1344,11 +1455,11 @@
             var sqlQuery = sqlBuilder
                    .From("Table")
                    .Where("Column1")
-                   .IsLike("FOO")
+                   .IsLike("FOO%")
                    .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+            Assert.Equal("FOO%", sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 LIKE ?)", sqlQuery.CommandText);
         }
@@ -1361,11 +1472,11 @@
             var sqlQuery = sqlBuilder
                    .From("Table")
                    .Where("Column1")
-                   .IsLike("FOO")
+                   .IsLike("FOO%")
                    .ToSqlQuery();
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+            Assert.Equal("FOO%", sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] LIKE @p0)", sqlQuery.CommandText);
         }
@@ -1402,6 +1513,40 @@
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <> @p0)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsNotLike()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1")
+                   .IsNotLike("FOO%")
+                   .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO%", sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT LIKE ?)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsNotLikeWithSqlCharacters()
+        {
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1")
+                   .IsNotLike("FOO%")
+                   .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO%", sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT LIKE @p0)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1466,6 +1611,25 @@
             Assert.Equal(0, sqlQuery.Arguments.Count);
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] IS NULL)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereExistsSqlQuery()
+        {
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where()
+                .Exists(subQuery)
+                .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(1024, sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE EXISTS (SELECT Id FROM Table WHERE Column = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1568,7 +1732,7 @@
         [Fact]
         public void SelectWhereInSqlQuery()
         {
-            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = @p0", 1024);
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
 
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
 
@@ -1581,7 +1745,62 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1024, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (SELECT Id FROM Table WHERE Column = @p0))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereNotBetween()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1")
+                   .NotBetween(1, 10)
+                   .ToSqlQuery();
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+            Assert.Equal(1, sqlQuery.Arguments[0]);
+            Assert.Equal(10, sqlQuery.Arguments[1]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT BETWEEN ? AND ?)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereNotBetweenWithSqlCharacters()
+        {
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1")
+                   .NotBetween(1, 10)
+                   .ToSqlQuery();
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+            Assert.Equal(1, sqlQuery.Arguments[0]);
+            Assert.Equal(10, sqlQuery.Arguments[1]);
+
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereNotExistsSqlQuery()
+        {
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where()
+                .NotExists(subQuery)
+                .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(1024, sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE NOT EXISTS (SELECT Id FROM Table WHERE Column = ?)", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1624,7 +1843,7 @@
         [Fact]
         public void SelectWhereNotInSqlQuery()
         {
-            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = @p0", 1024);
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
 
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
 
@@ -1636,7 +1855,7 @@
             Assert.Equal(1, sqlQuery.Arguments.Count);
             Assert.Equal(1024, sqlQuery.Arguments[0]);
 
-            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (SELECT Id FROM Table WHERE Column = @p0))", sqlQuery.CommandText);
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1775,6 +1994,28 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
 
             Assert.Equal("SELECT *", sqlBuilder.ToSqlQuery().CommandText);
+        }
+
+        [Fact]
+        public void WhereThrowsArgumentExceptionForNullColumn()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Where(null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"), exception.Message);
+        }
+
+        [Fact]
+        public void WhereThrowsArgumentExceptionForNullPredicate()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Where(null, new object[0]));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"), exception.Message);
         }
     }
 }

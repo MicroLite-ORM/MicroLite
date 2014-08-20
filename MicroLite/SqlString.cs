@@ -19,8 +19,6 @@ namespace MicroLite
     /// </summary>
     public sealed class SqlString
     {
-        private static readonly SqlString empty = new SqlString();
-
         private SqlString()
         {
             this.From = string.Empty;
@@ -96,7 +94,7 @@ namespace MicroLite
         {
             if (string.IsNullOrEmpty(commandText))
             {
-                return empty;
+                return new SqlString();
             }
 
             if (commandText.Contains(Environment.NewLine))

@@ -38,7 +38,7 @@ namespace MicroLite.Mapping
         /// <param name="columns">The columns that are mapped for the table.</param>
         /// <param name="identifierStrategy">The identifier strategy used by the table.</param>
         /// <param name="name">The name of the table.</param>
-        /// <param name="schema">The name of the schema the table exists within.</param>
+        /// <param name="schema">The database schema the table exists within (e.g. 'dbo'); otherwise null.</param>
         /// <exception cref="ArgumentNullException">Thrown if columns or name are null.</exception>
         /// <exception cref="MappingException">Thrown if no there is a problem with the column mappings.</exception>
         public TableInfo(
@@ -64,7 +64,7 @@ namespace MicroLite.Mapping
 
             this.ValidateColumns();
 
-            this.identifierColumn = columns.Single(c => c.IsIdentifier);
+            this.identifierColumn = columns.SingleOrDefault(c => c.IsIdentifier);
 
             this.insertColumnCount = columns.Count(c => c.AllowInsert);
             this.updateColumnCount = columns.Count(c => c.AllowUpdate);
@@ -115,7 +115,7 @@ namespace MicroLite.Mapping
         }
 
         /// <summary>
-        /// Gets the name of the table.
+        /// Gets the database schema the table exists within (e.g. 'dbo'); otherwise null.
         /// </summary>
         public string Name
         {
@@ -161,11 +161,6 @@ namespace MicroLite.Mapping
             if (duplicatedColumn != null)
             {
                 throw new MappingException(ExceptionMessages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
-            }
-
-            if (!this.columns.Any(c => c.IsIdentifier))
-            {
-                throw new MappingException(ExceptionMessages.TableInfo_NoIdentifierColumn.FormatWith(this.schema, this.name));
             }
 
             if (this.columns.Count(c => c.IsIdentifier) > 1)

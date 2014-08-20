@@ -113,6 +113,47 @@
             }
         }
 
+        public class ForAReferenceTypeWhenBuildValueHasBeenCalledAndThereIsACallbackRegistered
+        {
+            private bool callbackCalled = false;
+            private IncludeScalar<string> include = new IncludeScalar<string>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public ForAReferenceTypeWhenBuildValueHasBeenCalledAndThereIsACallbackRegistered()
+            {
+                this.mockReader.Setup(x => x.FieldCount).Returns(1);
+                this.mockReader.Setup(x => x[0]).Returns("Foo");
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                this.include.OnLoad(inc => callbackCalled = object.ReferenceEquals(inc, this.include));
+                this.include.BuildValue(this.mockReader.Object);
+            }
+
+            [Fact]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.True(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheCallbackShouldBeCalled()
+            {
+                Assert.True(this.callbackCalled);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void ValueShouldBeSetToTheResult()
+            {
+                Assert.Equal("Foo", this.include.Value);
+            }
+        }
+
         public class ForAReferenceTypeWhenBuildValueHasBeenCalledAndThereIsOneResult
         {
             private IncludeScalar<string> include = new IncludeScalar<string>();
