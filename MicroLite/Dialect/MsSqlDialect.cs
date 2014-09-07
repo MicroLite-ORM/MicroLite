@@ -32,7 +32,7 @@ namespace MicroLite.Dialect
         {
         }
 
-        public override bool SupportsIdentity
+        public override bool SupportsSelectInsertedIdentifier
         {
             get
             {

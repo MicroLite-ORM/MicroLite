@@ -224,7 +224,7 @@
             {
                 Created = new DateTime(2011, 12, 24),
                 CreditLimit = 10500.00M,
-                DateOfBirth = new System.DateTime(1975, 9, 18),
+                DateOfBirth = new DateTime(1975, 9, 18),
                 Id = 134875,
                 Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
@@ -252,7 +252,7 @@
             {
                 Created = new DateTime(2012, 08, 13),
                 CreditLimit = 6250.00M,
-                DateOfBirth = new System.DateTime(1984, 3, 11),
+                DateOfBirth = new DateTime(1984, 3, 11),
                 Id = 998866,
                 Name = "John Smith",
                 Status = CustomerStatus.Inactive,
@@ -282,7 +282,7 @@
             {
                 Created = new DateTime(2011, 12, 24),
                 CreditLimit = 10500.00M,
-                DateOfBirth = new System.DateTime(1975, 9, 18),
+                DateOfBirth = new DateTime(1975, 9, 18),
                 Id = 134875,
                 Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
@@ -309,7 +309,63 @@
             {
                 Created = new DateTime(2012, 08, 13),
                 CreditLimit = 6250.00M,
-                DateOfBirth = new System.DateTime(1984, 3, 11),
+                DateOfBirth = new DateTime(1984, 3, 11),
+                Id = 998866,
+                Name = "John Smith",
+                Status = CustomerStatus.Inactive,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com/about")
+            };
+            var sqlQuery2 = mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
+
+            Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?)", sqlQuery2.CommandText);
+            Assert.Equal(6, sqlQuery2.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery2.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery2.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery2.Arguments[3]);
+            Assert.Equal((int)customer.Status, sqlQuery2.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/about", sqlQuery2.Arguments[5]);
+        }
+
+        [Fact]
+        public void InsertInstanceQueryForIdentifierStrategySequence()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+
+            var customer = new Customer
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var sqlQuery = mockSqlDialect.Object.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
+
+            Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?)", sqlQuery.CommandText);
+            Assert.Equal(6, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
+            Assert.Equal((int)customer.Status, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
+
+            // Do a second query to check that the caching doesn't cause a problem.
+            customer = new Customer
+            {
+                Created = new DateTime(2012, 08, 13),
+                CreditLimit = 6250.00M,
+                DateOfBirth = new DateTime(1984, 3, 11),
                 Id = 998866,
                 Name = "John Smith",
                 Status = CustomerStatus.Inactive,
@@ -365,12 +421,12 @@
         }
 
         [Fact]
-        public void SupportsIdentityReturnsFalseByDefault()
+        public void SupportsSelectInsertedIdentifierReturnsFalseByDefault()
         {
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
 
-            Assert.False(mockSqlDialect.Object.SupportsIdentity);
+            Assert.False(mockSqlDialect.Object.SupportsSelectInsertedIdentifier);
         }
 
         [Fact]
@@ -383,7 +439,7 @@
             {
                 Created = new DateTime(2011, 12, 24),
                 CreditLimit = 10500.00M,
-                DateOfBirth = new System.DateTime(1975, 9, 18),
+                DateOfBirth = new DateTime(1975, 9, 18),
                 Id = 134875,
                 Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
@@ -411,7 +467,7 @@
             {
                 Created = new DateTime(2012, 08, 13),
                 CreditLimit = 6250.00M,
-                DateOfBirth = new System.DateTime(1984, 3, 11),
+                DateOfBirth = new DateTime(1984, 3, 11),
                 Id = 998866,
                 Name = "John Smith",
                 Status = CustomerStatus.Inactive,

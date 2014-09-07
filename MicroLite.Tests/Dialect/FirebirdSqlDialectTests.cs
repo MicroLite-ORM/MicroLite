@@ -249,11 +249,11 @@
         }
 
         [Fact]
-        public void SupportsIdentityReturnsFalse()
+        public void SupportsSelectInsertedIdentifierReturnsFalse()
         {
             var sqlDialect = new FirebirdSqlDialect();
 
-            Assert.False(sqlDialect.SupportsIdentity);
+            Assert.False(sqlDialect.SupportsSelectInsertedIdentifier);
         }
 
         [Fact]

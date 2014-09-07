@@ -234,11 +234,11 @@
         }
 
         [Fact]
-        public void SupportsIdentityReturnsTrue()
+        public void SupportsSelectInsertedIdentifierReturnsTrue()
         {
             var sqlDialect = new SqlServerCeDialect();
 
-            Assert.True(sqlDialect.SupportsIdentity);
+            Assert.True(sqlDialect.SupportsSelectInsertedIdentifier);
         }
 
         [Fact]

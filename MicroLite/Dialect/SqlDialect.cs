@@ -49,10 +49,9 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
-        /// Gets a value indicating whether the SQL Dialect supports Identity or AutoIncrement columns.
+        /// Gets a value indicating whether the SQL Dialect supports selecting the identifier value of an inserted column.
         /// </summary>
-        /// <remarks>Returns false unless overridden.</remarks>
-        public virtual bool SupportsIdentity
+        public virtual bool SupportsSelectInsertedIdentifier
         {
             get
             {

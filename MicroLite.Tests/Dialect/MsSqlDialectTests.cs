@@ -290,11 +290,11 @@ ORDER BY
         }
 
         [Fact]
-        public void SupportsIdentityReturnsTrue()
+        public void SupportsSelectInsertedIdentifierReturnsTrue()
         {
             var sqlDialect = new MsSqlDialect();
 
-            Assert.True(sqlDialect.SupportsIdentity);
+            Assert.True(sqlDialect.SupportsSelectInsertedIdentifier);
         }
 
         [Fact]
