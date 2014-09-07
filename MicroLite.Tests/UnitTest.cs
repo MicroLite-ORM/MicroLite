@@ -33,6 +33,12 @@
                 {
                     return identifierStrategy;
                 },
+                ResolveSequenceName = (PropertyInfo propertyInfo) =>
+                {
+                    return identifierStrategy == IdentifierStrategy.Sequence
+                        ? propertyInfo.DeclaringType.Name + "_" + propertyInfo.Name + "_Sequence"
+                        : null;
+                },
                 ResolveTableSchema = (Type type) =>
                 {
                     return "Sales";

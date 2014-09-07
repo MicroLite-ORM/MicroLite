@@ -75,6 +75,12 @@
             }
 
             [Fact]
+            public void TheCreatedShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").SequenceName);
+            }
+
+            [Fact]
             public void TheCreditLimitColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").AllowInsert);
@@ -105,6 +111,12 @@
             }
 
             [Fact]
+            public void TheCreditLimitShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").SequenceName);
+            }
+
+            [Fact]
             public void TheDateOfBirthColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").AllowInsert);
@@ -132,6 +144,12 @@
             public void TheDateOfBirthPropertyShouldBeMapped()
             {
                 Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "DateOfBirth"));
+            }
+
+            [Fact]
+            public void TheDateOfBirthShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").SequenceName);
             }
 
             [Fact]
@@ -177,6 +195,12 @@
             }
 
             [Fact]
+            public void TheIdShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").SequenceName);
+            }
+
+            [Fact]
             public void TheNameColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name").AllowInsert);
@@ -204,6 +228,12 @@
             public void TheNamePropertyShouldBeMapped()
             {
                 Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Name"));
+            }
+
+            [Fact]
+            public void TheNameShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name").SequenceName);
             }
 
             [Fact]
@@ -249,6 +279,12 @@
             }
 
             [Fact]
+            public void TheStatusShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").SequenceName);
+            }
+
+            [Fact]
             public void TheTableNameShouldNotBePluralized()
             {
                 Assert.Equal("Customer", this.objectInfo.TableInfo.Name);
@@ -282,6 +318,12 @@
             public void TheUpdatedPropertyShouldBeMapped()
             {
                 Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Updated"));
+            }
+
+            [Fact]
+            public void TheUpdatedShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").SequenceName);
             }
 
             [Fact]
@@ -328,6 +370,28 @@
             }
         }
 
+        public class WhenTheIdentifierStrategyIsSequence : UnitTest
+        {
+            private readonly IObjectInfo objectInfo;
+
+            public WhenTheIdentifierStrategyIsSequence()
+            {
+                var settings = UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence);
+
+                settings.UsePluralClassNameForTableName = false;
+
+                var mappingConvention = new ConventionMappingConvention(settings);
+
+                this.objectInfo = mappingConvention.CreateObjectInfo(typeof(Customer));
+            }
+
+            [Fact]
+            public void TheIdentifierColumnShouldHaveTheSequenceNameSet()
+            {
+                Assert.Equal("Customer_Id_Sequence", this.objectInfo.TableInfo.IdentifierColumn.SequenceName);
+            }
+        }
+
         public class WhenUsingDefaultSettings : UnitTest
         {
             private readonly IObjectInfo objectInfo;
@@ -370,6 +434,12 @@
             }
 
             [Fact]
+            public void TheCreatedShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").SequenceName);
+            }
+
+            [Fact]
             public void TheCreditLimitColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").AllowInsert);
@@ -400,6 +470,12 @@
             }
 
             [Fact]
+            public void TheCreditLimitShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").SequenceName);
+            }
+
+            [Fact]
             public void TheDateOfBirthColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").AllowInsert);
@@ -427,6 +503,12 @@
             public void TheDateOfBirthPropertyShouldBeMapped()
             {
                 Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "DateOfBirth"));
+            }
+
+            [Fact]
+            public void TheDateOfBirthShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").SequenceName);
             }
 
             [Fact]
@@ -472,6 +554,12 @@
             }
 
             [Fact]
+            public void TheIdShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").SequenceName);
+            }
+
+            [Fact]
             public void TheNameColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name").AllowInsert);
@@ -499,6 +587,12 @@
             public void TheNamePropertyShouldBeMapped()
             {
                 Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Name"));
+            }
+
+            [Fact]
+            public void TheNameShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name").SequenceName);
             }
 
             [Fact]
@@ -544,6 +638,12 @@
             }
 
             [Fact]
+            public void TheStatusShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").SequenceName);
+            }
+
+            [Fact]
             public void TheTableNameShouldBePluralized()
             {
                 Assert.Equal("Customers", this.objectInfo.TableInfo.Name);
@@ -580,6 +680,12 @@
             }
 
             [Fact]
+            public void TheUpdatedShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").SequenceName);
+            }
+
+            [Fact]
             public void TheWebsiteColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Website").AllowInsert);
@@ -607,6 +713,12 @@
             public void TheWebsitePropertyShouldBeMapped()
             {
                 Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Website"));
+            }
+
+            [Fact]
+            public void TheWebsiteShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Website").SequenceName);
             }
         }
     }

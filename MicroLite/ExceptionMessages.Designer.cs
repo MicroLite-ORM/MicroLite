@@ -322,6 +322,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The identifier &apos;{0}&apos; has been mapped using IdentifierStrategy.Sequence but no SequenceName has been specified..
+        /// </summary>
+        internal static string TableInfo_SequenceNameNotSet {
+            get {
+                return ResourceManager.GetString("TableInfo_SequenceNameNotSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Transaction has been completed.
         /// </summary>
         internal static string Transaction_AlreadyCompleted {

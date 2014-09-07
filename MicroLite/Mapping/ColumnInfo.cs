@@ -26,6 +26,7 @@ namespace MicroLite.Mapping
         private readonly string columnName;
         private readonly bool isIdentifier;
         private readonly PropertyInfo propertyInfo;
+        private readonly string sequenceName;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnInfo"/> class.
@@ -35,13 +36,15 @@ namespace MicroLite.Mapping
         /// <param name="isIdentifier">A value indicating whether column is the table identifier column (primary key).</param>
         /// <param name="allowInsert">true if the column can be inserted, otherwise false.</param>
         /// <param name="allowUpdate">true if the column can be updated, otherwise false.</param>
+        /// <param name="sequenceName">The name of the sequence which generates the identifier value.</param>
         /// <exception cref="ArgumentNullException">Thrown if columnName or propertyInfo are null.</exception>
         public ColumnInfo(
             string columnName,
             PropertyInfo propertyInfo,
             bool isIdentifier,
             bool allowInsert,
-            bool allowUpdate)
+            bool allowUpdate,
+            string sequenceName)
         {
             if (columnName == null)
             {
@@ -58,6 +61,7 @@ namespace MicroLite.Mapping
             this.propertyInfo = propertyInfo;
             this.allowInsert = allowInsert;
             this.allowUpdate = allowUpdate;
+            this.sequenceName = sequenceName;
         }
 
         /// <summary>
@@ -112,6 +116,17 @@ namespace MicroLite.Mapping
             get
             {
                 return this.propertyInfo;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the sequence which generates the identifier value.
+        /// </summary>
+        public string SequenceName
+        {
+            get
+            {
+                return this.sequenceName;
             }
         }
     }

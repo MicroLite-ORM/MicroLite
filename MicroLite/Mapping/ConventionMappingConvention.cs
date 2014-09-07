@@ -89,7 +89,8 @@ namespace MicroLite.Mapping
                        propertyInfo: property,
                        isIdentifier: isIdentifier,
                        allowInsert: isIdentifier ? identifierStrategy == IdentifierStrategy.Assigned : this.settings.AllowInsert(property),
-                       allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property));
+                       allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property),
+                       sequenceName: isIdentifier && identifierStrategy == IdentifierStrategy.Sequence ? this.settings.ResolveSequenceName(property) : null);
 
                 if (this.log.IsDebug)
                 {

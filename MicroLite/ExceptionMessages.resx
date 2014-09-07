@@ -204,6 +204,9 @@
   <data name="TableInfo_MultipleIdentifierColumns" xml:space="preserve">
     <value>Multiple columns have been mapped as the identifier for the table '{0}.{1}'</value>
   </data>
+  <data name="TableInfo_SequenceNameNotSet" xml:space="preserve">
+    <value>The identifier '{0}' has been mapped using IdentifierStrategy.Sequence but no SequenceName has been specified.</value>
+  </data>
   <data name="Transaction_AlreadyCompleted" xml:space="preserve">
     <value>The Transaction has been completed</value>
   </data>
