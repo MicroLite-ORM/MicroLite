@@ -19,7 +19,7 @@ namespace MicroLite.Listeners
 
     /// <summary>
     /// The implementation of <see cref="IListener"/> for setting the instance identifier value if
-    /// <see cref="IdentifierStrategy"/>.DbGenerated is used.
+    /// <see cref="IdentifierStrategy"/>.DbGenerated or <see cref="IdentifierStrategy"/>.Sequence is used.
     /// </summary>
     public sealed class DbGeneratedListener : Listener
     {
@@ -42,7 +42,7 @@ namespace MicroLite.Listeners
 
             var objectInfo = ObjectInfo.For(instance.GetType());
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
+            if (objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
                 if (executeScalarResult == null)
                 {

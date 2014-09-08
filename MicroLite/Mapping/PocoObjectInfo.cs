@@ -245,7 +245,7 @@ namespace MicroLite.Mapping
         {
             this.VerifyIdentifierMapped();
 
-            if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
+            if (this.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
                 if (!this.HasDefaultIdentifierValue(instance))
                 {

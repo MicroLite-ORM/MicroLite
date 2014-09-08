@@ -562,6 +562,22 @@
         }
 
         [Fact]
+        public void VerifyInstanceForInsertDoesNotThrowMicroLiteException_WhenIdentifierStrategySequence_AndIdentifierNotSet()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+
+            var customer = new Customer
+            {
+                Id = 0
+            };
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            Assert.DoesNotThrow(() => objectInfo.VerifyInstanceForInsert(customer));
+        }
+
+        [Fact]
         public void VerifyInstanceForInsertThrowsMicroLiteException_WhenIdentifierStrategyAssigned_AndIdentifierNotSet()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
@@ -584,6 +600,24 @@
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new Customer
+            {
+                Id = 147843
+            };
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
+
+            Assert.Equal(ExceptionMessages.PocoObjectInfo_IdentifierSetForInsert, exception.Message);
+        }
+
+        [Fact]
+        public void VerifyInstanceForInsertThrowsMicroLiteException_WhenIdentifierStrategySequence_AndIdentifierSet()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
 
             var customer = new Customer
             {

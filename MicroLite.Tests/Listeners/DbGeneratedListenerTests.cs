@@ -23,21 +23,6 @@
         }
 
         [Fact]
-        public void AfterInsertSetsIdentifierValue()
-        {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
-
-            var customer = new Customer();
-            int scalarResult = 4354;
-
-            var listener = new DbGeneratedListener();
-            listener.AfterInsert(customer, scalarResult);
-
-            Assert.Equal(scalarResult, customer.Id);
-        }
-
-        [Fact]
         public void AfterInsertSetsIdentifierValueConvertingItToThePropertyType()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
@@ -53,10 +38,53 @@
         }
 
         [Fact]
+        public void AfterInsertSetsIdentifierValueForIdentifierStrategyDbGenerated()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new Customer();
+            int scalarResult = 4354;
+
+            var listener = new DbGeneratedListener();
+            listener.AfterInsert(customer, scalarResult);
+
+            Assert.Equal(scalarResult, customer.Id);
+        }
+
+        [Fact]
+        public void AfterInsertSetsIdentifierValueForIdentifierStrategySequence()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+
+            var customer = new Customer();
+            int scalarResult = 4354;
+
+            var listener = new DbGeneratedListener();
+            listener.AfterInsert(customer, scalarResult);
+
+            Assert.Equal(scalarResult, customer.Id);
+        }
+
+        [Fact]
         public void AfterInsertThrowsArgumentNullExceptionForNullExecuteScalarResultIfIdentifierStrategyDbGenerated()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var listener = new DbGeneratedListener();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => listener.AfterInsert(new Customer(), null));
+
+            Assert.Equal("executeScalarResult", exception.ParamName);
+        }
+
+        [Fact]
+        public void AfterInsertThrowsArgumentNullExceptionForNullExecuteScalarResultIfIdentifierStrategySequence()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
 
             var listener = new DbGeneratedListener();
 
