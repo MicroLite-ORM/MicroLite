@@ -195,9 +195,6 @@
   <data name="Session_PagingOptionsMustNotBeNone" xml:space="preserve">
     <value>The paging options must contain a count and offset, use the PagingOptions.ForPage or PagingOptions.SkipTake methods to specify the values</value>
   </data>
-  <data name="SqlServerCeDialect_PagedRequiresOrderBy" xml:space="preserve">
-    <value>SQL Server Compact Edition Requires an ORDER BY clause for paged queries. If there is no specific order you want the results in, order by the primary key of the table being queried</value>
-  </data>
   <data name="TableInfo_ColumnMappedMultipleTimes" xml:space="preserve">
     <value>The column '{0}' has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute</value>
   </data>

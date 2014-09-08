@@ -295,15 +295,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SQL Server Compact Edition Requires an ORDER BY clause for paged queries. If there is no specific order you want the results in, order by the primary key of the table being queried.
-        /// </summary>
-        internal static string SqlServerCeDialect_PagedRequiresOrderBy {
-            get {
-                return ResourceManager.GetString("SqlServerCeDialect_PagedRequiresOrderBy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The column &apos;{0}&apos; has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute.
         /// </summary>
         internal static string TableInfo_ColumnMappedMultipleTimes {

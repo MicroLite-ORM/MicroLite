@@ -88,6 +88,20 @@
         }
 
         [Fact]
+        public void PageAppendsOrderByGetDateIfNoOrderByClause()
+        {
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers");
+
+            var sqlDialect = new SqlServerCeDialect();
+
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
+
+            Assert.Equal("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers ORDER BY GETDATE() OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", paged.CommandText);
+            Assert.Equal(0, paged.Arguments[0]);
+            Assert.Equal(25, paged.Arguments[1]);
+        }
+
+        [Fact]
         public void PageNonQualifiedQuery()
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers ORDER BY CustomerId");
@@ -122,19 +136,6 @@
 
             var exception = Assert.Throws<ArgumentNullException>(
                 () => sqlDialect.PageQuery(null, PagingOptions.None));
-        }
-
-        [Fact]
-        public void PageThrowsMicroLiteExceptionIfNoOrderByClause()
-        {
-            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers");
-
-            var sqlDialect = new SqlServerCeDialect();
-
-            var exception = Assert.Throws<MicroLiteException>(
-                () => sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25)));
-
-            Assert.Equal(ExceptionMessages.SqlServerCeDialect_PagedRequiresOrderBy, exception.Message);
         }
 
         [Fact]

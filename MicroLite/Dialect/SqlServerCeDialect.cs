@@ -51,19 +51,18 @@ namespace MicroLite.Dialect
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            var sqlString = SqlString.Parse(sqlQuery.CommandText, Clauses.OrderBy);
-
-            if (string.IsNullOrEmpty(sqlString.OrderBy))
-            {
-                throw new MicroLiteException(ExceptionMessages.SqlServerCeDialect_PagedRequiresOrderBy);
-            }
-
             var arguments = new object[sqlQuery.Arguments.Count + 2];
             Array.Copy(sqlQuery.ArgumentsArray, 0, arguments, 0, sqlQuery.Arguments.Count);
             arguments[arguments.Length - 2] = pagingOptions.Offset;
             arguments[arguments.Length - 1] = pagingOptions.Count;
 
-            var stringBuilder = new StringBuilder(sqlQuery.CommandText)
+            var sqlString = SqlString.Parse(sqlQuery.CommandText, Clauses.OrderBy);
+
+            var commandText = string.IsNullOrEmpty(sqlString.OrderBy)
+                ? sqlQuery.CommandText + " ORDER BY GETDATE()"
+                : sqlQuery.CommandText;
+
+            var stringBuilder = new StringBuilder(commandText)
                 .Replace(Environment.NewLine, string.Empty)
                 .Append(" OFFSET ")
                 .Append(this.SqlCharacters.GetParameterName(arguments.Length - 2))
