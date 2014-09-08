@@ -42,6 +42,46 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
+        /// Configures a MS SQL 2005 (or later) connection using the connection string with the specified name
+        /// in the connection strings section of the app/web config.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name of the connection string in the app/web config.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
+        public static ICreateSessionFactory ForMsSql2005Connection(this IConfigureConnection configureConnection, string connectionName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, new MsSql2005Dialect(), new MsSqlDbDriver());
+        }
+
+        /// <summary>
+        /// Configures a MS SQL 2012 (or later) connection using the connection string with the specified name
+        /// in the connection strings section of the app/web config.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name of the connection string in the app/web config.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
+        public static ICreateSessionFactory ForMsSql2012Connection(this IConfigureConnection configureConnection, string connectionName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, new MsSql2012Dialect(), new MsSqlDbDriver());
+        }
+
+        /// <summary>
         /// Configures a MsSql connection using the connection string with the specified name
         /// in the connection strings section of the app/web config.
         /// </summary>
@@ -51,6 +91,7 @@ namespace MicroLite.Configuration
         /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
+        [System.Obsolete("This method has been superceeded by the new ForMsSql2005Connection and ForMsSql2012Connection methods and will be removed in MicroLite 6.0")]
         public static ICreateSessionFactory ForMsSqlConnection(this IConfigureConnection configureConnection, string connectionName)
         {
             if (configureConnection == null)
@@ -58,7 +99,7 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("configureConnection");
             }
 
-            return configureConnection.ForConnection(connectionName, new MsSqlDialect(), new MsSqlDbDriver());
+            return configureConnection.ForConnection(connectionName, new MsSql2005Dialect(), new MsSqlDbDriver());
         }
 
         /// <summary>

@@ -43,6 +43,66 @@
             }
         }
 
+        public class WhenCallingForMsSql2005Connection
+        {
+            private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();
+
+            public WhenCallingForMsSql2005Connection()
+            {
+                ConfigurationExtensions.ForMsSql2005Connection(this.mockConfigureConnection.Object, "TestConnection");
+            }
+
+            [Fact]
+            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
+            {
+                this.mockConfigureConnection.Verify(
+                    x => x.ForConnection("TestConnection", It.IsNotNull<MsSql2005Dialect>(), It.IsNotNull<MsSqlDbDriver>()),
+                    Times.Once());
+            }
+        }
+
+        public class WhenCallingForMsSql2005Connection_AndTheConfigureConnectionIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionIsThrown()
+            {
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => ConfigurationExtensions.ForMsSql2005Connection(null, "TestConnection"));
+
+                Assert.Equal("configureConnection", exception.ParamName);
+            }
+        }
+
+        public class WhenCallingForMsSql2012Connection
+        {
+            private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();
+
+            public WhenCallingForMsSql2012Connection()
+            {
+                ConfigurationExtensions.ForMsSql2012Connection(this.mockConfigureConnection.Object, "TestConnection");
+            }
+
+            [Fact]
+            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
+            {
+                this.mockConfigureConnection.Verify(
+                    x => x.ForConnection("TestConnection", It.IsNotNull<MsSql2012Dialect>(), It.IsNotNull<MsSqlDbDriver>()),
+                    Times.Once());
+            }
+        }
+
+        public class WhenCallingForMsSql2012Connection_AndTheConfigureConnectionIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionIsThrown()
+            {
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => ConfigurationExtensions.ForMsSql2012Connection(null, "TestConnection"));
+
+                Assert.Equal("configureConnection", exception.ParamName);
+            }
+        }
+
         public class WhenCallingForMsSqlConnection
         {
             private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();
@@ -56,7 +116,7 @@
             public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
             {
                 this.mockConfigureConnection.Verify(
-                    x => x.ForConnection("TestConnection", It.IsNotNull<MsSqlDialect>(), It.IsNotNull<MsSqlDbDriver>()),
+                    x => x.ForConnection("TestConnection", It.IsNotNull<MsSql2005Dialect>(), It.IsNotNull<MsSqlDbDriver>()),
                     Times.Once());
             }
         }

@@ -69,6 +69,8 @@
     <Compile Include="DbEncryptedStringTests.cs" />
     <Compile Include="Dialect\FirebirdSqlCharactersTests.cs" />
     <Compile Include="Dialect\FirebirdSqlDialectTests.cs" />
+    <Compile Include="Dialect\MsSql2005DialectTests.cs" />
+    <Compile Include="Dialect\MsSql2012DialectTests.cs" />
     <Compile Include="Dialect\MsSqlCharactersTests.cs" />
     <Compile Include="Dialect\MySqlCharactersTests.cs" />
     <Compile Include="Dialect\MySqlDialectTests.cs" />
@@ -102,7 +104,6 @@
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
     <Compile Include="Listeners\DbGeneratedListenerTests.cs" />
-    <Compile Include="Dialect\MsSqlDialectTests.cs" />
     <Compile Include="Listeners\ListenerCollectionTests.cs" />
     <Compile Include="Mapping\ColumnInfoTests.cs" />
     <Compile Include="Mapping\ConventionMappingConventionTests.cs" />

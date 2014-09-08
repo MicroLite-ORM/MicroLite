@@ -8,14 +8,14 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="MsSqlDialect"/> class.
+    /// Unit Tests for the <see cref="MsSql2005Dialect"/> class.
     /// </summary>
-    public class MsSqlDialectTests : UnitTest
+    public class MsSql2005DialectTests : UnitTest
     {
         [Fact]
         public void BuildSelectInsertIdSqlQuery()
         {
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
 
             var sqlQuery = sqlDialect.BuildSelectInsertIdSqlQuery(ObjectInfo.For(typeof(Customer)));
 
@@ -41,7 +41,7 @@
                 Website = new Uri("http://microliteorm.wordpress.com")
             };
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
 
             var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
@@ -74,7 +74,7 @@
                 Website = new Uri("http://microliteorm.wordpress.com")
             };
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
 
             var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
@@ -93,7 +93,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, StatusId FROM Customers");
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT CustomerId, Name, DoB, StatusId FROM (SELECT CustomerId, Name, DoB, StatusId,ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -106,7 +106,7 @@
         {
             var sqlQuery = new SqlQuery("SELECT * FROM Customers");
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -117,7 +117,7 @@
         [Fact]
         public void PageQueryThrowsArgumentNullExceptionIfSqlQueryIsNull()
         {
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
 
             var exception = Assert.Throws<ArgumentNullException>(
                 () => sqlDialect.PageQuery(null, PagingOptions.ForPage(1, 10)));
@@ -138,7 +138,7 @@
                                         .Where("Name LIKE @p0", "Fred%")
                                         .ToSqlQuery();
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
 
             SqlQuery pageQuerySingleLevel = sqlDialect.PageQuery(sqlQuerySingleLevel, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
             Assert.Equal("SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website] FROM (SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Customers] WHERE (Name LIKE @p0)) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", pageQuerySingleLevel.CommandText);
@@ -162,7 +162,7 @@
                                         .AndWhere("SourceId").In(new SqlQuery("SELECT SourceId FROM Source WHERE Status = @p0", 1))
                                         .ToSqlQuery();
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
 
             SqlQuery pageQuerySubQuery = sqlDialect.PageQuery(sqlQuerySubQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
             Assert.Equal("SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website] FROM (SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Customers] WHERE (Name LIKE @p0) AND ([SourceId] IN (SELECT SourceId FROM Source WHERE Status = @p1))) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", pageQuerySubQuery.CommandText);
@@ -188,7 +188,7 @@ ORDER BY
 [Customers].[Name] ASC,
 [Customers].[DoB] ASC", new object[] { CustomerStatus.Active, new DateTime(1980, 01, 01) });
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC) AS RowNumber FROM [Sales].[Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
@@ -203,7 +203,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM [dbo].[Customers] ORDER BY [CustomerId] ASC");
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM (SELECT [CustomerId], [Name], [DoB], [StatusId],ROW_NUMBER() OVER(ORDER BY [CustomerId] ASC) AS RowNumber FROM [dbo].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -216,7 +216,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]");
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -229,7 +229,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers]");
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
@@ -242,7 +242,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0 ORDER BY [Customers].[Name] ASC", CustomerStatus.Active);
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
@@ -266,7 +266,7 @@ WHERE
 ORDER BY
 [Customers].[Name] ASC", new object[] { CustomerStatus.Active });
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
@@ -280,7 +280,7 @@ ORDER BY
         {
             var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0", CustomerStatus.Active);
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
             Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
@@ -292,7 +292,7 @@ ORDER BY
         [Fact]
         public void SupportsSelectInsertedIdentifierReturnsTrue()
         {
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
 
             Assert.True(sqlDialect.SupportsSelectInsertedIdentifier);
         }
@@ -315,7 +315,7 @@ ORDER BY
                 Website = new Uri("http://microliteorm.wordpress.com")
             };
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
 
             var sqlQuery = sqlDialect.BuildUpdateSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
@@ -348,7 +348,7 @@ ORDER BY
                 Website = new Uri("http://microliteorm.wordpress.com")
             };
 
-            var sqlDialect = new MsSqlDialect();
+            var sqlDialect = new MsSql2005Dialect();
 
             var sqlQuery = sqlDialect.BuildUpdateSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
