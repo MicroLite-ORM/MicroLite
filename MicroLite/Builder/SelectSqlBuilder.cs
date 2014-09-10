@@ -259,6 +259,13 @@ namespace MicroLite.Builder
             return this;
         }
 
+        public IAndOrOrderBy In(params SqlQuery[] subQueries)
+        {
+            this.AddIn(subQueries, negate: false);
+
+            return this;
+        }
+
         public IAndOrOrderBy In(SqlQuery subQuery)
         {
             this.AddIn(subQuery, negate: false);
@@ -391,6 +398,13 @@ namespace MicroLite.Builder
         public IAndOrOrderBy NotIn(params object[] args)
         {
             this.AddIn(args, negate: true);
+
+            return this;
+        }
+
+        public IAndOrOrderBy NotIn(params SqlQuery[] subQueries)
+        {
+            this.AddIn(subQueries, negate: true);
 
             return this;
         }
@@ -643,6 +657,39 @@ namespace MicroLite.Builder
                 }
 
                 this.InnerSql.Append(this.SqlCharacters.GetParameterName((this.Arguments.Count - args.Length) + i));
+            }
+
+            this.InnerSql.Append("))");
+        }
+
+        private void AddIn(SqlQuery[] subQueries, bool negate)
+        {
+            if (subQueries == null)
+            {
+                throw new ArgumentNullException("subQueries");
+            }
+
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.InnerSql.Append(this.operand);
+            }
+
+            this.InnerSql.Append(" (")
+                .Append(this.whereColumnName)
+                .Append(negate ? " NOT" : string.Empty)
+                .Append(" IN (");
+
+            for (int i = 0; i < subQueries.Length; i++)
+            {
+                var subQuery = subQueries[i];
+
+                this.Arguments.AddRange(subQuery.Arguments);
+
+                var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+
+                this.InnerSql.Append('(')
+                    .Append(renumberedPredicate)
+                    .Append(i < subQueries.Length - 1 ? "), " : ")");
             }
 
             this.InnerSql.Append("))");
