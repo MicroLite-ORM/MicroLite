@@ -21,11 +21,13 @@ namespace MicroLite.Dialect
     /// </summary>
     internal sealed class MsSql2012Dialect : MsSql2005Dialect
     {
+        private static readonly SqlQuery selectSequenceIdentityQuery = new SqlQuery("SELECT @@id");
+
         public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
         {
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
             {
-                return new SqlQuery("SELECT @@id");
+                return selectSequenceIdentityQuery;
             }
 
             return base.BuildSelectInsertIdSqlQuery(objectInfo);
