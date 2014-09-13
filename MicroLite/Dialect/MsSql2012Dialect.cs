@@ -21,6 +21,16 @@ namespace MicroLite.Dialect
     /// </summary>
     internal sealed class MsSql2012Dialect : MsSql2005Dialect
     {
+        public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
+        {
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
+            {
+                return new SqlQuery("SELECT @@id");
+            }
+
+            return base.BuildSelectInsertIdSqlQuery(objectInfo);
+        }
+
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
             if (sqlQuery == null)
@@ -56,6 +66,10 @@ namespace MicroLite.Dialect
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
             {
+                commandText = "DECLARE @@id int;"
+                    + "SELECT @@id = NEXT VALUE FOR " + objectInfo.TableInfo.IdentifierColumn.SequenceName + ";"
+                    + commandText;
+
                 var firstParenthesisIndex = commandText.IndexOf('(') + 1;
 
                 commandText = commandText.Insert(
@@ -66,7 +80,7 @@ namespace MicroLite.Dialect
 
                 commandText = commandText.Insert(
                     secondParenthesisIndex,
-                    "NEXT VALUE FOR " + objectInfo.TableInfo.IdentifierColumn.SequenceName + ",");
+                    "@@id,");
             }
 
             return commandText;

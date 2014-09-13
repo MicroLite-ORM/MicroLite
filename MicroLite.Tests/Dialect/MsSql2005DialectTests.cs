@@ -13,8 +13,25 @@
     public class MsSql2005DialectTests : UnitTest
     {
         [Fact]
-        public void BuildSelectInsertIdSqlQuery()
+        public void BuildSelectInsertIdSqlQueryForIdentifierStrategyAssigned()
         {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
+            var sqlDialect = new MsSql2005Dialect();
+
+            var sqlQuery = sqlDialect.BuildSelectInsertIdSqlQuery(ObjectInfo.For(typeof(Customer)));
+
+            Assert.Equal("SELECT SCOPE_IDENTITY()", sqlQuery.CommandText);
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+        }
+
+        [Fact]
+        public void BuildSelectInsertIdSqlQueryForIdentifierStrategyDbGenerated()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
             var sqlDialect = new MsSql2005Dialect();
 
             var sqlQuery = sqlDialect.BuildSelectInsertIdSqlQuery(ObjectInfo.For(typeof(Customer)));
