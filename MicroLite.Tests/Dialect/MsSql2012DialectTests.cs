@@ -119,7 +119,7 @@
         }
 
         [Fact]
-        public void InsertInstanceQueryForIdentifierStrategySequence()
+        public void InsertInstanceQueryForIdentifierStrategySequenceWithInt32Id()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
@@ -141,6 +141,38 @@
             var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
             Assert.Equal("DECLARE @@id int;SELECT @@id = NEXT VALUE FOR Customer_Id_Sequence;INSERT INTO [Sales].[Customers] ([Id],[Created],[CreditLimit],[DateOfBirth],[Name],[CustomerStatusId],[Website]) VALUES (@@id,@p0,@p1,@p2,@p3,@p4,@p5)", sqlQuery.CommandText);
+            Assert.Equal(6, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
+            Assert.Equal(1, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
+        }
+
+        [Fact]
+        public void InsertInstanceQueryForIdentifierStrategySequenceWithInt64Id()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+
+            var customer = new CustomerWithLongId
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var sqlDialect = new MsSql2012Dialect();
+
+            var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(CustomerWithLongId)), customer);
+
+            Assert.Equal("DECLARE @@id bigint;SELECT @@id = NEXT VALUE FOR CustomerWithLongId_Id_Sequence;INSERT INTO [Sales].[CustomerWithLongIds] ([Id],[Created],[CreditLimit],[DateOfBirth],[Name],[CustomerStatusId],[Website]) VALUES (@@id,@p0,@p1,@p2,@p3,@p4,@p5)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
@@ -295,6 +327,61 @@
             Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
             Assert.Equal(25, paged.Arguments[1]);
             Assert.Equal(25, paged.Arguments[2]);
+        }
+
+        public class CustomerWithLongId
+        {
+            public CustomerWithLongId()
+            {
+            }
+
+            public DateTime Created
+            {
+                get;
+                set;
+            }
+
+            public Decimal? CreditLimit
+            {
+                get;
+                set;
+            }
+
+            public DateTime DateOfBirth
+            {
+                get;
+                set;
+            }
+
+            public long Id
+            {
+                get;
+                set;
+            }
+
+            public string Name
+            {
+                get;
+                set;
+            }
+
+            public CustomerStatus Status
+            {
+                get;
+                set;
+            }
+
+            public DateTime? Updated
+            {
+                get;
+                set;
+            }
+
+            public Uri Website
+            {
+                get;
+                set;
+            }
         }
     }
 }

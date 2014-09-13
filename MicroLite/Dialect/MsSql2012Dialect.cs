@@ -68,7 +68,7 @@ namespace MicroLite.Dialect
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
             {
-                commandText = "DECLARE @@id int;"
+                commandText = "DECLARE @@id " + GetSqlType(objectInfo.TableInfo.IdentifierColumn) + ";"
                     + "SELECT @@id = NEXT VALUE FOR " + objectInfo.TableInfo.IdentifierColumn.SequenceName + ";"
                     + commandText;
 
@@ -86,6 +86,21 @@ namespace MicroLite.Dialect
             }
 
             return commandText;
+        }
+
+        private static string GetSqlType(ColumnInfo columnInfo)
+        {
+            switch (columnInfo.PropertyInfo.PropertyType.Name)
+            {
+                case "Int32":
+                    return "int";
+
+                case "Int64":
+                    return "bigint";
+
+                default:
+                    throw new NotSupportedException(columnInfo.PropertyInfo.PropertyType.Name);
+            }
         }
     }
 }
