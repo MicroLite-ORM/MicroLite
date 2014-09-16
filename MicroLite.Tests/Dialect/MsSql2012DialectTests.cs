@@ -119,6 +119,70 @@
         }
 
         [Fact]
+        public void InsertInstanceQueryForIdentifierStrategySequenceWithByteId()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+
+            var customer = new CustomerWithByteId
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 175,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var sqlDialect = new MsSql2012Dialect();
+
+            var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(CustomerWithByteId)), customer);
+
+            Assert.Equal("DECLARE @@id tinyint;SELECT @@id = NEXT VALUE FOR CustomerWithByteId_Id_Sequence;INSERT INTO [Sales].[CustomerWithByteIds] ([Id],[Created],[CreditLimit],[DateOfBirth],[Name],[CustomerStatusId],[Website]) VALUES (@@id,@p0,@p1,@p2,@p3,@p4,@p5)", sqlQuery.CommandText);
+            Assert.Equal(6, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
+            Assert.Equal(1, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
+        }
+
+        [Fact]
+        public void InsertInstanceQueryForIdentifierStrategySequenceWithInt16Id()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+
+            var customer = new CustomerWithShortId
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 13875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var sqlDialect = new MsSql2012Dialect();
+
+            var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(CustomerWithShortId)), customer);
+
+            Assert.Equal("DECLARE @@id smallint;SELECT @@id = NEXT VALUE FOR CustomerWithShortId_Id_Sequence;INSERT INTO [Sales].[CustomerWithShortIds] ([Id],[Created],[CreditLimit],[DateOfBirth],[Name],[CustomerStatusId],[Website]) VALUES (@@id,@p0,@p1,@p2,@p3,@p4,@p5)", sqlQuery.CommandText);
+            Assert.Equal(6, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
+            Assert.Equal(1, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
+        }
+
+        [Fact]
         public void InsertInstanceQueryForIdentifierStrategySequenceWithInt32Id()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
@@ -329,6 +393,61 @@
             Assert.Equal(25, paged.Arguments[2]);
         }
 
+        public class CustomerWithByteId
+        {
+            public CustomerWithByteId()
+            {
+            }
+
+            public DateTime Created
+            {
+                get;
+                set;
+            }
+
+            public Decimal? CreditLimit
+            {
+                get;
+                set;
+            }
+
+            public DateTime DateOfBirth
+            {
+                get;
+                set;
+            }
+
+            public byte Id
+            {
+                get;
+                set;
+            }
+
+            public string Name
+            {
+                get;
+                set;
+            }
+
+            public CustomerStatus Status
+            {
+                get;
+                set;
+            }
+
+            public DateTime? Updated
+            {
+                get;
+                set;
+            }
+
+            public Uri Website
+            {
+                get;
+                set;
+            }
+        }
+
         public class CustomerWithLongId
         {
             public CustomerWithLongId()
@@ -354,6 +473,61 @@
             }
 
             public long Id
+            {
+                get;
+                set;
+            }
+
+            public string Name
+            {
+                get;
+                set;
+            }
+
+            public CustomerStatus Status
+            {
+                get;
+                set;
+            }
+
+            public DateTime? Updated
+            {
+                get;
+                set;
+            }
+
+            public Uri Website
+            {
+                get;
+                set;
+            }
+        }
+
+        public class CustomerWithShortId
+        {
+            public CustomerWithShortId()
+            {
+            }
+
+            public DateTime Created
+            {
+                get;
+                set;
+            }
+
+            public Decimal? CreditLimit
+            {
+                get;
+                set;
+            }
+
+            public DateTime DateOfBirth
+            {
+                get;
+                set;
+            }
+
+            public short Id
             {
                 get;
                 set;

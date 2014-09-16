@@ -92,6 +92,12 @@ namespace MicroLite.Dialect
         {
             switch (columnInfo.PropertyInfo.PropertyType.Name)
             {
+                case "Byte":
+                    return "tinyint";
+
+                case "Int16":
+                    return "smallint";
+
                 case "Int32":
                     return "int";
 
