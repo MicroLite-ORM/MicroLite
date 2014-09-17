@@ -103,36 +103,6 @@
             }
         }
 
-        public class WhenCallingForMsSqlConnection
-        {
-            private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();
-
-            public WhenCallingForMsSqlConnection()
-            {
-                ConfigurationExtensions.ForMsSqlConnection(this.mockConfigureConnection.Object, "TestConnection");
-            }
-
-            [Fact]
-            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
-            {
-                this.mockConfigureConnection.Verify(
-                    x => x.ForConnection("TestConnection", It.IsNotNull<MsSql2005Dialect>(), It.IsNotNull<MsSqlDbDriver>()),
-                    Times.Once());
-            }
-        }
-
-        public class WhenCallingForMsSqlConnection_AndTheConfigureConnectionIsNull
-        {
-            [Fact]
-            public void AnArgumentNullExceptionIsThrown()
-            {
-                var exception = Assert.Throws<ArgumentNullException>(
-                    () => ConfigurationExtensions.ForMsSqlConnection(null, "TestConnection"));
-
-                Assert.Equal("configureConnection", exception.ParamName);
-            }
-        }
-
         public class WhenCallingForMySqlConnection
         {
             private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();
