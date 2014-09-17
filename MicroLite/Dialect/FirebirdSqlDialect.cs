@@ -55,7 +55,22 @@ namespace MicroLite.Dialect
         {
             var commandText = base.BuildInsertCommandText(objectInfo);
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.DbGenerated)
+            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
+            {
+                var firstParenthesisIndex = commandText.IndexOf('(') + 1;
+
+                commandText = commandText.Insert(
+                    firstParenthesisIndex,
+                    this.SqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn.ColumnName) + ",");
+
+                var secondParenthesisIndex = commandText.IndexOf('(', firstParenthesisIndex) + 1;
+
+                commandText = commandText.Insert(
+                    secondParenthesisIndex,
+                    "GEN_ID(" + objectInfo.TableInfo.IdentifierColumn.SequenceName + ", 1),");
+            }
+
+            if (objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
                 commandText += " RETURNING " + objectInfo.TableInfo.IdentifierColumn.ColumnName;
             }

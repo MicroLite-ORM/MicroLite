@@ -17,10 +17,10 @@
         {
             var columns = new ReadOnlyCollection<ColumnInfo>(new[]
             {
-                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true),
-                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, false),
-                new ColumnInfo("Created", typeof(Customer).GetProperty("Created"), false, true, false),
-                new ColumnInfo("Updated", typeof(Customer).GetProperty("Updated"), false, false, true)
+                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true, null),
+                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, false, null),
+                new ColumnInfo("Created", typeof(Customer).GetProperty("Created"), false, true, false, null),
+                new ColumnInfo("Updated", typeof(Customer).GetProperty("Updated"), false, false, true, null)
             });
             var identifierStrategy = IdentifierStrategy.Assigned;
             var name = "Customers";
@@ -42,9 +42,9 @@
         {
             var columns = new ReadOnlyCollection<ColumnInfo>(new[]
             {
-                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true),
-                new ColumnInfo("Created", typeof(Customer).GetProperty("Created"), false, true, false),
-                new ColumnInfo("Updated", typeof(Customer).GetProperty("Updated"), false, false, true)
+                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true, null),
+                new ColumnInfo("Created", typeof(Customer).GetProperty("Created"), false, true, false, null),
+                new ColumnInfo("Updated", typeof(Customer).GetProperty("Updated"), false, false, true, null)
             });
             var identifierStrategy = IdentifierStrategy.Assigned;
             var name = "Customers";
@@ -80,12 +80,26 @@
         }
 
         [Fact]
-        public void ConstructorThrowsMicroLiteExceptionIfMultipleColumnsWithSameName()
+        public void ConstructorThrowsMappingExceptionIfIdentifierStrategySequenceButSequenceNameIsNull()
         {
             var columns = new[]
             {
-                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true),
-                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true)
+                new ColumnInfo("Id", typeof(Customer).GetProperty("Id"), true, true, true, null)
+            };
+
+            var exception = Assert.Throws<MappingException>(
+                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.Sequence, name: "Customers", schema: "Sales"));
+
+            Assert.Equal(ExceptionMessages.TableInfo_SequenceNameNotSet.FormatWith("Id"), exception.Message);
+        }
+
+        [Fact]
+        public void ConstructorThrowsMappingExceptionIfMultipleColumnsWithSameName()
+        {
+            var columns = new[]
+            {
+                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true, null),
+                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true, null)
             };
 
             var exception = Assert.Throws<MappingException>(
@@ -95,12 +109,12 @@
         }
 
         [Fact]
-        public void ConstructorThrowsMicroLiteExceptionMultipleColumnsAreIdentifierColumn()
+        public void ConstructorThrowsMappingExceptionMultipleColumnsAreIdentifierColumn()
         {
             var columns = new[]
             {
-                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, true),
-                new ColumnInfo("Id", typeof(Customer).GetProperty("Id"), true, true, true)
+                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, true, null),
+                new ColumnInfo("Id", typeof(Customer).GetProperty("Id"), true, true, true, null)
             };
 
             var exception = Assert.Throws<MappingException>(

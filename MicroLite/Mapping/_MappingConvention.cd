@@ -19,7 +19,7 @@
   <Class Name="MicroLite.Mapping.ConventionMappingSettings">
     <Position X="3.75" Y="4.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAQCAIAAAAiAAAAIAAAIAAACEACAEABAAAAAAA=</HashCode>
+      <HashCode>AIAAAAAQCAIAAAAiAAAAIAAAIAAACEACAEABAAAAAAA=</HashCode>
       <FileName>Mapping\ConventionMappingSettings.cs</FileName>
     </TypeIdentifier>
   </Class>

@@ -56,6 +56,17 @@
             }
 
             [Fact]
+            public void ResolveSequenceNameReturnsNull()
+            {
+                var properties = typeof(Customer).GetProperties();
+
+                for (int i = 0; i < properties.Length; i++)
+                {
+                    Assert.Null(this.settings.ResolveSequenceName(properties[i]));
+                }
+            }
+
+            [Fact]
             public void ResolveTableNameReturnsPluralTypeName()
             {
                 var type = typeof(Customer);
@@ -117,6 +128,12 @@
             public void TheResolveIdentifierStrategyFunctionShouldBeSet()
             {
                 Assert.NotNull(this.settings.ResolveIdentifierStrategy);
+            }
+
+            [Fact]
+            public void TheResolveSequenceNameShouldBeSet()
+            {
+                Assert.NotNull(this.settings.ResolveSequenceName);
             }
 
             [Fact]

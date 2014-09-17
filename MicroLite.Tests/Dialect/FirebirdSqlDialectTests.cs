@@ -88,6 +88,38 @@
         }
 
         [Fact]
+        public void InsertInstanceQueryForIdentifierStrategySequence()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+
+            var customer = new Customer
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var sqlDialect = new FirebirdSqlDialect();
+
+            var sqlQuery = sqlDialect.BuildInsertSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
+
+            Assert.Equal("INSERT INTO \"Sales\".\"Customers\" (\"Id\",\"Created\",\"CreditLimit\",\"DateOfBirth\",\"Name\",\"CustomerStatusId\",\"Website\") VALUES (GEN_ID(Customer_Id_Sequence, 1),@p0,@p1,@p2,@p3,@p4,@p5) RETURNING Id", sqlQuery.CommandText);
+            Assert.Equal(6, sqlQuery.Arguments.Count);
+            Assert.Equal(customer.Created, sqlQuery.Arguments[0]);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1]);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2]);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[3]);
+            Assert.Equal(1, sqlQuery.Arguments[4]);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[5]);
+        }
+
+        [Fact]
         public void PageNonQualifiedQuery()
         {
             var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DateOfBirth, CustomerStatusId FROM Customers");
@@ -249,11 +281,11 @@
         }
 
         [Fact]
-        public void SupportsIdentityReturnsFalse()
+        public void SupportsSelectInsertedIdentifierReturnsFalse()
         {
             var sqlDialect = new FirebirdSqlDialect();
 
-            Assert.False(sqlDialect.SupportsIdentity);
+            Assert.False(sqlDialect.SupportsSelectInsertedIdentifier);
         }
 
         [Fact]

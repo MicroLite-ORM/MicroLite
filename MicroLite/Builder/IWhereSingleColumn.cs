@@ -60,6 +60,15 @@ namespace MicroLite.Builder
         IAndOrOrderBy In(params object[] args);
 
         /// <summary>
+        /// Uses the specified SQL queries as sub queries to filter the column.
+        /// </summary>
+        /// <param name="subQueries">The sub queries.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if subQueries is null.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
+        IAndOrOrderBy In(params SqlQuery[] subQueries);
+
+        /// <summary>
         /// Uses the specified SqlQuery as a sub query to filter the column.
         /// </summary>
         /// <param name="subQuery">The sub query.</param>
@@ -294,6 +303,14 @@ namespace MicroLite.Builder
         /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 NOT IN (@p0, @p1, @p2))
         /// </example>
         IAndOrOrderBy NotIn(params object[] args);
+
+        /// <summary>
+        /// Uses the specified SQL queries as sub queries to filter the column.
+        /// </summary>
+        /// <param name="subQueries">The sub queries.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if subQueries is null.</exception>
+        IAndOrOrderBy NotIn(params SqlQuery[] subQueries);
 
         /// <summary>
         /// Uses the specified SqlQuery as a sub query to filter the column.

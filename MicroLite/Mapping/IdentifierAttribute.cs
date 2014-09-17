@@ -29,18 +29,42 @@ namespace MicroLite.Mapping
     /// }
     /// </code>
     /// </example>
+    /// <example>
+    /// If the IdentifierStrategy Sequence is used, a sequence name must also be specified:
+    /// <code>
+    /// [Column("CustomerId")]
+    /// [Identifier(IdentifierStrategy.Sequence, "CustomerIdSequence")]
+    /// public int Id
+    /// {
+    ///     get;
+    ///     set;
+    /// }
+    /// </code>
+    /// </example>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class IdentifierAttribute : Attribute
     {
         private readonly IdentifierStrategy identifierStrategy;
+        private readonly string sequenceName;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="IdentifierAttribute"/> class.
         /// </summary>
         /// <param name="identifierStrategy">The identifier strategy used to manage the identifier's value.</param>
         public IdentifierAttribute(IdentifierStrategy identifierStrategy)
+            : this(identifierStrategy, null)
+        {
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="IdentifierAttribute"/> class.
+        /// </summary>
+        /// <param name="identifierStrategy">The identifier strategy used to manage the identifier's value.</param>
+        /// <param name="sequenceName">The name of the sequence which generates the identifier value.</param>
+        public IdentifierAttribute(IdentifierStrategy identifierStrategy, string sequenceName)
         {
             this.identifierStrategy = identifierStrategy;
+            this.sequenceName = sequenceName;
         }
 
         /// <summary>
@@ -51,6 +75,17 @@ namespace MicroLite.Mapping
             get
             {
                 return this.identifierStrategy;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the sequence which generates the identifier value.
+        /// </summary>
+        public string SequenceName
+        {
+            get
+            {
+                return this.sequenceName;
             }
         }
     }

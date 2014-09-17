@@ -245,9 +245,20 @@
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
 
             var exception = Assert.Throws<ArgumentNullException>(
-                () => sqlBuilder.From("Customer").Where("Column").In((object[])(object[])null));
+                () => sqlBuilder.From("Customer").Where("Column").In((object[])null));
 
             Assert.Equal("args", exception.ParamName);
+        }
+
+        [Fact]
+        public void InThrowArgumentNullExceptionForNullSqlQueries()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").Where("Column").In((SqlQuery[])null));
+
+            Assert.Equal("subQueries", exception.ParamName);
         }
 
         [Fact]
@@ -345,6 +356,15 @@
 
             Assert.Throws<ArgumentNullException>(
                 () => sqlBuilder.From("Customer").Where("Column").NotIn((object[])null));
+        }
+
+        [Fact]
+        public void NotInThrowsArgumentNullExceptionForNullSqlQueries()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "CustomerId");
+
+            Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.From("Customer").Where("Column").NotIn((SqlQuery[])null));
         }
 
         [Fact]
@@ -1162,6 +1182,28 @@
         }
 
         [Fact]
+        public void SelectWhereAndWhereInMultipleSqlQueries()
+        {
+            var subQuery1 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+            var subQuery2 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 2048);
+
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("Column2 = ?", "FOO")
+                .AndWhere("Column1").In(subQuery1, subQuery2)
+                .ToSqlQuery();
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+            Assert.Equal(1024, sqlQuery.Arguments[1]);
+            Assert.Equal(2048, sqlQuery.Arguments[2]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) AND (Column1 IN ((SELECT Id FROM Table WHERE Column = ?), (SELECT Id FROM Table WHERE Column = ?)))", sqlQuery.CommandText);
+        }
+
+        [Fact]
         public void SelectWhereAndWhereInSqlQuery()
         {
             var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
@@ -1219,6 +1261,28 @@
             Assert.Equal(3, sqlQuery.Arguments[3]);
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column2] = @p0) AND ([Column1] NOT IN (@p1,@p2,@p3))", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereAndWhereNotInMultipleSqlQueries()
+        {
+            var subQuery1 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+            var subQuery2 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 2048);
+
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("Column2 = ?", "FOO")
+                .AndWhere("Column1").NotIn(subQuery1, subQuery2)
+                .ToSqlQuery();
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+            Assert.Equal(1024, sqlQuery.Arguments[1]);
+            Assert.Equal(2048, sqlQuery.Arguments[2]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) AND (Column1 NOT IN ((SELECT Id FROM Table WHERE Column = ?), (SELECT Id FROM Table WHERE Column = ?)))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1730,6 +1794,26 @@
         }
 
         [Fact]
+        public void SelectWhereInMultipleSqlQueries()
+        {
+            var subQuery1 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+            var subQuery2 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 2048);
+
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("Column1").In(subQuery1, subQuery2)
+                .ToSqlQuery();
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+            Assert.Equal(1024, sqlQuery.Arguments[0]);
+            Assert.Equal(2048, sqlQuery.Arguments[1]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN ((SELECT Id FROM Table WHERE Column = ?), (SELECT Id FROM Table WHERE Column = ?)))", sqlQuery.CommandText);
+        }
+
+        [Fact]
         public void SelectWhereInSqlQuery()
         {
             var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
@@ -1838,6 +1922,26 @@
             Assert.Equal(3, sqlQuery.Arguments[2]);
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT IN (@p0,@p1,@p2))", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereNotInMultipleSqlQueries()
+        {
+            var subQuery1 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+            var subQuery2 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 2048);
+
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("Column1").NotIn(subQuery1, subQuery2)
+                .ToSqlQuery();
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+            Assert.Equal(1024, sqlQuery.Arguments[0]);
+            Assert.Equal(2048, sqlQuery.Arguments[1]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN ((SELECT Id FROM Table WHERE Column = ?), (SELECT Id FROM Table WHERE Column = ?)))", sqlQuery.CommandText);
         }
 
         [Fact]

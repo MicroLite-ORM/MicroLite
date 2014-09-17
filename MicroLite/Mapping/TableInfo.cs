@@ -62,12 +62,12 @@ namespace MicroLite.Mapping
             this.name = name;
             this.schema = schema;
 
-            this.ValidateColumns();
-
-            this.identifierColumn = columns.SingleOrDefault(c => c.IsIdentifier);
+            this.identifierColumn = columns.FirstOrDefault(c => c.IsIdentifier);
 
             this.insertColumnCount = columns.Count(c => c.AllowInsert);
             this.updateColumnCount = columns.Count(c => c.AllowUpdate);
+
+            this.ValidateColumns();
         }
 
         /// <summary>
@@ -166,6 +166,13 @@ namespace MicroLite.Mapping
             if (this.columns.Count(c => c.IsIdentifier) > 1)
             {
                 throw new MappingException(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith(this.schema, this.name));
+            }
+
+            if (this.identifierStrategy == Mapping.IdentifierStrategy.Sequence
+                && this.identifierColumn != null
+                && string.IsNullOrEmpty(this.identifierColumn.SequenceName))
+            {
+                throw new MappingException(ExceptionMessages.TableInfo_SequenceNameNotSet.FormatWith(this.identifierColumn.ColumnName));
             }
         }
     }

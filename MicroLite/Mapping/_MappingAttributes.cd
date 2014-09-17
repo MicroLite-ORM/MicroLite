@@ -8,9 +8,9 @@
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Mapping.IdentifierAttribute">
-    <Position X="5.75" Y="0.5" Width="1.75" />
+    <Position X="5.75" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAEQAAAAEAAAAAAAAA=</HashCode>
       <FileName>Mapping\IdentifierAttribute.cs</FileName>
     </TypeIdentifier>
   </Class>

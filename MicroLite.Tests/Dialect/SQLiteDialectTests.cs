@@ -249,11 +249,11 @@
         }
 
         [Fact]
-        public void SupportsIdentityReturnsTrue()
+        public void SupportsSelectInsertedIdentifierReturnsTrue()
         {
             var sqlDialect = new SQLiteDialect();
 
-            Assert.True(sqlDialect.SupportsIdentity);
+            Assert.True(sqlDialect.SupportsSelectInsertedIdentifier);
         }
 
         [Fact]

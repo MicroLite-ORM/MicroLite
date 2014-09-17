@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="MsSqlDialect.cs" company="MicroLite">
+// <copyright file="MsSql2005Dialect.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,21 +18,21 @@ namespace MicroLite.Dialect
     using MicroLite.Mapping;
 
     /// <summary>
-    /// The implementation of <see cref="ISqlDialect"/> for MsSql server.
+    /// The implementation of <see cref="ISqlDialect"/> for MsSql Server 2005 or later.
     /// </summary>
-    internal sealed class MsSqlDialect : SqlDialect
+    internal class MsSql2005Dialect : SqlDialect
     {
         private static readonly SqlQuery selectIdentityQuery = new SqlQuery("SELECT SCOPE_IDENTITY()");
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="MsSqlDialect"/> class.
+        /// Initialises a new instance of the <see cref="MsSql2005Dialect"/> class.
         /// </summary>
-        internal MsSqlDialect()
+        internal MsSql2005Dialect()
             : base(MsSqlCharacters.Instance)
         {
         }
 
-        public override bool SupportsIdentity
+        public override bool SupportsSelectInsertedIdentifier
         {
             get
             {
