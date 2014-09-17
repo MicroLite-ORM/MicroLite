@@ -28,6 +28,6 @@ The NuGet Package contains binaries compiled against:
 * [SQLite](https://github.com/TrevorPilley/MicroLite/wiki/Using-PostgreSQL) 3.7 or newer
 * [PostgreSQL](https://github.com/TrevorPilley/MicroLite/wiki/Using-SQLite) 9.2 or newer
 
-To find out more, head over to the [Getting Started](https://github.com/TrevorPilley/MicroLite/wiki/Getting-Started) guide on the wiki and see how easy it is to use!
+To find out more, head over to the [Getting Started](https://github.com/TrevorPilley/MicroLite/wiki) guide on the wiki and see how easy it is to use!
 
 [![Powered by NDepend](https://github.com/TrevorPilley/MicroLite/raw/master/tools/PoweredByNDependLogo.PNG)](http://ndepend.com/)
