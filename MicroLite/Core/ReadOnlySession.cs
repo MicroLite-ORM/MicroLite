@@ -221,6 +221,23 @@ namespace MicroLite.Core
             return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
         }
 
+        public T Single<T>(object identifier)
+            where T : class, new()
+        {
+            this.ThrowIfDisposed();
+
+            if (identifier == null)
+            {
+                throw new ArgumentNullException("identifier");
+            }
+
+            var include = this.Include.Single<T>(identifier);
+
+            this.ExecutePendingQueries();
+
+            return include.Value;
+        }
+
         public T Single<T>(SqlQuery sqlQuery)
         {
             this.ThrowIfDisposed();
@@ -234,23 +251,6 @@ namespace MicroLite.Core
 
             this.includes.Enqueue(include);
             this.queries.Enqueue(sqlQuery);
-
-            this.ExecutePendingQueries();
-
-            return include.Value;
-        }
-
-        public T Single<T>(object identifier)
-            where T : class, new()
-        {
-            this.ThrowIfDisposed();
-
-            if (identifier == null)
-            {
-                throw new ArgumentNullException("identifier");
-            }
-
-            var include = this.Include.Single<T>(identifier);
 
             this.ExecutePendingQueries();
 
