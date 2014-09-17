@@ -142,6 +142,21 @@ namespace MicroLite.Core
             return include;
         }
 
+        IInclude<T> IIncludeSession.Scalar<T>(SqlQuery sqlQuery)
+        {
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            var include = new IncludeScalar<T>();
+
+            this.includes.Enqueue(include);
+            this.queries.Enqueue(sqlQuery);
+
+            return include;
+        }
+
         IInclude<T> IIncludeSession.Single<T>(object identifier)
         {
             if (identifier == null)
@@ -204,21 +219,6 @@ namespace MicroLite.Core
             var page = (pagingOptions.Offset / pagingOptions.Count) + 1;
 
             return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
-        }
-
-        public IInclude<T> Scalar<T>(SqlQuery sqlQuery)
-        {
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            var include = new IncludeScalar<T>();
-
-            this.includes.Enqueue(include);
-            this.queries.Enqueue(sqlQuery);
-
-            return include;
         }
 
         public T Single<T>(SqlQuery sqlQuery)
