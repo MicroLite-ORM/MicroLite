@@ -30,6 +30,7 @@ The NuGet Package contains binaries compiled against:
 * [SQLite](https://github.com/TrevorPilley/MicroLite/wiki/Using-PostgreSQL) 3.7 or newer
 * [PostgreSQL](https://github.com/TrevorPilley/MicroLite/wiki/Using-SQLite) 9.2 or newer
 * [Firebird](https://github.com/TrevorPilley/MicroLite/wiki/Using-Firebird) 2.5 or newer
+* [SQL Server Compact Edition](https://github.com/TrevorPilley/MicroLite/wiki/Using-SqlServerCE) 4.0 or newer
 
 To find out more, head over to the [Getting Started](https://github.com/TrevorPilley/MicroLite/wiki) guide on the wiki and see how easy it is to use!
 
