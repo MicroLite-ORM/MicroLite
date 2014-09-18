@@ -41,10 +41,10 @@
         {
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -80,10 +80,10 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -177,10 +177,10 @@
             mockReader.Setup(x => x.FieldCount).Returns(1);
             mockReader.Setup(x => x[0]).Returns(10);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -290,10 +290,10 @@
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
             mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -337,10 +337,10 @@
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
             mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -384,10 +384,10 @@
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
             mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -455,10 +455,10 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(false);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -492,10 +492,10 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -561,10 +561,10 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(false);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -596,10 +596,10 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
