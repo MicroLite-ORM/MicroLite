@@ -51,6 +51,25 @@ namespace MicroLite.Core
             }
         }
 
+#if NET_4_5
+
+        public IAsyncReadOnlySession OpenAsyncReadOnlySession()
+        {
+            return this.OpenAsyncReadOnlySession(ConnectionScope.PerTransaction);
+        }
+
+        public IAsyncReadOnlySession OpenAsyncReadOnlySession(ConnectionScope connectionScope)
+        {
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.SessionFactory_CreatingReadOnlySession, this.connectionName);
+            }
+
+            return new AsyncReadOnlySession(connectionScope, this.sqlDialect, this.dbDriver);
+        }
+
+#endif
+
         public IReadOnlySession OpenReadOnlySession()
         {
             return this.OpenReadOnlySession(ConnectionScope.PerTransaction);

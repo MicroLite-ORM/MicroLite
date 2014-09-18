@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Configuration\ConfigurationExtensionsTests.cs" />
     <Compile Include="Configuration\FluentConfigurationTests.cs" />
+    <Compile Include="Core\AsyncReadOnlySessionTests.cs" />
     <Compile Include="Core\IncludeManyTests.cs" />
     <Compile Include="Core\IncludeScalarTests.cs" />
     <Compile Include="Core\IncludeSingleTests.cs" />
@@ -93,6 +94,14 @@
     <Compile Include="Mapping\TupleObjectInfoTests.cs" />
     <Compile Include="SqlStringTests.cs" />
     <Compile Include="TestEntities\Invoice.cs" />
+    <Compile Include="TestEntities\MockDbCommandWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TestEntities\MockDbConnectionWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TestEntities\MockDbDataReaderWrapper.cs" />
+    <Compile Include="TestEntities\MockDbTransactionWrapper.cs" />
     <Compile Include="UnitTest.cs" />
     <Compile Include="ObjectDeltaTests.cs" />
     <Compile Include="Builder\DeleteSqlBuilderTests.cs" />

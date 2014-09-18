@@ -11,6 +11,76 @@
     /// </summary>
     public class SessionFactoryTests
     {
+#if NET_4_5
+
+        public class WhenCallingOpenAsyncReadOnlySession : UnitTest
+        {
+            private readonly IAsyncReadOnlySession readOnlySession;
+
+            public WhenCallingOpenAsyncReadOnlySession()
+            {
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
+
+                this.readOnlySession = sessionFactory.OpenAsyncReadOnlySession();
+            }
+
+            [Fact]
+            public void AReadOnlySessionIsReturned()
+            {
+                Assert.NotNull(this.readOnlySession);
+                Assert.IsType<AsyncReadOnlySession>(this.readOnlySession);
+            }
+
+            [Fact]
+            public void TheConnectionScopeOfTheSessionIsPerTransactionByDefault()
+            {
+                Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.readOnlySession).ConnectionScope);
+            }
+        }
+
+        public class WhenCallingOpenAsyncReadOnlySession_MultipleTimes : UnitTest
+        {
+            private readonly IAsyncReadOnlySession readOnlySession1;
+            private readonly IAsyncReadOnlySession readOnlySession2;
+
+            public WhenCallingOpenAsyncReadOnlySession_MultipleTimes()
+            {
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
+
+                this.readOnlySession1 = sessionFactory.OpenAsyncReadOnlySession();
+                this.readOnlySession2 = sessionFactory.OpenAsyncReadOnlySession();
+            }
+
+            [Fact]
+            public void ANewSessionIsReturnedEachTime()
+            {
+                Assert.NotSame(this.readOnlySession1, this.readOnlySession2);
+            }
+        }
+
+        public class WhenCallingOpenAsyncReadOnlySession_SpecifyingConnectionScope : UnitTest
+        {
+            private readonly IAsyncReadOnlySession readOnlySession;
+
+            public WhenCallingOpenAsyncReadOnlySession_SpecifyingConnectionScope()
+            {
+                var mockDbDriver = new Mock<IDbDriver>();
+                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
+
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, new Mock<ISqlDialect>().Object);
+
+                this.readOnlySession = sessionFactory.OpenAsyncReadOnlySession(ConnectionScope.PerSession);
+            }
+
+            [Fact]
+            public void TheConnectionScopeOfTheSessionIsSetCorrectly()
+            {
+                Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.readOnlySession).ConnectionScope);
+            }
+        }
+
+#endif
+
         public class WhenCallingOpenReadOnlySession : UnitTest
         {
             private readonly IReadOnlySession readOnlySession;

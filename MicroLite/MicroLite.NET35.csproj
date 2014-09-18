@@ -63,6 +63,7 @@
     <Compile Include="Configuration\FluentConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationException.cs" />
     <Compile Include="ConnectionScope.cs" />
+    <Compile Include="Core\AsyncReadOnlySession.cs" />
     <Compile Include="Dialect\FirebirdSqlCharacters.cs" />
     <Compile Include="Dialect\FirebirdSqlDialect.cs" />
     <Compile Include="Dialect\MsSql2005Dialect.cs" />
