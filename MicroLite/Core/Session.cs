@@ -267,7 +267,7 @@ namespace MicroLite.Core
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
             {
-                this.Execute(insertSqlQuery);
+                this.ExecuteQuery(insertSqlQuery);
             }
             else
             {
@@ -287,7 +287,7 @@ namespace MicroLite.Core
                     }
                     else
                     {
-                        this.Execute(insertSqlQuery);
+                        this.ExecuteQuery(insertSqlQuery);
                         identifier = this.ExecuteScalarQuery<object>(selectInsertIdSqlQuery);
                     }
                 }
