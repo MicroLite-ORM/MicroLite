@@ -60,6 +60,7 @@
     <Compile Include="Configuration\ConfigurationExtensionsTests.cs" />
     <Compile Include="Configuration\FluentConfigurationTests.cs" />
     <Compile Include="Core\AsyncReadOnlySessionTests.cs" />
+    <Compile Include="Core\AsyncSessionTests.cs" />
     <Compile Include="Core\IncludeManyTests.cs" />
     <Compile Include="Core\IncludeScalarTests.cs" />
     <Compile Include="Core\IncludeSingleTests.cs" />

@@ -68,6 +68,21 @@ namespace MicroLite.Core
             return new AsyncReadOnlySession(connectionScope, this.sqlDialect, this.dbDriver);
         }
 
+        public IAsyncSession OpenAsyncSession()
+        {
+            return this.OpenAsyncSession(ConnectionScope.PerTransaction);
+        }
+
+        public IAsyncSession OpenAsyncSession(ConnectionScope connectionScope)
+        {
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.SessionFactory_CreatingSession, this.connectionName);
+            }
+
+            return new AsyncSession(connectionScope, this.sqlDialect, this.dbDriver, Listener.Listeners);
+        }
+
 #endif
 
         public IReadOnlySession OpenReadOnlySession()

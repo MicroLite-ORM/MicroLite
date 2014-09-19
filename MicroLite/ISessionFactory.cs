@@ -50,6 +50,19 @@ namespace MicroLite
         /// <returns>A new asynchronous read-only session instance.</returns>
         IAsyncReadOnlySession OpenAsyncReadOnlySession(ConnectionScope connectionScope);
 
+        /// <summary>
+        /// Opens a new asynchronous session to the database using <see cref="ConnectionScope"/>.PerTransaction.
+        /// </summary>
+        /// <returns>A new session instance.</returns>
+        IAsyncSession OpenAsyncSession();
+
+        /// <summary>
+        /// Opens a new asynchronous session to the database using the specified <see cref="ConnectionScope"/>.
+        /// </summary>
+        /// <param name="connectionScope">The connection scope to use for the session.</param>
+        /// <returns>A new session instance.</returns>
+        IAsyncSession OpenAsyncSession(ConnectionScope connectionScope);
+
 #endif
 
         /// <summary>
@@ -77,6 +90,10 @@ namespace MicroLite
         /// Opens a new session to the database using <see cref="ConnectionScope"/>.PerTransaction.
         /// </summary>
         /// <returns>A new session instance.</returns>
+#if NET_4_5
+
+        [System.Obsolete(".NET 4.5 apps should fully utilise async actions, consider using the new IAsyncSession via OpenAsyncSession instead")]
+#endif
         ISession OpenSession();
 
         /// <summary>
@@ -84,6 +101,10 @@ namespace MicroLite
         /// </summary>
         /// <param name="connectionScope">The connection scope to use for the session.</param>
         /// <returns>A new session instance.</returns>
+#if NET_4_5
+
+        [System.Obsolete(".NET 4.5 apps should fully utilise async actions, consider using the new IAsyncSession via OpenAsyncSession instead")]
+#endif
         ISession OpenSession(ConnectionScope connectionScope);
     }
 }

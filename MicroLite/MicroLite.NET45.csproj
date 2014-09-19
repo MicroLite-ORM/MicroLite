@@ -65,6 +65,7 @@
     <Compile Include="Configuration\ConfigurationException.cs" />
     <Compile Include="ConnectionScope.cs" />
     <Compile Include="Core\AsyncReadOnlySession.cs" />
+    <Compile Include="Core\AsyncSession.cs" />
     <Compile Include="Dialect\FirebirdSqlCharacters.cs" />
     <Compile Include="Dialect\FirebirdSqlDialect.cs" />
     <Compile Include="Dialect\MsSql2005Dialect.cs" />
@@ -91,7 +92,9 @@
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
     <Compile Include="IAdvancedAsyncReadOnlySession.cs" />
+    <Compile Include="IAdvancedAsyncSession.cs" />
     <Compile Include="IAsyncReadOnlySession.cs" />
+    <Compile Include="IAsyncSession.cs" />
     <Compile Include="Mapping\DelegateFactory.cs" />
     <Compile Include="Core\ISessionBase.cs" />
     <Compile Include="Core\Transaction.cs" />

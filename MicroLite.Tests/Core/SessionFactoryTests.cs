@@ -79,6 +79,72 @@
             }
         }
 
+        public class WhenCallingOpenAsyncSession : UnitTest
+        {
+            private readonly IAsyncSession session;
+
+            public WhenCallingOpenAsyncSession()
+            {
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
+
+                this.session = sessionFactory.OpenAsyncSession();
+            }
+
+            [Fact]
+            public void AnAsyncSessionIsReturned()
+            {
+                Assert.NotNull(this.session);
+                Assert.IsType<AsyncSession>(this.session);
+            }
+
+            [Fact]
+            public void TheConnectionScopeOfTheSessionIsPerTransactionByDefault()
+            {
+                Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.session).ConnectionScope);
+            }
+        }
+
+        public class WhenCallingOpenAsyncSession_MultipleTimes : UnitTest
+        {
+            private readonly IAsyncSession session1;
+            private readonly IAsyncSession session2;
+
+            public WhenCallingOpenAsyncSession_MultipleTimes()
+            {
+                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
+
+                this.session1 = sessionFactory.OpenAsyncSession();
+                this.session2 = sessionFactory.OpenAsyncSession();
+            }
+
+            [Fact]
+            public void ANewSessionIsReturnedEachTime()
+            {
+                Assert.NotSame(this.session1, this.session2);
+            }
+        }
+
+        public class WhenCallingOpenAsyncSession_SpecifyingConnectionScope : UnitTest
+        {
+            private readonly IAsyncSession session;
+
+            public WhenCallingOpenAsyncSession_SpecifyingConnectionScope()
+            {
+                var mockDbDriver = new Mock<IDbDriver>();
+                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
+
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, new Mock<ISqlDialect>().Object);
+
+                this.session = sessionFactory.OpenAsyncSession(ConnectionScope.PerSession);
+            }
+
+            [Fact]
+            public void TheConnectionScopeOfTheSessionIsSetCorrectly()
+            {
+                Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.session).ConnectionScope);
+            }
+        }
+
 #endif
 
         public class WhenCallingOpenReadOnlySession : UnitTest
