@@ -95,6 +95,8 @@
     <Compile Include="IAdvancedAsyncSession.cs" />
     <Compile Include="IAsyncReadOnlySession.cs" />
     <Compile Include="IAsyncSession.cs" />
+    <Compile Include="Infrastructure\IHaveAsyncReadOnlySession.cs" />
+    <Compile Include="Infrastructure\IHaveAsyncSession.cs" />
     <Compile Include="Mapping\DelegateFactory.cs" />
     <Compile Include="Core\ISessionBase.cs" />
     <Compile Include="Core\Transaction.cs" />
