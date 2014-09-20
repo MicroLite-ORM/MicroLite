@@ -281,7 +281,7 @@ namespace MicroLite.Core
                         do
                         {
                             var include = this.includes.Dequeue();
-                            include.BuildValue(reader);
+                            await include.BuildValueAsync(reader);
                         }
                         while (reader.NextResult());
                     }
@@ -306,7 +306,7 @@ namespace MicroLite.Core
                         using (var reader = await command.ExecuteReaderAsync())
                         {
                             var include = this.includes.Dequeue();
-                            include.BuildValue(reader);
+                            await include.BuildValueAsync(reader);
                         }
                     }
                     finally

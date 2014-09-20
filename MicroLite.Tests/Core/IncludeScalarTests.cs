@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests.Core
 {
+    using System;
     using System.Collections.Generic;
     using System.Data;
     using MicroLite.Core;
@@ -81,6 +82,115 @@
                 Assert.Equal(CustomerStatus.Active, this.include.Value);
             }
         }
+
+#if NET_4_5
+
+        public class ForAReferenceTypeWhenBuildValueAsyncHasBeenCalledAndThereAreNoResults
+        {
+            private IncludeScalar<string> include = new IncludeScalar<string>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public ForAReferenceTypeWhenBuildValueAsyncHasBeenCalledAndThereAreNoResults()
+            {
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
+
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait();
+            }
+
+            [Fact]
+            public void HasValueShouldBeFalse()
+            {
+                Assert.False(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void ValueShouldBeNull()
+            {
+                Assert.Null(this.include.Value);
+            }
+        }
+
+        public class ForAReferenceTypeWhenBuildValueAsyncHasBeenCalledAndThereIsACallbackRegistered
+        {
+            private bool callbackCalled = false;
+            private IncludeScalar<string> include = new IncludeScalar<string>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public ForAReferenceTypeWhenBuildValueAsyncHasBeenCalledAndThereIsACallbackRegistered()
+            {
+                this.mockReader.Setup(x => x.FieldCount).Returns(1);
+                this.mockReader.Setup(x => x[0]).Returns("Foo");
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                this.include.OnLoad(inc => callbackCalled = object.ReferenceEquals(inc, this.include));
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait();
+            }
+
+            [Fact]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.True(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheCallbackShouldBeCalled()
+            {
+                Assert.True(this.callbackCalled);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void ValueShouldBeSetToTheResult()
+            {
+                Assert.Equal("Foo", this.include.Value);
+            }
+        }
+
+        public class ForAReferenceTypeWhenBuildValueAsyncHasBeenCalledAndThereIsOneResult
+        {
+            private IncludeScalar<string> include = new IncludeScalar<string>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public ForAReferenceTypeWhenBuildValueAsyncHasBeenCalledAndThereIsOneResult()
+            {
+                this.mockReader.Setup(x => x.FieldCount).Returns(1);
+                this.mockReader.Setup(x => x[0]).Returns("Foo");
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait();
+            }
+
+            [Fact]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.True(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void ValueShouldBeSetToTheResult()
+            {
+                Assert.Equal("Foo", this.include.Value);
+            }
+        }
+
+#endif
 
         public class ForAReferenceTypeWhenBuildValueHasBeenCalledAndThereAreNoResults
         {
@@ -208,6 +318,74 @@
             }
         }
 
+#if NET_4_5
+
+        public class ForAValueTypeWhenBuildValueAsyncHasBeenCalledAndThereAreNoResults
+        {
+            private IncludeScalar<int> include = new IncludeScalar<int>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public ForAValueTypeWhenBuildValueAsyncHasBeenCalledAndThereAreNoResults()
+            {
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
+
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait();
+            }
+
+            [Fact]
+            public void HasValueShouldBeFalse()
+            {
+                Assert.False(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void ValueShouldBeDefaultValue()
+            {
+                Assert.Equal(0, this.include.Value);
+            }
+        }
+
+        public class ForAValueTypeWhenBuildValueAsyncHasBeenCalledAndThereIsOneResult
+        {
+            private IncludeScalar<int> include = new IncludeScalar<int>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public ForAValueTypeWhenBuildValueAsyncHasBeenCalledAndThereIsOneResult()
+            {
+                this.mockReader.Setup(x => x.FieldCount).Returns(1);
+                this.mockReader.Setup(x => x[0]).Returns(10);
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait();
+            }
+
+            [Fact]
+            public void HasValueShouldBeTrue()
+            {
+                Assert.True(this.include.HasValue);
+            }
+
+            [Fact]
+            public void TheDataReaderShouldBeRead()
+            {
+                this.mockReader.VerifyAll();
+            }
+
+            [Fact]
+            public void ValueShouldBeSetToTheResult()
+            {
+                Assert.Equal(10, this.include.Value);
+            }
+        }
+
+#endif
+
         public class ForAValueTypeWhenBuildValueHasBeenCalledAndThereAreNoResults
         {
             private IncludeScalar<int> include = new IncludeScalar<int>();
@@ -293,12 +471,12 @@
             }
         }
 
-        public class WhenTheDataReaderContainsMultipleColumns
+        public class WhenCallingBuildValueAndTheDataReaderContainsMultipleColumns
         {
             private IncludeScalar<int> include = new IncludeScalar<int>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
-            public WhenTheDataReaderContainsMultipleColumns()
+            public WhenCallingBuildValueAndTheDataReaderContainsMultipleColumns()
             {
                 this.mockReader.Setup(x => x.FieldCount).Returns(2);
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, true }).Dequeue);
@@ -313,12 +491,12 @@
             }
         }
 
-        public class WhenTheDataReaderContainsMultipleResults
+        public class WhenCallingBuildValueAndTheDataReaderContainsMultipleResults
         {
             private IncludeScalar<int> include = new IncludeScalar<int>();
             private Mock<IDataReader> mockReader = new Mock<IDataReader>();
 
-            public WhenTheDataReaderContainsMultipleResults()
+            public WhenCallingBuildValueAndTheDataReaderContainsMultipleResults()
             {
                 this.mockReader.Setup(x => x.FieldCount).Returns(1);
                 this.mockReader.Setup(x => x[0]).Returns(10);
@@ -333,5 +511,54 @@
                 Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.Message);
             }
         }
+
+#if NET_4_5
+
+        public class WhenCallingBuildValueAsyncAndTheDataReaderContainsMultipleColumns
+        {
+            private IncludeScalar<int> include = new IncludeScalar<int>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public WhenCallingBuildValueAsyncAndTheDataReaderContainsMultipleColumns()
+            {
+                this.mockReader.Setup(x => x.FieldCount).Returns(2);
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, true }).Dequeue);
+            }
+
+            [Fact]
+            public void BuildValueAsyncShouldThrowAMicroLiteException()
+            {
+                var exception = Assert.Throws<AggregateException>(
+                    () => this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait());
+
+                Assert.IsType<MicroLiteException>(exception.InnerException);
+                Assert.Equal(ExceptionMessages.IncludeScalar_MultipleColumns, exception.InnerException.Message);
+            }
+        }
+
+        public class WhenCallingBuildValueAsyncAndTheDataReaderContainsMultipleResults
+        {
+            private IncludeScalar<int> include = new IncludeScalar<int>();
+            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
+
+            public WhenCallingBuildValueAsyncAndTheDataReaderContainsMultipleResults()
+            {
+                this.mockReader.Setup(x => x.FieldCount).Returns(1);
+                this.mockReader.Setup(x => x[0]).Returns(10);
+                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, true }).Dequeue);
+            }
+
+            [Fact]
+            public void BuildValueAsyncShouldThrowAMicroLiteException()
+            {
+                var exception = Assert.Throws<AggregateException>(
+                    () => this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait());
+
+                Assert.IsType<MicroLiteException>(exception.InnerException);
+                Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.InnerException.Message);
+            }
+        }
+
+#endif
     }
 }

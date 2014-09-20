@@ -14,6 +14,7 @@ namespace MicroLite.Core
 {
     using System;
     using System.Data;
+    using System.Data.Common;
     using MicroLite.Mapping;
     using MicroLite.TypeConverters;
 
@@ -68,5 +69,40 @@ namespace MicroLite.Core
                 }
             }
         }
+
+#if NET_4_5
+
+        internal override async System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader)
+        {
+            if (await reader.ReadAsync())
+            {
+                if (TypeConverter.IsNotEntityAndConvertible(resultType))
+                {
+                    var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+
+                    this.Value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
+                }
+                else
+                {
+                    var objectInfo = ObjectInfo.For(resultType);
+
+                    this.Value = (T)objectInfo.CreateInstance(reader);
+                }
+
+                this.HasValue = true;
+
+                if (await reader.ReadAsync())
+                {
+                    throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
+                }
+
+                if (this.callback != null)
+                {
+                    this.callback(this);
+                }
+            }
+        }
+
+#endif
     }
 }

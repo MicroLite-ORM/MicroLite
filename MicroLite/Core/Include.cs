@@ -13,6 +13,7 @@
 namespace MicroLite.Core
 {
     using System.Data;
+    using System.Data.Common;
 
     /// <summary>
     /// The base class for include implementations.
@@ -34,5 +35,16 @@ namespace MicroLite.Core
         /// </summary>
         /// <param name="reader">The <see cref="IDataReader"/> containing the results.</param>
         internal abstract void BuildValue(IDataReader reader);
+
+#if NET_4_5
+
+        /// <summary>
+        /// Builds the included value from the results in the data reader.
+        /// </summary>
+        /// <param name="reader">The <see cref="DbDataReader"/> containing the results.</param>
+        /// <returns>A task which can be awaited.</returns>
+        internal abstract System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader);
+
+#endif
     }
 }
