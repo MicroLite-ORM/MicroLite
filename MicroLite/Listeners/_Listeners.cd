@@ -8,11 +8,11 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="MicroLite.Listeners.DbGeneratedListener">
-    <Position X="3.75" Y="4.5" Width="1.75" />
+  <Class Name="MicroLite.Listeners.IdentifierStrategyListener">
+    <Position X="3.75" Y="4.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAACAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Listeners\DbGeneratedListener.cs</FileName>
+      <FileName>Listeners\IdentifierStrategyListener.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Listeners.ListenerCollection">

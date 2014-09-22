@@ -10,7 +10,7 @@
   <Interface Name="MicroLite.Builder.IFunctionOrFrom">
     <Position X="8" Y="6.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>ACAAAAAAABAAAAAAEAAAAAQAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <HashCode>ACAAAAAAABAACAAAEAAAAAQAAAAAAAAAAAAAAAAAAAQ=</HashCode>
       <FileName>Builder\IFunctionOrFrom.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -36,7 +36,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.Builder.IWhereOrOrderBy">
-    <Position X="2.25" Y="7.25" Width="1.75" />
+    <Position X="2.25" Y="7.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Builder\IWhereOrOrderBy.cs</FileName>
@@ -59,7 +59,7 @@
   <Interface Name="MicroLite.Builder.IWhereSingleColumn">
     <Position X="5.5" Y="4.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>ABAAAAAAAAAAAAAAAABAAAAAAAQAAAgIAADIEBAAgCA=</HashCode>
+      <HashCode>ABAAAAAAAAAAAAAAAABAAAAAAAQAAAgIAADIEBAAgGA=</HashCode>
       <FileName>Builder\IWhereSingleColumn.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -95,7 +95,7 @@
   <Interface Name="MicroLite.Builder.ISetOrWhere">
     <Position X="13" Y="2.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Builder\ISetOrWhere.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -113,7 +113,7 @@
       <FileName>Builder\IWhereEquals.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="MicroLite.Builder.ISelectFrom" Collapsed="true">
+  <Interface Name="MicroLite.Builder.ISelectFrom">
     <Position X="8.25" Y="4.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
@@ -125,6 +125,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
       <FileName>Builder\IInsertColumn.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.Builder.IWhereExists">
+    <Position X="15" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAEAAAA=</HashCode>
+      <FileName>Builder\IWhereExists.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
