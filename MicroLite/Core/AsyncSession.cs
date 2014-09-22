@@ -18,9 +18,7 @@ namespace MicroLite.Core
     using System.Collections.Generic;
     using System.Data.Common;
     using System.Threading.Tasks;
-
     using MicroLite.Dialect;
-
     using MicroLite.Driver;
     using MicroLite.Listeners;
     using MicroLite.Mapping;
