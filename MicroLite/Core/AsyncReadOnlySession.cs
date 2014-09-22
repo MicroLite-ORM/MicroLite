@@ -78,11 +78,11 @@ namespace MicroLite.Core
             {
                 if (this.DbDriver.SupportsBatchedQueries && this.queries.Count > 1)
                 {
-                    await this.ExecuteQueriesCombinedAsync();
+                    await this.ExecuteQueriesCombinedAsync().ConfigureAwait(false);
                 }
                 else
                 {
-                    await this.ExecuteQueriesIndividuallyAsync();
+                    await this.ExecuteQueriesIndividuallyAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -120,7 +120,7 @@ namespace MicroLite.Core
             this.includes.Enqueue(include);
             this.queries.Enqueue(sqlQuery);
 
-            await this.ExecutePendingQueriesAsync();
+            await this.ExecutePendingQueriesAsync().ConfigureAwait(false);
 
             return include.Values;
         }
@@ -223,7 +223,7 @@ namespace MicroLite.Core
             var pagedSqlQuery = this.SqlDialect.PageQuery(sqlQuery, pagingOptions);
             this.queries.Enqueue(pagedSqlQuery);
 
-            await this.ExecutePendingQueriesAsync();
+            await this.ExecutePendingQueriesAsync().ConfigureAwait(false);
 
             var page = (pagingOptions.Offset / pagingOptions.Count) + 1;
 
@@ -242,7 +242,7 @@ namespace MicroLite.Core
 
             var include = this.Include.Single<T>(identifier);
 
-            await this.ExecutePendingQueriesAsync();
+            await this.ExecutePendingQueriesAsync().ConfigureAwait(false);
 
             return include.Value;
         }
@@ -261,7 +261,7 @@ namespace MicroLite.Core
             this.includes.Enqueue(include);
             this.queries.Enqueue(sqlQuery);
 
-            await this.ExecutePendingQueriesAsync();
+            await this.ExecutePendingQueriesAsync().ConfigureAwait(false);
 
             return include.Value;
         }
@@ -276,12 +276,12 @@ namespace MicroLite.Core
             {
                 try
                 {
-                    using (var reader = await command.ExecuteReaderAsync())
+                    using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
                     {
                         do
                         {
                             var include = this.includes.Dequeue();
-                            await include.BuildValueAsync(reader);
+                            await include.BuildValueAsync(reader).ConfigureAwait(false);
                         }
                         while (reader.NextResult());
                     }
@@ -303,10 +303,10 @@ namespace MicroLite.Core
                 {
                     try
                     {
-                        using (var reader = await command.ExecuteReaderAsync())
+                        using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
                         {
                             var include = this.includes.Dequeue();
-                            await include.BuildValueAsync(reader);
+                            await include.BuildValueAsync(reader).ConfigureAwait(false);
                         }
                     }
                     finally

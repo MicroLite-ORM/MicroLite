@@ -74,7 +74,7 @@ namespace MicroLite.Core
 
         internal override async System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader)
         {
-            if (await reader.ReadAsync())
+            if (await reader.ReadAsync().ConfigureAwait(false))
             {
                 if (TypeConverter.IsNotEntityAndConvertible(resultType))
                 {
@@ -91,7 +91,7 @@ namespace MicroLite.Core
 
                 this.HasValue = true;
 
-                if (await reader.ReadAsync())
+                if (await reader.ReadAsync().ConfigureAwait(false))
                 {
                     throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }

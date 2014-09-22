@@ -84,7 +84,7 @@ namespace MicroLite.Core
             {
                 var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
 
-                while (await reader.ReadAsync())
+                while (await reader.ReadAsync().ConfigureAwait(false))
                 {
                     var value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
 
@@ -95,7 +95,7 @@ namespace MicroLite.Core
             {
                 var objectInfo = ObjectInfo.For(resultType);
 
-                while (await reader.ReadAsync())
+                while (await reader.ReadAsync().ConfigureAwait(false))
                 {
                     var instance = (T)objectInfo.CreateInstance(reader);
 

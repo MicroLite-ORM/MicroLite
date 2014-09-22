@@ -18,7 +18,9 @@ namespace MicroLite.Core
     using System.Collections.Generic;
     using System.Data.Common;
     using System.Threading.Tasks;
+
     using MicroLite.Dialect;
+
     using MicroLite.Driver;
     using MicroLite.Listeners;
     using MicroLite.Mapping;
@@ -75,7 +77,7 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
 
-            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery);
+            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery).ConfigureAwait(false);
 
             for (int i = this.listeners.Count - 1; i >= 0; i--)
             {
@@ -103,7 +105,7 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
 
-            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery);
+            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery).ConfigureAwait(false);
 
             return rowsAffected == 1;
         }
@@ -117,7 +119,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            return await this.ExecuteQueryAsync(sqlQuery);
+            return await this.ExecuteQueryAsync(sqlQuery).ConfigureAwait(false);
         }
 
         public async Task<T> ExecuteScalarAsync<T>(SqlQuery sqlQuery)
@@ -129,7 +131,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            return await this.ExecuteScalarQueryAsync<T>(sqlQuery);
+            return await this.ExecuteScalarQueryAsync<T>(sqlQuery).ConfigureAwait(false);
         }
 
         public async Task InsertAsync(object instance)
@@ -149,7 +151,7 @@ namespace MicroLite.Core
             var objectInfo = ObjectInfo.For(instance.GetType());
             objectInfo.VerifyInstanceForInsert(instance);
 
-            object identifier = await this.InsertReturningIdentifierAsync(objectInfo, instance);
+            object identifier = await this.InsertReturningIdentifierAsync(objectInfo, instance).ConfigureAwait(false);
 
             for (int i = this.listeners.Count - 1; i >= 0; i--)
             {
@@ -173,7 +175,7 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectDelta);
 
-            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery);
+            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery).ConfigureAwait(false);
 
             return rowsAffected == 1;
         }
@@ -201,7 +203,7 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectInfo, instance);
 
-            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery);
+            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery).ConfigureAwait(false);
 
             for (int i = this.listeners.Count - 1; i >= 0; i--)
             {
@@ -217,7 +219,7 @@ namespace MicroLite.Core
             {
                 using (var command = (DbCommand)this.CreateCommand(sqlQuery))
                 {
-                    var result = await command.ExecuteNonQueryAsync();
+                    var result = await command.ExecuteNonQueryAsync().ConfigureAwait(false);
 
                     this.CommandCompleted();
 
@@ -246,7 +248,7 @@ namespace MicroLite.Core
             {
                 using (var command = (DbCommand)this.CreateCommand(sqlQuery))
                 {
-                    var result = await command.ExecuteScalarAsync();
+                    var result = await command.ExecuteScalarAsync().ConfigureAwait(false);
 
                     this.CommandCompleted();
 
@@ -281,7 +283,7 @@ namespace MicroLite.Core
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
             {
-                await this.ExecuteQueryAsync(insertSqlQuery);
+                await this.ExecuteQueryAsync(insertSqlQuery).ConfigureAwait(false);
             }
             else
             {
@@ -297,17 +299,17 @@ namespace MicroLite.Core
                     if (this.DbDriver.SupportsBatchedQueries)
                     {
                         var combined = this.DbDriver.Combine(insertSqlQuery, selectInsertIdSqlQuery);
-                        identifier = await this.ExecuteScalarQueryAsync<object>(combined);
+                        identifier = await this.ExecuteScalarQueryAsync<object>(combined).ConfigureAwait(false);
                     }
                     else
                     {
-                        await this.ExecuteQueryAsync(insertSqlQuery);
-                        identifier = await this.ExecuteScalarQueryAsync<object>(selectInsertIdSqlQuery);
+                        await this.ExecuteQueryAsync(insertSqlQuery).ConfigureAwait(false);
+                        identifier = await this.ExecuteScalarQueryAsync<object>(selectInsertIdSqlQuery).ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    identifier = await this.ExecuteScalarQueryAsync<object>(insertSqlQuery);
+                    identifier = await this.ExecuteScalarQueryAsync<object>(insertSqlQuery).ConfigureAwait(false);
                 }
             }
 
