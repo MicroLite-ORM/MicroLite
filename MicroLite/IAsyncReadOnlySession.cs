@@ -22,7 +22,7 @@ namespace MicroLite
     /// <summary>
     /// The interface which provides the asynchronous read methods to map objects to database records.
     /// </summary>
-    public interface IAsyncReadOnlySession : IHideObjectMethods
+    public interface IAsyncReadOnlySession : IHideObjectMethods, IDisposable
     {
         /// <summary>
         /// Gets the advanced async session operations.
