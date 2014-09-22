@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="MicroLite.PagedResult&lt;T&gt;">
-    <Position X="8.75" Y="6.75" Width="1.75" />
+    <Position X="8.75" Y="7.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AIAAAgAAAAQQAAAAEAAAAAAACAAIAAhAAAAAQACAAAA=</HashCode>
       <FileName>PagedResult.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="MicroLite.PagingOptions">
-    <Position X="6.75" Y="6.75" Width="1.75" />
+    <Position X="6.75" Y="7.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAGAAAAAAAAAAAAAhAAAAAQAAAAAAIgAAAAAAAEAgiA=</HashCode>
       <FileName>PagingOptions.cs</FileName>
@@ -23,14 +23,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.IAdvancedSession">
-    <Position X="9.5" Y="0.5" Width="1.75" />
+    <Position X="9.75" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAAAAAQAAAAAAAAAAAEAAAABAAAAAAAAAAA=</HashCode>
       <FileName>IAdvancedSession.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.IIncludeSession">
-    <Position X="6.75" Y="4.5" Width="2" />
+    <Position X="6.75" Y="5" Width="2" />
     <TypeIdentifier>
       <HashCode>CAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAIAAACAAAAA=</HashCode>
       <FileName>IIncludeSession.cs</FileName>
@@ -44,14 +44,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.IInclude&lt;T&gt;">
-    <Position X="9.25" Y="4.5" Width="1.5" />
+    <Position X="9.25" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAACBAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>IInclude.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.IIncludeMany&lt;T&gt;">
-    <Position X="11.25" Y="4.5" Width="1.5" />
+    <Position X="11.25" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAACBAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>IIncludeMany.cs</FileName>
@@ -67,7 +67,7 @@
   <Interface Name="MicroLite.ISessionFactory">
     <Position X="0.5" Y="0.5" Width="3" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAQwAEAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAgAAAAAAAAAAAAAAQwAEAAAA=</HashCode>
       <FileName>ISessionFactory.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -90,6 +90,20 @@
     <TypeIdentifier>
       <HashCode>AAAAAAABAAAgAQAAAAAACAAAACAAAAAAAAAAAABCAAA=</HashCode>
       <FileName>IAsyncReadOnlySession.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.IAdvancedAsyncSession">
+    <Position X="9.75" Y="2.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAAAAgAAAAAAAAAAMA=</HashCode>
+      <FileName>IAdvancedAsyncSession.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MicroLite.IAsyncSession">
+    <Position X="4" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAgAAAAAAAACAIA=</HashCode>
+      <FileName>IAsyncSession.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
