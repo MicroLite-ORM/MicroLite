@@ -7,9 +7,9 @@
     using Xunit;
 
     /// <summary>
-    /// Unit tests for the <see cref="DbGeneratedListener"/> class.
+    /// Unit tests for the <see cref="IdentifierStrategyListener"/> class.
     /// </summary>
-    public class DbGeneratedListenerTests : UnitTest
+    public class IdentifierStrategyListenerTests : UnitTest
     {
         [Fact]
         public void AfterInsertDoesNotThrowArgumentNullExceptionForNullExecuteScalarResultIfIdentifierStrategyAssigned()
@@ -17,7 +17,7 @@
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentifierStrategyListener();
 
             Assert.DoesNotThrow(() => listener.AfterInsert(new Customer(), null));
         }
@@ -31,7 +31,7 @@
             var customer = new Customer();
             decimal scalarResult = 4354;
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentifierStrategyListener();
             listener.AfterInsert(customer, scalarResult);
 
             Assert.Equal(Convert.ToInt32(scalarResult), customer.Id);
@@ -46,7 +46,7 @@
             var customer = new Customer();
             int scalarResult = 4354;
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentifierStrategyListener();
             listener.AfterInsert(customer, scalarResult);
 
             Assert.Equal(scalarResult, customer.Id);
@@ -61,7 +61,7 @@
             var customer = new Customer();
             int scalarResult = 4354;
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentifierStrategyListener();
             listener.AfterInsert(customer, scalarResult);
 
             Assert.Equal(scalarResult, customer.Id);
@@ -73,7 +73,7 @@
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentifierStrategyListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.AfterInsert(new Customer(), null));
 
@@ -86,7 +86,7 @@
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
 
-            var listener = new DbGeneratedListener();
+            var listener = new IdentifierStrategyListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.AfterInsert(new Customer(), null));
 
@@ -96,7 +96,7 @@
         [Fact]
         public void AfterInsertThrowsArgumentNullExceptionForNullInstance()
         {
-            var listener = new DbGeneratedListener();
+            var listener = new IdentifierStrategyListener();
 
             var exception = Assert.Throws<ArgumentNullException>(() => listener.AfterInsert(null, 1));
 

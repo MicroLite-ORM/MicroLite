@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="DbGeneratedListener.cs" company="MicroLite">
+// <copyright file="IdentifierStrategyListener.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ namespace MicroLite.Listeners
     /// The implementation of <see cref="IListener"/> for setting the instance identifier value if
     /// <see cref="IdentifierStrategy"/>.DbGenerated or <see cref="IdentifierStrategy"/>.Sequence is used.
     /// </summary>
-    public sealed class DbGeneratedListener : Listener
+    public sealed class IdentifierStrategyListener : Listener
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
 

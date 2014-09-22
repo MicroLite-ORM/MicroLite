@@ -97,6 +97,7 @@
     <Compile Include="IAsyncSession.cs" />
     <Compile Include="Infrastructure\IHaveAsyncReadOnlySession.cs" />
     <Compile Include="Infrastructure\IHaveAsyncSession.cs" />
+    <Compile Include="Listeners\IdentifierStrategyListener.cs" />
     <Compile Include="Mapping\DelegateFactory.cs" />
     <Compile Include="Core\ISessionBase.cs" />
     <Compile Include="Core\Transaction.cs" />
@@ -140,7 +141,6 @@
     <Compile Include="Configuration\IConfigureConnection.cs" />
     <Compile Include="Configuration\IConfigureExtensions.cs" />
     <Compile Include="Configuration\ICreateSessionFactory.cs" />
-    <Compile Include="Listeners\DbGeneratedListener.cs" />
     <Compile Include="Dialect\ISqlDialect.cs" />
     <Compile Include="FrameworkExtensions\MemberInfoExtensions.cs" />
     <Compile Include="Core\Session.cs" />

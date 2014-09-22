@@ -114,7 +114,7 @@
     <Compile Include="Mapping\ColumnAttributeTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
-    <Compile Include="Listeners\DbGeneratedListenerTests.cs" />
+    <Compile Include="Listeners\IdentifierStrategyListenerTests.cs" />
     <Compile Include="Listeners\ListenerCollectionTests.cs" />
     <Compile Include="Mapping\ColumnInfoTests.cs" />
     <Compile Include="Mapping\ConventionMappingConventionTests.cs" />

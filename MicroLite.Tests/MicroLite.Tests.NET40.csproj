@@ -90,6 +90,7 @@
     <Compile Include="Driver\PostgreSqlDbDriverTests.cs" />
     <Compile Include="Driver\SqlServerCeDbDriverTests.cs" />
     <Compile Include="Driver\SQLiteDbDriverTests.cs" />
+    <Compile Include="Listeners\IdentifierStrategyListenerTests.cs" />
     <Compile Include="Mapping\Inflection\InflectionServiceTests.cs" />
     <Compile Include="Mapping\PocoObjectInfoTests.cs" />
     <Compile Include="Mapping\TupleObjectInfoTests.cs" />
@@ -110,7 +111,6 @@
     <Compile Include="Mapping\ColumnAttributeTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
-    <Compile Include="Listeners\DbGeneratedListenerTests.cs" />
     <Compile Include="Listeners\ListenerCollectionTests.cs" />
     <Compile Include="Mapping\ColumnInfoTests.cs" />
     <Compile Include="Mapping\ConventionMappingConventionTests.cs" />
