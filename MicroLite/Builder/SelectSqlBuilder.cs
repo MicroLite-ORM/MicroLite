@@ -280,6 +280,13 @@ namespace MicroLite.Builder
             return this;
         }
 
+        public IAndOrOrderBy IsEqualTo(SqlQuery subQuery)
+        {
+            this.AddWithComparisonOperator(subQuery, " = ");
+
+            return this;
+        }
+
         public IAndOrOrderBy IsGreaterThan(object comparisonValue)
         {
             this.AddWithComparisonOperator(comparisonValue, " > ");
@@ -318,6 +325,13 @@ namespace MicroLite.Builder
         public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
         {
             this.AddWithComparisonOperator(comparisonValue, " <> ");
+
+            return this;
+        }
+
+        public IAndOrOrderBy IsNotEqualTo(SqlQuery subQuery)
+        {
+            this.AddWithComparisonOperator(subQuery, " <> ");
 
             return this;
         }
@@ -786,7 +800,30 @@ namespace MicroLite.Builder
 
             var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
 
-            this.InnerSql.Append(" (").Append(this.whereColumnName).Append(comparisonOperator).Append(parameter).Append(')');
+            this.InnerSql.Append(" (")
+                .Append(this.whereColumnName)
+                .Append(comparisonOperator)
+                .Append(parameter)
+                .Append(')');
+        }
+
+        private void AddWithComparisonOperator(SqlQuery subQuery, string comparisonOperator)
+        {
+            if (!string.IsNullOrEmpty(this.operand))
+            {
+                this.InnerSql.Append(this.operand);
+            }
+
+            this.Arguments.AddRange(subQuery.Arguments);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+
+            this.InnerSql.Append(" (")
+                .Append(this.whereColumnName)
+                .Append(comparisonOperator)
+                .Append('(')
+                .Append(renumberedPredicate)
+                .Append("))");
         }
     }
 }

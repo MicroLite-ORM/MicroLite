@@ -115,6 +115,27 @@ namespace MicroLite.Builder
         IAndOrOrderBy IsEqualTo(object comparisonValue);
 
         /// <summary>
+        /// Uses the specified sub query to filter the column.
+        /// </summary>
+        /// <param name="subQuery">The sub query to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results being equal to the result of the specified sub query.
+        /// <code>
+        /// var subQuery = new SqlQuery("SELECT TOP 1 CustomerId FROM Invoices ORDER BY Total DESC");
+        ///
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("CustomerId")
+        ///     .IsEqualTo(subQuery)
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (CustomerId = (SELECT TOP 1 CustomerId FROM Invoices ORDER BY Total DESC))
+        /// </example>
+        IAndOrOrderBy IsEqualTo(SqlQuery subQuery);
+
+        /// <summary>
         /// Uses the specified argument to filter the column.
         /// </summary>
         /// <param name="comparisonValue">The value to compare with.</param>
@@ -186,7 +207,7 @@ namespace MicroLite.Builder
         ///     .IsLessThanOrEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<-->= @p0)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered &lt;= @p0)
         /// </example>
         IAndOrOrderBy IsLessThanOrEqualTo(object comparisonValue);
 
@@ -224,9 +245,30 @@ namespace MicroLite.Builder
         ///     .IsNotEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<>--> @p0)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered &lt;&gt; @p0)
         /// </example>
         IAndOrOrderBy IsNotEqualTo(object comparisonValue);
+
+        /// <summary>
+        /// Uses the specified sub query to filter the column.
+        /// </summary>
+        /// <param name="subQuery">The sub query to compare with.</param>
+        /// <returns>The next step in the fluent sql builder.</returns>
+        /// <example>
+        /// This method allows us to specify that a column is filtered with the results not being equal to the result of the specified sub query.
+        /// <code>
+        /// var subQuery = new SqlQuery("SELECT TOP 1 CustomerId FROM Invoices ORDER BY Total DESC");
+        ///
+        /// var query = SqlBuilder
+        ///     .Select("*")
+        ///     .From(typeof(Customer))
+        ///     .Where("CustomerId")
+        ///     .IsNotEqualTo(subQuery)
+        ///     .ToSqlQuery();
+        /// </code>
+        /// Will generate SELECT {Columns} FROM Customers WHERE (CustomerId &lt;&gt; (SELECT TOP 1 CustomerId FROM Invoices ORDER BY Total DESC))
+        /// </example>
+        IAndOrOrderBy IsNotEqualTo(SqlQuery subQuery);
 
         /// <summary>
         /// Uses the specified argument to filter the column.

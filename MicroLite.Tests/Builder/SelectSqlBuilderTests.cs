@@ -1342,7 +1342,7 @@
         }
 
         [Fact]
-        public void SelectWhereColumnIsEqualTo()
+        public void SelectWhereColumnIsEqualToObjectValue()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
 
@@ -1359,7 +1359,7 @@
         }
 
         [Fact]
-        public void SelectWhereColumnIsEqualToWithSqlCharacters()
+        public void SelectWhereColumnIsEqualToObjectValueWithSqlCharacters()
         {
             var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
@@ -1373,6 +1373,44 @@
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] = @p0)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsEqualToSqlQuery()
+        {
+            var subQuery = new SqlQuery("SELECT Column2 FROM Table2 WHERE Column3 = ?", "FOO");
+
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1")
+                   .IsEqualTo(subQuery)
+                   .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = (SELECT Column2 FROM Table2 WHERE Column3 = ?))", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsEqualToWithSqlCharacters()
+        {
+            var subQuery = new SqlQuery("SELECT Column2 FROM Table2 WHERE Column3 = @p0", "FOO");
+
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1")
+                   .IsEqualTo(subQuery)
+                   .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] = (SELECT Column2 FROM Table2 WHERE Column3 = @p0))", sqlQuery.CommandText);
         }
 
         [Fact]
@@ -1546,7 +1584,7 @@
         }
 
         [Fact]
-        public void SelectWhereColumnIsNotEqualTo()
+        public void SelectWhereColumnIsNotEqualToObjectValue()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
 
@@ -1563,7 +1601,7 @@
         }
 
         [Fact]
-        public void SelectWhereColumnIsNotEqualToWithSqlCharacters()
+        public void SelectWhereColumnIsNotEqualToObjectValueWithSqlCharacters()
         {
             var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
 
@@ -1577,6 +1615,44 @@
             Assert.Equal("FOO", sqlQuery.Arguments[0]);
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <> @p0)", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsNotEqualToSqlQuery()
+        {
+            var subQuery = new SqlQuery("SELECT Column2 FROM Table2 WHERE Column3 = ?", "FOO");
+
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1")
+                   .IsNotEqualTo(subQuery)
+                   .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> (SELECT Column2 FROM Table2 WHERE Column3 = ?))", sqlQuery.CommandText);
+        }
+
+        [Fact]
+        public void SelectWhereColumnIsNotEqualToWithSqlCharacters()
+        {
+            var subQuery = new SqlQuery("SELECT Column2 FROM Table2 WHERE Column3 = @p0", "FOO");
+
+            var sqlBuilder = new SelectSqlBuilder(MsSqlCharacters.Instance, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1")
+                   .IsNotEqualTo(subQuery)
+                   .ToSqlQuery();
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal("FOO", sqlQuery.Arguments[0]);
+
+            Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <> (SELECT Column2 FROM Table2 WHERE Column3 = @p0))", sqlQuery.CommandText);
         }
 
         [Fact]
