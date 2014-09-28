@@ -42,7 +42,7 @@ namespace MicroLite
         /// <code>
         /// bool deleted = false;
         ///
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncSession())
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -75,7 +75,7 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the insert command.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncSession())
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -98,7 +98,7 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the update command.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncSession())
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {

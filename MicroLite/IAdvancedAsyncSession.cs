@@ -22,12 +22,12 @@ namespace MicroLite
     /// </summary>
     /// <remarks>
     /// These operations allow for more advanced use and have been moved to a separate interface to avoid
-    /// cluttering the ISession API.
+    /// cluttering the IAsyncSession API.
     /// </remarks>
     public interface IAdvancedAsyncSession : IHideObjectMethods, IAdvancedAsyncReadOnlySession
     {
         /// <summary>
-        /// Asynchronously deletes the database record with the specified identifier for the specified type.
+        /// Asynchronously deletes the database record of the specified type with the specified identifier.
         /// </summary>
         /// <param name="type">The type to delete.</param>
         /// <param name="identifier">The identifier of the record to delete.</param>
@@ -37,7 +37,7 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the delete command.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncSession())
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -60,11 +60,11 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the command.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncSession())
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
-        ///         var query = new SqlQuery("UPDATE Customers SET Locked = @p0 WHERE Locked = @p1", 0, 1);
+        ///         var query = new SqlQuery("UPDATE Customers SET Locked = @p0 WHERE Locked = @p1", false, true);
         ///
         ///         int unlockedRowCount = await session.Advanced.ExecuteAsync(query);
         ///
@@ -86,7 +86,7 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the command.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncSession())
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -109,13 +109,13 @@ namespace MicroLite
         /// <returns>A Task which can be awaited containing a result which indicates whether the object was updated successfully.</returns>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncSession())
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
         ///         // Create an ObjectDelta which only updates specific properties:
         ///         var objectDelta = new ObjectDelta(type: typeof(Customer), identifier: 12823);
-        ///         objectDelta.AddChange(propertyName: "Locked", newValue: 0); // Add as many or few changes as required.
+        ///         objectDelta.AddChange(propertyName: "Locked", newValue: false); // Add 1 or more changes.
         ///
         ///         bool wasUpdated = await session.Advanced.UpdateAsync(objectDelta);
         ///

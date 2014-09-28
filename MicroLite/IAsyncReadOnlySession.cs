@@ -55,7 +55,7 @@ namespace MicroLite
         /// <remarks>It is a good idea to perform all insert/update/delete actions inside a transaction.</remarks>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncReadOnlySession()) // or sessionFactory.OpenAsyncSession()
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -77,7 +77,7 @@ namespace MicroLite
         /// <remarks>It is a good idea to perform all insert/update/delete actions inside a transaction.</remarks>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncReadOnlySession()) // or sessionFactory.OpenAsyncSession()
         /// {
         ///     // This overload allows us to specify a specific IsolationLevel.
         ///     using (var transaction = session.BeginTransaction(IsolationLevel.ReadCommitted))
@@ -111,7 +111,7 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncReadOnlySession()) // or sessionFactory.OpenAsyncSession()
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -139,7 +139,7 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncReadOnlySession()) // or sessionFactory.OpenAsyncSession()
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -167,7 +167,7 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncReadOnlySession()) // or sessionFactory.OpenAsyncSession()
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -178,7 +178,6 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Single", Justification = "It's used in loads of places by the linq extension methods as a method name.")]
         Task<T> SingleAsync<T>(object identifier) where T : class, new();
 
         /// <summary>
@@ -192,13 +191,13 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenAsyncReadOnlySession()) // or sessionFactory.OpenAsyncSession()
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
         ///         var query = new SqlQuery("SELECT * FROM Customers WHERE EmailAddress = @p0", "fred.flintstone@bedrock.com");
         ///
-        ///         // This overload is useful to retrieve a single object based upon a unique value which isn't it's identifier.
+        ///         // This overload is useful to retrieve a single object based upon a unique value which isn't its identifier.
         ///         var customer = await session.SingleAsync&lt;Customer&gt;(query);
         ///
         ///         transaction.Commit();
@@ -206,7 +205,6 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Single", Justification = "It's used in loads of places by the linq extension methods as a method name.")]
         Task<T> SingleAsync<T>(SqlQuery sqlQuery);
     }
 

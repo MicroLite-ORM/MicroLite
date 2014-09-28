@@ -26,7 +26,7 @@ namespace MicroLite.Configuration
         /// Gets or sets a function which will be called when a session factory is created.
         /// </summary>
         /// <remarks>
-        /// This is null by default, but if set will be called:
+        /// This is null by default, but if set it will be called when a session factory has been created.
         /// - Input is the ISessionFactory which has been created before it is added to Configure.SessionFactories.
         /// - Output is added to Configure.SessionFactories.
         /// The purpose of the method is to allow the session factory to be wrapped for profiling.
@@ -77,7 +77,7 @@ namespace MicroLite.Configuration
         /// <code>
         /// var sessionFactory = Configure
         ///     .Fluently()
-        ///     .ForMsSqlConnection("TestDB") // or ForMySqlConnection, ForPostgreSqlConnection or ForSQLiteConnection
+        ///     .ForMsSql2005Connection("TestDB") // or any other supported SQL connection.
         ///     .CreateSessionFactory();
         /// </code>
         /// </example>

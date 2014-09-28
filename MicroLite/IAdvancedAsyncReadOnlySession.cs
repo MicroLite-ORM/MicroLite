@@ -21,7 +21,7 @@ namespace MicroLite
     /// </summary>
     /// <remarks>
     /// These operations allow for more advanced use and have been moved to a separate interface to avoid
-    /// cluttering the IReadOnlySession API.
+    /// cluttering the IAsyncReadOnlySession API.
     /// </remarks>
     public interface IAdvancedAsyncReadOnlySession : IHideObjectMethods
     {

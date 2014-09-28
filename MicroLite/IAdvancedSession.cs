@@ -24,7 +24,7 @@ namespace MicroLite
     public interface IAdvancedSession : IHideObjectMethods, IAdvancedReadOnlySession
     {
         /// <summary>
-        /// Deletes the database record with the specified identifier for the specified type.
+        /// Deletes the database record of the specified type with the specified identifier.
         /// </summary>
         /// <param name="type">The type to delete.</param>
         /// <param name="identifier">The identifier of the record to delete.</param>
@@ -61,7 +61,7 @@ namespace MicroLite
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
-        ///         var query = new SqlQuery("UPDATE Customers SET Locked = @p0 WHERE Locked = @p1", 0, 1);
+        ///         var query = new SqlQuery("UPDATE Customers SET Locked = @p0 WHERE Locked = @p1", false, true);
         ///
         ///         int unlockedRowCount = session.Advanced.Execute(query);
         ///
@@ -112,7 +112,7 @@ namespace MicroLite
         ///     {
         ///         // Create an ObjectDelta which only updates specific properties:
         ///         var objectDelta = new ObjectDelta(type: typeof(Customer), identifier: 12823);
-        ///         objectDelta.AddChange(propertyName: "Locked", newValue: 0); // Add as many or few changes as required.
+        ///         objectDelta.AddChange(propertyName: "Locked", newValue: false); // Add 1 or more changes.
         ///
         ///         bool wasUpdated = session.Advanced.Update(objectDelta);
         ///

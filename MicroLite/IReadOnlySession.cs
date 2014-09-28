@@ -52,7 +52,7 @@ namespace MicroLite
         /// <remarks>It is a good idea to perform all insert/update/delete actions inside a transaction.</remarks>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenReadOnlySession()) // or sessionFactory.OpenSession()
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -74,7 +74,7 @@ namespace MicroLite
         /// <remarks>It is a good idea to perform all insert/update/delete actions inside a transaction.</remarks>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenReadOnlySession()) // or sessionFactory.OpenSession()
         /// {
         ///     // This overload allows us to specify a specific IsolationLevel.
         ///     using (var transaction = session.BeginTransaction(IsolationLevel.ReadCommitted))
@@ -108,7 +108,7 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenReadOnlySession()) // or sessionFactory.OpenSession()
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -135,7 +135,7 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenReadOnlySession()) // or sessionFactory.OpenSession()
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -162,7 +162,7 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenReadOnlySession()) // or sessionFactory.OpenSession()
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
@@ -187,13 +187,13 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
         /// <example>
         /// <code>
-        /// using (var session = sessionFactory.OpenSession())
+        /// using (var session = sessionFactory.OpenReadOnlySession()) // or sessionFactory.OpenSession()
         /// {
         ///     using (var transaction = session.BeginTransaction())
         ///     {
         ///         var query = new SqlQuery("SELECT * FROM Customers WHERE EmailAddress = @p0", "fred.flintstone@bedrock.com");
         ///
-        ///         // This overload is useful to retrieve a single object based upon a unique value which isn't it's identifier.
+        ///         // This overload is useful to retrieve a single object based upon a unique value which isn't its identifier.
         ///         var customer = session.Single&lt;Customer&gt;(query);
         ///
         ///         transaction.Commit();
