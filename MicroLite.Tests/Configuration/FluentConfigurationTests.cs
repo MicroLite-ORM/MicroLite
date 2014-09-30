@@ -19,13 +19,10 @@
             private readonly Mock<IDbDriver> mockDbDriver = new Mock<IDbDriver>();
             private readonly Mock<ISqlDialect> mockSqlDialect = new Mock<ISqlDialect>();
             private readonly ISessionFactory sessionFactory;
-            private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
             private bool sessionFactoryCreatedCalled = false;
 
             public WhenCallingCreateSessionFactory()
             {
-                this.mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
-
                 var fluentConfiguration = new FluentConfiguration((ISessionFactory s) =>
                 {
                     this.sessionFactoryCreatedCalled = true;
@@ -59,12 +56,6 @@
             public void TheSessionFactoryShouldBeAddedToTheSessionFactoriesProperty()
             {
                 Assert.Contains(this.sessionFactory, Configure.SessionFactories);
-            }
-
-            [Fact]
-            public void TheSqlCharactersCurrentPropertyShouldBeSetToTheSqlDialectSqlCharacters()
-            {
-                Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
             }
         }
 

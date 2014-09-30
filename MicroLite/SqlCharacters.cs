@@ -15,6 +15,7 @@ namespace MicroLite
     using System;
     using System.Globalization;
     using System.Linq;
+    using System.Runtime.Remoting.Messaging;
 
     /// <summary>
     /// A class containing the SQL characters for an SQL Dialect.
@@ -23,7 +24,6 @@ namespace MicroLite
     {
         private static readonly SqlCharacters empty = new SqlCharacters();
         private static readonly char[] period = new[] { '.' };
-        private static SqlCharacters current;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlCharacters"/> class.
@@ -39,12 +39,12 @@ namespace MicroLite
         {
             get
             {
-                return current ?? empty;
+                return CallContext.LogicalGetData("SqlCharacters_Current") as SqlCharacters ?? empty;
             }
 
             set
             {
-                current = value;
+                CallContext.LogicalSetData("SqlCharacters_Current", value);
             }
         }
 

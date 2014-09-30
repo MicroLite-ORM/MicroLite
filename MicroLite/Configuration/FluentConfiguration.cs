@@ -64,8 +64,6 @@ namespace MicroLite.Configuration
                         sessionFactory = this.sessionFactoryCreated(sessionFactory);
                     }
 
-                    SqlCharacters.Current = this.chosenSqlDialect.SqlCharacters;
-
                     Configure.SessionFactories.Add(sessionFactory);
                 }
 

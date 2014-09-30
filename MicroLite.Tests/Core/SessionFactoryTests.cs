@@ -15,92 +15,135 @@
 
         public class WhenCallingOpenAsyncReadOnlySession : UnitTest
         {
-            private readonly IAsyncReadOnlySession readOnlySession;
+            private readonly IAsyncReadOnlySession readOnlyAsyncSession;
+            private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
             public WhenCallingOpenAsyncReadOnlySession()
             {
-                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
+                var mockDbDriver = new Mock<IDbDriver>();
+                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction));
 
-                this.readOnlySession = sessionFactory.OpenAsyncReadOnlySession();
+                var mockSqlDialect = new Mock<ISqlDialect>();
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
+
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
+
+                this.readOnlyAsyncSession = sessionFactory.OpenAsyncReadOnlySession();
             }
 
             [Fact]
-            public void AReadOnlySessionIsReturned()
+            public void AAsyncReadOnlySessionIsReturned()
             {
-                Assert.NotNull(this.readOnlySession);
-                Assert.IsType<AsyncReadOnlySession>(this.readOnlySession);
+                Assert.NotNull(this.readOnlyAsyncSession);
+                Assert.IsType<AsyncReadOnlySession>(this.readOnlyAsyncSession);
             }
 
             [Fact]
-            public void TheConnectionScopeOfTheSessionIsPerTransactionByDefault()
+            public void TheConnectionScopeOfTheAsyncSessionIsPerTransactionByDefault()
             {
-                Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.readOnlySession).ConnectionScope);
+                Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.readOnlyAsyncSession).ConnectionScope);
+            }
+
+            [Fact]
+            public void TheSqlCharactersCurrentPropertyShouldBeSetToTheSqlDialectSqlCharacters()
+            {
+                Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
             }
         }
 
         public class WhenCallingOpenAsyncReadOnlySession_MultipleTimes : UnitTest
         {
-            private readonly IAsyncReadOnlySession readOnlySession1;
-            private readonly IAsyncReadOnlySession readOnlySession2;
+            private readonly IAsyncReadOnlySession readOnlyAsyncSession1;
+            private readonly IAsyncReadOnlySession readOnlyAsyncSession2;
 
             public WhenCallingOpenAsyncReadOnlySession_MultipleTimes()
             {
                 var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
 
-                this.readOnlySession1 = sessionFactory.OpenAsyncReadOnlySession();
-                this.readOnlySession2 = sessionFactory.OpenAsyncReadOnlySession();
+                this.readOnlyAsyncSession1 = sessionFactory.OpenAsyncReadOnlySession();
+                this.readOnlyAsyncSession2 = sessionFactory.OpenAsyncReadOnlySession();
             }
 
             [Fact]
-            public void ANewSessionIsReturnedEachTime()
+            public void ANewAsyncSessionIsReturnedEachTime()
             {
-                Assert.NotSame(this.readOnlySession1, this.readOnlySession2);
+                Assert.NotSame(this.readOnlyAsyncSession1, this.readOnlyAsyncSession2);
             }
         }
 
         public class WhenCallingOpenAsyncReadOnlySession_SpecifyingConnectionScope : UnitTest
         {
-            private readonly IAsyncReadOnlySession readOnlySession;
+            private readonly IAsyncReadOnlySession readOnlyAsyncSession;
+            private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
             public WhenCallingOpenAsyncReadOnlySession_SpecifyingConnectionScope()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
                 mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
 
-                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, new Mock<ISqlDialect>().Object);
+                var mockSqlDialect = new Mock<ISqlDialect>();
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
 
-                this.readOnlySession = sessionFactory.OpenAsyncReadOnlySession(ConnectionScope.PerSession);
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
+
+                this.readOnlyAsyncSession = sessionFactory.OpenAsyncReadOnlySession(ConnectionScope.PerSession);
             }
 
             [Fact]
-            public void TheConnectionScopeOfTheSessionIsSetCorrectly()
+            public void AAsyncReadOnlySessionIsReturned()
             {
-                Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.readOnlySession).ConnectionScope);
+                Assert.NotNull(this.readOnlyAsyncSession);
+                Assert.IsType<AsyncReadOnlySession>(this.readOnlyAsyncSession);
+            }
+
+            [Fact]
+            public void TheConnectionScopeOfTheAsyncSessionIsSetCorrectly()
+            {
+                Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.readOnlyAsyncSession).ConnectionScope);
+            }
+
+            [Fact]
+            public void TheSqlCharactersCurrentPropertyShouldBeSetToTheSqlDialectSqlCharacters()
+            {
+                Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
             }
         }
 
         public class WhenCallingOpenAsyncSession : UnitTest
         {
             private readonly IAsyncSession session;
+            private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
             public WhenCallingOpenAsyncSession()
             {
-                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
+                var mockDbDriver = new Mock<IDbDriver>();
+                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction));
+
+                var mockSqlDialect = new Mock<ISqlDialect>();
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
+
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
 
                 this.session = sessionFactory.OpenAsyncSession();
             }
 
             [Fact]
-            public void AnAsyncSessionIsReturned()
+            public void AAsyncSessionIsReturned()
             {
                 Assert.NotNull(this.session);
                 Assert.IsType<AsyncSession>(this.session);
             }
 
             [Fact]
-            public void TheConnectionScopeOfTheSessionIsPerTransactionByDefault()
+            public void TheConnectionScopeOfTheAsyncSessionIsPerTransactionByDefault()
             {
                 Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.session).ConnectionScope);
+            }
+
+            [Fact]
+            public void TheSqlCharactersCurrentPropertyShouldBeSetToTheSqlDialectSqlCharacters()
+            {
+                Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
             }
         }
 
@@ -118,7 +161,7 @@
             }
 
             [Fact]
-            public void ANewSessionIsReturnedEachTime()
+            public void ANewAsyncSessionIsReturnedEachTime()
             {
                 Assert.NotSame(this.session1, this.session2);
             }
@@ -127,21 +170,38 @@
         public class WhenCallingOpenAsyncSession_SpecifyingConnectionScope : UnitTest
         {
             private readonly IAsyncSession session;
+            private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
             public WhenCallingOpenAsyncSession_SpecifyingConnectionScope()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
                 mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
 
-                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, new Mock<ISqlDialect>().Object);
+                var mockSqlDialect = new Mock<ISqlDialect>();
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
+
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
 
                 this.session = sessionFactory.OpenAsyncSession(ConnectionScope.PerSession);
             }
 
             [Fact]
-            public void TheConnectionScopeOfTheSessionIsSetCorrectly()
+            public void AAsyncSessionIsReturned()
+            {
+                Assert.NotNull(this.session);
+                Assert.IsType<AsyncSession>(this.session);
+            }
+
+            [Fact]
+            public void TheConnectionScopeOfTheAsyncSessionIsSetCorrectly()
             {
                 Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.session).ConnectionScope);
+            }
+
+            [Fact]
+            public void TheSqlCharactersCurrentPropertyShouldBeSetToTheSqlDialectSqlCharacters()
+            {
+                Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
             }
         }
 
@@ -150,10 +210,17 @@
         public class WhenCallingOpenReadOnlySession : UnitTest
         {
             private readonly IReadOnlySession readOnlySession;
+            private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
             public WhenCallingOpenReadOnlySession()
             {
-                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
+                var mockDbDriver = new Mock<IDbDriver>();
+                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction));
+
+                var mockSqlDialect = new Mock<ISqlDialect>();
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
+
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
 
                 this.readOnlySession = sessionFactory.OpenReadOnlySession();
             }
@@ -169,6 +236,12 @@
             public void TheConnectionScopeOfTheSessionIsPerTransactionByDefault()
             {
                 Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.readOnlySession).ConnectionScope);
+            }
+
+            [Fact]
+            public void TheSqlCharactersCurrentPropertyShouldBeSetToTheSqlDialectSqlCharacters()
+            {
+                Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
             }
         }
 
@@ -195,15 +268,26 @@
         public class WhenCallingOpenReadOnlySession_SpecifyingConnectionScope : UnitTest
         {
             private readonly IReadOnlySession readOnlySession;
+            private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
             public WhenCallingOpenReadOnlySession_SpecifyingConnectionScope()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
                 mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
 
-                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, new Mock<ISqlDialect>().Object);
+                var mockSqlDialect = new Mock<ISqlDialect>();
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
+
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
 
                 this.readOnlySession = sessionFactory.OpenReadOnlySession(ConnectionScope.PerSession);
+            }
+
+            [Fact]
+            public void AReadOnlySessionIsReturned()
+            {
+                Assert.NotNull(this.readOnlySession);
+                Assert.IsType<ReadOnlySession>(this.readOnlySession);
             }
 
             [Fact]
@@ -211,15 +295,28 @@
             {
                 Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.readOnlySession).ConnectionScope);
             }
+
+            [Fact]
+            public void TheSqlCharactersCurrentPropertyShouldBeSetToTheSqlDialectSqlCharacters()
+            {
+                Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
+            }
         }
 
         public class WhenCallingOpenSession : UnitTest
         {
             private readonly ISession session;
+            private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
             public WhenCallingOpenSession()
             {
-                var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
+                var mockDbDriver = new Mock<IDbDriver>();
+                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction));
+
+                var mockSqlDialect = new Mock<ISqlDialect>();
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
+
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
 
                 this.session = sessionFactory.OpenSession();
             }
@@ -235,6 +332,12 @@
             public void TheConnectionScopeOfTheSessionIsPerTransactionByDefault()
             {
                 Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.session).ConnectionScope);
+            }
+
+            [Fact]
+            public void TheSqlCharactersCurrentPropertyShouldBeSetToTheSqlDialectSqlCharacters()
+            {
+                Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
             }
         }
 
@@ -261,21 +364,38 @@
         public class WhenCallingOpenSession_SpecifyingConnectionScope : UnitTest
         {
             private readonly ISession session;
+            private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
             public WhenCallingOpenSession_SpecifyingConnectionScope()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
                 mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
 
-                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, new Mock<ISqlDialect>().Object);
+                var mockSqlDialect = new Mock<ISqlDialect>();
+                mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
+
+                var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
 
                 this.session = sessionFactory.OpenSession(ConnectionScope.PerSession);
+            }
+
+            [Fact]
+            public void ASessionIsReturned()
+            {
+                Assert.NotNull(this.session);
+                Assert.IsType<Session>(this.session);
             }
 
             [Fact]
             public void TheConnectionScopeOfTheSessionIsSetCorrectly()
             {
                 Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.session).ConnectionScope);
+            }
+
+            [Fact]
+            public void TheSqlCharactersCurrentPropertyShouldBeSetToTheSqlDialectSqlCharacters()
+            {
+                Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
             }
         }
 
