@@ -1,8 +1,9 @@
-﻿Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite", "MicroLite\MicroLite.NET40.csproj", "{3DEF63F2-C78B-461C-AC94-410BC45098AA}"
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.NET40", "MicroLite\MicroLite.NET40.csproj", "{3DEF63F2-C78B-461C-AC94-410BC45098AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Tests", "MicroLite.Tests\MicroLite.Tests.NET40.csproj", "{A693D0A7-1347-4FAA-9CB4-67E6C1C084A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Tests.NET40", "MicroLite.Tests\MicroLite.Tests.NET40.csproj", "{A693D0A7-1347-4FAA-9CB4-67E6C1C084A2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5D647A53-D475-4696-91CB-08FF5706B881}"
 	ProjectSection(SolutionItems) = preProject
@@ -10,6 +11,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5D647A
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.NET35", "MicroLite\MicroLite.NET35.csproj", "{D00EAC4D-DEFC-4842-BA8C-89622DC47F71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.NET45", "MicroLite\MicroLite.NET45.csproj", "{22A1B91B-A197-406B-BA40-BDFE31A692DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Tests.NET35", "MicroLite.Tests\MicroLite.Tests.NET35.csproj", "{072961EB-7321-4493-ABD0-647025D1178A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Tests.NET45", "MicroLite.Tests\MicroLite.Tests.NET45.csproj", "{8D525516-CE28-43D6-8F72-A1009D90714D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +34,22 @@ Global
 		{A693D0A7-1347-4FAA-9CB4-67E6C1C084A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A693D0A7-1347-4FAA-9CB4-67E6C1C084A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A693D0A7-1347-4FAA-9CB4-67E6C1C084A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D00EAC4D-DEFC-4842-BA8C-89622DC47F71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D00EAC4D-DEFC-4842-BA8C-89622DC47F71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D00EAC4D-DEFC-4842-BA8C-89622DC47F71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D00EAC4D-DEFC-4842-BA8C-89622DC47F71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22A1B91B-A197-406B-BA40-BDFE31A692DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22A1B91B-A197-406B-BA40-BDFE31A692DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22A1B91B-A197-406B-BA40-BDFE31A692DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22A1B91B-A197-406B-BA40-BDFE31A692DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{072961EB-7321-4493-ABD0-647025D1178A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{072961EB-7321-4493-ABD0-647025D1178A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{072961EB-7321-4493-ABD0-647025D1178A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{072961EB-7321-4493-ABD0-647025D1178A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D525516-CE28-43D6-8F72-A1009D90714D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D525516-CE28-43D6-8F72-A1009D90714D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D525516-CE28-43D6-8F72-A1009D90714D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D525516-CE28-43D6-8F72-A1009D90714D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
