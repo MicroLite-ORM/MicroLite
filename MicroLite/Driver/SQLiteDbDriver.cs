@@ -21,6 +21,7 @@ namespace MicroLite.Driver
         /// Initialises a new instance of the <see cref="SQLiteDbDriver" /> class.
         /// </summary>
         internal SQLiteDbDriver()
+            : base(MicroLite.Dialect.SQLiteCharacters.Instance)
         {
         }
 

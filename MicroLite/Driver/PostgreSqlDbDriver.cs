@@ -12,6 +12,9 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Driver
 {
+    using System;
+    using System.Data;
+
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for PostgreSql server.
     /// </summary>
@@ -21,6 +24,7 @@ namespace MicroLite.Driver
         /// Initialises a new instance of the <see cref="PostgreSqlDbDriver" /> class.
         /// </summary>
         internal PostgreSqlDbDriver()
+            : base(MicroLite.Dialect.PostgreSqlCharacters.Instance)
         {
         }
 
@@ -30,6 +34,48 @@ namespace MicroLite.Driver
             {
                 return true;
             }
+        }
+
+        protected override string GetCommandText(string commandText)
+        {
+            if (this.SupportsStoredProcedures
+                && commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase) == -1
+                && commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                && !commandText.Contains(this.StatementSeparator))
+            {
+                var invocationCommandLength = this.SqlCharacters.StoredProcedureInvocationCommand.Length;
+                var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
+
+                if (commandText.Contains("("))
+                {
+                    firstParameterPosition--;
+                }
+
+                if (firstParameterPosition > invocationCommandLength)
+                {
+                    return commandText
+                        .Substring(invocationCommandLength, firstParameterPosition - invocationCommandLength)
+                        .Trim();
+                }
+                else
+                {
+                    return commandText.Substring(invocationCommandLength, commandText.Length - invocationCommandLength).Trim();
+                }
+            }
+
+            return commandText;
+        }
+
+        protected override CommandType GetCommandType(string commandText)
+        {
+            if (commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                && commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase) == -1
+                && !commandText.Contains(this.StatementSeparator))
+            {
+                return CommandType.StoredProcedure;
+            }
+
+            return CommandType.Text;
         }
     }
 }

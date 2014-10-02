@@ -23,6 +23,7 @@ namespace MicroLite.Driver
         /// Initialises a new instance of the <see cref="SqlServerCeDbDriver" /> class.
         /// </summary>
         internal SqlServerCeDbDriver()
+            : base(MicroLite.Dialect.SqlServerCeCharacters.Instance)
         {
         }
 

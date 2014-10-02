@@ -129,8 +129,12 @@
     <Compile Include="TestEntities\Customer.cs" />
     <Compile Include="TestEntities\CustomerStatus.cs" />
     <Compile Include="TestEntities\Invoice.cs" />
-    <Compile Include="TestEntities\MockDbCommandWrapper.cs" />
-    <Compile Include="TestEntities\MockDbConnectionWrapper.cs" />
+    <Compile Include="TestEntities\MockDbCommandWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TestEntities\MockDbConnectionWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="TestEntities\MockDbDataReaderWrapper.cs" />
     <Compile Include="TestEntities\MockDbTransactionWrapper.cs" />
     <Compile Include="TypeConverters\DbEncryptedStringTypeConverterTests.cs" />

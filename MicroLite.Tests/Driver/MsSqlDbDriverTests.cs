@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests.Driver
 {
-    using System;
     using System.Data;
     using System.Data.Common;
     using MicroLite.Driver;
@@ -115,20 +114,6 @@
             var dbDriver = new MsSqlDbDriver();
 
             Assert.True(dbDriver.SupportsBatchedQueries);
-        }
-
-        public class WhenCallingCombine_WithAnIEnumerable_AndTheSourceQueriesIsNull
-        {
-            [Fact]
-            public void AnArgumentNullExceptionShouldBeThrown()
-            {
-                var dbDriver = new MsSqlDbDriver();
-
-                var exception = Assert.Throws<ArgumentNullException>(
-                    () => dbDriver.Combine(null));
-
-                Assert.Equal("sqlQueries", exception.ParamName);
-            }
         }
 
         public class WhenCallingCombine_WithAnIEnumerableSqlQuery
@@ -312,34 +297,6 @@
             public void TheTimeoutShouldBeSetToTheLongestTimeoutOfTheSourceQueries()
             {
                 Assert.Equal(this.sqlQuery2.Timeout, this.combinedQuery.Timeout);
-            }
-        }
-
-        public class WhenCallingCombineAndTheFirstSqlQueryIsNull
-        {
-            [Fact]
-            public void AnArgumentNullExceptionShouldBeThrown()
-            {
-                var dbDriver = new MsSqlDbDriver();
-
-                var exception = Assert.Throws<ArgumentNullException>(
-                    () => dbDriver.Combine(null, new SqlQuery("")));
-
-                Assert.Equal("sqlQuery1", exception.ParamName);
-            }
-        }
-
-        public class WhenCallingCombineAndTheSecondSqlQueryIsNull
-        {
-            [Fact]
-            public void AnArgumentNullExceptionShouldBeThrown()
-            {
-                var dbDriver = new MsSqlDbDriver();
-
-                var exception = Assert.Throws<ArgumentNullException>(
-                    () => dbDriver.Combine(new SqlQuery(""), null));
-
-                Assert.Equal("sqlQuery2", exception.ParamName);
             }
         }
     }

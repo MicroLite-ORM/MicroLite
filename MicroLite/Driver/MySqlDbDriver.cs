@@ -21,6 +21,7 @@ namespace MicroLite.Driver
         /// Initialises a new instance of the <see cref="MySqlDbDriver" /> class.
         /// </summary>
         internal MySqlDbDriver()
+            : base(MicroLite.Dialect.MySqlCharacters.Instance)
         {
         }
 

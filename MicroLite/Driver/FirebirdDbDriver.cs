@@ -21,6 +21,7 @@ namespace MicroLite.Driver
         /// Initialises a new instance of the <see cref="FirebirdDbDriver" /> class.
         /// </summary>
         internal FirebirdDbDriver()
+            : base(MicroLite.Dialect.FirebirdSqlCharacters.Instance)
         {
         }
     }

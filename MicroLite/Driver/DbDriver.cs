@@ -28,14 +28,17 @@ namespace MicroLite.Driver
     internal abstract class DbDriver : IDbDriver
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
+        private readonly SqlCharacters sqlCharacters;
         private bool handleStringsAsUnicode;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="DbDriver" /> class.
         /// </summary>
-        protected DbDriver()
+        /// <param name="sqlCharacters">The SQL characters.</param>
+        protected DbDriver(SqlCharacters sqlCharacters)
         {
             this.handleStringsAsUnicode = true;
+            this.sqlCharacters = sqlCharacters;
         }
 
         /// <summary>
@@ -89,6 +92,17 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
+        /// Gets the SQL characters used by the database.
+        /// </summary>
+        protected SqlCharacters SqlCharacters
+        {
+            get
+            {
+                return this.sqlCharacters;
+            }
+        }
+
+        /// <summary>
         /// Gets the character used to separate SQL statements.
         /// </summary>
         protected virtual string StatementSeparator
@@ -96,6 +110,17 @@ namespace MicroLite.Driver
             get
             {
                 return ";";
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the database supports stored procedures.
+        /// </summary>
+        protected bool SupportsStoredProcedures
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(this.sqlCharacters.StoredProcedureInvocationCommand);
             }
         }
 
@@ -149,7 +174,7 @@ namespace MicroLite.Driver
         /// <returns>
         /// An <see cref="SqlQuery" /> containing the combined command text and arguments.
         /// </returns>
-        public virtual SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
+        public SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
         {
             if (sqlQueries == null)
             {
@@ -169,7 +194,10 @@ namespace MicroLite.Driver
                 }
                 else
                 {
-                    var commandText = SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
+                    var commandText = this.SupportsStoredProcedures && sqlQuery.CommandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                        ? sqlQuery.CommandText
+                        : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
+
                     sqlBuilder.Append(commandText).AppendLine(this.StatementSeparator);
                 }
             }
@@ -188,7 +216,7 @@ namespace MicroLite.Driver
         /// <returns>
         /// An <see cref="SqlQuery" /> containing the combined command text and arguments.
         /// </returns>
-        public virtual SqlQuery Combine(SqlQuery sqlQuery1, SqlQuery sqlQuery2)
+        public SqlQuery Combine(SqlQuery sqlQuery1, SqlQuery sqlQuery2)
         {
             if (sqlQuery1 == null)
             {
@@ -211,10 +239,11 @@ namespace MicroLite.Driver
                 Array.Copy(sqlQuery2.ArgumentsArray, 0, arguments, sqlQuery1.Arguments.Count, sqlQuery2.Arguments.Count);
             }
 
-            var commandText = sqlQuery1.CommandText
-                + this.StatementSeparator
-                + Environment.NewLine
-                + SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
+            var query2CommandText = this.SupportsStoredProcedures && sqlQuery2.CommandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                ? sqlQuery2.CommandText
+                : SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
+
+            var commandText = sqlQuery1.CommandText + this.StatementSeparator + Environment.NewLine + query2CommandText;
 
             var combinedQuery = new SqlQuery(commandText, arguments);
             combinedQuery.Timeout = Math.Max(sqlQuery1.Timeout, sqlQuery2.Timeout);
@@ -287,6 +316,23 @@ namespace MicroLite.Driver
         /// <returns>The actual command text.</returns>
         protected virtual string GetCommandText(string commandText)
         {
+            if (this.SupportsStoredProcedures
+                && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                && !commandText.Contains(this.StatementSeparator))
+            {
+                var invocationCommandLength = this.sqlCharacters.StoredProcedureInvocationCommand.Length;
+                var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
+
+                if (firstParameterPosition > invocationCommandLength)
+                {
+                    return commandText.Substring(invocationCommandLength, firstParameterPosition - invocationCommandLength).Trim();
+                }
+                else
+                {
+                    return commandText.Substring(invocationCommandLength, commandText.Length - invocationCommandLength).Trim();
+                }
+            }
+
             return commandText;
         }
 
@@ -297,6 +343,13 @@ namespace MicroLite.Driver
         /// <returns>The CommandType for the specified command text.</returns>
         protected virtual CommandType GetCommandType(string commandText)
         {
+            if (this.SupportsStoredProcedures
+                && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                && !commandText.Contains(this.StatementSeparator))
+            {
+                return CommandType.StoredProcedure;
+            }
+
             return CommandType.Text;
         }
     }
