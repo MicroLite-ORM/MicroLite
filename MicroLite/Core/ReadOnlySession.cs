@@ -18,6 +18,7 @@ namespace MicroLite.Core
     using MicroLite.Builder;
     using MicroLite.Dialect;
     using MicroLite.Driver;
+    using MicroLite.Logging;
     using MicroLite.Mapping;
 
     /// <summary>
