@@ -25,6 +25,11 @@ namespace MicroLite.Dialect
 
         public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
         {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
             {
                 return selectSequenceIdentityQuery;
