@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3DEF63F2-C78B-461C-AC94-410BC45098AA}</ProjectGuid>
+    <ProjectGuid>{D00EAC4D-DEFC-4842-BA8C-89622DC47F71}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MicroLite</RootNamespace>
@@ -183,6 +183,7 @@
     <Compile Include="Mapping\IObjectInfo.cs" />
     <Compile Include="Mapping\MappingException.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
+    <Compile Include="Mapping\ObjectInfoExtensions.cs" />
     <Compile Include="Mapping\PocoObjectInfo.cs" />
     <Compile Include="Mapping\TableAttribute.cs" />
     <Compile Include="Mapping\TableInfo.cs" />

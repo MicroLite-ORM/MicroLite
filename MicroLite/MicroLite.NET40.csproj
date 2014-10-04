@@ -184,6 +184,7 @@
     <Compile Include="Mapping\IObjectInfo.cs" />
     <Compile Include="Mapping\MappingException.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
+    <Compile Include="Mapping\ObjectInfoExtensions.cs" />
     <Compile Include="Mapping\PocoObjectInfo.cs" />
     <Compile Include="Mapping\TableAttribute.cs" />
     <Compile Include="Mapping\TableInfo.cs" />
@@ -236,7 +237,7 @@
     <EmbeddedResource Include="ExceptionMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>    
+    </EmbeddedResource>
     <EmbeddedResource Include="Logging\LogMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LogMessages.Designer.cs</LastGenOutput>
