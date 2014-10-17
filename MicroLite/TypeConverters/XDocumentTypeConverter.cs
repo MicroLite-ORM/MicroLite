@@ -22,6 +22,14 @@ namespace MicroLite.TypeConverters
     public sealed class XDocumentTypeConverter : ITypeConverter
     {
         /// <summary>
+        /// Initialises a new instance of the <see cref="XDocumentTypeConverter"/> class.
+        /// </summary>
+        public XDocumentTypeConverter()
+        {
+            TypeConverter.RegisterTypeMapping(typeof(XDocument), DbType.String);
+        }
+
+        /// <summary>
         /// Determines whether this type converter can convert values for the specified type.
         /// </summary>
         /// <param name="type">The type to check.</param>

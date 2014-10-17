@@ -21,6 +21,14 @@ namespace MicroLite.TypeConverters
     public sealed class UriTypeConverter : ITypeConverter
     {
         /// <summary>
+        /// Initialises a new instance of the <see cref="UriTypeConverter"/> class.
+        /// </summary>
+        public UriTypeConverter()
+        {
+            TypeConverter.RegisterTypeMapping(typeof(Uri), DbType.String);
+        }
+
+        /// <summary>
         /// Determines whether this type converter can convert values for the specified type.
         /// </summary>
         /// <param name="type">The type to check.</param>

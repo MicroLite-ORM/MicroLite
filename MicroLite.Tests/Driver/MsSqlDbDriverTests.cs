@@ -35,14 +35,16 @@
             Assert.Equal(2, command.Parameters.Count);
 
             var parameter1 = (IDataParameter)command.Parameters[0];
+            Assert.Equal(DbType.Int32, parameter1.DbType);
             Assert.Equal(ParameterDirection.Input, parameter1.Direction);
             Assert.Equal("@p0", parameter1.ParameterName);
-            Assert.Equal(sqlQuery.Arguments[0], parameter1.Value);
+            Assert.Equal(sqlQuery.Arguments[0].Value, parameter1.Value);
 
             var parameter2 = (IDataParameter)command.Parameters[1];
+            Assert.Equal(DbType.String, parameter2.DbType);
             Assert.Equal(ParameterDirection.Input, parameter2.Direction);
             Assert.Equal("@p1", parameter2.ParameterName);
-            Assert.Equal(sqlQuery.Arguments[1], parameter2.Value);
+            Assert.Equal(sqlQuery.Arguments[1].Value, parameter2.Value);
         }
 
         [Fact]
@@ -85,12 +87,16 @@
             Assert.Equal(2, command.Parameters.Count);
 
             var parameter1 = (IDataParameter)command.Parameters[0];
+            Assert.Equal(DbType.Int32, parameter1.DbType);
+            Assert.Equal(ParameterDirection.Input, parameter1.Direction);
             Assert.Equal("@identifier", parameter1.ParameterName);
-            Assert.Equal(sqlQuery.Arguments[0], parameter1.Value);
+            Assert.Equal(sqlQuery.Arguments[0].Value, parameter1.Value);
 
             var parameter2 = (IDataParameter)command.Parameters[1];
+            Assert.Equal(DbType.String, parameter2.DbType);
+            Assert.Equal(ParameterDirection.Input, parameter2.Direction);
             Assert.Equal("@Cust_Name", parameter2.ParameterName);
-            Assert.Equal(sqlQuery.Arguments[1], parameter2.Value);
+            Assert.Equal(sqlQuery.Arguments[1].Value, parameter2.Value);
         }
 
         [Fact]

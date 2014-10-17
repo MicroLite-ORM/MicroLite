@@ -13,8 +13,10 @@
 namespace MicroLite.Mapping
 {
     using System;
+    using System.Data;
     using System.Reflection;
     using MicroLite.Mapping.Inflection;
+    using MicroLite.TypeConverters;
 
     /// <summary>
     /// A class containing the configurable settings.
@@ -51,6 +53,10 @@ namespace MicroLite.Mapping
                 }
 
                 return propertyInfo.Name;
+            };
+            this.ResolveDbType = (PropertyInfo propertyInfo) =>
+            {
+                return TypeConverter.ResolveDbType(propertyInfo.PropertyType);
             };
             this.ResolveIdentifierColumnName = (PropertyInfo propertyInfo) =>
             {
@@ -136,6 +142,15 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <remarks>Only called if the call to IsIdentifier returns false.</remarks>
         public Func<PropertyInfo, string> ResolveColumnName
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the function which resolves the DbType for the column.
+        /// </summary>
+        public Func<PropertyInfo, DbType> ResolveDbType
         {
             get;
             set;

@@ -39,7 +39,7 @@ namespace MicroLite.Builder
                 .Append(" = ")
                 .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
 
-            this.Arguments.Add(columnValue);
+            this.Arguments.Add(new SqlArgument(columnValue));
 
             return this;
         }
@@ -66,7 +66,7 @@ namespace MicroLite.Builder
                 .Append(" = ")
                 .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
 
-            this.Arguments.Add(comparisonValue);
+            this.Arguments.Add(new SqlArgument(comparisonValue));
 
             return this;
         }

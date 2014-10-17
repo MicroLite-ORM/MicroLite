@@ -13,6 +13,7 @@
 namespace MicroLite.Dialect
 {
     using System;
+    using System.Data;
     using System.Text;
     using MicroLite.Mapping;
 
@@ -59,10 +60,10 @@ namespace MicroLite.Dialect
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            var arguments = new object[sqlQuery.Arguments.Count + 2];
+            var arguments = new SqlArgument[sqlQuery.Arguments.Count + 2];
             Array.Copy(sqlQuery.ArgumentsArray, 0, arguments, 0, sqlQuery.Arguments.Count);
-            arguments[arguments.Length - 2] = pagingOptions.Offset;
-            arguments[arguments.Length - 1] = pagingOptions.Count;
+            arguments[arguments.Length - 2] = new SqlArgument(pagingOptions.Offset, DbType.Int32);
+            arguments[arguments.Length - 1] = new SqlArgument(pagingOptions.Count, DbType.Int32);
 
             var stringBuilder = new StringBuilder(sqlQuery.CommandText)
                 .Replace(Environment.NewLine, string.Empty)

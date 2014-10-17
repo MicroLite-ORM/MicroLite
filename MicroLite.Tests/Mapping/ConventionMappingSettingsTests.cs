@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
+    using System.Data;
     using MicroLite.Mapping;
     using MicroLite.Mapping.Inflection;
     using MicroLite.Tests.TestEntities;
@@ -53,6 +54,14 @@
                 var propertyInfo = typeof(Customer).GetProperty("Name");
 
                 Assert.Equal("Name", this.settings.ResolveColumnName(propertyInfo));
+            }
+
+            [Fact]
+            public void ResolveDbTypeReturnsDbType()
+            {
+                var propertyInfo = typeof(Customer).GetProperty("Id");
+
+                Assert.Equal(DbType.Int32, this.settings.ResolveDbType(propertyInfo));
             }
 
             [Fact]
@@ -116,6 +125,12 @@
             public void TheResolveColumnNameFunctionShouldBeSet()
             {
                 Assert.NotNull(this.settings.ResolveColumnName);
+            }
+
+            [Fact]
+            public void TheResolveDbTypeFunctionShouldBeSet()
+            {
+                Assert.NotNull(this.settings.ResolveDbType);
             }
 
             [Fact]

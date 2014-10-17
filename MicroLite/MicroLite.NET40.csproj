@@ -194,6 +194,7 @@
     <Compile Include="PagedResult.cs" />
     <Compile Include="PagingOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlArgument.cs" />
     <Compile Include="SqlCharacters.cs" />
     <Compile Include="SqlQuery.cs" />
     <Compile Include="SqlString.cs" />

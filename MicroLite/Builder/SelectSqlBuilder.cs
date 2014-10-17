@@ -94,7 +94,15 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
             }
 
-            this.Arguments.AddRange(args);
+            if (args == null)
+            {
+                throw new ArgumentNullException("args");
+            }
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                this.Arguments.Add(new SqlArgument(args[i]));
+            }
 
             var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
 
@@ -243,7 +251,7 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
             }
 
-            this.Arguments.Add(value);
+            this.Arguments.Add(new SqlArgument(value));
 
             var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
 
@@ -478,7 +486,15 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
             }
 
-            this.Arguments.AddRange(args);
+            if (args == null)
+            {
+                throw new ArgumentNullException("args");
+            }
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                this.Arguments.Add(new SqlArgument(args[i]));
+            }
 
             var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
 
@@ -537,7 +553,13 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
             }
 
-            this.Arguments.AddRange(args);
+            if (args != null)
+            {
+                for (int i = 0; i < args.Length; i++)
+                {
+                    this.Arguments.Add(new SqlArgument(args[0]));
+                }
+            }
 
             var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
 
@@ -587,8 +609,8 @@ namespace MicroLite.Builder
                 this.InnerSql.Append(this.operand);
             }
 
-            this.Arguments.Add(lower);
-            this.Arguments.Add(upper);
+            this.Arguments.Add(new SqlArgument(lower));
+            this.Arguments.Add(new SqlArgument(upper));
 
             var lowerParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 2);
             var upperParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
@@ -656,12 +678,15 @@ namespace MicroLite.Builder
                 this.InnerSql.Append(this.operand);
             }
 
-            this.Arguments.AddRange(args);
-
             this.InnerSql.Append(" (")
                 .Append(this.whereColumnName)
                 .Append(negate ? " NOT" : string.Empty)
                 .Append(" IN (");
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                this.Arguments.Add(new SqlArgument(args[i]));
+            }
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -740,7 +765,7 @@ namespace MicroLite.Builder
                 this.InnerSql.Append(this.operand);
             }
 
-            this.Arguments.Add(comparisonValue);
+            this.Arguments.Add(new SqlArgument(comparisonValue));
 
             var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
 
@@ -796,7 +821,7 @@ namespace MicroLite.Builder
                 this.InnerSql.Append(this.operand);
             }
 
-            this.Arguments.Add(comparisonValue);
+            this.Arguments.Add(new SqlArgument(comparisonValue));
 
             var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
 

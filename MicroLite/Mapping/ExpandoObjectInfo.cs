@@ -71,12 +71,12 @@ namespace MicroLite.Mapping
             throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
-        public object[] GetInsertValues(object instance)
+        public SqlArgument[] GetInsertValues(object instance)
         {
             throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
 
-        public object[] GetUpdateValues(object instance)
+        public SqlArgument[] GetUpdateValues(object instance)
         {
             throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }

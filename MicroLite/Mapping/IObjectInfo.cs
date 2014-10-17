@@ -68,7 +68,7 @@ namespace MicroLite.Mapping
         /// <returns>An array of values to be used for the insert command.</returns>
         /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        object[] GetInsertValues(object instance);
+        SqlArgument[] GetInsertValues(object instance);
 
         /// <summary>
         /// Gets the update values for the specified instance.
@@ -77,7 +77,7 @@ namespace MicroLite.Mapping
         /// <returns>An array of values to be used for the update command.</returns>
         /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        object[] GetUpdateValues(object instance);
+        SqlArgument[] GetUpdateValues(object instance);
 
         /// <summary>
         /// Determines whether the specified instance has the default identifier value.

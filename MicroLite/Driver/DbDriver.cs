@@ -157,9 +157,9 @@ namespace MicroLite.Driver
             {
                 var parameter = command.CreateParameter();
                 var parameterName = parameterNames[i];
-                var parameterValue = sqlQuery.Arguments[i];
+                var sqlArgument = sqlQuery.Arguments[i];
 
-                this.BuildParameter(parameter, parameterName, parameterValue);
+                this.BuildParameter(parameter, parameterName, sqlArgument);
 
                 command.Parameters.Add(parameter);
             }
@@ -230,7 +230,7 @@ namespace MicroLite.Driver
 
             int argumentsCount = sqlQuery1.Arguments.Count + sqlQuery2.Arguments.Count;
 
-            var arguments = new object[argumentsCount];
+            var arguments = new SqlArgument[argumentsCount];
 
             Array.Copy(sqlQuery1.ArgumentsArray, 0, arguments, 0, sqlQuery1.Arguments.Count);
 
@@ -279,17 +279,21 @@ namespace MicroLite.Driver
         /// </summary>
         /// <param name="parameter">The parameter to build.</param>
         /// <param name="parameterName">The name for the parameter.</param>
-        /// <param name="parameterValue">The value for the parameter.</param>
-        protected virtual void BuildParameter(IDbDataParameter parameter, string parameterName, object parameterValue)
+        /// <param name="sqlArgument">The <see cref="SqlArgument"/> for the parameter.</param>
+        protected virtual void BuildParameter(IDbDataParameter parameter, string parameterName, SqlArgument sqlArgument)
         {
+            if (!this.HandleStringsAsUnicode && sqlArgument.DbType == DbType.String)
+            {
+                parameter.DbType = DbType.AnsiString;
+            }
+            else
+            {
+                parameter.DbType = sqlArgument.DbType;
+            }
+
             parameter.Direction = ParameterDirection.Input;
             parameter.ParameterName = parameterName;
-            parameter.Value = parameterValue ?? DBNull.Value;
-
-            if (parameterValue is string)
-            {
-                parameter.DbType = this.HandleStringsAsUnicode ? DbType.String : DbType.AnsiString;
-            }
+            parameter.Value = sqlArgument.Value ?? DBNull.Value;
         }
 
         /// <summary>

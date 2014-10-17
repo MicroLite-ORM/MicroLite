@@ -88,10 +88,10 @@ namespace MicroLite.Dialect
 
                 this.deleteCommandCache = newDeleteCommandCache;
 
-                return deleteSqlQuery;
+                deleteCommand = deleteSqlQuery.CommandText;
             }
 
-            return new SqlQuery(deleteCommand, identifier);
+            return new SqlQuery(deleteCommand, new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType));
         }
 
         /// <summary>
@@ -168,10 +168,10 @@ namespace MicroLite.Dialect
 
                 this.selectCommandCache = newSelectCommandCache;
 
-                return selectSqlQuery;
+                selectCommand = selectSqlQuery.CommandText;
             }
 
-            return new SqlQuery(selectCommand, identifier);
+            return new SqlQuery(selectCommand, new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType));
         }
 
         /// <summary>

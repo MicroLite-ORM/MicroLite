@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests.Builder
 {
+    using System.Data;
     using MicroLite;
     using MicroLite.Builder;
     using MicroLite.Dialect;
@@ -83,10 +84,17 @@
                 .ToSqlQuery();
 
             Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE Id = ?", sqlQuery.CommandText);
+
             Assert.Equal(3, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
-            Assert.Equal(12, sqlQuery.Arguments[1]);
-            Assert.Equal(100122, sqlQuery.Arguments[2]);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(100122, sqlQuery.Arguments[2].Value);
         }
 
         [Fact]
@@ -102,10 +110,17 @@
                 .ToSqlQuery();
 
             Assert.Equal("UPDATE [Table] SET [Column1] = @p0,[Column2] = @p1 WHERE [Id] = @p2", sqlQuery.CommandText);
+
             Assert.Equal(3, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
-            Assert.Equal(12, sqlQuery.Arguments[1]);
-            Assert.Equal(100122, sqlQuery.Arguments[2]);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(100122, sqlQuery.Arguments[2].Value);
         }
     }
 }

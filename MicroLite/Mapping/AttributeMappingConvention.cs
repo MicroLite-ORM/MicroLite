@@ -14,9 +14,11 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
+    using MicroLite.TypeConverters;
 
     /// <summary>
     /// The implementation of <see cref="IMappingConvention"/> which uses attributes to map tables and columns
@@ -58,7 +60,7 @@ namespace MicroLite.Mapping
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var columns = new List<ColumnInfo>(properties.Length);
 
-            foreach (var property in properties)
+            foreach (var property in properties.OrderBy(p => p.Name))
             {
                 if (!property.CanRead || !property.CanWrite)
                 {
@@ -89,13 +91,7 @@ namespace MicroLite.Mapping
                     identifierStrategy = identifierAttribute.IdentifierStrategy;
                 }
 
-                var columnInfo = new ColumnInfo(
-                    columnName: columnAttribute.Name,
-                    propertyInfo: property,
-                    isIdentifier: identifierAttribute != null,
-                    allowInsert: identifierAttribute != null ? identifierStrategy == IdentifierStrategy.Assigned : columnAttribute.AllowInsert,
-                    allowUpdate: identifierAttribute != null ? false : columnAttribute.AllowUpdate,
-                    sequenceName: identifierAttribute != null ? identifierAttribute.SequenceName : null);
+                var columnInfo = new ColumnInfo(columnName: columnAttribute.Name, dbType: columnAttribute.DbType ?? TypeConverter.ResolveDbType(property.PropertyType), propertyInfo: property, isIdentifier: identifierAttribute != null, allowInsert: identifierAttribute != null ? identifierStrategy == IdentifierStrategy.Assigned : columnAttribute.AllowInsert, allowUpdate: identifierAttribute != null ? false : columnAttribute.AllowUpdate, sequenceName: identifierAttribute != null ? identifierAttribute.SequenceName : null);
 
                 if (this.log.IsDebug)
                 {

@@ -25,8 +25,8 @@ namespace MicroLite.Mapping
         private readonly object defaultIdentifierValue;
         private readonly Type forType;
         private readonly Func<object, object> getIdentifierValue;
-        private readonly Func<object, object[]> getInsertValues;
-        private readonly Func<object, object[]> getUpdateValues;
+        private readonly Func<object, SqlArgument[]> getInsertValues;
+        private readonly Func<object, SqlArgument[]> getUpdateValues;
         private readonly Func<IDataReader, object> instanceFactory;
         private readonly Action<object, object> setIdentifierValue;
         private readonly TableInfo tableInfo;
@@ -157,7 +157,7 @@ namespace MicroLite.Mapping
         /// <returns>An array of values to be used for the insert command.</returns>
         /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        public object[] GetInsertValues(object instance)
+        public SqlArgument[] GetInsertValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
             this.VerifyIdentifierMapped();
@@ -174,7 +174,7 @@ namespace MicroLite.Mapping
         /// <returns>An array of values to be used for the update command.</returns>
         /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        public object[] GetUpdateValues(object instance)
+        public SqlArgument[] GetUpdateValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
             this.VerifyIdentifierMapped();

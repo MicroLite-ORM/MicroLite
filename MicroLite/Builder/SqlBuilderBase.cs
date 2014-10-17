@@ -22,7 +22,7 @@ namespace MicroLite.Builder
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal abstract class SqlBuilderBase : IToSqlQuery
     {
-        private readonly List<object> arguments = new List<object>();
+        private readonly List<SqlArgument> arguments = new List<SqlArgument>();
         private readonly StringBuilder innerSql = new StringBuilder(capacity: 128);
         private readonly SqlCharacters sqlCharacters;
 
@@ -39,7 +39,7 @@ namespace MicroLite.Builder
         /// Gets the arguments currently added to the sql builder.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Allowed in this instance, we want to make use of AddRange.")]
-        protected List<object> Arguments
+        protected List<SqlArgument> Arguments
         {
             get
             {

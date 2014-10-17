@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests.TestEntities
 {
 #if NET_4_5
+
     using System;
     using System.Data;
     using System.Data.Common;
@@ -206,5 +207,6 @@
             base.Dispose(disposing);
         }
     }
+
 #endif
 }

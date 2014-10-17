@@ -38,6 +38,8 @@ namespace MicroLite.TypeConverters
             }
 
             this.algorithmProvider = algorithmProvider;
+
+            TypeConverter.RegisterTypeMapping(typeof(DbEncryptedString), DbType.String);
         }
 
         /// <summary>

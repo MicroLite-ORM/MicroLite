@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Data;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
@@ -17,10 +18,10 @@
         {
             var columns = new ReadOnlyCollection<ColumnInfo>(new[]
             {
-                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true, null),
-                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, false, null),
-                new ColumnInfo("Created", typeof(Customer).GetProperty("Created"), false, true, false, null),
-                new ColumnInfo("Updated", typeof(Customer).GetProperty("Updated"), false, false, true, null)
+                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null),
+                new ColumnInfo("CustomerId", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, false, null),
+                new ColumnInfo("Created", DbType.DateTime, typeof(Customer).GetProperty("Created"), false, true, false, null),
+                new ColumnInfo("Updated", DbType.DateTime, typeof(Customer).GetProperty("Updated"), false, false, true, null)
             });
             var identifierStrategy = IdentifierStrategy.Assigned;
             var name = "Customers";
@@ -42,9 +43,9 @@
         {
             var columns = new ReadOnlyCollection<ColumnInfo>(new[]
             {
-                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true, null),
-                new ColumnInfo("Created", typeof(Customer).GetProperty("Created"), false, true, false, null),
-                new ColumnInfo("Updated", typeof(Customer).GetProperty("Updated"), false, false, true, null)
+                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null),
+                new ColumnInfo("Created", DbType.DateTime, typeof(Customer).GetProperty("Created"), false, true, false, null),
+                new ColumnInfo("Updated", DbType.DateTime, typeof(Customer).GetProperty("Updated"), false, false, true, null)
             });
             var identifierStrategy = IdentifierStrategy.Assigned;
             var name = "Customers";
@@ -84,7 +85,7 @@
         {
             var columns = new[]
             {
-                new ColumnInfo("Id", typeof(Customer).GetProperty("Id"), true, true, true, null)
+                new ColumnInfo("Id", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, true, null)
             };
 
             var exception = Assert.Throws<MappingException>(
@@ -98,8 +99,8 @@
         {
             var columns = new[]
             {
-                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true, null),
-                new ColumnInfo("Name", typeof(Customer).GetProperty("Name"), false, true, true, null)
+                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null),
+                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null)
             };
 
             var exception = Assert.Throws<MappingException>(
@@ -113,8 +114,8 @@
         {
             var columns = new[]
             {
-                new ColumnInfo("CustomerId", typeof(Customer).GetProperty("Id"), true, true, true, null),
-                new ColumnInfo("Id", typeof(Customer).GetProperty("Id"), true, true, true, null)
+                new ColumnInfo("CustomerId", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, true, null),
+                new ColumnInfo("Id", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, true, null)
             };
 
             var exception = Assert.Throws<MappingException>(

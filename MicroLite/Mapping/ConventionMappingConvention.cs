@@ -14,6 +14,7 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using MicroLite.Logging;
 
@@ -60,7 +61,7 @@ namespace MicroLite.Mapping
             var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var columns = new List<ColumnInfo>(properties.Length);
 
-            foreach (var property in properties)
+            foreach (var property in properties.OrderBy(p => p.Name))
             {
                 if (!property.CanRead || !property.CanWrite)
                 {
@@ -85,12 +86,13 @@ namespace MicroLite.Mapping
                 var isIdentifier = this.settings.IsIdentifier(property);
 
                 var columnInfo = new ColumnInfo(
-                       columnName: isIdentifier ? this.settings.ResolveIdentifierColumnName(property) : this.settings.ResolveColumnName(property),
-                       propertyInfo: property,
-                       isIdentifier: isIdentifier,
-                       allowInsert: isIdentifier ? identifierStrategy == IdentifierStrategy.Assigned : this.settings.AllowInsert(property),
-                       allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property),
-                       sequenceName: isIdentifier && identifierStrategy == IdentifierStrategy.Sequence ? this.settings.ResolveSequenceName(property) : null);
+                    columnName: isIdentifier ? this.settings.ResolveIdentifierColumnName(property) : this.settings.ResolveColumnName(property),
+                    dbType: this.settings.ResolveDbType(property),
+                    propertyInfo: property,
+                    isIdentifier: isIdentifier,
+                    allowInsert: isIdentifier ? identifierStrategy == IdentifierStrategy.Assigned : this.settings.AllowInsert(property),
+                    allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property),
+                    sequenceName: isIdentifier && identifierStrategy == IdentifierStrategy.Sequence ? this.settings.ResolveSequenceName(property) : null);
 
                 if (this.log.IsDebug)
                 {

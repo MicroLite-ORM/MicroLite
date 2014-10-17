@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests.Builder
 {
+    using System.Data;
     using MicroLite.Builder;
     using MicroLite.Dialect;
     using MicroLite.Mapping;
@@ -80,8 +81,11 @@
                 .ToSqlQuery();
 
             Assert.Equal("DELETE FROM Table WHERE Column1 = ?", sqlQuery.CommandText);
+
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -95,8 +99,11 @@
                 .ToSqlQuery();
 
             Assert.Equal("DELETE FROM [Table] WHERE [Column1] = @p0", sqlQuery.CommandText);
+
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
         }
     }
 }

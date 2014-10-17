@@ -31,7 +31,7 @@ namespace MicroLite.Builder
                 this.InnerSql.Append(',');
             }
 
-            this.Arguments.Add(arg);
+            this.Arguments.Add(new SqlArgument(arg));
 
             this.InnerSql.Append(parameter);
 

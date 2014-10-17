@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D00EAC4D-DEFC-4842-BA8C-89622DC47F71}</ProjectGuid>
+    <ProjectGuid>{3DEF63F2-C78B-461C-AC94-410BC45098AA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MicroLite</RootNamespace>
@@ -193,6 +193,7 @@
     <Compile Include="PagedResult.cs" />
     <Compile Include="PagingOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlArgument.cs" />
     <Compile Include="SqlCharacters.cs" />
     <Compile Include="SqlQuery.cs" />
     <Compile Include="SqlString.cs" />

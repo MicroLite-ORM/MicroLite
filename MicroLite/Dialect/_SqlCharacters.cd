@@ -31,7 +31,7 @@
   <Class Name="MicroLite.SqlCharacters">
     <Position X="6.5" Y="0.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAgAAAGAAAAAAAKAQAACiAgAAAAAIgAAAgAQABA=</HashCode>
+      <HashCode>AAAAAAgAAAGAAAAAAAKAQAACCAgAAAAAIgAAAgAQABA=</HashCode>
       <FileName>SqlCharacters.cs</FileName>
     </TypeIdentifier>
   </Class>

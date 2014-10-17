@@ -21,8 +21,9 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("{CommandText}")]
     public sealed class SqlQuery : IEquatable<SqlQuery>
     {
-        private static readonly object[] emptyArguments = new object[0];
-        private readonly object[] arguments;
+        private static readonly SqlArgument[] emptyArguments = new SqlArgument[0];
+
+        private readonly SqlArgument[] arguments = SqlQuery.emptyArguments;
         private readonly string commandText;
 
         /// <summary>
@@ -30,8 +31,9 @@ namespace MicroLite
         /// </summary>
         /// <param name="commandText">The SQL command text to be executed against the data source.</param>
         public SqlQuery(string commandText)
-            : this(commandText, null)
         {
+            this.commandText = commandText;
+            this.Timeout = 30;
         }
 
         /// <summary>
@@ -40,16 +42,37 @@ namespace MicroLite
         /// <param name="commandText">The SQL command text to be executed against the data source.</param>
         /// <param name="arguments">The argument values for the SQL command.</param>
         public SqlQuery(string commandText, params object[] arguments)
+            : this(commandText)
         {
-            this.commandText = commandText;
-            this.arguments = arguments ?? SqlQuery.emptyArguments;
-            this.Timeout = 30;
+            if (arguments != null)
+            {
+                this.arguments = new SqlArgument[arguments.Length];
+
+                for (int i = 0; i < arguments.Length; i++)
+                {
+                    this.arguments[i] = new SqlArgument(arguments[i]);
+                }
+            }
         }
 
         /// <summary>
-        /// Gets the argument values for the SQL command.
+        /// Initialises a new instance of the <see cref="SqlQuery"/> class with the specified command text and <see cref="SqlArgument"/> values.
         /// </summary>
-        public IList<object> Arguments
+        /// <param name="commandText">The SQL command text to be executed against the data source.</param>
+        /// <param name="arguments">The <see cref="SqlArgument"/>s for the SQL command.</param>
+        public SqlQuery(string commandText, params SqlArgument[] arguments)
+            : this(commandText)
+        {
+            if (arguments != null)
+            {
+                this.arguments = arguments;
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="SqlArgument"/>s for the SQL command.
+        /// </summary>
+        public IList<SqlArgument> Arguments
         {
             get
             {
@@ -79,9 +102,9 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Gets the private argument array.
+        /// Gets the private SqlArgument array.
         /// </summary>
-        internal object[] ArgumentsArray
+        internal SqlArgument[] ArgumentsArray
         {
             get
             {
@@ -125,7 +148,7 @@ namespace MicroLite
 
             for (int i = 0; i < this.Arguments.Count; i++)
             {
-                if (!object.Equals(other.Arguments[i], this.Arguments[i]))
+                if (!other.Arguments[i].Equals(this.Arguments[i]))
                 {
                     return false;
                 }

@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests.Builder
 {
     using System;
+    using System.Data;
     using MicroLite.Builder;
     using MicroLite.Dialect;
     using MicroLite.FrameworkExtensions;
@@ -101,10 +102,18 @@
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 IN (?,?)) AND (Column3 BETWEEN ? AND ?)", sqlQuery.CommandText);
             Assert.Equal(4, sqlQuery.Arguments.Count);
-            Assert.Equal("Opt1", sqlQuery.Arguments[0]);
-            Assert.Equal("Opt2", sqlQuery.Arguments[1]);
-            Assert.Equal(1, sqlQuery.Arguments[2]);
-            Assert.Equal(10, sqlQuery.Arguments[3]);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Opt1", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[1].DbType);
+            Assert.Equal("Opt2", sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(10, sqlQuery.Arguments[3].Value);
         }
 
         [Fact]
@@ -509,10 +518,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT AVG(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -526,10 +537,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT AVG(CreditLimit) AS AverageCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -544,10 +557,12 @@
                 .GroupBy("CustomerStatusId")
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Id,AVG(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?) GROUP BY CustomerStatusId", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -561,10 +576,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT AVG([CreditLimit]) AS CreditLimit FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         /// <summary>
@@ -581,8 +598,8 @@
                 .From("Table")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT Column1,COUNT(Column2) AS Col2,MAX(Column3) AS Col3 FROM Table", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -595,8 +612,8 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT COUNT(Id) AS Id FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -609,8 +626,8 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT COUNT(Id) AS CustomerCount FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -624,8 +641,8 @@
                 .GroupBy("CustomerStatusId")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT CustomerStatusId,COUNT(Id) AS Id FROM Sales.Customers GROUP BY CustomerStatusId", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -639,10 +656,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT COUNT([Id]) AS Id FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -655,9 +674,8 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Equal(0, sqlQuery.Arguments.Count);
-
             Assert.Equal("SELECT DISTINCT CreditLimit FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Equal(0, sqlQuery.Arguments.Count);
         }
 
         [Fact]
@@ -670,9 +688,8 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Equal(0, sqlQuery.Arguments.Count);
-
             Assert.Equal("SELECT DISTINCT [CreditLimit],[DateOfBirth] FROM [Sales].[Customers]", sqlQuery.CommandText);
+            Assert.Equal(0, sqlQuery.Arguments.Count);
         }
 
         [Fact]
@@ -685,9 +702,8 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Equal(0, sqlQuery.Arguments.Count);
-
             Assert.Equal("SELECT DISTINCT [CreditLimit] FROM [Sales].[Customers]", sqlQuery.CommandText);
+            Assert.Equal(0, sqlQuery.Arguments.Count);
         }
 
         [Fact]
@@ -700,8 +716,8 @@
                 .OrderByAscending("Column1", "Column2")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1 ASC,Column2 ASC", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         /// <summary>
@@ -718,8 +734,8 @@
                 .OrderByDescending("Column2")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1 ASC,Column2 DESC", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -732,8 +748,8 @@
                 .OrderByAscending("Column1", "Column2")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT [Column1],[Column2] FROM [Table] ORDER BY [Column1] ASC,[Column2] ASC", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -746,8 +762,8 @@
                 .OrderByDescending("Column1", "Column2")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1 DESC,Column2 DESC", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         /// <summary>
@@ -764,8 +780,8 @@
                 .OrderByAscending("Column2")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT Column1,Column2 FROM Table ORDER BY Column1 DESC,Column2 ASC", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -778,8 +794,8 @@
                 .OrderByDescending("Column1", "Column2")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT [Column1],[Column2] FROM [Table] ORDER BY [Column1] DESC,[Column2] DESC", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -791,8 +807,8 @@
                 .From("Table")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT Column1,Column2 FROM Table", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -804,8 +820,8 @@
                 .From("Table")
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT [Column1],[Column2] FROM [Table]", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -817,8 +833,8 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT Name,DateOfBirth FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -830,8 +846,8 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT [Name],[DateOfBirth] FROM [Sales].[Customers]", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -843,8 +859,8 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT Created,CreditLimit,DateOfBirth,Id,Name,CustomerStatusId,Updated,Website FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -856,8 +872,8 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Empty(sqlQuery.Arguments);
             Assert.Equal("SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website] FROM [Sales].[Customers]", sqlQuery.CommandText);
+            Assert.Empty(sqlQuery.Arguments);
         }
 
         [Fact]
@@ -870,10 +886,12 @@
                 .Where("Column1 = @p0", "Foo")
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1,Column2 FROM Table WHERE (Column1 = @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -887,11 +905,15 @@
                 .AndWhere("Column2").IsEqualTo("Bar")
                 .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
-            Assert.Equal("Bar", sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT Column1,Column2 FROM Table WHERE (Column1 = ?) AND (Column2 = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[1].DbType);
+            Assert.Equal("Bar", sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -906,16 +928,30 @@
                 .OrWhere("Column3 IN (@p0, @p1, @p2, @p3)", 1, 2, 3, 4)
                 .ToSqlQuery();
 
-            Assert.Equal(7, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
-            Assert.Equal(DateTime.Today.AddDays(-1), sqlQuery.Arguments[1]);
-            Assert.Equal(DateTime.Today, sqlQuery.Arguments[2]);
-            Assert.Equal(1, sqlQuery.Arguments[3]);
-            Assert.Equal(2, sqlQuery.Arguments[4]);
-            Assert.Equal(3, sqlQuery.Arguments[5]);
-            Assert.Equal(4, sqlQuery.Arguments[6]);
-
             Assert.Equal("SELECT Column1,Column2,Column3 FROM Table WHERE (Column1 = @p0 OR @p0 IS NULL) AND (Column2 BETWEEN @p1 AND @p2) OR (Column3 IN (@p3, @p4, @p5, @p6))", sqlQuery.CommandText);
+
+            Assert.Equal(7, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(DateTime.Today.AddDays(-1), sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DateTime.Today, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[3].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[4].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[4].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[5].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[5].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[6].DbType);
+            Assert.Equal(4, sqlQuery.Arguments[6].Value);
         }
 
         [Fact]
@@ -929,11 +965,15 @@
                 .OrWhere("Column2").IsEqualTo("Bar")
                 .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
-            Assert.Equal("Bar", sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT Column1,Column2 FROM Table WHERE (Column1 = ?) OR (Column2 = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[1].DbType);
+            Assert.Equal("Bar", sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -947,10 +987,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT MAX(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -964,10 +1006,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT MAX(CreditLimit) AS MaxCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -981,10 +1025,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Id,MAX(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -998,10 +1044,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT MAX([CreditLimit]) AS CreditLimit FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1015,10 +1063,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT MIN(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1032,10 +1082,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT MIN(CreditLimit) AS MinCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1049,10 +1101,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Id,MIN(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1066,10 +1120,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT MIN([CreditLimit]) AS CreditLimit FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1083,10 +1139,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT SUM(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1100,10 +1158,11 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT SUM(CreditLimit) AS SumCreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1117,10 +1176,12 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Id,SUM(CreditLimit) AS CreditLimit FROM Sales.Customers WHERE (CustomerStatusId = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1134,10 +1195,11 @@
                 .Where("CustomerStatusId").IsEqualTo(CustomerStatus.Active)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT SUM([CreditLimit]) AS CreditLimit FROM [Sales].[Customers] WHERE ([CustomerStatusId] = @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1152,13 +1214,21 @@
                 .In(1, 2, 3)
                 .ToSqlQuery();
 
-            Assert.Equal(4, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1, sqlQuery.Arguments[1]);
-            Assert.Equal(2, sqlQuery.Arguments[2]);
-            Assert.Equal(3, sqlQuery.Arguments[3]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) AND (Column1 IN (?,?,?))", sqlQuery.CommandText);
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[3].Value);
         }
 
         [Fact]
@@ -1172,13 +1242,21 @@
                 .AndWhere("Column1").In(1, 2, 3)
                 .ToSqlQuery();
 
-            Assert.Equal(4, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1, sqlQuery.Arguments[1]);
-            Assert.Equal(2, sqlQuery.Arguments[2]);
-            Assert.Equal(3, sqlQuery.Arguments[3]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column2] = @p0) AND ([Column1] IN (@p1,@p2,@p3))", sqlQuery.CommandText);
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[3].Value);
         }
 
         [Fact]
@@ -1195,12 +1273,18 @@
                 .AndWhere("Column1").In(subQuery1, subQuery2)
                 .ToSqlQuery();
 
-            Assert.Equal(3, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1024, sqlQuery.Arguments[1]);
-            Assert.Equal(2048, sqlQuery.Arguments[2]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) AND (Column1 IN ((SELECT Id FROM Table WHERE Column = ?), (SELECT Id FROM Table WHERE Column = ?)))", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(2048, sqlQuery.Arguments[2].Value);
         }
 
         [Fact]
@@ -1216,11 +1300,15 @@
                 .AndWhere("Column1").In(subQuery)
                 .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1024, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) AND (Column1 IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -1236,11 +1324,15 @@
                 .AndWhere("Column1").In(subQuery)
                 .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1024, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) AND ([Column1] IN (SELECT Id FROM Table WHERE Column = @p1))", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -1254,13 +1346,21 @@
                 .AndWhere("Column1").NotIn(1, 2, 3)
                 .ToSqlQuery();
 
-            Assert.Equal(4, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1, sqlQuery.Arguments[1]);
-            Assert.Equal(2, sqlQuery.Arguments[2]);
-            Assert.Equal(3, sqlQuery.Arguments[3]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column2] = @p0) AND ([Column1] NOT IN (@p1,@p2,@p3))", sqlQuery.CommandText);
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[3].Value);
         }
 
         [Fact]
@@ -1277,12 +1377,18 @@
                 .AndWhere("Column1").NotIn(subQuery1, subQuery2)
                 .ToSqlQuery();
 
-            Assert.Equal(3, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1024, sqlQuery.Arguments[1]);
-            Assert.Equal(2048, sqlQuery.Arguments[2]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) AND (Column1 NOT IN ((SELECT Id FROM Table WHERE Column = ?), (SELECT Id FROM Table WHERE Column = ?)))", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(2048, sqlQuery.Arguments[2].Value);
         }
 
         [Fact]
@@ -1298,11 +1404,15 @@
                 .AndWhere("Column1").NotIn(subQuery)
                 .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1024, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) AND (Column1 NOT IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -1316,11 +1426,15 @@
                    .Between(1, 10)
                    .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal(1, sqlQuery.Arguments[0]);
-            Assert.Equal(10, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 BETWEEN ? AND ?)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(10, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -1334,11 +1448,15 @@
                    .Between(1, 10)
                    .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal(1, sqlQuery.Arguments[0]);
-            Assert.Equal(10, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(10, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -1352,10 +1470,12 @@
                    .IsEqualTo("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1369,10 +1489,12 @@
                    .IsEqualTo("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] = @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1388,10 +1510,12 @@
                    .IsEqualTo(subQuery)
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = (SELECT Column2 FROM Table2 WHERE Column3 = ?))", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1407,10 +1531,12 @@
                    .IsEqualTo(subQuery)
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] = (SELECT Column2 FROM Table2 WHERE Column3 = @p0))", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1424,10 +1550,12 @@
                    .IsGreaterThan("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 > ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1441,10 +1569,12 @@
                    .IsGreaterThanOrEqualTo("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 >= ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1458,10 +1588,12 @@
                    .IsGreaterThanOrEqualTo("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] >= @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1475,10 +1607,12 @@
                    .IsGreaterThan("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] > @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1492,10 +1626,12 @@
                    .IsLessThan("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 < ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1509,10 +1645,12 @@
                    .IsLessThanOrEqualTo("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <= ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1526,10 +1664,12 @@
                    .IsLessThanOrEqualTo("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <= @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1543,10 +1683,12 @@
                    .IsLessThan("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] < @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1560,10 +1702,12 @@
                    .IsLike("FOO%")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO%", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 LIKE ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO%", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1577,10 +1721,12 @@
                    .IsLike("FOO%")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO%", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] LIKE @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO%", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1594,10 +1740,12 @@
                    .IsNotEqualTo("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1611,10 +1759,12 @@
                    .IsNotEqualTo("FOO")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <> @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1630,10 +1780,12 @@
                    .IsNotEqualTo(subQuery)
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> (SELECT Column2 FROM Table2 WHERE Column3 = ?))", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1649,10 +1801,12 @@
                    .IsNotEqualTo(subQuery)
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <> (SELECT Column2 FROM Table2 WHERE Column3 = @p0))", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1666,10 +1820,12 @@
                    .IsNotLike("FOO%")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO%", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT LIKE ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO%", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1683,10 +1839,12 @@
                    .IsNotLike("FOO%")
                    .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO%", sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT LIKE @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO%", sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1700,9 +1858,9 @@
                    .IsNotNull()
                    .ToSqlQuery();
 
-            Assert.Equal(0, sqlQuery.Arguments.Count);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NOT NULL)", sqlQuery.CommandText);
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
         }
 
         [Fact]
@@ -1716,9 +1874,9 @@
                    .IsNotNull()
                    .ToSqlQuery();
 
-            Assert.Equal(0, sqlQuery.Arguments.Count);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] IS NOT NULL)", sqlQuery.CommandText);
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
         }
 
         [Fact]
@@ -1732,9 +1890,9 @@
                    .IsNull()
                    .ToSqlQuery();
 
-            Assert.Equal(0, sqlQuery.Arguments.Count);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NULL)", sqlQuery.CommandText);
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
         }
 
         [Fact]
@@ -1748,9 +1906,9 @@
                    .IsNull()
                    .ToSqlQuery();
 
-            Assert.Equal(0, sqlQuery.Arguments.Count);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] IS NULL)", sqlQuery.CommandText);
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
         }
 
         [Fact]
@@ -1766,10 +1924,12 @@
                 .Exists(subQuery)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1024, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE EXISTS (SELECT Id FROM Table WHERE Column = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1786,11 +1946,15 @@
                 .OrderByDescending("OrderDate")
                 .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
-            Assert.Equal(10000M, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT CustomerId,SUM(Total) AS Total FROM Invoices WHERE (OrderDate > ?) GROUP BY Total HAVING SUM(Total) > ? ORDER BY OrderDate DESC", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Decimal, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(10000M, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -1806,10 +1970,12 @@
                 .OrderByDescending("OrderDate")
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT CustomerId,SUM(Total) AS Total FROM Invoices WHERE (OrderDate > ?) GROUP BY Total ORDER BY OrderDate DESC", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1825,10 +1991,12 @@
                 .OrderByDescending("OrderDate")
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT [CustomerId],SUM([Total]) AS Total FROM [Invoices] WHERE ([OrderDate] > @p0) GROUP BY [Total] ORDER BY [OrderDate] DESC", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1842,12 +2010,18 @@
                 .In(1, 2, 3)
                 .ToSqlQuery();
 
-            Assert.Equal(3, sqlQuery.Arguments.Count);
-            Assert.Equal(1, sqlQuery.Arguments[0]);
-            Assert.Equal(2, sqlQuery.Arguments[1]);
-            Assert.Equal(3, sqlQuery.Arguments[2]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (?,?,?))", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[2].Value);
         }
 
         [Fact]
@@ -1861,12 +2035,18 @@
                 .In(1, 2, 3)
                 .ToSqlQuery();
 
-            Assert.Equal(3, sqlQuery.Arguments.Count);
-            Assert.Equal(1, sqlQuery.Arguments[0]);
-            Assert.Equal(2, sqlQuery.Arguments[1]);
-            Assert.Equal(3, sqlQuery.Arguments[2]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] IN (@p0,@p1,@p2))", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[2].Value);
         }
 
         [Fact]
@@ -1882,11 +2062,15 @@
                 .Where("Column1").In(subQuery1, subQuery2)
                 .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal(1024, sqlQuery.Arguments[0]);
-            Assert.Equal(2048, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN ((SELECT Id FROM Table WHERE Column = ?), (SELECT Id FROM Table WHERE Column = ?)))", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(2048, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -1902,10 +2086,12 @@
                 .In(subQuery)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1024, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1919,11 +2105,15 @@
                    .NotBetween(1, 10)
                    .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal(1, sqlQuery.Arguments[0]);
-            Assert.Equal(10, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT BETWEEN ? AND ?)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(10, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -1937,11 +2127,15 @@
                    .NotBetween(1, 10)
                    .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal(1, sqlQuery.Arguments[0]);
-            Assert.Equal(10, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(10, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -1957,10 +2151,12 @@
                 .NotExists(subQuery)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1024, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE NOT EXISTS (SELECT Id FROM Table WHERE Column = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -1974,12 +2170,18 @@
                 .NotIn(1, 2, 3)
                 .ToSqlQuery();
 
-            Assert.Equal(3, sqlQuery.Arguments.Count);
-            Assert.Equal(1, sqlQuery.Arguments[0]);
-            Assert.Equal(2, sqlQuery.Arguments[1]);
-            Assert.Equal(3, sqlQuery.Arguments[2]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (?,?,?))", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[2].Value);
         }
 
         [Fact]
@@ -1992,12 +2194,18 @@
                 .Where("Column1").NotIn(1, 2, 3)
                 .ToSqlQuery();
 
-            Assert.Equal(3, sqlQuery.Arguments.Count);
-            Assert.Equal(1, sqlQuery.Arguments[0]);
-            Assert.Equal(2, sqlQuery.Arguments[1]);
-            Assert.Equal(3, sqlQuery.Arguments[2]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT IN (@p0,@p1,@p2))", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[2].Value);
         }
 
         [Fact]
@@ -2013,11 +2221,15 @@
                 .Where("Column1").NotIn(subQuery1, subQuery2)
                 .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal(1024, sqlQuery.Arguments[0]);
-            Assert.Equal(2048, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN ((SELECT Id FROM Table WHERE Column = ?), (SELECT Id FROM Table WHERE Column = ?)))", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(2048, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -2032,10 +2244,12 @@
                 .Where("Column1").NotIn(subQuery)
                 .ToSqlQuery();
 
-            Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal(1024, sqlQuery.Arguments[0]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[0].Value);
         }
 
         [Fact]
@@ -2050,13 +2264,21 @@
                 .In(1, 2, 3)
                 .ToSqlQuery();
 
-            Assert.Equal(4, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1, sqlQuery.Arguments[1]);
-            Assert.Equal(2, sqlQuery.Arguments[2]);
-            Assert.Equal(3, sqlQuery.Arguments[3]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) OR (Column1 IN (?,?,?))", sqlQuery.CommandText);
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[3].Value);
         }
 
         [Fact]
@@ -2070,13 +2292,21 @@
                 .OrWhere("Column1").In(1, 2, 3)
                 .ToSqlQuery();
 
-            Assert.Equal(4, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1, sqlQuery.Arguments[1]);
-            Assert.Equal(2, sqlQuery.Arguments[2]);
-            Assert.Equal(3, sqlQuery.Arguments[3]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column2] = @p0) OR ([Column1] IN (@p1,@p2,@p3))", sqlQuery.CommandText);
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[3].Value);
         }
 
         [Fact]
@@ -2093,11 +2323,15 @@
                 .In(subQuery)
                 .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1024, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) OR (Column1 IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -2114,11 +2348,15 @@
                 .In(subQuery)
                 .ToSqlQuery();
 
-            Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal("FOO", sqlQuery.Arguments[0]);
-            Assert.Equal(1024, sqlQuery.Arguments[1]);
-
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) OR ([Column1] IN (SELECT Id FROM Table WHERE Column = @p1))", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[1].Value);
         }
 
         /// <summary>
