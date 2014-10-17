@@ -57,6 +57,7 @@ namespace MicroLite.TypeConverters
                 { typeof(char), DbType.StringFixedLength },
                 { typeof(char?), DbType.StringFixedLength },
                 { typeof(string), DbType.String },
+                { typeof(byte[]), DbType.Binary },
                 { typeof(DateTime), DbType.DateTime },
                 { typeof(DateTime?), DbType.DateTime },
                 { typeof(DateTimeOffset), DbType.DateTimeOffset },
