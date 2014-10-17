@@ -46,11 +46,8 @@ namespace MicroLite.Mapping
             // var identifier = instance.Id;
             ilGenerator.Emit(OpCodes.Callvirt, objectInfo.TableInfo.IdentifierColumn.PropertyInfo.GetGetMethod());
 
-            if (objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
-            {
-                // value = (object)identifier;
-                ilGenerator.Emit(OpCodes.Box, objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType);
-            }
+            // value = (object)identifier;
+            ilGenerator.EmitBoxIfValueType(objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType);
 
             // return identifier;
             ilGenerator.Emit(OpCodes.Ret);
@@ -79,7 +76,7 @@ namespace MicroLite.Mapping
             ilGenerator.Emit(OpCodes.Stloc_0);
 
             // var values = new SqlArgument[count];
-            ilGenerator.Emit(OpCodes.Ldc_I4, objectInfo.TableInfo.InsertColumnCount);
+            ilGenerator.EmitEfficientInt(objectInfo.TableInfo.InsertColumnCount);
             ilGenerator.Emit(OpCodes.Newarr, typeof(SqlArgument));
             ilGenerator.Emit(OpCodes.Stloc_1);
 
@@ -113,7 +110,7 @@ namespace MicroLite.Mapping
             ilGenerator.Emit(OpCodes.Stloc_0);
 
             // var values = new SqlArgument[count + 1]; // Add 1 for the identifier
-            ilGenerator.Emit(OpCodes.Ldc_I4, objectInfo.TableInfo.UpdateColumnCount + 1);
+            ilGenerator.EmitEfficientInt(objectInfo.TableInfo.UpdateColumnCount + 1);
             ilGenerator.Emit(OpCodes.Newarr, typeof(SqlArgument));
             ilGenerator.Emit(OpCodes.Stloc_1);
 
@@ -121,17 +118,14 @@ namespace MicroLite.Mapping
 
             // values[values.Length - 1] = entity.{Id};
             ilGenerator.Emit(OpCodes.Ldloc_1);
-            ilGenerator.Emit(OpCodes.Ldc_I4, objectInfo.TableInfo.UpdateColumnCount);
+            ilGenerator.EmitEfficientInt(objectInfo.TableInfo.UpdateColumnCount);
             ilGenerator.Emit(OpCodes.Ldelema, typeof(SqlArgument));
             ilGenerator.Emit(OpCodes.Ldloc_0);
             ilGenerator.Emit(OpCodes.Callvirt, objectInfo.TableInfo.IdentifierColumn.PropertyInfo.GetGetMethod());
 
-            if (objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
-            {
-                ilGenerator.Emit(OpCodes.Box, objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType);
-            }
+            ilGenerator.EmitBoxIfValueType(objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType);
 
-            ilGenerator.Emit(OpCodes.Ldc_I4, (int)objectInfo.TableInfo.IdentifierColumn.DbType);
+            ilGenerator.EmitEfficientInt((int)objectInfo.TableInfo.IdentifierColumn.DbType);
             ilGenerator.Emit(OpCodes.Newobj, sqlArgumentConstructor);
 
             // values[i] = new SqlArgument(value, column.DbType); OR values[i] = new SqlArgument(converted, column.DbType);
@@ -172,7 +166,7 @@ namespace MicroLite.Mapping
             ilGenerator.Emit(OpCodes.Stloc_0);
 
             // var i = 0;
-            ilGenerator.Emit(OpCodes.Ldc_I4_0);
+            ilGenerator.EmitEfficientInt(0);
             ilGenerator.Emit(OpCodes.Stloc_1);
             ilGenerator.Emit(OpCodes.Br, getFieldCount);
 
@@ -256,16 +250,8 @@ namespace MicroLite.Mapping
                     ilGenerator.EmitCall(OpCodes.Call, typeGetTypeFromHandleMethod, null);
                     ilGenerator.EmitCall(OpCodes.Callvirt, convertFromDbValueMethod, null);
 
-                    if (actualPropertyType.IsValueType)
-                    {
-                        // converted = ({PropertyType})converted;
-                        ilGenerator.Emit(OpCodes.Unbox_Any, actualPropertyType);
-                    }
-                    else
-                    {
-                        // converted = ({PropertyType})converted;
-                        ilGenerator.Emit(OpCodes.Castclass, actualPropertyType);
-                    }
+                    // converted = ({PropertyType})converted;
+                    ilGenerator.EmitUnboxOrCast(actualPropertyType);
 
                     // entity.{Property} = converted;
                     ilGenerator.EmitCall(OpCodes.Callvirt, column.PropertyInfo.GetSetMethod(), null);
@@ -277,7 +263,7 @@ namespace MicroLite.Mapping
             // i++;
             ilGenerator.MarkLabel(incrementIndex);
             ilGenerator.Emit(OpCodes.Ldloc_1);
-            ilGenerator.Emit(OpCodes.Ldc_I4_1);
+            ilGenerator.EmitEfficientInt(1);
             ilGenerator.Emit(OpCodes.Add);
             ilGenerator.Emit(OpCodes.Stloc_1);
 
@@ -314,11 +300,8 @@ namespace MicroLite.Mapping
             // var value = arg_1;
             ilGenerator.Emit(OpCodes.Ldarg_1);
 
-            if (objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
-            {
-                // value = ({PropertyType})value;
-                ilGenerator.Emit(OpCodes.Unbox_Any, objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType);
-            }
+            // value = ({PropertyType})value;
+            ilGenerator.EmitUnboxIfValueType(objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType);
 
             // instance.Id = value;
             ilGenerator.Emit(OpCodes.Callvirt, objectInfo.TableInfo.IdentifierColumn.PropertyInfo.GetSetMethod());
@@ -344,7 +327,7 @@ namespace MicroLite.Mapping
                 }
 
                 ilGenerator.Emit(OpCodes.Ldloc_1);
-                ilGenerator.Emit(OpCodes.Ldc_I4, index++);
+                ilGenerator.EmitEfficientInt(index++);
                 ilGenerator.Emit(OpCodes.Ldelema, typeof(SqlArgument));
 
                 var hasTypeConverter = TypeConverter.For(column.PropertyInfo.PropertyType) != null;
@@ -361,11 +344,8 @@ namespace MicroLite.Mapping
                 ilGenerator.Emit(OpCodes.Ldloc_0);
                 ilGenerator.EmitCall(OpCodes.Callvirt, column.PropertyInfo.GetGetMethod(), null);
 
-                if (column.PropertyInfo.PropertyType.IsValueType)
-                {
-                    // value = (object)value;
-                    ilGenerator.Emit(OpCodes.Box, column.PropertyInfo.PropertyType);
-                }
+                // value = (object)value;
+                ilGenerator.EmitBoxIfValueType(column.PropertyInfo.PropertyType);
 
                 if (hasTypeConverter)
                 {
@@ -375,7 +355,7 @@ namespace MicroLite.Mapping
                     ilGenerator.EmitCall(OpCodes.Call, convertToDbValueMethod, null);
                 }
 
-                ilGenerator.Emit(OpCodes.Ldc_I4, (int)column.DbType);
+                ilGenerator.EmitEfficientInt((int)column.DbType);
                 ilGenerator.Emit(OpCodes.Newobj, sqlArgumentConstructor);
 
                 // values[i] = new SqlArgument(value, column.DbType); OR values[i] = new SqlArgument(converted, column.DbType);

@@ -176,6 +176,7 @@
     <Compile Include="Mapping\ExpandoObjectInfo.cs" />
     <Compile Include="Mapping\IdentifierAttribute.cs" />
     <Compile Include="Mapping\IdentifierStrategy.cs" />
+    <Compile Include="Mapping\ILGeneratorExtensions.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
     <Compile Include="Mapping\Inflection\EnglishInflectionService.cs" />
     <Compile Include="Mapping\Inflection\IInflectionService.cs" />
