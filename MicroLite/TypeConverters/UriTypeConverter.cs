@@ -20,12 +20,14 @@ namespace MicroLite.TypeConverters
     /// </summary>
     public sealed class UriTypeConverter : ITypeConverter
     {
+        private readonly Type uriType = typeof(Uri);
+
         /// <summary>
         /// Initialises a new instance of the <see cref="UriTypeConverter"/> class.
         /// </summary>
         public UriTypeConverter()
         {
-            TypeConverter.RegisterTypeMapping(typeof(Uri), DbType.String);
+            TypeConverter.RegisterTypeMapping(this.uriType, DbType.String);
         }
 
         /// <summary>
@@ -37,7 +39,7 @@ namespace MicroLite.TypeConverters
         /// </returns>
         public bool CanConvert(Type type)
         {
-            return type == typeof(Uri);
+            return type == this.uriType;
         }
 
         /// <summary>

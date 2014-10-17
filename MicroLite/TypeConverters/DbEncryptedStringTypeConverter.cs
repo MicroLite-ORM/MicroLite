@@ -25,6 +25,7 @@ namespace MicroLite.TypeConverters
     public sealed class DbEncryptedStringTypeConverter : ITypeConverter
     {
         private readonly ISymmetricAlgorithmProvider algorithmProvider;
+        private readonly Type dbEncryptedStringType = typeof(DbEncryptedString);
 
         /// <summary>
         /// Initialises a new instance of the <see cref="DbEncryptedStringTypeConverter"/> class.
@@ -39,7 +40,7 @@ namespace MicroLite.TypeConverters
 
             this.algorithmProvider = algorithmProvider;
 
-            TypeConverter.RegisterTypeMapping(typeof(DbEncryptedString), DbType.String);
+            TypeConverter.RegisterTypeMapping(this.dbEncryptedStringType, DbType.String);
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace MicroLite.TypeConverters
         /// </returns>
         public bool CanConvert(Type type)
         {
-            return type == typeof(DbEncryptedString);
+            return type == this.dbEncryptedStringType;
         }
 
         /// <summary>
