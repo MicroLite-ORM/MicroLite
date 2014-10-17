@@ -48,7 +48,13 @@ namespace MicroLite.Mapping
 
             foreach (var columnInfo in objectInfo.TableInfo.Columns)
             {
-                textWriter.WriteLine("Property '{0}' -> Column '{1}'", columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                textWriter.WriteLine(
+                    "Property '{0} ({1})' -> Column '{2} ({3})'",
+                    columnInfo.PropertyInfo.Name,
+                    columnInfo.PropertyInfo.PropertyType.Name,
+                    columnInfo.ColumnName,
+                    columnInfo.DbType.ToString());
+
                 textWriter.WriteLine("\tAllow Insert: {0}", columnInfo.AllowInsert.ToString());
                 textWriter.WriteLine("\tAllow Update: {0}", columnInfo.AllowUpdate.ToString());
                 textWriter.WriteLine("\tIs Identifier: {0}", columnInfo.IsIdentifier.ToString());
