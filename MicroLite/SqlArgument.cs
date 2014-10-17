@@ -31,8 +31,8 @@ namespace MicroLite
         /// <param name="value">The argument value.</param>
         public SqlArgument(object value)
         {
-            this.dbType = value != null ? TypeConverter.ResolveDbType(value.GetType()) : default(DbType);
             this.value = value;
+            this.dbType = value != null ? TypeConverter.ResolveDbType(value.GetType()) : default(DbType);
         }
 
         /// <summary>
