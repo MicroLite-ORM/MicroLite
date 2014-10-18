@@ -133,7 +133,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="FrameworkExtensions\MemberInfoExtensions.cs" />
     <Compile Include="FrameworkExtensions\StringExtensions.cs" />
     <Compile Include="IAdvancedAsyncReadOnlySession.cs" />
     <Compile Include="IAdvancedAsyncSession.cs" />
@@ -184,6 +183,7 @@
     <Compile Include="Mapping\Inflection\InflectionService.cs" />
     <Compile Include="Mapping\IObjectInfo.cs" />
     <Compile Include="Mapping\MappingException.cs" />
+    <Compile Include="Mapping\MemberInfoExtensions.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
     <Compile Include="Mapping\ObjectInfoExtensions.cs" />
     <Compile Include="Mapping\PocoObjectInfo.cs" />

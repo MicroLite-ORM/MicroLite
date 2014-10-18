@@ -10,7 +10,7 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.FrameworkExtensions
+namespace MicroLite.Mapping
 {
     using System;
     using System.Reflection;
