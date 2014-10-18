@@ -19,7 +19,7 @@ namespace MicroLite.Driver
     /// <summary>
     /// The interface for a class which handles IDbConnections and IDbCommands for a specific database.
     /// </summary>
-    public interface IDbDriver : IHideObjectMethods
+    public interface IDbDriver
     {
         /// <summary>
         /// Gets or sets the connection string of the database this Db Driver is connecting to.

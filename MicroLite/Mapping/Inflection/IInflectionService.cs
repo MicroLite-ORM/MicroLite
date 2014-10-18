@@ -15,7 +15,7 @@ namespace MicroLite.Mapping.Inflection
     /// <summary>
     /// The interface for a class which is capable of modifying the grammatical category of words.
     /// </summary>
-    public interface IInflectionService : IHideObjectMethods
+    public interface IInflectionService
     {
         /// <summary>
         /// Adds a word which is considered invariant, for example 'equipment' or 'species' in English.

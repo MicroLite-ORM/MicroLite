@@ -17,7 +17,7 @@ namespace MicroLite.Dialect
     /// <summary>
     /// The interface for a class which builds SqlQueries for a specific database dialect.
     /// </summary>
-    public interface ISqlDialect : IHideObjectMethods
+    public interface ISqlDialect
     {
         /// <summary>
         /// Gets the SQL characters used by the SQL dialect.

@@ -18,7 +18,7 @@ namespace MicroLite.Mapping
     /// <summary>
     /// The interface for a class which describes a type and the table it is mapped to.
     /// </summary>
-    public interface IObjectInfo : IHideObjectMethods
+    public interface IObjectInfo
     {
         /// <summary>
         /// Gets type the object info relates to.
