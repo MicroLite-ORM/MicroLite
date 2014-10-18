@@ -1,10 +1,11 @@
-﻿namespace MicroLite.Tests.Mapping
+﻿namespace MicroLite.Tests.Mapping.Attributes
 {
     using System;
     using System.Data;
     using System.Linq;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
+    using MicroLite.Mapping.Attributes;
     using Xunit;
 
     /// <summary>

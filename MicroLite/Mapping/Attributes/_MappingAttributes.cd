@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MicroLite.Mapping.Attributes.AttributeMappingConvention" BaseTypeListCollapsed="true">
+    <Position X="2.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAACAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mapping\Attributes\AttributeMappingConvention.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MicroLite.Mapping.Attributes.ColumnAttribute">
+    <Position X="3.25" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAQAAAAAAAAAAAAAAQAYAAEAGAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mapping\Attributes\ColumnAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Mapping.Attributes.IdentifierAttribute">
+    <Position X="6.25" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAEQAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Mapping\Attributes\IdentifierAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Mapping.Attributes.TableAttribute">
+    <Position X="0.5" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQEAAAEBAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mapping\Attributes\TableAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="MicroLite.Mapping.IMappingConvention">
+    <Position X="0.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mapping\IMappingConvention.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

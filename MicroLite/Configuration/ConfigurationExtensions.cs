@@ -16,6 +16,7 @@ namespace MicroLite.Configuration
     using MicroLite.Dialect;
     using MicroLite.Driver;
     using MicroLite.Mapping;
+    using MicroLite.Mapping.Attributes;
 
     /// <summary>
     /// Extension methods for IConfigureExtensions.

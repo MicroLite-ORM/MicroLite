@@ -166,14 +166,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LogMessages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Mapping\AttributeMappingConvention.cs" />
-    <Compile Include="Mapping\ColumnAttribute.cs" />
+    <Compile Include="Mapping\Attributes\AttributeMappingConvention.cs" />
+    <Compile Include="Mapping\Attributes\ColumnAttribute.cs" />
+    <Compile Include="Mapping\Attributes\IdentifierAttribute.cs" />
+    <Compile Include="Mapping\Attributes\TableAttribute.cs" />
     <Compile Include="Mapping\ColumnInfo.cs" />
     <Compile Include="Mapping\ConventionMappingConvention.cs" />
     <Compile Include="Mapping\ConventionMappingSettings.cs" />
     <Compile Include="Mapping\DelegateFactory.cs" />
     <Compile Include="Mapping\ExpandoObjectInfo.cs" />
-    <Compile Include="Mapping\IdentifierAttribute.cs" />
     <Compile Include="Mapping\IdentifierStrategy.cs" />
     <Compile Include="Mapping\ILGeneratorExtensions.cs" />
     <Compile Include="Mapping\IMappingConvention.cs" />
@@ -186,7 +187,6 @@
     <Compile Include="Mapping\ObjectInfo.cs" />
     <Compile Include="Mapping\ObjectInfoExtensions.cs" />
     <Compile Include="Mapping\PocoObjectInfo.cs" />
-    <Compile Include="Mapping\TableAttribute.cs" />
     <Compile Include="Mapping\TableInfo.cs" />
     <Compile Include="Mapping\TupleObjectInfo.cs" />
     <Compile Include="MicroLiteException.cs" />
@@ -222,8 +222,8 @@
     <None Include="Driver\_Driver.cd" />
     <None Include="Listeners\_Listeners.cd" />
     <None Include="Logging\_Logging.cd" />
+    <None Include="Mapping\Attributes\_MappingAttributes.cd" />
     <None Include="Mapping\Inflection\_Inflection.cd" />
-    <None Include="Mapping\_MappingAttributes.cd" />
     <None Include="Mapping\_MappingConvention.cd" />
     <None Include="Mapping\_ObjectInfo.cd" />
     <None Include="TypeConverters\_TypeConverters.cd" />

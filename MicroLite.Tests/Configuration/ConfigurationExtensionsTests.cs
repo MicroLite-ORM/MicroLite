@@ -5,6 +5,7 @@
     using MicroLite.Dialect;
     using MicroLite.Driver;
     using MicroLite.Mapping;
+    using MicroLite.Mapping.Attributes;
     using Moq;
     using Xunit;
 
