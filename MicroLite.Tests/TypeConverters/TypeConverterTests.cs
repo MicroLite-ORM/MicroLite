@@ -50,7 +50,6 @@
             Assert.Equal(DbType.Time, TypeConverter.ResolveDbType(typeof(TimeSpan?)));
 
             Assert.Equal(DbType.Int32, TypeConverter.ResolveDbType(typeof(CustomerStatus)));
-            Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(DbEncryptedString)));
             Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(Uri)));
             Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(XDocument)));
         }

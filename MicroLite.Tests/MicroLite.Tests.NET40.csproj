@@ -78,7 +78,6 @@
     <Compile Include="Core\SessionFactoryTests.cs" />
     <Compile Include="Core\SessionTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
-    <Compile Include="DbEncryptedStringTests.cs" />
     <Compile Include="Dialect\FirebirdSqlCharactersTests.cs" />
     <Compile Include="Dialect\FirebirdSqlDialectTests.cs" />
     <Compile Include="Dialect\MsSql2005DialectTests.cs" />
@@ -100,7 +99,6 @@
     <Compile Include="Driver\PostgreSqlDbDriverTests.cs" />
     <Compile Include="Driver\SQLiteDbDriverTests.cs" />
     <Compile Include="Driver\SqlServerCeDbDriverTests.cs" />
-    <Compile Include="Infrastructure\SymmetricAlgorithmProviderTests.cs" />
     <Compile Include="Listeners\IdentifierStrategyListenerTests.cs" />
     <Compile Include="Listeners\ListenerCollectionTests.cs" />
     <Compile Include="Logging\LogManagerTests.cs" />
@@ -134,7 +132,6 @@
     <Compile Include="TestEntities\MockDbConnectionWrapper.cs" />
     <Compile Include="TestEntities\MockDbDataReaderWrapper.cs" />
     <Compile Include="TestEntities\MockDbTransactionWrapper.cs" />
-    <Compile Include="TypeConverters\DbEncryptedStringTypeConverterTests.cs" />
     <Compile Include="TypeConverters\EnumTypeConverterTests.cs" />
     <Compile Include="TypeConverters\ObjectTypeConverterTests.cs" />
     <Compile Include="TypeConverters\TypeConverterCollectionTests.cs" />

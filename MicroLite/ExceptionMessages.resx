@@ -117,12 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppSettingSymmetricAlgorithmProvider_MissingAlgorithm" xml:space="preserve">
-    <value>The Encryption algorithm is missing, please add the following value to app.settings: &lt;add key="MicroLite.DbEncryptedString.SymmetricAlgorithm" value="AesManaged" /&gt; (see http://msdn.microsoft.com/en-us/library/System.Security.Cryptography.SymmetricAlgorithm(v=vs.110).aspx for the fully supported list of values)</value>
-  </data>
-  <data name="AppSettingSymmetricAlgorithmProvider_MissingKey" xml:space="preserve">
-    <value>The Encryption key is missing, please add the following value to app.settings: &lt;add key="MicroLite.DbEncryptedString.EncryptionKey" value="replace-with-your-encryption-key" /&gt;</value>
-  </data>
   <data name="ArgumentNullOrEmpty" xml:space="preserve">
     <value>The {0} must be specified</value>
   </data>
@@ -131,9 +125,6 @@
   </data>
   <data name="DbDriver_ArgumentsCountMismatch" xml:space="preserve">
     <value>The number of parameters in the SQL statement and the number of specified parameter arguments should match. However '{0}' parameters used in the SQL statement and '{1}' parameter arguments were specified.</value>
-  </data>
-  <data name="DbEncryptedStringTypeConverter_CipherTextInvalid" xml:space="preserve">
-    <value>The cipher text is invalid, it should contain 2 parts separated by an '@'</value>
   </data>
   <data name="ExpandoObjectInfo_NotSupportedReason" xml:space="preserve">
     <value>The 'dynamic' type can only be used for queries where an SqlQuery is supplied, it cannot be used for select by identifier, insert, update or delete.</value>
