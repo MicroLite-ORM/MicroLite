@@ -21,56 +21,48 @@ namespace MicroLite.TypeConverters
     /// </summary>
     public static class TypeConverter
     {
-        private static readonly TypeConverterCollection converters;
-        private static readonly ITypeConverter defaultConverter;
-        private static IDictionary<Type, DbType> dbTypeMap;
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline", Justification = "The dictionary must be created before the collection is populated as the type converters in the collection need to add to the dictionary.")]
-        static TypeConverter()
+        private static readonly IDictionary<Type, DbType> dbTypeMap = new Dictionary<Type, DbType>
         {
-            dbTypeMap = new Dictionary<Type, DbType>
-            {
-                { typeof(byte), DbType.Byte },
-                { typeof(byte?), DbType.Byte },
-                { typeof(sbyte), DbType.SByte },
-                { typeof(sbyte?), DbType.SByte },
-                { typeof(short), DbType.Int16 },
-                { typeof(short?), DbType.Int16 },
-                { typeof(ushort), DbType.UInt16 },
-                { typeof(ushort?), DbType.UInt16 },
-                { typeof(int), DbType.Int32 },
-                { typeof(int?), DbType.Int32 },
-                { typeof(uint), DbType.UInt32 },
-                { typeof(uint?), DbType.UInt32 },
-                { typeof(long), DbType.Int64 },
-                { typeof(long?), DbType.Int64 },
-                { typeof(ulong), DbType.UInt64 },
-                { typeof(ulong?), DbType.UInt64 },
-                { typeof(float), DbType.Single },
-                { typeof(float?), DbType.Single },
-                { typeof(decimal), DbType.Decimal },
-                { typeof(decimal?), DbType.Decimal },
-                { typeof(double), DbType.Double },
-                { typeof(double?), DbType.Double },
-                { typeof(bool), DbType.Boolean },
-                { typeof(bool?), DbType.Boolean },
-                { typeof(char), DbType.StringFixedLength },
-                { typeof(char?), DbType.StringFixedLength },
-                { typeof(string), DbType.String },
-                { typeof(byte[]), DbType.Binary },
-                { typeof(DateTime), DbType.DateTime },
-                { typeof(DateTime?), DbType.DateTime },
-                { typeof(DateTimeOffset), DbType.DateTimeOffset },
-                { typeof(DateTimeOffset?), DbType.DateTimeOffset },
-                { typeof(Guid), DbType.Guid },
-                { typeof(Guid?), DbType.Guid },
-                { typeof(TimeSpan), DbType.Time },
-                { typeof(TimeSpan?), DbType.Time }
-            };
+            { typeof(byte), DbType.Byte },
+            { typeof(byte?), DbType.Byte },
+            { typeof(sbyte), DbType.SByte },
+            { typeof(sbyte?), DbType.SByte },
+            { typeof(short), DbType.Int16 },
+            { typeof(short?), DbType.Int16 },
+            { typeof(ushort), DbType.UInt16 },
+            { typeof(ushort?), DbType.UInt16 },
+            { typeof(int), DbType.Int32 },
+            { typeof(int?), DbType.Int32 },
+            { typeof(uint), DbType.UInt32 },
+            { typeof(uint?), DbType.UInt32 },
+            { typeof(long), DbType.Int64 },
+            { typeof(long?), DbType.Int64 },
+            { typeof(ulong), DbType.UInt64 },
+            { typeof(ulong?), DbType.UInt64 },
+            { typeof(float), DbType.Single },
+            { typeof(float?), DbType.Single },
+            { typeof(decimal), DbType.Decimal },
+            { typeof(decimal?), DbType.Decimal },
+            { typeof(double), DbType.Double },
+            { typeof(double?), DbType.Double },
+            { typeof(bool), DbType.Boolean },
+            { typeof(bool?), DbType.Boolean },
+            { typeof(char), DbType.StringFixedLength },
+            { typeof(char?), DbType.StringFixedLength },
+            { typeof(string), DbType.String },
+            { typeof(byte[]), DbType.Binary },
+            { typeof(DateTime), DbType.DateTime },
+            { typeof(DateTime?), DbType.DateTime },
+            { typeof(DateTimeOffset), DbType.DateTimeOffset },
+            { typeof(DateTimeOffset?), DbType.DateTimeOffset },
+            { typeof(Guid), DbType.Guid },
+            { typeof(Guid?), DbType.Guid },
+            { typeof(TimeSpan), DbType.Time },
+            { typeof(TimeSpan?), DbType.Time }
+        };
 
-            converters = new TypeConverterCollection();
-            defaultConverter = new ObjectTypeConverter();
-        }
+        private static readonly ITypeConverter defaultConverter = new ObjectTypeConverter();
+        private static readonly TypeConverterCollection typeConverters = new TypeConverterCollection();
 
         /// <summary>
         /// Gets the type converter collection which contains all type converters registered with the MicroLite ORM framework.
@@ -79,7 +71,7 @@ namespace MicroLite.TypeConverters
         {
             get
             {
-                return converters;
+                return typeConverters;
             }
         }
 
@@ -157,10 +149,7 @@ namespace MicroLite.TypeConverters
         /// <param name="dbType">The DbType to be mapped to.</param>
         public static void RegisterTypeMapping(Type type, DbType dbType)
         {
-            var newDbTypeMap = new Dictionary<Type, DbType>(dbTypeMap);
-            newDbTypeMap[type] = dbType;
-
-            dbTypeMap = newDbTypeMap;
+            dbTypeMap[type] = dbType;
         }
 
         /// <summary>
