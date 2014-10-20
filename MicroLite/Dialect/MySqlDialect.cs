@@ -23,8 +23,6 @@ namespace MicroLite.Dialect
     /// </summary>
     internal sealed class MySqlDialect : SqlDialect
     {
-        private static readonly SqlQuery selectIdentityQuery = new SqlQuery("SELECT LAST_INSERT_ID()");
-
         /// <summary>
         /// Initialises a new instance of the <see cref="MySqlDialect"/> class.
         /// </summary>
@@ -43,7 +41,7 @@ namespace MicroLite.Dialect
 
         public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
         {
-            return selectIdentityQuery;
+            return new SqlQuery("SELECT LAST_INSERT_ID()");
         }
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)

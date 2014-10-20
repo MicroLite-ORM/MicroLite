@@ -23,8 +23,6 @@ namespace MicroLite.Dialect
     /// </summary>
     internal sealed class SqlServerCeDialect : SqlDialect
     {
-        private static readonly SqlQuery selectIdentityQuery = new SqlQuery("SELECT @@IDENTITY");
-
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlServerCeDialect"/> class.
         /// </summary>
@@ -43,7 +41,7 @@ namespace MicroLite.Dialect
 
         public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
         {
-            return selectIdentityQuery;
+            return new SqlQuery("SELECT @@IDENTITY");
         }
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)

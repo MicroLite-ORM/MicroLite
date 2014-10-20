@@ -23,8 +23,6 @@ namespace MicroLite.Dialect
     /// </summary>
     internal sealed class PostgreSqlDialect : SqlDialect
     {
-        private static readonly SqlQuery selectIdentityQuery = new SqlQuery("SELECT lastval()");
-
         /// <summary>
         /// Initialises a new instance of the <see cref="PostgreSqlDialect"/> class.
         /// </summary>
@@ -43,7 +41,7 @@ namespace MicroLite.Dialect
 
         public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
         {
-            return selectIdentityQuery;
+            return new SqlQuery("SELECT lastval()");
         }
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
