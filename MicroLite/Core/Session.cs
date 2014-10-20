@@ -271,15 +271,10 @@ namespace MicroLite.Core
             }
             else
             {
-                SqlQuery selectInsertIdSqlQuery = null;
-
                 if (this.SqlDialect.SupportsSelectInsertedIdentifier)
                 {
-                    selectInsertIdSqlQuery = this.SqlDialect.BuildSelectInsertIdSqlQuery(objectInfo);
-                }
+                    var selectInsertIdSqlQuery = this.SqlDialect.BuildSelectInsertIdSqlQuery(objectInfo);
 
-                if (selectInsertIdSqlQuery != null)
-                {
                     if (this.DbDriver.SupportsBatchedQueries)
                     {
                         var combined = this.DbDriver.Combine(insertSqlQuery, selectInsertIdSqlQuery);
