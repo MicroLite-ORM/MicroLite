@@ -95,18 +95,6 @@ namespace MicroLite.Mapping
             return objectInfo;
         }
 
-        /// <summary>
-        /// Resets the object info state, removing any cached object information and restoring the default mapping convention.
-        /// </summary>
-        /// <remarks>
-        /// Makes it easier to unit test using different mapping conventions - should remain an internal method.
-        /// </remarks>
-        internal static void Reset()
-        {
-            mappingConvention = null;
-            objectInfos = GetObjectInfos();
-        }
-
         private static Dictionary<Type, IObjectInfo> GetObjectInfos()
         {
             var dictionary = new Dictionary<Type, IObjectInfo>();
