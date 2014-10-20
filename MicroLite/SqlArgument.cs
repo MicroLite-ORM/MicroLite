@@ -129,7 +129,7 @@ namespace MicroLite
         /// </returns>
         public override int GetHashCode()
         {
-            return this.DbType.GetHashCode() ^ (this.Value ?? string.Empty).GetHashCode();
+            return ((int)this.DbType).GetHashCode() ^ (this.Value ?? string.Empty).GetHashCode();
         }
     }
 }
