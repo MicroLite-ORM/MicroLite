@@ -42,7 +42,7 @@ namespace MicroLite.Driver
             if (this.SupportsStoredProcedures
                 && commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase) == -1
                 && commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
-                && !commandText.Contains(this.StatementSeparator))
+                && !commandText.Contains(this.SqlCharacters.StatementSeparator))
             {
                 var invocationCommandLength = this.SqlCharacters.StoredProcedureInvocationCommand.Length;
                 var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
@@ -71,7 +71,7 @@ namespace MicroLite.Driver
         {
             if (commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
                 && commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase) == -1
-                && !commandText.Contains(this.StatementSeparator))
+                && !commandText.Contains(this.SqlCharacters.StatementSeparator))
             {
                 return CommandType.StoredProcedure;
             }

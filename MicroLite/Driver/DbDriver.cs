@@ -104,17 +104,6 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Gets the character used to separate SQL statements.
-        /// </summary>
-        protected virtual string StatementSeparator
-        {
-            get
-            {
-                return ";";
-            }
-        }
-
-        /// <summary>
         /// Gets a value indicating whether the database supports stored procedures.
         /// </summary>
         protected bool SupportsStoredProcedures
@@ -191,7 +180,7 @@ namespace MicroLite.Driver
 
                 if (sqlBuilder.Length == 0)
                 {
-                    sqlBuilder.Append(sqlQuery.CommandText).AppendLine(this.StatementSeparator);
+                    sqlBuilder.Append(sqlQuery.CommandText).AppendLine(this.sqlCharacters.StatementSeparator);
                 }
                 else
                 {
@@ -199,7 +188,7 @@ namespace MicroLite.Driver
                         ? sqlQuery.CommandText
                         : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                    sqlBuilder.Append(commandText).AppendLine(this.StatementSeparator);
+                    sqlBuilder.Append(commandText).AppendLine(this.sqlCharacters.StatementSeparator);
                 }
             }
 
@@ -244,7 +233,7 @@ namespace MicroLite.Driver
                 ? sqlQuery2.CommandText
                 : SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
 
-            var commandText = sqlQuery1.CommandText + this.StatementSeparator + Environment.NewLine + query2CommandText;
+            var commandText = sqlQuery1.CommandText + this.sqlCharacters.StatementSeparator + Environment.NewLine + query2CommandText;
 
             var combinedQuery = new SqlQuery(commandText, arguments);
             combinedQuery.Timeout = Math.Max(sqlQuery1.Timeout, sqlQuery2.Timeout);
@@ -323,7 +312,7 @@ namespace MicroLite.Driver
         {
             if (this.SupportsStoredProcedures
                 && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
-                && !commandText.Contains(this.StatementSeparator))
+                && !commandText.Contains(this.sqlCharacters.StatementSeparator))
             {
                 var invocationCommandLength = this.sqlCharacters.StoredProcedureInvocationCommand.Length;
                 var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
@@ -350,7 +339,7 @@ namespace MicroLite.Driver
         {
             if (this.SupportsStoredProcedures
                 && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
-                && !commandText.Contains(this.StatementSeparator))
+                && !commandText.Contains(this.sqlCharacters.StatementSeparator))
             {
                 return CommandType.StoredProcedure;
             }

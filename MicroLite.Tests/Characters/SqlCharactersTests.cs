@@ -34,6 +34,7 @@
             Assert.Equal(string.Empty, sqlCharacters.RightDelimiter);
             Assert.Equal("*", sqlCharacters.SelectWildcard);
             Assert.Equal("?", sqlCharacters.SqlParameter);
+            Assert.Equal(";", sqlCharacters.StatementSeparator);
             Assert.Equal(string.Empty, sqlCharacters.StoredProcedureInvocationCommand);
             Assert.Equal(false, sqlCharacters.SupportsNamedParameters);
         }

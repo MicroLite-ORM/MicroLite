@@ -115,6 +115,17 @@ namespace MicroLite.Characters
         }
 
         /// <summary>
+        /// Gets the character used to separate SQL statements.
+        /// </summary>
+        public virtual string StatementSeparator
+        {
+            get
+            {
+                return ";";
+            }
+        }
+
+        /// <summary>
         /// Gets the stored procedure invocation command.
         /// </summary>
         public virtual string StoredProcedureInvocationCommand
