@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Dialect
 {
+    using MicroLite.Characters;
     using MicroLite.Mapping;
 
     /// <summary>

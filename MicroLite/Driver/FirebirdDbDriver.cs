@@ -12,6 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Driver
 {
+    using MicroLite.Characters;
+
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for Firebird.
     /// </summary>
@@ -21,7 +23,7 @@ namespace MicroLite.Driver
         /// Initialises a new instance of the <see cref="FirebirdDbDriver" /> class.
         /// </summary>
         internal FirebirdDbDriver()
-            : base(MicroLite.Dialect.FirebirdSqlCharacters.Instance)
+            : base(FirebirdSqlCharacters.Instance)
         {
         }
     }

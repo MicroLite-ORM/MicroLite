@@ -15,6 +15,7 @@ namespace MicroLite.Dialect
     using System;
     using System.Data;
     using System.Text;
+    using MicroLite.Characters;
     using MicroLite.Mapping;
 
     /// <summary>

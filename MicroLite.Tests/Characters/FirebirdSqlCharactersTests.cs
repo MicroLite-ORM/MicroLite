@@ -1,6 +1,6 @@
-﻿namespace MicroLite.Tests.Dialect
+﻿namespace MicroLite.Tests.Characters
 {
-    using MicroLite.Dialect;
+    using MicroLite.Characters;
     using Xunit;
 
     /// <summary>

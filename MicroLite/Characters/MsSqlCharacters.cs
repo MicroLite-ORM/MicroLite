@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="PostgreSqlCharacters.cs" company="MicroLite">
+// <copyright file="MsSqlCharacters.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,22 +10,22 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Dialect
+namespace MicroLite.Characters
 {
     /// <summary>
-    /// An implementation of SqlCharacters for PostgreSql.
+    /// The implementation of <see cref="SqlCharacters"/> for MsSql server.
     /// </summary>
-    internal sealed class PostgreSqlCharacters : SqlCharacters
+    internal sealed class MsSqlCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of SqlCharacters for PostgreSql.
+        /// The single instance of <see cref="SqlCharacters"/> for MsSql.
         /// </summary>
-        internal static readonly SqlCharacters Instance = new PostgreSqlCharacters();
+        internal static readonly SqlCharacters Instance = new MsSqlCharacters();
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="PostgreSqlCharacters"/> class from being created.
+        /// Prevents a default instance of the <see cref="MsSqlCharacters"/> class from being created.
         /// </summary>
-        private PostgreSqlCharacters()
+        private MsSqlCharacters()
         {
         }
 
@@ -36,7 +36,7 @@ namespace MicroLite.Dialect
         {
             get
             {
-                return "\"";
+                return "[";
             }
         }
 
@@ -47,7 +47,7 @@ namespace MicroLite.Dialect
         {
             get
             {
-                return "\"";
+                return "]";
             }
         }
 
@@ -69,7 +69,7 @@ namespace MicroLite.Dialect
         {
             get
             {
-                return "SELECT";
+                return "EXEC";
             }
         }
 

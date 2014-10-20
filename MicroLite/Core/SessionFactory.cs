@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
+    using MicroLite.Characters;
     using MicroLite.Dialect;
     using MicroLite.Driver;
     using MicroLite.Listeners;

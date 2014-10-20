@@ -2,6 +2,7 @@
 {
     using System;
     using System.Data;
+    using MicroLite.Characters;
     using MicroLite.Dialect;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;

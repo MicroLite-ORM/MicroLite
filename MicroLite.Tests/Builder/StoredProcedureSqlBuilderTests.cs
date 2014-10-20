@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using MicroLite.Builder;
+    using MicroLite.Characters;
     using Xunit;
 
     /// <summary>

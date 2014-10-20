@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="MsSqlCharacters.cs" company="MicroLite">
+// <copyright file="MySqlCharacters.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,22 +10,22 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Dialect
+namespace MicroLite.Characters
 {
     /// <summary>
-    /// The implementation of <see cref="SqlCharacters"/> for MsSql server.
+    /// An implementation of SqlCharacters for MySql.
     /// </summary>
-    internal sealed class MsSqlCharacters : SqlCharacters
+    internal sealed class MySqlCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of <see cref="SqlCharacters"/> for MsSql.
+        /// The single instance of SqlCharacters for MySql.
         /// </summary>
-        internal static readonly SqlCharacters Instance = new MsSqlCharacters();
+        internal static readonly SqlCharacters Instance = new MySqlCharacters();
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="MsSqlCharacters"/> class from being created.
+        /// Prevents a default instance of the <see cref="MySqlCharacters"/> class from being created.
         /// </summary>
-        private MsSqlCharacters()
+        private MySqlCharacters()
         {
         }
 
@@ -36,7 +36,7 @@ namespace MicroLite.Dialect
         {
             get
             {
-                return "[";
+                return "`";
             }
         }
 
@@ -47,7 +47,7 @@ namespace MicroLite.Dialect
         {
             get
             {
-                return "]";
+                return "`";
             }
         }
 
@@ -69,7 +69,7 @@ namespace MicroLite.Dialect
         {
             get
             {
-                return "EXEC";
+                return "CALL";
             }
         }
 

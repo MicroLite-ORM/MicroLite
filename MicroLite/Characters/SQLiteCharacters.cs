@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SqlServerCeCharacters.cs" company="MicroLite">
+// <copyright file="SQLiteCharacters.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,22 +10,22 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Dialect
+namespace MicroLite.Characters
 {
     /// <summary>
-    /// The implementation of <see cref="SqlCharacters"/> for SQL Server Compact Edition.
+    /// An implementation of SqlCharacters for SQLite.
     /// </summary>
-    internal sealed class SqlServerCeCharacters : SqlCharacters
+    internal sealed class SQLiteCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of <see cref="SqlCharacters"/> for SQL Server Compact Edition.
+        /// The single instance of SqlCharacters for SQLite.
         /// </summary>
-        internal static readonly SqlCharacters Instance = new SqlServerCeCharacters();
+        internal static readonly SqlCharacters Instance = new SQLiteCharacters();
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="SqlServerCeCharacters"/> class from being created.
+        /// Prevents a default instance of the <see cref="SQLiteCharacters"/> class from being created.
         /// </summary>
-        private SqlServerCeCharacters()
+        private SQLiteCharacters()
         {
         }
 

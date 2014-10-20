@@ -12,6 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Builder
 {
+    using MicroLite.Characters;
+
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class StoredProcedureSqlBuilder : SqlBuilderBase, IWithParameter
     {

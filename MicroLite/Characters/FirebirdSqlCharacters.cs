@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="MySqlCharacters.cs" company="MicroLite">
+// <copyright file="FirebirdSqlCharacters.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,22 +10,22 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Dialect
+namespace MicroLite.Characters
 {
     /// <summary>
-    /// An implementation of SqlCharacters for MySql.
+    /// The implementation of <see cref="SqlCharacters"/> for Firebird.
     /// </summary>
-    internal sealed class MySqlCharacters : SqlCharacters
+    internal sealed class FirebirdSqlCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of SqlCharacters for MySql.
+        /// The single instance of <see cref="SqlCharacters"/> for Firebird.
         /// </summary>
-        internal static readonly SqlCharacters Instance = new MySqlCharacters();
+        internal static readonly SqlCharacters Instance = new FirebirdSqlCharacters();
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="MySqlCharacters"/> class from being created.
+        /// Prevents a default instance of the <see cref="FirebirdSqlCharacters"/> class from being created.
         /// </summary>
-        private MySqlCharacters()
+        private FirebirdSqlCharacters()
         {
         }
 
@@ -36,7 +36,7 @@ namespace MicroLite.Dialect
         {
             get
             {
-                return "`";
+                return "\"";
             }
         }
 
@@ -47,7 +47,7 @@ namespace MicroLite.Dialect
         {
             get
             {
-                return "`";
+                return "\"";
             }
         }
 
@@ -59,17 +59,6 @@ namespace MicroLite.Dialect
             get
             {
                 return "@";
-            }
-        }
-
-        /// <summary>
-        /// Gets the stored procedure invocation command.
-        /// </summary>
-        public override string StoredProcedureInvocationCommand
-        {
-            get
-            {
-                return "CALL";
             }
         }
 

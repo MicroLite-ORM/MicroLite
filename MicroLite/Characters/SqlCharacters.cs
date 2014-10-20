@@ -10,7 +10,7 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite
+namespace MicroLite.Characters
 {
     using System;
     using System.Globalization;

@@ -1,9 +1,8 @@
 ﻿namespace MicroLite.Tests.Builder
 {
     using System.Data;
-    using MicroLite;
     using MicroLite.Builder;
-    using MicroLite.Dialect;
+    using MicroLite.Characters;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
     using Xunit;

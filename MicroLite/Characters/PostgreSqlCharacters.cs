@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="FirebirdSqlCharacters.cs" company="MicroLite">
+// <copyright file="PostgreSqlCharacters.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,22 +10,22 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Dialect
+namespace MicroLite.Characters
 {
     /// <summary>
-    /// The implementation of <see cref="SqlCharacters"/> for Firebird.
+    /// An implementation of SqlCharacters for PostgreSql.
     /// </summary>
-    internal sealed class FirebirdSqlCharacters : SqlCharacters
+    internal sealed class PostgreSqlCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of <see cref="SqlCharacters"/> for Firebird.
+        /// The single instance of SqlCharacters for PostgreSql.
         /// </summary>
-        internal static readonly SqlCharacters Instance = new FirebirdSqlCharacters();
+        internal static readonly SqlCharacters Instance = new PostgreSqlCharacters();
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="FirebirdSqlCharacters"/> class from being created.
+        /// Prevents a default instance of the <see cref="PostgreSqlCharacters"/> class from being created.
         /// </summary>
-        private FirebirdSqlCharacters()
+        private PostgreSqlCharacters()
         {
         }
 
@@ -59,6 +59,17 @@ namespace MicroLite.Dialect
             get
             {
                 return "@";
+            }
+        }
+
+        /// <summary>
+        /// Gets the stored procedure invocation command.
+        /// </summary>
+        public override string StoredProcedureInvocationCommand
+        {
+            get
+            {
+                return "SELECT";
             }
         }
 

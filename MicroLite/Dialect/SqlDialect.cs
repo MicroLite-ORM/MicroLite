@@ -15,6 +15,7 @@ namespace MicroLite.Dialect
     using System;
     using System.Collections.Generic;
     using MicroLite.Builder;
+    using MicroLite.Characters;
     using MicroLite.Mapping;
 
     /// <summary>

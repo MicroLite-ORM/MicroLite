@@ -12,6 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Builder
 {
+    using MicroLite.Characters;
+
     /// <summary>
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>

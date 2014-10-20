@@ -1,6 +1,7 @@
-﻿namespace MicroLite.Tests
+﻿namespace MicroLite.Tests.Characters
 {
     using System;
+    using MicroLite.Characters;
     using Moq;
     using Xunit;
 

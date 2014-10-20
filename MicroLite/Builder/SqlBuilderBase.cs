@@ -14,6 +14,7 @@ namespace MicroLite.Builder
 {
     using System.Collections.Generic;
     using System.Text;
+    using MicroLite.Characters;
     using MicroLite.Mapping;
 
     /// <summary>

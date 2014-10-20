@@ -14,6 +14,7 @@ namespace MicroLite.Driver
 {
     using System;
     using System.Data;
+    using MicroLite.Characters;
 
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for PostgreSql server.
@@ -24,7 +25,7 @@ namespace MicroLite.Driver
         /// Initialises a new instance of the <see cref="PostgreSqlDbDriver" /> class.
         /// </summary>
         internal PostgreSqlDbDriver()
-            : base(MicroLite.Dialect.PostgreSqlCharacters.Instance)
+            : base(PostgreSqlCharacters.Instance)
         {
         }
 

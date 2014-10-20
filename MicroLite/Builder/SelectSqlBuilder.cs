@@ -13,6 +13,7 @@
 namespace MicroLite.Builder
 {
     using System;
+    using MicroLite.Characters;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
 

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using MicroLite.Characters;
     using MicroLite.Configuration;
     using MicroLite.Logging;
     using MicroLite.Mapping;

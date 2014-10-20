@@ -81,6 +81,13 @@
     <Compile Include="Builder\SqlBuilderBase.cs" />
     <Compile Include="Builder\StoredProcedureSqlBuilder.cs" />
     <Compile Include="Builder\UpdateSqlBuilder.cs" />
+    <Compile Include="Characters\FirebirdSqlCharacters.cs" />
+    <Compile Include="Characters\MsSqlCharacters.cs" />
+    <Compile Include="Characters\MySqlCharacters.cs" />
+    <Compile Include="Characters\PostgreSqlCharacters.cs" />
+    <Compile Include="Characters\SqlCharacters.cs" />
+    <Compile Include="Characters\SQLiteCharacters.cs" />
+    <Compile Include="Characters\SqlServerCeCharacters.cs" />
     <Compile Include="Clauses.cs" />
     <Compile Include="Configuration\ConfigurationException.cs" />
     <Compile Include="Configuration\ConfigurationExtensions.cs" />
@@ -103,20 +110,14 @@
     <Compile Include="Core\SessionBase.cs" />
     <Compile Include="Core\SessionFactory.cs" />
     <Compile Include="Core\Transaction.cs" />
-    <Compile Include="Dialect\FirebirdSqlCharacters.cs" />
     <Compile Include="Dialect\FirebirdSqlDialect.cs" />
     <Compile Include="Dialect\ISqlDialect.cs" />
     <Compile Include="Dialect\MsSql2005Dialect.cs" />
     <Compile Include="Dialect\MsSql2012Dialect.cs" />
-    <Compile Include="Dialect\MsSqlCharacters.cs" />
-    <Compile Include="Dialect\MySqlCharacters.cs" />
     <Compile Include="Dialect\MySqlDialect.cs" />
-    <Compile Include="Dialect\PostgreSqlCharacters.cs" />
     <Compile Include="Dialect\PostgreSqlDialect.cs" />
     <Compile Include="Dialect\SqlDialect.cs" />
-    <Compile Include="Dialect\SQLiteCharacters.cs" />
     <Compile Include="Dialect\SQLiteDialect.cs" />
-    <Compile Include="Dialect\SqlServerCeCharacters.cs" />
     <Compile Include="Dialect\SqlServerCeDialect.cs" />
     <Compile Include="Driver\DbDriver.cs" />
     <Compile Include="Driver\FirebirdDbDriver.cs" />
@@ -191,7 +192,6 @@
     <Compile Include="PagingOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlArgument.cs" />
-    <Compile Include="SqlCharacters.cs" />
     <Compile Include="SqlQuery.cs" />
     <Compile Include="SqlString.cs" />
     <Compile Include="SqlUtility.cs" />
@@ -209,10 +209,10 @@
     </None>
     <None Include="Builder\_SqlBuilder.cd" />
     <None Include="Builder\_SqlBuilders.cd" />
+    <None Include="Characters\_SqlCharacters.cd" />
     <None Include="Configuration\_Configuration.cd" />
     <None Include="Core\_Includes.cd" />
     <None Include="Core\_Session.cd" />
-    <None Include="Dialect\_SqlCharacters.cd" />
     <None Include="Dialect\_SqlDialect.cd" />
     <None Include="Driver\_Driver.cd" />
     <None Include="Listeners\_Listeners.cd" />

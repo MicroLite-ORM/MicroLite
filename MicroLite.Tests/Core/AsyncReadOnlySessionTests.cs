@@ -6,6 +6,7 @@
     using System.Collections.Generic;
     using System.Data;
     using MicroLite.Builder;
+    using MicroLite.Characters;
     using MicroLite.Core;
     using MicroLite.Dialect;
     using MicroLite.Driver;

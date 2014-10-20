@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests.Core
 {
+    using MicroLite.Characters;
     using MicroLite.Core;
     using MicroLite.Dialect;
     using MicroLite.Driver;

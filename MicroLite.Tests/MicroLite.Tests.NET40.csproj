@@ -64,6 +64,13 @@
     <Compile Include="Builder\SqlBuilderTests.cs" />
     <Compile Include="Builder\StoredProcedureSqlBuilderTests.cs" />
     <Compile Include="Builder\UpdateSqlBuilderTests.cs" />
+    <Compile Include="Characters\FirebirdSqlCharactersTests.cs" />
+    <Compile Include="Characters\MsSqlCharactersTests.cs" />
+    <Compile Include="Characters\MySqlCharactersTests.cs" />
+    <Compile Include="Characters\PostgreSqlCharactersTests.cs" />
+    <Compile Include="Characters\SqlCharactersTests.cs" />
+    <Compile Include="Characters\SQLiteCharactersTests.cs" />
+    <Compile Include="Characters\SqlServerCeCharactersTests.cs" />
     <Compile Include="Configuration\ConfigurationExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
@@ -78,19 +85,13 @@
     <Compile Include="Core\SessionFactoryTests.cs" />
     <Compile Include="Core\SessionTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
-    <Compile Include="Dialect\FirebirdSqlCharactersTests.cs" />
     <Compile Include="Dialect\FirebirdSqlDialectTests.cs" />
     <Compile Include="Dialect\MsSql2005DialectTests.cs" />
     <Compile Include="Dialect\MsSql2012DialectTests.cs" />
-    <Compile Include="Dialect\MsSqlCharactersTests.cs" />
-    <Compile Include="Dialect\MySqlCharactersTests.cs" />
     <Compile Include="Dialect\MySqlDialectTests.cs" />
-    <Compile Include="Dialect\PostgreSqlCharactersTests.cs" />
     <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
     <Compile Include="Dialect\SqlDialectTests.cs" />
-    <Compile Include="Dialect\SQLiteCharactersTests.cs" />
     <Compile Include="Dialect\SQLiteDialectTests.cs" />
-    <Compile Include="Dialect\SqlServerCeCharactersTests.cs" />
     <Compile Include="Dialect\SqlServerCeDialectTests.cs" />
     <Compile Include="Driver\DbDriverTests.cs" />
     <Compile Include="Driver\FirebirdDbDriverTests.cs" />
@@ -121,15 +122,18 @@
     <Compile Include="PagingOptionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlArgumentTests.cs" />
-    <Compile Include="SqlCharactersTests.cs" />
     <Compile Include="SqlQueryTests.cs" />
     <Compile Include="SqlStringTests.cs" />
     <Compile Include="SqlUtilityTests.cs" />
     <Compile Include="TestEntities\Customer.cs" />
     <Compile Include="TestEntities\CustomerStatus.cs" />
     <Compile Include="TestEntities\Invoice.cs" />
-    <Compile Include="TestEntities\MockDbCommandWrapper.cs" />
-    <Compile Include="TestEntities\MockDbConnectionWrapper.cs" />
+    <Compile Include="TestEntities\MockDbCommandWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TestEntities\MockDbConnectionWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="TestEntities\MockDbDataReaderWrapper.cs" />
     <Compile Include="TestEntities\MockDbTransactionWrapper.cs" />
     <Compile Include="TypeConverters\EnumTypeConverterTests.cs" />

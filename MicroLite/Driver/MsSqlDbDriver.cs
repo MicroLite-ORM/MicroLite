@@ -12,6 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Driver
 {
+    using MicroLite.Characters;
+
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for MsSql server.
     /// </summary>
@@ -21,7 +23,7 @@ namespace MicroLite.Driver
         /// Initialises a new instance of the <see cref="MsSqlDbDriver" /> class.
         /// </summary>
         internal MsSqlDbDriver()
-            : base(MicroLite.Dialect.MsSqlCharacters.Instance)
+            : base(MsSqlCharacters.Instance)
         {
         }
 

@@ -19,6 +19,7 @@ namespace MicroLite.Driver
     using System.Globalization;
     using System.Linq;
     using System.Text;
+    using MicroLite.Characters;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 

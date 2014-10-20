@@ -13,6 +13,7 @@
 namespace MicroLite.Driver
 {
     using System.Data;
+    using MicroLite.Characters;
 
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for SQL Server Compact Edition.
@@ -23,7 +24,7 @@ namespace MicroLite.Driver
         /// Initialises a new instance of the <see cref="SqlServerCeDbDriver" /> class.
         /// </summary>
         internal SqlServerCeDbDriver()
-            : base(MicroLite.Dialect.SqlServerCeCharacters.Instance)
+            : base(SqlServerCeCharacters.Instance)
         {
         }
 

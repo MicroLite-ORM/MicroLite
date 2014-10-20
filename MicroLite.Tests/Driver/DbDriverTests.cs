@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using System.Data.Common;
+    using MicroLite.Characters;
     using MicroLite.Driver;
     using MicroLite.FrameworkExtensions;
     using Moq;
