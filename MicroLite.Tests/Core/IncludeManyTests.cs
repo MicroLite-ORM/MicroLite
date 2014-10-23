@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Threading;
     using System.Xml.Linq;
     using MicroLite.Core;
     using MicroLite.Tests.TestEntities;
@@ -25,7 +26,7 @@
             {
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait();
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait();
             }
 
             [Fact]
@@ -56,7 +57,7 @@
             {
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object));
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None);
             }
 
             [Fact]
@@ -89,7 +90,7 @@
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
                 this.include.OnLoad(inc => callbackCalled = object.ReferenceEquals(inc, this.include));
-                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object));
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None);
             }
 
             [Fact]

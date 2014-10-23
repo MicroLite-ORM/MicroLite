@@ -14,6 +14,7 @@ namespace MicroLite.Core
 {
     using System.Data;
     using System.Data.Common;
+    using System.Threading;
 
     /// <summary>
     /// The base class for include implementations.
@@ -42,8 +43,9 @@ namespace MicroLite.Core
         /// Builds the included value from the results in the data reader.
         /// </summary>
         /// <param name="reader">The <see cref="DbDataReader"/> containing the results.</param>
-        /// <returns>A task which can be awaited.</returns>
-        internal abstract System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader);
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        internal abstract System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken);
 
 #endif
     }

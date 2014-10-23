@@ -15,6 +15,7 @@ namespace MicroLite.Core
     using System;
     using System.Data;
     using System.Data.Common;
+    using System.Threading;
     using MicroLite.Mapping;
     using MicroLite.TypeConverters;
 
@@ -72,9 +73,9 @@ namespace MicroLite.Core
 
 #if NET_4_5
 
-        internal override async System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader)
+        internal override async System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
-            if (await reader.ReadAsync().ConfigureAwait(false))
+            if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
                 if (TypeConverter.IsNotEntityAndConvertible(resultType))
                 {
@@ -91,7 +92,7 @@ namespace MicroLite.Core
 
                 this.HasValue = true;
 
-                if (await reader.ReadAsync().ConfigureAwait(false))
+                if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
                     throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }

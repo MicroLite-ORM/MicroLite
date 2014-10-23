@@ -114,9 +114,19 @@
             return this.command.ExecuteNonQuery();
         }
 
+        public override Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken)
+        {
+            return Task.FromResult(this.command.ExecuteNonQuery());
+        }
+
         public override object ExecuteScalar()
         {
             return this.command.ExecuteScalar();
+        }
+
+        public override Task<object> ExecuteScalarAsync(CancellationToken cancellationToken)
+        {
+            return Task.FromResult(this.command.ExecuteScalar());
         }
 
         public override void Prepare()

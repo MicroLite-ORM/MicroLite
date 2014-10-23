@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Threading;
     using MicroLite.Core;
     using MicroLite.Tests.TestEntities;
     using Moq;
@@ -94,7 +95,7 @@
             {
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait();
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait();
             }
 
             [Fact]
@@ -129,7 +130,7 @@
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
                 this.include.OnLoad(inc => callbackCalled = object.ReferenceEquals(inc, this.include));
-                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait();
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait();
             }
 
             [Fact]
@@ -168,7 +169,7 @@
                 this.mockReader.Setup(x => x[0]).Returns("Foo");
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait();
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait();
             }
 
             [Fact]
@@ -329,7 +330,7 @@
             {
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
 
-                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait();
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait();
             }
 
             [Fact]
@@ -362,7 +363,7 @@
                 this.mockReader.Setup(x => x[0]).Returns(10);
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait();
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait();
             }
 
             [Fact]
@@ -529,7 +530,7 @@
             public void BuildValueAsyncShouldThrowAMicroLiteException()
             {
                 var exception = Assert.Throws<AggregateException>(
-                    () => this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait());
+                    () => this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait());
 
                 Assert.IsType<MicroLiteException>(exception.InnerException);
                 Assert.Equal(ExceptionMessages.IncludeScalar_MultipleColumns, exception.InnerException.Message);
@@ -552,7 +553,7 @@
             public void BuildValueAsyncShouldThrowAMicroLiteException()
             {
                 var exception = Assert.Throws<AggregateException>(
-                    () => this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object)).Wait());
+                    () => this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait());
 
                 Assert.IsType<MicroLiteException>(exception.InnerException);
                 Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.InnerException.Message);

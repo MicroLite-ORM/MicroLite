@@ -18,6 +18,7 @@ namespace MicroLite.Core
     using System.Collections.Generic;
     using System.Data.Common;
     using System.Globalization;
+    using System.Threading;
     using System.Threading.Tasks;
     using MicroLite.Builder;
     using MicroLite.Dialect;
@@ -68,7 +69,12 @@ namespace MicroLite.Core
             }
         }
 
-        public async Task ExecutePendingQueriesAsync()
+        public Task ExecutePendingQueriesAsync()
+        {
+            return this.ExecutePendingQueriesAsync(CancellationToken.None);
+        }
+
+        public async Task ExecutePendingQueriesAsync(CancellationToken cancellationToken)
         {
             if (Log.IsDebug)
             {
@@ -79,11 +85,11 @@ namespace MicroLite.Core
             {
                 if (this.DbDriver.SupportsBatchedQueries && this.queries.Count > 1)
                 {
-                    await this.ExecuteQueriesCombinedAsync().ConfigureAwait(false);
+                    await this.ExecuteQueriesCombinedAsync(cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    await this.ExecuteQueriesIndividuallyAsync().ConfigureAwait(false);
+                    await this.ExecuteQueriesIndividuallyAsync(cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -107,7 +113,12 @@ namespace MicroLite.Core
             }
         }
 
-        public async Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery)
+        public Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery)
+        {
+            return this.FetchAsync<T>(sqlQuery, CancellationToken.None);
+        }
+
+        public async Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
         {
             this.ThrowIfDisposed();
 
@@ -121,7 +132,7 @@ namespace MicroLite.Core
             this.includes.Enqueue(include);
             this.queries.Enqueue(sqlQuery);
 
-            await this.ExecutePendingQueriesAsync().ConfigureAwait(false);
+            await this.ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
 
             return include.Values;
         }
@@ -198,7 +209,12 @@ namespace MicroLite.Core
             return include;
         }
 
-        public async Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions)
+        public Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions)
+        {
+            return this.PagedAsync<T>(sqlQuery, pagingOptions, CancellationToken.None);
+        }
+
+        public async Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions, CancellationToken cancellationToken)
         {
             this.ThrowIfDisposed();
 
@@ -224,14 +240,20 @@ namespace MicroLite.Core
             var pagedSqlQuery = this.SqlDialect.PageQuery(sqlQuery, pagingOptions);
             this.queries.Enqueue(pagedSqlQuery);
 
-            await this.ExecutePendingQueriesAsync().ConfigureAwait(false);
+            await this.ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
 
             var page = (pagingOptions.Offset / pagingOptions.Count) + 1;
 
             return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
         }
 
-        public async Task<T> SingleAsync<T>(object identifier)
+        public Task<T> SingleAsync<T>(object identifier)
+            where T : class, new()
+        {
+            return this.SingleAsync<T>(identifier, CancellationToken.None);
+        }
+
+        public async Task<T> SingleAsync<T>(object identifier, CancellationToken cancellationToken)
             where T : class, new()
         {
             this.ThrowIfDisposed();
@@ -243,12 +265,17 @@ namespace MicroLite.Core
 
             var include = this.Include.Single<T>(identifier);
 
-            await this.ExecutePendingQueriesAsync().ConfigureAwait(false);
+            await this.ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
 
             return include.Value;
         }
 
-        public async Task<T> SingleAsync<T>(SqlQuery sqlQuery)
+        public Task<T> SingleAsync<T>(SqlQuery sqlQuery)
+        {
+            return this.SingleAsync<T>(sqlQuery, CancellationToken.None);
+        }
+
+        public async Task<T> SingleAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
         {
             this.ThrowIfDisposed();
 
@@ -262,12 +289,12 @@ namespace MicroLite.Core
             this.includes.Enqueue(include);
             this.queries.Enqueue(sqlQuery);
 
-            await this.ExecutePendingQueriesAsync().ConfigureAwait(false);
+            await this.ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
 
             return include.Value;
         }
 
-        private async Task ExecuteQueriesCombinedAsync()
+        private async Task ExecuteQueriesCombinedAsync(CancellationToken cancellationToken)
         {
             var combinedSqlQuery = this.queries.Count == 2
                 ? this.DbDriver.Combine(this.queries.Dequeue(), this.queries.Dequeue())
@@ -277,12 +304,12 @@ namespace MicroLite.Core
             {
                 try
                 {
-                    using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
+                    using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
                     {
                         do
                         {
                             var include = this.includes.Dequeue();
-                            await include.BuildValueAsync(reader).ConfigureAwait(false);
+                            await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
                         }
                         while (reader.NextResult());
                     }
@@ -294,7 +321,7 @@ namespace MicroLite.Core
             }
         }
 
-        private async Task ExecuteQueriesIndividuallyAsync()
+        private async Task ExecuteQueriesIndividuallyAsync(CancellationToken cancellationToken)
         {
             do
             {
@@ -304,10 +331,10 @@ namespace MicroLite.Core
                 {
                     try
                     {
-                        using (var reader = await command.ExecuteReaderAsync().ConfigureAwait(false))
+                        using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
                         {
                             var include = this.includes.Dequeue();
-                            await include.BuildValueAsync(reader).ConfigureAwait(false);
+                            await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
                         }
                     }
                     finally
