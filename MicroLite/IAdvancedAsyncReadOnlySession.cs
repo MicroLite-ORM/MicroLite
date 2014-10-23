@@ -14,6 +14,7 @@ namespace MicroLite
 {
 #if NET_4_5
 
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -28,8 +29,17 @@ namespace MicroLite
         /// <summary>
         /// Asynchronously executes any pending queries which have been queued using the Include API.
         /// </summary>
-        /// <returns>A Task which can be awaited.</returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <remarks>Invokes ExecutePendingQueriesAsync(CancellationToken) with CancellationToken.None.</remarks>
         Task ExecutePendingQueriesAsync();
+
+        /// <summary>
+        /// Asynchronously executes any pending queries which have been queued using the Include API.
+        /// This method propagates a notification that operations should be cancelled.
+        /// </summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task ExecutePendingQueriesAsync(CancellationToken cancellationToken);
     }
 
 #endif

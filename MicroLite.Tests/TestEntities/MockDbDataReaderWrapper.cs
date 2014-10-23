@@ -5,6 +5,8 @@
     using System;
     using System.Data;
     using System.Data.Common;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     internal sealed class MockDbDataReaderWrapper : DbDataReader
     {
@@ -199,6 +201,11 @@
         public override bool Read()
         {
             return this.dataReader.Read();
+        }
+
+        public override Task<bool> ReadAsync(CancellationToken cancellationToken)
+        {
+            return Task.FromResult(this.dataReader.Read());
         }
 
         protected override void Dispose(bool disposing)
