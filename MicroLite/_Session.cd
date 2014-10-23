@@ -79,7 +79,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.IAdvancedAsyncReadOnlySession">
-    <Position X="6.75" Y="2.75" Width="2.5" />
+    <Position X="6.75" Y="2.75" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IAdvancedAsyncReadOnlySession.cs</FileName>
@@ -93,14 +93,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.IAdvancedAsyncSession">
-    <Position X="9.75" Y="2.75" Width="2" />
+    <Position X="10.75" Y="2.75" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAAAAgAAAAAAAAAAMA=</HashCode>
       <FileName>IAdvancedAsyncSession.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="MicroLite.IAsyncSession">
-    <Position X="4" Y="6.75" Width="1.5" />
+    <Position X="3.5" Y="6.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAgAAAAAAAACAIA=</HashCode>
       <FileName>IAsyncSession.cs</FileName>

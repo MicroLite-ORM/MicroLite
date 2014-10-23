@@ -11,28 +11,28 @@
   <Class Name="MicroLite.Dialect.MySqlDialect">
     <Position X="8.25" Y="6" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAQAAAAAAAIAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAQAAAAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dialect\MySqlDialect.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Dialect.PostgreSqlDialect">
     <Position X="5.5" Y="6" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAQAAAAAAAIAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAQAAAAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dialect\PostgreSqlDialect.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Dialect.SQLiteDialect">
     <Position X="11" Y="6" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAQAAAAAAAIAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAQAAAAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dialect\SQLiteDialect.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Dialect.SqlServerCeDialect">
     <Position X="13.75" Y="6" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAQAAAAAAAIAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAQAAAAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dialect\SqlServerCeDialect.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -46,14 +46,14 @@
   <Class Name="MicroLite.Dialect.MsSql2005Dialect">
     <Position X="2.75" Y="6" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAQAAAAAAAIAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAQAAAAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dialect\MsSql2005Dialect.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Dialect.MsSql2012Dialect">
     <Position X="2.75" Y="9" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAQAAAAAAAAAgAAAAQAAAAAAAAAABgAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAQAAAAAAAAAgAAAAQAAAAAAAAAABAAAAAAAAAAA=</HashCode>
       <FileName>Dialect\MsSql2012Dialect.cs</FileName>
     </TypeIdentifier>
   </Class>

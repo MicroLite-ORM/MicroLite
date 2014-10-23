@@ -3,7 +3,7 @@
   <Class Name="MicroLite.Driver.DbDriver">
     <Position X="5.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAEIAAAhQAAAICAAAAEECAAAgAAQAAAAACABABAACQA=</HashCode>
+      <HashCode>AAEIAAAhQAAAIAAAAAEECAAAgAAQAAAAACABABAACQA=</HashCode>
       <FileName>Driver\DbDriver.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

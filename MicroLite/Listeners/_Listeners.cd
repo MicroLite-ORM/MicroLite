@@ -19,7 +19,7 @@
     <Position X="0.5" Y="3" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Listeners\ListenerCollection.cs</FileName>
+      <FileName>Logging\ListenerCollection.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="MicroLite.Listeners.IListener">
