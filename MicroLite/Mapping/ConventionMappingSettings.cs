@@ -43,7 +43,7 @@ namespace MicroLite.Mapping
             this.InflectionService = Inflection.InflectionService.English;
             this.IsIdentifier = (PropertyInfo propertyInfo) =>
             {
-                return propertyInfo.Name == "Id" || propertyInfo.Name == propertyInfo.DeclaringType.Name + "Id";
+                return propertyInfo.Name == "Id" || propertyInfo.Name == propertyInfo.ReflectedType.Name + "Id";
             };
             this.ResolveColumnName = (PropertyInfo propertyInfo) =>
             {

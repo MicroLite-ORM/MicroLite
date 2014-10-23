@@ -13,6 +13,19 @@
     /// </summary>
     public class ConventionMappingConventionTests
     {
+        public class CustomerEntity : EntityBase
+        {
+        }
+
+        public class EntityBase
+        {
+            public int CustomerEntityId
+            {
+                get;
+                set;
+            }
+        }
+
         public class WhenCallingCreateObjectInfoAndTypeIsNull
         {
             [Fact]
@@ -410,6 +423,30 @@
             public void TheInvoiceIdShouldBeIdentifier()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "InvoiceId").IsIdentifier);
+            }
+        }
+
+        /// <summary>
+        /// Issue #353 - Convention based mapping fails to consider inherited property as identifier.
+        /// </summary>
+        public class WhenTheIdentifierPropertyIsInherited : UnitTest
+        {
+            private readonly IObjectInfo objectInfo;
+
+            public WhenTheIdentifierPropertyIsInherited()
+            {
+                var settings = UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated);
+
+                var mappingConvention = new ConventionMappingConvention(settings);
+
+                this.objectInfo = mappingConvention.CreateObjectInfo(typeof(CustomerEntity));
+            }
+
+            [Fact]
+            public void ItShouldStillBeAcceptedIfItMatchesConventions()
+            {
+                Assert.NotNull(objectInfo.TableInfo.IdentifierColumn);
+                Assert.Equal("CustomerEntityId", objectInfo.TableInfo.IdentifierColumn.PropertyInfo.Name);
             }
         }
 
