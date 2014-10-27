@@ -3,7 +3,7 @@
   <Class Name="MicroLite.Driver.DbDriver">
     <Position X="5.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAEIAAAhQAAAIAAAAAEECAAAgAAQAAAAACABABAACQA=</HashCode>
+      <HashCode>AAEIAAAhQAAAIAAAAAEACAAAgAAQAAAAACABBBAACQA=</HashCode>
       <FileName>Driver\DbDriver.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -37,9 +37,9 @@
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Driver.SqlServerCeDbDriver">
-    <Position X="11.25" Y="6.25" Width="1.75" />
+    <Position X="11.25" Y="6.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
       <FileName>Driver\SqlServerCeDbDriver.cs</FileName>
     </TypeIdentifier>
   </Class>

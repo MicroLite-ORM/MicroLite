@@ -26,11 +26,11 @@ namespace MicroLite.Driver
     /// <summary>
     /// The base class for implementations of <see cref="IDbDriver" />.
     /// </summary>
-    internal abstract class DbDriver : IDbDriver
+    public abstract class DbDriver : IDbDriver
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly SqlCharacters sqlCharacters;
-        private bool handleStringsAsUnicode;
+        private bool handleStringsAsUnicode = true;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="DbDriver" /> class.
@@ -38,7 +38,6 @@ namespace MicroLite.Driver
         /// <param name="sqlCharacters">The SQL characters.</param>
         protected DbDriver(SqlCharacters sqlCharacters)
         {
-            this.handleStringsAsUnicode = true;
             this.sqlCharacters = sqlCharacters;
         }
 
@@ -93,7 +92,7 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Gets the SQL characters used by the database.
+        /// Gets the SQL characters used by the DbDriver.
         /// </summary>
         protected SqlCharacters SqlCharacters
         {
@@ -104,7 +103,19 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Gets a value indicating whether the database supports stored procedures.
+        /// Gets a value indicating whether this DbDriver supports command timeout.
+        /// </summary>
+        /// <remarks>Returns true unless overridden.</remarks>
+        protected virtual bool SupportsCommandTimeout
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this DbDriver supports stored procedures.
         /// </summary>
         protected bool SupportsStoredProcedures
         {
@@ -120,11 +131,17 @@ namespace MicroLite.Driver
         /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
         /// <returns>An IDbCommand with the CommandText, CommandType, Timeout and Parameters set.</returns>
         /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
         public IDbCommand BuildCommand(SqlQuery sqlQuery)
         {
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
+            }
+
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.DbDialect_BuildingCommand);
             }
 
             var parameterNames = SqlUtility.GetParameterNames(sqlQuery.CommandText);
@@ -141,12 +158,9 @@ namespace MicroLite.Driver
                 throw new MicroLiteException(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
             }
 
-            if (log.IsDebug)
-            {
-                log.Debug(LogMessages.DbDialect_BuildingCommand);
-            }
-
-            var command = this.CreateCommand(sqlQuery);
+            var command = this.DbProviderFactory.CreateCommand();
+            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
+            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
 
             for (int i = 0; i < parameterNames.Count; i++)
             {
@@ -157,6 +171,11 @@ namespace MicroLite.Driver
                 this.BuildParameter(parameter, parameterName, sqlArgument);
 
                 command.Parameters.Add(parameter);
+            }
+
+            if (this.SupportsCommandTimeout)
+            {
+                command.CommandTimeout = sqlQuery.Timeout;
             }
 
             return command;
@@ -289,23 +308,6 @@ namespace MicroLite.Driver
             parameter.Direction = ParameterDirection.Input;
             parameter.ParameterName = parameterName;
             parameter.Value = sqlArgument.Value ?? DBNull.Value;
-        }
-
-        /// <summary>
-        /// Creates an IDbCommand command using the values in the specified SqlQuery.
-        /// </summary>
-        /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
-        /// <returns>An IDbCommand with the CommandText, CommandType and Timeout set.</returns>
-        /// <remarks>The parameters should not be added at this point, they are handled by BuildParameter.</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
-        protected virtual IDbCommand CreateCommand(SqlQuery sqlQuery)
-        {
-            var command = this.DbProviderFactory.CreateCommand();
-            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
-            command.CommandTimeout = sqlQuery.Timeout;
-            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
-
-            return command;
         }
 
         /// <summary>

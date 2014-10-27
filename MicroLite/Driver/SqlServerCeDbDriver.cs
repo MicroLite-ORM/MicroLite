@@ -12,7 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Driver
 {
-    using System.Data;
     using MicroLite.Characters;
 
     /// <summary>
@@ -29,19 +28,18 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Creates an IDbCommand command using the values in the specified SqlQuery.
+        /// Gets a value indicating whether this DbDriver supports command timeout.
         /// </summary>
-        /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
-        /// <returns>An IDbCommand with the CommandText and CommandType set.</returns>
-        /// <remarks>SQL Server Compact Edition doesn't support command timeout so it is not set.</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
-        protected override IDbCommand CreateCommand(SqlQuery sqlQuery)
+        /// <remarks>
+        /// Returns true unless overridden.
+        /// </remarks>
+        /// <remarks>SQL Server Compact Edition doesn't support command timeout.</remarks>
+        protected override bool SupportsCommandTimeout
         {
-            var command = this.DbProviderFactory.CreateCommand();
-            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
-            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
-
-            return command;
+            get
+            {
+                return false;
+            }
         }
     }
 }

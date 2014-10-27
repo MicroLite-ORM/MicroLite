@@ -22,7 +22,7 @@ namespace MicroLite.Dialect
     /// <summary>
     /// The base class for implementations of <see cref="ISqlDialect" />.
     /// </summary>
-    internal abstract class SqlDialect : ISqlDialect
+    public abstract class SqlDialect : ISqlDialect
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly SqlCharacters sqlCharacters;
@@ -86,17 +86,14 @@ namespace MicroLite.Dialect
 
             if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out deleteCommand))
             {
-                var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
-                    .From(objectInfo)
-                    .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, identifier)
-                    .ToSqlQuery();
+                var commandText = this.BuildDeleteCommandText(objectInfo);
 
                 var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
-                newDeleteCommandCache[objectInfo.ForType] = deleteSqlQuery.CommandText;
+                newDeleteCommandCache[objectInfo.ForType] = commandText;
 
                 this.deleteCommandCache = newDeleteCommandCache;
 
-                deleteCommand = deleteSqlQuery.CommandText;
+                deleteCommand = commandText;
             }
 
             return new SqlQuery(deleteCommand, new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType));
@@ -176,17 +173,14 @@ namespace MicroLite.Dialect
 
             if (!this.selectCommandCache.TryGetValue(objectInfo.ForType, out selectCommand))
             {
-                var selectSqlQuery = new SelectSqlBuilder(this.SqlCharacters)
-                    .From(objectInfo)
-                    .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(identifier)
-                    .ToSqlQuery();
+                var commandText = this.BuildSelectCommandText(objectInfo);
 
                 var newSelectCommandCache = new Dictionary<Type, string>(this.selectCommandCache);
-                newSelectCommandCache[objectInfo.ForType] = selectSqlQuery.CommandText;
+                newSelectCommandCache[objectInfo.ForType] = commandText;
 
                 this.selectCommandCache = newSelectCommandCache;
 
-                selectCommand = selectSqlQuery.CommandText;
+                selectCommand = commandText;
             }
 
             return new SqlQuery(selectCommand, new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType));
@@ -216,25 +210,11 @@ namespace MicroLite.Dialect
 
             if (!this.updateCommandCache.TryGetValue(objectInfo.ForType, out updateCommand))
             {
-                var builder = new UpdateSqlBuilder(this.SqlCharacters)
-                    .Table(objectInfo);
-
-                for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
-                {
-                    var columnInfo = objectInfo.TableInfo.Columns[i];
-
-                    if (columnInfo.AllowUpdate)
-                    {
-                        builder.SetColumnValue(columnInfo.ColumnName, null);
-                    }
-                }
-
-                var updateSqlQuery = builder.WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectInfo.GetIdentifierValue(instance))
-                    .ToSqlQuery();
+                var commandText = this.BuildUpdateCommandText(objectInfo);
 
                 var newUpdateCommandCache = new Dictionary<Type, string>(this.updateCommandCache);
-                newUpdateCommandCache[objectInfo.ForType] = updateSqlQuery.CommandText;
-                updateCommand = updateSqlQuery.CommandText;
+                newUpdateCommandCache[objectInfo.ForType] = commandText;
+                updateCommand = commandText;
 
                 this.updateCommandCache = newUpdateCommandCache;
             }
@@ -319,6 +299,23 @@ namespace MicroLite.Dialect
         public abstract SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions);
 
         /// <summary>
+        /// Builds the command text to delete a database record for the specified <see cref="IObjectInfo"/>.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <returns>
+        /// The created command text.
+        /// </returns>
+        protected virtual string BuildDeleteCommandText(IObjectInfo objectInfo)
+        {
+            var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
+                .From(objectInfo)
+                .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, 0)
+                .ToSqlQuery();
+
+            return deleteSqlQuery.CommandText;
+        }
+
+        /// <summary>
         /// Builds the command text to insert a database record for the specified <see cref="IObjectInfo"/>.
         /// </summary>
         /// <param name="objectInfo">The object information.</param>
@@ -347,6 +344,52 @@ namespace MicroLite.Dialect
                 .ToSqlQuery();
 
             return insertSqlQuery.CommandText;
+        }
+
+        /// <summary>
+        /// Builds the command text to select a database record for the specified <see cref="IObjectInfo"/>.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <returns>
+        /// The created command text.
+        /// </returns>
+        protected virtual string BuildSelectCommandText(IObjectInfo objectInfo)
+        {
+            var selectSqlQuery = new SelectSqlBuilder(this.SqlCharacters)
+                .From(objectInfo)
+                .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0)
+                .ToSqlQuery();
+
+            return selectSqlQuery.CommandText;
+        }
+
+        /// <summary>
+        /// Builds the command text to update a database record for the specified <see cref="IObjectInfo"/>.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <returns>
+        /// The created command text.
+        /// </returns>
+        protected virtual string BuildUpdateCommandText(IObjectInfo objectInfo)
+        {
+            var builder = new UpdateSqlBuilder(this.SqlCharacters)
+                       .Table(objectInfo);
+
+            for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
+            {
+                var columnInfo = objectInfo.TableInfo.Columns[i];
+
+                if (columnInfo.AllowUpdate)
+                {
+                    builder.SetColumnValue(columnInfo.ColumnName, null);
+                }
+            }
+
+            var updateSqlQuery = builder
+                .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, 0)
+                .ToSqlQuery();
+
+            return updateSqlQuery.CommandText;
         }
     }
 }
