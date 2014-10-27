@@ -186,4 +186,19 @@
   <data name="Session_ExecutingQueries" xml:space="preserve">
     <value>Executing '{0}' queries</value>
   </data>
+  <data name="DbDialect_BuildingCommand" xml:space="preserve">
+    <value>Building an IDbCommand for the SqlQuery</value>
+  </data>
+  <data name="ObjectInfo_CreatingInstance" xml:space="preserve">
+    <value>Creating instance of '{0}' using the results in the IDataReader</value>
+  </data>
+  <data name="SqlDialect_CreatingSqlQuery" xml:space="preserve">
+    <value>Creating '{0}' SqlQuery</value>
+  </data>
+  <data name="SessionFactory_CreatingAsyncReadOnlySession" xml:space="preserve">
+    <value>Creating a new async read only session for connection named '{0}'</value>
+  </data>
+  <data name="SessionFactory_CreatingAsyncSession" xml:space="preserve">
+    <value>Creating a new async session for connection named '{0}'</value>
+  </data>
 </root>

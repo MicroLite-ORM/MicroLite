@@ -141,6 +141,11 @@ namespace MicroLite.Driver
                 throw new MicroLiteException(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
             }
 
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.DbDialect_BuildingCommand);
+            }
+
             var command = this.CreateCommand(sqlQuery);
 
             for (int i = 0; i < parameterNames.Count; i++)

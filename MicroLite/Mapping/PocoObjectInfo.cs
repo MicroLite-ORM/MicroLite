@@ -15,6 +15,7 @@ namespace MicroLite.Mapping
     using System;
     using System.Data;
     using MicroLite.FrameworkExtensions;
+    using MicroLite.Logging;
 
     /// <summary>
     /// The class which describes a type and the table it is mapped to.
@@ -22,6 +23,7 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     public sealed class PocoObjectInfo : IObjectInfo
     {
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly object defaultIdentifierValue;
         private readonly Type forType;
         private readonly Func<object, object> getIdentifierValue;
@@ -103,6 +105,11 @@ namespace MicroLite.Mapping
             if (reader == null)
             {
                 throw new ArgumentNullException("reader");
+            }
+
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.ObjectInfo_CreatingInstance, this.forType.FullName);
             }
 
             var instance = this.instanceFactory(reader);

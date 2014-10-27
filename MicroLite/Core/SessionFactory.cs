@@ -63,7 +63,7 @@ namespace MicroLite.Core
         {
             if (log.IsDebug)
             {
-                log.Debug(LogMessages.SessionFactory_CreatingReadOnlySession, this.connectionName);
+                log.Debug(LogMessages.SessionFactory_CreatingAsyncReadOnlySession, this.connectionName);
             }
 
             SqlCharacters.Current = this.sqlDialect.SqlCharacters;
@@ -80,7 +80,7 @@ namespace MicroLite.Core
         {
             if (log.IsDebug)
             {
-                log.Debug(LogMessages.SessionFactory_CreatingSession, this.connectionName);
+                log.Debug(LogMessages.SessionFactory_CreatingAsyncSession, this.connectionName);
             }
 
             SqlCharacters.Current = this.sqlDialect.SqlCharacters;

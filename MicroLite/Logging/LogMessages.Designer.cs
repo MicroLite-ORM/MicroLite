@@ -97,6 +97,15 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Building an IDbCommand for the SqlQuery.
+        /// </summary>
+        internal static string DbDialect_BuildingCommand {
+            get {
+                return ResourceManager.GetString("DbDialect_BuildingCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creating a session factory for the connection named &apos;{0}&apos; using the &apos;{1}&apos; and &apos;{2}&apos;.
         /// </summary>
         internal static string FluentConfiguration_CreatingSessionFactory {
@@ -142,6 +151,15 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creating instance of &apos;{0}&apos; using the results in the IDataReader.
+        /// </summary>
+        internal static string ObjectInfo_CreatingInstance {
+            get {
+                return ResourceManager.GetString("ObjectInfo_CreatingInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creating the ObjectInfo for the type &apos;{0}&apos;.
         /// </summary>
         internal static string ObjectInfo_CreatingObjectInfo {
@@ -178,6 +196,24 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creating a new async read only session for connection named &apos;{0}&apos;.
+        /// </summary>
+        internal static string SessionFactory_CreatingAsyncReadOnlySession {
+            get {
+                return ResourceManager.GetString("SessionFactory_CreatingAsyncReadOnlySession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating a new async session for connection named &apos;{0}&apos;.
+        /// </summary>
+        internal static string SessionFactory_CreatingAsyncSession {
+            get {
+                return ResourceManager.GetString("SessionFactory_CreatingAsyncSession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creating a new read only session for connection named &apos;{0}&apos;.
         /// </summary>
         internal static string SessionFactory_CreatingReadOnlySession {
@@ -192,6 +228,15 @@ namespace MicroLite.Logging {
         internal static string SessionFactory_CreatingSession {
             get {
                 return ResourceManager.GetString("SessionFactory_CreatingSession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating &apos;{0}&apos; SqlQuery.
+        /// </summary>
+        internal static string SqlDialect_CreatingSqlQuery {
+            get {
+                return ResourceManager.GetString("SqlDialect_CreatingSqlQuery", resourceCulture);
             }
         }
         

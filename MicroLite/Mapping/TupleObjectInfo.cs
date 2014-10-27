@@ -16,11 +16,13 @@ namespace MicroLite.Mapping
 
     using System;
     using System.Data;
+    using MicroLite.Logging;
 
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     internal sealed class TupleObjectInfo : IObjectInfo
     {
         private static readonly Type forType = typeof(Tuple);
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
 
         public Type ForType
         {
@@ -43,6 +45,11 @@ namespace MicroLite.Mapping
             if (reader == null)
             {
                 throw new ArgumentNullException("reader");
+            }
+
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.ObjectInfo_CreatingInstance, forType.Name);
             }
 
             var fieldTypes = new Type[reader.FieldCount];

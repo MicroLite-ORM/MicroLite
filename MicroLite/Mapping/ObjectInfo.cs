@@ -14,6 +14,8 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
@@ -85,6 +87,15 @@ namespace MicroLite.Mapping
                 }
 
                 objectInfo = MappingConvention.CreateObjectInfo(forType);
+
+                if (log.IsDebug)
+                {
+                    using (var stringWriter = new StringWriter(CultureInfo.InvariantCulture))
+                    {
+                        objectInfo.EmitMappings(stringWriter);
+                        log.Debug(stringWriter.ToString());
+                    }
+                }
 
                 var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos);
                 newObjectInfos[forType] = objectInfo;

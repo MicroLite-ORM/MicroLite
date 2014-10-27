@@ -16,6 +16,7 @@ namespace MicroLite.Dialect
     using System.Collections.Generic;
     using MicroLite.Builder;
     using MicroLite.Characters;
+    using MicroLite.Logging;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -23,6 +24,7 @@ namespace MicroLite.Dialect
     /// </summary>
     internal abstract class SqlDialect : ISqlDialect
     {
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly SqlCharacters sqlCharacters;
         private Dictionary<Type, string> deleteCommandCache = new Dictionary<Type, string>();
         private Dictionary<Type, string> insertCommandCache = new Dictionary<Type, string>();
@@ -75,6 +77,11 @@ namespace MicroLite.Dialect
                 throw new ArgumentNullException("objectInfo");
             }
 
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "DELETE");
+            }
+
             string deleteCommand;
 
             if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out deleteCommand))
@@ -108,6 +115,11 @@ namespace MicroLite.Dialect
             if (objectInfo == null)
             {
                 throw new ArgumentNullException("objectInfo");
+            }
+
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "INSERT");
             }
 
             string insertCommand;
@@ -155,6 +167,11 @@ namespace MicroLite.Dialect
                 throw new ArgumentNullException("objectInfo");
             }
 
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "SELECT");
+            }
+
             string selectCommand;
 
             if (!this.selectCommandCache.TryGetValue(objectInfo.ForType, out selectCommand))
@@ -188,6 +205,11 @@ namespace MicroLite.Dialect
             if (objectInfo == null)
             {
                 throw new ArgumentNullException("objectInfo");
+            }
+
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "UPDATE");
             }
 
             string updateCommand;
@@ -236,6 +258,11 @@ namespace MicroLite.Dialect
                 throw new ArgumentNullException("objectDelta");
             }
 
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "UPDATE");
+            }
+
             var objectInfo = ObjectInfo.For(objectDelta.ForType);
 
             var builder = new UpdateSqlBuilder(this.SqlCharacters)
@@ -265,6 +292,11 @@ namespace MicroLite.Dialect
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
+            }
+
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "COUNT");
             }
 
             var sqlString = SqlString.Parse(sqlQuery.CommandText, Clauses.From | Clauses.Where);

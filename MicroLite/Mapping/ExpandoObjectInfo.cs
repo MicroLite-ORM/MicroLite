@@ -18,11 +18,13 @@ namespace MicroLite.Mapping
     using System.Collections.Generic;
     using System.Data;
     using System.Dynamic;
+    using MicroLite.Logging;
 
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     internal sealed class ExpandoObjectInfo : IObjectInfo
     {
         private static readonly Type forType = typeof(ExpandoObject);
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
 
         public Type ForType
         {
@@ -45,6 +47,11 @@ namespace MicroLite.Mapping
             if (reader == null)
             {
                 throw new ArgumentNullException("reader");
+            }
+
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.ObjectInfo_CreatingInstance, forType.Name);
             }
 
             var instance = new ExpandoObject();
