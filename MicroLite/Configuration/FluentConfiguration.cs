@@ -78,6 +78,33 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("connectionName");
             }
 
+            var configSection = ConfigurationManager.ConnectionStrings[connectionName];
+
+            if (configSection == null)
+            {
+                throw new ConfigurationException(ExceptionMessages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
+            }
+
+            return this.ForConnection(configSection.Name, configSection.ConnectionString, configSection.ProviderName, sqlDialect, dbDriver);
+        }
+
+        public ICreateSessionFactory ForConnection(string connectionName, string connectionString, string providerName, ISqlDialect sqlDialect, IDbDriver dbDriver)
+        {
+            if (connectionName == null)
+            {
+                throw new ArgumentNullException("connectionName");
+            }
+
+            if (connectionString == null)
+            {
+                throw new ArgumentNullException("connectionString");
+            }
+
+            if (providerName == null)
+            {
+                throw new ArgumentNullException("providerName");
+            }
+
             if (sqlDialect == null)
             {
                 throw new ArgumentNullException("sqlDialect");
@@ -88,18 +115,11 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException("dbDriver");
             }
 
-            var configSection = ConfigurationManager.ConnectionStrings[connectionName];
-
-            if (configSection == null)
-            {
-                throw new ConfigurationException(ExceptionMessages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
-            }
-
-            this.chosenConnectionName = configSection.Name;
-            this.chosenSqlDialect = sqlDialect;
+            this.chosenConnectionName = connectionName;
             this.chosenDbDriver = dbDriver;
-            this.chosenDbDriver.ConnectionString = configSection.ConnectionString;
-            this.chosenDbDriver.DbProviderFactory = DbProviderFactories.GetFactory(configSection.ProviderName);
+            this.chosenDbDriver.ConnectionString = connectionString;
+            this.chosenDbDriver.DbProviderFactory = DbProviderFactories.GetFactory(providerName);
+            this.chosenSqlDialect = sqlDialect;
 
             return this;
         }

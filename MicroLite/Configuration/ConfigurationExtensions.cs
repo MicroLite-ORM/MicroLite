@@ -30,7 +30,7 @@ namespace MicroLite.Configuration
         /// <param name="configureConnection">The interface to configure a connection.</param>
         /// <param name="connectionName">The name of the connection string in the app/web config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         public static ICreateSessionFactory ForFirebirdConnection(this IConfigureConnection configureConnection, string connectionName)
         {
@@ -43,13 +43,33 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// Configures a MS SQL 2005 (or later) connection using the connection string with the specified name
+        /// Configures a Firebird connection using the specified connection name,
+        /// connection string string and provider name.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name for the connection.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="providerName">The name of the provider.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
+        public static ICreateSessionFactory ForFirebirdConnection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, connectionString, providerName, new FirebirdSqlDialect(), new FirebirdDbDriver());
+        }
+
+        /// <summary>
+        /// Configures an MS SQL 2005 (or later) connection using the connection string with the specified name
         /// in the connection strings section of the app/web config.
         /// </summary>
         /// <param name="configureConnection">The interface to configure a connection.</param>
         /// <param name="connectionName">The name of the connection string in the app/web config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
         public static ICreateSessionFactory ForMsSql2005Connection(this IConfigureConnection configureConnection, string connectionName)
@@ -63,13 +83,34 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
-        /// Configures a MS SQL 2012 (or later) connection using the connection string with the specified name
+        /// Configures an MS SQL 2005 (or later) connection using the specified connection name,
+        /// connection string string and provider name.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name for the connection.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="providerName">The name of the provider.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
+        public static ICreateSessionFactory ForMsSql2005Connection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, connectionString, providerName, new MsSql2005Dialect(), new MsSqlDbDriver());
+        }
+
+        /// <summary>
+        /// Configures an MS SQL 2012 (or later) connection using the connection string with the specified name
         /// in the connection strings section of the app/web config.
         /// </summary>
         /// <param name="configureConnection">The interface to configure a connection.</param>
         /// <param name="connectionName">The name of the connection string in the app/web config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
         public static ICreateSessionFactory ForMsSql2012Connection(this IConfigureConnection configureConnection, string connectionName)
@@ -83,13 +124,34 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
+        /// Configures an MS SQL 2012 (or later) connection using the specified connection name,
+        /// connection string string and provider name.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name for the connection.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="providerName">The name of the provider.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
+        public static ICreateSessionFactory ForMsSql2012Connection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, connectionString, providerName, new MsSql2012Dialect(), new MsSqlDbDriver());
+        }
+
+        /// <summary>
         /// Configures a MySql connection using the connection string with the specified name
         /// in the connection strings section of the app/web config.
         /// </summary>
         /// <param name="configureConnection">The interface to configure a connection.</param>
         /// <param name="connectionName">The name of the connection string in the app/web config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         public static ICreateSessionFactory ForMySqlConnection(this IConfigureConnection configureConnection, string connectionName)
         {
@@ -102,13 +164,33 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
+        /// Configures a MySql connection using the specified connection name,
+        /// connection string string and provider name.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name for the connection.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="providerName">The name of the provider.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
+        public static ICreateSessionFactory ForMySqlConnection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, connectionString, providerName, new MySqlDialect(), new MySqlDbDriver());
+        }
+
+        /// <summary>
         /// Configures a PostgreSql connection using the connection string with the specified name
         /// in the connection strings section of the app/web config.
         /// </summary>
         /// <param name="configureConnection">The interface to configure a connection.</param>
         /// <param name="connectionName">The name of the connection string in the app/web config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         public static ICreateSessionFactory ForPostgreSqlConnection(this IConfigureConnection configureConnection, string connectionName)
         {
@@ -121,13 +203,33 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
+        /// Configures a PostgreSql connection using the specified connection name,
+        /// connection string string and provider name.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name for the connection.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="providerName">The name of the provider.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
+        public static ICreateSessionFactory ForPostgreSqlConnection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, connectionString, providerName, new PostgreSqlDialect(), new PostgreSqlDbDriver());
+        }
+
+        /// <summary>
         /// Configures an SQLite connection using the connection string with the specified name
         /// in the connection strings section of the app/web config.
         /// </summary>
         /// <param name="configureConnection">The interface to configure a connection.</param>
         /// <param name="connectionName">The name of the connection string in the app/web config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         public static ICreateSessionFactory ForSQLiteConnection(this IConfigureConnection configureConnection, string connectionName)
         {
@@ -140,13 +242,33 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
+        /// Configures an SQLite connection using the specified connection name,
+        /// connection string string and provider name.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name for the connection.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="providerName">The name of the provider.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
+        public static ICreateSessionFactory ForSQLiteConnection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, connectionString, providerName, new SQLiteDialect(), new SQLiteDbDriver());
+        }
+
+        /// <summary>
         /// Configures a SQL Server Compact Edition connection using the connection string with the specified name
         /// in the connection strings section of the app/web config.
         /// </summary>
         /// <param name="configureConnection">The interface to configure a connection.</param>
         /// <param name="connectionName">The name of the connection string in the app/web config.</param>
         /// <returns>The next step in the fluent configuration.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if configureConnection or connectionName is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Ce", Justification = "More consistent with the style in this class (we haven't capitalised the s in Ms or y in My)")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "Ce", Justification = "More consistent with the style in this class (we haven't capitalised the s in Ms or y in My)")]
@@ -161,11 +283,33 @@ namespace MicroLite.Configuration
         }
 
         /// <summary>
+        /// Configures a SQL Server Compact Edition connection using the specified connection name,
+        /// connection string string and provider name.
+        /// </summary>
+        /// <param name="configureConnection">The interface to configure a connection.</param>
+        /// <param name="connectionName">The name for the connection.</param>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="providerName">The name of the provider.</param>
+        /// <returns>The next step in the fluent configuration.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Ce", Justification = "More consistent with the style in this class (we haven't capitalised the s in Ms or y in My)")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "Ce", Justification = "More consistent with the style in this class (we haven't capitalised the s in Ms or y in My)")]
+        public static ICreateSessionFactory ForSqlServerCeConnection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
+        {
+            if (configureConnection == null)
+            {
+                throw new ArgumentNullException("configureConnection");
+            }
+
+            return configureConnection.ForConnection(connectionName, connectionString, providerName, new SqlServerCeDialect(), new SqlServerCeDbDriver());
+        }
+
+        /// <summary>
         /// Configures the MicroLite ORM Framework to use attribute based mapping instead of the default convention based mapping.
         /// </summary>
         /// <param name="configureExtensions">The interface to configure extensions.</param>
         /// <returns>The interface which provides the extension points.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if configureExtensions is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         public static IConfigureExtensions WithAttributeBasedMapping(
             this IConfigureExtensions configureExtensions)
         {
@@ -185,7 +329,7 @@ namespace MicroLite.Configuration
         /// <param name="configureExtensions">The interface to configure extensions.</param>
         /// <param name="settings">The settings for the convention mapping.</param>
         /// <returns>The interface which provides the extension points.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown if configureExtensions or settings is null.</exception>
+        /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         public static IConfigureExtensions WithConventionBasedMapping(
             this IConfigureExtensions configureExtensions,
             ConventionMappingSettings settings)

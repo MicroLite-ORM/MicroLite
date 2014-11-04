@@ -14,14 +14,14 @@
     /// </summary>
     public class FluentConfigurationTests
     {
-        public class WhenCallingCreateSessionFactory : UnitTest
+        public class WhenCallingCreateSessionFactory_WithNamedConnection : UnitTest
         {
             private readonly Mock<IDbDriver> mockDbDriver = new Mock<IDbDriver>();
             private readonly Mock<ISqlDialect> mockSqlDialect = new Mock<ISqlDialect>();
             private readonly ISessionFactory sessionFactory;
             private bool sessionFactoryCreatedCalled = false;
 
-            public WhenCallingCreateSessionFactory()
+            public WhenCallingCreateSessionFactory_WithNamedConnection()
             {
                 var fluentConfiguration = new FluentConfiguration((ISessionFactory s) =>
                 {
@@ -59,13 +59,13 @@
             }
         }
 
-        public class WhenCallingCreateSessionFactory_MultipleTimesForTheSameConnection : UnitTest
+        public class WhenCallingCreateSessionFactory_WithNamedConnection_MultipleTimesForTheSameConnection : UnitTest
         {
             private readonly ISessionFactory sessionFactory1;
             private readonly ISessionFactory sessionFactory2;
             private int sessionFactoryCreatedCount = 0;
 
-            public WhenCallingCreateSessionFactory_MultipleTimesForTheSameConnection()
+            public WhenCallingCreateSessionFactory_WithNamedConnection_MultipleTimesForTheSameConnection()
             {
                 var fluentConfiguration = new FluentConfiguration((ISessionFactory s) =>
                 {
@@ -95,7 +95,77 @@
             }
         }
 
-        public class WhenCallingForConnection_AndTheConnectionNameDoesNotExistInTheAppConfig
+        public class WhenCallingForConnection_WithConnectionDetails_AndTheConnectionNameIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionShouldBeThrown()
+            {
+                var fluentConfiguration = new FluentConfiguration(sessionFactoryCreated: null);
+
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => fluentConfiguration.ForConnection(null, @"Data Source=.\;Initial Catalog=Northwind;", "System.Data.SqlClient", new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
+
+                Assert.Equal(exception.ParamName, "connectionName");
+            }
+        }
+
+        public class WhenCallingForConnection_WithConnectionDetails_AndTheConnectionStringIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionShouldBeThrown()
+            {
+                var fluentConfiguration = new FluentConfiguration(sessionFactoryCreated: null);
+
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => fluentConfiguration.ForConnection("SqlConnection", null, "System.Data.SqlClient", new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
+
+                Assert.Equal(exception.ParamName, "connectionString");
+            }
+        }
+
+        public class WhenCallingForConnection_WithConnectionDetails_AndTheDbDriverIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionShouldBeThrown()
+            {
+                var fluentConfiguration = new FluentConfiguration(sessionFactoryCreated: null);
+
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => fluentConfiguration.ForConnection("SqlConnection", @"Data Source=.\;Initial Catalog=Northwind;", "System.Data.SqlClient", new Mock<ISqlDialect>().Object, null));
+
+                Assert.Equal(exception.ParamName, "dbDriver");
+            }
+        }
+
+        public class WhenCallingForConnection_WithConnectionDetails_AndTheProviderNameIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionShouldBeThrown()
+            {
+                var fluentConfiguration = new FluentConfiguration(sessionFactoryCreated: null);
+
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => fluentConfiguration.ForConnection("SqlConnection", @"Data Source=.\;Initial Catalog=Northwind;", null, new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
+
+                Assert.Equal(exception.ParamName, "providerName");
+            }
+        }
+
+        public class WhenCallingForConnection_WithConnectionDetails_AndTheSqlDialectIsNull
+        {
+            [Fact]
+            public void AnArgumentNullExceptionShouldBeThrown()
+            {
+                var fluentConfiguration = new FluentConfiguration(sessionFactoryCreated: null);
+
+                var exception = Assert.Throws<ArgumentNullException>(
+                    () => fluentConfiguration.ForConnection("SqlConnection", @"Data Source=.\;Initial Catalog=Northwind;", "System.Data.SqlClient", null, new Mock<IDbDriver>().Object));
+
+                Assert.Equal(exception.ParamName, "sqlDialect");
+            }
+        }
+
+        public class WhenCallingForConnection_WithNamedConnection_AndTheConnectionNameDoesNotExistInTheAppConfig
         {
             [Fact]
             public void AMicroLiteConfigurationExceptionShouldBeThrown()
@@ -109,7 +179,7 @@
             }
         }
 
-        public class WhenCallingForConnection_AndTheConnectionNameIsNull
+        public class WhenCallingForConnection_WithNamedConnection_AndTheConnectionNameIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
@@ -123,7 +193,7 @@
             }
         }
 
-        public class WhenCallingForConnection_AndTheDbDriverIsNull
+        public class WhenCallingForConnection_WithNamedConnection_AndTheDbDriverIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
@@ -137,7 +207,7 @@
             }
         }
 
-        public class WhenCallingForConnection_AndTheSqlDialectIsNull
+        public class WhenCallingForConnection_WithNamedConnection_AndTheSqlDialectIsNull
         {
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
