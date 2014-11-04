@@ -51,7 +51,6 @@
 
             Assert.Equal(string.Empty, sqlQuery.CommandText);
             Assert.Equal(0, sqlQuery.Arguments.Count);
-            Assert.Equal(0, sqlQuery.Arguments.Count);
         }
 
         [Fact]
@@ -127,7 +126,6 @@
 
             Assert.Equal("SELECT COUNT(*) FROM Customers", countQuery.CommandText);
             Assert.Equal(0, countQuery.Arguments.Count);
-            Assert.Equal(0, countQuery.Arguments.Count);
         }
 
         [Fact]
@@ -153,7 +151,6 @@
             var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
 
             Assert.Equal("SELECT COUNT(*) FROM [dbo].[Customers]", countQuery.CommandText);
-            Assert.Equal(0, countQuery.Arguments.Count);
             Assert.Equal(0, countQuery.Arguments.Count);
         }
 
