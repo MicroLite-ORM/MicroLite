@@ -39,7 +39,7 @@ namespace MicroLite.TypeConverters
         /// </returns>
         public bool CanConvert(Type type)
         {
-            return type == this.uriType;
+            return this.uriType == type;
         }
 
         /// <summary>

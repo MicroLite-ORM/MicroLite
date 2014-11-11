@@ -40,7 +40,7 @@ namespace MicroLite.TypeConverters
         /// </returns>
         public bool CanConvert(Type type)
         {
-            return type == this.xdocumentType;
+            return this.xdocumentType == type;
         }
 
         /// <summary>
