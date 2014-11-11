@@ -340,7 +340,7 @@
 
             var sqlQuery = sqlDialect.BuildUpdateSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            Assert.Equal("UPDATE `Sales`.`Customers` SET `CreditLimit` = @p0,`DateOfBirth` = @p1,`Name` = @p2,`CustomerStatusId` = @p3,`Updated` = @p4,`Website` = @p5 WHERE `Id` = @p6", sqlQuery.CommandText);
+            Assert.Equal("UPDATE `Sales`.`Customers` SET `CreditLimit` = @p0,`DateOfBirth` = @p1,`Name` = @p2,`CustomerStatusId` = @p3,`Updated` = @p4,`Website` = @p5 WHERE (`Id` = @p6)", sqlQuery.CommandText);
             Assert.Equal(7, sqlQuery.Arguments.Count);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[0].DbType);

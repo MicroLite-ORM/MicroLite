@@ -12,6 +12,9 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Builder
 {
+    using MicroLite.Builder.Syntax;
+    using MicroLite.Builder.Syntax.Read;
+    using MicroLite.Builder.Syntax.Write;
     using MicroLite.Characters;
 
     /// <summary>

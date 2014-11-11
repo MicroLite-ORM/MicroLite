@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Builder
 {
+    using MicroLite.Builder.Syntax;
     using MicroLite.Characters;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]

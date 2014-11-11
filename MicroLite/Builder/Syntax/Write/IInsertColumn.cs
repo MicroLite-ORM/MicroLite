@@ -10,7 +10,7 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Builder
+namespace MicroLite.Builder.Syntax.Write
 {
     /// <summary>
     /// The interface which specifies the column(s) method in the fluent insert sql builder syntax.

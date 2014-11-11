@@ -254,7 +254,7 @@ namespace MicroLite.Dialect
             }
 
             var sqlQuery = builder
-                .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, objectDelta.Identifier)
+                .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(objectDelta.Identifier)
                 .ToSqlQuery();
 
             return sqlQuery;
@@ -309,7 +309,7 @@ namespace MicroLite.Dialect
         {
             var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
                 .From(objectInfo)
-                .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, 0)
+                .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0)
                 .ToSqlQuery();
 
             return deleteSqlQuery.CommandText;
@@ -386,7 +386,7 @@ namespace MicroLite.Dialect
             }
 
             var updateSqlQuery = builder
-                .WhereEquals(objectInfo.TableInfo.IdentifierColumn.ColumnName, 0)
+                .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0)
                 .ToSqlQuery();
 
             return updateSqlQuery.CommandText;

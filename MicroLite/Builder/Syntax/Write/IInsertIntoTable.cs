@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IDeleteFrom.cs" company="MicroLite">
+// <copyright file="IInsertIntoTable.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,27 +10,27 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Builder
+namespace MicroLite.Builder.Syntax.Write
 {
     using System;
 
     /// <summary>
-    /// The interface which specifies the from method in the fluent sql builder syntax.
+    /// The interface which specifies the into method in the fluent insert sql builder syntax.
     /// </summary>
-    public interface IDeleteFrom : IHideObjectMethods
+    public interface IInsertIntoTable : IHideObjectMethods
     {
         /// <summary>
         /// Specifies the table to perform the query against.
         /// </summary>
         /// <param name="table">The name of the table.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IWhereEquals From(string table);
+        IInsertColumn Into(string table);
 
         /// <summary>
         /// Specifies the type to perform the query against.
         /// </summary>
         /// <param name="forType">The type of object the query relates to.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IWhereEquals From(Type forType);
+        IInsertColumn Into(Type forType);
     }
 }

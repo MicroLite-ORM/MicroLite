@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IInsertValue.cs" company="MicroLite">
+// <copyright file="ISetOrWhere.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,18 +10,19 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Builder
+namespace MicroLite.Builder.Syntax.Write
 {
     /// <summary>
-    /// The interface which specifies the value method in the fluent insert sql builder syntax.
+    /// The interface which specifies the value method in the fluent update sql builder syntax.
     /// </summary>
-    public interface IInsertValue : IHideObjectMethods, IToSqlQuery
+    public interface ISetOrWhere : IHideObjectMethods, IWhere
     {
         /// <summary>
-        /// Specifies the values to be inserted into the columns.
+        /// Specifies the column in the table and the new value for it.
         /// </summary>
-        /// <param name="columnValues">Values for the columns to be inserted.</param>
+        /// <param name="columnName">Name of the column to be updated.</param>
+        /// <param name="columnValue">The new value for the column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
-        IToSqlQuery Values(params object[] columnValues);
+        ISetOrWhere SetColumnValue(string columnName, object columnValue);
     }
 }

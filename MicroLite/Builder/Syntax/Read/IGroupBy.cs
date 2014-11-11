@@ -10,7 +10,7 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Builder
+namespace MicroLite.Builder.Syntax.Read
 {
     /// <summary>
     /// The interface which specifies the group by method in the fluent sql builder syntax.

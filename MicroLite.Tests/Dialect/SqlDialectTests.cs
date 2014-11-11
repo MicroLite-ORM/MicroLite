@@ -79,7 +79,7 @@
 
             var sqlQuery = mockSqlDialect.Object.BuildUpdateSqlQuery(objectDelta);
 
-            Assert.Equal("UPDATE Sales.Customers SET Name = ? WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal("UPDATE Sales.Customers SET Name = ? WHERE (Id = ?)", sqlQuery.CommandText);
 
             Assert.Equal(2, sqlQuery.Arguments.Count);
 
@@ -207,7 +207,7 @@
 
             var sqlQuery = mockSqlDialect.Object.BuildDeleteSqlQuery(ObjectInfo.For(typeof(Customer)), identifier);
 
-            Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal("DELETE FROM Sales.Customers WHERE (Id = ?)", sqlQuery.CommandText);
             Assert.Equal(1, sqlQuery.Arguments.Count);
 
             Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
@@ -218,7 +218,7 @@
 
             var sqlQuery2 = mockSqlDialect.Object.BuildDeleteSqlQuery(ObjectInfo.For(typeof(Customer)), identifier);
 
-            Assert.Equal("DELETE FROM Sales.Customers WHERE Id = ?", sqlQuery2.CommandText);
+            Assert.Equal("DELETE FROM Sales.Customers WHERE (Id = ?)", sqlQuery2.CommandText);
             Assert.Equal(1, sqlQuery2.Arguments.Count);
 
             Assert.Equal(DbType.Int32, sqlQuery2.Arguments[0].DbType);
@@ -544,7 +544,7 @@
 
             var sqlQuery = mockSqlDialect.Object.BuildUpdateSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?,DateOfBirth = ?,Name = ?,CustomerStatusId = ?,Updated = ?,Website = ? WHERE Id = ?", sqlQuery.CommandText);
+            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?,DateOfBirth = ?,Name = ?,CustomerStatusId = ?,Updated = ?,Website = ? WHERE (Id = ?)", sqlQuery.CommandText);
             Assert.Equal(7, sqlQuery.Arguments.Count);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[0].DbType);
@@ -583,7 +583,7 @@
 
             var sqlQuery2 = mockSqlDialect.Object.BuildUpdateSqlQuery(ObjectInfo.For(typeof(Customer)), customer);
 
-            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?,DateOfBirth = ?,Name = ?,CustomerStatusId = ?,Updated = ?,Website = ? WHERE Id = ?", sqlQuery2.CommandText);
+            Assert.Equal("UPDATE Sales.Customers SET CreditLimit = ?,DateOfBirth = ?,Name = ?,CustomerStatusId = ?,Updated = ?,Website = ? WHERE (Id = ?)", sqlQuery2.CommandText);
             Assert.Equal(7, sqlQuery2.Arguments.Count);
 
             Assert.Equal(DbType.Decimal, sqlQuery2.Arguments[0].DbType);

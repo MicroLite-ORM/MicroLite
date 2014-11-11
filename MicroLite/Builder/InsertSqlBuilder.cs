@@ -13,6 +13,8 @@
 namespace MicroLite.Builder
 {
     using System;
+    using MicroLite.Builder.Syntax;
+    using MicroLite.Builder.Syntax.Write;
     using MicroLite.Characters;
     using MicroLite.Mapping;
 

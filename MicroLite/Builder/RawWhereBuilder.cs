@@ -15,6 +15,7 @@ namespace MicroLite.Builder
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using MicroLite.Builder.Syntax.Read;
 
     /// <summary>
     /// A class which can be used to build a raw SQL WHERE clause.

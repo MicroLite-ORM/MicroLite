@@ -10,7 +10,7 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Builder
+namespace MicroLite.Builder.Syntax.Read
 {
     /// <summary>
     /// The interface which specifies the and/or methods to extend the where clause in the fluent sql builder syntax.

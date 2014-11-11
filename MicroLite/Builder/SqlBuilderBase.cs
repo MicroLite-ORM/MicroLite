@@ -14,6 +14,7 @@ namespace MicroLite.Builder
 {
     using System.Collections.Generic;
     using System.Text;
+    using MicroLite.Builder.Syntax;
     using MicroLite.Characters;
     using MicroLite.Mapping;
 
@@ -34,6 +35,12 @@ namespace MicroLite.Builder
         protected SqlBuilderBase(SqlCharacters sqlCharacters)
         {
             this.sqlCharacters = sqlCharacters;
+        }
+
+        protected bool AddedWhere
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -59,6 +66,12 @@ namespace MicroLite.Builder
             }
         }
 
+        protected string Operand
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Gets the SQL characters.
         /// </summary>
@@ -70,6 +83,12 @@ namespace MicroLite.Builder
             }
         }
 
+        protected string WhereColumnName
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Creates a <see cref="SqlQuery"/> from the values specified.
         /// </summary>
@@ -78,6 +97,24 @@ namespace MicroLite.Builder
         public virtual SqlQuery ToSqlQuery()
         {
             return new SqlQuery(this.innerSql.ToString(), this.arguments.ToArray());
+        }
+
+        protected void AddWithComparisonOperator(object comparisonValue, string comparisonOperator)
+        {
+            if (!string.IsNullOrEmpty(this.Operand))
+            {
+                this.InnerSql.Append(this.Operand);
+            }
+
+            this.Arguments.Add(new SqlArgument(comparisonValue));
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.Append(" (")
+                .Append(this.WhereColumnName)
+                .Append(comparisonOperator)
+                .Append(parameter)
+                .Append(')');
         }
 
         /// <summary>
