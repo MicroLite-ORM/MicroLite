@@ -39,6 +39,11 @@ namespace MicroLite.Driver
 
         protected override string GetCommandText(string commandText)
         {
+            if (commandText == null)
+            {
+                throw new ArgumentNullException("commandText");
+            }
+
             if (this.SupportsStoredProcedures
                 && commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase) == -1
                 && commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
@@ -69,6 +74,11 @@ namespace MicroLite.Driver
 
         protected override CommandType GetCommandType(string commandText)
         {
+            if (commandText == null)
+            {
+                throw new ArgumentNullException("commandText");
+            }
+
             if (commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
                 && commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase) == -1
                 && !commandText.Contains(this.SqlCharacters.StatementSeparator))

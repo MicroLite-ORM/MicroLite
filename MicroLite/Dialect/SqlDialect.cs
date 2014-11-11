@@ -307,6 +307,11 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildDeleteCommandText(IObjectInfo objectInfo)
         {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
             var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
                 .From(objectInfo)
                 .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0)
@@ -324,6 +329,11 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildInsertCommandText(IObjectInfo objectInfo)
         {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
             var counter = 0;
             var insertColumns = new string[objectInfo.TableInfo.InsertColumnCount];
 
@@ -355,6 +365,11 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildSelectCommandText(IObjectInfo objectInfo)
         {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
             var selectSqlQuery = new SelectSqlBuilder(this.SqlCharacters)
                 .From(objectInfo)
                 .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0)
@@ -372,6 +387,11 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildUpdateCommandText(IObjectInfo objectInfo)
         {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
             var builder = new UpdateSqlBuilder(this.SqlCharacters)
                        .Table(objectInfo);
 

@@ -68,6 +68,11 @@ namespace MicroLite.Dialect
 
         protected override string BuildInsertCommandText(IObjectInfo objectInfo)
         {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
             var commandText = base.BuildInsertCommandText(objectInfo);
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)

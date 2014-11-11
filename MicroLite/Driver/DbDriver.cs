@@ -296,6 +296,11 @@ namespace MicroLite.Driver
         /// <param name="sqlArgument">The <see cref="SqlArgument"/> for the parameter.</param>
         protected virtual void BuildParameter(IDbDataParameter parameter, string parameterName, SqlArgument sqlArgument)
         {
+            if (parameter == null)
+            {
+                throw new ArgumentNullException("parameter");
+            }
+
             if (!this.HandleStringsAsUnicode && sqlArgument.DbType == DbType.String)
             {
                 parameter.DbType = DbType.AnsiString;
@@ -317,6 +322,11 @@ namespace MicroLite.Driver
         /// <returns>The actual command text.</returns>
         protected virtual string GetCommandText(string commandText)
         {
+            if (commandText == null)
+            {
+                throw new ArgumentNullException("commandText");
+            }
+
             if (this.SupportsStoredProcedures
                 && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
                 && !commandText.Contains(this.sqlCharacters.StatementSeparator))
@@ -344,6 +354,11 @@ namespace MicroLite.Driver
         /// <returns>The CommandType for the specified command text.</returns>
         protected virtual CommandType GetCommandType(string commandText)
         {
+            if (commandText == null)
+            {
+                throw new ArgumentNullException("commandText");
+            }
+
             if (this.SupportsStoredProcedures
                 && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
                 && !commandText.Contains(this.sqlCharacters.StatementSeparator))
