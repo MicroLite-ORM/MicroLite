@@ -1202,6 +1202,30 @@
             Assert.Equal(CustomerStatus.Active, sqlQuery.Arguments[0].Value);
         }
 
+        /// <summary>
+        /// Issue #360 - SqlBuilder is using always using the first argument
+        /// </summary>
+        [Fact]
+        public void SelectWhere()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("Column1 = ? AND Column2 = ?", "FOO", "Bar")
+                .ToSqlQuery();
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = ? AND Column2 = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("FOO", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[1].DbType);
+            Assert.Equal("Bar", sqlQuery.Arguments[1].Value);
+        }
+
         [Fact]
         public void SelectWhereAndWhereInArgs()
         {

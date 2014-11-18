@@ -556,7 +556,7 @@ namespace MicroLite.Builder
             {
                 for (int i = 0; i < args.Length; i++)
                 {
-                    this.Arguments.Add(new SqlArgument(args[0]));
+                    this.Arguments.Add(new SqlArgument(args[i]));
                 }
             }
 
