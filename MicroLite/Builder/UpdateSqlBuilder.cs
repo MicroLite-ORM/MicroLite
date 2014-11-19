@@ -119,18 +119,6 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IToSqlQuery WhereEquals(string column, object comparisonValue)
-        {
-            this.InnerSql.Append(" WHERE ")
-                .Append(this.SqlCharacters.EscapeSql(column))
-                .Append(" = ")
-                .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
-
-            this.Arguments.Add(new SqlArgument(comparisonValue));
-
-            return this;
-        }
-
         internal ISetOrWhere Table(IObjectInfo objectInfo)
         {
             this.AppendTableName(objectInfo);
