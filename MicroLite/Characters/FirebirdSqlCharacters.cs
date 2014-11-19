@@ -15,6 +15,7 @@ namespace MicroLite.Characters
     /// <summary>
     /// The implementation of <see cref="SqlCharacters"/> for Firebird.
     /// </summary>
+    [System.Serializable]
     internal sealed class FirebirdSqlCharacters : SqlCharacters
     {
         /// <summary>

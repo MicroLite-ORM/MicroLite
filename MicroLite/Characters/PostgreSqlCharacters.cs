@@ -13,12 +13,13 @@
 namespace MicroLite.Characters
 {
     /// <summary>
-    /// An implementation of SqlCharacters for PostgreSql.
+    /// The implementation of <see cref="SqlCharacters"/> for PostgreSql.
     /// </summary>
+    [System.Serializable]
     internal sealed class PostgreSqlCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of SqlCharacters for PostgreSql.
+        /// The single instance of <see cref="SqlCharacters"/> for PostgreSql.
         /// </summary>
         internal static readonly SqlCharacters Instance = new PostgreSqlCharacters();
 

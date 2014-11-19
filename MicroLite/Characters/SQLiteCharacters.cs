@@ -13,12 +13,13 @@
 namespace MicroLite.Characters
 {
     /// <summary>
-    /// An implementation of SqlCharacters for SQLite.
+    /// The implementation of <see cref="SqlCharacters"/> for SQLite.
     /// </summary>
+    [System.Serializable]
     internal sealed class SQLiteCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of SqlCharacters for SQLite.
+        /// The single instance of <see cref="SqlCharacters"/> for SQLite.
         /// </summary>
         internal static readonly SqlCharacters Instance = new SQLiteCharacters();
 

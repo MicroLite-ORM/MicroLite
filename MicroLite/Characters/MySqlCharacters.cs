@@ -13,12 +13,13 @@
 namespace MicroLite.Characters
 {
     /// <summary>
-    /// An implementation of SqlCharacters for MySql.
+    /// The implementation of <see cref="SqlCharacters"/> for MySql.
     /// </summary>
+    [System.Serializable]
     internal sealed class MySqlCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of SqlCharacters for MySql.
+        /// The single instance of <see cref="SqlCharacters"/> for MySql.
         /// </summary>
         internal static readonly SqlCharacters Instance = new MySqlCharacters();
 

@@ -15,6 +15,7 @@ namespace MicroLite.Characters
     /// <summary>
     /// The implementation of <see cref="SqlCharacters"/> for MsSql server.
     /// </summary>
+    [System.Serializable]
     internal sealed class MsSqlCharacters : SqlCharacters
     {
         /// <summary>

@@ -20,6 +20,7 @@ namespace MicroLite.Characters
     /// <summary>
     /// A class containing the SQL characters for an SQL Dialect.
     /// </summary>
+    [Serializable]
     public class SqlCharacters
     {
         private static readonly SqlCharacters empty = new SqlCharacters();
