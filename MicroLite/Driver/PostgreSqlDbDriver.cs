@@ -13,7 +13,6 @@
 namespace MicroLite.Driver
 {
     using System;
-    using System.Data;
     using MicroLite.Characters;
 
     /// <summary>
@@ -44,10 +43,7 @@ namespace MicroLite.Driver
                 throw new ArgumentNullException("commandText");
             }
 
-            if (this.SupportsStoredProcedures
-                && commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase) == -1
-                && commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
-                && !commandText.Contains(this.SqlCharacters.StatementSeparator))
+            if (this.IsStoredProcedureCall(commandText))
             {
                 var invocationCommandLength = this.SqlCharacters.StoredProcedureInvocationCommand.Length;
                 var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
@@ -72,21 +68,12 @@ namespace MicroLite.Driver
             return commandText;
         }
 
-        protected override CommandType GetCommandType(string commandText)
+        protected override bool IsStoredProcedureCall(string commandText)
         {
-            if (commandText == null)
-            {
-                throw new ArgumentNullException("commandText");
-            }
-
-            if (commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+            return this.SupportsStoredProcedures
                 && commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase) == -1
-                && !commandText.Contains(this.SqlCharacters.StatementSeparator))
-            {
-                return CommandType.StoredProcedure;
-            }
-
-            return CommandType.Text;
+                && commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                && !commandText.Contains(this.SqlCharacters.StatementSeparator);
         }
     }
 }

@@ -208,7 +208,7 @@ namespace MicroLite.Driver
                 }
                 else
                 {
-                    var commandText = this.SupportsStoredProcedures && sqlQuery.CommandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                    var commandText = this.IsStoredProcedureCall(sqlQuery.CommandText)
                         ? sqlQuery.CommandText
                         : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
@@ -253,7 +253,7 @@ namespace MicroLite.Driver
                 Array.Copy(sqlQuery2.ArgumentsArray, 0, arguments, sqlQuery1.Arguments.Count, sqlQuery2.Arguments.Count);
             }
 
-            var query2CommandText = this.SupportsStoredProcedures && sqlQuery2.CommandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+            var query2CommandText = this.IsStoredProcedureCall(sqlQuery2.CommandText)
                 ? sqlQuery2.CommandText
                 : SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
 
@@ -327,9 +327,7 @@ namespace MicroLite.Driver
                 throw new ArgumentNullException("commandText");
             }
 
-            if (this.SupportsStoredProcedures
-                && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
-                && !commandText.Contains(this.sqlCharacters.StatementSeparator))
+            if (this.IsStoredProcedureCall(commandText))
             {
                 var invocationCommandLength = this.sqlCharacters.StoredProcedureInvocationCommand.Length;
                 var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
@@ -359,14 +357,24 @@ namespace MicroLite.Driver
                 throw new ArgumentNullException("commandText");
             }
 
-            if (this.SupportsStoredProcedures
-                && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
-                && !commandText.Contains(this.sqlCharacters.StatementSeparator))
+            if (this.IsStoredProcedureCall(commandText))
             {
                 return CommandType.StoredProcedure;
             }
 
             return CommandType.Text;
+        }
+
+        /// <summary>
+        /// Determines whether the command text is a stored procedure call.
+        /// </summary>
+        /// <param name="commandText">The command text to inspect.</param>
+        /// <returns>true if the command text is a stored procedure call, otherwise false.</returns>
+        protected virtual bool IsStoredProcedureCall(string commandText)
+        {
+            return this.SupportsStoredProcedures
+                && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                && !commandText.Contains(this.sqlCharacters.StatementSeparator);
         }
     }
 }

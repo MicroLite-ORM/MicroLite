@@ -3,7 +3,7 @@
   <Class Name="MicroLite.Driver.DbDriver">
     <Position X="5.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAEIAAAhQAAAIAAAAAEACAAAgAAQAAAAACABBBAACQA=</HashCode>
+      <HashCode>AAEIAAAhQAAAIBAAAAEACAAAgAAQAAAAACABBBAACQA=</HashCode>
       <FileName>Driver\DbDriver.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -25,7 +25,7 @@
   <Class Name="MicroLite.Driver.PostgreSqlDbDriver">
     <Position X="6.75" Y="6.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQA=</HashCode>
+      <HashCode>AAAAAAAAQAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
       <FileName>Driver\PostgreSqlDbDriver.cs</FileName>
     </TypeIdentifier>
   </Class>
