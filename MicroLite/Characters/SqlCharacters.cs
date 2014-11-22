@@ -21,8 +21,9 @@ namespace MicroLite.Characters
     /// A class containing the SQL characters for an SQL Dialect.
     /// </summary>
     [Serializable]
-    public class SqlCharacters
+    public class SqlCharacters : MarshalByRefObject
     {
+        private const string LogicalGetDataName = "MicroLite.Characters.SqlCharacters_Current";
         private static readonly SqlCharacters empty = new SqlCharacters();
         private static readonly char[] period = new[] { '.' };
 
@@ -40,12 +41,19 @@ namespace MicroLite.Characters
         {
             get
             {
-                return CallContext.LogicalGetData("SqlCharacters_Current") as SqlCharacters ?? empty;
+                return CallContext.LogicalGetData(LogicalGetDataName) as SqlCharacters ?? empty;
             }
 
             set
             {
-                CallContext.LogicalSetData("SqlCharacters_Current", value);
+                if (value == null)
+                {
+                    CallContext.FreeNamedDataSlot(LogicalGetDataName);
+                }
+                else
+                {
+                    CallContext.LogicalSetData(LogicalGetDataName, value);
+                }
             }
         }
 
