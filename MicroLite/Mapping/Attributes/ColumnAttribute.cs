@@ -60,7 +60,17 @@ namespace MicroLite.Mapping.Attributes
         /// </summary>
         /// <param name="name">The name of the column in the database table that the property maps to.</param>
         public ColumnAttribute(string name)
-            : this(name, dbType: null, allowInsert: true, allowUpdate: true)
+            : this(name, null, true, true)
+        {
+        }
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="ColumnAttribute"/> class.
+        /// </summary>
+        /// <param name="name">The name of the column in the database table that the property maps to.</param>
+        /// <param name="dbType">The type of the column in the database table that the property maps to.</param>
+        public ColumnAttribute(string name, DbType? dbType)
+            : this(name, dbType, true, true)
         {
         }
 

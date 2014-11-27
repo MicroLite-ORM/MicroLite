@@ -43,6 +43,17 @@
         }
 
         [Fact]
+        public void ConstructorSetsNameAndDbTypeAllowInsertAndAllowUpdateToTrue()
+        {
+            var columnAttribute = new ColumnAttribute("ObjectID", DbType.Guid);
+
+            Assert.Equal("ObjectID", columnAttribute.Name);
+            Assert.Equal(DbType.Guid, columnAttribute.DbType);
+            Assert.True(columnAttribute.AllowInsert);
+            Assert.True(columnAttribute.AllowUpdate);
+        }
+
+        [Fact]
         public void ConstructorSetsNameDbTypeToNullAndAllowInsertAndAllowUpdateToTrue()
         {
             var columnAttribute = new ColumnAttribute("ObjectID");
