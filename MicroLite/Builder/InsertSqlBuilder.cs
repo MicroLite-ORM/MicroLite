@@ -13,6 +13,9 @@
 namespace MicroLite.Builder
 {
     using System;
+    using MicroLite.Builder.Syntax;
+    using MicroLite.Builder.Syntax.Write;
+    using MicroLite.Characters;
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
@@ -72,7 +75,7 @@ namespace MicroLite.Builder
             {
                 for (int i = 0; i < columnValues.Length; i++)
                 {
-                    this.Arguments.Add(columnValues[i]);
+                    this.Arguments.Add(new SqlArgument(columnValues[i]));
 
                     this.InnerSql.Append(this.SqlCharacters.GetParameterName(i));
 

@@ -12,6 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Driver
 {
+    using MicroLite.Characters;
+
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for SQLite.
     /// </summary>
@@ -21,6 +23,7 @@ namespace MicroLite.Driver
         /// Initialises a new instance of the <see cref="SQLiteDbDriver" /> class.
         /// </summary>
         internal SQLiteDbDriver()
+            : base(SQLiteCharacters.Instance)
         {
         }
 

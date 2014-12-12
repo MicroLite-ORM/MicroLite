@@ -15,6 +15,7 @@ namespace MicroLite.Mapping
     using System;
     using System.Data;
     using MicroLite.FrameworkExtensions;
+    using MicroLite.Logging;
 
     /// <summary>
     /// The class which describes a type and the table it is mapped to.
@@ -22,11 +23,12 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     public sealed class PocoObjectInfo : IObjectInfo
     {
+        private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly object defaultIdentifierValue;
         private readonly Type forType;
         private readonly Func<object, object> getIdentifierValue;
-        private readonly Func<object, object[]> getInsertValues;
-        private readonly Func<object, object[]> getUpdateValues;
+        private readonly Func<object, SqlArgument[]> getInsertValues;
+        private readonly Func<object, SqlArgument[]> getUpdateValues;
         private readonly Func<IDataReader, object> instanceFactory;
         private readonly Action<object, object> setIdentifierValue;
         private readonly TableInfo tableInfo;
@@ -105,6 +107,11 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException("reader");
             }
 
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.ObjectInfo_CreatingInstance, this.forType.FullName);
+            }
+
             var instance = this.instanceFactory(reader);
 
             return instance;
@@ -157,7 +164,7 @@ namespace MicroLite.Mapping
         /// <returns>An array of values to be used for the insert command.</returns>
         /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        public object[] GetInsertValues(object instance)
+        public SqlArgument[] GetInsertValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
             this.VerifyIdentifierMapped();
@@ -174,7 +181,7 @@ namespace MicroLite.Mapping
         /// <returns>An array of values to be used for the update command.</returns>
         /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
-        public object[] GetUpdateValues(object instance)
+        public SqlArgument[] GetUpdateValues(object instance)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
             this.VerifyIdentifierMapped();

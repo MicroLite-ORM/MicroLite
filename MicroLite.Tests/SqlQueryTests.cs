@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests
 {
+    using System.Data;
     using Xunit;
 
     /// <summary>
@@ -10,7 +11,7 @@
         [Fact]
         public void ArgumentsArrayReturnsInnerArgumentArray()
         {
-            var args = new[] { new object() };
+            var args = new[] { new SqlArgument() };
 
             var sqlQuery = new SqlQuery(string.Empty, args);
 
@@ -18,39 +19,10 @@
         }
 
         [Fact]
-        public void ConstructorSetsArgumentsToEmptyArrayIfNoneSpecified()
-        {
-            var sqlQuery = new SqlQuery(string.Empty);
-
-            Assert.NotNull(sqlQuery.Arguments);
-            Assert.Empty(sqlQuery.Arguments);
-        }
-
-        [Fact]
-        public void ConstructorSetsProperties()
-        {
-            var commandText = "SELECT * FROM Table WHERE Id = @p0";
-            var parameters = new object[] { 10 };
-
-            var sqlQuery = new SqlQuery(commandText, parameters);
-
-            Assert.Equal(commandText, sqlQuery.CommandText);
-            Assert.Equal(parameters, sqlQuery.Arguments);
-        }
-
-        [Fact]
-        public void DefaultTimeoutIs30Seconds()
-        {
-            var sqlQuery = new SqlQuery(string.Empty);
-
-            Assert.Equal(30, sqlQuery.Timeout);
-        }
-
-        [Fact]
-        public void EqualsReturnsFalseIfCommandTextMatchesButArgumentCountDiffers()
+        public void EqualsReturnsFalseIfCommandTextDiffers()
         {
             var sqlQuery1 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", 10);
-            var sqlQuery2 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0 OR Id = @p1", 10, 35);
+            var sqlQuery2 = new SqlQuery("SELECT * FROM Table WHERE Id <> @p0", 10);
 
             Assert.False(sqlQuery1.Equals(sqlQuery2));
         }
@@ -60,6 +32,15 @@
         {
             var sqlQuery1 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", 10);
             var sqlQuery2 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", 35);
+
+            Assert.False(sqlQuery1.Equals(sqlQuery2));
+        }
+
+        [Fact]
+        public void EqualsReturnsFalseIfCommandTextMatchesButSqlArgumentsDiffer()
+        {
+            var sqlQuery1 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", new SqlArgument(10, DbType.Int32));
+            var sqlQuery2 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", new SqlArgument(35, DbType.Int32));
 
             Assert.False(sqlQuery1.Equals(sqlQuery2));
         }
@@ -85,6 +66,15 @@
         {
             var sqlQuery1 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", 10);
             var sqlQuery2 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", 10);
+
+            Assert.True(sqlQuery1.Equals(sqlQuery2));
+        }
+
+        [Fact]
+        public void EqualsReturnsTrueIfCommandTextMatchesAndSqlArgumentsMatch()
+        {
+            var sqlQuery1 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", new SqlArgument(10, DbType.Int32));
+            var sqlQuery2 = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", new SqlArgument(10, DbType.Int32));
 
             Assert.True(sqlQuery1.Equals(sqlQuery2));
         }
@@ -116,6 +106,122 @@
             var sqlQuery = new SqlQuery("SELECT * FROM Table WHERE Id = @p0", 10);
 
             Assert.Same(sqlQuery.CommandText, sqlQuery.ToString());
+        }
+
+        public class WhenConstructedWithCommandTextAndArguments
+        {
+            private readonly object[] arguments;
+            private readonly string commandText;
+            private readonly SqlQuery sqlQuery;
+
+            public WhenConstructedWithCommandTextAndArguments()
+            {
+                this.commandText = "SELECT * FROM Table WHERE Id = @p0";
+                this.arguments = new object[] { 10 };
+                this.sqlQuery = new SqlQuery(this.commandText, this.arguments);
+            }
+
+            [Fact]
+            public void TheArgumentsDbTypeAndValueShouldBeSet()
+            {
+                Assert.Equal(DbType.Int32, this.sqlQuery.Arguments[0].DbType);
+                Assert.Equal(10, this.sqlQuery.Arguments[0].Value);
+            }
+
+            [Fact]
+            public void TheArgumentsShouldBeSet()
+            {
+                Assert.NotNull(this.sqlQuery.Arguments);
+                Assert.NotEmpty(this.sqlQuery.Arguments);
+            }
+
+            [Fact]
+            public void TheCommandTextShouldBeSet()
+            {
+                Assert.Equal(this.commandText, this.sqlQuery.CommandText);
+            }
+
+            [Fact]
+            public void TheTimeoutDefaultsTo30()
+            {
+                Assert.Equal(30, this.sqlQuery.Timeout);
+            }
+        }
+
+        public class WhenConstructedWithCommandTextAndSqlArguments
+        {
+            private readonly string commandText;
+            private readonly SqlArgument[] sqlArguments;
+            private readonly SqlQuery sqlQuery;
+
+            public WhenConstructedWithCommandTextAndSqlArguments()
+            {
+                this.commandText = "SELECT * FROM Table WHERE Id = @p0";
+                this.sqlArguments = new[] { new SqlArgument(10, DbType.Int32) };
+                this.sqlQuery = new SqlQuery(this.commandText, this.sqlArguments);
+            }
+
+            [Fact]
+            public void TheArgumentsDbTypeAndValueShouldBeSet()
+            {
+                Assert.Equal(DbType.Int32, this.sqlQuery.Arguments[0].DbType);
+                Assert.Equal(10, this.sqlQuery.Arguments[0].Value);
+            }
+
+            [Fact]
+            public void TheArgumentsShouldBeSet()
+            {
+                Assert.NotNull(this.sqlQuery.Arguments);
+                Assert.NotEmpty(this.sqlQuery.Arguments);
+            }
+
+            [Fact]
+            public void TheCommandTextShouldBeSet()
+            {
+                Assert.Equal(this.commandText, this.sqlQuery.CommandText);
+            }
+
+            [Fact]
+            public void TheTimeoutDefaultsTo30()
+            {
+                Assert.Equal(30, this.sqlQuery.Timeout);
+            }
+        }
+
+        public class WhenConstructedWithCommandTextOnly
+        {
+            private readonly string commandText;
+            private readonly SqlQuery sqlQuery;
+
+            public WhenConstructedWithCommandTextOnly()
+            {
+                this.commandText = "SELECT * FROM TABLE";
+                this.sqlQuery = new SqlQuery(this.commandText);
+            }
+
+            [Fact]
+            public void TheArgumentsShouldBeEmpty()
+            {
+                Assert.Empty(this.sqlQuery.Arguments);
+            }
+
+            [Fact]
+            public void TheCommandTextShouldBeSet()
+            {
+                Assert.Equal(this.commandText, this.sqlQuery.CommandText);
+            }
+
+            [Fact]
+            public void TheSqlArgumentsShouldBeEmpty()
+            {
+                Assert.Empty(this.sqlQuery.Arguments);
+            }
+
+            [Fact]
+            public void TheTimeoutDefaultsTo30()
+            {
+                Assert.Equal(30, this.sqlQuery.Timeout);
+            }
         }
     }
 }

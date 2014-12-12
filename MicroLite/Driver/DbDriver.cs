@@ -19,23 +19,26 @@ namespace MicroLite.Driver
     using System.Globalization;
     using System.Linq;
     using System.Text;
+    using MicroLite.Characters;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
     /// <summary>
     /// The base class for implementations of <see cref="IDbDriver" />.
     /// </summary>
-    internal abstract class DbDriver : IDbDriver
+    public abstract class DbDriver : IDbDriver
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private bool handleStringsAsUnicode;
+        private readonly SqlCharacters sqlCharacters;
+        private bool handleStringsAsUnicode = true;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="DbDriver" /> class.
         /// </summary>
-        protected DbDriver()
+        /// <param name="sqlCharacters">The SQL characters.</param>
+        protected DbDriver(SqlCharacters sqlCharacters)
         {
-            this.handleStringsAsUnicode = true;
+            this.sqlCharacters = sqlCharacters;
         }
 
         /// <summary>
@@ -89,13 +92,36 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Gets the character used to separate SQL statements.
+        /// Gets the SQL characters used by the DbDriver.
         /// </summary>
-        protected virtual string StatementSeparator
+        protected SqlCharacters SqlCharacters
         {
             get
             {
-                return ";";
+                return this.sqlCharacters;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this DbDriver supports command timeout.
+        /// </summary>
+        /// <remarks>Returns true unless overridden.</remarks>
+        protected virtual bool SupportsCommandTimeout
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this DbDriver supports stored procedures.
+        /// </summary>
+        protected bool SupportsStoredProcedures
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(this.sqlCharacters.StoredProcedureInvocationCommand);
             }
         }
 
@@ -105,11 +131,17 @@ namespace MicroLite.Driver
         /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
         /// <returns>An IDbCommand with the CommandText, CommandType, Timeout and Parameters set.</returns>
         /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
         public IDbCommand BuildCommand(SqlQuery sqlQuery)
         {
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
+            }
+
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.DbDialect_BuildingCommand);
             }
 
             var parameterNames = SqlUtility.GetParameterNames(sqlQuery.CommandText);
@@ -126,17 +158,24 @@ namespace MicroLite.Driver
                 throw new MicroLiteException(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
             }
 
-            var command = this.CreateCommand(sqlQuery);
+            var command = this.DbProviderFactory.CreateCommand();
+            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
+            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
 
             for (int i = 0; i < parameterNames.Count; i++)
             {
                 var parameter = command.CreateParameter();
                 var parameterName = parameterNames[i];
-                var parameterValue = sqlQuery.Arguments[i];
+                var sqlArgument = sqlQuery.Arguments[i];
 
-                this.BuildParameter(parameter, parameterName, parameterValue);
+                this.BuildParameter(parameter, parameterName, sqlArgument);
 
                 command.Parameters.Add(parameter);
+            }
+
+            if (this.SupportsCommandTimeout)
+            {
+                command.CommandTimeout = sqlQuery.Timeout;
             }
 
             return command;
@@ -149,7 +188,7 @@ namespace MicroLite.Driver
         /// <returns>
         /// An <see cref="SqlQuery" /> containing the combined command text and arguments.
         /// </returns>
-        public virtual SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
+        public SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
         {
             if (sqlQueries == null)
             {
@@ -165,12 +204,15 @@ namespace MicroLite.Driver
 
                 if (sqlBuilder.Length == 0)
                 {
-                    sqlBuilder.Append(sqlQuery.CommandText).AppendLine(this.StatementSeparator);
+                    sqlBuilder.Append(sqlQuery.CommandText).AppendLine(this.sqlCharacters.StatementSeparator);
                 }
                 else
                 {
-                    var commandText = SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
-                    sqlBuilder.Append(commandText).AppendLine(this.StatementSeparator);
+                    var commandText = this.IsStoredProcedureCall(sqlQuery.CommandText)
+                        ? sqlQuery.CommandText
+                        : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
+
+                    sqlBuilder.Append(commandText).AppendLine(this.sqlCharacters.StatementSeparator);
                 }
             }
 
@@ -188,7 +230,7 @@ namespace MicroLite.Driver
         /// <returns>
         /// An <see cref="SqlQuery" /> containing the combined command text and arguments.
         /// </returns>
-        public virtual SqlQuery Combine(SqlQuery sqlQuery1, SqlQuery sqlQuery2)
+        public SqlQuery Combine(SqlQuery sqlQuery1, SqlQuery sqlQuery2)
         {
             if (sqlQuery1 == null)
             {
@@ -202,7 +244,7 @@ namespace MicroLite.Driver
 
             int argumentsCount = sqlQuery1.Arguments.Count + sqlQuery2.Arguments.Count;
 
-            var arguments = new object[argumentsCount];
+            var arguments = new SqlArgument[argumentsCount];
 
             Array.Copy(sqlQuery1.ArgumentsArray, 0, arguments, 0, sqlQuery1.Arguments.Count);
 
@@ -211,10 +253,11 @@ namespace MicroLite.Driver
                 Array.Copy(sqlQuery2.ArgumentsArray, 0, arguments, sqlQuery1.Arguments.Count, sqlQuery2.Arguments.Count);
             }
 
-            var commandText = sqlQuery1.CommandText
-                + this.StatementSeparator
-                + Environment.NewLine
-                + SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
+            var query2CommandText = this.IsStoredProcedureCall(sqlQuery2.CommandText)
+                ? sqlQuery2.CommandText
+                : SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
+
+            var commandText = sqlQuery1.CommandText + this.sqlCharacters.StatementSeparator + Environment.NewLine + query2CommandText;
 
             var combinedQuery = new SqlQuery(commandText, arguments);
             combinedQuery.Timeout = Math.Max(sqlQuery1.Timeout, sqlQuery2.Timeout);
@@ -250,34 +293,26 @@ namespace MicroLite.Driver
         /// </summary>
         /// <param name="parameter">The parameter to build.</param>
         /// <param name="parameterName">The name for the parameter.</param>
-        /// <param name="parameterValue">The value for the parameter.</param>
-        protected virtual void BuildParameter(IDbDataParameter parameter, string parameterName, object parameterValue)
+        /// <param name="sqlArgument">The <see cref="SqlArgument"/> for the parameter.</param>
+        protected virtual void BuildParameter(IDbDataParameter parameter, string parameterName, SqlArgument sqlArgument)
         {
+            if (parameter == null)
+            {
+                throw new ArgumentNullException("parameter");
+            }
+
+            if (!this.HandleStringsAsUnicode && sqlArgument.DbType == DbType.String)
+            {
+                parameter.DbType = DbType.AnsiString;
+            }
+            else
+            {
+                parameter.DbType = sqlArgument.DbType;
+            }
+
             parameter.Direction = ParameterDirection.Input;
             parameter.ParameterName = parameterName;
-            parameter.Value = parameterValue ?? DBNull.Value;
-
-            if (parameterValue is string)
-            {
-                parameter.DbType = this.HandleStringsAsUnicode ? DbType.String : DbType.AnsiString;
-            }
-        }
-
-        /// <summary>
-        /// Creates an IDbCommand command using the values in the specified SqlQuery.
-        /// </summary>
-        /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
-        /// <returns>An IDbCommand with the CommandText, CommandType and Timeout set.</returns>
-        /// <remarks>The parameters should not be added at this point, they are handled by BuildParameter.</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
-        protected virtual IDbCommand CreateCommand(SqlQuery sqlQuery)
-        {
-            var command = this.DbProviderFactory.CreateCommand();
-            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
-            command.CommandTimeout = sqlQuery.Timeout;
-            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
-
-            return command;
+            parameter.Value = sqlArgument.Value ?? DBNull.Value;
         }
 
         /// <summary>
@@ -287,6 +322,26 @@ namespace MicroLite.Driver
         /// <returns>The actual command text.</returns>
         protected virtual string GetCommandText(string commandText)
         {
+            if (commandText == null)
+            {
+                throw new ArgumentNullException("commandText");
+            }
+
+            if (this.IsStoredProcedureCall(commandText))
+            {
+                var invocationCommandLength = this.sqlCharacters.StoredProcedureInvocationCommand.Length;
+                var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
+
+                if (firstParameterPosition > invocationCommandLength)
+                {
+                    return commandText.Substring(invocationCommandLength, firstParameterPosition - invocationCommandLength).Trim();
+                }
+                else
+                {
+                    return commandText.Substring(invocationCommandLength, commandText.Length - invocationCommandLength).Trim();
+                }
+            }
+
             return commandText;
         }
 
@@ -297,7 +352,29 @@ namespace MicroLite.Driver
         /// <returns>The CommandType for the specified command text.</returns>
         protected virtual CommandType GetCommandType(string commandText)
         {
+            if (commandText == null)
+            {
+                throw new ArgumentNullException("commandText");
+            }
+
+            if (this.IsStoredProcedureCall(commandText))
+            {
+                return CommandType.StoredProcedure;
+            }
+
             return CommandType.Text;
+        }
+
+        /// <summary>
+        /// Determines whether the command text is a stored procedure call.
+        /// </summary>
+        /// <param name="commandText">The command text to inspect.</param>
+        /// <returns>true if the command text is a stored procedure call, otherwise false.</returns>
+        protected virtual bool IsStoredProcedureCall(string commandText)
+        {
+            return this.SupportsStoredProcedures
+                && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                && !commandText.Contains(this.sqlCharacters.StatementSeparator);
         }
     }
 }

@@ -71,7 +71,7 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
 
-            var rowsAffected = this.Execute(sqlQuery);
+            var rowsAffected = this.ExecuteQuery(sqlQuery);
 
             for (int i = this.listeners.Count - 1; i >= 0; i--)
             {
@@ -99,7 +99,7 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
 
-            var rowsAffected = this.Execute(sqlQuery);
+            var rowsAffected = this.ExecuteQuery(sqlQuery);
 
             return rowsAffected == 1;
         }
@@ -113,26 +113,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            try
-            {
-                using (var command = this.CreateCommand(sqlQuery))
-                {
-                    var result = command.ExecuteNonQuery();
-
-                    this.CommandCompleted();
-
-                    return result;
-                }
-            }
-            catch (MicroLiteException)
-            {
-                // Don't re-wrap MicroLite exceptions
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new MicroLiteException(e.Message, e);
-            }
+            return this.ExecuteQuery(sqlQuery);
         }
 
         public T ExecuteScalar<T>(SqlQuery sqlQuery)
@@ -144,30 +125,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            try
-            {
-                using (var command = this.CreateCommand(sqlQuery))
-                {
-                    var result = command.ExecuteScalar();
-
-                    this.CommandCompleted();
-
-                    var resultType = typeof(T);
-                    var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
-                    var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
-
-                    return converted;
-                }
-            }
-            catch (MicroLiteException)
-            {
-                // Don't re-wrap MicroLite exceptions
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new MicroLiteException(e.Message, e);
-            }
+            return this.ExecuteScalarQuery<T>(sqlQuery);
         }
 
         public void Insert(object instance)
@@ -218,7 +176,7 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectInfo, instance);
 
-            var rowsAffected = this.Execute(sqlQuery);
+            var rowsAffected = this.ExecuteQuery(sqlQuery);
 
             for (int i = this.listeners.Count - 1; i >= 0; i--)
             {
@@ -244,9 +202,61 @@ namespace MicroLite.Core
 
             var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectDelta);
 
-            var rowsAffected = this.Execute(sqlQuery);
+            var rowsAffected = this.ExecuteQuery(sqlQuery);
 
             return rowsAffected == 1;
+        }
+
+        private int ExecuteQuery(SqlQuery sqlQuery)
+        {
+            try
+            {
+                using (var command = this.CreateCommand(sqlQuery))
+                {
+                    var result = command.ExecuteNonQuery();
+
+                    this.CommandCompleted();
+
+                    return result;
+                }
+            }
+            catch (MicroLiteException)
+            {
+                // Don't re-wrap MicroLite exceptions
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new MicroLiteException(e.Message, e);
+            }
+        }
+
+        private T ExecuteScalarQuery<T>(SqlQuery sqlQuery)
+        {
+            try
+            {
+                using (var command = this.CreateCommand(sqlQuery))
+                {
+                    var result = command.ExecuteScalar();
+
+                    this.CommandCompleted();
+
+                    var resultType = typeof(T);
+                    var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                    var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
+
+                    return converted;
+                }
+            }
+            catch (MicroLiteException)
+            {
+                // Don't re-wrap MicroLite exceptions
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new MicroLiteException(e.Message, e);
+            }
         }
 
         private object InsertReturningIdentifier(IObjectInfo objectInfo, object instance)
@@ -257,33 +267,28 @@ namespace MicroLite.Core
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
             {
-                this.Execute(insertSqlQuery);
+                this.ExecuteQuery(insertSqlQuery);
             }
             else
             {
-                SqlQuery selectInsertIdSqlQuery = null;
-
                 if (this.SqlDialect.SupportsSelectInsertedIdentifier)
                 {
-                    selectInsertIdSqlQuery = this.SqlDialect.BuildSelectInsertIdSqlQuery(objectInfo);
-                }
+                    var selectInsertIdSqlQuery = this.SqlDialect.BuildSelectInsertIdSqlQuery(objectInfo);
 
-                if (selectInsertIdSqlQuery != null)
-                {
                     if (this.DbDriver.SupportsBatchedQueries)
                     {
                         var combined = this.DbDriver.Combine(insertSqlQuery, selectInsertIdSqlQuery);
-                        identifier = this.ExecuteScalar<object>(combined);
+                        identifier = this.ExecuteScalarQuery<object>(combined);
                     }
                     else
                     {
-                        this.Execute(insertSqlQuery);
-                        identifier = this.ExecuteScalar<object>(selectInsertIdSqlQuery);
+                        this.ExecuteQuery(insertSqlQuery);
+                        identifier = this.ExecuteScalarQuery<object>(selectInsertIdSqlQuery);
                     }
                 }
                 else
                 {
-                    identifier = this.ExecuteScalar<object>(insertSqlQuery);
+                    identifier = this.ExecuteScalarQuery<object>(insertSqlQuery);
                 }
             }
 

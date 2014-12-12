@@ -21,6 +21,16 @@ namespace MicroLite.TypeConverters
     /// </summary>
     public sealed class XDocumentTypeConverter : ITypeConverter
     {
+        private readonly Type xdocumentType = typeof(XDocument);
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="XDocumentTypeConverter"/> class.
+        /// </summary>
+        public XDocumentTypeConverter()
+        {
+            TypeConverter.RegisterTypeMapping(this.xdocumentType, DbType.String);
+        }
+
         /// <summary>
         /// Determines whether this type converter can convert values for the specified type.
         /// </summary>
@@ -30,7 +40,7 @@ namespace MicroLite.TypeConverters
         /// </returns>
         public bool CanConvert(Type type)
         {
-            return type == typeof(XDocument);
+            return this.xdocumentType == type;
         }
 
         /// <summary>

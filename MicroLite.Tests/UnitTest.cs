@@ -2,6 +2,7 @@
 {
     using System;
     using System.Reflection;
+    using MicroLite.Characters;
     using MicroLite.Configuration;
     using MicroLite.Logging;
     using MicroLite.Mapping;
@@ -10,11 +11,7 @@
     {
         protected UnitTest()
         {
-            Configure.OnSessionFactoryCreated = null;
-            Configure.SessionFactories.Clear();
-            ObjectInfo.Reset();
-            SqlCharacters.Current = null;
-            LogManager.GetLogger = null;
+            this.ResetMicroLiteInternalState();
         }
 
         public static ConventionMappingSettings GetConventionMappingSettings(IdentifierStrategy identifierStrategy)
@@ -48,17 +45,35 @@
 
         public void Dispose()
         {
-            Configure.OnSessionFactoryCreated = null;
-            Configure.SessionFactories.Clear();
-            ObjectInfo.Reset();
-            SqlCharacters.Current = null;
-            LogManager.GetLogger = null;
+            this.ResetMicroLiteInternalState();
 
             this.OnDispose();
         }
 
         protected virtual void OnDispose()
         {
+        }
+
+        private void ResetMicroLiteInternalState()
+        {
+            Configure.OnSessionFactoryCreated = null;
+            SqlCharacters.Current = null;
+            LogManager.GetLogger = null;
+            Configure.SessionFactories.Clear();
+
+            // Reset the internal state of ObjectInfo for the next set of tests so that we can easily
+            // Test different mapping conventions etc.
+            // Use reflection to assasinate the currently chosen mapping convention and objectinfos.
+            var objectInfoType = typeof(ObjectInfo);
+
+            var mappingConventionField = objectInfoType.GetField("mappingConvention", BindingFlags.Static | BindingFlags.NonPublic);
+            mappingConventionField.SetValue(null, null);
+
+            var objectInfosField = objectInfoType.GetField("objectInfos", BindingFlags.Static | BindingFlags.NonPublic);
+            var getObjectInfosMethod = objectInfoType.GetMethod("GetObjectInfos", BindingFlags.Static | BindingFlags.NonPublic);
+
+            var objectInfos = getObjectInfosMethod.Invoke(null, null);
+            objectInfosField.SetValue(null, objectInfos);
         }
     }
 }

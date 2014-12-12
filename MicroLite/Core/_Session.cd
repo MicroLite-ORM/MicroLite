@@ -1,31 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="MicroLite.Core.Session">
-    <Position X="11.25" Y="0.75" Width="2" />
+    <Position X="4.5" Y="11.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAQAAEAQAAAAAAQAAAAAAAAAAIEAAAABAAAAAAACAAA=</HashCode>
+      <HashCode>AAQQAECAAAAAAAQAAAAAAEAAAIEAAAABAAAAAAACAAA=</HashCode>
       <FileName>Core\Session.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Core.ReadOnlySession">
-    <Position X="7.5" Y="0.75" Width="3" />
+    <Position X="4" Y="5.75" Width="3" />
     <TypeIdentifier>
-      <HashCode>CAAAQAAAAABCAUAAAAkACAgABQAAAAAAAIAAACACAEA=</HashCode>
+      <HashCode>AAAAQAAAACBCAQAAAAkACAiABQAAAAAAAAAAAAACAEE=</HashCode>
       <FileName>Core\ReadOnlySession.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Core.SessionFactory">
-    <Position X="0.5" Y="0.5" Width="2.75" />
+    <Position X="0.5" Y="0.5" Width="3" />
     <TypeIdentifier>
-      <HashCode>AAAAQAAAAAAAAAAAAAAACAAAAAAAAAAAAQAQwAEAAEA=</HashCode>
+      <HashCode>AAAAQAAAAAAAEAAAAAAAiAAAAAAAAAAAAQAQwAEAAEA=</HashCode>
       <FileName>Core\SessionFactory.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Core.SessionBase">
-    <Position X="4.25" Y="0.75" Width="2.5" />
+    <Position X="6.25" Y="0.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAABACAAgQEAAAQEAAAAAAgAAAAAAAAAwACAAAA=</HashCode>
       <FileName>Core\SessionBase.cs</FileName>
@@ -33,10 +33,34 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="MicroLite.Core.Transaction">
-    <Position X="0.5" Y="4.25" Width="2.5" />
+    <Position X="0.5" Y="4.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAUAAAmAIgAACEAAACAAAAQAAEACAAAIAAAAAoAA=</HashCode>
+      <HashCode>AAIAAUAAAmAIgAACEAAACAAAAAAAEACAAAIAAAAAgAA=</HashCode>
       <FileName>Core\Transaction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MicroLite.Core.AsyncReadOnlySession">
+    <Position X="8.5" Y="5.75" Width="3.25" />
+    <InheritanceLine Type="MicroLite.Core.SessionBase" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="7.5" Y="4.622" />
+        <Point X="7.5" Y="4.875" />
+        <Point X="10.125" Y="4.875" />
+        <Point X="10.125" Y="5.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>IAAAQAIAACBgAQAAAAAACAgQBCAAAAAAAAAAAABCAEE=</HashCode>
+      <FileName>Core\AsyncReadOnlySession.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MicroLite.Core.AsyncSession">
+    <Position X="8.75" Y="11.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAgAIAAQAAAAAAAAAIAAAAgAAAAAAAACCMA=</HashCode>
+      <FileName>Core\AsyncSession.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

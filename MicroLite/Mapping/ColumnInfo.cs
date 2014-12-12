@@ -13,6 +13,7 @@
 namespace MicroLite.Mapping
 {
     using System;
+    using System.Data;
     using System.Reflection;
 
     /// <summary>
@@ -24,6 +25,7 @@ namespace MicroLite.Mapping
         private readonly bool allowInsert;
         private readonly bool allowUpdate;
         private readonly string columnName;
+        private readonly DbType dbType;
         private readonly bool isIdentifier;
         private readonly PropertyInfo propertyInfo;
         private readonly string sequenceName;
@@ -32,14 +34,16 @@ namespace MicroLite.Mapping
         /// Initialises a new instance of the <see cref="ColumnInfo"/> class.
         /// </summary>
         /// <param name="columnName">The name of the column in the database table.</param>
+        /// <param name="dbType">The <see cref="DbType"/> of the column in the database table.</param>
         /// <param name="propertyInfo">The property info for the property the column maps to.</param>
         /// <param name="isIdentifier">A value indicating whether column is the table identifier column (primary key).</param>
         /// <param name="allowInsert">true if the column can be inserted, otherwise false.</param>
         /// <param name="allowUpdate">true if the column can be updated, otherwise false.</param>
-        /// <param name="sequenceName">The name of the sequence which generates the identifier value.</param>
+        /// <param name="sequenceName">The name of the sequence which generates the identifier value or null if sequences are not used.</param>
         /// <exception cref="ArgumentNullException">Thrown if columnName or propertyInfo are null.</exception>
         public ColumnInfo(
             string columnName,
+            DbType dbType,
             PropertyInfo propertyInfo,
             bool isIdentifier,
             bool allowInsert,
@@ -57,8 +61,9 @@ namespace MicroLite.Mapping
             }
 
             this.columnName = columnName;
-            this.isIdentifier = isIdentifier;
+            this.dbType = dbType;
             this.propertyInfo = propertyInfo;
+            this.isIdentifier = isIdentifier;
             this.allowInsert = allowInsert;
             this.allowUpdate = allowUpdate;
             this.sequenceName = sequenceName;
@@ -94,6 +99,17 @@ namespace MicroLite.Mapping
             get
             {
                 return this.columnName;
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="DbType"/> of the column in the database table.
+        /// </summary>
+        public DbType DbType
+        {
+            get
+            {
+                return this.dbType;
             }
         }
 

@@ -14,6 +14,8 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Logging;
 
@@ -86,6 +88,15 @@ namespace MicroLite.Mapping
 
                 objectInfo = MappingConvention.CreateObjectInfo(forType);
 
+                if (log.IsDebug)
+                {
+                    using (var stringWriter = new StringWriter(CultureInfo.InvariantCulture))
+                    {
+                        objectInfo.EmitMappings(stringWriter);
+                        log.Debug(stringWriter.ToString());
+                    }
+                }
+
                 var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos);
                 newObjectInfos[forType] = objectInfo;
 
@@ -93,18 +104,6 @@ namespace MicroLite.Mapping
             }
 
             return objectInfo;
-        }
-
-        /// <summary>
-        /// Resets the object info state, removing any cached object information and restoring the default mapping convention.
-        /// </summary>
-        /// <remarks>
-        /// Makes it easier to unit test using different mapping conventions - should remain an internal method.
-        /// </remarks>
-        internal static void Reset()
-        {
-            mappingConvention = null;
-            objectInfos = GetObjectInfos();
         }
 
         private static Dictionary<Type, IObjectInfo> GetObjectInfos()

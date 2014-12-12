@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
+    using MicroLite.Characters;
     using MicroLite.Dialect;
     using MicroLite.Driver;
     using MicroLite.Listeners;
@@ -51,6 +52,44 @@ namespace MicroLite.Core
             }
         }
 
+#if NET_4_5
+
+        public IAsyncReadOnlySession OpenAsyncReadOnlySession()
+        {
+            return this.OpenAsyncReadOnlySession(ConnectionScope.PerTransaction);
+        }
+
+        public IAsyncReadOnlySession OpenAsyncReadOnlySession(ConnectionScope connectionScope)
+        {
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.SessionFactory_CreatingAsyncReadOnlySession, this.connectionName);
+            }
+
+            SqlCharacters.Current = this.sqlDialect.SqlCharacters;
+
+            return new AsyncReadOnlySession(connectionScope, this.sqlDialect, this.dbDriver);
+        }
+
+        public IAsyncSession OpenAsyncSession()
+        {
+            return this.OpenAsyncSession(ConnectionScope.PerTransaction);
+        }
+
+        public IAsyncSession OpenAsyncSession(ConnectionScope connectionScope)
+        {
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.SessionFactory_CreatingAsyncSession, this.connectionName);
+            }
+
+            SqlCharacters.Current = this.sqlDialect.SqlCharacters;
+
+            return new AsyncSession(connectionScope, this.sqlDialect, this.dbDriver, Listener.Listeners);
+        }
+
+#endif
+
         public IReadOnlySession OpenReadOnlySession()
         {
             return this.OpenReadOnlySession(ConnectionScope.PerTransaction);
@@ -62,6 +101,8 @@ namespace MicroLite.Core
             {
                 log.Debug(LogMessages.SessionFactory_CreatingReadOnlySession, this.connectionName);
             }
+
+            SqlCharacters.Current = this.sqlDialect.SqlCharacters;
 
             return new ReadOnlySession(connectionScope, this.sqlDialect, this.dbDriver);
         }
@@ -77,6 +118,8 @@ namespace MicroLite.Core
             {
                 log.Debug(LogMessages.SessionFactory_CreatingSession, this.connectionName);
             }
+
+            SqlCharacters.Current = this.sqlDialect.SqlCharacters;
 
             return new Session(connectionScope, this.sqlDialect, this.dbDriver, Listener.Listeners);
         }

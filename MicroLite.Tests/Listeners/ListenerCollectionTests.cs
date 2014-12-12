@@ -31,9 +31,9 @@
             private readonly ListenerCollection collection = new ListenerCollection();
 
             [Fact]
-            public void ConstructorRegistersDbGeneratedListener()
+            public void ConstructorRegistersIdentifierStrategyListener()
             {
-                var listener = this.collection.OfType<DbGeneratedListener>().SingleOrDefault();
+                var listener = this.collection.OfType<IdentifierStrategyListener>().SingleOrDefault();
 
                 Assert.NotNull(listener);
             }

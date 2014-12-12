@@ -18,6 +18,7 @@ namespace MicroLite.Core
     using MicroLite.Builder;
     using MicroLite.Dialect;
     using MicroLite.Driver;
+    using MicroLite.Logging;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -61,17 +62,6 @@ namespace MicroLite.Core
             {
                 return this.sqlDialect;
             }
-        }
-
-        public IIncludeMany<T> All<T>() where T : class, new()
-        {
-            var sqlQuery = new SelectSqlBuilder(this.SqlDialect.SqlCharacters)
-                .From(typeof(T))
-                .ToSqlQuery();
-
-            var include = this.Include.Many<T>(sqlQuery);
-
-            return include;
         }
 
         public void ExecutePendingQueries()
@@ -127,6 +117,47 @@ namespace MicroLite.Core
             return include.Values;
         }
 
+        IIncludeMany<T> IIncludeSession.All<T>()
+        {
+            var sqlQuery = new SelectSqlBuilder(this.SqlDialect.SqlCharacters)
+                .From(typeof(T))
+                .ToSqlQuery();
+
+            var include = this.Include.Many<T>(sqlQuery);
+
+            return include;
+        }
+
+        IIncludeMany<T> IIncludeSession.Many<T>(SqlQuery sqlQuery)
+        {
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            var include = new IncludeMany<T>();
+
+            this.includes.Enqueue(include);
+            this.queries.Enqueue(sqlQuery);
+
+            return include;
+        }
+
+        IInclude<T> IIncludeSession.Scalar<T>(SqlQuery sqlQuery)
+        {
+            if (sqlQuery == null)
+            {
+                throw new ArgumentNullException("sqlQuery");
+            }
+
+            var include = new IncludeScalar<T>();
+
+            this.includes.Enqueue(include);
+            this.queries.Enqueue(sqlQuery);
+
+            return include;
+        }
+
         IInclude<T> IIncludeSession.Single<T>(object identifier)
         {
             if (identifier == null)
@@ -151,56 +182,6 @@ namespace MicroLite.Core
             }
 
             var include = new IncludeSingle<T>();
-
-            this.includes.Enqueue(include);
-            this.queries.Enqueue(sqlQuery);
-
-            return include;
-        }
-
-        T IReadOnlySession.Single<T>(object identifier)
-        {
-            this.ThrowIfDisposed();
-
-            if (identifier == null)
-            {
-                throw new ArgumentNullException("identifier");
-            }
-
-            var include = this.Include.Single<T>(identifier);
-
-            this.ExecutePendingQueries();
-
-            return include.Value;
-        }
-
-        T IReadOnlySession.Single<T>(SqlQuery sqlQuery)
-        {
-            this.ThrowIfDisposed();
-
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            var include = new IncludeSingle<T>();
-
-            this.includes.Enqueue(include);
-            this.queries.Enqueue(sqlQuery);
-
-            this.ExecutePendingQueries();
-
-            return include.Value;
-        }
-
-        public IIncludeMany<T> Many<T>(SqlQuery sqlQuery)
-        {
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            var include = new IncludeMany<T>();
 
             this.includes.Enqueue(include);
             this.queries.Enqueue(sqlQuery);
@@ -241,19 +222,40 @@ namespace MicroLite.Core
             return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
         }
 
-        public IInclude<T> Scalar<T>(SqlQuery sqlQuery)
+        public T Single<T>(object identifier)
+            where T : class, new()
         {
+            this.ThrowIfDisposed();
+
+            if (identifier == null)
+            {
+                throw new ArgumentNullException("identifier");
+            }
+
+            var include = this.Include.Single<T>(identifier);
+
+            this.ExecutePendingQueries();
+
+            return include.Value;
+        }
+
+        public T Single<T>(SqlQuery sqlQuery)
+        {
+            this.ThrowIfDisposed();
+
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
             }
 
-            var include = new IncludeScalar<T>();
+            var include = new IncludeSingle<T>();
 
             this.includes.Enqueue(include);
             this.queries.Enqueue(sqlQuery);
 
-            return include;
+            this.ExecutePendingQueries();
+
+            return include.Value;
         }
 
         private void ExecuteQueriesCombined()

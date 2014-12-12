@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests.Driver
 {
-    using System;
     using System.Data;
     using System.Data.Common;
     using MicroLite.Driver;
@@ -36,14 +35,16 @@
             Assert.Equal(2, command.Parameters.Count);
 
             var parameter1 = (IDataParameter)command.Parameters[0];
+            Assert.Equal(DbType.Int32, parameter1.DbType);
             Assert.Equal(ParameterDirection.Input, parameter1.Direction);
             Assert.Equal("@p0", parameter1.ParameterName);
-            Assert.Equal(sqlQuery.Arguments[0], parameter1.Value);
+            Assert.Equal(sqlQuery.Arguments[0].Value, parameter1.Value);
 
             var parameter2 = (IDataParameter)command.Parameters[1];
+            Assert.Equal(DbType.String, parameter2.DbType);
             Assert.Equal(ParameterDirection.Input, parameter2.Direction);
             Assert.Equal("@p1", parameter2.ParameterName);
-            Assert.Equal(sqlQuery.Arguments[1], parameter2.Value);
+            Assert.Equal(sqlQuery.Arguments[1].Value, parameter2.Value);
         }
 
         [Fact]
@@ -86,12 +87,16 @@
             Assert.Equal(2, command.Parameters.Count);
 
             var parameter1 = (IDataParameter)command.Parameters[0];
+            Assert.Equal(DbType.Int32, parameter1.DbType);
+            Assert.Equal(ParameterDirection.Input, parameter1.Direction);
             Assert.Equal("@identifier", parameter1.ParameterName);
-            Assert.Equal(sqlQuery.Arguments[0], parameter1.Value);
+            Assert.Equal(sqlQuery.Arguments[0].Value, parameter1.Value);
 
             var parameter2 = (IDataParameter)command.Parameters[1];
+            Assert.Equal(DbType.String, parameter2.DbType);
+            Assert.Equal(ParameterDirection.Input, parameter2.Direction);
             Assert.Equal("@Cust_Name", parameter2.ParameterName);
-            Assert.Equal(sqlQuery.Arguments[1], parameter2.Value);
+            Assert.Equal(sqlQuery.Arguments[1].Value, parameter2.Value);
         }
 
         [Fact]
@@ -115,20 +120,6 @@
             var dbDriver = new MsSqlDbDriver();
 
             Assert.True(dbDriver.SupportsBatchedQueries);
-        }
-
-        public class WhenCallingCombine_WithAnIEnumerable_AndTheSourceQueriesIsNull
-        {
-            [Fact]
-            public void AnArgumentNullExceptionShouldBeThrown()
-            {
-                var dbDriver = new MsSqlDbDriver();
-
-                var exception = Assert.Throws<ArgumentNullException>(
-                    () => dbDriver.Combine(null));
-
-                Assert.Equal("sqlQueries", exception.ParamName);
-            }
         }
 
         public class WhenCallingCombine_WithAnIEnumerableSqlQuery
@@ -312,34 +303,6 @@
             public void TheTimeoutShouldBeSetToTheLongestTimeoutOfTheSourceQueries()
             {
                 Assert.Equal(this.sqlQuery2.Timeout, this.combinedQuery.Timeout);
-            }
-        }
-
-        public class WhenCallingCombineAndTheFirstSqlQueryIsNull
-        {
-            [Fact]
-            public void AnArgumentNullExceptionShouldBeThrown()
-            {
-                var dbDriver = new MsSqlDbDriver();
-
-                var exception = Assert.Throws<ArgumentNullException>(
-                    () => dbDriver.Combine(null, new SqlQuery("")));
-
-                Assert.Equal("sqlQuery1", exception.ParamName);
-            }
-        }
-
-        public class WhenCallingCombineAndTheSecondSqlQueryIsNull
-        {
-            [Fact]
-            public void AnArgumentNullExceptionShouldBeThrown()
-            {
-                var dbDriver = new MsSqlDbDriver();
-
-                var exception = Assert.Throws<ArgumentNullException>(
-                    () => dbDriver.Combine(new SqlQuery(""), null));
-
-                Assert.Equal("sqlQuery2", exception.ParamName);
             }
         }
     }

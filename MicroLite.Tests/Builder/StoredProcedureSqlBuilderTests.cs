@@ -1,7 +1,9 @@
 ﻿namespace MicroLite.Tests.Builder
 {
     using System;
+    using System.Data;
     using MicroLite.Builder;
+    using MicroLite.Characters;
     using Xunit;
 
     /// <summary>
@@ -21,10 +23,17 @@
                 .ToSqlQuery();
 
             Assert.Equal("INVOKE GetCustomerInvoices @CustomerId,@StartDate,@EndDate", sqlQuery.CommandText);
+
             Assert.Equal(3, sqlQuery.Arguments.Count);
-            Assert.Equal(7633245, sqlQuery.Arguments[0]);
-            Assert.Equal(DateTime.Today.AddMonths(-3), sqlQuery.Arguments[1]);
-            Assert.Equal(DateTime.Today, sqlQuery.Arguments[2]);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(7633245, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(DateTime.Today.AddMonths(-3), sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DateTime.Today, sqlQuery.Arguments[2].Value);
         }
 
         /// <summary>

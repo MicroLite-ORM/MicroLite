@@ -34,16 +34,17 @@
       <NamespaceSummaryItem name="MicroLite" isDocumented="True">The root namespace, contains the main interfaces and classes required to use MicroLite ORM.
 
 For further information, see the MicroLite blog at http://microliteorm.wordpress.com/</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Configuration" isDocumented="True">Contains the classes and interfaces used to configure MicroLite ORM.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Listeners" isDocumented="True">Contains the classes and interfaces which are allow custom code to be called throughout the session requests.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Logging" isDocumented="True">Contains the interface used abstract the logging functionality.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Mapping" isDocumented="True">Contains the classes and interfaces required to map classes to tables.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Infrastructure" isDocumented="True">Contains the classes and interfaces to be used by extensions to MicroLite ORM.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Dialect" isDocumented="True">Contains the classes and interfaces used to generate database specific SQL.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Mapping.Inflection" isDocumented="True">Contains the classes and interfaces required to perform language specific inflection for convention based mapping.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.TypeConverters" isDocumented="True">Contains the classes and interfaces required to convert values between .NET types and database types.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Builder" isDocumented="True">Contains the SqlBuilder and interfaces used for its fluent interface.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Driver" isDocumented="True">Contains the classes and interfaces used to communicate with different databases.</NamespaceSummaryItem></NamespaceSummaries>
+      <NamespaceSummaryItem name="MicroLite.Configuration" isDocumented="True">Contains the classes and interfaces used to configure MicroLite ORM.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Listeners" isDocumented="True">Contains the classes and interfaces which are allow custom code to be called throughout the session requests.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Logging" isDocumented="True">Contains the interface used abstract the logging functionality.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Mapping" isDocumented="True">Contains the classes and interfaces required to map classes to tables.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Infrastructure" isDocumented="True">Contains the classes and interfaces to be used by extensions to MicroLite ORM.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Dialect" isDocumented="True">Contains the classes and interfaces used to generate database specific SQL.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Mapping.Inflection" isDocumented="True">Contains the classes and interfaces required to perform language specific inflection for convention based mapping.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.TypeConverters" isDocumented="True">Contains the classes and interfaces required to convert values between .NET types and database types.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Builder" isDocumented="True">Contains the SqlBuilder and interfaces used for its fluent interface.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Driver" isDocumented="True">Contains the classes and interfaces used to communicate with different databases.</NamespaceSummaryItem>
+    </NamespaceSummaries>
     <BuildAssemblerVerbosity>AllMessages</BuildAssemblerVerbosity>
     <MissingTags>None</MissingTags>
     <NamingMethod>MemberName</NamingMethod>
@@ -53,11 +54,21 @@ For further information, see the MicroLite blog at http://microliteorm.wordpress
     <CppCommentsFixup>False</CppCommentsFixup>
     <CleanIntermediates>True</CleanIntermediates>
     <MaximumGroupParts>2</MaximumGroupParts>
-    <NamespaceGrouping>False</NamespaceGrouping>
+    <NamespaceGrouping>True</NamespaceGrouping>
     <SdkLinkTarget>Blank</SdkLinkTarget>
-    <RootNamespaceContainer>False</RootNamespaceContainer>
+    <RootNamespaceContainer>True</RootNamespaceContainer>
     <Preliminary>False</Preliminary>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
+    <CatalogName>VisualStudio12</CatalogName>
+    <TocParentId>-1</TocParentId>
+    <TocParentVersion>100</TocParentVersion>
+    <TopicVersion>100</TopicVersion>
+    <TocOrder>-1</TocOrder>
+    <ProductTitle>MicroLite ORM</ProductTitle>
+    <VendorName>MicroLite</VendorName>
+    <MSHelpViewerSdkLinkType>Msdn</MSHelpViewerSdkLinkType>
+    <CatalogVersion>100</CatalogVersion>
+    <CatalogProductId>VS</CatalogProductId>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in
        order for Visual Studio to perform the build.  The others are optional

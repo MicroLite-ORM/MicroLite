@@ -2,6 +2,7 @@
 {
     using System;
     using MicroLite.Builder;
+    using MicroLite.Builder.Syntax.Read;
     using Moq;
     using Xunit;
 

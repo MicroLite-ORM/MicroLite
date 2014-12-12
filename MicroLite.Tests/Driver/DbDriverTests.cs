@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using System.Data.Common;
+    using MicroLite.Characters;
     using MicroLite.Driver;
     using MicroLite.FrameworkExtensions;
     using Moq;
@@ -23,7 +24,7 @@
             var mockDbProviderFactory = new Mock<DbProviderFactory>();
             mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand());
 
-            var mockDbDriver = new Mock<DbDriver>();
+            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
             mockDbDriver.CallBase = true;
             mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
 
@@ -34,19 +35,58 @@
             Assert.Equal(3, command.Parameters.Count);
 
             var parameter1 = (IDataParameter)command.Parameters[0];
+            Assert.Equal(DbType.Int32, parameter1.DbType);
             Assert.Equal(ParameterDirection.Input, parameter1.Direction);
             Assert.Equal("Parameter0", parameter1.ParameterName);
-            Assert.Equal(sqlQuery.Arguments[0], parameter1.Value);
+            Assert.Equal(sqlQuery.Arguments[0].Value, parameter1.Value);
 
             var parameter2 = (IDataParameter)command.Parameters[1];
+            Assert.Equal(DbType.String, parameter2.DbType);
             Assert.Equal(ParameterDirection.Input, parameter2.Direction);
             Assert.Equal("Parameter1", parameter2.ParameterName);
-            Assert.Equal(sqlQuery.Arguments[1], parameter2.Value);
+            Assert.Equal(sqlQuery.Arguments[1].Value, parameter2.Value);
 
             var parameter3 = (IDataParameter)command.Parameters[2];
+            Assert.Equal(default(DbType), parameter3.DbType);
             Assert.Equal(ParameterDirection.Input, parameter3.Direction);
             Assert.Equal("Parameter2", parameter3.ParameterName);
             Assert.Equal(DBNull.Value, parameter3.Value);
+        }
+
+        /// <summary>
+        /// Issue #6 - The argument count check needs to cater for the same argument being used twice.
+        /// </summary>
+        [Fact]
+        public void BuildCommandForSqlQueryWithSqlTextWhichUsesSameParameterTwice()
+        {
+            var sqlQuery = new SqlQuery(
+                "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value1] = @p1 OR @p1 IS NULL",
+                100, "hello");
+
+            var mockDbProviderFactory = new Mock<DbProviderFactory>();
+            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.SqlClient.SqlCommand());
+
+            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
+            mockDbDriver.CallBase = true;
+            mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
+
+            var command = mockDbDriver.Object.BuildCommand(sqlQuery);
+
+            Assert.Equal(sqlQuery.CommandText, command.CommandText);
+            Assert.Equal(CommandType.Text, command.CommandType);
+            Assert.Equal(2, command.Parameters.Count);
+
+            var parameter1 = (IDataParameter)command.Parameters[0];
+            Assert.Equal(DbType.Int32, parameter1.DbType);
+            Assert.Equal(ParameterDirection.Input, parameter1.Direction);
+            Assert.Equal("@p0", parameter1.ParameterName);
+            Assert.Equal(sqlQuery.Arguments[0].Value, parameter1.Value);
+
+            var parameter2 = (IDataParameter)command.Parameters[1];
+            Assert.Equal(DbType.String, parameter2.DbType);
+            Assert.Equal(ParameterDirection.Input, parameter2.Direction);
+            Assert.Equal("@p1", parameter2.ParameterName);
+            Assert.Equal(sqlQuery.Arguments[1].Value, parameter2.Value);
         }
 
         [Fact]
@@ -58,7 +98,7 @@
             var mockDbProviderFactory = new Mock<DbProviderFactory>();
             mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand());
 
-            var mockDbDriver = new Mock<DbDriver>();
+            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
             mockDbDriver.CallBase = true;
             mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
 
@@ -73,7 +113,7 @@
             var mockDbProviderFactory = new Mock<DbProviderFactory>();
             mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand());
 
-            var mockDbDriver = new Mock<DbDriver>();
+            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
             mockDbDriver.CallBase = true;
             mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
 
@@ -93,7 +133,7 @@
             var mockDbProviderFactory = new Mock<DbProviderFactory>();
             mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand());
 
-            var mockDbDriver = new Mock<DbDriver>();
+            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
             mockDbDriver.CallBase = true;
             mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
 
@@ -110,7 +150,7 @@
         [Fact]
         public void BuildCommandThrowsArgumentNullExceptionForNullSqlQuery()
         {
-            var mockDbDriver = new Mock<DbDriver>();
+            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
             mockDbDriver.CallBase = true;
 
             var exception = Assert.Throws<ArgumentNullException>(
@@ -126,7 +166,7 @@
                 "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value] = @p1",
                 100);
 
-            var mockDbDriver = new Mock<DbDriver>();
+            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
             mockDbDriver.CallBase = true;
 
             var exception = Assert.Throws<MicroLiteException>(
@@ -138,7 +178,7 @@
         [Fact]
         public void HandleStringsAsUnicodeReturnsTrueByDefault()
         {
-            var mockDbDriver = new Mock<DbDriver>();
+            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
             mockDbDriver.CallBase = true;
 
             Assert.True(mockDbDriver.Object.HandleStringsAsUnicode);
@@ -147,7 +187,7 @@
         [Fact]
         public void SupportsBatchedQueriesReturnsFalseByDefault()
         {
-            var mockDbDriver = new Mock<DbDriver>();
+            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
             mockDbDriver.CallBase = true;
 
             Assert.False(mockDbDriver.Object.SupportsBatchedQueries);
@@ -167,7 +207,7 @@
                 this.sqlQuery2 = new SqlQuery("SELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = ? OR ? IS NULL) AND \"Column2\" < ?", "Bar", -1);
                 this.sqlQuery2.Timeout = 42;
 
-                var mockDbDriver = new Mock<DbDriver>();
+                var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
                 mockDbDriver.CallBase = true;
 
                 this.combinedQuery = mockDbDriver.Object.Combine(this.sqlQuery1, this.sqlQuery2);
@@ -223,7 +263,7 @@
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
-                var mockDbDriver = new Mock<DbDriver>();
+                var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
                 mockDbDriver.CallBase = true;
 
                 var exception = Assert.Throws<ArgumentNullException>(
@@ -238,7 +278,7 @@
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
-                var mockDbDriver = new Mock<DbDriver>();
+                var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
                 mockDbDriver.CallBase = true;
 
                 var exception = Assert.Throws<ArgumentNullException>(
@@ -253,7 +293,7 @@
             [Fact]
             public void AnArgumentNullExceptionShouldBeThrown()
             {
-                var mockDbDriver = new Mock<DbDriver>();
+                var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
                 mockDbDriver.CallBase = true;
 
                 var exception = Assert.Throws<ArgumentNullException>(
@@ -277,7 +317,7 @@
                 this.sqlQuery2 = new SqlQuery("SELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = ? OR ? IS NULL) AND \"Column2\" < ?", "Bar", -1);
                 this.sqlQuery2.Timeout = 42;
 
-                var mockDbDriver = new Mock<DbDriver>();
+                var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
                 mockDbDriver.CallBase = true;
 
                 this.combinedQuery = mockDbDriver.Object.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
@@ -342,7 +382,7 @@
                 this.sqlQuery2 = new SqlQuery("SELECT \"Column1\", \"Column2\" FROM \"Table2\" WHERE (\"Column1\" = @p0 OR @p0 IS NULL) AND \"Column2\" < @p1", "Bar", -1);
                 this.sqlQuery2.Timeout = 42;
 
-                var mockDbDriver = new Mock<DbDriver>();
+                var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
                 mockDbDriver.CallBase = true;
 
                 this.combinedQuery = mockDbDriver.Object.Combine(new[] { this.sqlQuery1, this.sqlQuery2 });
@@ -404,7 +444,7 @@
                 var mockDbProviderFactory = new Mock<DbProviderFactory>();
                 mockDbProviderFactory.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
-                var mockDbDriver = new Mock<DbDriver>();
+                var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
                 mockDbDriver.CallBase = true;
 
                 mockDbDriver.Object.ConnectionString = "DATA SOURCE=...";
@@ -437,7 +477,7 @@
                 var mockDbProviderFactory = new Mock<DbProviderFactory>();
                 mockDbProviderFactory.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
-                var mockDbDriver = new Mock<DbDriver>();
+                var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
                 mockDbDriver.CallBase = true;
 
                 mockDbDriver.Object.ConnectionString = "DATA SOURCE=...";

@@ -10,7 +10,7 @@
   <Class Name="MicroLite.Builder.SelectSqlBuilder">
     <Position X="5.75" Y="5.75" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AzAAAACgAJAAAAAAFBBABEQEAAUAAAgIAADIEBAAgKQ=</HashCode>
+      <HashCode>AzgAABCgAJAACIAAFBBABEQEAAWAAAgIAADIGBEggOQ=</HashCode>
       <FileName>Builder\SelectSqlBuilder.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -34,7 +34,7 @@
   <Class Name="MicroLite.Builder.UpdateSqlBuilder">
     <Position X="11.5" Y="5.75" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAIAAAAAAAAAAAAAQAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAQAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Builder\UpdateSqlBuilder.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -54,6 +54,13 @@
       <FileName>Builder\SqlBuilderBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MicroLite.Builder.RawWhereBuilder">
+    <Position X="10" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAoAQAAAAAAIAAAAAA=</HashCode>
+      <FileName>Builder\RawWhereBuilder.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

@@ -14,6 +14,8 @@ namespace MicroLite.Builder
 {
     using System.Collections.Generic;
     using System.Text;
+    using MicroLite.Builder.Syntax;
+    using MicroLite.Characters;
     using MicroLite.Mapping;
 
     /// <summary>
@@ -22,7 +24,7 @@ namespace MicroLite.Builder
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal abstract class SqlBuilderBase : IToSqlQuery
     {
-        private readonly List<object> arguments = new List<object>();
+        private readonly List<SqlArgument> arguments = new List<SqlArgument>();
         private readonly StringBuilder innerSql = new StringBuilder(capacity: 128);
         private readonly SqlCharacters sqlCharacters;
 
@@ -35,11 +37,17 @@ namespace MicroLite.Builder
             this.sqlCharacters = sqlCharacters;
         }
 
+        protected bool AddedWhere
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Gets the arguments currently added to the sql builder.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Allowed in this instance, we want to make use of AddRange.")]
-        protected List<object> Arguments
+        protected List<SqlArgument> Arguments
         {
             get
             {
@@ -58,6 +66,12 @@ namespace MicroLite.Builder
             }
         }
 
+        protected string Operand
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Gets the SQL characters.
         /// </summary>
@@ -69,6 +83,12 @@ namespace MicroLite.Builder
             }
         }
 
+        protected string WhereColumnName
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Creates a <see cref="SqlQuery"/> from the values specified.
         /// </summary>
@@ -77,6 +97,24 @@ namespace MicroLite.Builder
         public virtual SqlQuery ToSqlQuery()
         {
             return new SqlQuery(this.innerSql.ToString(), this.arguments.ToArray());
+        }
+
+        protected void AddWithComparisonOperator(object comparisonValue, string comparisonOperator)
+        {
+            if (!string.IsNullOrEmpty(this.Operand))
+            {
+                this.InnerSql.Append(this.Operand);
+            }
+
+            this.Arguments.Add(new SqlArgument(comparisonValue));
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.Append(" (")
+                .Append(this.WhereColumnName)
+                .Append(comparisonOperator)
+                .Append(parameter)
+                .Append(')');
         }
 
         /// <summary>

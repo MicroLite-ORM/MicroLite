@@ -1,7 +1,8 @@
 ﻿namespace MicroLite.Tests.Builder
 {
+    using System.Data;
     using MicroLite.Builder;
-    using MicroLite.Dialect;
+    using MicroLite.Characters;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
     using Xunit;
@@ -76,12 +77,103 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .WhereEquals("Column1", "Foo")
+                .Where("Column1").IsEqualTo("Foo")
                 .ToSqlQuery();
 
-            Assert.Equal("DELETE FROM Table WHERE Column1 = ?", sqlQuery.CommandText);
+            Assert.Equal("DELETE FROM Table WHERE (Column1 = ?)", sqlQuery.CommandText);
+
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+        }
+
+        [Fact]
+        public void DeleteFromWhereEqualsAndWhereEquals()
+        {
+            var sqlBuilder = new DeleteSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("Column1").IsEqualTo("Foo")
+                .AndWhere("Column2").IsEqualTo("Bar")
+                .ToSqlQuery();
+
+            Assert.Equal("DELETE FROM Table WHERE (Column1 = ?) AND (Column2 = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[1].DbType);
+            Assert.Equal("Bar", sqlQuery.Arguments[1].Value);
+        }
+
+        [Fact]
+        public void DeleteFromWhereEqualsAndWhereEqualsWithSqlCharacters()
+        {
+            var sqlBuilder = new DeleteSqlBuilder(MsSqlCharacters.Instance);
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("Column1").IsEqualTo("Foo")
+                .AndWhere("Column2").IsEqualTo("Bar")
+                .ToSqlQuery();
+
+            Assert.Equal("DELETE FROM [Table] WHERE ([Column1] = @p0) AND ([Column2] = @p1)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[1].DbType);
+            Assert.Equal("Bar", sqlQuery.Arguments[1].Value);
+        }
+
+        [Fact]
+        public void DeleteFromWhereEqualsOrWhereEquals()
+        {
+            var sqlBuilder = new DeleteSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("Column1").IsEqualTo("Foo")
+                .OrWhere("Column2").IsEqualTo("Bar")
+                .ToSqlQuery();
+
+            Assert.Equal("DELETE FROM Table WHERE (Column1 = ?) OR (Column2 = ?)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[1].DbType);
+            Assert.Equal("Bar", sqlQuery.Arguments[1].Value);
+        }
+
+        [Fact]
+        public void DeleteFromWhereEqualsOrWhereEqualsWithSqlCharacters()
+        {
+            var sqlBuilder = new DeleteSqlBuilder(MsSqlCharacters.Instance);
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("Column1").IsEqualTo("Foo")
+                .OrWhere("Column2").IsEqualTo("Bar")
+                .ToSqlQuery();
+
+            Assert.Equal("DELETE FROM [Table] WHERE ([Column1] = @p0) OR ([Column2] = @p1)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[1].DbType);
+            Assert.Equal("Bar", sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -91,12 +183,15 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .WhereEquals("Column1", "Foo")
+                .Where("Column1").IsEqualTo("Foo")
                 .ToSqlQuery();
 
-            Assert.Equal("DELETE FROM [Table] WHERE [Column1] = @p0", sqlQuery.CommandText);
+            Assert.Equal("DELETE FROM [Table] WHERE ([Column1] = @p0)", sqlQuery.CommandText);
+
             Assert.Equal(1, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
         }
     }
 }

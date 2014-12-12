@@ -13,10 +13,13 @@
 namespace MicroLite.Builder
 {
     using System;
+    using MicroLite.Builder.Syntax.Write;
+    using MicroLite.Characters;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class DeleteSqlBuilder : SqlBuilderBase, IDeleteFrom, IWhereEquals
+    internal sealed class DeleteSqlBuilder : SqlBuilderBase, IDeleteFrom, IWhere, IWhereSingleColumn, IAndOr
     {
         /// <summary>
         /// Initialises a new instance of the <see cref="DeleteSqlBuilder"/> class with the starting command text 'DELETE FROM '.
@@ -25,37 +28,83 @@ namespace MicroLite.Builder
         internal DeleteSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)
         {
-            this.InnerSql.Append("DELETE FROM ");
+            this.InnerSql.Append("DELETE");
         }
 
-        public IWhereEquals From(string table)
+        public IWhereSingleColumn AndWhere(string column)
         {
+            if (string.IsNullOrEmpty(column))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
+            }
+
+            this.Operand = " AND";
+            this.WhereColumnName = this.SqlCharacters.EscapeSql(column);
+
+            return this;
+        }
+
+        public IWhere From(string table)
+        {
+            if (string.IsNullOrEmpty(table))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("table"));
+            }
+
+            this.InnerSql.Append(" FROM ");
             this.AppendTableName(table);
 
             return this;
         }
 
-        public IWhereEquals From(Type forType)
+        public IWhere From(Type forType)
         {
             var objectInfo = ObjectInfo.For(forType);
 
             return this.From(objectInfo);
         }
 
-        public IToSqlQuery WhereEquals(string column, object comparisonValue)
+        public IAndOr IsEqualTo(object comparisonValue)
         {
-            this.InnerSql.Append(" WHERE ")
-                .Append(this.SqlCharacters.EscapeSql(column))
-                .Append(" = ")
-                .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
-
-            this.Arguments.Add(comparisonValue);
+            this.AddWithComparisonOperator(comparisonValue, " = ");
 
             return this;
         }
 
-        internal IWhereEquals From(IObjectInfo objectInfo)
+        public IWhereSingleColumn OrWhere(string column)
         {
+            if (string.IsNullOrEmpty(column))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
+            }
+
+            this.Operand = " OR";
+            this.WhereColumnName = this.SqlCharacters.EscapeSql(column);
+
+            return this;
+        }
+
+        public IWhereSingleColumn Where(string column)
+        {
+            if (string.IsNullOrEmpty(column))
+            {
+                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
+            }
+
+            this.WhereColumnName = this.SqlCharacters.EscapeSql(column);
+
+            if (!this.AddedWhere)
+            {
+                this.InnerSql.Append(" WHERE");
+                this.AddedWhere = true;
+            }
+
+            return this;
+        }
+
+        internal IWhere From(IObjectInfo objectInfo)
+        {
+            this.InnerSql.Append(" FROM ");
             this.AppendTableName(objectInfo);
 
             return this;

@@ -12,6 +12,9 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Builder
 {
+    using MicroLite.Builder.Syntax;
+    using MicroLite.Characters;
+
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class StoredProcedureSqlBuilder : SqlBuilderBase, IWithParameter
     {
@@ -31,7 +34,7 @@ namespace MicroLite.Builder
                 this.InnerSql.Append(',');
             }
 
-            this.Arguments.Add(arg);
+            this.Arguments.Add(new SqlArgument(arg));
 
             this.InnerSql.Append(parameter);
 

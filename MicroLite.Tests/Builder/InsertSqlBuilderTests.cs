@@ -1,7 +1,8 @@
 ﻿namespace MicroLite.Tests.Builder
 {
+    using System.Data;
     using MicroLite.Builder;
-    using MicroLite.Dialect;
+    using MicroLite.Characters;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
     using Xunit;
@@ -29,9 +30,14 @@
                 .ToSqlQuery();
 
             Assert.Equal("INSERT INTO Table (Column1,Column2) VALUES (?,?)", sqlQuery.CommandText);
+
             Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
-            Assert.Equal(12, sqlQuery.Arguments[1]);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]
@@ -46,9 +52,14 @@
                 .ToSqlQuery();
 
             Assert.Equal("INSERT INTO [Table] ([Column1],[Column2]) VALUES (@p0,@p1)", sqlQuery.CommandText);
+
             Assert.Equal(2, sqlQuery.Arguments.Count);
-            Assert.Equal("Foo", sqlQuery.Arguments[0]);
-            Assert.Equal(12, sqlQuery.Arguments[1]);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
         }
 
         [Fact]

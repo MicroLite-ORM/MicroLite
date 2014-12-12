@@ -25,7 +25,7 @@ namespace MicroLite.Listeners
         public ListenerCollection()
         {
             // In order to maintain the behaviour of a stack, keep inserting at position 0 which will shift the items down.
-            this.Items.Insert(0, new DbGeneratedListener());
+            this.Items.Insert(0, new IdentifierStrategyListener());
         }
 
         /// <summary>

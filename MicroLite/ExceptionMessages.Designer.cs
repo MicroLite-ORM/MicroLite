@@ -61,24 +61,6 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Encryption algorithm is missing, please add the following value to app.settings: &lt;add key=&quot;MicroLite.DbEncryptedString.SymmetricAlgorithm&quot; value=&quot;AesManaged&quot; /&gt; (see http://msdn.microsoft.com/en-us/library/System.Security.Cryptography.SymmetricAlgorithm(v=vs.110).aspx for the fully supported list of values).
-        /// </summary>
-        internal static string AppSettingSymmetricAlgorithmProvider_MissingAlgorithm {
-            get {
-                return ResourceManager.GetString("AppSettingSymmetricAlgorithmProvider_MissingAlgorithm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The Encryption key is missing, please add the following value to app.settings: &lt;add key=&quot;MicroLite.DbEncryptedString.EncryptionKey&quot; value=&quot;replace-with-your-encryption-key&quot; /&gt;.
-        /// </summary>
-        internal static string AppSettingSymmetricAlgorithmProvider_MissingKey {
-            get {
-                return ResourceManager.GetString("AppSettingSymmetricAlgorithmProvider_MissingKey", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The {0} must be specified.
         /// </summary>
         internal static string ArgumentNullOrEmpty {
@@ -102,15 +84,6 @@ namespace MicroLite {
         internal static string DbDriver_ArgumentsCountMismatch {
             get {
                 return ResourceManager.GetString("DbDriver_ArgumentsCountMismatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The cipher text is invalid, it should contain 2 parts separated by an &apos;@&apos;.
-        /// </summary>
-        internal static string DbEncryptedStringTypeConverter_CipherTextInvalid {
-            get {
-                return ResourceManager.GetString("DbEncryptedStringTypeConverter_CipherTextInvalid", resourceCulture);
             }
         }
         

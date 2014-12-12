@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data;
     using MicroLite.Builder;
+    using MicroLite.Characters;
     using MicroLite.Core;
     using MicroLite.Dialect;
     using MicroLite.Driver;
@@ -41,10 +42,10 @@
         {
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -61,7 +62,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customers = session.All<Customer>();
+            var customers = session.Include.All<Customer>();
 
             session.ExecutePendingQueries();
 
@@ -80,10 +81,10 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -177,10 +178,10 @@
             mockReader.Setup(x => x.FieldCount).Returns(1);
             mockReader.Setup(x => x[0]).Returns(10);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -290,10 +291,10 @@
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
             mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -337,10 +338,10 @@
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
             mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -384,10 +385,10 @@
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
             mockReader.Setup(x => x.NextResult()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -455,10 +456,10 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(false);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -470,7 +471,7 @@
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
-            IReadOnlySession session = new ReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -492,10 +493,10 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -507,7 +508,7 @@
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
-            IReadOnlySession session = new ReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -525,7 +526,7 @@
         [Fact]
         public void SingleIdentifierThrowsArgumentNullExceptionForNullIdentifier()
         {
-            IReadOnlySession session = new ReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -541,7 +542,7 @@
         [Fact]
         public void SingleIdentifierThrowsObjectDisposedExceptionIfDisposed()
         {
-            IReadOnlySession session = new ReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -561,10 +562,10 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(false);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -575,7 +576,7 @@
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
             mockDbDriver.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
-            IReadOnlySession session = new ReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -596,10 +597,10 @@
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
-            var reader = mockReader.Object;
+            mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(reader);
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
             mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
@@ -610,7 +611,7 @@
             mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
             mockDbDriver.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
-            IReadOnlySession session = new ReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -627,7 +628,7 @@
         [Fact]
         public void SingleSqlQueryThrowsArgumentNullExceptionForNullSqlQuery()
         {
-            IReadOnlySession session = new ReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -643,7 +644,7 @@
         [Fact]
         public void SingleSqlQueryThrowsObjectDisposedExceptionIfDisposed()
         {
-            IReadOnlySession session = new ReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -698,7 +699,7 @@
                     return mockCommand.Object;
                 });
 
-                IReadOnlySession session = new ReadOnlySession(
+                var session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
                     mockSqlDialect.Object,
                     mockDbDriver.Object);
@@ -750,7 +751,7 @@
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
                 mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
-                IReadOnlySession session = new ReadOnlySession(
+                var session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
                     mockSqlDialect.Object,
                     mockDbDriver.Object);
@@ -803,7 +804,7 @@
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
                 mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
-                IReadOnlySession session = new ReadOnlySession(
+                var session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
                     mockSqlDialect.Object,
                     mockDbDriver.Object);

@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MicroLite.Characters.FirebirdSqlCharacters">
+    <Position X="0.5" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAACAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
+      <FileName>Characters\FirebirdSqlCharacters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Characters.MsSqlCharacters">
+    <Position X="9.25" Y="5.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAGAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
+      <FileName>Characters\MsSqlCharacters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Characters.MySqlCharacters">
+    <Position X="12.5" Y="5.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAGAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
+      <FileName>Characters\MySqlCharacters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Characters.PostgreSqlCharacters">
+    <Position X="3.25" Y="5.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAGAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
+      <FileName>Characters\PostgreSqlCharacters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Characters.SqlCharacters">
+    <Position X="7.75" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAGAAAAAAAKAQAACCAgAAAAAIgAAAgAQABA=</HashCode>
+      <FileName>Characters\SqlCharacters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Characters.SQLiteCharacters">
+    <Position X="15.75" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAACAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
+      <FileName>Characters\SQLiteCharacters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Characters.SqlServerCeCharacters">
+    <Position X="6.5" Y="5.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAACAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
+      <FileName>Characters\SqlServerCeCharacters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

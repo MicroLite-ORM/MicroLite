@@ -34,7 +34,7 @@ namespace MicroLite.TypeConverters
         /// </returns>
         public bool CanConvert(Type type)
         {
-            if (type.IsEnum)
+            if (type != null && type.IsEnum)
             {
                 return true;
             }

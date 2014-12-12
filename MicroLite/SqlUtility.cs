@@ -116,58 +116,6 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Reads the ORDER BY clause from the specified SQL command text excluding the ORDER BY keyword.
-        /// </summary>
-        /// <param name="commandText">The SQL command text.</param>
-        /// <returns>The ORDER BY clause without the ORDER BY keyword, or an empty string if there is no ORDER BY clause.</returns>
-        [Obsolete("This method has been superceeded by the new SqlString class and its Parse method, please use that instead. This method will be removed in MicroLite 6.0", error: false)]
-        public static string ReadOrderByClause(string commandText)
-        {
-            var sqlString = SqlString.Parse(commandText, Clauses.OrderBy);
-
-            return sqlString.OrderBy;
-        }
-
-        /// <summary>
-        /// Reads the SELECT clause from the specified SQL command text excluding the SELECT keyword.
-        /// </summary>
-        /// <param name="commandText">The SQL command text.</param>
-        /// <returns>The SELECT clause without the SELECT keyword, or an empty string if there is no SELECT clause.</returns>
-        [Obsolete("This method has been superceeded by the new SqlString class and its Parse method, please use that instead. This method will be removed in MicroLite 6.0", error: false)]
-        public static string ReadSelectClause(string commandText)
-        {
-            var sqlString = SqlString.Parse(commandText, Clauses.Select);
-
-            return sqlString.Select;
-        }
-
-        /// <summary>
-        /// Reads the name of the table the sql query is targeting.
-        /// </summary>
-        /// <param name="commandText">The SQL command text.</param>
-        /// <returns>The name of the table the sql query is targeting.</returns>
-        [Obsolete("This method has been superceeded by the new SqlString class and its Parse method, please use that instead. This method will be removed in MicroLite 6.0", error: false)]
-        public static string ReadTableName(string commandText)
-        {
-            var sqlString = SqlString.Parse(commandText, Clauses.From);
-
-            return sqlString.From;
-        }
-
-        /// <summary>
-        /// Reads the WHERE clause from the specified SQL command text excluding the WHERE keyword.
-        /// </summary>
-        /// <param name="commandText">The SQL command text.</param>
-        /// <returns>The WHERE clause without the WHERE keyword, or an empty string if there is no WHERE clause.</returns>
-        [Obsolete("This method has been superceeded by the new SqlString class and its Parse method, please use that instead. This method will be removed in MicroLite 6.0", error: false)]
-        public static string ReadWhereClause(string commandText)
-        {
-            var sqlString = SqlString.Parse(commandText, Clauses.Where);
-
-            return sqlString.Where;
-        }
-
-        /// <summary>
         /// Re-numbers the parameters in the SQL based upon the total number of arguments.
         /// </summary>
         /// <param name="sql">The SQL.</param>

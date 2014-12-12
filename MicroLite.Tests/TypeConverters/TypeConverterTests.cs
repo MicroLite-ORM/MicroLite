@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests.TypeConverters
 {
     using System;
+    using System.Data;
     using System.Xml.Linq;
     using MicroLite.Tests.TestEntities;
     using MicroLite.TypeConverters;
@@ -8,6 +9,69 @@
 
     public class TypeConverterTests
     {
+        [Fact]
+        public void ResolveDbType()
+        {
+            Assert.Equal(DbType.Byte, TypeConverter.ResolveDbType(typeof(byte)));
+            Assert.Equal(DbType.Byte, TypeConverter.ResolveDbType(typeof(byte?)));
+            Assert.Equal(DbType.SByte, TypeConverter.ResolveDbType(typeof(sbyte)));
+            Assert.Equal(DbType.SByte, TypeConverter.ResolveDbType(typeof(sbyte?)));
+            Assert.Equal(DbType.Int16, TypeConverter.ResolveDbType(typeof(short)));
+            Assert.Equal(DbType.Int16, TypeConverter.ResolveDbType(typeof(short?)));
+            Assert.Equal(DbType.UInt16, TypeConverter.ResolveDbType(typeof(ushort)));
+            Assert.Equal(DbType.UInt16, TypeConverter.ResolveDbType(typeof(ushort?)));
+            Assert.Equal(DbType.Int32, TypeConverter.ResolveDbType(typeof(int)));
+            Assert.Equal(DbType.Int32, TypeConverter.ResolveDbType(typeof(int?)));
+            Assert.Equal(DbType.UInt32, TypeConverter.ResolveDbType(typeof(uint)));
+            Assert.Equal(DbType.UInt32, TypeConverter.ResolveDbType(typeof(uint?)));
+            Assert.Equal(DbType.Int64, TypeConverter.ResolveDbType(typeof(long)));
+            Assert.Equal(DbType.Int64, TypeConverter.ResolveDbType(typeof(long?)));
+            Assert.Equal(DbType.UInt64, TypeConverter.ResolveDbType(typeof(ulong)));
+            Assert.Equal(DbType.UInt64, TypeConverter.ResolveDbType(typeof(ulong?)));
+            Assert.Equal(DbType.Single, TypeConverter.ResolveDbType(typeof(float)));
+            Assert.Equal(DbType.Single, TypeConverter.ResolveDbType(typeof(float?)));
+            Assert.Equal(DbType.Decimal, TypeConverter.ResolveDbType(typeof(decimal)));
+            Assert.Equal(DbType.Decimal, TypeConverter.ResolveDbType(typeof(decimal?)));
+            Assert.Equal(DbType.Double, TypeConverter.ResolveDbType(typeof(double)));
+            Assert.Equal(DbType.Double, TypeConverter.ResolveDbType(typeof(double?)));
+            Assert.Equal(DbType.Boolean, TypeConverter.ResolveDbType(typeof(bool)));
+            Assert.Equal(DbType.Boolean, TypeConverter.ResolveDbType(typeof(bool?)));
+            Assert.Equal(DbType.StringFixedLength, TypeConverter.ResolveDbType(typeof(char)));
+            Assert.Equal(DbType.StringFixedLength, TypeConverter.ResolveDbType(typeof(char?)));
+            Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(string)));
+            Assert.Equal(DbType.Binary, TypeConverter.ResolveDbType(typeof(byte[])));
+            Assert.Equal(DbType.DateTime, TypeConverter.ResolveDbType(typeof(DateTime)));
+            Assert.Equal(DbType.DateTime, TypeConverter.ResolveDbType(typeof(DateTime?)));
+            Assert.Equal(DbType.DateTimeOffset, TypeConverter.ResolveDbType(typeof(DateTimeOffset)));
+            Assert.Equal(DbType.DateTimeOffset, TypeConverter.ResolveDbType(typeof(DateTimeOffset?)));
+            Assert.Equal(DbType.Guid, TypeConverter.ResolveDbType(typeof(Guid)));
+            Assert.Equal(DbType.Guid, TypeConverter.ResolveDbType(typeof(Guid?)));
+            Assert.Equal(DbType.Time, TypeConverter.ResolveDbType(typeof(TimeSpan)));
+            Assert.Equal(DbType.Time, TypeConverter.ResolveDbType(typeof(TimeSpan?)));
+
+            Assert.Equal(DbType.Int32, TypeConverter.ResolveDbType(typeof(CustomerStatus)));
+            Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(Uri)));
+            Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(XDocument)));
+        }
+
+        [Fact]
+        public void ResolveDbTypeThrowsArgumentNullExceptionForNullType()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => TypeConverter.ResolveDbType(null));
+
+            Assert.Equal("type", exception.ParamName);
+        }
+
+        [Fact]
+        public void ResolveDbTypeThrowsNotSupportedExceptionIfTypeNotMappedToDbType()
+        {
+            var exception = Assert.Throws<NotSupportedException>(
+                () => TypeConverter.ResolveDbType(typeof(Customer)));
+
+            Assert.Equal(typeof(Customer).FullName, exception.Message);
+        }
+
         public class WhenCallingDefault
         {
             [Fact]

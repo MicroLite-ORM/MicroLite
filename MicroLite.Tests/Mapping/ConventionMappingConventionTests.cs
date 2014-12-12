@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
     using System;
+    using System.Data;
     using System.Linq;
     using System.Reflection;
     using MicroLite.Mapping;
@@ -58,6 +59,12 @@
             }
 
             [Fact]
+            public void TheCreatedColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").DbType);
+            }
+
+            [Fact]
             public void TheCreatedColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").AllowInsert);
@@ -91,6 +98,12 @@
             public void TheCreatedShouldNotHaveASequenceName()
             {
                 Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").SequenceName);
+            }
+
+            [Fact]
+            public void TheCreditLimitColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.Decimal, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").DbType);
             }
 
             [Fact]
@@ -130,6 +143,12 @@
             }
 
             [Fact]
+            public void TheDateOfBirthColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").DbType);
+            }
+
+            [Fact]
             public void TheDateOfBirthColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").AllowInsert);
@@ -163,6 +182,12 @@
             public void TheDateOfBirthShouldNotHaveASequenceName()
             {
                 Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").SequenceName);
+            }
+
+            [Fact]
+            public void TheIdColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.Int32, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").DbType);
             }
 
             [Fact]
@@ -214,6 +239,12 @@
             }
 
             [Fact]
+            public void TheNameColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.String, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name").DbType);
+            }
+
+            [Fact]
             public void TheNameColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name").AllowInsert);
@@ -262,6 +293,12 @@
             }
 
             [Fact]
+            public void TheStatusColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.Int32, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").DbType);
+            }
+
+            [Fact]
             public void TheStatusColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").AllowInsert);
@@ -301,6 +338,12 @@
             public void TheTableNameShouldNotBePluralized()
             {
                 Assert.Equal("Customer", this.objectInfo.TableInfo.Name);
+            }
+
+            [Fact]
+            public void TheUpdatedColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").DbType);
             }
 
             [Fact]
@@ -441,6 +484,12 @@
             }
 
             [Fact]
+            public void TheCreatedColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").DbType);
+            }
+
+            [Fact]
             public void TheCreatedColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").AllowInsert);
@@ -474,6 +523,12 @@
             public void TheCreatedShouldNotHaveASequenceName()
             {
                 Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").SequenceName);
+            }
+
+            [Fact]
+            public void TheCreditLimitColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.Decimal, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").DbType);
             }
 
             [Fact]
@@ -513,6 +568,12 @@
             }
 
             [Fact]
+            public void TheDateOfBirthColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").DbType);
+            }
+
+            [Fact]
             public void TheDateOfBirthColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").AllowInsert);
@@ -546,6 +607,12 @@
             public void TheDateOfBirthShouldNotHaveASequenceName()
             {
                 Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").SequenceName);
+            }
+
+            [Fact]
+            public void TheIdColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.Int32, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").DbType);
             }
 
             [Fact]
@@ -597,6 +664,12 @@
             }
 
             [Fact]
+            public void TheNameColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.String, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name").DbType);
+            }
+
+            [Fact]
             public void TheNameColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name").AllowInsert);
@@ -645,6 +718,12 @@
             }
 
             [Fact]
+            public void TheStatusColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.Int32, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").DbType);
+            }
+
+            [Fact]
             public void TheStatusColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").AllowInsert);
@@ -684,6 +763,12 @@
             public void TheTableNameShouldBePluralized()
             {
                 Assert.Equal("Customers", this.objectInfo.TableInfo.Name);
+            }
+
+            [Fact]
+            public void TheUpdatedColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").DbType);
             }
 
             [Fact]

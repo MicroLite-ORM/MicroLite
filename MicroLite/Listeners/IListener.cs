@@ -15,7 +15,7 @@ namespace MicroLite.Listeners
     /// <summary>
     /// The interface which exposes hooks into the processing of an object by the MicroLite ORM framework.
     /// </summary>
-    public interface IListener : IHideObjectMethods
+    public interface IListener
     {
         /// <summary>
         /// Invoked after the SqlQuery to delete the record for the instance has been executed.
