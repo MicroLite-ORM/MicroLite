@@ -55,6 +55,16 @@
         }
 
         [Fact]
+        public void BuildSelectInsertIdSqlQueryThrowsArgumentNullExceptionForNullObjectInfo()
+        {
+            var sqlDialect = new MsSql2012Dialect();
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlDialect.BuildSelectInsertIdSqlQuery(null));
+
+            Assert.Equal("objectInfo", exception.ParamName);
+        }
+        [Fact]
         public void InsertInstanceQueryForIdentifierStrategyAssigned()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(

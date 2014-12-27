@@ -1,8 +1,10 @@
 ﻿namespace MicroLite.Tests.Builder
 {
+    using System;
     using System.Data;
     using MicroLite.Builder;
     using MicroLite.Characters;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
     using Xunit;
@@ -16,6 +18,17 @@
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+        }
+
+        [Fact]
+        public void AndWhereThrowsArgumentExceptionForEmptyColumn()
+        {
+            var sqlBuilder = new DeleteSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.AndWhere(""));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"), exception.Message);
         }
 
         [Fact]
@@ -192,6 +205,39 @@
 
             Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
             Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+        }
+
+        [Fact]
+        public void FromThrowsArgumentExceptionForEmptyTableName()
+        {
+            var sqlBuilder = new DeleteSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.From(""));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("table"), exception.Message);
+        }
+
+        [Fact]
+        public void OrWhereThrowsArgumentExceptionForEmptyColumn()
+        {
+            var sqlBuilder = new DeleteSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.OrWhere(""));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"), exception.Message);
+        }
+
+        [Fact]
+        public void WhereThrowsArgumentExceptionForNullColumn()
+        {
+            var sqlBuilder = new DeleteSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentException>(
+                () => sqlBuilder.Where(null));
+
+            Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"), exception.Message);
         }
     }
 }

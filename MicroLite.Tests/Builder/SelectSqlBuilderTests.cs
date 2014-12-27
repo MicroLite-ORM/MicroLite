@@ -21,6 +21,17 @@
         }
 
         [Fact]
+        public void AndWhereThrowsArgumentNullExceptionForEmptyArgs()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.AndWhere("x = ?", null));
+
+            Assert.Equal("args", exception.ParamName);
+        }
+
+        [Fact]
         public void AndWhereThrowsArgumentExceptionForEmptyColumn()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
@@ -461,6 +472,17 @@
 
             Assert.Throws<ArgumentNullException>(
                 () => sqlBuilder.From("Customer").OrderByDescending((string[])null));
+        }
+
+        [Fact]
+        public void OrWhereThrowsArgumentNullExceptionForEmptyArgs()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.OrWhere("x = ?", null));
+
+            Assert.Equal("args", exception.ParamName);
         }
 
         [Fact]
