@@ -25,7 +25,7 @@ namespace MicroLite.Logging
         /// <summary>
         /// Gets or sets the function which can be called by MicroLite to resolve the <see cref="ILog"/> to use.
         /// </summary>
-        internal static Func<string, ILog> GetLogger
+        internal static Func<Type, ILog> GetLogger
         {
             get;
             set;
@@ -44,7 +44,7 @@ namespace MicroLite.Logging
             {
                 var stackFrame = new StackFrame(skipFrames: 1);
 
-                return getLogger(stackFrame.GetMethod().DeclaringType.FullName);
+                return getLogger(stackFrame.GetMethod().DeclaringType);
             }
 
             return emptyLog;

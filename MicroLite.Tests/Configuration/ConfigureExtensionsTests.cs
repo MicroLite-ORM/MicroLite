@@ -14,7 +14,7 @@
     {
         public class WhenCallingSetLogResolver : UnitTest
         {
-            private readonly Func<string, ILog> resolver = (s) =>
+            private readonly Func<Type, ILog> resolver = (s) =>
             {
                 return new EmptyLog();
             };
