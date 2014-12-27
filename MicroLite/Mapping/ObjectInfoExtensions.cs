@@ -75,7 +75,10 @@ namespace MicroLite.Mapping
         /// <param name="objectInfo">The object information to emit.</param>
         public static void EmitMappingsToConsole(this IObjectInfo objectInfo)
         {
-            EmitMappings(objectInfo, Console.Out);
+            if (Console.Out != null)
+            {
+                EmitMappings(objectInfo, Console.Out);
+            }
         }
     }
 }
