@@ -46,7 +46,6 @@ namespace MicroLite.Builder
         /// <summary>
         /// Gets the arguments currently added to the sql builder.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Allowed in this instance, we want to make use of AddRange.")]
         protected List<SqlArgument> Arguments
         {
             get

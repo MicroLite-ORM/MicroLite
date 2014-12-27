@@ -70,6 +70,11 @@ namespace MicroLite.Driver
 
         protected override bool IsStoredProcedureCall(string commandText)
         {
+            if (commandText == null)
+            {
+                throw new ArgumentNullException("commandText");
+            }
+
             return this.SupportsStoredProcedures
                 && commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase) == -1
                 && commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
