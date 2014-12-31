@@ -13,3 +13,4 @@ TestResults
 *.user
 *.sln.docstates
 *.shfbproj_*
+*.GhostDoc*
