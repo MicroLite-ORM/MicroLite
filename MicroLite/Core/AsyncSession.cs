@@ -321,31 +321,29 @@ namespace MicroLite.Core
 
             SqlQuery insertSqlQuery = this.SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
 
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
+            if (this.SqlDialect.SupportsSelectInsertedIdentifier
+                && objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
-                await this.ExecuteQueryAsync(insertSqlQuery, cancellationToken).ConfigureAwait(false);
-            }
-            else
-            {
-                if (this.SqlDialect.SupportsSelectInsertedIdentifier)
-                {
-                    var selectInsertIdSqlQuery = this.SqlDialect.BuildSelectInsertIdSqlQuery(objectInfo);
+                var selectInsertIdSqlQuery = this.SqlDialect.BuildSelectInsertIdSqlQuery(objectInfo);
 
-                    if (this.DbDriver.SupportsBatchedQueries)
-                    {
-                        var combined = this.DbDriver.Combine(insertSqlQuery, selectInsertIdSqlQuery);
-                        identifier = await this.ExecuteScalarQueryAsync<object>(combined, cancellationToken).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await this.ExecuteQueryAsync(insertSqlQuery, cancellationToken).ConfigureAwait(false);
-                        identifier = await this.ExecuteScalarQueryAsync<object>(selectInsertIdSqlQuery, cancellationToken).ConfigureAwait(false);
-                    }
+                if (this.DbDriver.SupportsBatchedQueries)
+                {
+                    var combined = this.DbDriver.Combine(insertSqlQuery, selectInsertIdSqlQuery);
+                    identifier = await this.ExecuteScalarQueryAsync<object>(combined, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    identifier = await this.ExecuteScalarQueryAsync<object>(insertSqlQuery, cancellationToken).ConfigureAwait(false);
+                    await this.ExecuteQueryAsync(insertSqlQuery, cancellationToken).ConfigureAwait(false);
+                    identifier = await this.ExecuteScalarQueryAsync<object>(selectInsertIdSqlQuery, cancellationToken).ConfigureAwait(false);
                 }
+            }
+            else if (objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
+            {
+                identifier = await this.ExecuteScalarQueryAsync<object>(insertSqlQuery, cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                await this.ExecuteQueryAsync(insertSqlQuery, cancellationToken).ConfigureAwait(false);
             }
 
             return identifier;
