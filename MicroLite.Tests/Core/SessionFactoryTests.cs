@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests.Core
 {
+    using System.Data;
     using MicroLite.Characters;
     using MicroLite.Core;
     using MicroLite.Dialect;
@@ -22,7 +23,7 @@
             public WhenCallingOpenAsyncReadOnlySession()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction));
+                mockDbDriver.Setup(x => x.CreateConnection());
 
                 var mockSqlDialect = new Mock<ISqlDialect>();
                 mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
@@ -80,7 +81,7 @@
             public WhenCallingOpenAsyncReadOnlySession_SpecifyingConnectionScope()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
 
                 var mockSqlDialect = new Mock<ISqlDialect>();
                 mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
@@ -118,7 +119,7 @@
             public WhenCallingOpenAsyncSession()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction));
+                mockDbDriver.Setup(x => x.CreateConnection());
 
                 var mockSqlDialect = new Mock<ISqlDialect>();
                 mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
@@ -176,7 +177,7 @@
             public WhenCallingOpenAsyncSession_SpecifyingConnectionScope()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
 
                 var mockSqlDialect = new Mock<ISqlDialect>();
                 mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
@@ -216,7 +217,7 @@
             public WhenCallingOpenReadOnlySession()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction));
+                mockDbDriver.Setup(x => x.CreateConnection());
 
                 var mockSqlDialect = new Mock<ISqlDialect>();
                 mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
@@ -274,7 +275,7 @@
             public WhenCallingOpenReadOnlySession_SpecifyingConnectionScope()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
 
                 var mockSqlDialect = new Mock<ISqlDialect>();
                 mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
@@ -312,7 +313,7 @@
             public WhenCallingOpenSession()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction));
+                mockDbDriver.Setup(x => x.CreateConnection());
 
                 var mockSqlDialect = new Mock<ISqlDialect>();
                 mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);
@@ -370,7 +371,7 @@
             public WhenCallingOpenSession_SpecifyingConnectionScope()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession));
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
 
                 var mockSqlDialect = new Mock<ISqlDialect>();
                 mockSqlDialect.Setup(x => x.SqlCharacters).Returns(this.sqlCharacters);

@@ -29,9 +29,20 @@ namespace MicroLite.Core
 
         protected SessionBase(ConnectionScope connectionScope, IDbDriver dbDriver)
         {
-            this.Connection = dbDriver.GetConnection(connectionScope);
             this.ConnectionScope = connectionScope;
             this.DbDriver = dbDriver;
+
+            this.Connection = dbDriver.CreateConnection();
+
+            if (this.ConnectionScope == ConnectionScope.PerSession)
+            {
+                if (Log.IsDebug)
+                {
+                    Log.Debug(LogMessages.Session_OpeningConnection);
+                }
+
+                this.Connection.Open();
+            }
         }
 
         public IDbConnection Connection
@@ -73,7 +84,7 @@ namespace MicroLite.Core
             {
                 if (Log.IsDebug)
                 {
-                    Log.Debug(LogMessages.OpeningConnection);
+                    Log.Debug(LogMessages.Session_OpeningConnection);
                 }
 
                 this.Connection.Open();
@@ -96,7 +107,7 @@ namespace MicroLite.Core
             {
                 if (Log.IsDebug)
                 {
-                    Log.Debug(LogMessages.ClosingConnection);
+                    Log.Debug(LogMessages.Session_ClosingConnection);
                 }
 
                 this.Connection.Close();
@@ -113,7 +124,7 @@ namespace MicroLite.Core
             {
                 if (Log.IsDebug)
                 {
-                    Log.Debug(LogMessages.ClosingConnection);
+                    Log.Debug(LogMessages.Session_ClosingConnection);
                 }
 
                 this.Connection.Close();
@@ -128,7 +139,7 @@ namespace MicroLite.Core
             {
                 if (Log.IsDebug)
                 {
-                    Log.Debug(LogMessages.OpeningConnection);
+                    Log.Debug(LogMessages.Session_OpeningConnection);
                 }
 
                 this.Connection.Open();
@@ -168,7 +179,7 @@ namespace MicroLite.Core
                     {
                         if (Log.IsDebug)
                         {
-                            Log.Debug(LogMessages.ClosingConnection);
+                            Log.Debug(LogMessages.Session_ClosingConnection);
                         }
 
                         this.Connection.Close();

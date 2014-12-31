@@ -84,10 +84,9 @@ namespace MicroLite.Driver
         SqlQuery Combine(SqlQuery sqlQuery1, SqlQuery sqlQuery2);
 
         /// <summary>
-        /// Gets an IDbConnection for the database.
+        /// Creates an IDbConnection to the database.
         /// </summary>
-        /// <param name="connectionScope">The connection scope of the connection.</param>
-        /// <returns>The IDbConnection for the database.</returns>
-        IDbConnection GetConnection(ConnectionScope connectionScope);
+        /// <returns>The IDbConnection to the database.</returns>
+        IDbConnection CreateConnection();
     }
 }

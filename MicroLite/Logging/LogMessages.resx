@@ -138,10 +138,10 @@
   <data name="SessionFactory_CreatingSession" xml:space="preserve">
     <value>Creating a new session for connection named '{0}'</value>
   </data>
-  <data name="ClosingConnection" xml:space="preserve">
+  <data name="Session_ClosingConnection" xml:space="preserve">
     <value>Closing the database connection</value>
   </data>
-  <data name="OpeningConnection" xml:space="preserve">
+  <data name="Session_OpeningConnection" xml:space="preserve">
     <value>Opening the database connection</value>
   </data>
   <data name="AttributeMappingConvention_IgnoringProperty" xml:space="preserve">

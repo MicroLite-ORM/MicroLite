@@ -48,7 +48,7 @@
             mockSqlDialect.Setup(x => x.BuildDeleteSqlQuery(It.IsNotNull<IObjectInfo>(), customer.Id)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             int counter = 0;
@@ -91,7 +91,7 @@
             mockSqlDialect.Setup(x => x.BuildDeleteSqlQuery(It.IsNotNull<IObjectInfo>(), customer.Id)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -125,7 +125,7 @@
             mockSqlDialect.Setup(x => x.BuildDeleteSqlQuery(It.IsNotNull<IObjectInfo>(), customer.Id)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -175,7 +175,7 @@
             mockSqlDialect.Setup(x => x.BuildDeleteSqlQuery(It.IsNotNull<IObjectInfo>(), customer.Id)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -204,7 +204,7 @@
             };
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -251,7 +251,7 @@
             mockSqlDialect.Setup(x => x.BuildDeleteSqlQuery(It.IsNotNull<IObjectInfo>(), identifier)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -283,7 +283,7 @@
             mockSqlDialect.Setup(x => x.BuildDeleteSqlQuery(It.IsNotNull<IObjectInfo>(), identifier)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -347,7 +347,7 @@
             mockSqlDialect.Setup(x => x.BuildDeleteSqlQuery(It.IsNotNull<IObjectInfo>(), identifier)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -398,7 +398,7 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -428,7 +428,7 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -492,7 +492,7 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -565,7 +565,7 @@
             mockSqlDialect.Setup(x => x.SupportsSelectInsertedIdentifier).Returns(false);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(insertSqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -604,7 +604,7 @@
             mockSqlDialect.Setup(x => x.SupportsSelectInsertedIdentifier).Returns(false);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(insertSqlQuery)).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -646,7 +646,7 @@
             mockSqlDialect.Setup(x => x.SupportsSelectInsertedIdentifier).Returns(true);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(insertSqlQuery, selectIdSqlQuery)).Returns(combinedSqlQuery);
             mockDbDriver.Setup(x => x.BuildCommand(combinedSqlQuery)).Returns(mockCommand.Object);
@@ -691,7 +691,7 @@
             mockSqlDialect.Setup(x => x.SupportsSelectInsertedIdentifier).Returns(true);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(false);
             mockDbDriver.Setup(x => x.BuildCommand(insertSqlQuery)).Returns(mockInsertCommand.Object);
             mockDbDriver.Setup(x => x.BuildCommand(selectIdSqlQuery)).Returns(mockSelectCommand.Object);
@@ -725,7 +725,7 @@
             mockSqlDialect.Setup(x => x.BuildSelectInsertIdSqlQuery(It.IsNotNull<IObjectInfo>())).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             int counter = 0;
@@ -782,7 +782,7 @@
             mockSqlDialect.Setup(x => x.BuildSelectInsertIdSqlQuery(It.IsNotNull<IObjectInfo>())).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -839,7 +839,7 @@
             mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(sqlQuery);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -875,7 +875,7 @@
             mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(sqlQuery);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             int counter = 0;
@@ -918,7 +918,7 @@
             mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -952,7 +952,7 @@
             mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -1004,7 +1004,7 @@
             mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(sqlQuery);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -1033,7 +1033,7 @@
             };
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -1080,7 +1080,7 @@
             mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(objectDelta)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(
@@ -1111,7 +1111,7 @@
             mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(objectDelta)).Returns(new SqlQuery(""));
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new Session(

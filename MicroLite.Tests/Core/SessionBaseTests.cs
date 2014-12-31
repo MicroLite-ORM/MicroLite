@@ -33,7 +33,7 @@
 
             public WhenCallingBeginTransaction()
             {
-                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(mockConnection.Object);
+                this.mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerSession, mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -69,7 +69,7 @@
             public WhenCallingBeginTransaction_AndTheSessionIsDisposed()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(new Mock<IDbConnection>().Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerSession, mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -95,7 +95,7 @@
 
             public WhenCallingBeginTransaction_AndTheTransactionScopeIsPerSession()
             {
-                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(mockConnection.Object);
+                this.mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerSession, this.mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -105,9 +105,9 @@
             }
 
             [Fact]
-            public void TheConnectionNotIsOpened()
+            public void TheConnectionIsOpened()
             {
-                this.mockConnection.Verify(x => x.Open(), Times.Never());
+                this.mockConnection.Verify(x => x.Open(), Times.Once());
             }
 
             [Fact]
@@ -140,7 +140,7 @@
 
             public WhenCallingBeginTransaction_AndTheTransactionScopeIsPerTransaction()
             {
-                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
+                this.mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerTransaction, this.mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -185,7 +185,7 @@
 
             public WhenCallingBeginTransaction_WithAnIsolationLevel()
             {
-                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(mockConnection.Object);
+                this.mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerSession, this.mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -223,7 +223,7 @@
                 this.mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
 
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var sessionBase = new TestSessionBase(ConnectionScope.PerSession, mockDbDriver.Object);
                 sessionBase.BeginTransaction();
@@ -246,7 +246,7 @@
                 this.mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
 
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var sessionBase = new TestSessionBase(ConnectionScope.PerSession, mockDbDriver.Object);
                 sessionBase.CallCommandCompleted();
@@ -268,7 +268,7 @@
                 this.mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
 
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var sessionBase = new TestSessionBase(ConnectionScope.PerTransaction, mockDbDriver.Object);
                 sessionBase.BeginTransaction();
@@ -291,7 +291,7 @@
                 this.mockConnection.Setup(x => x.State).Returns(ConnectionState.Open);
 
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var sessionBase = new TestSessionBase(ConnectionScope.PerTransaction, mockDbDriver.Object);
                 sessionBase.CallCommandCompleted();
@@ -316,7 +316,7 @@
             {
                 this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(this.mockTransaction.Object);
 
-                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(this.mockConnection.Object);
+                this.mockDbDriver.Setup(x => x.CreateConnection()).Returns(this.mockConnection.Object);
                 this.mockDbDriver.Setup(x => x.BuildCommand(sqlQuery)).Returns(this.mockCommand.Object);
 
                 var sessionBase = new TestSessionBase(ConnectionScope.PerSession, this.mockDbDriver.Object);
@@ -352,7 +352,7 @@
 
             public WhenCallingCreateCommand_WithConnectionScopePerSession_AndThereIsNoTransaction()
             {
-                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(this.mockConnection.Object);
+                this.mockDbDriver.Setup(x => x.CreateConnection()).Returns(this.mockConnection.Object);
                 this.mockDbDriver.Setup(x => x.BuildCommand(sqlQuery)).Returns(this.mockCommand.Object);
 
                 var sessionBase = new TestSessionBase(ConnectionScope.PerSession, this.mockDbDriver.Object);
@@ -391,7 +391,7 @@
                 this.mockConnection.Setup(x => x.State).Returns(ConnectionState.Closed);
                 this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(this.mockTransaction.Object);
 
-                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(this.mockConnection.Object);
+                this.mockDbDriver.Setup(x => x.CreateConnection()).Returns(this.mockConnection.Object);
                 this.mockDbDriver.Setup(x => x.BuildCommand(sqlQuery)).Returns(this.mockCommand.Object);
 
                 var sessionBase = new TestSessionBase(ConnectionScope.PerTransaction, this.mockDbDriver.Object);
@@ -429,7 +429,7 @@
             {
                 this.mockConnection.Setup(x => x.State).Returns(ConnectionState.Closed);
 
-                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(this.mockConnection.Object);
+                this.mockDbDriver.Setup(x => x.CreateConnection()).Returns(this.mockConnection.Object);
                 this.mockDbDriver.Setup(x => x.BuildCommand(sqlQuery)).Returns(this.mockCommand.Object);
 
                 var sessionBase = new TestSessionBase(ConnectionScope.PerTransaction, this.mockDbDriver.Object);
@@ -469,7 +469,7 @@
             public WhenCallingDispose_AndTheConnectionScopeIsPerSession()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerSession, mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -499,7 +499,7 @@
             public WhenCallingDispose_AndTheConnectionScopeIsPerTransaction()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerTransaction, mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -531,7 +531,7 @@
                 this.mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(new Mock<IDbTransaction>().Object);
 
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerTransaction, mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -556,7 +556,7 @@
             public WhenCallingTransactionCompleted_WithConnectionScopePerSession()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerSession, mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -587,7 +587,7 @@
             public WhenCallingTransactionCompleted_WithConnectionScopePerTransaction()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
-                mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerTransaction, mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -612,13 +612,13 @@
 
         public class WhenConstructed_WithConnectionScopePerSession
         {
-            private readonly IDbConnection connection = new Mock<IDbConnection>().Object;
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
             private readonly Mock<IDbDriver> mockDbDriver = new Mock<IDbDriver>();
             private readonly SessionBase sessionBase;
 
             public WhenConstructed_WithConnectionScopePerSession()
             {
-                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerSession)).Returns(connection);
+                this.mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerSession, this.mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -627,9 +627,15 @@
             }
 
             [Fact]
+            public void TheConnectionIsOpened()
+            {
+                this.mockConnection.Verify(x => x.Open(), Times.Once());
+            }
+
+            [Fact]
             public void TheConnectionPropertyIsSetToTheConnectionReturnedByDbDriver()
             {
-                Assert.Equal(this.connection, this.sessionBase.Connection);
+                Assert.Equal(this.mockConnection.Object, this.sessionBase.Connection);
             }
 
             [Fact]
@@ -641,7 +647,7 @@
             [Fact]
             public void TheConstructorCallsDbDriverGetConnection()
             {
-                this.mockDbDriver.Verify(x => x.GetConnection(ConnectionScope.PerSession));
+                this.mockDbDriver.Verify(x => x.CreateConnection());
             }
 
             [Fact]
@@ -653,13 +659,13 @@
 
         public class WhenConstructed_WithConnectionScopePerTransaction
         {
-            private readonly IDbConnection connection = new Mock<IDbConnection>().Object;
+            private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
             private readonly Mock<IDbDriver> mockDbDriver = new Mock<IDbDriver>();
             private readonly SessionBase sessionBase;
 
             public WhenConstructed_WithConnectionScopePerTransaction()
             {
-                this.mockDbDriver.Setup(x => x.GetConnection(ConnectionScope.PerTransaction)).Returns(connection);
+                this.mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
 
                 var mockSessionBase = new Mock<SessionBase>(ConnectionScope.PerTransaction, this.mockDbDriver.Object);
                 mockSessionBase.CallBase = true;
@@ -668,9 +674,15 @@
             }
 
             [Fact]
+            public void TheConnectionIsNotOpened()
+            {
+                this.mockConnection.Verify(x => x.Open(), Times.Never());
+            }
+
+            [Fact]
             public void TheConnectionPropertyIsSetToTheConnectionReturnedByDbDriver()
             {
-                Assert.Equal(this.connection, this.sessionBase.Connection);
+                Assert.Equal(this.mockConnection.Object, this.sessionBase.Connection);
             }
 
             [Fact]
@@ -682,7 +694,7 @@
             [Fact]
             public void TheConstructorCallsDbDriverGetConnection()
             {
-                this.mockDbDriver.Verify(x => x.GetConnection(ConnectionScope.PerTransaction));
+                this.mockDbDriver.Verify(x => x.CreateConnection());
             }
 
             [Fact]
