@@ -106,7 +106,128 @@
         }
 
         [Fact]
-        public void UpdateTableSetColumnValueWhereEquals()
+        public void UpdateTableSetColumnValueWhereBetween()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Id").Between(1, 199)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Id BETWEEN ? AND ?)", sqlQuery.CommandText);
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(199, sqlQuery.Arguments[3].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereInArgs()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Column3").In(1, 2, 3)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Column3 IN (?,?,?))", sqlQuery.CommandText);
+
+            Assert.Equal(5, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[3].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[4].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[4].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereInMultipleSqlQueries()
+        {
+            var subQuery1 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+            var subQuery2 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 2048);
+
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Column3").In(subQuery1, subQuery2)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Column3 IN ((SELECT Id FROM Table WHERE Column = ?), (SELECT Id FROM Table WHERE Column = ?)))", sqlQuery.CommandText);
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(2048, sqlQuery.Arguments[3].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereInSqlQuery()
+        {
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Column3").In(subQuery)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Column3 IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[2].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereIsEqualTo()
         {
             var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
 
@@ -132,7 +253,7 @@
         }
 
         [Fact]
-        public void UpdateTableSetColumnValueWhereEqualsAndWhereEquals()
+        public void UpdateTableSetColumnValueWhereIsEqualToAndWhereIsEqualTo()
         {
             var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
 
@@ -162,7 +283,7 @@
         }
 
         [Fact]
-        public void UpdateTableSetColumnValueWhereEqualsAndWhereEqualsWithSqlCharacters()
+        public void UpdateTableSetColumnValueWhereIsEqualToAndWhereIsEqualToWithSqlCharacters()
         {
             var sqlBuilder = new UpdateSqlBuilder(MsSqlCharacters.Instance);
 
@@ -192,7 +313,7 @@
         }
 
         [Fact]
-        public void UpdateTableSetColumnValueWhereEqualsOrWhereEquals()
+        public void UpdateTableSetColumnValueWhereIsEqualToOrWhereIsEqualTo()
         {
             var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
 
@@ -222,7 +343,7 @@
         }
 
         [Fact]
-        public void UpdateTableSetColumnValueWhereEqualsOrWhereEqualsWithSqlCharacters()
+        public void UpdateTableSetColumnValueWhereIsEqualToOrWhereIsEqualToWithSqlCharacters()
         {
             var sqlBuilder = new UpdateSqlBuilder(MsSqlCharacters.Instance);
 
@@ -252,7 +373,7 @@
         }
 
         [Fact]
-        public void UpdateTableSetColumnValueWhereEqualsWithSqlCharacters()
+        public void UpdateTableSetColumnValueWhereIsEqualToWithSqlCharacters()
         {
             var sqlBuilder = new UpdateSqlBuilder(MsSqlCharacters.Instance);
 
@@ -275,6 +396,355 @@
 
             Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
             Assert.Equal(100122, sqlQuery.Arguments[2].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereIsGreaterThan()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Id").IsGreaterThan(100122)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Id > ?)", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(100122, sqlQuery.Arguments[2].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereIsGreaterThanOrEqualTo()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Id").IsGreaterThanOrEqualTo(100122)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Id >= ?)", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(100122, sqlQuery.Arguments[2].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereIsLessThan()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Id").IsLessThan(100122)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Id < ?)", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(100122, sqlQuery.Arguments[2].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereIsLessThanOrEqualTo()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Id").IsLessThanOrEqualTo(100122)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Id <= ?)", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(100122, sqlQuery.Arguments[2].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereIsLike()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Column3").IsLike("Foo%")
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Column3 LIKE ?)", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[2].DbType);
+            Assert.Equal("Foo%", sqlQuery.Arguments[2].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereIsNotEqualTo()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Id").IsNotEqualTo(100122)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Id <> ?)", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(100122, sqlQuery.Arguments[2].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereIsNotLike()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Column3").IsNotLike("Foo%")
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Column3 NOT LIKE ?)", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[2].DbType);
+            Assert.Equal("Foo%", sqlQuery.Arguments[2].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereIsNotNull()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Id").IsNotNull()
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Id IS NOT NULL)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereIsNull()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Id").IsNull()
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Id IS NULL)", sqlQuery.CommandText);
+
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereNotBetween()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Id").NotBetween(1, 199)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Id NOT BETWEEN ? AND ?)", sqlQuery.CommandText);
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(199, sqlQuery.Arguments[3].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereNotInArgs()
+        {
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Column3").NotIn(1, 2, 3)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Column3 NOT IN (?,?,?))", sqlQuery.CommandText);
+
+            Assert.Equal(5, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(1, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(2, sqlQuery.Arguments[3].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[4].DbType);
+            Assert.Equal(3, sqlQuery.Arguments[4].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereNotInMultipleSqlQueries()
+        {
+            var subQuery1 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+            var subQuery2 = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 2048);
+
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Column3").NotIn(subQuery1, subQuery2)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Column3 NOT IN ((SELECT Id FROM Table WHERE Column = ?), (SELECT Id FROM Table WHERE Column = ?)))", sqlQuery.CommandText);
+
+            Assert.Equal(4, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal(2048, sqlQuery.Arguments[3].Value);
+        }
+
+        [Fact]
+        public void UpdateTableSetColumnValueWhereNotInSqlQuery()
+        {
+            var subQuery = new SqlQuery("SELECT Id FROM Table WHERE Column = ?", 1024);
+
+            var sqlBuilder = new UpdateSqlBuilder(SqlCharacters.Empty);
+
+            var sqlQuery = sqlBuilder
+                .Table("Table")
+                .SetColumnValue("Column1", "Foo")
+                .SetColumnValue("Column2", 12)
+                .Where("Column3").NotIn(subQuery)
+                .ToSqlQuery();
+
+            Assert.Equal("UPDATE Table SET Column1 = ?,Column2 = ? WHERE (Column3 NOT IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
+
+            Assert.Equal(3, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(12, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(1024, sqlQuery.Arguments[2].Value);
         }
 
         [Fact]

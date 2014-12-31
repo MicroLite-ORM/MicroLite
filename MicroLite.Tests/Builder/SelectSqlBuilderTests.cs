@@ -21,17 +21,6 @@
         }
 
         [Fact]
-        public void AndWhereThrowsArgumentNullExceptionForEmptyArgs()
-        {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
-
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => sqlBuilder.AndWhere("x = ?", null));
-
-            Assert.Equal("args", exception.ParamName);
-        }
-
-        [Fact]
         public void AndWhereThrowsArgumentExceptionForEmptyColumn()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
@@ -73,6 +62,17 @@
                 () => sqlBuilder.AndWhere(null, new object()));
 
             Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"), exception.Message);
+        }
+
+        [Fact]
+        public void AndWhereThrowsArgumentNullExceptionForEmptyArgs()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.AndWhere("x = ?", null));
+
+            Assert.Equal("args", exception.ParamName);
         }
 
         [Fact]
@@ -475,17 +475,6 @@
         }
 
         [Fact]
-        public void OrWhereThrowsArgumentNullExceptionForEmptyArgs()
-        {
-            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
-
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => sqlBuilder.OrWhere("x = ?", null));
-
-            Assert.Equal("args", exception.ParamName);
-        }
-
-        [Fact]
         public void OrWhereThrowsArgumentExceptionForEmptyColumn()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
@@ -527,6 +516,17 @@
                 () => sqlBuilder.OrWhere(null, new object()));
 
             Assert.Equal(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"), exception.Message);
+        }
+
+        [Fact]
+        public void OrWhereThrowsArgumentNullExceptionForEmptyArgs()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty);
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => sqlBuilder.OrWhere("x = ?", null));
+
+            Assert.Equal("args", exception.ParamName);
         }
 
         [Fact]
@@ -1468,8 +1468,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .Between(1, 10)
+                   .Where("Column1").Between(1, 10)
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 BETWEEN ? AND ?)", sqlQuery.CommandText);
@@ -1490,8 +1489,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .Between(1, 10)
+                   .Where("Column1").Between(1, 10)
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
@@ -1512,8 +1510,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsEqualTo("FOO")
+                   .Where("Column1").IsEqualTo("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = ?)", sqlQuery.CommandText);
@@ -1531,8 +1528,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsEqualTo("FOO")
+                   .Where("Column1").IsEqualTo("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] = @p0)", sqlQuery.CommandText);
@@ -1552,8 +1548,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsEqualTo(subQuery)
+                   .Where("Column1").IsEqualTo(subQuery)
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 = (SELECT Column2 FROM Table2 WHERE Column3 = ?))", sqlQuery.CommandText);
@@ -1573,8 +1568,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsEqualTo(subQuery)
+                   .Where("Column1").IsEqualTo(subQuery)
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] = (SELECT Column2 FROM Table2 WHERE Column3 = @p0))", sqlQuery.CommandText);
@@ -1592,8 +1586,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsGreaterThan("FOO")
+                   .Where("Column1").IsGreaterThan("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 > ?)", sqlQuery.CommandText);
@@ -1611,8 +1604,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsGreaterThanOrEqualTo("FOO")
+                   .Where("Column1").IsGreaterThanOrEqualTo("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 >= ?)", sqlQuery.CommandText);
@@ -1630,8 +1622,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsGreaterThanOrEqualTo("FOO")
+                   .Where("Column1").IsGreaterThanOrEqualTo("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] >= @p0)", sqlQuery.CommandText);
@@ -1649,8 +1640,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsGreaterThan("FOO")
+                   .Where("Column1").IsGreaterThan("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] > @p0)", sqlQuery.CommandText);
@@ -1668,8 +1658,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsLessThan("FOO")
+                   .Where("Column1").IsLessThan("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 < ?)", sqlQuery.CommandText);
@@ -1687,8 +1676,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsLessThanOrEqualTo("FOO")
+                   .Where("Column1").IsLessThanOrEqualTo("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <= ?)", sqlQuery.CommandText);
@@ -1706,8 +1694,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsLessThanOrEqualTo("FOO")
+                   .Where("Column1").IsLessThanOrEqualTo("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <= @p0)", sqlQuery.CommandText);
@@ -1725,8 +1712,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsLessThan("FOO")
+                   .Where("Column1").IsLessThan("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] < @p0)", sqlQuery.CommandText);
@@ -1744,8 +1730,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsLike("FOO%")
+                   .Where("Column1").IsLike("FOO%")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 LIKE ?)", sqlQuery.CommandText);
@@ -1763,8 +1748,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsLike("FOO%")
+                   .Where("Column1").IsLike("FOO%")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] LIKE @p0)", sqlQuery.CommandText);
@@ -1782,8 +1766,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsNotEqualTo("FOO")
+                   .Where("Column1").IsNotEqualTo("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> ?)", sqlQuery.CommandText);
@@ -1801,8 +1784,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsNotEqualTo("FOO")
+                   .Where("Column1").IsNotEqualTo("FOO")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <> @p0)", sqlQuery.CommandText);
@@ -1822,8 +1804,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsNotEqualTo(subQuery)
+                   .Where("Column1").IsNotEqualTo(subQuery)
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 <> (SELECT Column2 FROM Table2 WHERE Column3 = ?))", sqlQuery.CommandText);
@@ -1843,8 +1824,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsNotEqualTo(subQuery)
+                   .Where("Column1").IsNotEqualTo(subQuery)
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] <> (SELECT Column2 FROM Table2 WHERE Column3 = @p0))", sqlQuery.CommandText);
@@ -1862,8 +1842,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsNotLike("FOO%")
+                   .Where("Column1").IsNotLike("FOO%")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT LIKE ?)", sqlQuery.CommandText);
@@ -1881,8 +1860,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsNotLike("FOO%")
+                   .Where("Column1").IsNotLike("FOO%")
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT LIKE @p0)", sqlQuery.CommandText);
@@ -1900,8 +1878,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsNotNull()
+                   .Where("Column1").IsNotNull()
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NOT NULL)", sqlQuery.CommandText);
@@ -1916,8 +1893,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsNotNull()
+                   .Where("Column1").IsNotNull()
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] IS NOT NULL)", sqlQuery.CommandText);
@@ -1932,8 +1908,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .IsNull()
+                   .Where("Column1").IsNull()
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NULL)", sqlQuery.CommandText);
@@ -2052,8 +2027,7 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where("Column1")
-                .In(1, 2, 3)
+                .Where("Column1").In(1, 2, 3)
                 .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (?,?,?))", sqlQuery.CommandText);
@@ -2077,8 +2051,7 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where("Column1")
-                .In(1, 2, 3)
+                .Where("Column1").In(1, 2, 3)
                 .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] IN (@p0,@p1,@p2))", sqlQuery.CommandText);
@@ -2128,8 +2101,7 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where("Column1")
-                .In(subQuery)
+                .Where("Column1").In(subQuery)
                 .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
@@ -2147,8 +2119,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .NotBetween(1, 10)
+                   .Where("Column1").NotBetween(1, 10)
                    .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT BETWEEN ? AND ?)", sqlQuery.CommandText);
@@ -2169,8 +2140,7 @@
 
             var sqlQuery = sqlBuilder
                    .From("Table")
-                   .Where("Column1")
-                   .NotBetween(1, 10)
+                   .Where("Column1").NotBetween(1, 10)
                    .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE ([Column1] NOT BETWEEN @p0 AND @p1)", sqlQuery.CommandText);
@@ -2193,8 +2163,7 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where()
-                .NotExists(subQuery)
+                .Where().NotExists(subQuery)
                 .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE NOT EXISTS (SELECT Id FROM Table WHERE Column = ?)", sqlQuery.CommandText);
@@ -2212,8 +2181,7 @@
 
             var sqlQuery = sqlBuilder
                 .From("Table")
-                .Where("Column1")
-                .NotIn(1, 2, 3)
+                .Where("Column1").NotIn(1, 2, 3)
                 .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 NOT IN (?,?,?))", sqlQuery.CommandText);
@@ -2306,8 +2274,7 @@
             var sqlQuery = sqlBuilder
                 .From("Table")
                 .Where("Column2").IsEqualTo("FOO")
-                .OrWhere("Column1")
-                .In(1, 2, 3)
+                .OrWhere("Column1").In(1, 2, 3)
                 .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) OR (Column1 IN (?,?,?))", sqlQuery.CommandText);
@@ -2365,8 +2332,7 @@
             var sqlQuery = sqlBuilder
                 .From("Table")
                 .Where("Column2 = ?", "FOO")
-                .OrWhere("Column1")
-                .In(subQuery)
+                .OrWhere("Column1").In(subQuery)
                 .ToSqlQuery();
 
             Assert.Equal("SELECT Column1 FROM Table WHERE (Column2 = ?) OR (Column1 IN (SELECT Id FROM Table WHERE Column = ?))", sqlQuery.CommandText);
@@ -2390,8 +2356,7 @@
             var sqlQuery = sqlBuilder
                 .From("Table")
                 .Where("Column2 = @p0", "FOO")
-                .OrWhere("Column1")
-                .In(subQuery)
+                .OrWhere("Column1").In(subQuery)
                 .ToSqlQuery();
 
             Assert.Equal("SELECT [Column1] FROM [Table] WHERE (Column2 = @p0) OR ([Column1] IN (SELECT Id FROM Table WHERE Column = @p1))", sqlQuery.CommandText);

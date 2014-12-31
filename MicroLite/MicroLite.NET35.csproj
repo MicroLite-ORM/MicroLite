@@ -83,6 +83,7 @@
     <Compile Include="Builder\Syntax\Write\IWhere.cs" />
     <Compile Include="Builder\Syntax\Write\IWhereSingleColumn.cs" />
     <Compile Include="Builder\UpdateSqlBuilder.cs" />
+    <Compile Include="Builder\WriteSqlBuilderBase.cs" />
     <Compile Include="Characters\FirebirdSqlCharacters.cs" />
     <Compile Include="Characters\MsSqlCharacters.cs" />
     <Compile Include="Characters\MySqlCharacters.cs" />
@@ -209,7 +210,8 @@
     <None Include="..\MicroLite.snk">
       <Link>MicroLite.snk</Link>
     </None>
-    <None Include="Builder\_SqlBuilder.cd" />
+    <None Include="Builder\Syntax\Read\_Read.cd" />
+    <None Include="Builder\Syntax\Write\_Write.cd" />
     <None Include="Builder\_SqlBuilders.cd" />
     <None Include="Characters\_SqlCharacters.cd" />
     <None Include="Configuration\_Configuration.cd" />
