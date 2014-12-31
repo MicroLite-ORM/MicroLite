@@ -26,6 +26,7 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Initialises a new instance of the <see cref="ConventionMappingSettings" /> class.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Acceptable in this instance, it's still perfectly readable")]
         public ConventionMappingSettings()
         {
             this.AllowInsert = (PropertyInfo propertyInfo) => true;
