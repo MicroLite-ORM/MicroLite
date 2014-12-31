@@ -18,7 +18,7 @@ namespace MicroLite.Builder.Syntax.Read
     public interface IWhereSingleColumn : IHideObjectMethods
     {
         /// <summary>
-        /// Uses the specified Arguments to filter the column.
+        /// Uses the specified arguments to filter the column.
         /// </summary>
         /// <param name="lower">The inclusive lower value.</param>
         /// <param name="upper">The inclusive upper value.</param>
@@ -39,9 +39,9 @@ namespace MicroLite.Builder.Syntax.Read
         IAndOrOrderBy Between(object lower, object upper);
 
         /// <summary>
-        /// Uses the specified Arguments to filter the column.
+        /// Uses the specified arguments to filter the column.
         /// </summary>
-        /// <param name="args">The Arguments to filter the column.</param>
+        /// <param name="args">The arguments to filter the column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if args is null.</exception>
         /// <example>
@@ -306,7 +306,7 @@ namespace MicroLite.Builder.Syntax.Read
         IAndOrOrderBy IsNull();
 
         /// <summary>
-        /// Uses the specified Arguments to filter the column.
+        /// Uses the specified arguments to filter the column.
         /// </summary>
         /// <param name="lower">The inclusive lower value.</param>
         /// <param name="upper">The inclusive upper value.</param>
@@ -327,9 +327,9 @@ namespace MicroLite.Builder.Syntax.Read
         IAndOrOrderBy NotBetween(object lower, object upper);
 
         /// <summary>
-        /// Uses the specified Arguments to filter the column.
+        /// Uses the specified arguments to filter the column.
         /// </summary>
-        /// <param name="args">The Arguments to filter the column.</param>
+        /// <param name="args">The arguments to filter the column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if args is null.</exception>
         /// <example>
