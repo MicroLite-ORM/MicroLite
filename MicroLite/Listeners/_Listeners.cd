@@ -1,32 +1,60 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="MicroLite.Listeners.Listener">
-    <Position X="4" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAAAAQAAAAAAAAAAAAAAAAIAACACAAAUAAAABAAA=</HashCode>
+      <HashCode>AAAAAAAIgAAAAAAAgAAAAAAIgAAAAAAAgAAAAAAAAAA=</HashCode>
       <FileName>Listeners\Listener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Listeners.DeleteListenerCollection">
+    <Position X="2.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Listeners\DeleteListenerCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Listeners.InsertListenerCollection">
+    <Position X="5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Listeners\InsertListenerCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Listeners.UpdateListenerCollection">
+    <Position X="7.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Listeners\UpdateListenerCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLite.Listeners.IdentifierStrategyListener">
+    <Position X="5" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAACAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Listeners\IdentifierStrategyListener.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="MicroLite.Listeners.IdentifierStrategyListener">
-    <Position X="3.75" Y="4.5" Width="2" />
+  <Interface Name="MicroLite.Listeners.IDeleteListener">
+    <Position X="2.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAACAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Listeners\IdentifierStrategyListener.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAA=</HashCode>
+      <FileName>Listeners\IDeleteListener.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Class Name="MicroLite.Listeners.ListenerCollection">
-    <Position X="0.5" Y="3" Width="1.75" />
+  </Interface>
+  <Interface Name="MicroLite.Listeners.IInsertListener">
+    <Position X="5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Logging\ListenerCollection.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Listeners\IInsertListener.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Interface Name="MicroLite.Listeners.IListener">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+  </Interface>
+  <Interface Name="MicroLite.Listeners.IUpdateListener">
+    <Position X="7.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAAAAQAAAAAAAAAAAAAAAAAAACAAAAAUAAAABAAA=</HashCode>
-      <FileName>Listeners\IListener.cs</FileName>
+      <HashCode>AAAgAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Listeners\IUpdateListener.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

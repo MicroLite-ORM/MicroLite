@@ -99,8 +99,10 @@
     <Compile Include="Driver\PostgreSqlDbDriverTests.cs" />
     <Compile Include="Driver\SQLiteDbDriverTests.cs" />
     <Compile Include="Driver\SqlServerCeDbDriverTests.cs" />
+    <Compile Include="Listeners\DeleteListenerCollectionTests.cs" />
     <Compile Include="Listeners\IdentifierStrategyListenerTests.cs" />
-    <Compile Include="Listeners\ListenerCollectionTests.cs" />
+    <Compile Include="Listeners\InsertListenerCollectionTests.cs" />
+    <Compile Include="Listeners\UpdateListenerCollectionTests.cs" />
     <Compile Include="Logging\LogManagerTests.cs" />
     <Compile Include="Mapping\Attributes\AttributeMappingConventionTests.cs" />
     <Compile Include="Mapping\Attributes\ColumnAttributeTests.cs" />

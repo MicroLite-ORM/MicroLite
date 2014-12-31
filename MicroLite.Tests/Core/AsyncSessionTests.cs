@@ -25,7 +25,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var advancedSession = session.Advanced;
 
@@ -53,11 +55,11 @@
 
             int counter = 0;
 
-            var mockListener1 = new Mock<IListener>();
+            var mockListener1 = new Mock<IDeleteListener>();
             mockListener1.Setup(x => x.AfterDelete(customer, 1)).Callback(() => Assert.Equal(4, ++counter));
             mockListener1.Setup(x => x.BeforeDelete(customer)).Callback(() => Assert.Equal(1, ++counter));
 
-            var mockListener2 = new Mock<IListener>();
+            var mockListener2 = new Mock<IDeleteListener>();
             mockListener2.Setup(x => x.AfterDelete(customer, 1)).Callback(() => Assert.Equal(3, ++counter));
             mockListener2.Setup(x => x.BeforeDelete(customer)).Callback(() => Assert.Equal(2, ++counter));
 
@@ -65,7 +67,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new[] { mockListener1.Object, mockListener2.Object });
+                new[] { mockListener1.Object, mockListener2.Object },
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             session.DeleteAsync(customer).Wait();
 
@@ -96,7 +100,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             Assert.False(session.DeleteAsync(customer).Result);
 
@@ -128,7 +134,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             Assert.True(session.DeleteAsync(customer).Result);
 
@@ -144,7 +152,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(
                 () => session.DeleteAsync(null).Result);
@@ -175,7 +185,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(customer).Wait());
 
@@ -202,7 +214,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(
                 () => session.DeleteAsync(customer).Result);
@@ -218,7 +232,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             using (session)
             {
@@ -251,7 +267,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             Assert.False(session.DeleteAsync(type, identifier).Result);
 
@@ -281,7 +299,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             Assert.True(session.DeleteAsync(type, identifier).Result);
 
@@ -297,7 +317,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(
                 () => session.DeleteAsync(typeof(Customer), null).Result);
@@ -312,7 +334,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(
                 () => session.DeleteAsync(null, 1234).Result);
@@ -341,7 +365,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(type, identifier).Result);
 
@@ -360,7 +386,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             using (session)
             {
@@ -392,7 +420,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             Assert.Equal(result, session.ExecuteAsync(sqlQuery).Result);
 
@@ -420,7 +450,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             Assert.Equal(result, session.ExecuteScalarAsync<object>(sqlQuery).Result);
 
@@ -435,7 +467,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(
                 () => session.ExecuteScalarAsync<object>(null).Result);
@@ -450,7 +484,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             using (session)
             {
@@ -482,7 +518,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             Assert.Equal((CustomerStatus)result, session.ExecuteScalarAsync<CustomerStatus>(sqlQuery).Result);
 
@@ -497,7 +535,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(
                 () => session.ExecuteAsync(null).Result);
@@ -512,7 +552,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             using (session)
             {
@@ -553,7 +595,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             session.InsertAsync(customer).Wait();
 
@@ -590,7 +634,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             session.InsertAsync(customer).Wait();
 
@@ -632,7 +678,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             session.InsertAsync(customer).Wait();
 
@@ -675,7 +723,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             session.InsertAsync(customer).Wait();
 
@@ -703,11 +753,11 @@
 
             int counter = 0;
 
-            var mockListener1 = new Mock<IListener>();
+            var mockListener1 = new Mock<IInsertListener>();
             mockListener1.Setup(x => x.AfterInsert(customer, identifier)).Callback(() => Assert.Equal(4, ++counter));
             mockListener1.Setup(x => x.BeforeInsert(customer)).Callback(() => Assert.Equal(1, ++counter));
 
-            var mockListener2 = new Mock<IListener>();
+            var mockListener2 = new Mock<IInsertListener>();
             mockListener2.Setup(x => x.AfterInsert(customer, identifier)).Callback(() => Assert.Equal(3, ++counter));
             mockListener2.Setup(x => x.BeforeInsert(customer)).Callback(() => Assert.Equal(2, ++counter));
 
@@ -715,7 +765,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new[] { mockListener1.Object, mockListener2.Object });
+                new IDeleteListener[0],
+                new[] { mockListener1.Object, mockListener2.Object },
+                new IUpdateListener[0]);
 
             session.InsertAsync(customer).Wait();
 
@@ -730,7 +782,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(
                 () => session.InsertAsync(null).Wait());
@@ -759,7 +813,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(() => session.InsertAsync(customer).Wait());
 
@@ -778,7 +834,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             using (session)
             {
@@ -816,7 +874,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             session.UpdateAsync(customer).Wait();
 
@@ -848,11 +908,11 @@
 
             int counter = 0;
 
-            var mockListener1 = new Mock<IListener>();
+            var mockListener1 = new Mock<IUpdateListener>();
             mockListener1.Setup(x => x.AfterUpdate(customer, 1)).Callback(() => Assert.Equal(4, ++counter));
             mockListener1.Setup(x => x.BeforeUpdate(customer)).Callback(() => Assert.Equal(1, ++counter));
 
-            var mockListener2 = new Mock<IListener>();
+            var mockListener2 = new Mock<IUpdateListener>();
             mockListener2.Setup(x => x.AfterUpdate(customer, 1)).Callback(() => Assert.Equal(3, ++counter));
             mockListener2.Setup(x => x.BeforeUpdate(customer)).Callback(() => Assert.Equal(2, ++counter));
 
@@ -860,6 +920,8 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
+                new IDeleteListener[0],
+                new IInsertListener[0],
                 new[] { mockListener1.Object, mockListener2.Object });
 
             session.UpdateAsync(customer).Wait();
@@ -891,7 +953,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             Assert.False(session.UpdateAsync(customer).Result);
 
@@ -923,7 +987,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             Assert.True(session.UpdateAsync(customer).Result);
 
@@ -939,7 +1005,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(
                 () => session.UpdateAsync((Customer)null).Result);
@@ -972,7 +1040,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(() => session.UpdateAsync(customer).Wait());
 
@@ -999,7 +1069,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(() => session.UpdateAsync(customer).Wait());
 
@@ -1014,7 +1086,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             using (session)
             {
@@ -1047,7 +1121,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             Assert.False(session.UpdateAsync(objectDelta).Result);
 
@@ -1076,7 +1152,9 @@
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             Assert.True(session.UpdateAsync(objectDelta).Result);
 
@@ -1091,7 +1169,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(
                 () => session.UpdateAsync((ObjectDelta)null).Result);
@@ -1108,7 +1188,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             var exception = Assert.Throws<AggregateException>(
                 () => session.UpdateAsync(objectDelta).Result);
@@ -1124,7 +1206,9 @@
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
-                new IListener[0]);
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
 
             using (session)
             {

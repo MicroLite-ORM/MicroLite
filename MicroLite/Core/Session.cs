@@ -26,16 +26,22 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("ConnectionScope: {ConnectionScope}")]
     internal sealed class Session : ReadOnlySession, ISession, IAdvancedSession
     {
-        private readonly IList<IListener> listeners;
+        private readonly IList<IDeleteListener> deleteListeners;
+        private readonly IList<IInsertListener> insertListeners;
+        private readonly IList<IUpdateListener> updateListeners;
 
         internal Session(
             ConnectionScope connectionScope,
             ISqlDialect sqlDialect,
             IDbDriver sqlDriver,
-            IList<IListener> listeners)
+            IList<IDeleteListener> deleteListeners,
+            IList<IInsertListener> insertListeners,
+            IList<IUpdateListener> updateListeners)
             : base(connectionScope, sqlDialect, sqlDriver)
         {
-            this.listeners = listeners;
+            this.deleteListeners = deleteListeners;
+            this.insertListeners = insertListeners;
+            this.updateListeners = updateListeners;
         }
 
         public new IAdvancedSession Advanced
@@ -55,9 +61,9 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            for (int i = 0; i < this.listeners.Count; i++)
+            for (int i = 0; i < this.deleteListeners.Count; i++)
             {
-                this.listeners[i].BeforeDelete(instance);
+                this.deleteListeners[i].BeforeDelete(instance);
             }
 
             var objectInfo = ObjectInfo.For(instance.GetType());
@@ -73,9 +79,9 @@ namespace MicroLite.Core
 
             var rowsAffected = this.ExecuteQuery(sqlQuery);
 
-            for (int i = this.listeners.Count - 1; i >= 0; i--)
+            for (int i = this.deleteListeners.Count - 1; i >= 0; i--)
             {
-                this.listeners[i].AfterDelete(instance, rowsAffected);
+                this.deleteListeners[i].AfterDelete(instance, rowsAffected);
             }
 
             return rowsAffected == 1;
@@ -137,9 +143,9 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            for (int i = 0; i < this.listeners.Count; i++)
+            for (int i = 0; i < this.insertListeners.Count; i++)
             {
-                this.listeners[i].BeforeInsert(instance);
+                this.insertListeners[i].BeforeInsert(instance);
             }
 
             var objectInfo = ObjectInfo.For(instance.GetType());
@@ -147,9 +153,9 @@ namespace MicroLite.Core
 
             object identifier = this.InsertReturningIdentifier(objectInfo, instance);
 
-            for (int i = this.listeners.Count - 1; i >= 0; i--)
+            for (int i = this.insertListeners.Count - 1; i >= 0; i--)
             {
-                this.listeners[i].AfterInsert(instance, identifier);
+                this.insertListeners[i].AfterInsert(instance, identifier);
             }
         }
 
@@ -162,9 +168,9 @@ namespace MicroLite.Core
                 throw new ArgumentNullException("instance");
             }
 
-            for (int i = 0; i < this.listeners.Count; i++)
+            for (int i = 0; i < this.updateListeners.Count; i++)
             {
-                this.listeners[i].BeforeUpdate(instance);
+                this.updateListeners[i].BeforeUpdate(instance);
             }
 
             var objectInfo = ObjectInfo.For(instance.GetType());
@@ -178,9 +184,9 @@ namespace MicroLite.Core
 
             var rowsAffected = this.ExecuteQuery(sqlQuery);
 
-            for (int i = this.listeners.Count - 1; i >= 0; i--)
+            for (int i = this.updateListeners.Count - 1; i >= 0; i--)
             {
-                this.listeners[i].AfterUpdate(instance, rowsAffected);
+                this.updateListeners[i].AfterUpdate(instance, rowsAffected);
             }
 
             return rowsAffected == 1;

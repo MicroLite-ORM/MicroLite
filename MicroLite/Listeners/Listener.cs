@@ -13,77 +13,45 @@
 namespace MicroLite.Listeners
 {
     /// <summary>
-    /// Empty implementation of IListener.
+    /// Static entry point for listener collections.
     /// </summary>
-    /// <remarks>
-    /// Provided so that implementations don't have to implement full interface.
-    /// Quite possibly a violation of SRP but it does allow for simplified extensions to the framework.
-    /// </remarks>
-    public abstract class Listener : IListener
+    public static class Listener
     {
-        private static readonly ListenerCollection listeners = new ListenerCollection();
+        private static readonly DeleteListenerCollection deleteListeners = new DeleteListenerCollection();
+        private static readonly InsertListenerCollection insertListeners = new InsertListenerCollection();
+        private static readonly UpdateListenerCollection updateListeners = new UpdateListenerCollection();
 
         /// <summary>
-        /// Gets the listener collection which contains all listeners registered with the MicroLite ORM framework.
+        /// Gets the listener collection which contains all registered <see cref="IDeleteListener"/>s.
         /// </summary>
-        public static ListenerCollection Listeners
+        public static DeleteListenerCollection DeleteListeners
         {
             get
             {
-                return listeners;
+                return deleteListeners;
             }
         }
 
         /// <summary>
-        /// Invoked after the SqlQuery to delete the record for the instance has been executed.
+        /// Gets the listener collection which contains all registered <see cref="IInsertListener"/>s.
         /// </summary>
-        /// <param name="instance">The instance which has been deleted.</param>
-        /// <param name="rowsAffected">The number of rows affected by the delete.</param>
-        public virtual void AfterDelete(object instance, int rowsAffected)
+        public static InsertListenerCollection InsertListener
         {
+            get
+            {
+                return insertListeners;
+            }
         }
 
         /// <summary>
-        /// Invoked after the SqlQuery to insert the record for the instance has been executed.
+        /// Gets the listener collection which contains all registered <see cref="IUpdateListener"/>s.
         /// </summary>
-        /// <param name="instance">The instance which has been inserted.</param>
-        /// <param name="executeScalarResult">The execute scalar result (the identifier value returned by the database
-        /// or null if the identifier is <see cref="MicroLite.Mapping.IdentifierStrategy" />.Assigned.</param>
-        public virtual void AfterInsert(object instance, object executeScalarResult)
+        public static UpdateListenerCollection UpdateListeners
         {
-        }
-
-        /// <summary>
-        /// Invoked after the SqlQuery to update the record for the instance has been executed.
-        /// </summary>
-        /// <param name="instance">The instance which has been updates.</param>
-        /// <param name="rowsAffected">The number of rows affected by the update.</param>
-        public virtual void AfterUpdate(object instance, int rowsAffected)
-        {
-        }
-
-        /// <summary>
-        /// Invoked before the SqlQuery to delete the record from the database is created.
-        /// </summary>
-        /// <param name="instance">The instance to be deleted.</param>
-        public virtual void BeforeDelete(object instance)
-        {
-        }
-
-        /// <summary>
-        /// Invoked before the SqlQuery to insert the record into the database is created.
-        /// </summary>
-        /// <param name="instance">The instance to be inserted.</param>
-        public virtual void BeforeInsert(object instance)
-        {
-        }
-
-        /// <summary>
-        /// Invoked before the SqlQuery to update the record in the database is created.
-        /// </summary>
-        /// <param name="instance">The instance to be updated.</param>
-        public virtual void BeforeUpdate(object instance)
-        {
+            get
+            {
+                return updateListeners;
+            }
         }
     }
 }

@@ -155,10 +155,14 @@
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="ITransaction.cs" />
+    <Compile Include="Listeners\DeleteListenerCollection.cs" />
+    <Compile Include="Listeners\IDeleteListener.cs" />
     <Compile Include="Listeners\IdentifierStrategyListener.cs" />
-    <Compile Include="Listeners\IListener.cs" />
+    <Compile Include="Listeners\IInsertListener.cs" />
+    <Compile Include="Listeners\IUpdateListener.cs" />
     <Compile Include="Listeners\Listener.cs" />
-    <Compile Include="Listeners\ListenerCollection.cs" />
+    <Compile Include="Listeners\InsertListenerCollection.cs" />
+    <Compile Include="Listeners\UpdateListenerCollection.cs" />
     <Compile Include="Logging\EmptyLog.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LogManager.cs" />
