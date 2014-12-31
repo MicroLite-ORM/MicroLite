@@ -40,18 +40,18 @@ namespace MicroLite.Mapping
             textWriter.WriteLine("MicroLite Mapping:");
             textWriter.WriteLine("------------------");
             textWriter.WriteLine(
-                "Class '{0}' -> Schema '{1}' Table '{2}'",
+                "Class '{0}' mapped to Table '{1}' in Schema '{2}'",
                 objectInfo.ForType.FullName,
-                objectInfo.TableInfo.Schema ?? "(not used)",
+                objectInfo.TableInfo.Schema ?? "(schema not used)",
                 objectInfo.TableInfo.Name);
             textWriter.WriteLine();
 
             foreach (var columnInfo in objectInfo.TableInfo.Columns)
             {
                 textWriter.WriteLine(
-                    "Property '{0} ({1})' -> Column '{2} ({3})'",
+                    "Property '{0} ({1})' mapped to Column '{2} (DbType.{3})'",
                     columnInfo.PropertyInfo.Name,
-                    columnInfo.PropertyInfo.PropertyType.Name,
+                    columnInfo.PropertyInfo.PropertyType.FullName,
                     columnInfo.ColumnName,
                     columnInfo.DbType.ToString());
 
@@ -64,7 +64,7 @@ namespace MicroLite.Mapping
                     textWriter.WriteLine("\tIdentifier Strategy: {0}", objectInfo.TableInfo.IdentifierStrategy.ToString());
                 }
 
-                textWriter.WriteLine("\tSequence Name: {0}", (columnInfo.SequenceName ?? "(not used)").ToString());
+                textWriter.WriteLine("\tSequence Name: {0}", (columnInfo.SequenceName ?? "(sequence not used)").ToString());
                 textWriter.WriteLine();
             }
         }
