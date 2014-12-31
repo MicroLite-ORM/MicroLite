@@ -64,6 +64,7 @@
 
             Assert.Equal("objectInfo", exception.ParamName);
         }
+
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategyAssigned()
         {
