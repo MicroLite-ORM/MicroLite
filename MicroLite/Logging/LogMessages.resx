@@ -151,7 +151,7 @@
     <value>The Transaction is committing changes</value>
   </data>
   <data name="Transaction_Disposed" xml:space="preserve">
-    <value>The Transaction has been disposed of</value>
+    <value>The Transaction has been disposed</value>
   </data>
   <data name="Transaction_DisposedUncommitted" xml:space="preserve">
     <value>The Transaction is being disposed with uncommitted changes, they will be automatically rolled back</value>
@@ -200,5 +200,8 @@
   </data>
   <data name="SessionFactory_CreatingAsyncSession" xml:space="preserve">
     <value>Creating a new async session for connection named '{0}'</value>
+  </data>
+  <data name="Session_Disposed" xml:space="preserve">
+    <value>The Session has been disposed</value>
   </data>
 </root>

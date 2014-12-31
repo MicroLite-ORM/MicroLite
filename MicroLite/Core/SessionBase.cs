@@ -165,17 +165,15 @@ namespace MicroLite.Core
 
             if (disposing)
             {
-                this.disposed = true;
-
                 if (this.currentTransaction != null)
                 {
                     this.currentTransaction.Dispose();
                     this.currentTransaction = null;
                 }
 
-                if (this.ConnectionScope == ConnectionScope.PerSession)
+                if (this.Connection != null)
                 {
-                    if (this.Connection != null)
+                    if (this.ConnectionScope == ConnectionScope.PerSession)
                     {
                         if (Log.IsDebug)
                         {
@@ -184,12 +182,16 @@ namespace MicroLite.Core
 
                         this.Connection.Close();
                     }
-                }
 
-                if (this.Connection != null)
-                {
                     this.Connection.Dispose();
                     this.Connection = null;
+                }
+
+                this.disposed = true;
+
+                if (Log.IsDebug)
+                {
+                    Log.Debug(LogMessages.Session_Disposed);
                 }
             }
         }

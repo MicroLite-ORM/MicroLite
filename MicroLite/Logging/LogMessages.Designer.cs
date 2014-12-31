@@ -178,6 +178,15 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Session has been disposed.
+        /// </summary>
+        internal static string Session_Disposed {
+            get {
+                return ResourceManager.GetString("Session_Disposed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Executing &apos;{0}&apos; queries.
         /// </summary>
         internal static string Session_ExecutingQueries {
@@ -268,7 +277,7 @@ namespace MicroLite.Logging {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Transaction has been disposed of.
+        ///   Looks up a localized string similar to The Transaction has been disposed.
         /// </summary>
         internal static string Transaction_Disposed {
             get {
