@@ -18,10 +18,10 @@ namespace MicroLite.Listeners
     using MicroLite.Mapping;
 
     /// <summary>
-    /// The implementation of <see cref="IListener"/> for setting the instance identifier value if
+    /// The implementation of <see cref="IInsertListener"/> for setting the instance identifier value if
     /// <see cref="IdentifierStrategy"/>.DbGenerated or <see cref="IdentifierStrategy"/>.Sequence is used.
     /// </summary>
-    public sealed class IdentifierStrategyListener : Listener
+    public sealed class IdentifierStrategyListener : IInsertListener
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
 
@@ -33,7 +33,7 @@ namespace MicroLite.Listeners
         /// or null if the identifier is <see cref="IdentifierStrategy" />.Assigned.</param>
         /// <exception cref="ArgumentNullException">Thrown if instance is null or IdentifierStrategy is DbGenerated
         /// and executeScalarResult is null.</exception>
-        public override void AfterInsert(object instance, object executeScalarResult)
+        public void AfterInsert(object instance, object executeScalarResult)
         {
             if (instance == null)
             {
@@ -67,6 +67,15 @@ namespace MicroLite.Listeners
                     objectInfo.SetIdentifierValue(instance, executeScalarResult);
                 }
             }
+        }
+
+        /// <summary>
+        /// Invoked before the SqlQuery to insert the record into the database is created.
+        /// </summary>
+        /// <param name="instance">The instance to be inserted.</param>
+        public void BeforeInsert(object instance)
+        {
+            return; // no-op
         }
     }
 }

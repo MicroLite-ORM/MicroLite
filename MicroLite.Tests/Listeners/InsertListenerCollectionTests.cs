@@ -5,13 +5,13 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="ListenerCollection"/> class.
+    /// Unit Tests for the <see cref="InsertListenerCollection"/> class.
     /// </summary>
-    public class ListenerCollectionTests
+    public class InsertListenerCollectionTests
     {
         public class WhenCallingAdd
         {
-            private readonly ListenerCollection collection = new ListenerCollection();
+            private readonly InsertListenerCollection collection = new InsertListenerCollection();
             private readonly TestListener listener = new TestListener();
 
             public WhenCallingAdd()
@@ -22,13 +22,14 @@
             [Fact]
             public void TheListenerShouldBeAddedAtTheTopOfTheList()
             {
-                Assert.IsType<TestListener>(this.collection[0]);
+                // The second listener should be added at 0.
+                Assert.Same(this.listener, this.collection[0]);
             }
         }
 
         public class WhenCallingTheConstructor
         {
-            private readonly ListenerCollection collection = new ListenerCollection();
+            private readonly InsertListenerCollection collection = new InsertListenerCollection();
 
             [Fact]
             public void ConstructorRegistersIdentifierStrategyListener()
@@ -45,8 +46,15 @@
             }
         }
 
-        private class TestListener : Listener
+        private class TestListener : IInsertListener
         {
+            public void AfterInsert(object instance, object executeScalarResult)
+            {
+            }
+
+            public void BeforeInsert(object instance)
+            {
+            }
         }
     }
 }

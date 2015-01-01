@@ -23,7 +23,7 @@ namespace MicroLite.Configuration
     {
         private ILog log = LogManager.GetCurrentClassLog();
 
-        public void SetLogResolver(Func<string, ILog> logResolver)
+        public void SetLogResolver(Func<Type, ILog> logResolver)
         {
             LogManager.GetLogger = logResolver;
 

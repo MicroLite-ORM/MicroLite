@@ -19,7 +19,7 @@ namespace MicroLite.Builder
     using MicroLite.Mapping;
 
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class DeleteSqlBuilder : SqlBuilderBase, IDeleteFrom, IWhere, IWhereSingleColumn, IAndOr
+    internal sealed class DeleteSqlBuilder : WriteSqlBuilderBase, IDeleteFrom
     {
         /// <summary>
         /// Initialises a new instance of the <see cref="DeleteSqlBuilder"/> class with the starting command text 'DELETE FROM '.
@@ -29,19 +29,6 @@ namespace MicroLite.Builder
             : base(sqlCharacters)
         {
             this.InnerSql.Append("DELETE");
-        }
-
-        public IWhereSingleColumn AndWhere(string column)
-        {
-            if (string.IsNullOrEmpty(column))
-            {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
-            }
-
-            this.Operand = " AND";
-            this.WhereColumnName = this.SqlCharacters.EscapeSql(column);
-
-            return this;
         }
 
         public IWhere From(string table)
@@ -62,44 +49,6 @@ namespace MicroLite.Builder
             var objectInfo = ObjectInfo.For(forType);
 
             return this.From(objectInfo);
-        }
-
-        public IAndOr IsEqualTo(object comparisonValue)
-        {
-            this.AddWithComparisonOperator(comparisonValue, " = ");
-
-            return this;
-        }
-
-        public IWhereSingleColumn OrWhere(string column)
-        {
-            if (string.IsNullOrEmpty(column))
-            {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
-            }
-
-            this.Operand = " OR";
-            this.WhereColumnName = this.SqlCharacters.EscapeSql(column);
-
-            return this;
-        }
-
-        public IWhereSingleColumn Where(string column)
-        {
-            if (string.IsNullOrEmpty(column))
-            {
-                throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
-            }
-
-            this.WhereColumnName = this.SqlCharacters.EscapeSql(column);
-
-            if (!this.AddedWhere)
-            {
-                this.InnerSql.Append(" WHERE");
-                this.AddedWhere = true;
-            }
-
-            return this;
         }
 
         internal IWhere From(IObjectInfo objectInfo)

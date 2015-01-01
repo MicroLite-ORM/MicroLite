@@ -266,24 +266,15 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Gets an IDbConnection for the database.
+        /// Creates an IDbConnection to the database.
         /// </summary>
-        /// <param name="connectionScope">The connection scope of the connection.</param>
-        /// <returns>The IDbConnection for the database.</returns>
-        public IDbConnection GetConnection(ConnectionScope connectionScope)
+        /// <returns>
+        /// The IDbConnection to the database.
+        /// </returns>
+        public IDbConnection CreateConnection()
         {
             var connection = this.DbProviderFactory.CreateConnection();
             connection.ConnectionString = this.ConnectionString;
-
-            if (connectionScope == ConnectionScope.PerSession)
-            {
-                if (log.IsDebug)
-                {
-                    log.Debug(LogMessages.OpeningConnection);
-                }
-
-                connection.Open();
-            }
 
             return connection;
         }
@@ -372,6 +363,11 @@ namespace MicroLite.Driver
         /// <returns>true if the command text is a stored procedure call, otherwise false.</returns>
         protected virtual bool IsStoredProcedureCall(string commandText)
         {
+            if (commandText == null)
+            {
+                throw new ArgumentNullException("commandText");
+            }
+
             return this.SupportsStoredProcedures
                 && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
                 && !commandText.Contains(this.sqlCharacters.StatementSeparator);

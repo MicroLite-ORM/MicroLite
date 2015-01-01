@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Builder
 {
+    using System;
     using System.Collections.Generic;
     using System.Text;
     using MicroLite.Builder.Syntax;
@@ -46,7 +47,6 @@ namespace MicroLite.Builder
         /// <summary>
         /// Gets the arguments currently added to the sql builder.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "Allowed in this instance, we want to make use of AddRange.")]
         protected List<SqlArgument> Arguments
         {
             get
@@ -97,6 +97,150 @@ namespace MicroLite.Builder
         public virtual SqlQuery ToSqlQuery()
         {
             return new SqlQuery(this.innerSql.ToString(), this.arguments.ToArray());
+        }
+
+        protected void AddBetween(object lower, object upper, bool negate)
+        {
+            if (lower == null)
+            {
+                throw new ArgumentNullException("lower");
+            }
+
+            if (upper == null)
+            {
+                throw new ArgumentNullException("upper");
+            }
+
+            if (!string.IsNullOrEmpty(this.Operand))
+            {
+                this.InnerSql.Append(this.Operand);
+            }
+
+            this.Arguments.Add(new SqlArgument(lower));
+            this.Arguments.Add(new SqlArgument(upper));
+
+            var lowerParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 2);
+            var upperParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.Append(" (")
+                .Append(this.WhereColumnName)
+                .Append(negate ? " NOT" : string.Empty)
+                .Append(" BETWEEN ")
+                .Append(lowerParam)
+                .Append(" AND ")
+                .Append(upperParam)
+                .Append(')');
+        }
+
+        protected void AddIn(object[] args, bool negate)
+        {
+            if (args == null)
+            {
+                throw new ArgumentNullException("args");
+            }
+
+            if (!string.IsNullOrEmpty(this.Operand))
+            {
+                this.InnerSql.Append(this.Operand);
+            }
+
+            this.InnerSql.Append(" (")
+                .Append(this.WhereColumnName)
+                .Append(negate ? " NOT" : string.Empty)
+                .Append(" IN (");
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                this.Arguments.Add(new SqlArgument(args[i]));
+            }
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (i > 0)
+                {
+                    this.InnerSql.Append(',');
+                }
+
+                this.InnerSql.Append(this.SqlCharacters.GetParameterName((this.Arguments.Count - args.Length) + i));
+            }
+
+            this.InnerSql.Append("))");
+        }
+
+        protected void AddIn(SqlQuery subQuery, bool negate)
+        {
+            if (subQuery == null)
+            {
+                throw new ArgumentNullException("subQuery");
+            }
+
+            if (!string.IsNullOrEmpty(this.Operand))
+            {
+                this.InnerSql.Append(this.Operand);
+            }
+
+            this.Arguments.AddRange(subQuery.Arguments);
+
+            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+
+            this.InnerSql.Append(" (")
+                .Append(this.WhereColumnName)
+                .Append(negate ? " NOT" : string.Empty)
+                .Append(" IN (")
+                .Append(renumberedPredicate)
+                .Append("))");
+        }
+
+        protected void AddIn(SqlQuery[] subQueries, bool negate)
+        {
+            if (subQueries == null)
+            {
+                throw new ArgumentNullException("subQueries");
+            }
+
+            if (!string.IsNullOrEmpty(this.Operand))
+            {
+                this.InnerSql.Append(this.Operand);
+            }
+
+            this.InnerSql.Append(" (")
+                .Append(this.WhereColumnName)
+                .Append(negate ? " NOT" : string.Empty)
+                .Append(" IN (");
+
+            for (int i = 0; i < subQueries.Length; i++)
+            {
+                var subQuery = subQueries[i];
+
+                this.Arguments.AddRange(subQuery.Arguments);
+
+                var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+
+                this.InnerSql.Append('(')
+                    .Append(renumberedPredicate)
+                    .Append(i < subQueries.Length - 1 ? "), " : ")");
+            }
+
+            this.InnerSql.Append("))");
+        }
+
+        protected void AddLike(object comparisonValue, bool negate)
+        {
+            if (!string.IsNullOrEmpty(this.Operand))
+            {
+                this.InnerSql.Append(this.Operand);
+            }
+
+            this.Arguments.Add(new SqlArgument(comparisonValue));
+
+            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+
+            this.InnerSql.Append(" (")
+                .Append(this.WhereColumnName)
+                .Append(negate ? " NOT" : string.Empty)
+                .Append(" LIKE ")
+                .Append(parameter)
+                .Append(')');
         }
 
         protected void AddWithComparisonOperator(object comparisonValue, string comparisonOperator)

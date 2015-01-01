@@ -26,6 +26,48 @@
             }
         }
 
+        public class IgnoredProperties : UnitTest
+        {
+            private readonly IObjectInfo objectInfo;
+
+            public IgnoredProperties()
+            {
+                var mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+
+                this.objectInfo = mappingConvention.CreateObjectInfo(typeof(Product));
+            }
+
+            [Fact]
+            public void ReadOnlyPropertiesAreNotMapped()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Any(x => x.ColumnName == "ReadOnlyProperty"));
+            }
+
+            [Fact]
+            public void WriteOnlyPropertiesAreNotMapped()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Any(x => x.ColumnName == "WriteOnlyProperty"));
+            }
+        }
+
+        public class Product
+        {
+            public string ReadOnlyProperty
+            {
+                get
+                {
+                    return null;
+                }
+            }
+
+            public string WriteOnlyProperty
+            {
+                set
+                {
+                }
+            }
+        }
+
         public class WhenCallingCreateObjectInfoAndTypeIsNull
         {
             [Fact]

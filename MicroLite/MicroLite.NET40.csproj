@@ -84,6 +84,7 @@
     <Compile Include="Builder\Syntax\Write\IWhere.cs" />
     <Compile Include="Builder\Syntax\Write\IWhereSingleColumn.cs" />
     <Compile Include="Builder\UpdateSqlBuilder.cs" />
+    <Compile Include="Builder\WriteSqlBuilderBase.cs" />
     <Compile Include="Characters\FirebirdSqlCharacters.cs" />
     <Compile Include="Characters\MsSqlCharacters.cs" />
     <Compile Include="Characters\MySqlCharacters.cs" />
@@ -154,10 +155,14 @@
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="ITransaction.cs" />
+    <Compile Include="Listeners\DeleteListenerCollection.cs" />
+    <Compile Include="Listeners\IDeleteListener.cs" />
     <Compile Include="Listeners\IdentifierStrategyListener.cs" />
-    <Compile Include="Listeners\IListener.cs" />
+    <Compile Include="Listeners\IInsertListener.cs" />
+    <Compile Include="Listeners\IUpdateListener.cs" />
     <Compile Include="Listeners\Listener.cs" />
-    <Compile Include="Listeners\ListenerCollection.cs" />
+    <Compile Include="Listeners\InsertListenerCollection.cs" />
+    <Compile Include="Listeners\UpdateListenerCollection.cs" />
     <Compile Include="Logging\EmptyLog.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LogManager.cs" />
@@ -210,7 +215,8 @@
     <None Include="..\MicroLite.snk">
       <Link>MicroLite.snk</Link>
     </None>
-    <None Include="Builder\_SqlBuilder.cd" />
+    <None Include="Builder\Syntax\Read\_Read.cd" />
+    <None Include="Builder\Syntax\Write\_Write.cd" />
     <None Include="Builder\_SqlBuilders.cd" />
     <None Include="Characters\_SqlCharacters.cd" />
     <None Include="Configuration\_Configuration.cd" />

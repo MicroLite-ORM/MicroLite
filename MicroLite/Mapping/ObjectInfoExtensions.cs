@@ -14,6 +14,7 @@ namespace MicroLite.Mapping
 {
     using System;
     using System.IO;
+    using MicroLite.TypeConverters;
 
     /// <summary>
     /// Extension methods for <see cref="IObjectInfo"/>.
@@ -39,19 +40,27 @@ namespace MicroLite.Mapping
 
             textWriter.WriteLine("MicroLite Mapping:");
             textWriter.WriteLine("------------------");
-            textWriter.WriteLine(
-                "Class '{0}' -> Schema '{1}' Table '{2}'",
-                objectInfo.ForType.FullName,
-                objectInfo.TableInfo.Schema ?? "(not used)",
-                objectInfo.TableInfo.Name);
+            textWriter.Write("Class '{0}' mapped to Table '{1}'", objectInfo.ForType.FullName, objectInfo.TableInfo.Name);
+
+            if (objectInfo.TableInfo.Schema != null)
+            {
+                textWriter.WriteLine(" in Schema '{0}'", objectInfo.TableInfo.Schema);
+            }
+            else
+            {
+                textWriter.WriteLine();
+            }
+
             textWriter.WriteLine();
 
             foreach (var columnInfo in objectInfo.TableInfo.Columns)
             {
+                var actualPropertyType = TypeConverter.ResolveActualType(columnInfo.PropertyInfo.PropertyType);
+
                 textWriter.WriteLine(
-                    "Property '{0} ({1})' -> Column '{2} ({3})'",
+                    "Property '{0} ({1})' mapped to Column '{2} (DbType.{3})'",
                     columnInfo.PropertyInfo.Name,
-                    columnInfo.PropertyInfo.PropertyType.Name,
+                    actualPropertyType == columnInfo.PropertyInfo.PropertyType ? actualPropertyType.FullName : actualPropertyType.FullName + "?",
                     columnInfo.ColumnName,
                     columnInfo.DbType.ToString());
 
@@ -64,7 +73,11 @@ namespace MicroLite.Mapping
                     textWriter.WriteLine("\tIdentifier Strategy: {0}", objectInfo.TableInfo.IdentifierStrategy.ToString());
                 }
 
-                textWriter.WriteLine("\tSequence Name: {0}", (columnInfo.SequenceName ?? "(not used)").ToString());
+                if (columnInfo.SequenceName != null)
+                {
+                    textWriter.WriteLine("\tSequence Name: {0}", columnInfo.SequenceName);
+                }
+
                 textWriter.WriteLine();
             }
         }
@@ -75,7 +88,10 @@ namespace MicroLite.Mapping
         /// <param name="objectInfo">The object information to emit.</param>
         public static void EmitMappingsToConsole(this IObjectInfo objectInfo)
         {
-            EmitMappings(objectInfo, Console.Out);
+            if (Console.Out != null)
+            {
+                EmitMappings(objectInfo, Console.Out);
+            }
         }
     }
 }

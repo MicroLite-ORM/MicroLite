@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ListenerCollection.cs" company="MicroLite">
+// <copyright file="UpdateListenerCollection.cs" company="MicroLite">
 // Copyright 2012 - 2014 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,15 @@ namespace MicroLite.Listeners
     using System.Collections.ObjectModel;
 
     /// <summary>
-    /// The class which contains the IListeners used by the MicroLite ORM framework.
+    /// The class which contains the <see cref="IUpdateListener"/>s used by the MicroLite ORM framework.
     /// </summary>
-    public sealed class ListenerCollection : Collection<IListener>
+    public sealed class UpdateListenerCollection : Collection<IUpdateListener>
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="ListenerCollection"/> class.
+        /// Initialises a new instance of the <see cref="UpdateListenerCollection"/> class.
         /// </summary>
-        public ListenerCollection()
+        public UpdateListenerCollection()
         {
-            // In order to maintain the behaviour of a stack, keep inserting at position 0 which will shift the items down.
-            this.Items.Insert(0, new IdentifierStrategyListener());
         }
 
         /// <summary>
@@ -33,8 +31,9 @@ namespace MicroLite.Listeners
         /// </summary>
         /// <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
         /// <param name="item">The object to insert. The value can be null for reference types.</param>
-        protected override void InsertItem(int index, IListener item)
+        protected override void InsertItem(int index, IUpdateListener item)
         {
+            // In order to maintain the behaviour of a stack, keep inserting at position 0 which will shift the items down.
             this.Items.Insert(0, item);
         }
     }

@@ -433,11 +433,11 @@
             }
         }
 
-        public class WhenCallingGetConnection_WithConnectionScopePerSession
+        public class WhenCallingGetConnection
         {
             private readonly Mock<DbConnection> mockConnection = new Mock<DbConnection>();
 
-            public WhenCallingGetConnection_WithConnectionScopePerSession()
+            public WhenCallingGetConnection()
             {
                 this.mockConnection.SetupProperty(x => x.ConnectionString);
 
@@ -450,40 +450,7 @@
                 mockDbDriver.Object.ConnectionString = "DATA SOURCE=...";
                 mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
 
-                mockDbDriver.Object.GetConnection(ConnectionScope.PerSession);
-            }
-
-            [Fact]
-            public void TheConnectionIsOpened()
-            {
-                this.mockConnection.Verify(x => x.Open(), Times.Once());
-            }
-
-            [Fact]
-            public void TheConnectionStringIsSet()
-            {
-                this.mockConnection.VerifySet(x => x.ConnectionString = "DATA SOURCE=...", Times.Once());
-            }
-        }
-
-        public class WhenCallingGetConnection_WithConnectionScopePerTransaction
-        {
-            private readonly Mock<DbConnection> mockConnection = new Mock<DbConnection>();
-
-            public WhenCallingGetConnection_WithConnectionScopePerTransaction()
-            {
-                this.mockConnection.SetupProperty(x => x.ConnectionString);
-
-                var mockDbProviderFactory = new Mock<DbProviderFactory>();
-                mockDbProviderFactory.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-
-                var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
-                mockDbDriver.CallBase = true;
-
-                mockDbDriver.Object.ConnectionString = "DATA SOURCE=...";
-                mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
-
-                mockDbDriver.Object.GetConnection(ConnectionScope.PerTransaction);
+                mockDbDriver.Object.CreateConnection();
             }
 
             [Fact]

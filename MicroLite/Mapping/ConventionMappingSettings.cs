@@ -26,20 +26,12 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Initialises a new instance of the <see cref="ConventionMappingSettings" /> class.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Acceptable in this instance, it's still perfectly readable")]
         public ConventionMappingSettings()
         {
-            this.AllowInsert = (PropertyInfo propertyInfo) =>
-            {
-                return true;
-            };
-            this.AllowUpdate = (PropertyInfo propertyInfo) =>
-            {
-                return true;
-            };
-            this.Ignore = (PropertyInfo propertyInfo) =>
-            {
-                return false;
-            };
+            this.AllowInsert = (PropertyInfo propertyInfo) => true;
+            this.AllowUpdate = (PropertyInfo propertyInfo) => true;
+            this.Ignore = (PropertyInfo propertyInfo) => false;
             this.InflectionService = Inflection.InflectionService.English;
             this.IsIdentifier = (PropertyInfo propertyInfo) =>
             {
@@ -54,30 +46,15 @@ namespace MicroLite.Mapping
 
                 return propertyInfo.Name;
             };
-            this.ResolveDbType = (PropertyInfo propertyInfo) =>
-            {
-                return TypeConverter.ResolveDbType(propertyInfo.PropertyType);
-            };
-            this.ResolveIdentifierColumnName = (PropertyInfo propertyInfo) =>
-            {
-                return propertyInfo.Name;
-            };
-            this.ResolveIdentifierStrategy = (Type type) =>
-            {
-                return IdentifierStrategy.DbGenerated;
-            };
-            this.ResolveSequenceName = (PropertyInfo propertyInfo) =>
-            {
-                return null;
-            };
+            this.ResolveDbType = (PropertyInfo propertyInfo) => TypeConverter.ResolveDbType(propertyInfo.PropertyType);
+            this.ResolveIdentifierColumnName = (PropertyInfo propertyInfo) => propertyInfo.Name;
+            this.ResolveIdentifierStrategy = (Type type) => IdentifierStrategy.DbGenerated;
+            this.ResolveSequenceName = (PropertyInfo propertyInfo) => null;
             this.ResolveTableName = (Type type) =>
             {
                 return this.UsePluralClassNameForTableName ? this.InflectionService.ToPlural(type.Name) : type.Name;
             };
-            this.ResolveTableSchema = (Type type) =>
-            {
-                return null;
-            };
+            this.ResolveTableSchema = (Type type) => null;
             this.UsePluralClassNameForTableName = true;
         }
 

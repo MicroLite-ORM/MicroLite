@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests.Logging
 {
+    using System;
     using MicroLite.Logging;
     using Moq;
     using Xunit;
@@ -20,11 +21,8 @@
         {
             var log = new Mock<ILog>().Object;
 
-            LogManager.GetLogger = (string name) =>
+            LogManager.GetLogger = (Type type) =>
             {
-                // TODO: Figure out why this fails when using the console runner...
-                ////Assert.Equal(typeof(LogManagerTests).FullName, name);
-
                 return log;
             };
 

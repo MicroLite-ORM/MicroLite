@@ -25,7 +25,7 @@ namespace MicroLite.Configuration
         /// Sets the function which can be called by MicroLite to resolve the <see cref="ILog"/> to use.
         /// </summary>
         /// <param name="logResolver">The function to resolve an ILog.</param>
-        void SetLogResolver(Func<string, ILog> logResolver);
+        void SetLogResolver(Func<Type, ILog> logResolver);
 
         /// <summary>
         /// Specifies the mapping convention which should be used by MicroLite ORM to map classes to tables.
