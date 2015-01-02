@@ -26,6 +26,7 @@ namespace MicroLite.Characters
         private const string LogicalGetDataName = "MicroLite.Characters.SqlCharacters_Current";
         private static readonly SqlCharacters empty = new SqlCharacters();
         private static readonly char[] period = new[] { '.' };
+        private static SqlCharacters defaultSqlCharacters = null;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlCharacters"/> class.
@@ -37,11 +38,25 @@ namespace MicroLite.Characters
         /// <summary>
         /// Gets or sets the current SqlCharacters or Empty if not otherwise specified.
         /// </summary>
+        /// <remarks>
+        /// Using CallContext internally allows us to set the correct SqlCharacters
+        /// in a scenario where we have multiple session factories for different
+        /// database providers active at once and SqlCharacters are used (via builder).
+        /// The static defaultSqlCharacters is a fall-back so we don't end up with Empty
+        /// characters.
+        /// </remarks>
         public static SqlCharacters Current
         {
             get
             {
-                return CallContext.LogicalGetData(LogicalGetDataName) as SqlCharacters ?? empty;
+                var current = CallContext.LogicalGetData(LogicalGetDataName) as SqlCharacters;
+
+                if (current != null)
+                {
+                    return current;
+                }
+
+                return defaultSqlCharacters ?? empty;
             }
 
             set
@@ -49,10 +64,12 @@ namespace MicroLite.Characters
                 if (value == null)
                 {
                     CallContext.FreeNamedDataSlot(LogicalGetDataName);
+                    defaultSqlCharacters = null;
                 }
                 else
                 {
                     CallContext.LogicalSetData(LogicalGetDataName, value);
+                    defaultSqlCharacters = value;
                 }
             }
         }

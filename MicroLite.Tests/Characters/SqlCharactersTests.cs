@@ -1,14 +1,89 @@
 ﻿namespace MicroLite.Tests.Characters
 {
     using System;
+    using System.Threading;
     using MicroLite.Characters;
     using Moq;
     using Xunit;
 
     public class SqlCharactersTests : UnitTest
     {
+#if NET_4_0 || NET_4_5
+
         [Fact]
-        public void CurrentReturnsDefaultSqlCharactersIfNotSet()
+        public void CurrentIsVisibleAccrossTasks()
+        {
+            var sqlCharacters = new TestSqlCharacters();
+            SqlCharacters.Current = sqlCharacters;
+
+            SqlCharacters actual = null;
+
+            System.Threading.Tasks.Task.Factory.StartNew(
+                () => actual = SqlCharacters.Current,
+                System.Threading.Tasks.TaskCreationOptions.LongRunning).Wait();
+
+            Assert.Same(sqlCharacters, actual);
+        }
+
+#endif
+
+        [Fact]
+        public void CurrentIsVisibleAccrossThreadPools()
+        {
+            var sqlCharacters = new TestSqlCharacters();
+            SqlCharacters.Current = sqlCharacters;
+
+            SqlCharacters actual = null;
+            var handle = new ManualResetEvent(false);
+
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                actual = SqlCharacters.Current;
+                handle.Set();
+            });
+
+            handle.WaitOne();
+
+            Assert.Same(sqlCharacters, actual);
+        }
+
+        /// <summary>
+        /// Issue #370 - SqlCharacters.Current is not visible on new threads
+        /// </summary>
+        [Fact]
+        public void CurrentIsVisibleAccrossThreads()
+        {
+            var sqlCharacters = new TestSqlCharacters();
+
+            SqlCharacters actual = null;
+            var handle = new AutoResetEvent(false);
+
+            var thread1 = new Thread(() =>
+            {
+                SqlCharacters.Current = sqlCharacters;
+                handle.Set();
+            });
+
+            var thread2 = new Thread(() =>
+            {
+                actual = SqlCharacters.Current;
+                handle.Set();
+            });
+
+            thread1.Start();
+            handle.WaitOne();
+
+            thread2.Start();
+            handle.WaitOne();
+
+            thread1.Abort();
+            thread2.Abort();
+
+            Assert.Same(sqlCharacters, actual);
+        }
+
+        [Fact]
+        public void CurrentReturnsEmptySqlCharactersIfNotSet()
         {
             Assert.IsType<SqlCharacters>(SqlCharacters.Current);
         }
@@ -16,9 +91,11 @@
         [Fact]
         public void CurrentReturnsSpecifiedSqlCharactersIfSet()
         {
-            SqlCharacters.Current = new TestSqlCharacters();
+            var sqlCharacters = new TestSqlCharacters();
 
-            Assert.IsType<TestSqlCharacters>(SqlCharacters.Current);
+            SqlCharacters.Current = sqlCharacters;
+
+            Assert.Same(sqlCharacters, SqlCharacters.Current);
         }
 
         [Fact]
