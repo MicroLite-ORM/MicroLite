@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Driver
 {
+    using System.Data;
     using MicroLite.Characters;
 
     /// <summary>
@@ -32,6 +33,16 @@ namespace MicroLite.Driver
             get
             {
                 return true;
+            }
+        }
+
+        protected override void SetDbType(IDbDataParameter parameter, DbType dbType)
+        {
+            if (dbType != DbType.Time)
+            {
+                // Work around for a bug in SqlClient where it thinks DbType.Time is a MetaType.MetaDateTime.
+                // Do not set the DbType, the SqlParameter will figure it out by reflecting over the value type.
+                base.SetDbType(parameter, dbType);
             }
         }
     }
