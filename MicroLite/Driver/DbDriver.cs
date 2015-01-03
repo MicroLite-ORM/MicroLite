@@ -292,14 +292,7 @@ namespace MicroLite.Driver
                 throw new ArgumentNullException("parameter");
             }
 
-            if (!this.HandleStringsAsUnicode && sqlArgument.DbType == DbType.String)
-            {
-                parameter.DbType = DbType.AnsiString;
-            }
-            else
-            {
-                parameter.DbType = sqlArgument.DbType;
-            }
+            this.SetDbType(parameter, sqlArgument.DbType);
 
             parameter.Direction = ParameterDirection.Input;
             parameter.ParameterName = parameterName;
@@ -371,6 +364,28 @@ namespace MicroLite.Driver
             return this.SupportsStoredProcedures
                 && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
                 && !commandText.Contains(this.sqlCharacters.StatementSeparator);
+        }
+
+        /// <summary>
+        /// Sets the DbType of the parameter.
+        /// </summary>
+        /// <param name="parameter">The parameter to set.</param>
+        /// <param name="dbType">The DbType of the parameter value.</param>
+        protected virtual void SetDbType(IDbDataParameter parameter, DbType dbType)
+        {
+            if (parameter == null)
+            {
+                throw new ArgumentNullException("parameter");
+            }
+
+            if (!this.HandleStringsAsUnicode && dbType == DbType.String)
+            {
+                parameter.DbType = DbType.AnsiString;
+            }
+            else
+            {
+                parameter.DbType = dbType;
+            }
         }
     }
 }

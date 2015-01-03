@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Tests.Driver
 {
+    using System;
     using System.Data;
     using System.Data.Common;
     using MicroLite.Driver;
@@ -112,6 +113,27 @@
                 () => dbDriver.BuildCommand(sqlQuery));
 
             Assert.Equal(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
+        }
+
+        /// <summary>
+        /// Issue #371 - Failed to convert parameter value from a TimeSpan to a DateTime.
+        /// </summary>
+        [Fact]
+        public void DbTypeTimeIsIncorrectlyHandledAsDateTime()
+        {
+            var sqlQuery = new SqlQuery(
+                "SELECT * FROM [Table] WHERE [TimeStamp] > @p0",
+                new SqlArgument(new TimeSpan(5, 30, 1), DbType.Time));
+
+            var mockDbProviderFactory = new Mock<DbProviderFactory>();
+            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.SqlClient.SqlCommand());
+
+            var dbDriver = new MsSqlDbDriver();
+            dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
+
+            var command = (System.Data.SqlClient.SqlCommand)dbDriver.BuildCommand(sqlQuery);
+
+            Assert.Equal(SqlDbType.Time, command.Parameters[0].SqlDbType);
         }
 
         [Fact]
