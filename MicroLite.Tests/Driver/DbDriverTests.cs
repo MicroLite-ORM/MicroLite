@@ -108,46 +108,6 @@
         }
 
         [Fact]
-        public void BuildCommandSetsDbTypeToAnsiStringIfHandleStringsAsUnicodeIsFalse()
-        {
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand());
-
-            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
-            mockDbDriver.CallBase = true;
-            mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var dbDriver = mockDbDriver.Object;
-            dbDriver.HandleStringsAsUnicode = false;
-
-            var sqlQuery = new SqlQuery("SELECT * FROM Table WHERE Name = ?", "John");
-
-            var command = dbDriver.BuildCommand(sqlQuery);
-
-            Assert.Equal(DbType.AnsiString, ((DbParameter)command.Parameters[0]).DbType);
-        }
-
-        [Fact]
-        public void BuildCommandSetsDbTypeToStringIfHandleStringsAsUnicodeIsTrue()
-        {
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand());
-
-            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
-            mockDbDriver.CallBase = true;
-            mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var dbDriver = mockDbDriver.Object;
-            dbDriver.HandleStringsAsUnicode = true;
-
-            var sqlQuery = new SqlQuery("SELECT * FROM Table WHERE Name = ?", "John");
-
-            var command = dbDriver.BuildCommand(sqlQuery);
-
-            Assert.Equal(DbType.String, ((DbParameter)command.Parameters[0]).DbType);
-        }
-
-        [Fact]
         public void BuildCommandThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
@@ -173,15 +133,6 @@
                 () => mockDbDriver.Object.BuildCommand(sqlQuery));
 
             Assert.Equal(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
-        }
-
-        [Fact]
-        public void HandleStringsAsUnicodeReturnsTrueByDefault()
-        {
-            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
-            mockDbDriver.CallBase = true;
-
-            Assert.True(mockDbDriver.Object.HandleStringsAsUnicode);
         }
 
         [Fact]

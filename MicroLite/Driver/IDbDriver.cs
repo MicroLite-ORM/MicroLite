@@ -40,19 +40,6 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to handle strings as unicode (defaults to true).
-        /// </summary>
-        /// <remarks>
-        /// Indicates whether strings should be handled as unicode (true by default)
-        /// e.g. for MS SQL - if true, strings will be treated as NVARCHAR; if false, strings will be treated as VARCHAR.
-        /// </remarks>
-        bool HandleStringsAsUnicode
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Gets a value indicating whether this DbDriver supports batched queries.
         /// </summary>
         bool SupportsBatchedQueries

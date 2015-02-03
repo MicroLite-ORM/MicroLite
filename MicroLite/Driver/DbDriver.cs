@@ -30,7 +30,6 @@ namespace MicroLite.Driver
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly SqlCharacters sqlCharacters;
-        private bool handleStringsAsUnicode = true;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="DbDriver" /> class.
@@ -57,26 +56,6 @@ namespace MicroLite.Driver
         {
             get;
             set;
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to handle strings as unicode (defaults to true).
-        /// </summary>
-        /// <remarks>
-        /// Indicates whether strings should be handled as unicode (true by default)
-        /// e.g. for MS SQL - if true, strings will be treated as NVARCHAR; if false, strings will be treated as VARCHAR.
-        /// </remarks>
-        public bool HandleStringsAsUnicode
-        {
-            get
-            {
-                return this.handleStringsAsUnicode;
-            }
-
-            set
-            {
-                this.handleStringsAsUnicode = value;
-            }
         }
 
         /// <summary>
@@ -292,8 +271,7 @@ namespace MicroLite.Driver
                 throw new ArgumentNullException("parameter");
             }
 
-            this.SetDbType(parameter, sqlArgument.DbType);
-
+            parameter.DbType = sqlArgument.DbType;
             parameter.Direction = ParameterDirection.Input;
             parameter.ParameterName = parameterName;
             parameter.Value = sqlArgument.Value ?? DBNull.Value;
@@ -364,28 +342,6 @@ namespace MicroLite.Driver
             return this.SupportsStoredProcedures
                 && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
                 && !commandText.Contains(this.sqlCharacters.StatementSeparator);
-        }
-
-        /// <summary>
-        /// Sets the DbType of the parameter.
-        /// </summary>
-        /// <param name="parameter">The parameter to set.</param>
-        /// <param name="dbType">The DbType of the parameter value.</param>
-        protected virtual void SetDbType(IDbDataParameter parameter, DbType dbType)
-        {
-            if (parameter == null)
-            {
-                throw new ArgumentNullException("parameter");
-            }
-
-            if (!this.HandleStringsAsUnicode && dbType == DbType.String)
-            {
-                parameter.DbType = DbType.AnsiString;
-            }
-            else
-            {
-                parameter.DbType = dbType;
-            }
         }
     }
 }
