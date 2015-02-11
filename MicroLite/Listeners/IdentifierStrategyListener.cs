@@ -40,15 +40,15 @@ namespace MicroLite.Listeners
                 throw new ArgumentNullException("instance");
             }
 
+            if (executeScalarResult == null)
+            {
+                return;
+            }
+
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
-                if (executeScalarResult == null)
-                {
-                    throw new ArgumentNullException("executeScalarResult");
-                }
-
                 if (log.IsDebug)
                 {
                     log.Debug(LogMessages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());

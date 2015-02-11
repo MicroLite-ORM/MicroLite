@@ -97,19 +97,7 @@ namespace MicroLite.Core
 
             try
             {
-                if (log.IsDebug)
-                {
-                    log.Debug(LogMessages.Transaction_RollingBack);
-                }
-
-                this.transaction.Rollback();
-                this.sessionBase.TransactionCompleted();
-                this.rolledBack = true;
-
-                if (log.IsDebug)
-                {
-                    log.Debug(LogMessages.Transaction_RolledBack);
-                }
+                this.RollbackTransaction();
             }
             catch (Exception e)
             {
@@ -129,6 +117,7 @@ namespace MicroLite.Core
             command.Transaction = this.transaction;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We don't want to throw an excpetion when calling dispose.")]
         private void Dispose(bool disposing)
         {
             if (this.disposed)
@@ -138,26 +127,51 @@ namespace MicroLite.Core
 
             if (disposing)
             {
-                if (this.IsActive)
+                try
                 {
-                    log.Warn(LogMessages.Transaction_DisposedUncommitted);
-                    this.Rollback();
+                    if (this.IsActive)
+                    {
+                        log.Warn(LogMessages.Transaction_DisposedUncommitted);
+                        this.RollbackTransaction();
+                    }
+                    else if (this.failed && !this.rolledBack)
+                    {
+                        log.Warn(LogMessages.Transaction_RollingBackFailedCommit);
+                        this.RollbackTransaction();
+                    }
                 }
-                else if (this.failed && !this.rolledBack)
+                catch
                 {
-                    log.Warn(LogMessages.Transaction_RollingBackFailedCommit);
-                    this.Rollback();
                 }
+                finally
+                {
+                    this.transaction.Dispose();
+                    this.transaction = null;
+                    this.sessionBase = null;
+                    this.disposed = true;
 
-                this.transaction.Dispose();
-                this.transaction = null;
-                this.sessionBase = null;
-                this.disposed = true;
-
-                if (log.IsDebug)
-                {
-                    log.Debug(LogMessages.Transaction_Disposed);
+                    if (log.IsDebug)
+                    {
+                        log.Debug(LogMessages.Transaction_Disposed);
+                    }
                 }
+            }
+        }
+
+        private void RollbackTransaction()
+        {
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.Transaction_RollingBack);
+            }
+
+            this.transaction.Rollback();
+            this.sessionBase.TransactionCompleted();
+            this.rolledBack = true;
+
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.Transaction_RolledBack);
             }
         }
 
