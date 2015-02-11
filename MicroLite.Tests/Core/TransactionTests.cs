@@ -27,6 +27,32 @@
             Assert.DoesNotThrow(() => transaction.Dispose());
         }
 
+        [Fact]
+        public void DisposeShouldNotThrowAnExceptionIfRollingBackAnUncommittedTransactionAndRollbackThrowsAnException()
+        {
+            var mockTransaction = new Mock<IDbTransaction>();
+            mockTransaction.Setup(x => x.Commit()).Throws<InvalidOperationException>();
+            mockTransaction.Setup(x => x.Rollback()).Throws<InvalidOperationException>();
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(mockTransaction.Object);
+
+            var mockSessionBase = new Mock<ISessionBase>();
+            mockSessionBase.Setup(x => x.Connection).Returns(mockConnection.Object);
+
+            var transaction = new Transaction(mockSessionBase.Object, IsolationLevel.ReadCommitted);
+
+            try
+            {
+                transaction.Commit();
+            }
+            catch
+            {
+            }
+
+            Assert.DoesNotThrow(() => transaction.Dispose());
+        }
+
         public class WhenCallingCommit
         {
             private readonly Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();

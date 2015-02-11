@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IdentifierStrategyListener.cs" company="MicroLite">
-// Copyright 2012 - 2014 Project Contributors
+// Copyright 2012 - 2015 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,15 +40,15 @@ namespace MicroLite.Listeners
                 throw new ArgumentNullException("instance");
             }
 
+            if (executeScalarResult == null)
+            {
+                return;
+            }
+
             var objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
-                if (executeScalarResult == null)
-                {
-                    throw new ArgumentNullException("executeScalarResult");
-                }
-
                 if (log.IsDebug)
                 {
                     log.Debug(LogMessages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
