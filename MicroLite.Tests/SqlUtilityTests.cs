@@ -15,6 +15,25 @@
             Assert.Throws<ArgumentNullException>(() => SqlUtility.GetFirstParameterPosition(null));
         }
 
+        /// <summary>
+        /// Issue #382 - Incorrect parameter count detection.
+        /// </summary>
+        [Fact]
+        public void GetFirstParameterPositionWithAnIdentifierInAQuotedString()
+        {
+            var position = SqlUtility.GetFirstParameterPosition(@"CREATE VIEW IF NOT EXISTS ListIDs_24h AS
+SELECT
+  EPC,
+  substr( EPC, 15, 4 ) AS Type,
+  substr( EPC, 19 ) AS ID,
+  strftime( '%Y-%m-%d %H:%M:%S', Timestamp ) AS Timestamp
+FROM LogEntries
+WHERE Timestamp > datetime( 'now' ) - time( '24:00' )
+ORDER BY Timestamp DESC");
+
+            Assert.Equal(-1, position);
+        }
+
         [Fact]
         public void GetFirstParameterPositionWithAtParameters()
         {
@@ -51,6 +70,25 @@
         public void GetParameterNamesShouldNotMatchAtAtIdentifier()
         {
             var parameterNames = SqlUtility.GetParameterNames("SELECT @@IDENTITY");
+
+            Assert.Empty(parameterNames);
+        }
+
+        /// <summary>
+        /// Issue #382 - Incorrect parameter count detection.
+        /// </summary>
+        [Fact]
+        public void GetParameterNamesShouldNotMatchIfAnIdentifierInAQuotedString()
+        {
+            var parameterNames = SqlUtility.GetParameterNames(@"CREATE VIEW IF NOT EXISTS ListIDs_24h AS
+SELECT
+  EPC,
+  substr( EPC, 15, 4 ) AS Type,
+  substr( EPC, 19 ) AS ID,
+  strftime( '%Y-%m-%d %H:%M:%S', Timestamp ) AS Timestamp
+FROM LogEntries
+WHERE Timestamp > datetime( 'now' ) - time( '24:00' )
+ORDER BY Timestamp DESC");
 
             Assert.Empty(parameterNames);
         }
