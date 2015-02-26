@@ -27,6 +27,7 @@ namespace MicroLite
         private static readonly string[] emptyParameterNames = new string[0];
         private static readonly char[] namedParameterIdentifiers = new[] { '@', ':' };
         private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
+        private static readonly char[] quoteCharacters = new[] { '\'' };
 
         /// <summary>
         /// Gets the position of the first parameter in the specified SQL command text.
@@ -44,6 +45,19 @@ namespace MicroLite
             }
 
             var firstParameterPosition = commandText.IndexOfAny(parameterIdentifiers);
+
+            while (firstParameterPosition > -1)
+            {
+                // Ignore identifiers inside a quoted string
+                if (commandText.IndexOfAny(quoteCharacters, 0, firstParameterPosition) > -1
+                    && commandText.IndexOfAny(quoteCharacters, firstParameterPosition) > -1)
+                {
+                    firstParameterPosition = commandText.IndexOfAny(parameterIdentifiers, firstParameterPosition + 1);
+                    continue;
+                }
+
+                break;
+            }
 
             return firstParameterPosition;
         }
