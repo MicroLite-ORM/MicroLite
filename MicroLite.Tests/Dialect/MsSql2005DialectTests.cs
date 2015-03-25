@@ -141,7 +141,7 @@
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT CustomerId, Name, DoB, StatusId FROM (SELECT CustomerId, Name, DoB, StatusId,ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+            Assert.Equal("SELECT * FROM (SELECT CustomerId, Name, DoB, StatusId,ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS [MicroLitePagedResults] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
 
             Assert.Equal(DbType.Int32, paged.Arguments[0].DbType);
             Assert.Equal(1, paged.Arguments[0].Value);
@@ -159,7 +159,7 @@
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+            Assert.Equal("SELECT * FROM (SELECT *,ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS [MicroLitePagedResults] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
 
             Assert.Equal(DbType.Int32, paged.Arguments[0].DbType);
             Assert.Equal(1, paged.Arguments[0].Value);
@@ -196,7 +196,7 @@
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
 
-            Assert.Equal("SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website] FROM (SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Customers] WHERE (Name LIKE @p0)) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
+            Assert.Equal("SELECT * FROM (SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Customers] WHERE (Name LIKE @p0)) AS [MicroLitePagedResults] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
 
             Assert.Equal(DbType.String, paged.Arguments[0].DbType);
             Assert.Equal("Fred%", paged.Arguments[0].Value);
@@ -227,7 +227,7 @@
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 10));
 
-            Assert.Equal("SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website] FROM (SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Customers] WHERE (Name LIKE @p0) AND ([SourceId] IN (SELECT SourceId FROM Source WHERE Status = @p1))) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
+            Assert.Equal("SELECT * FROM (SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Customers] WHERE (Name LIKE @p0) AND ([SourceId] IN (SELECT SourceId FROM Source WHERE Status = @p1))) AS [MicroLitePagedResults] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
 
             Assert.Equal(DbType.String, paged.Arguments[0].DbType);
             Assert.Equal("Fred%", paged.Arguments[0].Value);
@@ -240,6 +240,48 @@
 
             Assert.Equal(DbType.Int32, paged.Arguments[3].DbType);
             Assert.Equal(20, paged.Arguments[3].Value);
+        }
+
+        /// <summary>
+        /// Issue 357 - Paged queries for MsSql2005 fail when they contain a join
+        /// </summary>
+        [Fact]
+        public void PageWithJoin()
+        {
+            var sqlDialect = new MsSql2005Dialect();
+
+            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId], [Invoices].[InvoiceId] FROM [Customers] INNER JOIN [Invoices] ON [Invoices].[CustomerId] = [Customers].[CustomerId]");
+
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
+
+            Assert.Equal("SELECT * FROM (SELECT [Customers].[CustomerId], [Invoices].[InvoiceId],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Customers] INNER JOIN [Invoices] ON [Invoices].[CustomerId] = [Customers].[CustomerId]) AS [MicroLitePagedResults] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+
+            Assert.Equal(DbType.Int32, paged.Arguments[0].DbType);
+            Assert.Equal(1, paged.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, paged.Arguments[1].DbType);
+            Assert.Equal(25, paged.Arguments[1].Value);
+        }
+
+        /// <summary>
+        /// Issue 357 - Paged queries for MsSql2005 fail when they contain a join
+        /// </summary>
+        [Fact]
+        public void PageWithJoinWithAlias()
+        {
+            var sqlDialect = new MsSql2005Dialect();
+
+            var sqlQuery = new SqlQuery("SELECT [Customers].[CustomerId] AS CustId, [Invoices].[InvoiceId] FROM [Customers] INNER JOIN [Invoices] ON [Invoices].[CustomerId] = [Customers].[CustomerId]");
+
+            var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
+
+            Assert.Equal("SELECT * FROM (SELECT [Customers].[CustomerId] AS CustId, [Invoices].[InvoiceId],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Customers] INNER JOIN [Invoices] ON [Invoices].[CustomerId] = [Customers].[CustomerId]) AS [MicroLitePagedResults] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+
+            Assert.Equal(DbType.Int32, paged.Arguments[0].DbType);
+            Assert.Equal(1, paged.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, paged.Arguments[1].DbType);
+            Assert.Equal(25, paged.Arguments[1].Value);
         }
 
         [Fact]
@@ -262,7 +304,7 @@ ORDER BY
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC) AS RowNumber FROM [Sales].[Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)) AS [Customers] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
+            Assert.Equal("SELECT * FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC, [Customers].[DoB] ASC) AS RowNumber FROM [Sales].[Customers] WHERE ([Customers].[StatusId] = @p0 AND [Customers].[DoB] > @p1)) AS [MicroLitePagedResults] WHERE (RowNumber >= @p2 AND RowNumber <= @p3)", paged.CommandText);
 
             Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
             Assert.Equal(sqlQuery.Arguments[1], paged.Arguments[1]);
@@ -283,7 +325,7 @@ ORDER BY
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT [CustomerId], [Name], [DoB], [StatusId] FROM (SELECT [CustomerId], [Name], [DoB], [StatusId],ROW_NUMBER() OVER(ORDER BY [CustomerId] ASC) AS RowNumber FROM [dbo].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+            Assert.Equal("SELECT * FROM (SELECT [CustomerId], [Name], [DoB], [StatusId],ROW_NUMBER() OVER(ORDER BY [CustomerId] ASC) AS RowNumber FROM [dbo].[Customers]) AS [MicroLitePagedResults] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
 
             Assert.Equal(DbType.Int32, paged.Arguments[0].DbType);
             Assert.Equal(1, paged.Arguments[0].Value);
@@ -301,7 +343,7 @@ ORDER BY
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+            Assert.Equal("SELECT * FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [MicroLitePagedResults] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
 
             Assert.Equal(DbType.Int32, paged.Arguments[0].DbType);
             Assert.Equal(1, paged.Arguments[0].Value);
@@ -319,7 +361,7 @@ ORDER BY
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 2, resultsPerPage: 25));
 
-            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [Customers] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
+            Assert.Equal("SELECT * FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers]) AS [MicroLitePagedResults] WHERE (RowNumber >= @p0 AND RowNumber <= @p1)", paged.CommandText);
 
             Assert.Equal(DbType.Int32, paged.Arguments[0].DbType);
             Assert.Equal(26, paged.Arguments[0].Value);
@@ -337,7 +379,7 @@ ORDER BY
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
+            Assert.Equal("SELECT * FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [MicroLitePagedResults] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
             Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
 
             Assert.Equal(DbType.Int32, paged.Arguments[1].DbType);
@@ -366,7 +408,7 @@ ORDER BY
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
+            Assert.Equal("SELECT * FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY [Customers].[Name] ASC) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [MicroLitePagedResults] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
             Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
 
             Assert.Equal(DbType.Int32, paged.Arguments[1].DbType);
@@ -385,7 +427,7 @@ ORDER BY
 
             var paged = sqlDialect.PageQuery(sqlQuery, PagingOptions.ForPage(page: 1, resultsPerPage: 25));
 
-            Assert.Equal("SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId] FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [Customers] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
+            Assert.Equal("SELECT * FROM (SELECT [Customers].[CustomerId], [Customers].[Name], [Customers].[DoB], [Customers].[StatusId],ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM [Sales].[Customers] WHERE [Customers].[StatusId] = @p0) AS [MicroLitePagedResults] WHERE (RowNumber >= @p1 AND RowNumber <= @p2)", paged.CommandText);
             Assert.Equal(sqlQuery.Arguments[0], paged.Arguments[0]);
 
             Assert.Equal(DbType.Int32, paged.Arguments[1].DbType);

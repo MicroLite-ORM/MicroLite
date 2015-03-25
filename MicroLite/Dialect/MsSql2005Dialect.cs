@@ -59,18 +59,11 @@ namespace MicroLite.Dialect
 
             var sqlString = SqlString.Parse(sqlQuery.CommandText, Clauses.Select | Clauses.From | Clauses.Where | Clauses.OrderBy);
 
-            var qualifiedTableName = sqlString.From;
-            var position = qualifiedTableName.LastIndexOf('.') + 1;
-            var tableName = position > 0 ? qualifiedTableName.Substring(position, qualifiedTableName.Length - position) : qualifiedTableName;
-
             var whereClause = !string.IsNullOrEmpty(sqlString.Where) ? " WHERE " + sqlString.Where : string.Empty;
             var orderByClause = !string.IsNullOrEmpty(sqlString.OrderBy) ? sqlString.OrderBy : "(SELECT NULL)";
 
             var stringBuilder = new StringBuilder(sqlQuery.CommandText.Length * 2)
-                .Append("SELECT ")
-                .Append(sqlString.Select)
-                .Append(" FROM")
-                .AppendFormat(CultureInfo.InvariantCulture, " (SELECT {0},ROW_NUMBER() OVER(ORDER BY {1}) AS RowNumber FROM {2}{3}) AS {4}", sqlString.Select, orderByClause, qualifiedTableName, whereClause, tableName)
+                .AppendFormat(CultureInfo.InvariantCulture, "SELECT * FROM (SELECT {0},ROW_NUMBER() OVER(ORDER BY {1}) AS RowNumber FROM {2}{3}) AS [MicroLitePagedResults]", sqlString.Select, orderByClause, sqlString.From, whereClause)
                 .AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Length - 2), this.SqlCharacters.GetParameterName(arguments.Length - 1));
 
             return new SqlQuery(stringBuilder.ToString(), arguments);
