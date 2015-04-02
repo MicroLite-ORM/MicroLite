@@ -46,11 +46,18 @@
             Assert.Equal(DbType.DateTimeOffset, TypeConverter.ResolveDbType(typeof(DateTimeOffset?)));
             Assert.Equal(DbType.Guid, TypeConverter.ResolveDbType(typeof(Guid)));
             Assert.Equal(DbType.Guid, TypeConverter.ResolveDbType(typeof(Guid?)));
-            Assert.Equal(DbType.Time, TypeConverter.ResolveDbType(typeof(TimeSpan)));
-            Assert.Equal(DbType.Time, TypeConverter.ResolveDbType(typeof(TimeSpan?)));
 
+            // Set by EnumTypeConverter.
             Assert.Equal(DbType.Int32, TypeConverter.ResolveDbType(typeof(CustomerStatus)));
+
+            // Set by TimeSpanTypeConverter.
+            Assert.Equal(DbType.Int64, TypeConverter.ResolveDbType(typeof(TimeSpan)));
+            Assert.Equal(DbType.Int64, TypeConverter.ResolveDbType(typeof(TimeSpan?)));
+
+            // Set by UriTypeConverter.
             Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(Uri)));
+
+            // Set by XDocumentTypeConverter.
             Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(XDocument)));
         }
 

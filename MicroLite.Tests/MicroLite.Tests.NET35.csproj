@@ -139,6 +139,7 @@
     <Compile Include="TestEntities\MockDbTransactionWrapper.cs" />
     <Compile Include="TypeConverters\EnumTypeConverterTests.cs" />
     <Compile Include="TypeConverters\ObjectTypeConverterTests.cs" />
+    <Compile Include="TypeConverters\TimeSpanTypeConverterTest.cs" />
     <Compile Include="TypeConverters\TypeConverterCollectionTests.cs" />
     <Compile Include="TypeConverters\TypeConverterTests.cs" />
     <Compile Include="TypeConverters\UriTypeConverterTests.cs" />

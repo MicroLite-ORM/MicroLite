@@ -36,9 +36,15 @@
             }
 
             [Fact]
-            public void ThereShouldBe3RegisteredTypeConverters()
+            public void ThereShouldBe4RegisteredTypeConverters()
             {
-                Assert.Equal(3, this.collection.Count);
+                Assert.Equal(4, this.collection.Count);
+            }
+
+            [Fact]
+            public void TheTimeSpanTypeConverterShouldBePositionThree()
+            {
+                Assert.IsType<TimeSpanTypeConverter>(this.collection[2]);
             }
 
             [Fact]
@@ -48,9 +54,9 @@
             }
 
             [Fact]
-            public void TheXDocumentTypeConverterShouldBePositionTwo()
+            public void TheXDocumentTypeConverterShouldBePositionThree()
             {
-                Assert.IsType<XDocumentTypeConverter>(this.collection[2]);
+                Assert.IsType<XDocumentTypeConverter>(this.collection[3]);
             }
         }
 

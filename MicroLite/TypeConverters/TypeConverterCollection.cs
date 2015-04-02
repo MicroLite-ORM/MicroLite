@@ -27,6 +27,7 @@ namespace MicroLite.TypeConverters
         {
             // In order to maintain the behaviour of a stack, keep inserting at position 0 which will shift the items down.
             this.Items.Insert(0, new XDocumentTypeConverter());
+            this.Items.Insert(0, new TimeSpanTypeConverter());
             this.Items.Insert(0, new UriTypeConverter());
             this.Items.Insert(0, new EnumTypeConverter()); // Enum is the most common of the custom types so put that at the top.
         }

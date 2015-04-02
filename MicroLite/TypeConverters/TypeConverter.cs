@@ -56,9 +56,7 @@ namespace MicroLite.TypeConverters
             { typeof(DateTimeOffset), DbType.DateTimeOffset },
             { typeof(DateTimeOffset?), DbType.DateTimeOffset },
             { typeof(Guid), DbType.Guid },
-            { typeof(Guid?), DbType.Guid },
-            { typeof(TimeSpan), DbType.Time },
-            { typeof(TimeSpan?), DbType.Time }
+            { typeof(Guid?), DbType.Guid }
         };
 
         private static readonly ITypeConverter defaultConverter = new ObjectTypeConverter();
