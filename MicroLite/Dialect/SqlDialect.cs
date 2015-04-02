@@ -86,14 +86,12 @@ namespace MicroLite.Dialect
 
             if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out deleteCommand))
             {
-                var commandText = this.BuildDeleteCommandText(objectInfo);
+                deleteCommand = this.BuildDeleteCommandText(objectInfo);
 
                 var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
-                newDeleteCommandCache[objectInfo.ForType] = commandText;
+                newDeleteCommandCache[objectInfo.ForType] = deleteCommand;
 
                 this.deleteCommandCache = newDeleteCommandCache;
-
-                deleteCommand = commandText;
             }
 
             return new SqlQuery(deleteCommand, new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType));
@@ -123,11 +121,10 @@ namespace MicroLite.Dialect
 
             if (!this.insertCommandCache.TryGetValue(objectInfo.ForType, out insertCommand))
             {
-                var commandText = this.BuildInsertCommandText(objectInfo);
+                insertCommand = this.BuildInsertCommandText(objectInfo);
 
                 var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
-                newInsertCommandCache[objectInfo.ForType] = commandText;
-                insertCommand = commandText;
+                newInsertCommandCache[objectInfo.ForType] = insertCommand;
 
                 this.insertCommandCache = newInsertCommandCache;
             }
@@ -173,14 +170,12 @@ namespace MicroLite.Dialect
 
             if (!this.selectCommandCache.TryGetValue(objectInfo.ForType, out selectCommand))
             {
-                var commandText = this.BuildSelectCommandText(objectInfo);
+                selectCommand = this.BuildSelectCommandText(objectInfo);
 
                 var newSelectCommandCache = new Dictionary<Type, string>(this.selectCommandCache);
-                newSelectCommandCache[objectInfo.ForType] = commandText;
+                newSelectCommandCache[objectInfo.ForType] = selectCommand;
 
                 this.selectCommandCache = newSelectCommandCache;
-
-                selectCommand = commandText;
             }
 
             return new SqlQuery(selectCommand, new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType));
@@ -210,11 +205,10 @@ namespace MicroLite.Dialect
 
             if (!this.updateCommandCache.TryGetValue(objectInfo.ForType, out updateCommand))
             {
-                var commandText = this.BuildUpdateCommandText(objectInfo);
+                updateCommand = this.BuildUpdateCommandText(objectInfo);
 
                 var newUpdateCommandCache = new Dictionary<Type, string>(this.updateCommandCache);
-                newUpdateCommandCache[objectInfo.ForType] = commandText;
-                updateCommand = commandText;
+                newUpdateCommandCache[objectInfo.ForType] = updateCommand;
 
                 this.updateCommandCache = newUpdateCommandCache;
             }
