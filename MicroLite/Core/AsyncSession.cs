@@ -321,7 +321,7 @@ namespace MicroLite.Core
         {
             object identifier = null;
 
-            SqlQuery insertSqlQuery = this.SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
+            var insertSqlQuery = this.SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
 
             if (this.SqlDialect.SupportsSelectInsertedIdentifier
                 && objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
