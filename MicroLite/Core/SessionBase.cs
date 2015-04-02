@@ -65,6 +65,12 @@ namespace MicroLite.Core
             private set;
         }
 
+        protected IDbCommand Command
+        {
+            get;
+            private set;
+        }
+
         protected IDbDriver DbDriver
         {
             get;
@@ -131,7 +137,7 @@ namespace MicroLite.Core
             }
         }
 
-        protected IDbCommand CreateCommand(SqlQuery sqlQuery)
+        protected void ConfigureCommand(SqlQuery sqlQuery)
         {
             if (this.ConnectionScope == ConnectionScope.PerTransaction
                 && this.Connection.State == ConnectionState.Closed
@@ -145,15 +151,18 @@ namespace MicroLite.Core
                 this.Connection.Open();
             }
 
-            var command = this.DbDriver.BuildCommand(sqlQuery);
-            command.Connection = this.Connection;
+            if (this.Command == null)
+            {
+                this.Command = this.Connection.CreateCommand();
+                this.Command.Connection = this.Connection;
+            }
+
+            this.DbDriver.BuildCommand(this.Command, sqlQuery);
 
             if (this.currentTransaction != null)
             {
-                this.currentTransaction.Enlist(command);
+                this.currentTransaction.Enlist(this.Command);
             }
-
-            return command;
         }
 
         protected void Dispose(bool disposing)
@@ -165,6 +174,12 @@ namespace MicroLite.Core
 
             if (disposing)
             {
+                if (this.Command != null)
+                {
+                    this.Command.Dispose();
+                    this.Command = null;
+                }
+
                 if (this.currentTransaction != null)
                 {
                     this.currentTransaction.Dispose();

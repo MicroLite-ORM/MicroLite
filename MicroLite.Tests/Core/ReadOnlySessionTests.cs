@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using MicroLite.Builder;
     using MicroLite.Characters;
     using MicroLite.Core;
     using MicroLite.Dialect;
@@ -40,22 +39,21 @@
         [Fact]
         public void AllCreatesASelectAllQueryExecutesAndReturnsResults()
         {
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-            mockDbDriver.Setup(x => x.BuildCommand(SqlBuilder.Select("*").From(typeof(Customer)).ToSqlQuery())).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -77,7 +75,7 @@
         [Fact]
         public void FetchExecutesAndReturnsResults()
         {
-            var sqlQuery = new SqlQuery("");
+            var mockSqlDialect = new Mock<ISqlDialect>();
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
@@ -85,22 +83,19 @@
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-            mockDbDriver.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customers = session.Fetch<Customer>(sqlQuery);
+            var customers = session.Fetch<Customer>(new SqlQuery(""));
 
             Assert.Equal(1, customers.Count);
 
@@ -172,7 +167,7 @@
         [Fact]
         public void IncludeScalarSqlQueryExecutesAndReturnsResult()
         {
-            var sqlQuery = new SqlQuery("");
+            var mockSqlDialect = new Mock<ISqlDialect>();
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.FieldCount).Returns(1);
@@ -182,22 +177,19 @@
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-            mockDbDriver.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var includeScalar = session.Include.Scalar<int>(sqlQuery);
+            var includeScalar = session.Include.Scalar<int>(new SqlQuery(""));
 
             session.ExecutePendingQueries();
 
@@ -263,7 +255,7 @@
             var mockSqlDialect = new Mock<ISqlDialect>();
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Throws<MicroLiteException>();
+            mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<IDbCommand>(), It.IsNotNull<SqlQuery>())).Throws<MicroLiteException>();
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -286,6 +278,10 @@
             var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
             var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT Id FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
 
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
+            mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(1, 1))).Returns(pagedQuery);
+
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.FieldCount).Returns(new Queue<int>(new[] { 1, 0 }).Dequeue);
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
@@ -295,19 +291,14 @@
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
-            mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(1, 1))).Returns(pagedQuery);
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(countQuery, pagedQuery)).Returns(combinedQuery);
-            mockDbDriver.Setup(x => x.BuildCommand(combinedQuery)).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -333,6 +324,10 @@
             var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
             var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
 
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
+            mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(1, 25))).Returns(pagedQuery);
+
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.FieldCount).Returns(new Queue<int>(new[] { 1, 0 }).Dequeue);
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
@@ -342,19 +337,14 @@
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
-            mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(1, 25))).Returns(pagedQuery);
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(countQuery, pagedQuery)).Returns(combinedQuery);
-            mockDbDriver.Setup(x => x.BuildCommand(combinedQuery)).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -380,6 +370,10 @@
             var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
             var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
 
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
+            mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(10, 25))).Returns(pagedQuery);
+
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.FieldCount).Returns(new Queue<int>(new[] { 1, 0 }).Dequeue);
             mockReader.Setup(x => x[0]).Returns(1000); // Simulate 1000 records in the count query
@@ -389,19 +383,14 @@
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
-            mockSqlDialect.Setup(x => x.PageQuery(sqlQuery, PagingOptions.ForPage(10, 25))).Returns(pagedQuery);
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(countQuery, pagedQuery)).Returns(combinedQuery);
-            mockDbDriver.Setup(x => x.BuildCommand(combinedQuery)).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -454,22 +443,20 @@
         {
             object identifier = 100;
 
-            var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.Read()).Returns(false);
-            mockReader.As<IDisposable>().Setup(x => x.Dispose());
-
-            var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
-
-            var mockConnection = new Mock<IDbConnection>();
-
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), identifier)).Returns(new SqlQuery(""));
 
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.Read()).Returns(false);
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-            mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -491,22 +478,21 @@
         {
             object identifier = 100;
 
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), identifier)).Returns(new SqlQuery(""));
+
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
             mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), identifier)).Returns(new SqlQuery(""));
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-            mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -558,7 +544,7 @@
         [Fact]
         public void SingleSqlQueryExecutesAndReturnsNull()
         {
-            var sqlQuery = new SqlQuery("");
+            var mockSqlDialect = new Mock<ISqlDialect>();
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(false);
@@ -566,22 +552,19 @@
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-            mockDbDriver.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customer = session.Single<Customer>(sqlQuery);
+            var customer = session.Single<Customer>(new SqlQuery(""));
 
             Assert.Null(customer);
 
@@ -593,7 +576,7 @@
         [Fact]
         public void SingleSqlQueryExecutesAndReturnsResult()
         {
-            var sqlQuery = new SqlQuery("");
+            var mockSqlDialect = new Mock<ISqlDialect>();
 
             var mockReader = new Mock<IDataReader>();
             mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
@@ -601,22 +584,19 @@
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
-            mockCommand.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockConnection = new Mock<IDbConnection>();
-
-            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
-            mockDbDriver.Setup(x => x.BuildCommand(sqlQuery)).Returns(mockCommand.Object);
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customer = session.Single<Customer>(sqlQuery);
+            var customer = session.Single<Customer>(new SqlQuery(""));
 
             Assert.NotNull(customer);
 
@@ -676,6 +656,8 @@
 
         public class WhenExecutingMultipleQueriesAndTheSqlDialectUsedDoesNotSupportBatching
         {
+            private Mock<IDbCommand> mockCommand = new Mock<IDbCommand>();
+            private Mock<IDbConnection> mockConnection = new Mock<IDbConnection>();
             private Mock<IDbDriver> mockDbDriver = new Mock<IDbDriver>();
 
             public WhenExecutingMultipleQueriesAndTheSqlDialectUsedDoesNotSupportBatching()
@@ -683,21 +665,18 @@
                 var mockSqlDialect = new Mock<ISqlDialect>();
                 mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), It.IsNotNull<object>())).Returns(new SqlQuery(""));
 
-                mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
-                mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(false);
-                mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(() =>
+                mockCommand.Setup(x => x.ExecuteReader()).Returns(() =>
                 {
-                    var mockCommand = new Mock<IDbCommand>();
-                    mockCommand.Setup(x => x.ExecuteReader()).Returns(() =>
-                    {
-                        var mockReader = new Mock<IDataReader>();
-                        mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
+                    var mockReader = new Mock<IDataReader>();
+                    mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-                        return mockReader.Object;
-                    });
-
-                    return mockCommand.Object;
+                    return mockReader.Object;
                 });
+
+                mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(false);
 
                 var session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
@@ -711,19 +690,19 @@
             [Fact]
             public void TheDbDriverShouldBuildTwoIDbCommands()
             {
-                this.mockDbDriver.Verify(x => x.BuildCommand(It.IsNotNull<SqlQuery>()), Times.Exactly(2));
+                this.mockDbDriver.Verify(x => x.BuildCommand(It.IsNotNull<IDbCommand>(), It.IsNotNull<SqlQuery>()), Times.Exactly(2));
             }
 
             [Fact]
             public void TheDbDriverShouldNotCombineTheQueriesUsingTheIEnumerableOverload()
             {
-                this.mockDbDriver.Verify(x => x.Combine(It.IsAny<IEnumerable<SqlQuery>>()), Times.Never());
+                this.mockDbDriver.Verify(x => x.Combine(It.IsNotNull<IEnumerable<SqlQuery>>()), Times.Never());
             }
 
             [Fact]
             public void TheDbDriverShouldNotCombineTheQueriesUsingTheNonIEnumerableOverload()
             {
-                this.mockDbDriver.Verify(x => x.Combine(It.IsAny<SqlQuery>(), It.IsAny<SqlQuery>()), Times.Never());
+                this.mockDbDriver.Verify(x => x.Combine(It.IsNotNull<SqlQuery>(), It.IsNotNull<SqlQuery>()), Times.Never());
             }
         }
 
@@ -733,6 +712,9 @@
 
             public WhenExecutingMultipleQueriesAndTheSqlDialectUsedSupportsBatching()
             {
+                var mockSqlDialect = new Mock<ISqlDialect>();
+                mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), It.IsNotNull<object>())).Returns(new SqlQuery(""));
+
                 this.mockDbDriver.Setup(x => x.Combine(It.IsNotNull<IEnumerable<SqlQuery>>())).Returns(new SqlQuery(""));
 
                 var mockReader = new Mock<IDataReader>();
@@ -744,12 +726,8 @@
                 var mockConnection = new Mock<IDbConnection>();
                 mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-                var mockSqlDialect = new Mock<ISqlDialect>();
-                mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), It.IsNotNull<object>())).Returns(new SqlQuery(""));
-
                 mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
-                mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
                 var session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
@@ -764,13 +742,13 @@
             [Fact]
             public void TheDbDriverShouldNotCombineTheQueriesUsingTheNonIEnumerableOverload()
             {
-                this.mockDbDriver.Verify(x => x.Combine(It.IsAny<SqlQuery>(), It.IsAny<SqlQuery>()), Times.Never());
+                this.mockDbDriver.Verify(x => x.Combine(It.IsNotNull<SqlQuery>(), It.IsNotNull<SqlQuery>()), Times.Never());
             }
 
             [Fact]
             public void TheSqlDialectShouldBuildOneIDbCommand()
             {
-                this.mockDbDriver.Verify(x => x.BuildCommand(It.IsNotNull<SqlQuery>()), Times.Once());
+                this.mockDbDriver.Verify(x => x.BuildCommand(It.IsNotNull<IDbCommand>(), It.IsNotNull<SqlQuery>()), Times.Once());
             }
 
             [Fact]
@@ -786,6 +764,9 @@
 
             public WhenExecutingTwoQueriesAndTheSqlDialectUsedSupportsBatching()
             {
+                var mockSqlDialect = new Mock<ISqlDialect>();
+                mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), It.IsNotNull<object>())).Returns(new SqlQuery(""));
+
                 this.mockDbDriver.Setup(x => x.Combine(It.IsNotNull<SqlQuery>(), It.IsNotNull<SqlQuery>())).Returns(new SqlQuery(""));
 
                 var mockReader = new Mock<IDataReader>();
@@ -797,12 +778,8 @@
                 var mockConnection = new Mock<IDbConnection>();
                 mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-                var mockSqlDialect = new Mock<ISqlDialect>();
-                mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), It.IsNotNull<object>())).Returns(new SqlQuery(""));
-
                 mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
-                mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<SqlQuery>())).Returns(mockCommand.Object);
 
                 var session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
@@ -822,13 +799,13 @@
             [Fact]
             public void TheSqlDialectShouldBuildOneIDbCommand()
             {
-                this.mockDbDriver.Verify(x => x.BuildCommand(It.IsNotNull<SqlQuery>()), Times.Once());
+                this.mockDbDriver.Verify(x => x.BuildCommand(It.IsNotNull<IDbCommand>(), It.IsNotNull<SqlQuery>()), Times.Once());
             }
 
             [Fact]
             public void TheSqlDialectShouldNotCombineTheQueriesUsingTheIEnumerableOverload()
             {
-                this.mockDbDriver.Verify(x => x.Combine(It.IsAny<IEnumerable<SqlQuery>>()), Times.Never());
+                this.mockDbDriver.Verify(x => x.Combine(It.IsNotNull<IEnumerable<SqlQuery>>()), Times.Never());
             }
         }
     }

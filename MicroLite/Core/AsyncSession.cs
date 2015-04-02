@@ -257,14 +257,15 @@ namespace MicroLite.Core
         {
             try
             {
-                using (var command = (DbCommand)this.CreateCommand(sqlQuery))
-                {
-                    var result = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+                this.ConfigureCommand(sqlQuery);
 
-                    this.CommandCompleted();
+                var command = (DbCommand)this.Command;
 
-                    return result;
-                }
+                var result = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+
+                this.CommandCompleted();
+
+                return result;
             }
             catch (OperationCanceledException)
             {
@@ -286,18 +287,19 @@ namespace MicroLite.Core
         {
             try
             {
-                using (var command = (DbCommand)this.CreateCommand(sqlQuery))
-                {
-                    var result = await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                this.ConfigureCommand(sqlQuery);
 
-                    this.CommandCompleted();
+                var command = (DbCommand)this.Command;
 
-                    var resultType = typeof(T);
-                    var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
-                    var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
+                var result = await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
 
-                    return converted;
-                }
+                this.CommandCompleted();
+
+                var resultType = typeof(T);
+                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
+
+                return converted;
             }
             catch (OperationCanceledException)
             {

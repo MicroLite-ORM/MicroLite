@@ -105,14 +105,19 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Builds an IDbCommand command using the values in the specified SqlQuery.
+        /// Builds the IDbCommand command using the values in the specified SqlQuery.
         /// </summary>
+        /// <param name="command">The command to build from the values in the specified SqlQuery.</param>
         /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
-        /// <returns>An IDbCommand with the CommandText, CommandType, Timeout and Parameters set.</returns>
         /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
-        public IDbCommand BuildCommand(SqlQuery sqlQuery)
+        public void BuildCommand(IDbCommand command, SqlQuery sqlQuery)
         {
+            if (command == null)
+            {
+                throw new ArgumentNullException("command");
+            }
+
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
@@ -137,27 +142,38 @@ namespace MicroLite.Driver
                 throw new MicroLiteException(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
             }
 
-            var command = this.DbProviderFactory.CreateCommand();
-            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
-            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
+            if (command.CommandText != sqlQuery.CommandText)
+            {
+                command.CommandText = this.GetCommandText(sqlQuery.CommandText);
+                command.CommandType = this.GetCommandType(sqlQuery.CommandText);
+
+                command.Parameters.Clear();
+            }
 
             for (int i = 0; i < parameterNames.Count; i++)
             {
-                var parameter = command.CreateParameter();
                 var parameterName = parameterNames[i];
                 var sqlArgument = sqlQuery.Arguments[i];
 
-                this.BuildParameter(parameter, parameterName, sqlArgument);
+                IDbDataParameter parameter;
 
-                command.Parameters.Add(parameter);
+                if (command.Parameters.Contains(parameterName))
+                {
+                    parameter = (IDbDataParameter)command.Parameters[parameterName];
+                }
+                else
+                {
+                    parameter = command.CreateParameter();
+                    command.Parameters.Add(parameter);
+                }
+
+                this.BuildParameter(parameter, parameterName, sqlArgument);
             }
 
             if (this.SupportsCommandTimeout)
             {
                 command.CommandTimeout = sqlQuery.Timeout;
             }
-
-            return command;
         }
 
         /// <summary>

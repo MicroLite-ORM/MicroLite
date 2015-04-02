@@ -264,24 +264,23 @@ namespace MicroLite.Core
                 ? this.DbDriver.Combine(this.queries.Dequeue(), this.queries.Dequeue())
                 : this.DbDriver.Combine(this.queries);
 
-            using (var command = this.CreateCommand(combinedSqlQuery))
+            this.ConfigureCommand(combinedSqlQuery);
+
+            try
             {
-                try
+                using (var reader = this.Command.ExecuteReader())
                 {
-                    using (var reader = command.ExecuteReader())
+                    do
                     {
-                        do
-                        {
-                            var include = this.includes.Dequeue();
-                            include.BuildValue(reader);
-                        }
-                        while (reader.NextResult());
+                        var include = this.includes.Dequeue();
+                        include.BuildValue(reader);
                     }
+                    while (reader.NextResult());
                 }
-                finally
-                {
-                    this.CommandCompleted();
-                }
+            }
+            finally
+            {
+                this.CommandCompleted();
             }
         }
 
@@ -291,20 +290,19 @@ namespace MicroLite.Core
             {
                 var sqlQuery = this.queries.Dequeue();
 
-                using (var command = this.CreateCommand(sqlQuery))
+                this.ConfigureCommand(sqlQuery);
+
+                try
                 {
-                    try
+                    using (var reader = this.Command.ExecuteReader())
                     {
-                        using (var reader = command.ExecuteReader())
-                        {
-                            var include = this.includes.Dequeue();
-                            include.BuildValue(reader);
-                        }
+                        var include = this.includes.Dequeue();
+                        include.BuildValue(reader);
                     }
-                    finally
-                    {
-                        this.CommandCompleted();
-                    }
+                }
+                finally
+                {
+                    this.CommandCompleted();
                 }
             }
             while (this.queries.Count > 0);

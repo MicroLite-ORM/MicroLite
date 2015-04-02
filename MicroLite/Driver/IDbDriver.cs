@@ -48,12 +48,12 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Builds an IDbCommand command using the values in the specified SqlQuery.
+        /// Builds the IDbCommand command using the values in the specified SqlQuery.
         /// </summary>
+        /// <param name="command">The command to build from the values in the specified SqlQuery.</param>
         /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
-        /// <returns>An IDbCommand with the CommandText, CommandType, Timeout and Parameters set.</returns>
         /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
-        IDbCommand BuildCommand(SqlQuery sqlQuery);
+        void BuildCommand(IDbCommand command, SqlQuery sqlQuery);
 
         /// <summary>
         /// Combines the specified SQL queries into a single SqlQuery.

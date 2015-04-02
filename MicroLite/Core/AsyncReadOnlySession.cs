@@ -300,24 +300,25 @@ namespace MicroLite.Core
                 ? this.DbDriver.Combine(this.queries.Dequeue(), this.queries.Dequeue())
                 : this.DbDriver.Combine(this.queries);
 
-            using (var command = (DbCommand)this.CreateCommand(combinedSqlQuery))
+            this.ConfigureCommand(combinedSqlQuery);
+
+            try
             {
-                try
+                var command = (DbCommand)this.Command;
+
+                using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
+                    do
                     {
-                        do
-                        {
-                            var include = this.includes.Dequeue();
-                            await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
-                        }
-                        while (reader.NextResult());
+                        var include = this.includes.Dequeue();
+                        await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
                     }
+                    while (reader.NextResult());
                 }
-                finally
-                {
-                    this.CommandCompleted();
-                }
+            }
+            finally
+            {
+                this.CommandCompleted();
             }
         }
 
@@ -327,20 +328,21 @@ namespace MicroLite.Core
             {
                 var sqlQuery = this.queries.Dequeue();
 
-                using (var command = (DbCommand)this.CreateCommand(sqlQuery))
+                this.ConfigureCommand(sqlQuery);
+
+                try
                 {
-                    try
+                    var command = (DbCommand)this.Command;
+
+                    using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
                     {
-                        using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
-                        {
-                            var include = this.includes.Dequeue();
-                            await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
-                        }
+                        var include = this.includes.Dequeue();
+                        await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        this.CommandCompleted();
-                    }
+                }
+                finally
+                {
+                    this.CommandCompleted();
                 }
             }
             while (this.queries.Count > 0);

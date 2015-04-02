@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using System.Data.Common;
+    using System.Data.OleDb;
     using MicroLite.Characters;
     using MicroLite.Driver;
     using MicroLite.FrameworkExtensions;
@@ -17,18 +18,15 @@
         [Fact]
         public void BuildCommandForSqlQueryWithSqlText()
         {
+            var command = new OleDbCommand();
+
             var sqlQuery = new SqlQuery(
                 "SELECT * FROM Table WHERE Table.Id = ? AND Table.Value1 = ? AND Table.Value2 = ?",
                 100, "hello", null);
 
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand());
-
             var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
             mockDbDriver.CallBase = true;
-            mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var command = mockDbDriver.Object.BuildCommand(sqlQuery);
+            mockDbDriver.Object.BuildCommand(command, sqlQuery);
 
             Assert.Equal(sqlQuery.CommandText, command.CommandText);
             Assert.Equal(CommandType.Text, command.CommandType);
@@ -63,14 +61,11 @@
                 "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value1] = @p1 OR @p1 IS NULL",
                 100, "hello");
 
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.SqlClient.SqlCommand());
+            var command = new OleDbCommand();
 
             var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
             mockDbDriver.CallBase = true;
-            mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var command = mockDbDriver.Object.BuildCommand(sqlQuery);
+            mockDbDriver.Object.BuildCommand(command, sqlQuery);
 
             Assert.Equal(sqlQuery.CommandText, command.CommandText);
             Assert.Equal(CommandType.Text, command.CommandType);
@@ -92,19 +87,28 @@
         [Fact]
         public void BuildCommandSetsDbCommandTimeoutToSqlQueryTime()
         {
+            var command = new OleDbCommand();
+
             var sqlQuery = new SqlQuery("SELECT * FROM Table");
             sqlQuery.Timeout = 42; // Use an oddball time which shouldn't be a default anywhere.
 
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand());
-
             var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
             mockDbDriver.CallBase = true;
-            mockDbDriver.Object.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var command = mockDbDriver.Object.BuildCommand(sqlQuery);
+            mockDbDriver.Object.BuildCommand(command, sqlQuery);
 
             Assert.Equal(sqlQuery.Timeout, command.CommandTimeout);
+        }
+
+        [Fact]
+        public void BuildCommandThrowsArgumentNullExceptionForNullCommand()
+        {
+            var mockDbDriver = new Mock<DbDriver>(SqlCharacters.Empty);
+            mockDbDriver.CallBase = true;
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => mockDbDriver.Object.BuildCommand(null, new SqlQuery("")));
+
+            Assert.Equal("command", exception.ParamName);
         }
 
         [Fact]
@@ -114,7 +118,7 @@
             mockDbDriver.CallBase = true;
 
             var exception = Assert.Throws<ArgumentNullException>(
-                () => mockDbDriver.Object.BuildCommand(null));
+                () => mockDbDriver.Object.BuildCommand(new OleDbCommand(), null));
 
             Assert.Equal("sqlQuery", exception.ParamName);
         }
@@ -130,7 +134,7 @@
             mockDbDriver.CallBase = true;
 
             var exception = Assert.Throws<MicroLiteException>(
-                () => mockDbDriver.Object.BuildCommand(sqlQuery));
+                () => mockDbDriver.Object.BuildCommand(new OleDbCommand(), sqlQuery));
 
             Assert.Equal(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
         }

@@ -1,8 +1,7 @@
 ﻿namespace MicroLite.Tests.Driver
 {
-    using System.Data.Common;
+    using System.Data.OleDb;
     using MicroLite.Driver;
-    using Moq;
     using Xunit;
 
     /// <summary>
@@ -13,22 +12,18 @@
         [Fact]
         public void BuildCommandDoesNotSetsDbCommandTimeoutToSqlQueryTime()
         {
+            // Frig the timeout here - we're using an OleDbCommand but at runtime it will be an
+            // SqlCeCommand which has the timeout set to 0 by default
+            var command = new OleDbCommand
+            {
+                CommandTimeout = 0
+            };
+
             var sqlQuery = new SqlQuery("SELECT * FROM Table");
             sqlQuery.Timeout = 42; // Use an oddball time which shouldn't be a default anywhere.
 
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-
-            // Frig the timeout here - we're using an OleDbCommand but at runtime it will be an
-            // SqlCeCommand which has the timeout set to 0 by default
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand
-            {
-                CommandTimeout = 0
-            });
-
             var dbDriver = new SqlServerCeDbDriver();
-            dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var command = dbDriver.BuildCommand(sqlQuery);
+            dbDriver.BuildCommand(command, sqlQuery);
 
             Assert.Equal(0, command.CommandTimeout);
         }

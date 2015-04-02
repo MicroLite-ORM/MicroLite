@@ -217,14 +217,13 @@ namespace MicroLite.Core
         {
             try
             {
-                using (var command = this.CreateCommand(sqlQuery))
-                {
-                    var result = command.ExecuteNonQuery();
+                this.ConfigureCommand(sqlQuery);
 
-                    this.CommandCompleted();
+                var result = this.Command.ExecuteNonQuery();
 
-                    return result;
-                }
+                this.CommandCompleted();
+
+                return result;
             }
             catch (MicroLiteException)
             {
@@ -241,18 +240,17 @@ namespace MicroLite.Core
         {
             try
             {
-                using (var command = this.CreateCommand(sqlQuery))
-                {
-                    var result = command.ExecuteScalar();
+                this.ConfigureCommand(sqlQuery);
 
-                    this.CommandCompleted();
+                var result = this.Command.ExecuteScalar();
 
-                    var resultType = typeof(T);
-                    var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
-                    var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
+                this.CommandCompleted();
 
-                    return converted;
-                }
+                var resultType = typeof(T);
+                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
+
+                return converted;
             }
             catch (MicroLiteException)
             {

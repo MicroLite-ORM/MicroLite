@@ -2,10 +2,9 @@
 {
     using System;
     using System.Data;
-    using System.Data.Common;
+    using System.Data.SqlClient;
     using MicroLite.Driver;
     using MicroLite.FrameworkExtensions;
-    using Moq;
     using Xunit;
 
     /// <summary>
@@ -19,17 +18,14 @@
         [Fact]
         public void BuildCommandForSqlQueryWithSqlTextWhichUsesSameParameterTwice()
         {
+            var command = new SqlCommand();
+
             var sqlQuery = new SqlQuery(
                 "SELECT * FROM [Table] WHERE [Table].[Id] = @p0 AND [Table].[Value1] = @p1 OR @p1 IS NULL",
                 100, "hello");
 
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.SqlClient.SqlCommand());
-
             var dbDriver = new MsSqlDbDriver();
-            dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var command = dbDriver.BuildCommand(sqlQuery);
+            dbDriver.BuildCommand(command, sqlQuery);
 
             Assert.Equal(sqlQuery.CommandText, command.CommandText);
             Assert.Equal(CommandType.Text, command.CommandType);
@@ -51,15 +47,12 @@
         [Fact]
         public void BuildCommandForSqlQueryWithStoredProcedureWithoutParameters()
         {
+            var command = new SqlCommand();
+
             var sqlQuery = new SqlQuery("EXEC GetTableContents");
 
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.SqlClient.SqlCommand());
-
             var dbDriver = new MsSqlDbDriver();
-            dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var command = dbDriver.BuildCommand(sqlQuery);
+            dbDriver.BuildCommand(command, sqlQuery);
 
             // The command text should only contain the stored procedure name.
             Assert.Equal("GetTableContents", command.CommandText);
@@ -70,17 +63,14 @@
         [Fact]
         public void BuildCommandForSqlQueryWithStoredProcedureWithParameters()
         {
+            var command = new SqlCommand();
+
             var sqlQuery = new SqlQuery(
                 "EXEC GetTableContents @identifier, @Cust_Name",
                 100, "hello");
 
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.SqlClient.SqlCommand());
-
             var dbDriver = new MsSqlDbDriver();
-            dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var command = dbDriver.BuildCommand(sqlQuery);
+            dbDriver.BuildCommand(command, sqlQuery);
 
             // The command text should only contain the stored procedure name.
             Assert.Equal("GetTableContents", command.CommandText);
@@ -110,7 +100,7 @@
             var dbDriver = new MsSqlDbDriver();
 
             var exception = Assert.Throws<MicroLiteException>(
-                () => dbDriver.BuildCommand(sqlQuery));
+                () => dbDriver.BuildCommand(new SqlCommand(), sqlQuery));
 
             Assert.Equal(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith("2", "1"), exception.Message);
         }
@@ -121,17 +111,14 @@
         [Fact]
         public void DbTypeTimeIsIncorrectlyHandledAsDateTime()
         {
+            var command = new SqlCommand();
+
             var sqlQuery = new SqlQuery(
                 "SELECT * FROM [Table] WHERE [TimeStamp] > @p0",
                 new SqlArgument(new TimeSpan(5, 30, 1), DbType.Time));
 
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.SqlClient.SqlCommand());
-
             var dbDriver = new MsSqlDbDriver();
-            dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var command = (System.Data.SqlClient.SqlCommand)dbDriver.BuildCommand(sqlQuery);
+            dbDriver.BuildCommand(command, sqlQuery);
 
             Assert.Equal(SqlDbType.Time, command.Parameters[0].SqlDbType);
         }
