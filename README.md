@@ -29,8 +29,8 @@ The NuGet Package contains binaries compiled against:
 
 * [Microsoft SQL Server](https://github.com/TrevorPilley/MicroLite/wiki#configuring-the-connection) 2005 or newer
 * [MySql](https://github.com/TrevorPilley/MicroLite/wiki/Using-MySql) 5.5 or newer
-* [SQLite](https://github.com/TrevorPilley/MicroLite/wiki/Using-PostgreSQL) 3.7 or newer
-* [PostgreSQL](https://github.com/TrevorPilley/MicroLite/wiki/Using-SQLite) 9.2 or newer
+* [SQLite](https://github.com/TrevorPilley/MicroLite/wiki/Using-SQLite) 3.7 or newer
+* [PostgreSQL](https://github.com/TrevorPilley/MicroLite/wiki/Using-PostgreSQL) 9.2 or newer
 * [Firebird](https://github.com/TrevorPilley/MicroLite/wiki/Using-Firebird) 2.5 or newer
 * [SQL Server Compact Edition](https://github.com/TrevorPilley/MicroLite/wiki/Using-SqlServerCE) 4.0 or newer
 
