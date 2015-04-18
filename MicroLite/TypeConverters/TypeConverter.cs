@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="TypeConverter.cs" company="MicroLite">
-// Copyright 2012 - 2014 Project Contributors
+// Copyright 2012 - 2015 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -56,9 +56,7 @@ namespace MicroLite.TypeConverters
             { typeof(DateTimeOffset), DbType.DateTimeOffset },
             { typeof(DateTimeOffset?), DbType.DateTimeOffset },
             { typeof(Guid), DbType.Guid },
-            { typeof(Guid?), DbType.Guid },
-            { typeof(TimeSpan), DbType.Time },
-            { typeof(TimeSpan?), DbType.Time }
+            { typeof(Guid?), DbType.Guid }
         };
 
         private static readonly ITypeConverter defaultConverter = new ObjectTypeConverter();

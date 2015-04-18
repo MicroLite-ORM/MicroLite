@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IDbDriver.cs" company="MicroLite">
-// Copyright 2012 - 2014 Project Contributors
+// Copyright 2012 - 2015 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,19 +40,6 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to handle strings as unicode (defaults to true).
-        /// </summary>
-        /// <remarks>
-        /// Indicates whether strings should be handled as unicode (true by default)
-        /// e.g. for MS SQL - if true, strings will be treated as NVARCHAR; if false, strings will be treated as VARCHAR.
-        /// </remarks>
-        bool HandleStringsAsUnicode
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Gets a value indicating whether this DbDriver supports batched queries.
         /// </summary>
         bool SupportsBatchedQueries
@@ -61,12 +48,12 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Builds an IDbCommand command using the values in the specified SqlQuery.
+        /// Builds the IDbCommand command using the values in the specified SqlQuery.
         /// </summary>
+        /// <param name="command">The command to build from the values in the specified SqlQuery.</param>
         /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
-        /// <returns>An IDbCommand with the CommandText, CommandType, Timeout and Parameters set.</returns>
         /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
-        IDbCommand BuildCommand(SqlQuery sqlQuery);
+        void BuildCommand(IDbCommand command, SqlQuery sqlQuery);
 
         /// <summary>
         /// Combines the specified SQL queries into a single SqlQuery.

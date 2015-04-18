@@ -1,9 +1,8 @@
 ﻿namespace MicroLite.Tests.Driver
 {
     using System.Data;
-    using System.Data.Common;
+    using System.Data.OleDb;
     using MicroLite.Driver;
-    using Moq;
     using Xunit;
 
     /// <summary>
@@ -17,17 +16,14 @@
         [Fact]
         public void BuildCommandForSqlQueryWithSqlTextWhichUsesSameParameterTwice()
         {
+            var command = new OleDbCommand();
+
             var sqlQuery = new SqlQuery(
                 "SELECT * FROM \"Table\" WHERE \"Table\".\"Id\" = @p0 AND \"Table].\"Value1\" = @p1 OR @p1 IS NULL",
                 100, "hello");
 
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand());
-
             var dbDriver = new PostgreSqlDbDriver();
-            dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var command = dbDriver.BuildCommand(sqlQuery);
+            dbDriver.BuildCommand(command, sqlQuery);
 
             Assert.Equal(sqlQuery.CommandText, command.CommandText);
             Assert.Equal(CommandType.Text, command.CommandType);
@@ -49,15 +45,12 @@
         [Fact]
         public void BuildCommandForSqlQueryWithStoredProcedureWithoutParameters()
         {
+            var command = new OleDbCommand();
+
             var sqlQuery = new SqlQuery("SELECT GetTableContents");
 
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand());
-
             var dbDriver = new PostgreSqlDbDriver();
-            dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var command = dbDriver.BuildCommand(sqlQuery);
+            dbDriver.BuildCommand(command, sqlQuery);
 
             // The command text should only contain the stored procedure name.
             Assert.Equal("GetTableContents", command.CommandText);
@@ -68,17 +61,14 @@
         [Fact]
         public void BuildCommandForSqlQueryWithStoredProcedureWithParameters()
         {
+            var command = new OleDbCommand();
+
             var sqlQuery = new SqlQuery(
                 "SELECT GetTableContents (@identifier, @Cust_Name)",
                 100, "hello");
 
-            var mockDbProviderFactory = new Mock<DbProviderFactory>();
-            mockDbProviderFactory.Setup(x => x.CreateCommand()).Returns(new System.Data.OleDb.OleDbCommand());
-
             var dbDriver = new PostgreSqlDbDriver();
-            dbDriver.DbProviderFactory = mockDbProviderFactory.Object;
-
-            var command = dbDriver.BuildCommand(sqlQuery);
+            dbDriver.BuildCommand(command, sqlQuery);
 
             // The command text should only contain the stored procedure name.
             Assert.Equal("GetTableContents", command.CommandText);

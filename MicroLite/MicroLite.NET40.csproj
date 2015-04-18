@@ -206,6 +206,7 @@
     <Compile Include="TypeConverters\EnumTypeConverter.cs" />
     <Compile Include="TypeConverters\ITypeConverter.cs" />
     <Compile Include="TypeConverters\ObjectTypeConverter.cs" />
+    <Compile Include="TypeConverters\TimeSpanTypeConverter.cs" />
     <Compile Include="TypeConverters\TypeConverter.cs" />
     <Compile Include="TypeConverters\TypeConverterCollection.cs" />
     <Compile Include="TypeConverters\UriTypeConverter.cs" />

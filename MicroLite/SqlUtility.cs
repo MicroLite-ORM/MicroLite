@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SqlUtility.cs" company="MicroLite">
-// Copyright 2012 - 2014 Project Contributors
+// Copyright 2012 - 2015 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,27 +39,7 @@ namespace MicroLite
         /// <exception cref="ArgumentNullException">Thrown if commandText is null.</exception>
         public static int GetFirstParameterPosition(string commandText)
         {
-            if (commandText == null)
-            {
-                throw new ArgumentNullException("commandText");
-            }
-
-            var firstParameterPosition = commandText.IndexOfAny(parameterIdentifiers);
-
-            while (firstParameterPosition > -1)
-            {
-                // Ignore identifiers inside a quoted string
-                if (commandText.IndexOfAny(quoteCharacters, 0, firstParameterPosition) > -1
-                    && commandText.IndexOfAny(quoteCharacters, firstParameterPosition) > -1)
-                {
-                    firstParameterPosition = commandText.IndexOfAny(parameterIdentifiers, firstParameterPosition + 1);
-                    continue;
-                }
-
-                break;
-            }
-
-            return firstParameterPosition;
+            return GetParameterPosition(commandText, 0, parameterIdentifiers);
         }
 
         /// <summary>
@@ -82,25 +62,17 @@ namespace MicroLite
                 throw new ArgumentNullException("commandText");
             }
 
-            if (GetFirstParameterPosition(commandText) == -1)
+            var startIndex = GetParameterPosition(commandText, 0, namedParameterIdentifiers);
+
+            if (startIndex == -1)
             {
                 return emptyParameterNames;
             }
 
             var parameterNames = new List<string>();
 
-            var startIndex = commandText.IndexOfAny(namedParameterIdentifiers);
-
-            while (startIndex > -1)
+            while (startIndex > -1 && startIndex < commandText.Length)
             {
-                // Ignore @@ as we would have for SELECT @@Identity
-                if ((startIndex < commandText.Length && commandText[startIndex + 1] == '@')
-                    || (startIndex > 0 && commandText[startIndex - 1] == '@'))
-                {
-                    startIndex = commandText.IndexOfAny(namedParameterIdentifiers, startIndex + 1);
-                    continue;
-                }
-
                 var endIndex = commandText.Length;
 
                 for (int i = startIndex + 1; i < commandText.Length; i++)
@@ -123,7 +95,7 @@ namespace MicroLite
                     parameterNames.Add(parameter);
                 }
 
-                startIndex = commandText.IndexOfAny(namedParameterIdentifiers, startIndex + 1);
+                startIndex = GetParameterPosition(commandText, startIndex + 1, namedParameterIdentifiers);
             }
 
             return parameterNames;
@@ -157,6 +129,51 @@ namespace MicroLite
             }
 
             return predicateReWriter.ToString();
+        }
+
+        private static int GetParameterPosition(string commandText, int position, char[] matchParameterIdentifiers)
+        {
+            if (commandText == null)
+            {
+                throw new ArgumentNullException("commandText");
+            }
+
+            if (position > commandText.Length)
+            {
+                throw new ArgumentOutOfRangeException("position");
+            }
+
+            var parameterPosition = commandText.IndexOfAny(matchParameterIdentifiers, position);
+
+            while (parameterPosition > -1)
+            {
+                // Ignore identifiers followed by whitespace or linebreak.
+                if (parameterPosition < commandText.Length && char.IsControl(commandText[parameterPosition + 1]))
+                {
+                    parameterPosition = commandText.IndexOfAny(matchParameterIdentifiers, parameterPosition + 1);
+                    continue;
+                }
+
+                // Ignore @@ as we would have for SELECT @@Identity.
+                if ((parameterPosition < commandText.Length && matchParameterIdentifiers.Contains(commandText[parameterPosition + 1]))
+                    || (parameterPosition > 0 && matchParameterIdentifiers.Contains(commandText[parameterPosition - 1])))
+                {
+                    parameterPosition = commandText.IndexOfAny(matchParameterIdentifiers, parameterPosition + 1);
+                    continue;
+                }
+
+                // Ignore identifiers inside a quoted string.
+                if (commandText.IndexOfAny(quoteCharacters, position, parameterPosition - position) > -1
+                    && commandText.IndexOfAny(quoteCharacters, parameterPosition) > -1)
+                {
+                    parameterPosition = commandText.IndexOfAny(matchParameterIdentifiers, parameterPosition + 1);
+                    continue;
+                }
+
+                break;
+            }
+
+            return parameterPosition;
         }
     }
 }

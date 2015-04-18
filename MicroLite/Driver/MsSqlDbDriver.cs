@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="MsSqlDbDriver.cs" company="MicroLite">
-// Copyright 2012 - 2014 Project Contributors
+// Copyright 2012 - 2015 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Driver
 {
+    using System;
     using System.Data;
     using MicroLite.Characters;
 
@@ -36,14 +37,23 @@ namespace MicroLite.Driver
             }
         }
 
-        protected override void SetDbType(IDbDataParameter parameter, DbType dbType)
+        protected override void BuildParameter(IDbDataParameter parameter, string parameterName, SqlArgument sqlArgument)
         {
-            if (dbType != DbType.Time)
+            if (parameter == null)
+            {
+                throw new ArgumentNullException("parameter");
+            }
+
+            if (sqlArgument.DbType != DbType.Time)
             {
                 // Work around for a bug in SqlClient where it thinks DbType.Time is a MetaType.MetaDateTime.
                 // Do not set the DbType, the SqlParameter will figure it out by reflecting over the value type.
-                base.SetDbType(parameter, dbType);
+                parameter.DbType = sqlArgument.DbType;
             }
+
+            parameter.Direction = ParameterDirection.Input;
+            parameter.ParameterName = parameterName;
+            parameter.Value = sqlArgument.Value ?? DBNull.Value;
         }
     }
 }

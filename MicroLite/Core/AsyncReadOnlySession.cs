@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="AsyncReadOnlySession.cs" company="MicroLite">
-// Copyright 2012 - 2014 Project Contributors
+// Copyright 2012 - 2015 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -300,24 +300,25 @@ namespace MicroLite.Core
                 ? this.DbDriver.Combine(this.queries.Dequeue(), this.queries.Dequeue())
                 : this.DbDriver.Combine(this.queries);
 
-            using (var command = (DbCommand)this.CreateCommand(combinedSqlQuery))
+            this.ConfigureCommand(combinedSqlQuery);
+
+            try
             {
-                try
+                var command = (DbCommand)this.Command;
+
+                using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
+                    do
                     {
-                        do
-                        {
-                            var include = this.includes.Dequeue();
-                            await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
-                        }
-                        while (reader.NextResult());
+                        var include = this.includes.Dequeue();
+                        await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
                     }
+                    while (reader.NextResult());
                 }
-                finally
-                {
-                    this.CommandCompleted();
-                }
+            }
+            finally
+            {
+                this.CommandCompleted();
             }
         }
 
@@ -327,20 +328,21 @@ namespace MicroLite.Core
             {
                 var sqlQuery = this.queries.Dequeue();
 
-                using (var command = (DbCommand)this.CreateCommand(sqlQuery))
+                this.ConfigureCommand(sqlQuery);
+
+                try
                 {
-                    try
+                    var command = (DbCommand)this.Command;
+
+                    using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
                     {
-                        using (var reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
-                        {
-                            var include = this.includes.Dequeue();
-                            await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
-                        }
+                        var include = this.includes.Dequeue();
+                        await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        this.CommandCompleted();
-                    }
+                }
+                finally
+                {
+                    this.CommandCompleted();
                 }
             }
             while (this.queries.Count > 0);

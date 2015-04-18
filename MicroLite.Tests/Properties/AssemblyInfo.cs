@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MicroLite")]
 [assembly: AssemblyProduct("MicroLite.Tests")]
-[assembly: AssemblyCopyright("Copyright 2012 - 2014 Project Contributors all rights reserved.")]
+[assembly: AssemblyCopyright("Copyright 2012 - 2015 Project Contributors all rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 //      Minor Version
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion("6.1.0.0")]
-[assembly: AssemblyFileVersion("6.1.4.0")]
+[assembly: AssemblyVersion("6.2.0.0")]
+[assembly: AssemblyFileVersion("6.2.0.0")]
 [assembly: CLSCompliant(true)]
 [assembly: NeutralResourcesLanguageAttribute("en-GB")]

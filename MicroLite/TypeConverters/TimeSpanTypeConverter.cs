@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ObjectTypeConverter.cs" company="MicroLite">
+// <copyright file="TimeSpanTypeConverter.cs" company="MicroLite">
 // Copyright 2012 - 2015 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +14,24 @@ namespace MicroLite.TypeConverters
 {
     using System;
     using System.Data;
-    using System.Globalization;
 
     /// <summary>
-    /// An ITypeConverter which uses Convert.ChangeType.
+    /// An ITypeConverter which can convert a TimeSpan to and from the stored database value of a 64 bit integer column.
     /// </summary>
-    /// <remarks>
-    /// It is the default ITypeConverter, which can be used if no suitable specific implementation exists.
-    /// </remarks>
-    internal sealed class ObjectTypeConverter : ITypeConverter
+    public sealed class TimeSpanTypeConverter : ITypeConverter
     {
+        private readonly Type timeSpanType = typeof(TimeSpan);
+        private readonly Type timeSpanTypeNullable = typeof(TimeSpan?);
+
+        /// <summary>
+        /// Initialises a new instance of the <see cref="TimeSpanTypeConverter"/> class.
+        /// </summary>
+        public TimeSpanTypeConverter()
+        {
+            TypeConverter.RegisterTypeMapping(this.timeSpanType, DbType.Int64);
+            TypeConverter.RegisterTypeMapping(this.timeSpanTypeNullable, DbType.Int64);
+        }
+
         /// <summary>
         /// Determines whether this type converter can convert values for the specified type.
         /// </summary>
@@ -33,7 +41,7 @@ namespace MicroLite.TypeConverters
         /// </returns>
         public bool CanConvert(Type type)
         {
-            return true;
+            return this.timeSpanType == type || this.timeSpanTypeNullable == type;
         }
 
         /// <summary>
@@ -54,18 +62,9 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            if (type.IsValueType && type.IsGenericType)
-            {
-                ValueType converted = (ValueType)value;
+            var timeSpan = new TimeSpan((long)value);
 
-                return converted;
-            }
-            else
-            {
-                var converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
-
-                return converted;
-            }
+            return timeSpan;
         }
 
         /// <summary>
@@ -75,7 +74,6 @@ namespace MicroLite.TypeConverters
         /// <param name="index">The index of the record to read from the IDataReader.</param>
         /// <param name="type">The type to convert result value to.</param>
         /// <returns>An instance of the specified type containing the specified value.</returns>
-        /// <exception cref="System.ArgumentNullException">thrown if propertyType is null.</exception>
         public object ConvertFromDbValue(IDataReader reader, int index, Type type)
         {
             if (reader == null)
@@ -93,20 +91,10 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            var value = reader[index];
+            var value = reader.GetInt64(index);
+            var timeSpan = new TimeSpan(value);
 
-            if (type.IsValueType && type.IsGenericType)
-            {
-                ValueType converted = (ValueType)value;
-
-                return converted;
-            }
-            else
-            {
-                var converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
-
-                return converted;
-            }
+            return timeSpan;
         }
 
         /// <summary>
@@ -117,7 +105,16 @@ namespace MicroLite.TypeConverters
         /// <returns>An instance of the corresponding database type containing the value.</returns>
         public object ConvertToDbValue(object value, Type type)
         {
-            return value;
+            if (value == null)
+            {
+                return value;
+            }
+
+            var timeSpan = (TimeSpan)value;
+
+            var timeSpanTicks = timeSpan.Ticks;
+
+            return timeSpanTicks;
         }
     }
 }

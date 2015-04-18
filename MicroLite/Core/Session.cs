@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="Session.cs" company="MicroLite">
-// Copyright 2012 - 2014 Project Contributors
+// Copyright 2012 - 2015 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -217,14 +217,13 @@ namespace MicroLite.Core
         {
             try
             {
-                using (var command = this.CreateCommand(sqlQuery))
-                {
-                    var result = command.ExecuteNonQuery();
+                this.ConfigureCommand(sqlQuery);
 
-                    this.CommandCompleted();
+                var result = this.Command.ExecuteNonQuery();
 
-                    return result;
-                }
+                this.CommandCompleted();
+
+                return result;
             }
             catch (MicroLiteException)
             {
@@ -241,18 +240,17 @@ namespace MicroLite.Core
         {
             try
             {
-                using (var command = this.CreateCommand(sqlQuery))
-                {
-                    var result = command.ExecuteScalar();
+                this.ConfigureCommand(sqlQuery);
 
-                    this.CommandCompleted();
+                var result = this.Command.ExecuteScalar();
 
-                    var resultType = typeof(T);
-                    var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
-                    var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
+                this.CommandCompleted();
 
-                    return converted;
-                }
+                var resultType = typeof(T);
+                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
+
+                return converted;
             }
             catch (MicroLiteException)
             {
@@ -269,7 +267,7 @@ namespace MicroLite.Core
         {
             object identifier = null;
 
-            SqlQuery insertSqlQuery = this.SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
+            var insertSqlQuery = this.SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
 
             if (this.SqlDialect.SupportsSelectInsertedIdentifier
                 && objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)

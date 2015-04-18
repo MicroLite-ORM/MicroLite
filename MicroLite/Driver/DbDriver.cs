@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="DbDriver.cs" company="MicroLite">
-// Copyright 2012 - 2014 Project Contributors
+// Copyright 2012 - 2015 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ namespace MicroLite.Driver
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly SqlCharacters sqlCharacters;
-        private bool handleStringsAsUnicode = true;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="DbDriver" /> class.
@@ -57,26 +56,6 @@ namespace MicroLite.Driver
         {
             get;
             set;
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to handle strings as unicode (defaults to true).
-        /// </summary>
-        /// <remarks>
-        /// Indicates whether strings should be handled as unicode (true by default)
-        /// e.g. for MS SQL - if true, strings will be treated as NVARCHAR; if false, strings will be treated as VARCHAR.
-        /// </remarks>
-        public bool HandleStringsAsUnicode
-        {
-            get
-            {
-                return this.handleStringsAsUnicode;
-            }
-
-            set
-            {
-                this.handleStringsAsUnicode = value;
-            }
         }
 
         /// <summary>
@@ -126,14 +105,19 @@ namespace MicroLite.Driver
         }
 
         /// <summary>
-        /// Builds an IDbCommand command using the values in the specified SqlQuery.
+        /// Builds the IDbCommand command using the values in the specified SqlQuery.
         /// </summary>
+        /// <param name="command">The command to build from the values in the specified SqlQuery.</param>
         /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
-        /// <returns>An IDbCommand with the CommandText, CommandType, Timeout and Parameters set.</returns>
         /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
-        public IDbCommand BuildCommand(SqlQuery sqlQuery)
+        public void BuildCommand(IDbCommand command, SqlQuery sqlQuery)
         {
+            if (command == null)
+            {
+                throw new ArgumentNullException("command");
+            }
+
             if (sqlQuery == null)
             {
                 throw new ArgumentNullException("sqlQuery");
@@ -158,27 +142,38 @@ namespace MicroLite.Driver
                 throw new MicroLiteException(ExceptionMessages.DbDriver_ArgumentsCountMismatch.FormatWith(parameterNames.Count.ToString(CultureInfo.InvariantCulture), sqlQuery.Arguments.Count.ToString(CultureInfo.InvariantCulture)));
             }
 
-            var command = this.DbProviderFactory.CreateCommand();
-            command.CommandText = this.GetCommandText(sqlQuery.CommandText);
-            command.CommandType = this.GetCommandType(sqlQuery.CommandText);
+            if (command.CommandText != sqlQuery.CommandText)
+            {
+                command.CommandText = this.GetCommandText(sqlQuery.CommandText);
+                command.CommandType = this.GetCommandType(sqlQuery.CommandText);
+
+                command.Parameters.Clear();
+            }
 
             for (int i = 0; i < parameterNames.Count; i++)
             {
-                var parameter = command.CreateParameter();
                 var parameterName = parameterNames[i];
                 var sqlArgument = sqlQuery.Arguments[i];
 
-                this.BuildParameter(parameter, parameterName, sqlArgument);
+                IDbDataParameter parameter;
 
-                command.Parameters.Add(parameter);
+                if (command.Parameters.Contains(parameterName))
+                {
+                    parameter = (IDbDataParameter)command.Parameters[parameterName];
+                }
+                else
+                {
+                    parameter = command.CreateParameter();
+                    command.Parameters.Add(parameter);
+                }
+
+                this.BuildParameter(parameter, parameterName, sqlArgument);
             }
 
             if (this.SupportsCommandTimeout)
             {
                 command.CommandTimeout = sqlQuery.Timeout;
             }
-
-            return command;
         }
 
         /// <summary>
@@ -292,8 +287,7 @@ namespace MicroLite.Driver
                 throw new ArgumentNullException("parameter");
             }
 
-            this.SetDbType(parameter, sqlArgument.DbType);
-
+            parameter.DbType = sqlArgument.DbType;
             parameter.Direction = ParameterDirection.Input;
             parameter.ParameterName = parameterName;
             parameter.Value = sqlArgument.Value ?? DBNull.Value;
@@ -364,28 +358,6 @@ namespace MicroLite.Driver
             return this.SupportsStoredProcedures
                 && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
                 && !commandText.Contains(this.sqlCharacters.StatementSeparator);
-        }
-
-        /// <summary>
-        /// Sets the DbType of the parameter.
-        /// </summary>
-        /// <param name="parameter">The parameter to set.</param>
-        /// <param name="dbType">The DbType of the parameter value.</param>
-        protected virtual void SetDbType(IDbDataParameter parameter, DbType dbType)
-        {
-            if (parameter == null)
-            {
-                throw new ArgumentNullException("parameter");
-            }
-
-            if (!this.HandleStringsAsUnicode && dbType == DbType.String)
-            {
-                parameter.DbType = DbType.AnsiString;
-            }
-            else
-            {
-                parameter.DbType = dbType;
-            }
         }
     }
 }

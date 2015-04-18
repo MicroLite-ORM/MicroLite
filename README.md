@@ -1,6 +1,8 @@
 MicroLite ORM Framework
 =======================
 
+[![NuGet version](https://badge.fury.io/nu/MicroLite.svg)](http://badge.fury.io/nu/MicroLite)
+
 MicroLite is a small lightweight or "micro" object relational mapping (ORM) framework written in C# for the Microsoft .NET framework. Its purpose is to provide a flexible and powerful feature set whilst maintaining a simple and concise API.
 
 _Headline Features_
@@ -27,8 +29,8 @@ The NuGet Package contains binaries compiled against:
 
 * [Microsoft SQL Server](https://github.com/TrevorPilley/MicroLite/wiki#configuring-the-connection) 2005 or newer
 * [MySql](https://github.com/TrevorPilley/MicroLite/wiki/Using-MySql) 5.5 or newer
-* [SQLite](https://github.com/TrevorPilley/MicroLite/wiki/Using-PostgreSQL) 3.7 or newer
-* [PostgreSQL](https://github.com/TrevorPilley/MicroLite/wiki/Using-SQLite) 9.2 or newer
+* [SQLite](https://github.com/TrevorPilley/MicroLite/wiki/Using-SQLite) 3.7 or newer
+* [PostgreSQL](https://github.com/TrevorPilley/MicroLite/wiki/Using-PostgreSQL) 9.2 or newer
 * [Firebird](https://github.com/TrevorPilley/MicroLite/wiki/Using-Firebird) 2.5 or newer
 * [SQL Server Compact Edition](https://github.com/TrevorPilley/MicroLite/wiki/Using-SqlServerCE) 4.0 or newer
 

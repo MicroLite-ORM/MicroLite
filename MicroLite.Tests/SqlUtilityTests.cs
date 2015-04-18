@@ -16,6 +16,19 @@
         }
 
         /// <summary>
+        /// #389 - Incorrect parameter count when sql statement contains a label.
+        /// </summary>
+        [Fact]
+        public void GetFirstParameterPositionWithALabelShouldNotMatchTheLabelStatement()
+        {
+            var position = SqlUtility.GetFirstParameterPosition(@"delete_more:
+     DELETE TOP(500) FROM LogMessages WHERE LogDate < @p0
+IF @@ROWCOUNT > 0 GOTO delete_more");
+
+            Assert.Equal(68, position);
+        }
+
+        /// <summary>
         /// Issue #382 - Incorrect parameter count detection.
         /// </summary>
         [Fact]
@@ -35,11 +48,27 @@ ORDER BY Timestamp DESC");
         }
 
         [Fact]
+        public void GetFirstParameterPositionWithAtAtIdentifier()
+        {
+            var position = SqlUtility.GetFirstParameterPosition("SELECT @@IDENTITY");
+
+            Assert.Equal(-1, position);
+        }
+
+        [Fact]
         public void GetFirstParameterPositionWithAtParameters()
         {
             var position = SqlUtility.GetFirstParameterPosition("SELECT * FROM TABLE WHERE Column1 = @p0 AND Column2 = @p1");
 
             Assert.Equal(36, position);
+        }
+
+        [Fact]
+        public void GetFirstParameterPositionWithColonColonIdentifier()
+        {
+            var position = SqlUtility.GetFirstParameterPosition("SELECT ::Foo");
+
+            Assert.Equal(-1, position);
         }
 
         [Fact]
@@ -74,6 +103,14 @@ ORDER BY Timestamp DESC");
             Assert.Empty(parameterNames);
         }
 
+        [Fact]
+        public void GetParameterNamesShouldNotMatchColonColonIdentifier()
+        {
+            var parameterNames = SqlUtility.GetParameterNames("SELECT ::Foo");
+
+            Assert.Empty(parameterNames);
+        }
+
         /// <summary>
         /// Issue #382 - Incorrect parameter count detection.
         /// </summary>
@@ -93,6 +130,20 @@ ORDER BY Timestamp DESC");
             Assert.Empty(parameterNames);
         }
 
+        /// <summary>
+        /// #389 - Incorrect parameter count when sql statement contains a label.
+        /// </summary>
+        [Fact]
+        public void GetParameterNamesShouldNotMatchTheLabelStatement()
+        {
+            var parameterNames = SqlUtility.GetParameterNames(@"delete_more:
+     DELETE TOP(500) FROM LogMessages WHERE LogDate < @p0
+IF @@ROWCOUNT > 0 GOTO delete_more");
+
+            Assert.Equal(1, parameterNames.Count);
+            Assert.Equal("@p0", parameterNames[0]);
+        }
+
         [Fact]
         public void GetParameterNamesThrowsArgumentNullExceptionForNullCommandText()
         {
@@ -100,7 +151,7 @@ ORDER BY Timestamp DESC");
         }
 
         /// <summary>
-        /// #309 - Invalid SQL produced by SqlBuilder when the predicate starts with an identifier
+        /// #309 - Invalid SQL produced by SqlBuilder when the predicate starts with an identifier.
         /// </summary>
         [Fact]
         public void GetParameterNamesWhereTextStartsWithIdentifierAndContainsFurtherText()

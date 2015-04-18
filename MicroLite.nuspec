@@ -10,7 +10,7 @@
     <language>en-GB</language>
     <projectUrl>http://microliteorm.wordpress.com/</projectUrl>
     <licenseUrl>http://microliteorm.wordpress.com/license/</licenseUrl>
-    <copyright>Copyright 2012 - 2014 Project Contributors</copyright>
+    <copyright>Copyright 2012 - 2015 Project Contributors</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <tags>MicroORM ORM SqlBuilder POCO MsSql SQLite MySql PostgreSql SqlServerCE Firebird Database</tags>
   </metadata>

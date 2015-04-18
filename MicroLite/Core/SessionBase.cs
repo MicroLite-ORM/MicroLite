@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SessionBase.cs" company="MicroLite">
-// Copyright 2012 - 2014 Project Contributors
+// Copyright 2012 - 2015 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -60,6 +60,12 @@ namespace MicroLite.Core
         }
 
         internal ConnectionScope ConnectionScope
+        {
+            get;
+            private set;
+        }
+
+        protected IDbCommand Command
         {
             get;
             private set;
@@ -131,7 +137,7 @@ namespace MicroLite.Core
             }
         }
 
-        protected IDbCommand CreateCommand(SqlQuery sqlQuery)
+        protected void ConfigureCommand(SqlQuery sqlQuery)
         {
             if (this.ConnectionScope == ConnectionScope.PerTransaction
                 && this.Connection.State == ConnectionState.Closed
@@ -145,15 +151,18 @@ namespace MicroLite.Core
                 this.Connection.Open();
             }
 
-            var command = this.DbDriver.BuildCommand(sqlQuery);
-            command.Connection = this.Connection;
+            if (this.Command == null)
+            {
+                this.Command = this.Connection.CreateCommand();
+                this.Command.Connection = this.Connection;
+            }
+
+            this.DbDriver.BuildCommand(this.Command, sqlQuery);
 
             if (this.currentTransaction != null)
             {
-                this.currentTransaction.Enlist(command);
+                this.currentTransaction.Enlist(this.Command);
             }
-
-            return command;
         }
 
         protected void Dispose(bool disposing)
@@ -165,6 +174,12 @@ namespace MicroLite.Core
 
             if (disposing)
             {
+                if (this.Command != null)
+                {
+                    this.Command.Dispose();
+                    this.Command = null;
+                }
+
                 if (this.currentTransaction != null)
                 {
                     this.currentTransaction.Dispose();

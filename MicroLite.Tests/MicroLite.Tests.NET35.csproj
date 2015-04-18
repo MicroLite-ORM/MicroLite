@@ -42,9 +42,9 @@
     <AssemblyOriginatorKeyFile>..\MicroLite.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Moq, Version=4.2.1409.1722, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+    <Reference Include="Moq, Version=4.2.1502.911, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Moq.4.2.1409.1722\lib\net35\Moq.dll</HintPath>
+      <HintPath>..\packages\Moq.4.2.1502.0911\lib\net35\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -129,16 +129,13 @@
     <Compile Include="TestEntities\Customer.cs" />
     <Compile Include="TestEntities\CustomerStatus.cs" />
     <Compile Include="TestEntities\Invoice.cs" />
-    <Compile Include="TestEntities\MockDbCommandWrapper.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="TestEntities\MockDbConnectionWrapper.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="TestEntities\MockDbCommandWrapper.cs" />
+    <Compile Include="TestEntities\MockDbConnectionWrapper.cs" />
     <Compile Include="TestEntities\MockDbDataReaderWrapper.cs" />
     <Compile Include="TestEntities\MockDbTransactionWrapper.cs" />
     <Compile Include="TypeConverters\EnumTypeConverterTests.cs" />
     <Compile Include="TypeConverters\ObjectTypeConverterTests.cs" />
+    <Compile Include="TypeConverters\TimeSpanTypeConverterTest.cs" />
     <Compile Include="TypeConverters\TypeConverterCollectionTests.cs" />
     <Compile Include="TypeConverters\TypeConverterTests.cs" />
     <Compile Include="TypeConverters\UriTypeConverterTests.cs" />
