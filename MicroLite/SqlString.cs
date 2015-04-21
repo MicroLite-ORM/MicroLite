@@ -127,17 +127,17 @@ namespace MicroLite
                 if (segmentPositions.WhereIndex > -1)
                 {
                     // Remove the space before the WHERE keyword
-                    length = segmentPositions.WhereIndex - startIndex - 1;
+                    length = segmentPositions.WhereIndex - startIndex;
                 }
                 else if (segmentPositions.GroupByIndex > -1)
                 {
                     // Remove the space before the GROUP BY keyword
-                    length = segmentPositions.GroupByIndex - startIndex - 1;
+                    length = segmentPositions.GroupByIndex - startIndex;
                 }
                 else if (segmentPositions.OrderByIndex > -1)
                 {
                     // Remove the space before the ORDER BY keyword
-                    length = segmentPositions.OrderByIndex - startIndex - 1;
+                    length = segmentPositions.OrderByIndex - startIndex;
                 }
 
                 var segment = commandText.Substring(startIndex, length).Trim();
@@ -154,13 +154,13 @@ namespace MicroLite
                 && (clauses & Clauses.GroupBy) == Clauses.GroupBy)
             {
                 // Remove the GROUP BY keyword and the subsequent space
-                var startIndex = segmentPositions.GroupByIndex + 9;
+                var startIndex = segmentPositions.GroupByIndex + 10;
                 var length = commandText.Length - startIndex;
 
                 if (segmentPositions.OrderByIndex > -1)
                 {
                     // Remove the space before the ORDER BY keyword
-                    length = segmentPositions.OrderByIndex - startIndex - 1;
+                    length = segmentPositions.OrderByIndex - startIndex;
                 }
 
                 var segment = commandText.Substring(startIndex, length).Trim();
@@ -177,7 +177,7 @@ namespace MicroLite
                 && (clauses & Clauses.OrderBy) == Clauses.OrderBy)
             {
                 // Remove the ORDER BY keyword and the subsequent space
-                var startIndex = segmentPositions.OrderByIndex + 9;
+                var startIndex = segmentPositions.OrderByIndex + 10;
                 var length = commandText.Length - startIndex;
 
                 var segment = commandText.Substring(startIndex, length).Trim();
@@ -197,7 +197,7 @@ namespace MicroLite
                 var startIndex = 7;
 
                 // Remove the space before the FROM keyword
-                var length = segmentPositions.FromIndex - startIndex - 1;
+                var length = segmentPositions.FromIndex - startIndex;
 
                 var segment = commandText.Substring(startIndex, length).Trim();
 
@@ -213,18 +213,18 @@ namespace MicroLite
                 && (clauses & Clauses.Where) == Clauses.Where)
             {
                 // Remove the WHERE keyword and the subsequent space
-                var startIndex = segmentPositions.WhereIndex + 5;
+                var startIndex = segmentPositions.WhereIndex + 6;
                 var length = commandText.Length - startIndex;
 
                 if (segmentPositions.GroupByIndex > -1)
                 {
                     // Remove the space before the GROUP BY keyword
-                    length = segmentPositions.GroupByIndex - startIndex - 1;
+                    length = segmentPositions.GroupByIndex - startIndex;
                 }
                 else if (segmentPositions.OrderByIndex > -1)
                 {
                     // Remove the space before the ORDER BY keyword
-                    length = segmentPositions.OrderByIndex - startIndex - 1;
+                    length = segmentPositions.OrderByIndex - startIndex;
                 }
 
                 var segment = commandText.Substring(startIndex, length).Trim();
@@ -285,10 +285,10 @@ namespace MicroLite
             internal static SegmentPositions GetSegmentPositions(string commandText)
             {
                 var segmentPositions = new SegmentPositions(
-                    commandText.IndexOf("FROM", 0, commandText.Length, StringComparison.OrdinalIgnoreCase),
-                    commandText.IndexOf("WHERE", 0, commandText.Length, StringComparison.OrdinalIgnoreCase),
-                    commandText.IndexOf("GROUP BY", 0, commandText.Length, StringComparison.OrdinalIgnoreCase),
-                    commandText.IndexOf("ORDER BY", 0, commandText.Length, StringComparison.OrdinalIgnoreCase));
+                    commandText.IndexOf(" FROM", 0, commandText.Length, StringComparison.OrdinalIgnoreCase),
+                    commandText.IndexOf(" WHERE", 0, commandText.Length, StringComparison.OrdinalIgnoreCase),
+                    commandText.IndexOf(" GROUP BY", 0, commandText.Length, StringComparison.OrdinalIgnoreCase),
+                    commandText.IndexOf(" ORDER BY", 0, commandText.Length, StringComparison.OrdinalIgnoreCase));
 
                 return segmentPositions;
             }
