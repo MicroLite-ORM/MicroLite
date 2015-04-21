@@ -595,6 +595,48 @@
             }
         }
 
+        public class WhenParsingCommandTextWhereColumnNameContainsKeyword
+        {
+            private readonly SqlString sqlString;
+
+            public WhenParsingCommandTextWhereColumnNameContainsKeyword()
+            {
+                this.sqlString = SqlString.Parse(
+                    "SELECT SelectionColumn, CalledFrom FROM Table WHERE SelectionColumn = @p0",
+                    Clauses.Select | Clauses.From | Clauses.Where | Clauses.GroupBy | Clauses.OrderBy);
+            }
+
+            [Fact]
+            public void TheFromClauseShouldBeSet()
+            {
+                Assert.Equal("Table", this.sqlString.From);
+            }
+
+            [Fact]
+            public void TheGroupByClauseShouldBeSet()
+            {
+                Assert.Empty(this.sqlString.GroupBy);
+            }
+
+            [Fact]
+            public void TheOrderByClauseShouldBeSet()
+            {
+                Assert.Empty(this.sqlString.OrderBy);
+            }
+
+            [Fact]
+            public void TheSelectClauseShouldBeSet()
+            {
+                Assert.Equal("SelectionColumn, CalledFrom", this.sqlString.Select);
+            }
+
+            [Fact]
+            public void TheWhereClauseShouldBeSet()
+            {
+                Assert.Equal("SelectionColumn = @p0", this.sqlString.Where);
+            }
+        }
+
         public class WhenParsingEmptyCommandText
         {
             private readonly SqlString sqlString;
