@@ -47,6 +47,17 @@ ORDER BY Timestamp DESC");
             Assert.Equal(-1, position);
         }
 
+        /// <summary>
+        /// #393 - Invalid parameters count.
+        /// </summary>
+        [Fact]
+        public void GetFirstParameterPositionWithAQuotedStringAndParameters()
+        {
+            var position = SqlUtility.GetFirstParameterPosition("SELECT 1 FROM table WHERE column1 <> '' AND id = @p0 AND column2 <> ''");
+
+            Assert.Equal(49, position);
+        }
+
         [Fact]
         public void GetFirstParameterPositionWithAtAtIdentifier()
         {
@@ -161,6 +172,18 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
             Assert.NotNull(parameterNames);
             Assert.Equal(1, parameterNames.Count);
             Assert.Equal(new List<string> { "@p0" }, parameterNames);
+        }
+
+        /// <summary>
+        /// #393 - Invalid parameters count.
+        /// </summary>
+        [Fact]
+        public void GetParameterNamesWithAQuotedStringAndParameters()
+        {
+            var parameterNames = SqlUtility.GetParameterNames("SELECT 1 FROM table WHERE column1 <> '' AND id = @p0 AND column2 <> ''");
+
+            Assert.Equal(1, parameterNames.Count);
+            Assert.Equal("@p0", parameterNames[0]);
         }
 
         [Fact]
