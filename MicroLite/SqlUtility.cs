@@ -166,8 +166,21 @@ namespace MicroLite
                 if (commandText.IndexOfAny(quoteCharacters, position, parameterPosition - position) > -1
                     && commandText.IndexOfAny(quoteCharacters, parameterPosition) > -1)
                 {
-                    parameterPosition = commandText.IndexOfAny(matchParameterIdentifiers, parameterPosition + 1);
-                    continue;
+                    int quoteCount = 0;
+
+                    for (int i = parameterPosition; i >= 0; i--)
+                    {
+                        if (commandText[i] == '\'')
+                        {
+                            quoteCount++;
+                        }
+                    }
+
+                    if (quoteCount % 2 != 0)
+                    {
+                        parameterPosition = commandText.IndexOfAny(matchParameterIdentifiers, parameterPosition + 1);
+                        continue;
+                    }
                 }
 
                 break;
