@@ -336,6 +336,11 @@ namespace MicroLite.Builder
 
         public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
         {
+            if (comparisonValue == null)
+            {
+                return this.IsNotNull();
+            }
+
             this.AddWithComparisonOperator(comparisonValue, " <> ");
 
             return this;
