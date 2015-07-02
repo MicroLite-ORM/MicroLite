@@ -1503,6 +1503,24 @@
             Assert.Equal(10, sqlQuery.Arguments[1].Value);
         }
 
+        /// <summary>
+        /// #395 - IsEqualTo(null) should mean the same as IsNull()
+        /// </summary>
+        [Fact]
+        public void SelectWhereColumnIsEqualToObjectNull()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1").IsEqualTo((object)null)
+                   .ToSqlQuery();
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NULL)", sqlQuery.CommandText);
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
+        }
+
         [Fact]
         public void SelectWhereColumnIsEqualToObjectValue()
         {
@@ -1757,6 +1775,24 @@
 
             Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
             Assert.Equal("FOO%", sqlQuery.Arguments[0].Value);
+        }
+
+        /// <summary>
+        /// #397 - IsNotEqualTo(null) should mean the same as IsNotNull()
+        /// </summary>
+        [Fact]
+        public void SelectWhereColumnIsNotEqualToObjectNull()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1");
+
+            var sqlQuery = sqlBuilder
+                   .From("Table")
+                   .Where("Column1").IsNotEqualTo((object)null)
+                   .ToSqlQuery();
+
+            Assert.Equal("SELECT Column1 FROM Table WHERE (Column1 IS NOT NULL)", sqlQuery.CommandText);
+
+            Assert.Equal(0, sqlQuery.Arguments.Count);
         }
 
         [Fact]
