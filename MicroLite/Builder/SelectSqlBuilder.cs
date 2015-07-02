@@ -282,6 +282,11 @@ namespace MicroLite.Builder
 
         public IAndOrOrderBy IsEqualTo(object comparisonValue)
         {
+            if (comparisonValue == null)
+            {
+                return this.IsNull();
+            }
+
             this.AddWithComparisonOperator(comparisonValue, " = ");
 
             return this;
