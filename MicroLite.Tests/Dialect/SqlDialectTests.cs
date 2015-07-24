@@ -129,6 +129,20 @@
         }
 
         [Fact]
+        public void CountQueryNoWhereOrOrderByAndWithParameters()
+        {
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var sqlQuery = new SqlQuery("SELECT CustomerId, Name, DoB, ? FROM Customers", "Test");
+
+            var countQuery = mockSqlDialect.Object.CountQuery(sqlQuery);
+
+            Assert.Equal("SELECT COUNT(*) FROM Customers", countQuery.CommandText);
+            Assert.Equal(0, countQuery.Arguments.Count);
+        }
+
+        [Fact]
         public void CountQueryThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
