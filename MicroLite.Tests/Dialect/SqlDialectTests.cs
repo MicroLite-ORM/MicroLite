@@ -128,6 +128,15 @@
             Assert.Equal(0, countQuery.Arguments.Count);
         }
 
+        /// <summary>
+        /// Issue #400 - Parameter matching incompatible with T-SQL geography types
+        /// </summary>
+        /// <remarks>
+        /// The actual issue description isn't quite accurate - the underlying problem was down to the fact that
+        /// when we create a count query, we expect no args if there is no where clause but in this case the select
+        /// contains parameters which meant that the args have a value and as a result when we combine the queries
+        /// we ended up with 4 parameter names and 6 args.
+        /// </remarks>
         [Fact]
         public void CountQueryNoWhereOrOrderByAndWithParameters()
         {
