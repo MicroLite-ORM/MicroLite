@@ -278,8 +278,9 @@ namespace MicroLite.Dialect
             var qualifiedTableName = sqlString.From;
             var whereValue = sqlString.Where;
             var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
+            var argumentsArray = !string.IsNullOrEmpty(whereValue) ? sqlQuery.ArgumentsArray : null;
 
-            return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, sqlQuery.ArgumentsArray);
+            return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, argumentsArray);
         }
 
         /// <summary>
