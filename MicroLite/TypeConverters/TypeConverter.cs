@@ -167,7 +167,7 @@ namespace MicroLite.TypeConverters
 
             var actualType = type;
 
-            if (type.IsGenericType)
+            if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
             {
                 actualType = Nullable.GetUnderlyingType(type);
             }

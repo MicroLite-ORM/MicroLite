@@ -1,6 +1,7 @@
 ﻿namespace MicroLite.Tests.TypeConverters
 {
     using System;
+    using System.Collections.Generic;
     using System.Data;
     using System.Xml.Linq;
     using MicroLite.Tests.TestEntities;
@@ -184,6 +185,15 @@
                     () => TypeConverter.ResolveActualType(null));
 
                 Assert.Equal("type", exception.ParamName);
+            }
+        }
+
+        public class WhenCallingResolveActualTypeWithACollectionType
+        {
+            [Fact]
+            public void TheSameTypeIsReturned()
+            {
+                Assert.Equal(typeof(IList<string>), TypeConverter.ResolveActualType(typeof(IList<string>)));
             }
         }
 
