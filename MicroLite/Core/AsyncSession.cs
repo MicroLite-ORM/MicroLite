@@ -12,8 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
-#if NET_4_5
-
     using System;
     using System.Collections.Generic;
     using System.Data.Common;
@@ -351,6 +349,4 @@ namespace MicroLite.Core
             return identifier;
         }
     }
-
-#endif
 }

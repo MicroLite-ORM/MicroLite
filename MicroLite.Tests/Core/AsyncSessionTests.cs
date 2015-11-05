@@ -1,7 +1,5 @@
 ﻿namespace MicroLite.Tests.Core
 {
-#if NET_4_5
-
     using System;
     using System.Data;
     using MicroLite.Core;
@@ -1237,6 +1235,4 @@
             Assert.IsType<ObjectDisposedException>(exception.InnerException);
         }
     }
-
-#endif
 }

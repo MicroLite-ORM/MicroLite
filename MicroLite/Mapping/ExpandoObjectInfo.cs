@@ -12,8 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Mapping
 {
-#if !NET_3_5
-
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -108,6 +106,4 @@ namespace MicroLite.Mapping
             throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
     }
-
-#endif
 }

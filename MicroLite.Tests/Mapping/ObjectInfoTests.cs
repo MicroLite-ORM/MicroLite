@@ -11,8 +11,6 @@
     /// </summary>
     public class ObjectInfoTests : UnitTest
     {
-#if !NET_3_5
-
         [Fact]
         public void For_ReturnsExpandoObjectInfo_ForTypeOfDynamic()
         {
@@ -20,8 +18,6 @@
 
             Assert.IsType<ExpandoObjectInfo>(objectInfo);
         }
-
-#endif
 
         [Fact]
         public void For_ReturnsPocoObjectInfo_ForPocoType()
@@ -43,8 +39,6 @@
 
             Assert.Same(objectInfo1, objectInfo2);
         }
-
-#if !NET_3_5
 
         [Fact]
         public void For_ReturnsTupleObjectInfo_ForTypeOfTupleT1()
@@ -101,8 +95,6 @@
 
             Assert.IsType<TupleObjectInfo>(objectInfo);
         }
-
-#endif
 
         [Fact]
         public void For_ThrowsArgumentNullExceptonForNullForType()
