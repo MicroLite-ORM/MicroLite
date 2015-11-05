@@ -20,6 +20,7 @@
         public void ChangesWordEndingManToEndMen()
         {
             var inflectionService = new EnglishInflectionService();
+            Assert.Equal("Men", inflectionService.ToPlural("Man"));
             Assert.Equal("Women", inflectionService.ToPlural("Woman"));
         }
 
