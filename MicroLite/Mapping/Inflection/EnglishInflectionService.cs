@@ -27,7 +27,7 @@ namespace MicroLite.Mapping.Inflection
         {
             { "Person", "People" },
             { "Child", "Children" },
-            { "(.*)fe?", "$1ves" },
+            { "(.*)fe?$", "$1ves" },
             { "(.*)man$", "$1men" },
             { "(.+[aeiou]y)$", "$1s" },
             { "(.+[^aeiou])y$", "$1ies" },
