@@ -13,19 +13,24 @@
         {
             var inflectionService = new EnglishInflectionService();
             Assert.Equal("Elves", inflectionService.ToPlural("Elf"));
+            Assert.Equal("Wolves", inflectionService.ToPlural("Wolf"));
         }
 
         [Fact]
         public void ChangesWordEndingManToEndMen()
         {
             var inflectionService = new EnglishInflectionService();
+            Assert.Equal("Men", inflectionService.ToPlural("Man"));
             Assert.Equal("Women", inflectionService.ToPlural("Woman"));
         }
 
         [Fact]
-        public void ShouldNotMutilateWordsHavingFInTheMiddle()
+        public void ContainsFButShouldStillEndS()
         {
             var inflectionService = new EnglishInflectionService();
+            Assert.Equal("Affiliates", inflectionService.ToPlural("Affiliate"));
+            Assert.Equal("Identifiers", inflectionService.ToPlural("Identifier"));
+            Assert.Equal("Notifications", inflectionService.ToPlural("Notification"));
             Assert.Equal("Refunds", inflectionService.ToPlural("Refund"));
         }
 
