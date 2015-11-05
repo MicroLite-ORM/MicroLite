@@ -23,6 +23,13 @@
         }
 
         [Fact]
+        public void ShouldNotMutilateWordsHavingFInTheMiddle()
+        {
+            var inflectionService = new EnglishInflectionService();
+            Assert.Equal("Refunds", inflectionService.ToPlural("Refund"));
+        }
+
+        [Fact]
         public void CorrectlyChangesSpecialCases()
         {
             var inflectionService = new EnglishInflectionService();
