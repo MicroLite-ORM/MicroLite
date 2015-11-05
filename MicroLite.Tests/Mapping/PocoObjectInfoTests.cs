@@ -218,7 +218,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.GetIdentifierValue(customer));
 
-            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentivesier"), exception.Message);
+            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentifiers"), exception.Message);
         }
 
         [Fact]
@@ -335,7 +335,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.GetInsertValues(customer));
 
-            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentivesier"), exception.Message);
+            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentifiers"), exception.Message);
         }
 
         [Fact]
@@ -455,7 +455,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.GetUpdateValues(customer));
 
-            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentivesier"), exception.Message);
+            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentifiers"), exception.Message);
         }
 
         [Fact]
@@ -538,7 +538,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.HasDefaultIdentifierValue(customer));
 
-            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentivesier"), exception.Message);
+            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentifiers"), exception.Message);
         }
 
         [Fact]
@@ -697,7 +697,7 @@
 
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.VerifyInstanceForInsert(customer));
 
-            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentivesier"), exception.Message);
+            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentifiers"), exception.Message);
         }
 
         public class CustomerWithGuidIdentifier
