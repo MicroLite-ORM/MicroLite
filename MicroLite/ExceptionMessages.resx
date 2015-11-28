@@ -177,6 +177,12 @@
   <data name="PocoObjectInfo_TypeMismatch" xml:space="preserve">
     <value>The type of the object {0} does not match the type for the ObjectInfo {1}</value>
   </data>
+  <data name="PocoObjectInfo_NoVersionColumn" xml:space="preserve">
+    <value>No column has been mapped as the version for the table '{0}.{1}', as a result it cannot be used for concurrency checking during an Update call</value>
+  </data>
+  <data name="PocoObjectInfo_VersionTypeNotSupported" xml:space="preserve">
+    <value>Only UInt16, Int16, UInt32, Int32, UInt64, Int64 and DateTime types are supported.</value>
+  </data>
   <data name="Session_IdentifierNotSetForDelete" xml:space="preserve">
     <value>The object does not have an identifier value set so it cannot be deleted</value>
   </data>

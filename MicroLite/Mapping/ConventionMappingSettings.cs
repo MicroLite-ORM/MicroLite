@@ -56,6 +56,8 @@ namespace MicroLite.Mapping
             };
             this.ResolveTableSchema = (Type type) => null;
             this.UsePluralClassNameForTableName = true;
+            this.IsVersion = (PropertyInfo propertyInfo) => propertyInfo.Name == "Version";
+            this.ResolveVersionColumnName = (PropertyInfo propertyInfo) => propertyInfo.Name;
         }
 
         /// <summary>
@@ -184,6 +186,25 @@ namespace MicroLite.Mapping
         /// Gets or sets a value indicating whether to use the plural class name for the table name (defaults to true).
         /// </summary>
         public bool UsePluralClassNameForTableName
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the function which determines whether a property is the version property (default returns true if the property name is 'Version').
+        /// </summary>
+        public Func<PropertyInfo, bool> IsVersion
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the function which determines the name of the version column for the table (default returns the property name).
+        /// </summary>
+        /// <remarks>Only called if the call to IsVersion returns true.</remarks>
+        public Func<PropertyInfo, string> ResolveVersionColumnName
         {
             get;
             set;

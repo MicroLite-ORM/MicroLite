@@ -323,9 +323,9 @@
             }
 
             [Fact]
-            public void ThereShouldBe7Columns()
+            public void ThereShouldBe8Columns()
             {
-                Assert.Equal(7, this.objectInfo.TableInfo.Columns.Count());
+                Assert.Equal(8, this.objectInfo.TableInfo.Columns.Count());
             }
 
             [Fact]
@@ -568,6 +568,12 @@
             }
 
             [Fact]
+            public void TheCreatedColumnShouldNotBeVersion()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").IsVersion);
+            }
+
+            [Fact]
             public void TheCreditLimitColumnDbTypeShouldBeSet()
             {
                 Assert.Equal(DbType.Decimal, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").DbType);
@@ -610,6 +616,12 @@
             }
 
             [Fact]
+            public void TheCreditLimitColumnShouldNotBeVersion()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CreditLimit").IsVersion);
+            }
+
+            [Fact]
             public void TheDateOfBirthColumnDbTypeShouldBeSet()
             {
                 Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").DbType);
@@ -649,6 +661,12 @@
             public void TheDateOfBirthShouldNotHaveASequenceName()
             {
                 Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").SequenceName);
+            }
+
+            [Fact]
+            public void TheDateOfBirthColumnShouldNotBeVersion()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").IsVersion);
             }
 
             [Fact]
@@ -706,6 +724,12 @@
             }
 
             [Fact]
+            public void TheIdColumnShouldNotBeVersion()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Id").IsVersion);
+            }
+
+            [Fact]
             public void TheNameColumnDbTypeShouldBeSet()
             {
                 Assert.Equal(DbType.String, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name").DbType);
@@ -748,9 +772,15 @@
             }
 
             [Fact]
-            public void ThereShouldBe8Columns()
+            public void TheNameColumnShouldNotBeVersion()
             {
-                Assert.Equal(8, this.objectInfo.TableInfo.Columns.Count());
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Name").IsVersion);
+            }
+
+            [Fact]
+            public void ThereShouldBe9Columns()
+            {
+                Assert.Equal(9, this.objectInfo.TableInfo.Columns.Count());
             }
 
             [Fact]
@@ -802,6 +832,12 @@
             }
 
             [Fact]
+            public void TheStatusColumnShouldNotBeVersion()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "CustomerStatusId").IsVersion);
+            }
+
+            [Fact]
             public void TheTableNameShouldBePluralized()
             {
                 Assert.Equal("Customers", this.objectInfo.TableInfo.Name);
@@ -850,6 +886,12 @@
             }
 
             [Fact]
+            public void TheUpdatedColumnShouldNotBeVersion()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").IsVersion);
+            }
+
+            [Fact]
             public void TheWebsiteColumnShouldAllowInsert()
             {
                 Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Website").AllowInsert);
@@ -883,6 +925,60 @@
             public void TheWebsiteShouldNotHaveASequenceName()
             {
                 Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Website").SequenceName);
+            }
+
+            [Fact]
+            public void TheWebsiteColumnShouldNotBeVersion()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Website").IsVersion);
+            }
+
+            [Fact]
+            public void TheVersionColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.Int32, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Version").DbType);
+            }
+
+            [Fact]
+            public void TheVersionColumnShouldAllowInsert()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Version").AllowInsert);
+            }
+
+            [Fact]
+            public void TheVersionColumnShouldAllowUpdate()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Version").AllowUpdate);
+            }
+
+            [Fact]
+            public void TheVersionColumnShouldBeSet()
+            {
+                Assert.Equal(typeof(Customer).GetProperty("Version"), this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Version").PropertyInfo);
+            }
+
+            [Fact]
+            public void TheVersionColumnShouldNotBeIdentifier()
+            {
+                Assert.False(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Version").IsIdentifier);
+            }
+
+            [Fact]
+            public void TheVersionPropertyShouldBeMapped()
+            {
+                Assert.NotNull(this.objectInfo.TableInfo.Columns.SingleOrDefault(x => x.ColumnName == "Version"));
+            }
+
+            [Fact]
+            public void TheVersionShouldNotHaveASequenceName()
+            {
+                Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Version").SequenceName);
+            }
+
+            [Fact]
+            public void TheVersionColumnShouldBeVersion()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Version").IsVersion);
             }
         }
     }

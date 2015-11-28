@@ -84,15 +84,17 @@ namespace MicroLite.Mapping
                 }
 
                 var isIdentifier = this.settings.IsIdentifier(property);
+                var isVersion = this.settings.IsVersion(property);
 
                 var columnInfo = new ColumnInfo(
                     columnName: isIdentifier ? this.settings.ResolveIdentifierColumnName(property) : this.settings.ResolveColumnName(property),
                     dbType: this.settings.ResolveDbType(property),
                     propertyInfo: property,
                     isIdentifier: isIdentifier,
-                    allowInsert: isIdentifier ? identifierStrategy == IdentifierStrategy.Assigned : this.settings.AllowInsert(property),
-                    allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property),
-                    sequenceName: isIdentifier && identifierStrategy == IdentifierStrategy.Sequence ? this.settings.ResolveSequenceName(property) : null);
+                    allowInsert: isIdentifier ? identifierStrategy == IdentifierStrategy.Assigned : isVersion || this.settings.AllowInsert(property),
+                    allowUpdate: isIdentifier ? false : isVersion || this.settings.AllowUpdate(property),
+                    sequenceName: isIdentifier && identifierStrategy == IdentifierStrategy.Sequence ? this.settings.ResolveSequenceName(property) : null,
+                    isVersion: isVersion);
 
                 if (this.log.IsDebug)
                 {
