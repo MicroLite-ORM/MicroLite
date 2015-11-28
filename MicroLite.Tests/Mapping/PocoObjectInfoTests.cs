@@ -584,6 +584,56 @@
         }
 
         [Fact]
+        public void SetIdentifierValue_ThrowsArgumentNullException_IfInstanceIsNull()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.SetIdentifierValue(null, 122323));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void SetIdentifierValue_ThrowsArgumentNullException_IfIdentifierIsNull()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.SetIdentifierValue(new Customer(), null));
+
+            Assert.Equal("identifier", exception.ParamName);
+        }
+
+        [Fact]
+        public void SetIdentifierValue_ThrowsMappingException_IfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<MappingException>(
+                () => objectInfo.SetIdentifierValue(new CustomerWithGuidIdentifier(), 122323));
+
+            Assert.Equal(
+                string.Format(ExceptionMessages.PocoObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void SetIdentifierValueThrowsMicroLiteException_WhenNoIdentifierMapped()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new CustomerWithNoIdentifier();
+
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithNoIdentifier));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetIdentifierValue(customer, 122323));
+
+            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentifiers"), exception.Message);
+        }
+
+        [Fact]
         public void VerifyInstanceForInsertDoesNotThrowMicroLiteException_WhenIdentifierStrategyAssigned_AndIdentifierSet()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
