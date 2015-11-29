@@ -872,7 +872,8 @@
             var rowsAffected = 1;
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer))
+                .Returns(new SqlQuery("", new SqlArgument(234, DbType.Int32), new SqlArgument(187224, DbType.Int32)));
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(rowsAffected);
@@ -909,7 +910,8 @@
             var rowsAffected = 1;
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer))
+                .Returns(new SqlQuery("", new SqlArgument(234, DbType.Int32), new SqlArgument(187224, DbType.Int32)));
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(rowsAffected);
@@ -984,11 +986,13 @@
         {
             var customer = new Customer
             {
-                Id = 187224
+                Id = 187224,
+                Version = 233
             };
 
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer))
+                .Returns(new SqlQuery("", new SqlArgument(234, DbType.Int32), new SqlArgument(187224, DbType.Int32)));
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
@@ -1008,6 +1012,82 @@
                 new IUpdateListener[0]);
 
             Assert.True(session.UpdateAsync(customer).Result);
+
+            mockSqlDialect.VerifyAll();
+            mockDbDriver.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Fact]
+        public void UpdateInstanceWhenRecordUpdatedDoesUpdateVersion()
+        {
+            var customer = new Customer
+            {
+                Id = 187224,
+                Version = 233
+            };
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer))
+                .Returns(new SqlQuery("", new SqlArgument(234, DbType.Int32), new SqlArgument(187224, DbType.Int32)));
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(1);
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var mockDbDriver = new Mock<IDbDriver>();
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
+
+            var session = new AsyncSession(
+                ConnectionScope.PerTransaction,
+                mockSqlDialect.Object,
+                mockDbDriver.Object,
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
+
+            Assert.True(session.UpdateAsync(customer).Result);
+            Assert.Equal(customer.Version, 234);
+
+            mockSqlDialect.VerifyAll();
+            mockDbDriver.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Fact]
+        public void UpdateInstanceWhenRecordUpdatedDoesNotUpdateVersion()
+        {
+            var customer = new Customer
+            {
+                Id = 187224,
+                Version = 233
+            };
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer))
+                .Returns(new SqlQuery("", new SqlArgument(234, DbType.Int32), new SqlArgument(187224, DbType.Int32)));
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var mockDbDriver = new Mock<IDbDriver>();
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
+
+            var session = new AsyncSession(
+                ConnectionScope.PerTransaction,
+                mockSqlDialect.Object,
+                mockDbDriver.Object,
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
+
+            Assert.False(session.UpdateAsync(customer).Result);
+            Assert.Equal(customer.Version, 233);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();

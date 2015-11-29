@@ -219,6 +219,11 @@ namespace MicroLite.Core
 
             var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
+            if (rowsAffected == 1 && objectInfo.TableInfo.VersionColumn != null)
+            {
+                objectInfo.SetVersionValue(instance, sqlQuery.ArgumentsArray[sqlQuery.ArgumentsArray.Length - 2].Value);
+            }
+
             for (int i = this.updateListeners.Count - 1; i >= 0; i--)
             {
                 this.updateListeners[i].AfterUpdate(instance, rowsAffected);
