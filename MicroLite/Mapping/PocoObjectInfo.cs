@@ -302,11 +302,6 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public void SetVersionValue(object instance, object version)
         {
-            if (version == null)
-            {
-                throw new ArgumentNullException("version");
-            }
-
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
             this.VerifyVersionMapped();
 

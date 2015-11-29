@@ -714,28 +714,17 @@
         }
 
         [Fact]
-        public void SetVersionValue_ThrowsArgumentNullException_IfVersionIsNull()
+        public void SetVersionValue_ThrowsNullReferenceException_IfVersionIsNull()
         {
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            Assert.Equal(
+            Assert.Throws<NullReferenceException>(
                 string.Format(ExceptionMessages.PocoObjectInfo_TypeMismatch, typeof(CustomerWithGuidIdentifier).Name, objectInfo.ForType.Name),
                 exception.Message);
         }
 
         [Fact]
         public void SetIdentifierValueThrowsMicroLiteException_WhenNoIdentifierMapped()
-        {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => objectInfo.SetVersionValue(new Customer(), null));
-
-            Assert.Equal("version", exception.ParamName);
-        }
-
-        [Fact]
-        public void SetVersionValue_ThrowsMappingException_IfInstanceIsIncorrectType()
         {
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
@@ -746,15 +735,6 @@
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetIdentifierValue(customer, 122323));
 
             Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentifiers"), exception.Message);
-        }
-
-        [Fact]
-            var exception = Assert.Throws<MappingException>(
-                () => objectInfo.SetVersionValue(new CustomerWithNoVersion(), 233));
-
-            Assert.Equal(
-                string.Format(ExceptionMessages.PocoObjectInfo_TypeMismatch, typeof(CustomerWithNoVersion).Name, objectInfo.ForType.Name),
-                exception.Message);
         }
 
         [Fact]
