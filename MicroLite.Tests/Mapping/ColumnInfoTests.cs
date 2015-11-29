@@ -21,9 +21,8 @@
             var allowUpdate = true;
             var sequenceName = "CustomerIdSequence";
             var dbType = DbType.String;
-            var isVersion = true;
 
-            var columnInfo = new ColumnInfo(columnName, dbType, propertyInfo, isIdentifier, allowInsert, allowUpdate, sequenceName, isVersion);
+            var columnInfo = new ColumnInfo(columnName, dbType, propertyInfo, isIdentifier, allowInsert, allowUpdate, sequenceName);
 
             Assert.Equal(columnName, columnInfo.ColumnName);
             Assert.Equal(propertyInfo, columnInfo.PropertyInfo);
@@ -32,14 +31,13 @@
             Assert.Equal(allowUpdate, columnInfo.AllowUpdate);
             Assert.Equal(sequenceName, columnInfo.SequenceName);
             Assert.Equal(dbType, columnInfo.DbType);
-            Assert.Equal(isVersion, columnInfo.IsVersion);
         }
 
         [Fact]
         public void ConstructorThrowsArgumentNullExceptionForNullColumnName()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new ColumnInfo(null, DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, "sequence", false));
+                () => new ColumnInfo(null, DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, "sequence"));
 
             Assert.Equal("columnName", exception.ParamName);
         }
@@ -48,7 +46,7 @@
         public void ConstructorThrowsArgumentNullExceptionForNullPropertyInfo()
         {
             var exception = Assert.Throws<ArgumentNullException>(
-                () => new ColumnInfo("Name", DbType.String, null, false, true, true, "sequence", false));
+                () => new ColumnInfo("Name", DbType.String, null, false, true, true, "sequence"));
 
             Assert.Equal("propertyInfo", exception.ParamName);
         }

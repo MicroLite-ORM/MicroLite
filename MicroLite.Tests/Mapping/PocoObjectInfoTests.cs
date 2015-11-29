@@ -48,7 +48,7 @@
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
             var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(9);
+            mockReader.Setup(x => x.FieldCount).Returns(8);
             mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns((int i) =>
             {
                 // CreditLimit, Updated and Website are null
@@ -76,9 +76,6 @@
 
             mockReader.Setup(x => x.GetName(7)).Returns("Website"); // null
 
-            mockReader.Setup(x => x.GetName(8)).Returns("Version");
-            mockReader.Setup(x => x.GetInt32(8)).Returns(1);
-
             var instance = objectInfo.CreateInstance(mockReader.Object) as Customer;
 
             Assert.NotNull(instance);
@@ -92,7 +89,6 @@
             Assert.Equal(CustomerStatus.Active, instance.Status);
             Assert.Null(instance.Updated);
             Assert.Null(instance.Website);
-            Assert.Equal(1, instance.Version);
         }
 
         [Fact]
@@ -101,7 +97,7 @@
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
             var mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(9);
+            mockReader.Setup(x => x.FieldCount).Returns(8);
             mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
 
             mockReader.Setup(x => x.GetName(0)).Returns("Id");
@@ -128,9 +124,6 @@
             mockReader.Setup(x => x.GetName(7)).Returns("Website");
             mockReader.Setup(x => x.GetString(7)).Returns("http://microliteorm.wordpress.com");
 
-            mockReader.Setup(x => x.GetName(8)).Returns("Version");
-            mockReader.Setup(x => x.GetInt32(8)).Returns(1);
-
             var instance = objectInfo.CreateInstance(mockReader.Object) as Customer;
 
             Assert.NotNull(instance);
@@ -144,7 +137,6 @@
             Assert.Equal(CustomerStatus.Active, instance.Status);
             Assert.Equal(new DateTime(2014, 3, 27), instance.Updated);
             Assert.Equal(new Uri("http://microliteorm.wordpress.com"), instance.Website);
-            Assert.Equal(1, instance.Version);
         }
 
         [Fact]
@@ -230,60 +222,6 @@
         }
 
         [Fact]
-        public void GetVersionValue_ReturnsPropertyValueOfVersionProperty()
-        {
-            var objectInfo = ObjectInfo.For(typeof(Customer));
-
-            var customer = new Customer
-            {
-                Version = 233
-            };
-
-            var identifierValue = (int)objectInfo.GetVersionValue(customer);
-
-            Assert.Equal(customer.Id, identifierValue);
-        }
-
-        [Fact]
-        public void GetVersionValue_ThrowsArgumentNullException_IfInstanceIsNull()
-        {
-            var objectInfo = ObjectInfo.For(typeof(Customer));
-
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => objectInfo.GetVersionValue(null));
-
-            Assert.Equal("instance", exception.ParamName);
-        }
-
-        [Fact]
-        public void GetVersionValue_ThrowsMappingException_IfInstanceIsIncorrectType()
-        {
-            var objectInfo = ObjectInfo.For(typeof(Customer));
-
-            var exception = Assert.Throws<MappingException>(
-                () => objectInfo.GetVersionValue(new CustomerWithNoVersion()));
-
-            Assert.Equal(
-                string.Format(ExceptionMessages.PocoObjectInfo_TypeMismatch, typeof(CustomerWithNoVersion).Name, objectInfo.ForType.Name),
-                exception.Message);
-        }
-
-        [Fact]
-        public void GetVersionValueThrowsMicroLiteException_WhenNoVersionMapped()
-        {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
-
-            var customer = new CustomerWithNoVersion();
-
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithNoVersion));
-
-            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.GetVersionValue(customer));
-
-            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoVersionColumn.FormatWith("Sales", "CustomerWithNoVersions"), exception.Message);
-        }
-
-        [Fact]
         public void GetInsertValues_ReturnsPropertyValues_WhenUsingAssigned()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
@@ -300,13 +238,12 @@
                 Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
                 Updated = DateTime.Now,
-                Website = new Uri("http://microliteorm.wordpress.com"),
-                Version = 233
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
             var values = objectInfo.GetInsertValues(customer);
 
-            Assert.Equal(8, values.Length);
+            Assert.Equal(7, values.Length);
 
             Assert.Equal(DbType.DateTime, values[0].DbType);
             Assert.Equal(customer.Created, values[0].Value);
@@ -326,11 +263,8 @@
             Assert.Equal(DbType.Int32, values[5].DbType);
             Assert.Equal((int)customer.Status, values[5].Value);
 
-            Assert.Equal(DbType.Int32, values[6].DbType);
-            Assert.Equal(customer.Version, values[6].Value);
-
-            Assert.Equal(DbType.String, values[7].DbType);
-            Assert.Equal(customer.Website.ToString(), values[7].Value);
+            Assert.Equal(DbType.String, values[6].DbType);
+            Assert.Equal(customer.Website.ToString(), values[6].Value);
         }
 
         [Fact]
@@ -350,13 +284,12 @@
                 Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
                 Updated = DateTime.Now,
-                Website = new Uri("http://microliteorm.wordpress.com"),
-                Version = 1
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
             var values = objectInfo.GetInsertValues(customer);
 
-            Assert.Equal(7, values.Length);
+            Assert.Equal(6, values.Length);
 
             Assert.Equal(DbType.DateTime, values[0].DbType);
             Assert.Equal(customer.Created, values[0].Value);
@@ -373,11 +306,8 @@
             Assert.Equal(DbType.Int32, values[4].DbType);
             Assert.Equal((int)customer.Status, values[4].Value);
 
-            Assert.Equal(DbType.Int32, values[5].DbType);
-            Assert.Equal(customer.Version, values[5].Value);
-
-            Assert.Equal(DbType.String, values[6].DbType);
-            Assert.Equal(customer.Website.ToString(), values[6].Value);
+            Assert.Equal(DbType.String, values[5].DbType);
+            Assert.Equal(customer.Website.ToString(), values[5].Value);
         }
 
         [Fact]
@@ -425,13 +355,12 @@
                 Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
                 Updated = DateTime.Now,
-                Website = new Uri("http://microliteorm.wordpress.com"),
-                Version = 233
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
             var values = objectInfo.GetUpdateValues(customer);
 
-            Assert.Equal(9, values.Length);
+            Assert.Equal(7, values.Length);
 
             Assert.Equal(DbType.Decimal, values[0].DbType);
             Assert.Equal(customer.CreditLimit, values[0].Value);
@@ -448,17 +377,11 @@
             Assert.Equal(DbType.DateTime, values[4].DbType);
             Assert.Equal(customer.Updated, values[4].Value);
 
-            Assert.Equal(DbType.Int32, values[5].DbType);
-            Assert.Equal(customer.Version + 1, values[5].Value);
+            Assert.Equal(DbType.String, values[5].DbType);
+            Assert.Equal(customer.Website.ToString(), values[5].Value);
 
-            Assert.Equal(DbType.String, values[6].DbType);
-            Assert.Equal(customer.Website.ToString(), values[6].Value);
-
-            Assert.Equal(DbType.Int32, values[7].DbType);
-            Assert.Equal(customer.Version, values[7].Value);
-
-            Assert.Equal(DbType.Int32, values[8].DbType);
-            Assert.Equal(customer.Id, values[8].Value);
+            Assert.Equal(DbType.Int32, values[6].DbType);
+            Assert.Equal(customer.Id, values[6].Value);
         }
 
         [Fact]
@@ -478,13 +401,12 @@
                 Name = "Joe Bloggs",
                 Status = CustomerStatus.Active,
                 Updated = DateTime.Now,
-                Website = new Uri("http://microliteorm.wordpress.com"),
-                Version = 233
+                Website = new Uri("http://microliteorm.wordpress.com")
             };
 
             var values = objectInfo.GetUpdateValues(customer);
 
-            Assert.Equal(9, values.Length);
+            Assert.Equal(7, values.Length);
 
             Assert.Equal(DbType.Decimal, values[0].DbType);
             Assert.Equal(customer.CreditLimit, values[0].Value);
@@ -501,17 +423,11 @@
             Assert.Equal(DbType.DateTime, values[4].DbType);
             Assert.Equal(customer.Updated, values[4].Value);
 
-            Assert.Equal(DbType.Int32, values[5].DbType);
-            Assert.Equal(customer.Version + 1, values[5].Value);
+            Assert.Equal(DbType.String, values[5].DbType);
+            Assert.Equal(customer.Website.ToString(), values[5].Value);
 
-            Assert.Equal(DbType.String, values[6].DbType);
-            Assert.Equal(customer.Website.ToString(), values[6].Value);
-
-            Assert.Equal(DbType.Int32, values[7].DbType);
-            Assert.Equal(customer.Version, values[7].Value);
-
-            Assert.Equal(DbType.Int32, values[8].DbType);
-            Assert.Equal(customer.Id, values[8].Value);
+            Assert.Equal(DbType.Int32, values[6].DbType);
+            Assert.Equal(customer.Id, values[6].Value);
         }
 
         [Fact]
@@ -666,7 +582,7 @@
 
             Assert.Equal(122323, customer.Id);
         }
-        
+
         [Fact]
         public void SetIdentifierValue_ThrowsArgumentNullException_IfInstanceIsNull()
         {
@@ -713,66 +629,6 @@
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetIdentifierValue(customer, 122323));
 
             Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentifiers"), exception.Message);
-        }
-
-        [Fact]
-        public void SetVersionValue_SetsPropertyValue()
-        {
-            var objectInfo = ObjectInfo.For(typeof(Customer));
-
-            var customer = new Customer();
-
-            objectInfo.SetVersionValue(customer, 233);
-
-            Assert.Equal(233, customer.Version);
-        }
-
-        [Fact]
-        public void SetVersionValue_ThrowsArgumentNullException_IfInstanceIsNull()
-        {
-            var objectInfo = ObjectInfo.For(typeof(Customer));
-
-            var exception = Assert.Throws<ArgumentNullException>(
-                () => objectInfo.SetVersionValue(null, 233));
-
-            Assert.Equal("instance", exception.ParamName);
-        }
-
-        [Fact]
-        public void SetVersionValue_ThrowsNullReferenceException_IfVersionIsNull()
-        {
-            var objectInfo = ObjectInfo.For(typeof(Customer));
-
-            Assert.Throws<NullReferenceException>(
-                () => objectInfo.SetVersionValue(new Customer(), null));
-        }
-
-        [Fact]
-        public void SetVersionValue_ThrowsMappingException_IfInstanceIsIncorrectType()
-        {
-            var objectInfo = ObjectInfo.For(typeof(Customer));
-
-            var exception = Assert.Throws<MappingException>(
-                () => objectInfo.SetVersionValue(new CustomerWithNoVersion(), 233));
-
-            Assert.Equal(
-                string.Format(ExceptionMessages.PocoObjectInfo_TypeMismatch, typeof(CustomerWithNoVersion).Name, objectInfo.ForType.Name),
-                exception.Message);
-        }
-
-        [Fact]
-        public void SetVersionValueThrowsMicroLiteException_WhenNoVersionMapped()
-        {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
-
-            var customer = new CustomerWithNoVersion();
-
-            var objectInfo = ObjectInfo.For(typeof(CustomerWithNoVersion));
-
-            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetVersionValue(customer, 233));
-
-            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoVersionColumn.FormatWith("Sales", "CustomerWithNoVersions"), exception.Message);
         }
 
         [Fact]
@@ -912,10 +768,6 @@
                 get;
                 set;
             }
-        }
-
-        public class CustomerWithNoVersion
-        {
         }
     }
 }
