@@ -679,7 +679,7 @@
         }
 
         [Fact]
-        public void SetIdentifierValue_ThrowsArgumentNullException_IfIdentifierIsNull()
+        public void SetIdentifierValue_ThrowsNullReferenceException_IfIdentifierIsNull()
         {
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
