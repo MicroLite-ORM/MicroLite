@@ -739,14 +739,12 @@
         }
 
         [Fact]
-        public void SetVersionValue_ThrowsArgumentNullException_IfVersionIsNull()
+        public void SetVersionValue_ThrowsNullReferenceException_IfVersionIsNull()
         {
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            var exception = Assert.Throws<ArgumentNullException>(
+            Assert.Throws<NullReferenceException>(
                 () => objectInfo.SetVersionValue(new Customer(), null));
-
-            Assert.Equal("version", exception.ParamName);
         }
 
         [Fact]
