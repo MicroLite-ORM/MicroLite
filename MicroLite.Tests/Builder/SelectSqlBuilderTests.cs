@@ -881,7 +881,7 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Equal("SELECT Created,CreditLimit,DateOfBirth,Id,Name,CustomerStatusId,Updated,Version,Website FROM Sales.Customers", sqlQuery.CommandText);
+            Assert.Equal("SELECT Created,CreditLimit,DateOfBirth,Id,Name,CustomerStatusId,Updated,Website FROM Sales.Customers", sqlQuery.CommandText);
             Assert.Empty(sqlQuery.Arguments);
         }
 
@@ -894,7 +894,7 @@
                 .From(typeof(Customer))
                 .ToSqlQuery();
 
-            Assert.Equal("SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Version],[Website] FROM [Sales].[Customers]", sqlQuery.CommandText);
+            Assert.Equal("SELECT [Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Updated],[Website] FROM [Sales].[Customers]", sqlQuery.CommandText);
             Assert.Empty(sqlQuery.Arguments);
         }
 
