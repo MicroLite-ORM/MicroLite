@@ -686,7 +686,6 @@
             Assert.Throws<NullReferenceException>(
                 () => objectInfo.SetIdentifierValue(new Customer(), null));
         }
-
         [Fact]
         public void SetVersionValue_SetsPropertyValue()
             var customer = new Customer();
