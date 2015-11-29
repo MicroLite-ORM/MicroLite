@@ -286,6 +286,15 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An update or delete statement affected an unexpected number of rows (0). The entity for `{0}.{1}` with version column `{3}` may have been modified or deleted since being loaded..
+        /// </summary>
+        internal static string Session_UpdateOptimisticConcurrencyError {
+            get {
+                return ResourceManager.GetString("Session_UpdateOptimisticConcurrencyError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The column &apos;{0}&apos; has been mapped multiple times, this usually occurs if multiple properties have the same column name specified in the column attribute.
         /// </summary>
         internal static string TableInfo_ColumnMappedMultipleTimes {
