@@ -599,10 +599,8 @@
         {
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            var exception = Assert.Throws<ArgumentNullException>(
+            Assert.Throws<NullReferenceException>(
                 () => objectInfo.SetIdentifierValue(new Customer(), null));
-
-            Assert.Equal("identifier", exception.ParamName);
         }
 
         [Fact]

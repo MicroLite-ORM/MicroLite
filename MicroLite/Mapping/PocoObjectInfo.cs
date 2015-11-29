@@ -235,11 +235,6 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public void SetIdentifierValue(object instance, object identifier)
         {
-            if (identifier == null)
-            {
-                throw new ArgumentNullException("identifier");
-            }
-
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
             this.VerifyIdentifierMapped();
 
