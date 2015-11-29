@@ -243,6 +243,7 @@ namespace MicroLite.Mapping
         public void SetIdentifierValue(object instance, object identifier)
         {
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            this.VerifyIdentifierMapped();
 
             this.setIdentifierValue(instance, identifier);
         }
