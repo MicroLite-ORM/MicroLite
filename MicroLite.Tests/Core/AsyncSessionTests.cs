@@ -476,7 +476,7 @@ namespace MicroLite.Tests.Core
             var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(type, identifier).Wait());
 
             Assert.IsType<MicroLiteException>(exception.InnerException);
-            Assert.Equal(ExceptionMessages.Session_TypeMismatchIsVersioned.FormatWith(typeof(CustomerWithVersion).Name), exception.InnerException.Message);
+            Assert.Equal(ExceptionMessages.Session_TypeMismatchIsVersioned.FormatWith(typeof(CustomerWithVersion).FullName), exception.InnerException.Message);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -542,7 +542,7 @@ namespace MicroLite.Tests.Core
             var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(type, identifier, version).Wait());
 
             Assert.IsType<MicroLiteException>(exception.InnerException);
-            Assert.Equal(ExceptionMessages.Session_TypeMismatchNotVersioned.FormatWith(typeof(Customer).Name), exception.InnerException.Message);
+            Assert.Equal(ExceptionMessages.Session_TypeMismatchNotVersioned.FormatWith(typeof(Customer).FullName), exception.InnerException.Message);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();

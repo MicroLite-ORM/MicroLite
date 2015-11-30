@@ -130,7 +130,7 @@ namespace MicroLite.Core
             if (objectInfo.TableInfo.VersionColumn != null)
             {
                 throw new MicroLiteException(
-                    ExceptionMessages.Session_TypeMismatchIsVersioned.FormatWith(type.Name));
+                    ExceptionMessages.Session_TypeMismatchIsVersioned.FormatWith(type.FullName));
             }
 
             var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
@@ -169,7 +169,7 @@ namespace MicroLite.Core
             if (objectInfo.TableInfo.VersionColumn == null)
             {
                 throw new MicroLiteException(
-                    ExceptionMessages.Session_TypeMismatchNotVersioned.FormatWith(type.Name));
+                    ExceptionMessages.Session_TypeMismatchNotVersioned.FormatWith(type.FullName));
             }
 
             var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier, version);
