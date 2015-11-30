@@ -286,7 +286,7 @@ namespace MicroLite {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An update or delete statement affected an unexpected number of rows (0). The entity for `{0}.{1}` with version column `{3}` may have been modified or deleted since being loaded..
+        ///   Looks up a localized string similar to An update or delete statement affected an unexpected number of rows (0). The entity for `{0}.{1}` with version column `{2}` may have been modified or deleted since being loaded..
         /// </summary>
         internal static string Session_UpdateOptimisticConcurrencyError {
             get {

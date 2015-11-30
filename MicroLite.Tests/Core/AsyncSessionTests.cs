@@ -1,4 +1,6 @@
-﻿namespace MicroLite.Tests.Core
+﻿using MicroLite.FrameworkExtensions;
+
+namespace MicroLite.Tests.Core
 {
     using System;
     using System.Data;
@@ -1111,6 +1113,47 @@
                 () => session.UpdateAsync(new Customer()).Result);
 
             Assert.IsType<ObjectDisposedException>(exception.InnerException);
+        }
+
+        [Fact]
+        public void UpdateInstanceThrowsDBConcurrencyExceptionIfRecordNotUpdated()
+        {
+            var customer = new CustomerWithVersion
+            {
+                Id = 187224,
+                Version = 233
+            };
+
+            var rowsAffected = 0;
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(new SqlQuery(""));
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(rowsAffected);
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var mockDbDriver = new Mock<IDbDriver>();
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
+
+            var session = new AsyncSession(
+                ConnectionScope.PerTransaction,
+                mockSqlDialect.Object,
+                mockDbDriver.Object,
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
+
+            var exception = Assert.Throws<AggregateException>(() => session.UpdateAsync(customer).Wait());
+
+            Assert.IsType<DBConcurrencyException>(exception.InnerException);
+            Assert.Equal(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith("", "CustomerWithVersions", "Version"), exception.InnerException.Message);
+
+            mockSqlDialect.VerifyAll();
+            mockDbDriver.VerifyAll();
+            mockCommand.VerifyAll();
         }
 
         [Fact]

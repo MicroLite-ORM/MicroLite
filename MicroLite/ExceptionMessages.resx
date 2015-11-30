@@ -211,6 +211,6 @@
     <value>Only Tuple&lt;T1&gt; through to Tuple&lt;T1,T2,T3,T4,T5,T6,T7&gt; are supported.</value>
   </data>
   <data name="Session_UpdateOptimisticConcurrencyError" xml:space="preserve">
-    <value>An update or delete statement affected an unexpected number of rows (0). The entity for `{0}.{1}` with version column `{3}` may have been modified or deleted since being loaded.</value>
+    <value>An update or delete statement affected an unexpected number of rows (0). The entity for `{0}.{1}` with version column `{2}` may have been modified or deleted since being loaded.</value>
   </data>
 </root>
