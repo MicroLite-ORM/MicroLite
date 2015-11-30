@@ -79,6 +79,71 @@ namespace MicroLite
         Task<bool> DeleteAsync(Type type, object identifier, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Asynchronously deletes the database record of the specified type with the specified identifier and version.
+        /// </summary>
+        /// <param name="type">The type to delete.</param>
+        /// <param name="identifier">The identifier of the record to delete.</param>
+        /// <param name="version">The version of the instance to delete.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the specified type or identifier is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if there is an error executing the delete command.</exception>
+        /// <example>
+        /// <code>
+        /// using (var session = sessionFactory.OpenAsyncSession())
+        /// {
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         try
+        ///         {
+        ///             await session.Advanced.DeleteAsync(type: typeof(Customer), identifier: 12823, version: 233);
+        ///             transaction.Commit();
+        ///         }
+        ///         catch(DBConcurrencyException ex)
+        ///         {
+        ///             UsersMessages.Add("Customer could not be deleted as the customer has been updated or deleted already");
+        ///         }
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        /// <remarks>Invokes DeleteAsync(Type, object, CancellationToken) with CancellationToken.None.</remarks>
+        Task DeleteAsync(Type type, object identifier, object version);
+
+        /// <summary>
+        /// Asynchronously deletes the database record of the specified type with the specified identifier and version.
+        /// This method propagates a notification that operations should be cancelled.
+        /// </summary>
+        /// <param name="type">The type to delete.</param>
+        /// <param name="identifier">The identifier of the record to delete.</param>
+        /// <param name="version">The version of the instance to delete.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the specified type or identifier is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if there is an error executing the delete command.</exception>
+        /// <example>
+        /// <code>
+        /// using (var session = sessionFactory.OpenAsyncSession())
+        /// {
+        ///     using (var transaction = session.BeginTransaction())
+        ///     {
+        ///         try
+        ///         {
+        ///             await session.Advanced.DeleteAsync(type: typeof(Customer), identifier: 12823, version: 233);
+        ///             transaction.Commit();
+        ///         }
+        ///         catch(DBConcurrencyException ex)
+        ///         {
+        ///             UsersMessages.Add("Customer could not be deleted as the customer has been updated or deleted already");
+        ///         }
+        ///     }
+        /// }
+        /// </code>
+        /// </example>
+        Task DeleteAsync(Type type, object identifier, object version, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Asynchronously executes the specified SQL query and returns the number of rows affected.
         /// </summary>
         /// <param name="sqlQuery">The SQL query to execute.</param>

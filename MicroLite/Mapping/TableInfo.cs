@@ -187,6 +187,11 @@ namespace MicroLite.Mapping
             {
                 throw new MappingException(ExceptionMessages.TableInfo_SequenceNameNotSet.FormatWith(this.identifierColumn.ColumnName));
             }
+
+            if (this.columns.Count(c => c.IsVersion) > 1)
+            {
+                throw new MappingException(ExceptionMessages.TableInfo_MultipleVersionColumns.FormatWith(this.schema, this.name));
+            }
         }
     }
 }

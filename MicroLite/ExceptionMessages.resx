@@ -198,6 +198,9 @@
   <data name="TableInfo_MultipleIdentifierColumns" xml:space="preserve">
     <value>Multiple columns have been mapped as the identifier for the table '{0}.{1}'</value>
   </data>
+  <data name="TableInfo_MultipleVersionColumns" xml:space="preserve">
+    <value>Multiple columns have been mapped as the version for the table '{0}.{1}'</value>
+  </data>  
   <data name="TableInfo_SequenceNameNotSet" xml:space="preserve">
     <value>The identifier '{0}' has been mapped using IdentifierStrategy.Sequence but no SequenceName has been specified.</value>
   </data>
@@ -212,5 +215,11 @@
   </data>
   <data name="Session_UpdateOptimisticConcurrencyError" xml:space="preserve">
     <value>An update or delete statement affected an unexpected number of rows (0). The entity for `{0}.{1}` with version column `{2}` may have been modified or deleted since being loaded.</value>
+  </data>
+  <data name="Session_TypeMismatchNotVersioned" xml:space="preserve">
+    <value>The type of the object {0} is not versioned.</value>
+  </data>
+  <data name="Session_TypeMismatchIsVersioned" xml:space="preserve">
+    <value>The type of the object {0} is versioned.</value>
   </data>
 </root>

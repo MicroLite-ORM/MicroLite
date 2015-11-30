@@ -496,9 +496,9 @@
                 Version = 233
             };
 
-            var identifierValue = (int)objectInfo.GetVersionValue(customer);
+            var versionValue = (int)objectInfo.GetVersionValue(customer);
 
-            Assert.Equal(customer.Id, identifierValue);
+            Assert.Equal(customer.Version, versionValue);
         }
 
         [Fact]

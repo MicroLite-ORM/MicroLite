@@ -288,7 +288,7 @@ namespace MicroLite.Mapping
             this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
             this.VerifyVersionMapped();
 
-            var value = this.getIdentifierValue(instance);
+            var value = this.getVersionValue(instance);
 
             return value;
         }
