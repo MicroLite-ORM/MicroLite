@@ -45,6 +45,15 @@ namespace MicroLite.Dialect
         SqlQuery BuildDeleteSqlQuery(IObjectInfo objectInfo, object identifier);
 
         /// <summary>
+        /// Builds an SqlQuery to delete the database record with the specified identifier and version for the type specified by the IObjectInfo.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <param name="identifier">The identifier of the instance to delete.</param>
+        /// <param name="version">The version of the instance to delete.</param>
+        /// <returns>The created <see cref="SqlQuery"/>.</returns>
+        SqlQuery BuildDeleteSqlQuery(IObjectInfo objectInfo, object identifier, object version);
+
+        /// <summary>
         /// Builds an SqlQuery to insert a database record for the specified instance with the current property values of the instance.
         /// </summary>
         /// <param name="objectInfo">The object information.</param>

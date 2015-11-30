@@ -89,6 +89,13 @@ namespace MicroLite.Core
 
             var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
+            if (rowsAffected == 0 && objectInfo.TableInfo.VersionColumn != null)
+            {
+                throw new DBConcurrencyException(
+                    ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema,
+                        objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
+            }
+
             for (int i = this.deleteListeners.Count - 1; i >= 0; i--)
             {
                 this.deleteListeners[i].AfterDelete(instance, rowsAffected);
