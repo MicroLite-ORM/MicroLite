@@ -140,6 +140,34 @@
         }
 
         [Fact]
+        public void CreateInstanceWithVersionWithoutNullValues()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithVersion));
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(3);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
+
+            mockReader.Setup(x => x.GetName(0)).Returns("Id");
+            mockReader.Setup(x => x.GetInt32(0)).Returns(12345);
+
+            mockReader.Setup(x => x.GetName(1)).Returns("Name");
+            mockReader.Setup(x => x.GetString(1)).Returns("John Smith");
+
+            mockReader.Setup(x => x.GetName(2)).Returns("Version");
+            mockReader.Setup(x => x.GetInt32(2)).Returns(233);
+
+            var instance = objectInfo.CreateInstance(mockReader.Object) as CustomerWithVersion;
+
+            Assert.NotNull(instance);
+            Assert.IsType<CustomerWithVersion>(instance);
+
+            Assert.Equal(12345, instance.Id);
+            Assert.Equal("John Smith", instance.Name);
+            Assert.Equal(233, instance.Version);
+        }
+
+        [Fact]
         public void ForType_ReturnsTypePassedToConstructor()
         {
             var forType = typeof(Customer);
@@ -459,6 +487,60 @@
         }
 
         [Fact]
+        public void GetVersionValue_ReturnsPropertyValueOfVersionProperty()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithVersion));
+
+            var customer = new CustomerWithVersion
+            {
+                Version = 233
+            };
+
+            var identifierValue = (int)objectInfo.GetVersionValue(customer);
+
+            Assert.Equal(customer.Id, identifierValue);
+        }
+
+        [Fact]
+        public void GetVersionValue_ThrowsArgumentNullException_IfInstanceIsNull()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithVersion));
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.GetVersionValue(null));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void GetVersionValue_ThrowsMappingException_IfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithVersion));
+
+            var exception = Assert.Throws<MappingException>(
+                () => objectInfo.GetVersionValue(new Customer()));
+
+            Assert.Equal(
+                string.Format(ExceptionMessages.PocoObjectInfo_TypeMismatch, typeof(Customer).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void GetVersionValueThrowsMicroLiteException_WhenNoVersionMapped()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new Customer();
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.GetVersionValue(customer));
+
+            Assert.Equal(ExceptionMessages.PocoObjectInfo_NoVersionColumn.FormatWith("Sales", "Customers"), exception.Message);
+        }
+
+        [Fact]
         public void HasDefaultIdentifierValue_ThrowsArgumentNullException_IfInstanceIsNull()
         {
             var objectInfo = ObjectInfo.For(typeof(Customer));
@@ -629,6 +711,68 @@
             var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetIdentifierValue(customer, 122323));
 
             Assert.Equal(ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith("Sales", "CustomerWithNoIdentifiers"), exception.Message);
+        }
+
+        [Fact]
+        public void SetVersionValue_SetsPropertyValue()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithVersion));
+
+            var customer = new CustomerWithVersion();
+
+            objectInfo.SetVersionValue(customer, 233);
+
+            Assert.Equal(233, customer.Version);
+        }
+
+        [Fact]
+        public void SetVersionValue_ThrowsArgumentNullException_IfInstanceIsNull()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithVersion));
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => objectInfo.SetVersionValue(null, 233));
+
+            Assert.Equal("instance", exception.ParamName);
+        }
+
+        [Fact]
+        public void SetVersionValue_ThrowsNullReferenceException_IfVersionIsNull()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithVersion));
+
+            Assert.Throws<NullReferenceException>(
+                () => objectInfo.SetVersionValue(new CustomerWithVersion(), null));
+        }
+
+        [Fact]
+        public void SetVersionValue_ThrowsMappingException_IfInstanceIsIncorrectType()
+        {
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithVersion));
+
+            var exception = Assert.Throws<MappingException>(
+                () => objectInfo.SetVersionValue(new Customer(), 233));
+
+            Assert.Equal(
+                string.Format(ExceptionMessages.PocoObjectInfo_TypeMismatch, typeof(Customer).Name, objectInfo.ForType.Name),
+                exception.Message);
+        }
+
+        [Fact]
+        public void SetVersionValueThrowsMicroLiteException_WhenNoVersionMapped()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var customer = new Customer();
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            var exception = Assert.Throws<MicroLiteException>(() => objectInfo.SetVersionValue(customer, 233));
+
+            Assert.Equal(
+                ExceptionMessages.PocoObjectInfo_NoVersionColumn.FormatWith("Sales", "Customers"),
+                exception.Message);
         }
 
         [Fact]

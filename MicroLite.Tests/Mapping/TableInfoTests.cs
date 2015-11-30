@@ -18,10 +18,10 @@
         {
             var columns = new ReadOnlyCollection<ColumnInfo>(new[]
             {
-                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null),
-                new ColumnInfo("CustomerId", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, false, null),
-                new ColumnInfo("Created", DbType.DateTime, typeof(Customer).GetProperty("Created"), false, true, false, null),
-                new ColumnInfo("Updated", DbType.DateTime, typeof(Customer).GetProperty("Updated"), false, false, true, null)
+                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null, false),
+                new ColumnInfo("CustomerId", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, false, null, false),
+                new ColumnInfo("Created", DbType.DateTime, typeof(Customer).GetProperty("Created"), false, true, false, null, false),
+                new ColumnInfo("Updated", DbType.DateTime, typeof(Customer).GetProperty("Updated"), false, false, true, null, false)
             });
             var identifierStrategy = IdentifierStrategy.Assigned;
             var name = "Customers";
@@ -43,9 +43,9 @@
         {
             var columns = new ReadOnlyCollection<ColumnInfo>(new[]
             {
-                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null),
-                new ColumnInfo("Created", DbType.DateTime, typeof(Customer).GetProperty("Created"), false, true, false, null),
-                new ColumnInfo("Updated", DbType.DateTime, typeof(Customer).GetProperty("Updated"), false, false, true, null)
+                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null, false),
+                new ColumnInfo("Created", DbType.DateTime, typeof(Customer).GetProperty("Created"), false, true, false, null, false),
+                new ColumnInfo("Updated", DbType.DateTime, typeof(Customer).GetProperty("Updated"), false, false, true, null, false)
             });
             var identifierStrategy = IdentifierStrategy.Assigned;
             var name = "Customers";
@@ -59,6 +59,59 @@
             Assert.Equal(name, tableInfo.Name);
             Assert.Equal(schema, tableInfo.Schema);
             Assert.Equal(2, tableInfo.InsertColumnCount);
+            Assert.Equal(2, tableInfo.UpdateColumnCount);
+        }
+
+        [Fact]
+        public void ConstructorSetsPropertyValuesWithVersionMapped()
+        {
+            var columns = new ReadOnlyCollection<ColumnInfo>(new[]
+            {
+                new ColumnInfo("Name", DbType.String, typeof(CustomerWithVersion).GetProperty("Name"), false, true, true, null, false),
+                new ColumnInfo("CustomerId", DbType.Int32, typeof(CustomerWithVersion).GetProperty("Id"), true, true, false, null, false),
+                new ColumnInfo("Created", DbType.DateTime, typeof(CustomerWithVersion).GetProperty("Created"), false, true, false, null, false),
+                new ColumnInfo("Updated", DbType.DateTime, typeof(CustomerWithVersion).GetProperty("Updated"), false, false, true, null, false),
+                new ColumnInfo("Version", DbType.Int32, typeof(CustomerWithVersion).GetProperty("Version"), false, true, true, null, true)
+            });
+            var identifierStrategy = IdentifierStrategy.Assigned;
+            var name = "Customers";
+            var schema = "Sales";
+
+            var tableInfo = new TableInfo(columns, identifierStrategy, name, schema);
+
+            Assert.Equal(columns, tableInfo.Columns);
+            Assert.Equal(columns[1].ColumnName, tableInfo.IdentifierColumn.ColumnName);
+            Assert.Equal(identifierStrategy, tableInfo.IdentifierStrategy);
+            Assert.Equal(columns[4].ColumnName, tableInfo.VersionColumn.ColumnName);
+            Assert.Equal(name, tableInfo.Name);
+            Assert.Equal(schema, tableInfo.Schema);
+            Assert.Equal(4, tableInfo.InsertColumnCount);
+            Assert.Equal(3, tableInfo.UpdateColumnCount);
+        }
+
+        [Fact]
+        public void ConstructorSetsPropertyValuesWithoutVersionMapped()
+        {
+            var columns = new ReadOnlyCollection<ColumnInfo>(new[]
+            {
+                new ColumnInfo("Name", DbType.String, typeof(CustomerWithVersion).GetProperty("Name"), false, true, true, null, false),
+                new ColumnInfo("CustomerId", DbType.Int32, typeof(CustomerWithVersion).GetProperty("Id"), true, true, false, null, false),
+                new ColumnInfo("Created", DbType.DateTime, typeof(CustomerWithVersion).GetProperty("Created"), false, true, false, null, false),
+                new ColumnInfo("Updated", DbType.DateTime, typeof(CustomerWithVersion).GetProperty("Updated"), false, false, true, null, false)
+            });
+            var identifierStrategy = IdentifierStrategy.Assigned;
+            var name = "Customers";
+            var schema = "Sales";
+
+            var tableInfo = new TableInfo(columns, identifierStrategy, name, schema);
+
+            Assert.Equal(columns, tableInfo.Columns);
+            Assert.Equal(columns[1].ColumnName, tableInfo.IdentifierColumn.ColumnName);
+            Assert.Equal(identifierStrategy, tableInfo.IdentifierStrategy);
+            Assert.Null(tableInfo.VersionColumn);
+            Assert.Equal(name, tableInfo.Name);
+            Assert.Equal(schema, tableInfo.Schema);
+            Assert.Equal(3, tableInfo.InsertColumnCount);
             Assert.Equal(2, tableInfo.UpdateColumnCount);
         }
 
@@ -85,7 +138,7 @@
         {
             var columns = new[]
             {
-                new ColumnInfo("Id", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, true, null)
+                new ColumnInfo("Id", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, true, null, false)
             };
 
             var exception = Assert.Throws<MappingException>(
@@ -99,8 +152,8 @@
         {
             var columns = new[]
             {
-                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null),
-                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null)
+                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null, false),
+                new ColumnInfo("Name", DbType.String, typeof(Customer).GetProperty("Name"), false, true, true, null, false)
             };
 
             var exception = Assert.Throws<MappingException>(
@@ -114,8 +167,8 @@
         {
             var columns = new[]
             {
-                new ColumnInfo("CustomerId", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, true, null),
-                new ColumnInfo("Id", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, true, null)
+                new ColumnInfo("CustomerId", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, true, null, false),
+                new ColumnInfo("Id", DbType.Int32, typeof(Customer).GetProperty("Id"), true, true, true, null, false)
             };
 
             var exception = Assert.Throws<MappingException>(
