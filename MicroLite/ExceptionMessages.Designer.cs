@@ -286,6 +286,24 @@ namespace MicroLite {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The type of the object {0} is versioned..
+        /// </summary>
+        internal static string Session_TypeMismatchIsVersioned {
+            get {
+                return ResourceManager.GetString("Session_TypeMismatchIsVersioned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type of the object {0} is not versioned..
+        /// </summary>
+        internal static string Session_TypeMismatchNotVersioned {
+            get {
+                return ResourceManager.GetString("Session_TypeMismatchNotVersioned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An update or delete statement affected an unexpected number of rows (0). The entity for `{0}.{1}` with version column `{2}` may have been modified or deleted since being loaded..
         /// </summary>
         internal static string Session_UpdateOptimisticConcurrencyError {
@@ -309,6 +327,15 @@ namespace MicroLite {
         internal static string TableInfo_MultipleIdentifierColumns {
             get {
                 return ResourceManager.GetString("TableInfo_MultipleIdentifierColumns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple columns have been mapped as the version for the table &apos;{0}.{1}&apos;.
+        /// </summary>
+        internal static string TableInfo_MultipleVersionColumns {
+            get {
+                return ResourceManager.GetString("TableInfo_MultipleVersionColumns", resourceCulture);
             }
         }
         

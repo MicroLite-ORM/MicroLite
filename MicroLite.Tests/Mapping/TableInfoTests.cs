@@ -176,5 +176,21 @@
 
             Assert.Equal(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith("Sales", "Customers"), exception.Message);
         }
+
+        [Fact]
+        public void ConstructorThrowsMappingExceptionMultipleColumnsAreVersionColumn()
+        {
+            var columns = new[]
+            {
+                new ColumnInfo("Id", DbType.Int32, typeof(CustomerWithVersion).GetProperty("Id"), true, true, true, null, false),
+                new ColumnInfo("Version", DbType.Int32, typeof(CustomerWithVersion).GetProperty("Version"), false, true, true, null, true),
+                new ColumnInfo("RowId", DbType.Int32, typeof(CustomerWithVersion).GetProperty("Version"), false, true, true, null, true),
+            };
+
+            var exception = Assert.Throws<MappingException>(
+                () => new TableInfo(columns: columns, identifierStrategy: IdentifierStrategy.DbGenerated, name: "CustomerWithVersion", schema: "Sales"));
+
+            Assert.Equal(ExceptionMessages.TableInfo_MultipleVersionColumns.FormatWith("Sales", "CustomerWithVersion"), exception.Message);
+        }
     }
 }

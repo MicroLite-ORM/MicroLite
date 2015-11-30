@@ -262,8 +262,12 @@ namespace MicroLite.Tests.Core
                 Version = 233
             };
 
+            var objectInfo = ObjectInfo.For(customer.GetType());
+            Assert.Equal(233, (int)objectInfo.GetVersionValue(customer));
+            Assert.Equal(187224, (int)objectInfo.GetIdentifierValue(customer));
+
             var mockSqlDialect = new Mock<ISqlDialect>();
-            mockSqlDialect.Setup(x => x.BuildDeleteSqlQuery(It.IsNotNull<IObjectInfo>(), customer.Id)).Returns(new SqlQuery(""));
+            mockSqlDialect.Setup(x => x.BuildDeleteSqlQuery(It.IsNotNull<IObjectInfo>(), customer.Id, customer.Version)).Returns(new SqlQuery(""));
 
             var mockCommand = new Mock<IDbCommand>();
             mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
@@ -447,6 +451,100 @@ namespace MicroLite.Tests.Core
                 () => session.DeleteAsync(typeof(Customer), 1234).Result);
 
             Assert.IsType<ObjectDisposedException>(exception.InnerException);
+        }
+
+        [Fact]
+        public void DeleteTypeByIdentifierThrowsMicroLiteExceptionIfTypeIsVersioned()
+        {
+            var type = typeof(CustomerWithVersion);
+            var identifier = 1234;
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            var mockCommand = new Mock<IDbCommand>();
+            var mockDbDriver = new Mock<IDbDriver>();
+
+            var session = new AsyncSession(
+                ConnectionScope.PerTransaction,
+                mockSqlDialect.Object,
+                mockDbDriver.Object,
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
+
+            var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(type, identifier).Wait());
+
+            Assert.IsType<MicroLiteException>(exception.InnerException);
+            Assert.Equal(ExceptionMessages.Session_TypeMismatchIsVersioned.FormatWith(typeof(CustomerWithVersion).Name), exception.InnerException.Message);
+
+            mockSqlDialect.VerifyAll();
+            mockDbDriver.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Fact]
+        public void DeleteTypeByIdentifierAndVersionThrowsDBConcurrencyExceptionIfRecordNotDeleted()
+        {
+            var type = typeof(CustomerWithVersion);
+            var identifier = 1234;
+            var version = 233;
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildDeleteSqlQuery(It.IsNotNull<IObjectInfo>(), identifier, version)).Returns(new SqlQuery(""));
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var mockDbDriver = new Mock<IDbDriver>();
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
+
+            var session = new AsyncSession(
+                ConnectionScope.PerTransaction,
+                mockSqlDialect.Object,
+                mockDbDriver.Object,
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
+
+            var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(type, identifier, version).Wait());
+
+            Assert.IsType<DBConcurrencyException>(exception.InnerException);
+            Assert.Equal(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith("", "CustomerWithVersions", "Version"), exception.InnerException.Message);
+
+            mockSqlDialect.VerifyAll();
+            mockDbDriver.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Fact]
+        public void DeleteTypeByIdentifierAndVersionThrowsMicroLiteExceptionIfTypeIsNotVersioned()
+        {
+            var type = typeof(Customer);
+            var identifier = 1234;
+            var version = 233;
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            var mockCommand = new Mock<IDbCommand>();
+            var mockDbDriver = new Mock<IDbDriver>();
+
+            var session = new AsyncSession(
+                ConnectionScope.PerTransaction,
+                mockSqlDialect.Object,
+                mockDbDriver.Object,
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
+
+            var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(type, identifier, version).Wait());
+
+            Assert.IsType<MicroLiteException>(exception.InnerException);
+            Assert.Equal(ExceptionMessages.Session_TypeMismatchNotVersioned.FormatWith(typeof(Customer).Name), exception.InnerException.Message);
+
+            mockSqlDialect.VerifyAll();
+            mockDbDriver.VerifyAll();
+            mockCommand.VerifyAll();
         }
 
         [Fact]
