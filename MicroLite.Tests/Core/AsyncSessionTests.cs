@@ -256,6 +256,45 @@ namespace MicroLite.Tests.Core
         }
 
         [Fact]
+        public void DeleteInstanceThrowsDBConcurrencyExceptionIfRecordNotDeleted()
+        {
+            var customer = new CustomerWithVersion
+            {
+                Id = 187224,
+                Version = 233
+            };
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildDeleteSqlQuery(It.IsNotNull<IObjectInfo>(), customer.Id)).Returns(new SqlQuery(""));
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(0);
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var mockDbDriver = new Mock<IDbDriver>();
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
+
+            var session = new AsyncSession(
+                ConnectionScope.PerTransaction,
+                mockSqlDialect.Object,
+                mockDbDriver.Object,
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
+
+            var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(customer).Wait());
+
+            Assert.IsType<DBConcurrencyException>(exception.InnerException);
+            Assert.Equal(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith("", "CustomerWithVersions", "Version"), exception.InnerException.Message);
+
+            mockSqlDialect.VerifyAll();
+            mockDbDriver.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Fact]
         public void DeleteTypeByIdentifierReturnsFalseIfNoRecordsDeleted()
         {
             var type = typeof(Customer);

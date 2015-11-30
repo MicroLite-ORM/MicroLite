@@ -249,6 +249,45 @@
         }
 
         [Fact]
+        public void DeleteWithVersionByIdentifierQuery()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var identifier = 134875;
+            var version = 233;
+
+            var sqlQuery = mockSqlDialect.Object.BuildDeleteSqlQuery(ObjectInfo.For(typeof(CustomerWithVersion)), identifier, version);
+
+            Assert.Equal("DELETE FROM Sales.CustomerWithVersions WHERE (Version = ?) AND (Id = ?)", sqlQuery.CommandText);
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(version, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(identifier, sqlQuery.Arguments[1].Value);
+
+            // Do a second query to check that the caching doesn't cause a problem.
+            identifier = 998866;
+            version = 999;
+
+            var sqlQuery2 = mockSqlDialect.Object.BuildDeleteSqlQuery(ObjectInfo.For(typeof(CustomerWithVersion)), identifier, version);
+
+            Assert.Equal("DELETE FROM Sales.CustomerWithVersions WHERE (Version = ?) AND (Id = ?)", sqlQuery2.CommandText);
+            Assert.Equal(2, sqlQuery2.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery2.Arguments[0].DbType);
+            Assert.Equal(version, sqlQuery2.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery2.Arguments[1].DbType);
+            Assert.Equal(identifier, sqlQuery2.Arguments[1].Value);
+        }
+
+        [Fact]
         public void InsertInstanceQueryForIdentifierStrategyAssigned()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
