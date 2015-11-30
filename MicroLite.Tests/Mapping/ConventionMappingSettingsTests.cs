@@ -1,4 +1,6 @@
-﻿namespace MicroLite.Tests.Mapping
+﻿using System.Runtime.InteropServices;
+
+namespace MicroLite.Tests.Mapping
 {
     using System.Data;
     using MicroLite.Mapping;
@@ -181,5 +183,6 @@
 
     public class Customer<T>
     {
+        
     }
 }
