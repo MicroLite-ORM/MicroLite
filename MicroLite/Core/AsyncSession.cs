@@ -26,6 +26,7 @@ namespace MicroLite.Core
     using MicroLite.TypeConverters;
     using MicroLite.FrameworkExtensions;
     using System.Data;
+    using System.Linq;
 
     /// <summary>
     /// The default implementation of <see cref="IAsyncSession"/>.
@@ -287,7 +288,8 @@ namespace MicroLite.Core
 
             if (rowsAffected == 1 && objectInfo.TableInfo.VersionColumn != null)
             {
-                objectInfo.SetVersionValue(instance, sqlQuery.ArgumentsArray[sqlQuery.ArgumentsArray.Length - 2].Value);
+                var index = Array.FindIndex(objectInfo.TableInfo.Columns.Where(c => c.AllowUpdate).ToArray(), c => c.IsVersion);
+                objectInfo.SetVersionValue(instance, sqlQuery.ArgumentsArray[index].Value);
             }
 
             for (int i = this.updateListeners.Count - 1; i >= 0; i--)

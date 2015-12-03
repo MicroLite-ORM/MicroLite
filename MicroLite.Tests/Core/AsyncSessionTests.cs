@@ -1038,6 +1038,47 @@ namespace MicroLite.Tests.Core
         }
 
         [Fact]
+        public void UpdateInstanceWhenVersionedExecutesQueryUpdatesVersion()
+        {
+            var customer = new CustomerWithVersion
+            {
+                Id = 187224,
+                Version = 233
+            };
+
+            var rowsAffected = 1;
+            var objectInfo = ObjectInfo.For(typeof(CustomerWithVersion));
+
+            var mockSqlDialect = new Mock<ISqlDialect>();
+            mockSqlDialect.Setup(x => x.BuildUpdateSqlQuery(It.IsNotNull<IObjectInfo>(), customer)).Returns(new SqlQuery("", objectInfo.GetUpdateValues(customer)));
+
+            var mockCommand = new Mock<IDbCommand>();
+            mockCommand.Setup(x => x.ExecuteNonQuery()).Returns(rowsAffected);
+
+            var mockConnection = new Mock<IDbConnection>();
+            mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
+
+            var mockDbDriver = new Mock<IDbDriver>();
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
+
+            var session = new AsyncSession(
+                ConnectionScope.PerTransaction,
+                mockSqlDialect.Object,
+                mockDbDriver.Object,
+                new IDeleteListener[0],
+                new IInsertListener[0],
+                new IUpdateListener[0]);
+
+            session.UpdateAsync(customer).Wait();
+
+            Assert.Equal(234, customer.Version);
+
+            mockSqlDialect.VerifyAll();
+            mockDbDriver.VerifyAll();
+            mockCommand.VerifyAll();
+        }
+
+        [Fact]
         public void UpdateInstanceInvokesListeners()
         {
             var customer = new Customer
