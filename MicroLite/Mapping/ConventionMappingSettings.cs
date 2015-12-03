@@ -52,7 +52,8 @@ namespace MicroLite.Mapping
             this.ResolveSequenceName = (PropertyInfo propertyInfo) => null;
             this.ResolveTableName = (Type type) =>
             {
-                return this.UsePluralClassNameForTableName ? this.InflectionService.ToPlural(type.Name) : type.Name;
+                var name = !type.IsGenericType ? type.Name : type.Name.Substring(0, type.Name.IndexOf("`", StringComparison.OrdinalIgnoreCase));
+                return this.UsePluralClassNameForTableName ? this.InflectionService.ToPlural(name) : name;
             };
             this.ResolveTableSchema = (Type type) => null;
             this.UsePluralClassNameForTableName = true;
