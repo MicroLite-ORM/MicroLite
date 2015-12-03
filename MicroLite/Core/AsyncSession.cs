@@ -16,17 +16,17 @@ namespace MicroLite.Core
 
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Data.Common;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using MicroLite.Dialect;
     using MicroLite.Driver;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Mapping;
     using MicroLite.TypeConverters;
-    using MicroLite.FrameworkExtensions;
-    using System.Data;
-    using System.Linq;
 
     /// <summary>
     /// The default implementation of <see cref="IAsyncSession"/>.
@@ -94,9 +94,7 @@ namespace MicroLite.Core
 
             if (rowsAffected == 0 && objectInfo.TableInfo.VersionColumn != null)
             {
-                throw new DBConcurrencyException(
-                    ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema,
-                        objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
+                throw new DBConcurrencyException(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
             }
 
             for (int i = this.deleteListeners.Count - 1; i >= 0; i--)
@@ -179,9 +177,7 @@ namespace MicroLite.Core
 
             if (rowsAffected == 0 && objectInfo.TableInfo.VersionColumn != null)
             {
-                throw new DBConcurrencyException(
-                    ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema,
-                        objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
+                throw new DBConcurrencyException(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
             }
         }
 
@@ -281,9 +277,7 @@ namespace MicroLite.Core
 
             if (rowsAffected == 0 && objectInfo.TableInfo.VersionColumn != null)
             {
-                throw new DBConcurrencyException(
-                    ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema,
-                        objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
+                throw new DBConcurrencyException(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
             }
 
             if (rowsAffected == 1 && objectInfo.TableInfo.VersionColumn != null)
