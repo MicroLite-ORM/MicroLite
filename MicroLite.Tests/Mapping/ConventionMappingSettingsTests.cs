@@ -1,4 +1,6 @@
-﻿namespace MicroLite.Tests.Mapping
+﻿using System.Runtime.InteropServices;
+
+namespace MicroLite.Tests.Mapping
 {
     using System.Data;
     using MicroLite.Mapping;
@@ -79,6 +81,14 @@
             public void ResolveTableNameReturnsPluralTypeName()
             {
                 var type = typeof(Customer);
+
+                Assert.Equal("Customers", this.settings.ResolveTableName(type));
+            }
+
+            [Fact]
+            public void ResolveTableNameWhenTypeIsGenericReturnsPluralTypeName()
+            {
+                var type = typeof(Customer<int>);
 
                 Assert.Equal("Customers", this.settings.ResolveTableName(type));
             }
@@ -169,5 +179,10 @@
                 Assert.True(this.settings.UsePluralClassNameForTableName);
             }
         }
+    }
+
+    public class Customer<T>
+    {
+        
     }
 }
