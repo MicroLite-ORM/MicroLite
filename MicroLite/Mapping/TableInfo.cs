@@ -27,6 +27,7 @@ namespace MicroLite.Mapping
         private readonly IList<ColumnInfo> columns;
         private readonly ColumnInfo identifierColumn;
         private readonly IdentifierStrategy identifierStrategy;
+        private readonly ColumnInfo versionColumn;
         private readonly int insertColumnCount;
         private readonly string name;
         private readonly string schema;
@@ -63,6 +64,7 @@ namespace MicroLite.Mapping
             this.schema = schema;
 
             this.identifierColumn = columns.FirstOrDefault(c => c.IsIdentifier);
+            this.versionColumn = columns.FirstOrDefault(c => c.IsVersion);
 
             this.insertColumnCount = columns.Count(c => c.AllowInsert);
             this.updateColumnCount = columns.Count(c => c.AllowUpdate);
@@ -100,6 +102,17 @@ namespace MicroLite.Mapping
             get
             {
                 return this.identifierStrategy;
+            }
+        }
+
+        /// <summary>
+        /// Gets the ColumnInfo of the column that is the table version column.
+        /// </summary>
+        public ColumnInfo VersionColumn
+        {
+            get
+            {
+                return this.versionColumn;
             }
         }
 
@@ -173,6 +186,11 @@ namespace MicroLite.Mapping
                 && string.IsNullOrEmpty(this.identifierColumn.SequenceName))
             {
                 throw new MappingException(ExceptionMessages.TableInfo_SequenceNameNotSet.FormatWith(this.identifierColumn.ColumnName));
+            }
+
+            if (this.columns.Count(c => c.IsVersion) > 1)
+            {
+                throw new MappingException(ExceptionMessages.TableInfo_MultipleVersionColumns.FormatWith(this.schema, this.name));
             }
         }
     }

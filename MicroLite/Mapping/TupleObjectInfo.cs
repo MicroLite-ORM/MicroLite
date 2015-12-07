@@ -106,6 +106,16 @@ namespace MicroLite.Mapping
             throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
         }
 
+        public object GetVersionValue(object instance)
+        {
+            throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
+        }
+
+        public void SetVersionValue(object instance, object version)
+        {
+            throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
+        }
+
         private static Type GetTupleType(Type[] fieldTypes)
         {
             switch (fieldTypes.Length)

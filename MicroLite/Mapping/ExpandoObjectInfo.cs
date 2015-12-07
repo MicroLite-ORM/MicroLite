@@ -105,5 +105,15 @@ namespace MicroLite.Mapping
         {
             throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
+
+        public object GetVersionValue(object instance)
+        {
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
+        }
+
+        public void SetVersionValue(object instance, object version)
+        {
+            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
+        }
     }
 }
