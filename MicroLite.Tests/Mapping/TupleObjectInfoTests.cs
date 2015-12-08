@@ -1,7 +1,5 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
-#if !NET_3_5
-
     using System;
     using System.Data;
     using MicroLite.Mapping;
@@ -365,6 +363,4 @@
             Assert.Equal(exception.Message, ExceptionMessages.TupleObjectInfo_NotSupportedReason);
         }
     }
-
-#endif
 }

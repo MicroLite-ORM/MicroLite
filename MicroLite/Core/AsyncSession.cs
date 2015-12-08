@@ -12,15 +12,16 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
-#if NET_4_5
-
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Data.Common;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using MicroLite.Dialect;
     using MicroLite.Driver;
+    using MicroLite.FrameworkExtensions;
     using MicroLite.Listeners;
     using MicroLite.Mapping;
     using MicroLite.TypeConverters;
@@ -85,9 +86,14 @@ namespace MicroLite.Core
                 throw new MicroLiteException(ExceptionMessages.Session_IdentifierNotSetForDelete);
             }
 
-            var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
+            var sqlQuery = objectInfo.TableInfo.VersionColumn == null ? this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier) : this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier, objectInfo.GetVersionValue(instance));
 
             var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
+
+            if (rowsAffected == 0 && objectInfo.TableInfo.VersionColumn != null)
+            {
+                throw new DBConcurrencyException(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
+            }
 
             for (int i = this.deleteListeners.Count - 1; i >= 0; i--)
             {
@@ -118,11 +124,59 @@ namespace MicroLite.Core
 
             var objectInfo = ObjectInfo.For(type);
 
+            if (objectInfo.TableInfo.VersionColumn != null)
+            {
+                throw new MicroLiteException(
+                    ExceptionMessages.Session_TypeMismatchIsVersioned.FormatWith(type.FullName));
+            }
+
             var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
 
             var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
             return rowsAffected == 1;
+        }
+
+        public Task DeleteAsync(Type type, object identifier, object version)
+        {
+            return this.DeleteAsync(type, identifier, version, CancellationToken.None);
+        }
+
+        public async Task DeleteAsync(Type type, object identifier, object version, CancellationToken cancellationToken)
+        {
+            this.ThrowIfDisposed();
+
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
+
+            if (identifier == null)
+            {
+                throw new ArgumentNullException("identifier");
+            }
+
+            if (version == null)
+            {
+                throw new ArgumentNullException("version");
+            }
+
+            var objectInfo = ObjectInfo.For(type);
+
+            if (objectInfo.TableInfo.VersionColumn == null)
+            {
+                throw new MicroLiteException(
+                    ExceptionMessages.Session_TypeMismatchNotVersioned.FormatWith(type.FullName));
+            }
+
+            var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier, version);
+
+            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
+
+            if (rowsAffected == 0 && objectInfo.TableInfo.VersionColumn != null)
+            {
+                throw new DBConcurrencyException(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
+            }
         }
 
         public Task<int> ExecuteAsync(SqlQuery sqlQuery)
@@ -218,6 +272,17 @@ namespace MicroLite.Core
             var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectInfo, instance);
 
             var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
+
+            if (rowsAffected == 0 && objectInfo.TableInfo.VersionColumn != null)
+            {
+                throw new DBConcurrencyException(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
+            }
+
+            if (rowsAffected == 1 && objectInfo.TableInfo.VersionColumn != null)
+            {
+                var index = Array.FindIndex(objectInfo.TableInfo.Columns.Where(c => c.AllowUpdate).ToArray(), c => c.IsVersion);
+                objectInfo.SetVersionValue(instance, sqlQuery.ArgumentsArray[index].Value);
+            }
 
             for (int i = this.updateListeners.Count - 1; i >= 0; i--)
             {
@@ -351,6 +416,4 @@ namespace MicroLite.Core
             return identifier;
         }
     }
-
-#endif
 }

@@ -91,7 +91,17 @@ namespace MicroLite.Mapping.Attributes
                     identifierStrategy = identifierAttribute.IdentifierStrategy;
                 }
 
-                var columnInfo = new ColumnInfo(columnName: columnAttribute.Name, dbType: columnAttribute.DbType ?? TypeConverter.ResolveDbType(property.PropertyType), propertyInfo: property, isIdentifier: identifierAttribute != null, allowInsert: identifierAttribute != null ? identifierStrategy == IdentifierStrategy.Assigned : columnAttribute.AllowInsert, allowUpdate: identifierAttribute != null ? false : columnAttribute.AllowUpdate, sequenceName: identifierAttribute != null ? identifierAttribute.SequenceName : null);
+                var versionAttribute = property.GetAttribute<VersionAttribute>(inherit: true);
+
+                var columnInfo = new ColumnInfo(
+                    columnName: columnAttribute.Name, 
+                    dbType: columnAttribute.DbType ?? TypeConverter.ResolveDbType(property.PropertyType), 
+                    propertyInfo: property, 
+                    isIdentifier: identifierAttribute != null, 
+                    allowInsert: identifierAttribute != null ? identifierStrategy == IdentifierStrategy.Assigned : versionAttribute != null || columnAttribute.AllowInsert, 
+                    allowUpdate: identifierAttribute != null ? false : versionAttribute != null || columnAttribute.AllowUpdate, 
+                    sequenceName: identifierAttribute != null ? identifierAttribute.SequenceName : null, 
+                    isVersion: versionAttribute != null);
 
                 if (this.log.IsDebug)
                 {

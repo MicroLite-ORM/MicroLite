@@ -249,6 +249,45 @@
         }
 
         [Fact]
+        public void DeleteWithVersionByIdentifierQuery()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var identifier = 134875;
+            var version = 233;
+
+            var sqlQuery = mockSqlDialect.Object.BuildDeleteSqlQuery(ObjectInfo.For(typeof(CustomerWithVersion)), identifier, version);
+
+            Assert.Equal("DELETE FROM Sales.CustomerWithVersions WHERE (Version = ?) AND (Id = ?)", sqlQuery.CommandText);
+            Assert.Equal(2, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(version, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(identifier, sqlQuery.Arguments[1].Value);
+
+            // Do a second query to check that the caching doesn't cause a problem.
+            identifier = 998866;
+            version = 999;
+
+            var sqlQuery2 = mockSqlDialect.Object.BuildDeleteSqlQuery(ObjectInfo.For(typeof(CustomerWithVersion)), identifier, version);
+
+            Assert.Equal("DELETE FROM Sales.CustomerWithVersions WHERE (Version = ?) AND (Id = ?)", sqlQuery2.CommandText);
+            Assert.Equal(2, sqlQuery2.Arguments.Count);
+
+            Assert.Equal(DbType.Int32, sqlQuery2.Arguments[0].DbType);
+            Assert.Equal(version, sqlQuery2.Arguments[0].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery2.Arguments[1].DbType);
+            Assert.Equal(identifier, sqlQuery2.Arguments[1].Value);
+        }
+
+        [Fact]
         public void InsertInstanceQueryForIdentifierStrategyAssigned()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
@@ -629,6 +668,126 @@
 
             Assert.Equal(DbType.Int32, sqlQuery2.Arguments[6].DbType);
             Assert.Equal(customer.Id, sqlQuery2.Arguments[6].Value);
+        }
+
+        [Fact]
+        public void UpdateWithVersionInstanceQuery()
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
+            var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
+            mockSqlDialect.CallBase = true;
+
+            var customer = new CustomerWithVersion
+            {
+                Created = new DateTime(2011, 12, 24),
+                CreditLimit = 10500.00M,
+                DateOfBirth = new System.DateTime(1975, 9, 18),
+                Id = 134875,
+                Name = "Joe Bloggs",
+                Status = CustomerStatus.Active,
+                Updated = DateTime.Now,
+                Version = 233,
+                Website = new Uri("http://microliteorm.wordpress.com")
+            };
+
+            var sqlQuery = mockSqlDialect.Object.BuildUpdateSqlQuery(ObjectInfo.For(typeof(CustomerWithVersion)), customer);
+
+            Assert.Equal("UPDATE Sales.CustomerWithVersions SET CreditLimit = ?,DateOfBirth = ?,Name = ?,CustomerStatusId = ?,Updated = ?,Version = ?,Website = ? WHERE (Version = ?) AND (Id = ?)", sqlQuery.CommandText);
+            Assert.Equal(9, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.Decimal, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[0].Value);
+
+            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(customer.Name, sqlQuery.Arguments[2].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
+            Assert.Equal((int)customer.Status, sqlQuery.Arguments[3].Value);
+
+            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[4].DbType);
+            Assert.Equal(customer.Updated, sqlQuery.Arguments[4].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[5].DbType);
+            Assert.Equal(customer.Version + 1, sqlQuery.Arguments[5].Value);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[6].DbType);
+            Assert.Equal("http://microliteorm.wordpress.com/", sqlQuery.Arguments[6].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[7].DbType);
+            Assert.Equal(customer.Version, sqlQuery.Arguments[7].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery.Arguments[8].DbType);
+            Assert.Equal(customer.Id, sqlQuery.Arguments[8].Value);
+
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+
+            var customer2 = new CustomerWithVersion<ushort>
+            {
+                Id = 134875,
+                Version = 233,
+            };
+
+            var sqlQuery2 = mockSqlDialect.Object.BuildUpdateSqlQuery(ObjectInfo.For(typeof(CustomerWithVersion<ushort>)), customer2);
+
+            Assert.Equal("UPDATE Sales.CustomerWithVersions SET CreditLimit = ?,DateOfBirth = ?,Name = ?,CustomerStatusId = ?,Updated = ?,Version = ?,Website = ? WHERE (Version = ?) AND (Id = ?)", sqlQuery2.CommandText);
+            Assert.Equal(9, sqlQuery2.Arguments.Count);
+
+            Assert.Equal(DbType.UInt16, sqlQuery2.Arguments[5].DbType);
+            Assert.Equal((ushort)(customer2.Version + 1), sqlQuery2.Arguments[5].Value);
+
+            Assert.Equal(DbType.UInt16, sqlQuery2.Arguments[7].DbType);
+            Assert.Equal(customer2.Version, sqlQuery2.Arguments[7].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery2.Arguments[8].DbType);
+            Assert.Equal(customer2.Id, sqlQuery2.Arguments[8].Value);
+
+            var customer3 = new CustomerWithVersion<long>
+            {
+                Id = 134875,
+                Version = 233,
+            };
+
+            var sqlQuery3 = mockSqlDialect.Object.BuildUpdateSqlQuery(ObjectInfo.For(typeof(CustomerWithVersion<long>)), customer3);
+
+            Assert.Equal("UPDATE Sales.CustomerWithVersions SET CreditLimit = ?,DateOfBirth = ?,Name = ?,CustomerStatusId = ?,Updated = ?,Version = ?,Website = ? WHERE (Version = ?) AND (Id = ?)", sqlQuery3.CommandText);
+            Assert.Equal(9, sqlQuery3.Arguments.Count);
+
+            Assert.Equal(DbType.Int64, sqlQuery3.Arguments[5].DbType);
+            Assert.Equal((long)(customer3.Version + 1), sqlQuery3.Arguments[5].Value);
+
+            Assert.Equal(DbType.Int64, sqlQuery3.Arguments[7].DbType);
+            Assert.Equal(customer3.Version, sqlQuery3.Arguments[7].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery3.Arguments[8].DbType);
+            Assert.Equal(customer3.Id, sqlQuery3.Arguments[8].Value);
+
+            var customer4 = new CustomerWithVersion<DateTime>
+            {
+                Id = 134875,
+                Version = new DateTime(1921, 1, 1, 1, 1, 1, DateTimeKind.Utc)
+            };
+
+            var now = DateTime.UtcNow;
+
+            var sqlQuery4 = mockSqlDialect.Object.BuildUpdateSqlQuery(ObjectInfo.For(typeof(CustomerWithVersion<DateTime>)), customer4);
+
+            Assert.Equal("UPDATE Sales.CustomerWithVersions SET CreditLimit = ?,DateOfBirth = ?,Name = ?,CustomerStatusId = ?,Updated = ?,Version = ?,Website = ? WHERE (Version = ?) AND (Id = ?)", sqlQuery4.CommandText);
+            Assert.Equal(9, sqlQuery4.Arguments.Count);
+
+            Assert.Equal(DbType.DateTime, sqlQuery4.Arguments[5].DbType);
+            Assert.InRange((DateTime)sqlQuery4.Arguments[5].Value, now, DateTime.UtcNow);
+
+            Assert.Equal(DbType.DateTime, sqlQuery4.Arguments[7].DbType);
+            Assert.Equal(customer4.Version, sqlQuery4.Arguments[7].Value);
+
+            Assert.Equal(DbType.Int32, sqlQuery4.Arguments[8].DbType);
+            Assert.Equal(customer4.Id, sqlQuery4.Arguments[8].Value);
         }
     }
 }
