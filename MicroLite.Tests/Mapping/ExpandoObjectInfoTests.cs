@@ -3,6 +3,7 @@
 #if !NET_3_5
 
     using System;
+    using System.Collections.Generic;
     using System.Data;
     using System.Dynamic;
     using MicroLite.Mapping;
@@ -32,6 +33,30 @@
             Assert.IsType<ExpandoObject>(instance);
             Assert.Equal(12345, instance.Id);
             Assert.Equal("Fred Flintstone", instance.Name);
+        }
+
+        [Fact]
+        public void CreateInstanceIgnoresMicroLiteRowNumber()
+        {
+            var objectInfo = new ExpandoObjectInfo();
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(3);
+            mockReader.Setup(x => x.IsDBNull(It.IsAny<int>())).Returns(false);
+
+            mockReader.Setup(x => x.GetName(0)).Returns("Id");
+            mockReader.Setup(x => x.GetName(1)).Returns("Name");
+            mockReader.Setup(x => x.GetName(2)).Returns("MicroLiteRowNumber");
+
+            mockReader.Setup(x => x.GetValue(0)).Returns(12345);
+            mockReader.Setup(x => x.GetValue(1)).Returns("Fred Flintstone");
+            mockReader.Setup(x => x.GetValue(2)).Returns(1);
+
+            var instance = (dynamic)objectInfo.CreateInstance(mockReader.Object);
+
+            var dictionary = (IDictionary<string, object>)instance;
+
+            Assert.False(dictionary.ContainsKey("MicroLiteRowNumber"));
         }
 
         [Fact]

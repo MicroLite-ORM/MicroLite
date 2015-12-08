@@ -60,9 +60,13 @@ namespace MicroLite.Mapping
             for (int i = 0; i < reader.FieldCount; i++)
             {
                 var columnName = reader.GetName(i);
-                var value = reader.IsDBNull(i) ? null : reader.GetValue(i);
 
-                dictionary[columnName] = value;
+                if (!"MicroLiteRowNumber".Equals(columnName))
+                {
+                    var value = reader.IsDBNull(i) ? null : reader.GetValue(i);
+
+                    dictionary[columnName] = value;
+                }
             }
 
             return instance;
