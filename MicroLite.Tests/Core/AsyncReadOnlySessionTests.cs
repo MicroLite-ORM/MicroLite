@@ -281,8 +281,8 @@
         {
             var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
             var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
-            var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
-            var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT Id FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
+            var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS MicroLiteRowNumber FROM Customers) AS Customers");
+            var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT Id FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS MicroLiteRowNumber FROM Customers) AS Customers");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
@@ -327,8 +327,8 @@
         {
             var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
             var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
-            var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
-            var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
+            var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS MicroLiteRowNumber FROM Customers) AS Customers");
+            var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS MicroLiteRowNumber FROM Customers) AS Customers");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
@@ -373,8 +373,8 @@
         {
             var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
             var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
-            var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
-            var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS RowNumber FROM Customers) AS Customers");
+            var pagedQuery = new SqlQuery("SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS MicroLiteRowNumber FROM Customers) AS Customers");
+            var combinedQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE;SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS MicroLiteRowNumber FROM Customers) AS Customers");
 
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.CountQuery(sqlQuery)).Returns(countQuery);
