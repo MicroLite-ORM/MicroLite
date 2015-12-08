@@ -400,11 +400,19 @@ namespace MicroLite.Dialect
                 }
             }
 
-            var updateSqlQuery = builder
-                .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0)
-                .ToSqlQuery();
+            if (objectInfo.TableInfo.VersionColumn == null)
+            {
+                builder
+                    .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0);
+            }
+            else
+            {
+                builder
+                    .Where(objectInfo.TableInfo.VersionColumn.ColumnName).IsEqualTo(0)
+                    .AndWhere(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0);
+            }
 
-            return updateSqlQuery.CommandText;
+            return builder.ToSqlQuery().CommandText;
         }
     }
 }

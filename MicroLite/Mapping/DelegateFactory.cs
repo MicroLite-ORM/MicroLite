@@ -80,7 +80,7 @@ namespace MicroLite.Mapping
             ilGenerator.Emit(OpCodes.Newarr, typeof(SqlArgument));
             ilGenerator.Emit(OpCodes.Stloc_1);
 
-            EmitGetPropertyValues(ilGenerator, objectInfo, c => c.AllowInsert);
+            EmitGetPropertyValues(ilGenerator, objectInfo, c => c.AllowInsert, false);
 
             // return values;
             ilGenerator.Emit(OpCodes.Ldloc_1);
@@ -109,16 +109,43 @@ namespace MicroLite.Mapping
             ilGenerator.Emit(OpCodes.Castclass, objectInfo.ForType);
             ilGenerator.Emit(OpCodes.Stloc_0);
 
-            // var values = new SqlArgument[count + 1]; // Add 1 for the identifier
-            ilGenerator.EmitEfficientInt(objectInfo.TableInfo.UpdateColumnCount + 1);
+            if (objectInfo.TableInfo.VersionColumn == null)
+            {
+                // var values = new SqlArgument[count + 1]; // Add 1 for the identifier
+                ilGenerator.EmitEfficientInt(objectInfo.TableInfo.UpdateColumnCount + 1);
+            }
+            else
+            {
+                // var values = new SqlArgument[count + 2]; // Add 2 for both version and identifier
+                ilGenerator.EmitEfficientInt(objectInfo.TableInfo.UpdateColumnCount + 2);
+            }
+
             ilGenerator.Emit(OpCodes.Newarr, typeof(SqlArgument));
             ilGenerator.Emit(OpCodes.Stloc_1);
 
-            EmitGetPropertyValues(ilGenerator, objectInfo, c => c.AllowUpdate);
+            EmitGetPropertyValues(ilGenerator, objectInfo, c => c.AllowUpdate, true);
+
+            if (objectInfo.TableInfo.VersionColumn != null)
+            {
+                // values[values.Length - 2] = entity.{Version};
+                ilGenerator.Emit(OpCodes.Ldloc_1);
+                ilGenerator.EmitEfficientInt(objectInfo.TableInfo.UpdateColumnCount);
+                ilGenerator.Emit(OpCodes.Ldelema, typeof(SqlArgument));
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+                ilGenerator.Emit(OpCodes.Callvirt, objectInfo.TableInfo.VersionColumn.PropertyInfo.GetGetMethod());
+
+                ilGenerator.EmitBoxIfValueType(objectInfo.TableInfo.VersionColumn.PropertyInfo.PropertyType);
+
+                ilGenerator.EmitEfficientInt((int)objectInfo.TableInfo.VersionColumn.DbType);
+                ilGenerator.Emit(OpCodes.Newobj, sqlArgumentConstructor);
+
+                // values[i] = new SqlArgument(value, column.DbType); OR values[i] = new SqlArgument(converted, column.DbType);
+                ilGenerator.Emit(OpCodes.Stobj, typeof(SqlArgument));
+            }
 
             // values[values.Length - 1] = entity.{Id};
             ilGenerator.Emit(OpCodes.Ldloc_1);
-            ilGenerator.EmitEfficientInt(objectInfo.TableInfo.UpdateColumnCount);
+            ilGenerator.EmitEfficientInt(objectInfo.TableInfo.VersionColumn == null ? objectInfo.TableInfo.UpdateColumnCount : objectInfo.TableInfo.UpdateColumnCount + 1);
             ilGenerator.Emit(OpCodes.Ldelema, typeof(SqlArgument));
             ilGenerator.Emit(OpCodes.Ldloc_0);
             ilGenerator.Emit(OpCodes.Callvirt, objectInfo.TableInfo.IdentifierColumn.PropertyInfo.GetGetMethod());
@@ -138,6 +165,33 @@ namespace MicroLite.Mapping
             var getUpdateValues = (Func<object, SqlArgument[]>)dynamicMethod.CreateDelegate(typeof(Func<object, SqlArgument[]>));
 
             return getUpdateValues;
+        }
+
+        internal static Func<object, object> CreateGetVersion(IObjectInfo objectInfo)
+        {
+            var dynamicMethod = new DynamicMethod(
+                name: "MicroLite" + objectInfo.ForType.Name + "GetVersion",
+                returnType: typeof(object),
+                parameterTypes: new[] { typeof(object) });
+
+            var ilGenerator = dynamicMethod.GetILGenerator();
+
+            // var instance = ({ForType})arg_0;
+            ilGenerator.Emit(OpCodes.Ldarg_0);
+            ilGenerator.Emit(OpCodes.Castclass, objectInfo.ForType);
+
+            // var version = instance.Version;
+            ilGenerator.Emit(OpCodes.Callvirt, objectInfo.TableInfo.VersionColumn.PropertyInfo.GetGetMethod());
+
+            // value = (object)version;
+            ilGenerator.EmitBoxIfValueType(objectInfo.TableInfo.VersionColumn.PropertyInfo.PropertyType);
+
+            // return version;
+            ilGenerator.Emit(OpCodes.Ret);
+
+            var getVersionValue = (Func<object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object>));
+
+            return getVersionValue;
         }
 
         internal static Func<IDataReader, object> CreateInstanceFactory(IObjectInfo objectInfo)
@@ -313,7 +367,36 @@ namespace MicroLite.Mapping
             return setIdentifierValue;
         }
 
-        private static void EmitGetPropertyValues(ILGenerator ilGenerator, IObjectInfo objectInfo, Func<ColumnInfo, bool> includeColumn)
+        internal static Action<object, object> CreateSetVersion(IObjectInfo objectInfo)
+        {
+            var dynamicMethod = new DynamicMethod(
+                name: "MicroLite" + objectInfo.ForType.Name + "SetVersion",
+                returnType: null,
+                parameterTypes: new[] { typeof(object), typeof(object) });
+
+            var ilGenerator = dynamicMethod.GetILGenerator();
+
+            // var instance = ({ForType})arg_0;
+            ilGenerator.Emit(OpCodes.Ldarg_0);
+            ilGenerator.Emit(OpCodes.Castclass, objectInfo.ForType);
+
+            // var value = arg_1;
+            ilGenerator.Emit(OpCodes.Ldarg_1);
+
+            // value = ({PropertyType})value;
+            ilGenerator.EmitUnboxIfValueType(objectInfo.TableInfo.VersionColumn.PropertyInfo.PropertyType);
+
+            // instance.Version = value;
+            ilGenerator.Emit(OpCodes.Callvirt, objectInfo.TableInfo.VersionColumn.PropertyInfo.GetSetMethod());
+
+            ilGenerator.Emit(OpCodes.Ret);
+
+            var setValueType = (Action<object, object>)dynamicMethod.CreateDelegate(typeof(Action<object, object>));
+
+            return setValueType;
+        }
+
+        private static void EmitGetPropertyValues(ILGenerator ilGenerator, IObjectInfo objectInfo, Func<ColumnInfo, bool> includeColumn, bool isUpdate)
         {
             var index = 0;
 
@@ -343,6 +426,26 @@ namespace MicroLite.Mapping
                 // var value = entity.{PropertyName};
                 ilGenerator.Emit(OpCodes.Ldloc_0);
                 ilGenerator.EmitCall(OpCodes.Callvirt, column.PropertyInfo.GetGetMethod(), null);
+
+                if (isUpdate && column.IsVersion)
+                {
+                    if (Type.GetTypeCode(objectInfo.TableInfo.VersionColumn.PropertyInfo.PropertyType) >= TypeCode.Int16 && Type.GetTypeCode(objectInfo.TableInfo.VersionColumn.PropertyInfo.PropertyType) <= TypeCode.UInt64)
+                    {
+                        // value = value + 1;
+                        ilGenerator.EmitEfficientInt(1);
+                        ilGenerator.Emit(OpCodes.Add);
+                    }
+                    else if (Type.GetTypeCode(objectInfo.TableInfo.VersionColumn.PropertyInfo.PropertyType) == TypeCode.DateTime)
+                    {
+                        // value = DateTime.UtcNow;
+                        ilGenerator.Emit(OpCodes.Pop);
+                        ilGenerator.Emit(OpCodes.Call, typeof(DateTime).GetMethod("get_UtcNow"));
+                    }
+                    else
+                    {
+                        throw new NotSupportedException(ExceptionMessages.PocoObjectInfo_VersionTypeNotSupported);
+                    }
+                }
 
                 // value = (object)value;
                 ilGenerator.EmitBoxIfValueType(column.PropertyInfo.PropertyType);
