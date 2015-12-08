@@ -19,7 +19,7 @@ namespace MicroLite.Mapping
     /// <summary>
     /// A class which contains information about a database table column and the property it is mapped to.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("Column: {ColumnName}, Identifier: {IsIdentifier}, Insert: {AllowInsert}, Update: {AllowUpdate}")]
+    [System.Diagnostics.DebuggerDisplay("Column: {ColumnName}, Identifier: {IsIdentifier}, Insert: {AllowInsert}, Update: {AllowUpdate}, Version: {IsVersion}")]
     public sealed class ColumnInfo
     {
         private readonly bool allowInsert;
@@ -29,6 +29,7 @@ namespace MicroLite.Mapping
         private readonly bool isIdentifier;
         private readonly PropertyInfo propertyInfo;
         private readonly string sequenceName;
+        private readonly bool isVersion;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnInfo"/> class.
@@ -40,6 +41,7 @@ namespace MicroLite.Mapping
         /// <param name="allowInsert">true if the column can be inserted, otherwise false.</param>
         /// <param name="allowUpdate">true if the column can be updated, otherwise false.</param>
         /// <param name="sequenceName">The name of the sequence which generates the identifier value or null if sequences are not used.</param>
+        /// <param name="isVersion">A value indicating whether column is the table version column.</param>
         /// <exception cref="ArgumentNullException">Thrown if columnName or propertyInfo are null.</exception>
         public ColumnInfo(
             string columnName,
@@ -48,7 +50,8 @@ namespace MicroLite.Mapping
             bool isIdentifier,
             bool allowInsert,
             bool allowUpdate,
-            string sequenceName)
+            string sequenceName,
+            bool isVersion)
         {
             if (columnName == null)
             {
@@ -67,6 +70,7 @@ namespace MicroLite.Mapping
             this.allowInsert = allowInsert;
             this.allowUpdate = allowUpdate;
             this.sequenceName = sequenceName;
+            this.isVersion = isVersion;
         }
 
         /// <summary>
@@ -143,6 +147,17 @@ namespace MicroLite.Mapping
             get
             {
                 return this.sequenceName;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether column is the table version column.
+        /// </summary>
+        public bool IsVersion
+        {
+            get
+            {
+                return this.isVersion;
             }
         }
     }
