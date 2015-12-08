@@ -115,5 +115,23 @@ namespace MicroLite.Mapping
         /// Thrown if the instance is not of the correct type or its state is invalid for the specified StatementType.
         /// </exception>
         void VerifyInstanceForInsert(object instance);
+
+        /// <summary>
+        /// Gets the property value for the object version.
+        /// </summary>
+        /// <param name="instance">The instance to retrieve the value from.</param>
+        /// <returns>The value of the version property.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
+        object GetVersionValue(object instance);
+
+        /// <summary>
+        /// Sets the property value for the version to the supplied value.
+        /// </summary>
+        /// <param name="instance">The instance to set the value for.</param>
+        /// <param name="version">The value to set as the version property.</param>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
+        void SetVersionValue(object instance, object version);
     }
 }
