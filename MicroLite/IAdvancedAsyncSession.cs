@@ -108,7 +108,7 @@ namespace MicroLite
         /// </code>
         /// </example>
         /// <remarks>Invokes DeleteAsync(Type, object, CancellationToken) with CancellationToken.None.</remarks>
-        Task DeleteAsync(Type type, object identifier, object version);
+        Task<bool> DeleteAsync(Type type, object identifier, object version);
 
         /// <summary>
         /// Asynchronously deletes the database record of the specified type with the specified identifier and version.
@@ -141,7 +141,7 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        Task DeleteAsync(Type type, object identifier, object version, CancellationToken cancellationToken);
+        Task<bool> DeleteAsync(Type type, object identifier, object version, CancellationToken cancellationToken);
 
         /// <summary>
         /// Asynchronously executes the specified SQL query and returns the number of rows affected.

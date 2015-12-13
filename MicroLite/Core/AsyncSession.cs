@@ -92,11 +92,6 @@ namespace MicroLite.Core
 
             var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
-            if (rowsAffected == 0 && objectInfo.TableInfo.VersionColumn != null)
-            {
-                throw new DBConcurrencyException(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
-            }
-
             for (int i = this.deleteListeners.Count - 1; i >= 0; i--)
             {
                 this.deleteListeners[i].AfterDelete(instance, rowsAffected);
@@ -139,12 +134,12 @@ namespace MicroLite.Core
             return rowsAffected == 1;
         }
 
-        public Task DeleteAsync(Type type, object identifier, object version)
+        public Task<bool> DeleteAsync(Type type, object identifier, object version)
         {
             return this.DeleteAsync(type, identifier, version, CancellationToken.None);
         }
 
-        public async Task DeleteAsync(Type type, object identifier, object version, CancellationToken cancellationToken)
+        public async Task<bool> DeleteAsync(Type type, object identifier, object version, CancellationToken cancellationToken)
         {
             this.ThrowIfDisposed();
 
@@ -175,10 +170,7 @@ namespace MicroLite.Core
 
             var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
-            if (rowsAffected == 0 && objectInfo.TableInfo.VersionColumn != null)
-            {
-                throw new DBConcurrencyException(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
-            }
+            return rowsAffected == 1;
         }
 
         public Task<int> ExecuteAsync(SqlQuery sqlQuery)
@@ -274,11 +266,6 @@ namespace MicroLite.Core
             var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectInfo, instance);
 
             var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
-
-            if (rowsAffected == 0 && objectInfo.TableInfo.VersionColumn != null)
-            {
-                throw new DBConcurrencyException(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith(objectInfo.TableInfo.Schema, objectInfo.TableInfo.Name, objectInfo.TableInfo.VersionColumn.ColumnName));
-            }
 
             if (rowsAffected == 1 && objectInfo.TableInfo.VersionColumn != null)
             {

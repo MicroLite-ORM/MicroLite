@@ -256,7 +256,7 @@ namespace MicroLite.Tests.Core
         }
 
         [Fact]
-        public void DeleteInstanceThrowsDBConcurrencyExceptionIfRecordNotDeleted()
+        public void DeleteInstanceUsingVersioningReturnsFalseIfNoRecordsDeleted()
         {
             var customer = new CustomerWithVersion
             {
@@ -288,10 +288,7 @@ namespace MicroLite.Tests.Core
                 new IInsertListener[0],
                 new IUpdateListener[0]);
 
-            var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(customer).Wait());
-
-            Assert.IsType<DBConcurrencyException>(exception.InnerException);
-            Assert.Equal(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith("", "CustomerWithVersions", "Version"), exception.InnerException.Message);
+            Assert.False(session.DeleteAsync(customer).Result);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -484,7 +481,7 @@ namespace MicroLite.Tests.Core
         }
 
         [Fact]
-        public void DeleteTypeByIdentifierAndVersionThrowsDBConcurrencyExceptionIfRecordNotDeleted()
+        public void DeleteTypeByIdentifierAndVersionReturnsFalseIfNoRecordsDeleted()
         {
             var type = typeof(CustomerWithVersion);
             var identifier = 1234;
@@ -510,10 +507,7 @@ namespace MicroLite.Tests.Core
                 new IInsertListener[0],
                 new IUpdateListener[0]);
 
-            var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(type, identifier, version).Wait());
-
-            Assert.IsType<DBConcurrencyException>(exception.InnerException);
-            Assert.Equal(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith("", "CustomerWithVersions", "Version"), exception.InnerException.Message);
+            Assert.False(session.DeleteAsync(type, identifier, version).Result);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -1296,7 +1290,7 @@ namespace MicroLite.Tests.Core
         }
 
         [Fact]
-        public void UpdateInstanceThrowsDBConcurrencyExceptionIfRecordNotUpdated()
+        public void UpdateInstanceUsingVersioningReturnsFalseIfNoRecordsUpdated()
         {
             var customer = new CustomerWithVersion
             {
@@ -1326,10 +1320,7 @@ namespace MicroLite.Tests.Core
                 new IInsertListener[0],
                 new IUpdateListener[0]);
 
-            var exception = Assert.Throws<AggregateException>(() => session.UpdateAsync(customer).Wait());
-
-            Assert.IsType<DBConcurrencyException>(exception.InnerException);
-            Assert.Equal(ExceptionMessages.Session_UpdateOptimisticConcurrencyError.FormatWith("", "CustomerWithVersions", "Version"), exception.InnerException.Message);
+            Assert.False(session.UpdateAsync(customer).Result);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
