@@ -431,6 +431,46 @@
             }
         }
 
+        public class WhenUsingVersionNotUsingDefaultSettings : UnitTest
+        {
+            private readonly IObjectInfo objectInfo;
+
+            public WhenUsingVersionNotUsingDefaultSettings()
+            {
+                var settings = UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned);
+                settings.IsVersion = (PropertyInfo propertyInfo) => propertyInfo.Name.ToLowerInvariant().Equals("rowid");
+
+                var mappingConvention = new ConventionMappingConvention(settings);
+
+                this.objectInfo = mappingConvention.CreateObjectInfo(typeof (CustomerWithCustomVersion));
+            }
+
+            [Fact]
+            public void TheRowIdColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.Int32,
+                    this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "RowId").DbType);
+            }
+
+            [Fact]
+            public void TheRowIdColumnDbTypeShouldBeVersion()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "RowId").IsVersion);
+            }
+
+            [Fact]
+            public void TheRowIdColumnDbTypeShouldAllowInsert()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "RowId").AllowInsert);
+            }
+
+            [Fact]
+            public void TheRowIdColumnShouldAllowUpdate()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "RowId").AllowUpdate);
+            }
+        }
+
         public class WhenTheClassIdentifierIsPrefixedWithTheClassName : UnitTest
         {
             private readonly IObjectInfo objectInfo;
@@ -883,6 +923,45 @@
             public void TheWebsiteShouldNotHaveASequenceName()
             {
                 Assert.Null(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Website").SequenceName);
+            }
+        }
+
+        public class WhenUsingVersionUsingDefaultSettings : UnitTest
+        {
+            private readonly IObjectInfo objectInfo;
+
+            public WhenUsingVersionUsingDefaultSettings()
+            {
+                var settings = UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned);
+
+                var mappingConvention = new ConventionMappingConvention(settings);
+
+                this.objectInfo = mappingConvention.CreateObjectInfo(typeof(CustomerWithVersion));
+            }
+
+            [Fact]
+            public void TheRowIdColumnDbTypeShouldBeSet()
+            {
+                Assert.Equal(DbType.Int32,
+                    this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Version").DbType);
+            }
+
+            [Fact]
+            public void TheRowIdColumnDbTypeShouldBeVersion()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Version").IsVersion);
+            }
+
+            [Fact]
+            public void TheRowIdColumnDbTypeShouldAllowInsert()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Version").AllowInsert);
+            }
+
+            [Fact]
+            public void TheRowIdColumnShouldAllowUpdate()
+            {
+                Assert.True(this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Version").AllowUpdate);
             }
         }
     }
