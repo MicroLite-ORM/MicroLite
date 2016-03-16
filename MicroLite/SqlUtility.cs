@@ -17,6 +17,7 @@ namespace MicroLite
     using System.Globalization;
     using System.Linq;
     using System.Text;
+    using System.Text.RegularExpressions;
 
     /// <summary>
     /// A utility class containing useful methods for manipulating SQL.
@@ -119,16 +120,17 @@ namespace MicroLite
             var argsAdded = 0;
             var parameterPrefix = parameterNames[0].Substring(0, parameterNames[0].IndexOfAny(digits));
 
-            var predicateReWriter = new StringBuilder(sql);
+            var result = sql;
 
-            foreach (var parameterName in parameterNames.OrderByDescending(n => n))
+            foreach (var parameterName in parameterNames.OrderByDescending(n => n.Replace(parameterPrefix, string.Empty).PadLeft(9, '0')))
             {
                 var newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
 
-                predicateReWriter.Replace(parameterName, newParameterName);
+                var regex = new Regex(string.Format(CultureInfo.InvariantCulture, "({0})(?=${{1}}|\\D{{1}})", parameterName));
+                result = regex.Replace(result, newParameterName);
             }
 
-            return predicateReWriter.ToString();
+            return result;
         }
 
         private static int GetParameterPosition(string commandText, int position, char[] matchParameterIdentifiers)
