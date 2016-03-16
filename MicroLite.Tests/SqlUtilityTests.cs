@@ -276,11 +276,28 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
         }
 
         [Fact]
+        public void GetParameterNamesWithTwentyTwoNamedParameters()
+        {
+            var parameterNames = SqlUtility.GetParameterNames("SELECT * FROM [ref_KalibreOmiSiteStatusAggregation] WHERE [AggregationTime] >= @p0 AND [AggregationTime] <= @p1 AND [OmiId] IN (@p2,@p3,@p4,@p5,@p6,@p7,@p8,@p9,@p10,@p11,@p12,@p13,@p14,@p15,@p16,@p17,@p18,@p19,@p20,@p21)");
+
+            Assert.NotNull(parameterNames);
+            Assert.Equal(22, parameterNames.Count);
+        }
+
+        [Fact]
         public void ReNumberParametersNoExistingArgumentsWithAtPrefix()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", totalArgumentCount: 2);
 
             Assert.Equal("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersNoExistingArgumentsWithTwentyTwoAtPrefix()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= @p0 AND [Column2] <= @p1 AND [Column3] IN(@p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21)", totalArgumentCount: 22);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= @p0 AND [Column2] <= @p1 AND [Column3] IN(@p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21)", commandText);
         }
 
         [Fact]
@@ -292,6 +309,14 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
         }
 
         [Fact]
+        public void ReNumberParametersNoExistingArgumentsWithTwentyTwoAtPrefixAndMoreThanPrefixCharacter()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= @param0 AND [Column2] <= @param1 AND [Column3] IN(@param2, @param3, @param4, @param5, @param6, @param7, @param8, @param9, @param10, @param11, @param12, @param13, @param14, @param15, @param16, @param17, @param18, @param19, @param20, @param21)", totalArgumentCount: 22);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= @param0 AND [Column2] <= @param1 AND [Column3] IN(@param2, @param3, @param4, @param5, @param6, @param7, @param8, @param9, @param10, @param11, @param12, @param13, @param14, @param15, @param16, @param17, @param18, @param19, @param20, @param21)", commandText);
+        }
+
+        [Fact]
         public void ReNumberParametersNoExistingArgumentsWithColonPrefix()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = :p0 OR :p0 IS NULL) AND Column2 = :p1", totalArgumentCount: 2);
@@ -300,11 +325,27 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
         }
 
         [Fact]
+        public void ReNumberParametersNoExistingArgumentsWithTwentyTwoColonPrefix()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= :p0 AND [Column2] <= :p1 AND [Column3] IN(:p2, :p3, :p4, :p5, :p6, :p7, :p8, :p9, :p10, :p11, :p12, :p13, :p14, :p15, :p16, :p17, :p18, :p19, :p20, :p21)", totalArgumentCount: 22);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= :p0 AND [Column2] <= :p1 AND [Column3] IN(:p2, :p3, :p4, :p5, :p6, :p7, :p8, :p9, :p10, :p11, :p12, :p13, :p14, :p15, :p16, :p17, :p18, :p19, :p20, :p21)", commandText);
+        }
+
+        [Fact]
         public void ReNumberParametersNoExistingArgumentsWithColonPrefixAndMoreThanPrefixCharacter()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = :param0 OR :param0 IS NULL) AND Column2 = :param1", totalArgumentCount: 2);
 
             Assert.Equal("(Column1 = :param0 OR :param0 IS NULL) AND Column2 = :param1", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersNoExistingArgumentsWithTwentyTwoColonPrefixAndMoreThanPrefixCharacter()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= :param0 AND [Column2] <= :param1 AND [Column3] IN(:param2, :param3, :param4, :param5, :param6, :param7, :param8, :param9, :param10, :param11, :param12, :param13, :param14, :param15, :param16, :param17, :param18, :param19, :param20, :param21)", totalArgumentCount: 22);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= :param0 AND [Column2] <= :param1 AND [Column3] IN(:param2, :param3, :param4, :param5, :param6, :param7, :param8, :param9, :param10, :param11, :param12, :param13, :param14, :param15, :param16, :param17, :param18, :param19, :param20, :param21)", commandText);
         }
 
         [Fact]
@@ -322,6 +363,14 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
 
             Assert.Equal("(Column1 = @p2 OR @p2 IS NULL) AND Column2 = @p3", commandText);
         }
+        
+        [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithTwentyTwoAtPrefix()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= @p0 AND [Column2] <= @p1 AND [Column3] IN(@p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21)", totalArgumentCount: 25);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= @p3 AND [Column2] <= @p4 AND [Column3] IN(@p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, @p24)", commandText);
+        }
 
         [Fact]
         public void ReNumberParametersWithExistingArgumentsWithAtPrefixAndMoreThanPrefixCharacter()
@@ -329,6 +378,14 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
             var commandText = SqlUtility.RenumberParameters("(Column1 = @param0 OR @param0 IS NULL) AND Column2 = @param1", totalArgumentCount: 4);
 
             Assert.Equal("(Column1 = @param2 OR @param2 IS NULL) AND Column2 = @param3", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithTwentyTwoAtPrefixAndMoreThanPrefixCharacter()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= @param0 AND [Column2] <= @param1 AND [Column3] IN(@param2, @param3, @param4, @param5, @param6, @param7, @param8, @param9, @param10, @param11, @param12, @param13, @param14, @param15, @param16, @param17, @param18, @param19, @param20, @param21)", totalArgumentCount: 25);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= @param3 AND [Column2] <= @param4 AND [Column3] IN(@param5, @param6, @param7, @param8, @param9, @param10, @param11, @param12, @param13, @param14, @param15, @param16, @param17, @param18, @param19, @param20, @param21, @param22, @param23, @param24)", commandText);
         }
 
         [Fact]
@@ -340,11 +397,27 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
         }
 
         [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithTwentyTwoColonPrefix()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= :p0 AND [Column2] <= :p1 AND [Column3] IN(:p2, :p3, :p4, :p5, :p6, :p7, :p8, :p9, :p10, :p11, :p12, :p13, :p14, :p15, :p16, :p17, :p18, :p19, :p20, :p21)", totalArgumentCount: 25);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= :p3 AND [Column2] <= :p4 AND [Column3] IN(:p5, :p6, :p7, :p8, :p9, :p10, :p11, :p12, :p13, :p14, :p15, :p16, :p17, :p18, :p19, :p20, :p21, :p22, :p23, :p24)", commandText);
+        }
+
+        [Fact]
         public void ReNumberParametersWithExistingArgumentsWithColonPrefixAndMoreThanPrefixCharacter()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = :param0 OR :param0 IS NULL) AND Column2 = :param1", totalArgumentCount: 4);
 
             Assert.Equal("(Column1 = :param2 OR :param2 IS NULL) AND Column2 = :param3", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithTwentyTwoColonPrefixAndMoreThanPrefixCharacter()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= :param0 AND [Column2] <= :param1 AND [Column3] IN(:param2, :param3, :param4, :param5, :param6, :param7, :param8, :param9, :param10, :param11, :param12, :param13, :param14, :param15, :param16, :param17, :param18, :param19, :param20, :param21)", totalArgumentCount: 25);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= :param3 AND [Column2] <= :param4 AND [Column3] IN(:param5, :param6, :param7, :param8, :param9, :param10, :param11, :param12, :param13, :param14, :param15, :param16, :param17, :param18, :param19, :param20, :param21, :param22, :param23, :param24)", commandText);
         }
     }
 }
