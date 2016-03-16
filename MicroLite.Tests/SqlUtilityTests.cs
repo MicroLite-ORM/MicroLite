@@ -278,7 +278,7 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
         [Fact]
         public void GetParameterNamesWithTwentyTwoNamedParameters()
         {
-            var parameterNames = SqlUtility.GetParameterNames("SELECT * FROM [ref_KalibreOmiSiteStatusAggregation] WHERE [AggregationTime] >= @p0 AND [AggregationTime] <= @p1 AND [OmiId] IN (@p2,@p3,@p4,@p5,@p6,@p7,@p8,@p9,@p10,@p11,@p12,@p13,@p14,@p15,@p16,@p17,@p18,@p19,@p20,@p21)");
+            var parameterNames = SqlUtility.GetParameterNames("SELECT * FROM [Table1] WHERE [Column1] >= @p0 AND [Column2] <= @p1 AND [Column3] IN (@p2,@p3,@p4,@p5,@p6,@p7,@p8,@p9,@p10,@p11,@p12,@p13,@p14,@p15,@p16,@p17,@p18,@p19,@p20,@p21)");
 
             Assert.NotNull(parameterNames);
             Assert.Equal(22, parameterNames.Count);
