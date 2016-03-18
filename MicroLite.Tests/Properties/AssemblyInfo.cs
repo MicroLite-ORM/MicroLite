@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MicroLite")]
 [assembly: AssemblyProduct("MicroLite.Tests")]
-[assembly: AssemblyCopyright("Copyright 2012 - 2015 Project Contributors all rights reserved.")]
+[assembly: AssemblyCopyright("Copyright 2012 - 2016 Project Contributors all rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
