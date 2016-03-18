@@ -5,7 +5,9 @@ There are a number of ways you can contribute to the MicroLite project:
 
 * Identifying defects - send us a failing unit test
 * Fixing defects - send us a fix and supporting unit test(s)
-* Implementing features - send us code and unit tests for any enhancement listed in the issues list https://github.com/TrevorPilley/MicroLite/issues
+* Implementing features - send us code and unit tests for any enhancement listed in the [issues list](https://github.com/TrevorPilley/MicroLite/issues)
+
+_note: if the defect is one you have identified, please add it as an issue before sending a fix_
 
 In order to contribute any code, you will need to fork the MicroLite repository and then:
 
