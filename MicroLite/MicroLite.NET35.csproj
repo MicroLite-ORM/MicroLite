@@ -197,6 +197,7 @@
     <Compile Include="ObjectDelta.cs" />
     <Compile Include="PagedResult.cs" />
     <Compile Include="PagingOptions.cs" />
+    <Compile Include="ParameterNameComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlArgument.cs" />
     <Compile Include="SqlQuery.cs" />

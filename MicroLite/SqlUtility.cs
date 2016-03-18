@@ -121,11 +121,22 @@ namespace MicroLite
 
             var predicateReWriter = new StringBuilder(sql);
 
-            foreach (var parameterName in parameterNames.OrderByDescending(n => n))
+            foreach (var parameterName in parameterNames.OrderByDescending(n => n, ParameterNameComparer.Instance))
             {
                 var newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
 
-                predicateReWriter.Replace(parameterName, newParameterName);
+                if (totalArgumentCount < 20)
+                {
+                    predicateReWriter.Replace(parameterName, newParameterName);
+                }
+                else
+                {
+                    // If we have more than 20 args, we need to avoid replacing partials
+                    // e.g. Replace(@p2, @p1) could turn @p20 into @p10!
+                    predicateReWriter.Replace(parameterName + " ", newParameterName + " ");
+                    predicateReWriter.Replace(parameterName + ",", newParameterName + ",");
+                    predicateReWriter.Replace(parameterName + ")", newParameterName + ")");
+                }
             }
 
             return predicateReWriter.ToString();
