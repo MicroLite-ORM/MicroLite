@@ -175,6 +175,7 @@
     <Compile Include="Mapping\Attributes\ColumnAttribute.cs" />
     <Compile Include="Mapping\Attributes\IdentifierAttribute.cs" />
     <Compile Include="Mapping\Attributes\TableAttribute.cs" />
+    <Compile Include="Mapping\Attributes\VersionAttribute.cs" />
     <Compile Include="Mapping\ColumnInfo.cs" />
     <Compile Include="Mapping\ConventionMappingConvention.cs" />
     <Compile Include="Mapping\ConventionMappingSettings.cs" />

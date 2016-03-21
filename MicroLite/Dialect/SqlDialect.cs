@@ -98,6 +98,42 @@ namespace MicroLite.Dialect
         }
 
         /// <summary>
+        /// Builds an SqlQuery to delete the database record with the specified identifier and version for the type specified by the IObjectInfo.
+        /// </summary>
+        /// <param name="objectInfo">The object information.</param>
+        /// <param name="identifier">The identifier of the instance to delete.</param>
+        /// <param name="version">The version of the instance to delete.</param>
+        /// <returns>The created <see cref="SqlQuery"/>.</returns>
+        public SqlQuery BuildDeleteSqlQuery(IObjectInfo objectInfo, object identifier, object version)
+        {
+            if (objectInfo == null)
+            {
+                throw new ArgumentNullException("objectInfo");
+            }
+
+            if (log.IsDebug)
+            {
+                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "DELETE");
+            }
+
+            string deleteCommand;
+
+            if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out deleteCommand))
+            {
+                deleteCommand = this.BuildDeleteCommandText(objectInfo);
+
+                var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
+                newDeleteCommandCache[objectInfo.ForType] = deleteCommand;
+
+                this.deleteCommandCache = newDeleteCommandCache;
+            }
+
+            return objectInfo.TableInfo.VersionColumn == null
+                ? new SqlQuery(deleteCommand, new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType))
+                : new SqlQuery(deleteCommand, new SqlArgument(version, objectInfo.TableInfo.VersionColumn.DbType), new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType));
+        }
+
+        /// <summary>
         /// Builds an SqlQuery to insert a database record for the specified instance with the current property values of the instance.
         /// </summary>
         /// <param name="objectInfo">The object information.</param>
@@ -307,12 +343,22 @@ namespace MicroLite.Dialect
                 throw new ArgumentNullException("objectInfo");
             }
 
-            var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
-                .From(objectInfo)
-                .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0)
-                .ToSqlQuery();
+            var builder = new DeleteSqlBuilder(this.SqlCharacters)
+                .From(objectInfo);
 
-            return deleteSqlQuery.CommandText;
+            if (objectInfo.TableInfo.VersionColumn == null)
+            {
+                builder
+                    .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0);
+            }
+            else
+            {
+                builder
+                    .Where(objectInfo.TableInfo.VersionColumn.ColumnName).IsEqualTo(0)
+                    .AndWhere(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0);
+            }
+
+            return builder.ToSqlQuery().CommandText;
         }
 
         /// <summary>
@@ -400,11 +446,19 @@ namespace MicroLite.Dialect
                 }
             }
 
-            var updateSqlQuery = builder
-                .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0)
-                .ToSqlQuery();
+            if (objectInfo.TableInfo.VersionColumn == null)
+            {
+                builder
+                    .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0);
+            }
+            else
+            {
+                builder
+                    .Where(objectInfo.TableInfo.VersionColumn.ColumnName).IsEqualTo(0)
+                    .AndWhere(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0);
+            }
 
-            return updateSqlQuery.CommandText;
+            return builder.ToSqlQuery().CommandText;
         }
     }
 }

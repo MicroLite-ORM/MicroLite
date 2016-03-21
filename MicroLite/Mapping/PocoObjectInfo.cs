@@ -29,8 +29,10 @@ namespace MicroLite.Mapping
         private readonly Func<object, object> getIdentifierValue;
         private readonly Func<object, SqlArgument[]> getInsertValues;
         private readonly Func<object, SqlArgument[]> getUpdateValues;
+        private readonly Func<object, object> getVersionValue;
         private readonly Func<IDataReader, object> instanceFactory;
         private readonly Action<object, object> setIdentifierValue;
+        private readonly Action<object, object> setVersionValue;
         private readonly TableInfo tableInfo;
 
         /// <summary>
@@ -67,6 +69,11 @@ namespace MicroLite.Mapping
                 this.getInsertValues = DelegateFactory.CreateGetInsertValues(this);
                 this.getUpdateValues = DelegateFactory.CreateGetUpdateValues(this);
                 this.setIdentifierValue = DelegateFactory.CreateSetIdentifier(this);
+                if (this.tableInfo.VersionColumn != null)
+                {
+                    this.getVersionValue = DelegateFactory.CreateGetVersion(this);
+                    this.setVersionValue = DelegateFactory.CreateSetVersion(this);
+                }
             }
 
             this.instanceFactory = DelegateFactory.CreateInstanceFactory(this);
@@ -269,6 +276,38 @@ namespace MicroLite.Mapping
             }
         }
 
+        /// <summary>
+        /// Gets the property value for the object version.
+        /// </summary>
+        /// <param name="instance">The instance to retrieve the value from.</param>
+        /// <returns>The value of the version property.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
+        public object GetVersionValue(object instance)
+        {
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            this.VerifyVersionMapped();
+
+            var value = this.getVersionValue(instance);
+
+            return value;
+        }
+
+        /// <summary>
+        /// Sets the property value for the version to the supplied value.
+        /// </summary>
+        /// <param name="instance">The instance to set the value for.</param>
+        /// <param name="version">The value to set as the version property.</param>
+        /// <exception cref="ArgumentNullException">Thrown if instance is null.</exception>
+        /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
+        public void SetVersionValue(object instance, object version)
+        {
+            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            this.VerifyVersionMapped();
+
+            this.setVersionValue(instance, version);
+        }
+
         private void VerifyIdentifierMapped()
         {
             if (this.tableInfo.IdentifierColumn == null)
@@ -288,6 +327,15 @@ namespace MicroLite.Mapping
             if (instance.GetType() != this.ForType)
             {
                 throw new MappingException(ExceptionMessages.PocoObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
+            }
+        }
+
+        private void VerifyVersionMapped()
+        {
+            if (this.tableInfo.VersionColumn == null)
+            {
+                throw new MicroLiteException(
+                    ExceptionMessages.PocoObjectInfo_NoVersionColumn.FormatWith(this.tableInfo.Schema ?? string.Empty, this.tableInfo.Name));
             }
         }
     }

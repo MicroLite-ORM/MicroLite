@@ -25,5 +25,11 @@ namespace MicroLite.FrameworkExtensions
         {
             return string.Format(value, arg0, arg1);
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)", Justification = "We're not formatting numeric values and this overload saves the cost of the params array.")]
+        internal static string FormatWith(this string value, string arg0, string arg1, string arg2)
+        {
+            return string.Format(value, arg0, arg1, arg2);
+        }
     }
 }
