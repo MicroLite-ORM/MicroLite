@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="SqlUtility.cs" company="MicroLite">
 // Copyright 2012 - 2016 Project Contributors
 //
@@ -117,25 +117,18 @@ namespace MicroLite
             }
 
             var argsAdded = 0;
+            var charIndex = 0;
             var parameterPrefix = parameterNames[0].Substring(0, parameterNames[0].IndexOfAny(digits));
-
-            var predicateReWriter = new StringBuilder(sql);
+            var predicateReWriter = new StringBuilder(sql, capacity: sql.Length + parameterNames.Count);
 
             foreach (var parameterName in parameterNames.OrderByDescending(n => n, ParameterNameComparer.Instance))
             {
+                charIndex = sql.Length;
                 var newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
 
-                if (totalArgumentCount < 20)
+                while ((charIndex = sql.LastIndexOf(parameterName, charIndex, StringComparison.Ordinal)) > -1)
                 {
-                    predicateReWriter.Replace(parameterName, newParameterName);
-                }
-                else
-                {
-                    // If we have more than 20 args, we need to avoid replacing partials
-                    // e.g. Replace(@p2, @p1) could turn @p20 into @p10!
-                    predicateReWriter.Replace(parameterName + " ", newParameterName + " ");
-                    predicateReWriter.Replace(parameterName + ",", newParameterName + ",");
-                    predicateReWriter.Replace(parameterName + ")", newParameterName + ")");
+                    predicateReWriter.Replace(parameterName, newParameterName, charIndex, parameterName.Length);
                 }
             }
 
