@@ -1,6 +1,6 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="SqlUtility.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -117,15 +117,19 @@ namespace MicroLite
             }
 
             var argsAdded = 0;
+            var charIndex = 0;
             var parameterPrefix = parameterNames[0].Substring(0, parameterNames[0].IndexOfAny(digits));
+            var predicateReWriter = new StringBuilder(sql, capacity: sql.Length + parameterNames.Count);
 
-            var predicateReWriter = new StringBuilder(sql);
-
-            foreach (var parameterName in parameterNames.OrderByDescending(n => n))
+            foreach (var parameterName in parameterNames.OrderByDescending(n => n, ParameterNameComparer.Instance))
             {
+                charIndex = sql.Length;
                 var newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
 
-                predicateReWriter.Replace(parameterName, newParameterName);
+                while ((charIndex = sql.LastIndexOf(parameterName, charIndex, StringComparison.Ordinal)) > -1)
+                {
+                    predicateReWriter.Replace(parameterName, newParameterName, charIndex, parameterName.Length);
+                }
             }
 
             return predicateReWriter.ToString();

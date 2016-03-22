@@ -198,6 +198,7 @@
     <Compile Include="ObjectDelta.cs" />
     <Compile Include="PagedResult.cs" />
     <Compile Include="PagingOptions.cs" />
+    <Compile Include="ParameterNameComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlArgument.cs" />
     <Compile Include="SqlQuery.cs" />
@@ -231,6 +232,7 @@
     <None Include="Mapping\Inflection\_Inflection.cd" />
     <None Include="Mapping\_MappingConvention.cd" />
     <None Include="Mapping\_ObjectInfo.cd" />
+    <None Include="packages.config" />
     <None Include="TypeConverters\_TypeConverters.cd" />
     <None Include="_Session.cd" />
   </ItemGroup>

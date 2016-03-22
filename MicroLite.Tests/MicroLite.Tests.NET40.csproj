@@ -121,6 +121,7 @@
     <Compile Include="ObjectDeltaTests.cs" />
     <Compile Include="PagedResultTests.cs" />
     <Compile Include="PagingOptionsTests.cs" />
+    <Compile Include="ParameterNameComparerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlArgumentTests.cs" />
     <Compile Include="SqlQueryTests.cs" />
