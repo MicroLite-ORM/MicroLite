@@ -85,7 +85,7 @@ namespace MicroLite.Core
 
             SqlCharacters.Current = this.sqlDialect.SqlCharacters;
 
-            return new AsyncSession(connectionScope, this.sqlDialect, this.dbDriver, Listener.DeleteListeners, Listener.InsertListener, Listener.UpdateListeners);
+            return new AsyncSession(connectionScope, this.sqlDialect, this.dbDriver, new SessionListeners(Listener.DeleteListeners, Listener.InsertListener, Listener.UpdateListeners));
         }
 
 #endif
@@ -121,7 +121,7 @@ namespace MicroLite.Core
 
             SqlCharacters.Current = this.sqlDialect.SqlCharacters;
 
-            return new Session(connectionScope, this.sqlDialect, this.dbDriver, Listener.DeleteListeners, Listener.InsertListener, Listener.UpdateListeners);
+            return new Session(connectionScope, this.sqlDialect, this.dbDriver, new SessionListeners(Listener.DeleteListeners, Listener.InsertListener, Listener.UpdateListeners));
         }
     }
 }

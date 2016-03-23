@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="InsertListenerCollection.cs" company="MicroLite">
+// <copyright file="StackCollection{T}.cs" company="MicroLite">
 // Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,21 +10,21 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-namespace MicroLite.Listeners
+namespace MicroLite.Collections
 {
     using System.Collections.ObjectModel;
 
     /// <summary>
-    /// The class which contains the <see cref="IInsertListener"/>s used by the MicroLite ORM framework.
+    /// A <see cref="Collection{T}"/> which imitates a stack whilst keeping the usual Add method.
     /// </summary>
-    public sealed class InsertListenerCollection : Collection<IInsertListener>
+    /// <typeparam name="T">The type contained in the collection</typeparam>
+    internal sealed class StackCollection<T> : Collection<T>
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="InsertListenerCollection"/> class.
+        /// Initialises a new instance of the <see cref="StackCollection{T}"/> class.
         /// </summary>
-        public InsertListenerCollection()
+        public StackCollection()
         {
-            this.Items.Insert(0, new IdentifierStrategyListener());
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace MicroLite.Listeners
         /// </summary>
         /// <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
         /// <param name="item">The object to insert. The value can be null for reference types.</param>
-        protected override void InsertItem(int index, IInsertListener item)
+        protected override void InsertItem(int index, T item)
         {
             // In order to maintain the behaviour of a stack, keep inserting at position 0 which will shift the items down.
             this.Items.Insert(0, item);

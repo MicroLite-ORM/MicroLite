@@ -12,19 +12,22 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Listeners
 {
+    using System.Collections.Generic;
+    using MicroLite.Collections;
+
     /// <summary>
     /// Static entry point for listener collections.
     /// </summary>
     public static class Listener
     {
-        private static readonly DeleteListenerCollection deleteListeners = new DeleteListenerCollection();
-        private static readonly InsertListenerCollection insertListeners = new InsertListenerCollection();
-        private static readonly UpdateListenerCollection updateListeners = new UpdateListenerCollection();
+        private static readonly StackCollection<IDeleteListener> deleteListeners = new StackCollection<IDeleteListener>();
+        private static readonly StackCollection<IInsertListener> insertListeners = new StackCollection<IInsertListener>();
+        private static readonly StackCollection<IUpdateListener> updateListeners = new StackCollection<IUpdateListener>();
 
         /// <summary>
         /// Gets the listener collection which contains all registered <see cref="IDeleteListener"/>s.
         /// </summary>
-        public static DeleteListenerCollection DeleteListeners
+        public static IList<IDeleteListener> DeleteListeners
         {
             get
             {
@@ -35,7 +38,7 @@ namespace MicroLite.Listeners
         /// <summary>
         /// Gets the listener collection which contains all registered <see cref="IInsertListener"/>s.
         /// </summary>
-        public static InsertListenerCollection InsertListener
+        public static IList<IInsertListener> InsertListener
         {
             get
             {
@@ -46,7 +49,7 @@ namespace MicroLite.Listeners
         /// <summary>
         /// Gets the listener collection which contains all registered <see cref="IUpdateListener"/>s.
         /// </summary>
-        public static UpdateListenerCollection UpdateListeners
+        public static IList<IUpdateListener> UpdateListeners
         {
             get
             {

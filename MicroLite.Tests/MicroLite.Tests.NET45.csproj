@@ -70,6 +70,7 @@
     <Compile Include="Characters\SqlCharactersTests.cs" />
     <Compile Include="Characters\SQLiteCharactersTests.cs" />
     <Compile Include="Characters\SqlServerCeCharactersTests.cs" />
+    <Compile Include="Collections\StackCollectionTests.cs" />
     <Compile Include="Configuration\ConfigurationExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureTests.cs" />
@@ -99,10 +100,7 @@
     <Compile Include="Driver\PostgreSqlDbDriverTests.cs" />
     <Compile Include="Driver\SQLiteDbDriverTests.cs" />
     <Compile Include="Driver\SqlServerCeDbDriverTests.cs" />
-    <Compile Include="Listeners\DeleteListenerCollectionTests.cs" />
     <Compile Include="Listeners\IdentifierStrategyListenerTests.cs" />
-    <Compile Include="Listeners\InsertListenerCollectionTests.cs" />
-    <Compile Include="Listeners\UpdateListenerCollectionTests.cs" />
     <Compile Include="Logging\LogManagerTests.cs" />
     <Compile Include="Mapping\Attributes\AttributeMappingConventionTests.cs" />
     <Compile Include="Mapping\Attributes\ColumnAttributeTests.cs" />

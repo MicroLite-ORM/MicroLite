@@ -92,6 +92,7 @@
     <Compile Include="Characters\SQLiteCharacters.cs" />
     <Compile Include="Characters\SqlServerCeCharacters.cs" />
     <Compile Include="Clauses.cs" />
+    <Compile Include="Collections\StackCollection{T}.cs" />
     <Compile Include="Configuration\ConfigurationException.cs" />
     <Compile Include="Configuration\ConfigurationExtensions.cs" />
     <Compile Include="Configuration\Configure.cs" />
@@ -154,14 +155,12 @@
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="ITransaction.cs" />
-    <Compile Include="Listeners\DeleteListenerCollection.cs" />
     <Compile Include="Listeners\IDeleteListener.cs" />
     <Compile Include="Listeners\IdentifierStrategyListener.cs" />
     <Compile Include="Listeners\IInsertListener.cs" />
     <Compile Include="Listeners\IUpdateListener.cs" />
     <Compile Include="Listeners\Listener.cs" />
-    <Compile Include="Listeners\InsertListenerCollection.cs" />
-    <Compile Include="Listeners\UpdateListenerCollection.cs" />
+    <Compile Include="Listeners\SessionListeners.cs" />
     <Compile Include="Logging\EmptyLog.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LogManager.cs" />
