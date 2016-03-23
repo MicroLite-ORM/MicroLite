@@ -19,6 +19,12 @@ namespace MicroLite.Logging
     /// </summary>
     internal sealed class EmptyLog : ILog
     {
+        private static readonly ILog instance = new EmptyLog();
+
+        private EmptyLog()
+        {
+        }
+
         public bool IsDebug
         {
             get
@@ -56,6 +62,14 @@ namespace MicroLite.Logging
             get
             {
                 return false;
+            }
+        }
+
+        internal static ILog Instance
+        {
+            get
+            {
+                return instance;
             }
         }
 
