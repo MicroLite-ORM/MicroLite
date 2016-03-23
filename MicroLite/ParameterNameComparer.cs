@@ -16,7 +16,7 @@ namespace MicroLite
     using System.Collections.Generic;
 
     /// <summary>
-    /// An implementation of <see cref="IComparer&lt;string&gt;"/> to sort parameter names.
+    /// An implementation of <see cref="IComparer&lt;T&gt;"/> to sort parameter names.
     /// </summary>
     /// <remarks>
     /// A special use case to ensure that @p9 is sorted after @p10 which is not the case with standard string sorting.
