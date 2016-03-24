@@ -230,6 +230,7 @@
     <None Include="Mapping\Inflection\_Inflection.cd" />
     <None Include="Mapping\_MappingConvention.cd" />
     <None Include="Mapping\_ObjectInfo.cd" />
+    <None Include="packages.config" />
     <None Include="TypeConverters\_TypeConverters.cd" />
     <None Include="_Session.cd" />
   </ItemGroup>
