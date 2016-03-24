@@ -24,6 +24,7 @@ The NuGet Package contains binaries compiled against:
 * .NET 3.5 (Client Profile)
 * .NET 4.0 (Client Profile)
 * .NET 4.5
+* .NET 4.6
 
 ## SQL Support
 

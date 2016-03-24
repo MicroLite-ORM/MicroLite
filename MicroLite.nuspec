@@ -21,6 +21,8 @@
     <file src="..\build\4.0\MicroLite.xml" target="lib\net40-client" />
     <file src="..\build\4.5\MicroLite.dll" target="lib\net45" />
     <file src="..\build\4.5\MicroLite.xml" target="lib\net45" />
+    <file src="..\build\4.6\MicroLite.dll" target="lib\net46" />
+    <file src="..\build\4.6\MicroLite.xml" target="lib\net46" />
     <file src="..\build\help\MicroLite.chm" target="" />
   </files>
 </package>

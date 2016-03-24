@@ -8,7 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7359dbc5-fdb0-429b-af32-b504f5be93ad}</ProjectGuid>
-    <SHFBSchemaVersion>1.9.9.0</SHFBSchemaVersion>
+    <SHFBSchemaVersion>2015.6.5.0</SHFBSchemaVersion>
     <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual
          Studio adds them anyway -->
     <AssemblyName>Documentation</AssemblyName>
@@ -25,37 +25,37 @@
     <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <DocumentationSources>
-      <DocumentationSource sourceFile="build\4.5\MicroLite.dll" />
-      <DocumentationSource sourceFile="build\4.5\MicroLite.xml" />
-    </DocumentationSources>
+      <DocumentationSource sourceFile="build\4.6\MicroLite.dll" />
+<DocumentationSource sourceFile="build\4.6\MicroLite.xml" /></DocumentationSources>
     <SyntaxFilters>C#</SyntaxFilters>
     <ProjectSummary>MicroLite ORM Framework</ProjectSummary>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="MicroLite" isDocumented="True">The root namespace, contains the main interfaces and classes required to use MicroLite ORM.
 
 For further information, see the MicroLite blog at http://microliteorm.wordpress.com/</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Configuration" isDocumented="True">Contains the classes and interfaces used to configure MicroLite ORM.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Listeners" isDocumented="True">Contains the classes and interfaces which are allow custom code to be called throughout the session requests.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Logging" isDocumented="True">Contains the interface used abstract the logging functionality.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Mapping" isDocumented="True">Contains the classes and interfaces required to map classes to tables.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Infrastructure" isDocumented="True">Contains the classes and interfaces to be used by extensions to MicroLite ORM.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Dialect" isDocumented="True">Contains the classes and interfaces used to generate database specific SQL.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Mapping.Inflection" isDocumented="True">Contains the classes and interfaces required to perform language specific inflection for convention based mapping.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.TypeConverters" isDocumented="True">Contains the classes and interfaces required to convert values between .NET types and database types.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Builder" isDocumented="True">Contains the SqlBuilder classes.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Driver" isDocumented="True">Contains the classes and interfaces used to communicate with different databases.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Builder.Syntax" isDocumented="True">Contains the SqlBuilder fluent interface.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Builder.Syntax.Read" isDocumented="True">Contains the SqlBuilder fluent interface for the read methods.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Builder.Syntax.Write" isDocumented="True">Contains the SqlBuilder fluent interface for the write methods.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Characters" isDocumented="True">Contains the lightweight classes used to format database specific SQL.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Mapping.Attributes" isDocumented="True">Contains the attribute classes required to map classes to tables.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Builder (Group)" isGroup="True" isDocumented="True">Contains the SqlBuilder classes.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="MicroLite.Mapping (Group)" isGroup="True" isDocumented="True">Contains the classes and interfaces required to map classes to tables.</NamespaceSummaryItem></NamespaceSummaries>
+      <NamespaceSummaryItem name="MicroLite.Configuration" isDocumented="True">Contains the classes and interfaces used to configure MicroLite ORM.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Listeners" isDocumented="True">Contains the classes and interfaces which are allow custom code to be called throughout the session requests.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Logging" isDocumented="True">Contains the interface used abstract the logging functionality.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Mapping" isDocumented="True">Contains the classes and interfaces required to map classes to tables.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Infrastructure" isDocumented="True">Contains the classes and interfaces to be used by extensions to MicroLite ORM.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Dialect" isDocumented="True">Contains the classes and interfaces used to generate database specific SQL.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Mapping.Inflection" isDocumented="True">Contains the classes and interfaces required to perform language specific inflection for convention based mapping.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.TypeConverters" isDocumented="True">Contains the classes and interfaces required to convert values between .NET types and database types.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Builder" isDocumented="True">Contains the SqlBuilder classes.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Driver" isDocumented="True">Contains the classes and interfaces used to communicate with different databases.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Builder.Syntax" isDocumented="True">Contains the SqlBuilder fluent interface.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Builder.Syntax.Read" isDocumented="True">Contains the SqlBuilder fluent interface for the read methods.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Builder.Syntax.Write" isDocumented="True">Contains the SqlBuilder fluent interface for the write methods.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Characters" isDocumented="True">Contains the lightweight classes used to format database specific SQL.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Mapping.Attributes" isDocumented="True">Contains the attribute classes required to map classes to tables.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Builder (Group)" isGroup="True" isDocumented="True">Contains the SqlBuilder classes.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="MicroLite.Mapping (Group)" isGroup="True" isDocumented="True">Contains the classes and interfaces required to map classes to tables.</NamespaceSummaryItem>
+    </NamespaceSummaries>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <MissingTags>None</MissingTags>
     <NamingMethod>MemberName</NamingMethod>
     <IndentHtml>False</IndentHtml>
-    <FrameworkVersion>.NET Framework 4.5</FrameworkVersion>
+    <FrameworkVersion>.NET Framework 4.6</FrameworkVersion>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <CppCommentsFixup>False</CppCommentsFixup>
     <CleanIntermediates>True</CleanIntermediates>
@@ -65,7 +65,8 @@ For further information, see the MicroLite blog at http://microliteorm.wordpress
     <RootNamespaceContainer>True</RootNamespaceContainer>
     <Preliminary>False</Preliminary>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
-    <CatalogName>VisualStudio12</CatalogName>
+    <CatalogName>
+    </CatalogName>
     <TocParentId>-1</TocParentId>
     <TocParentVersion>100</TocParentVersion>
     <TopicVersion>100</TopicVersion>
