@@ -37,7 +37,7 @@ namespace MicroLite.Core
         /// <param name="reader">The <see cref="IDataReader"/> containing the results.</param>
         internal abstract void BuildValue(IDataReader reader);
 
-#if NET_4_5
+#if !NET35 && !NET40
 
         /// <summary>
         /// Builds the included value from the results in the data reader.

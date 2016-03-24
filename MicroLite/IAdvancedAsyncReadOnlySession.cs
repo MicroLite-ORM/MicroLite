@@ -12,7 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
-#if NET_4_5
+#if !NET35 && !NET40
 
     using System.Threading;
     using System.Threading.Tasks;

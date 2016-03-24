@@ -1,6 +1,6 @@
 ﻿namespace MicroLite.Tests.Core
 {
-#if NET_4_5
+#if !NET35 && !NET40
 
     using System;
     using System.Data;

@@ -11,7 +11,7 @@
     /// </summary>
     public class ObjectInfoTests : UnitTest
     {
-#if !NET_3_5
+#if !NET35
 
         [Fact]
         public void For_ReturnsExpandoObjectInfo_ForTypeOfDynamic()
@@ -44,7 +44,7 @@
             Assert.Same(objectInfo1, objectInfo2);
         }
 
-#if !NET_3_5
+#if !NET35
 
         [Fact]
         public void For_ReturnsTupleObjectInfo_ForTypeOfTupleT1()

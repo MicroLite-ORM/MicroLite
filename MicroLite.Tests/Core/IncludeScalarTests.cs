@@ -84,7 +84,7 @@
             }
         }
 
-#if NET_4_5
+#if !NET35 && !NET40
 
         public class ForAReferenceTypeWhenBuildValueAsyncHasBeenCalledAndThereAreNoResults
         {
@@ -319,7 +319,7 @@
             }
         }
 
-#if NET_4_5
+#if !NET35 && !NET40
 
         public class ForAValueTypeWhenBuildValueAsyncHasBeenCalledAndThereAreNoResults
         {
@@ -513,7 +513,7 @@
             }
         }
 
-#if NET_4_5
+#if !NET35 && !NET40
 
         public class WhenCallingBuildValueAsyncAndTheDataReaderContainsMultipleColumns
         {

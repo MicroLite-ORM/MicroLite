@@ -110,7 +110,7 @@ namespace MicroLite.Mapping
         {
             var dictionary = new Dictionary<Type, IObjectInfo>();
 
-#if !NET_3_5
+#if !NET35
             var expandoObjectInfo = new ExpandoObjectInfo();
             dictionary.Add(typeof(System.Dynamic.ExpandoObject), expandoObjectInfo);
             dictionary.Add(typeof(object), expandoObjectInfo); // If the generic argument <dynamic> is used (in ISession.Fetch for example), typeof(T) will return object.

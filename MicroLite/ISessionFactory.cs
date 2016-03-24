@@ -35,7 +35,7 @@ namespace MicroLite
             get;
         }
 
-#if NET_4_5
+#if !NET35 && !NET40
 
         /// <summary>
         /// Opens a new asynchronous read-only session to the database using <see cref="ConnectionScope"/>.PerTransaction.

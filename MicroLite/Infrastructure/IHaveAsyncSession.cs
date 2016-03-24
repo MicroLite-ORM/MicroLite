@@ -12,7 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Infrastructure
 {
-#if NET_4_5
+#if !NET35 && !NET40
 
     /// <summary>
     /// An interface for classes which have an <see cref="IAsyncSession"/> property.

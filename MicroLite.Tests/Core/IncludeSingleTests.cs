@@ -15,7 +15,7 @@
     /// </summary>
     public class IncludeSingleTests
     {
-#if NET_4_5
+#if !NET35 && !NET40
 
         public class WhenBuildValueAsyncHasBeenCalledAndThereAreNoResults
         {
@@ -262,7 +262,7 @@
             }
         }
 
-#if NET_4_5
+#if !NET35 && !NET40
 
         public class WhenCallingBuildValueAsyncAndTheDataReaderContainsMultipleResults
         {

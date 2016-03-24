@@ -8,7 +8,7 @@
 
     public class SqlCharactersTests : UnitTest
     {
-#if NET_4_0 || NET_4_5
+#if !NET35
 
         [Fact]
         public void CurrentIsVisibleAccrossTasks()

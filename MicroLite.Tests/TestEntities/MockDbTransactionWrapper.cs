@@ -1,6 +1,6 @@
 ﻿namespace MicroLite.Tests.TestEntities
 {
-#if NET_4_5
+#if !NET35 && !NET40
 
     using System.Data;
     using System.Data.Common;
