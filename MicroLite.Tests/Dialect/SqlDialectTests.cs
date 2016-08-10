@@ -274,13 +274,13 @@
             Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Id,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?,?)", sqlQuery.CommandText);
             Assert.Equal(7, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2].Value);
 
             Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
@@ -313,13 +313,13 @@
             Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Id,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?,?)", sqlQuery2.CommandText);
             Assert.Equal(7, sqlQuery2.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery2.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery2.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery2.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery2.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery2.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery2.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery2.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[2].Value);
 
             Assert.Equal(DbType.Int32, sqlQuery2.Arguments[3].DbType);
@@ -360,13 +360,13 @@
             Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2].Value);
 
             Assert.Equal(DbType.String, sqlQuery.Arguments[3].DbType);
@@ -396,13 +396,13 @@
             Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?)", sqlQuery2.CommandText);
             Assert.Equal(6, sqlQuery2.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery2.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery2.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery2.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery2.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery2.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery2.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery2.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[2].Value);
 
             Assert.Equal(DbType.String, sqlQuery2.Arguments[3].DbType);
@@ -440,13 +440,13 @@
             Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2].Value);
 
             Assert.Equal(DbType.String, sqlQuery.Arguments[3].DbType);
@@ -476,13 +476,13 @@
             Assert.Equal("INSERT INTO Sales.Customers (Created,CreditLimit,DateOfBirth,Name,CustomerStatusId,Website) VALUES (?,?,?,?,?,?)", sqlQuery2.CommandText);
             Assert.Equal(6, sqlQuery2.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery2.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery2.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery2.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery2.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery2.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery2.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery2.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[2].Value);
 
             Assert.Equal(DbType.String, sqlQuery2.Arguments[3].DbType);
@@ -573,7 +573,7 @@
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[0].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[0].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[1].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[1].Value);
 
             Assert.Equal(DbType.String, sqlQuery.Arguments[2].DbType);
@@ -582,7 +582,7 @@
             Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
             Assert.Equal((int)customer.Status, sqlQuery.Arguments[3].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[4].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[4].DbType);
             Assert.Equal(customer.Updated, sqlQuery.Arguments[4].Value);
 
             Assert.Equal(DbType.String, sqlQuery.Arguments[5].DbType);
@@ -612,7 +612,7 @@
             Assert.Equal(DbType.Decimal, sqlQuery2.Arguments[0].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery2.Arguments[0].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery2.Arguments[1].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery2.Arguments[1].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery2.Arguments[1].Value);
 
             Assert.Equal(DbType.String, sqlQuery2.Arguments[2].DbType);
@@ -621,7 +621,7 @@
             Assert.Equal(DbType.Int32, sqlQuery2.Arguments[3].DbType);
             Assert.Equal((int)customer.Status, sqlQuery2.Arguments[3].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery2.Arguments[4].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery2.Arguments[4].DbType);
             Assert.Equal(customer.Updated, sqlQuery2.Arguments[4].Value);
 
             Assert.Equal(DbType.String, sqlQuery2.Arguments[5].DbType);

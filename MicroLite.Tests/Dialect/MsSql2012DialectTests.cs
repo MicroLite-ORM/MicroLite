@@ -90,13 +90,13 @@
             Assert.Equal("INSERT INTO [Sales].[Customers] ([Created],[CreditLimit],[DateOfBirth],[Id],[Name],[CustomerStatusId],[Website]) VALUES (@p0,@p1,@p2,@p3,@p4,@p5,@p6)", sqlQuery.CommandText);
             Assert.Equal(7, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2].Value);
 
             Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
@@ -136,13 +136,13 @@
             Assert.Equal("INSERT INTO [Sales].[Customers] ([Created],[CreditLimit],[DateOfBirth],[Name],[CustomerStatusId],[Website]) VALUES (@p0,@p1,@p2,@p3,@p4,@p5)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2].Value);
 
             Assert.Equal(DbType.String, sqlQuery.Arguments[3].DbType);
@@ -179,13 +179,13 @@
             Assert.Equal("DECLARE @@id tinyint;SELECT @@id = NEXT VALUE FOR CustomerWithByteId_Id_Sequence;INSERT INTO [Sales].[CustomerWithByteIds] ([Id],[Created],[CreditLimit],[DateOfBirth],[Name],[CustomerStatusId],[Website]) VALUES (@@id,@p0,@p1,@p2,@p3,@p4,@p5)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2].Value);
 
             Assert.Equal(DbType.String, sqlQuery.Arguments[3].DbType);
@@ -222,13 +222,13 @@
             Assert.Equal("DECLARE @@id smallint;SELECT @@id = NEXT VALUE FOR CustomerWithShortId_Id_Sequence;INSERT INTO [Sales].[CustomerWithShortIds] ([Id],[Created],[CreditLimit],[DateOfBirth],[Name],[CustomerStatusId],[Website]) VALUES (@@id,@p0,@p1,@p2,@p3,@p4,@p5)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2].Value);
 
             Assert.Equal(DbType.String, sqlQuery.Arguments[3].DbType);
@@ -265,13 +265,13 @@
             Assert.Equal("DECLARE @@id int;SELECT @@id = NEXT VALUE FOR Customer_Id_Sequence;INSERT INTO [Sales].[Customers] ([Id],[Created],[CreditLimit],[DateOfBirth],[Name],[CustomerStatusId],[Website]) VALUES (@@id,@p0,@p1,@p2,@p3,@p4,@p5)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2].Value);
 
             Assert.Equal(DbType.String, sqlQuery.Arguments[3].DbType);
@@ -308,13 +308,13 @@
             Assert.Equal("DECLARE @@id bigint;SELECT @@id = NEXT VALUE FOR CustomerWithLongId_Id_Sequence;INSERT INTO [Sales].[CustomerWithLongIds] ([Id],[Created],[CreditLimit],[DateOfBirth],[Name],[CustomerStatusId],[Website]) VALUES (@@id,@p0,@p1,@p2,@p3,@p4,@p5)", sqlQuery.CommandText);
             Assert.Equal(6, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(customer.Created, sqlQuery.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[1].DbType);
             Assert.Equal(customer.CreditLimit, sqlQuery.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[2].DbType);
             Assert.Equal(customer.DateOfBirth, sqlQuery.Arguments[2].Value);
 
             Assert.Equal(DbType.String, sqlQuery.Arguments[3].DbType);

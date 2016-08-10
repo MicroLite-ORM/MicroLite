@@ -245,13 +245,13 @@
 
             Assert.Equal(7, values.Length);
 
-            Assert.Equal(DbType.DateTime, values[0].DbType);
+            Assert.Equal(DbType.DateTime2, values[0].DbType);
             Assert.Equal(customer.Created, values[0].Value);
 
             Assert.Equal(DbType.Decimal, values[1].DbType);
             Assert.Equal(customer.CreditLimit, values[1].Value);
 
-            Assert.Equal(DbType.DateTime, values[2].DbType);
+            Assert.Equal(DbType.DateTime2, values[2].DbType);
             Assert.Equal(customer.DateOfBirth, values[2].Value);
 
             Assert.Equal(DbType.Int32, values[3].DbType);
@@ -291,13 +291,13 @@
 
             Assert.Equal(6, values.Length);
 
-            Assert.Equal(DbType.DateTime, values[0].DbType);
+            Assert.Equal(DbType.DateTime2, values[0].DbType);
             Assert.Equal(customer.Created, values[0].Value);
 
             Assert.Equal(DbType.Decimal, values[1].DbType);
             Assert.Equal(customer.CreditLimit, values[1].Value);
 
-            Assert.Equal(DbType.DateTime, values[2].DbType);
+            Assert.Equal(DbType.DateTime2, values[2].DbType);
             Assert.Equal(customer.DateOfBirth, values[2].Value);
 
             Assert.Equal(DbType.String, values[3].DbType);
@@ -365,7 +365,7 @@
             Assert.Equal(DbType.Decimal, values[0].DbType);
             Assert.Equal(customer.CreditLimit, values[0].Value);
 
-            Assert.Equal(DbType.DateTime, values[1].DbType);
+            Assert.Equal(DbType.DateTime2, values[1].DbType);
             Assert.Equal(customer.DateOfBirth, values[1].Value);
 
             Assert.Equal(DbType.String, values[2].DbType);
@@ -374,7 +374,7 @@
             Assert.Equal(DbType.Int32, values[3].DbType);
             Assert.Equal((int)customer.Status, values[3].Value);
 
-            Assert.Equal(DbType.DateTime, values[4].DbType);
+            Assert.Equal(DbType.DateTime2, values[4].DbType);
             Assert.Equal(customer.Updated, values[4].Value);
 
             Assert.Equal(DbType.String, values[5].DbType);
@@ -411,7 +411,7 @@
             Assert.Equal(DbType.Decimal, values[0].DbType);
             Assert.Equal(customer.CreditLimit, values[0].Value);
 
-            Assert.Equal(DbType.DateTime, values[1].DbType);
+            Assert.Equal(DbType.DateTime2, values[1].DbType);
             Assert.Equal(customer.DateOfBirth, values[1].Value);
 
             Assert.Equal(DbType.String, values[2].DbType);
@@ -420,7 +420,7 @@
             Assert.Equal(DbType.Int32, values[3].DbType);
             Assert.Equal((int)customer.Status, values[3].Value);
 
-            Assert.Equal(DbType.DateTime, values[4].DbType);
+            Assert.Equal(DbType.DateTime2, values[4].DbType);
             Assert.Equal(customer.Updated, values[4].Value);
 
             Assert.Equal(DbType.String, values[5].DbType);

@@ -103,7 +103,7 @@
             [Fact]
             public void TheCreatedColumnDbTypeShouldBeSet()
             {
-                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").DbType);
+                Assert.Equal(DbType.DateTime2, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").DbType);
             }
 
             [Fact]
@@ -187,7 +187,7 @@
             [Fact]
             public void TheDateOfBirthColumnDbTypeShouldBeSet()
             {
-                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").DbType);
+                Assert.Equal(DbType.DateTime2, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").DbType);
             }
 
             [Fact]
@@ -385,7 +385,7 @@
             [Fact]
             public void TheUpdatedColumnDbTypeShouldBeSet()
             {
-                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").DbType);
+                Assert.Equal(DbType.DateTime2, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").DbType);
             }
 
             [Fact]
@@ -528,7 +528,7 @@
             [Fact]
             public void TheCreatedColumnDbTypeShouldBeSet()
             {
-                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").DbType);
+                Assert.Equal(DbType.DateTime2, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Created").DbType);
             }
 
             [Fact]
@@ -612,7 +612,7 @@
             [Fact]
             public void TheDateOfBirthColumnDbTypeShouldBeSet()
             {
-                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").DbType);
+                Assert.Equal(DbType.DateTime2, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "DateOfBirth").DbType);
             }
 
             [Fact]
@@ -810,7 +810,7 @@
             [Fact]
             public void TheUpdatedColumnDbTypeShouldBeSet()
             {
-                Assert.Equal(DbType.DateTime, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").DbType);
+                Assert.Equal(DbType.DateTime2, this.objectInfo.TableInfo.Columns.Single(x => x.ColumnName == "Updated").DbType);
             }
 
             [Fact]
