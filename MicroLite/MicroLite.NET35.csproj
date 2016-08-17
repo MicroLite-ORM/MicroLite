@@ -185,6 +185,7 @@
     <Compile Include="Mapping\Inflection\IInflectionService.cs" />
     <Compile Include="Mapping\Inflection\InflectionService.cs" />
     <Compile Include="Mapping\IObjectInfo.cs" />
+    <Compile Include="Mapping\LowercaseWithUnderscoresConventionMappingSettings.cs" />
     <Compile Include="Mapping\MappingException.cs" />
     <Compile Include="Mapping\MemberInfoExtensions.cs" />
     <Compile Include="Mapping\ObjectInfo.cs" />
@@ -192,6 +193,7 @@
     <Compile Include="Mapping\PocoObjectInfo.cs" />
     <Compile Include="Mapping\TableInfo.cs" />
     <Compile Include="Mapping\TupleObjectInfo.cs" />
+    <Compile Include="Mapping\UppercaseWithUnderscoresConventionMappingSettings.cs" />
     <Compile Include="MicroLiteException.cs" />
     <Compile Include="ObjectDelta.cs" />
     <Compile Include="PagedResult.cs" />

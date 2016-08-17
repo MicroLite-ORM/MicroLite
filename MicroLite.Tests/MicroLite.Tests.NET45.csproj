@@ -113,10 +113,12 @@
     <Compile Include="Mapping\ExpandoObjectInfoTests.cs" />
     <Compile Include="Mapping\Inflection\EnglishInflectionServiceTests.cs" />
     <Compile Include="Mapping\Inflection\InflectionServiceTests.cs" />
+    <Compile Include="Mapping\LowercaseWithUnderscoresConventionMappingSettingsTests.cs" />
     <Compile Include="Mapping\ObjectInfoTests.cs" />
     <Compile Include="Mapping\PocoObjectInfoTests.cs" />
     <Compile Include="Mapping\TableInfoTests.cs" />
     <Compile Include="Mapping\TupleObjectInfoTests.cs" />
+    <Compile Include="Mapping\UppercaseWithUnderscoresConventionMappingSettingsTests.cs" />
     <Compile Include="ObjectDeltaTests.cs" />
     <Compile Include="PagedResultTests.cs" />
     <Compile Include="PagingOptionsTests.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="SqlQueryTests.cs" />
     <Compile Include="SqlStringTests.cs" />
     <Compile Include="SqlUtilityTests.cs" />
+    <Compile Include="TestEntities\CreditCard.cs" />
     <Compile Include="TestEntities\Customer.cs" />
     <Compile Include="TestEntities\CustomerStatus.cs" />
     <Compile Include="TestEntities\Invoice.cs" />
