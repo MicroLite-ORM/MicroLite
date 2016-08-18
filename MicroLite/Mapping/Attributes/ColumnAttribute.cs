@@ -52,7 +52,6 @@ namespace MicroLite.Mapping.Attributes
     {
         private readonly bool allowInsert;
         private readonly bool allowUpdate;
-        private readonly DbType? dbType;
         private readonly string name;
 
         /// <summary>
@@ -60,20 +59,10 @@ namespace MicroLite.Mapping.Attributes
         /// </summary>
         /// <param name="name">The name of the column in the database table that the property maps to.</param>
         public ColumnAttribute(string name)
-            : this(name, null, true, true)
+            : this(name, true, true)
         {
         }
-
-        /// <summary>
-        /// Initialises a new instance of the <see cref="ColumnAttribute"/> class.
-        /// </summary>
-        /// <param name="name">The name of the column in the database table that the property maps to.</param>
-        /// <param name="dbType">The type of the column in the database table that the property maps to.</param>
-        public ColumnAttribute(string name, DbType? dbType)
-            : this(name, dbType, true, true)
-        {
-        }
-
+        
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnAttribute" /> class.
         /// </summary>
@@ -81,21 +70,8 @@ namespace MicroLite.Mapping.Attributes
         /// <param name="allowInsert">true if the column value can be inserted, otherwise false.</param>
         /// <param name="allowUpdate">true if the column value can be updated, otherwise false.</param>
         public ColumnAttribute(string name, bool allowInsert, bool allowUpdate)
-            : this(name, null, allowInsert, allowUpdate)
-        {
-        }
-
-        /// <summary>
-        /// Initialises a new instance of the <see cref="ColumnAttribute" /> class.
-        /// </summary>
-        /// <param name="name">The name of the column in the database table that the property maps to.</param>
-        /// <param name="dbType">The type of the column in the database table that the property maps to.</param>
-        /// <param name="allowInsert">true if the column value can be inserted, otherwise false.</param>
-        /// <param name="allowUpdate">true if the column value can be updated, otherwise false.</param>
-        public ColumnAttribute(string name, DbType? dbType, bool allowInsert, bool allowUpdate)
         {
             this.name = name;
-            this.dbType = dbType;
             this.allowInsert = allowInsert;
             this.allowUpdate = allowUpdate;
         }
@@ -121,19 +97,7 @@ namespace MicroLite.Mapping.Attributes
                 return this.allowUpdate;
             }
         }
-
-        /// <summary>
-        /// Gets the type of the column in the database table that the property maps to.
-        /// </summary>
-        /// <remarks>If null, it will be resolved via TypeConverter.ResolveDbType.</remarks>
-        public DbType? DbType
-        {
-            get
-            {
-                return this.dbType;
-            }
-        }
-
+        
         /// <summary>
         /// Gets the name of the column in the database table that the property maps to
         /// </summary>
