@@ -59,7 +59,7 @@
             Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(Uri)));
 
             // Set by XDocumentTypeConverter.
-            Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(XDocument)));
+            Assert.Equal(DbType.Xml, TypeConverter.ResolveDbType(typeof(XDocument)));
         }
 
         [Fact]
