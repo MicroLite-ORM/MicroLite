@@ -28,7 +28,7 @@ namespace MicroLite.TypeConverters
         /// </summary>
         public XDocumentTypeConverter()
         {
-            TypeConverter.RegisterTypeMapping(this.xdocumentType, DbType.String);
+            TypeConverter.RegisterTypeMapping(this.xdocumentType, DbType.Xml);
         }
 
         /// <summary>
