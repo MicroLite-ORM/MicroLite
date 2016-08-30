@@ -8,8 +8,6 @@
 
     public class SqlCharactersTests : UnitTest
     {
-#if !NET35
-
         [Fact]
         public void CurrentIsVisibleAccrossTasks()
         {
@@ -24,9 +22,7 @@
 
             Assert.Same(sqlCharacters, actual);
         }
-
-#endif
-
+        
         [Fact]
         public void CurrentIsVisibleAccrossThreadPools()
         {

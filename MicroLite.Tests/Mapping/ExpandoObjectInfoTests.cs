@@ -1,7 +1,5 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
-#if !NET35
-
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -193,6 +191,4 @@
             Assert.Equal(exception.Message, ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
         }
     }
-
-#endif
 }

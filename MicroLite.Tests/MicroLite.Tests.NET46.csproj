@@ -81,10 +81,8 @@
     <Compile Include="Core\IncludeManyTests.cs" />
     <Compile Include="Core\IncludeScalarTests.cs" />
     <Compile Include="Core\IncludeSingleTests.cs" />
-    <Compile Include="Core\ReadOnlySessionTests.cs" />
     <Compile Include="Core\SessionBaseTests.cs" />
     <Compile Include="Core\SessionFactoryTests.cs" />
-    <Compile Include="Core\SessionTests.cs" />
     <Compile Include="Core\TransactionTests.cs" />
     <Compile Include="Dialect\FirebirdSqlDialectTests.cs" />
     <Compile Include="Dialect\MsSql2005DialectTests.cs" />

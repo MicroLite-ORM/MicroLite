@@ -110,8 +110,6 @@
     <Compile Include="Core\IncludeScalar.cs" />
     <Compile Include="Core\IncludeSingle.cs" />
     <Compile Include="Core\ISessionBase.cs" />
-    <Compile Include="Core\ReadOnlySession.cs" />
-    <Compile Include="Core\Session.cs" />
     <Compile Include="Core\SessionBase.cs" />
     <Compile Include="Core\SessionFactory.cs" />
     <Compile Include="Core\Transaction.cs" />
@@ -140,8 +138,6 @@
     <Compile Include="FrameworkExtensions\StringExtensions.cs" />
     <Compile Include="IAdvancedAsyncReadOnlySession.cs" />
     <Compile Include="IAdvancedAsyncSession.cs" />
-    <Compile Include="IAdvancedReadOnlySession.cs" />
-    <Compile Include="IAdvancedSession.cs" />
     <Compile Include="IAsyncReadOnlySession.cs" />
     <Compile Include="IAsyncSession.cs" />
     <Compile Include="IHideObjectMethods.cs" />
@@ -150,10 +146,6 @@
     <Compile Include="IIncludeSession.cs" />
     <Compile Include="Infrastructure\IHaveAsyncReadOnlySession.cs" />
     <Compile Include="Infrastructure\IHaveAsyncSession.cs" />
-    <Compile Include="Infrastructure\IHaveReadOnlySession.cs" />
-    <Compile Include="Infrastructure\IHaveSession.cs" />
-    <Compile Include="IReadOnlySession.cs" />
-    <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="ITransaction.cs" />
     <Compile Include="Listeners\IDeleteListener.cs" />

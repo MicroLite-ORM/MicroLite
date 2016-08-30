@@ -12,8 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
-#if !NET35 && !NET40
-
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -41,6 +39,4 @@ namespace MicroLite
         /// <returns>A task representing the asynchronous operation.</returns>
         Task ExecutePendingQueriesAsync(CancellationToken cancellationToken);
     }
-
-#endif
 }

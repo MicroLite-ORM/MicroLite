@@ -12,8 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
-#if !NET35 && !NET40
-
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -239,6 +237,4 @@ namespace MicroLite
         /// </example>
         Task<bool> UpdateAsync(ObjectDelta objectDelta, CancellationToken cancellationToken);
     }
-
-#endif
 }
