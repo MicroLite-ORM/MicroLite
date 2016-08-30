@@ -5,8 +5,6 @@ properties {
   $helpDir = "$buildDir\help\"
 
   $builds = @(
-    @{Name = "NET35"; Constants="NET35"; BuildDir="$buildDir\3.5\"; Framework="v3.5;TargetFrameworkProfile=Client"},
-    @{Name = "NET40"; Constants="NET40"; BuildDir="$buildDir\4.0\"; Framework="v4.0;TargetFrameworkProfile=Client"},
     @{Name = "NET45"; Constants="NET45"; BuildDir="$buildDir\4.5\"; Framework="v4.5"},
     @{Name = "NET46"; Constants="NET46"; BuildDir="$buildDir\4.6\"; Framework="v4.6"}
   )

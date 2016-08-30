@@ -15,14 +15,10 @@
     <tags>MicroORM ORM SqlBuilder POCO MsSql SQLite MySql PostgreSql SqlServerCE Firebird Database</tags>
   </metadata>
   <files>
-    <file src="..\build\3.5\MicroLite.dll" target="lib\net35-client" />
-    <file src="..\build\3.5\MicroLite.xml" target="lib\net35-client" />
-    <file src="..\build\4.0\MicroLite.dll" target="lib\net40-client" />
-    <file src="..\build\4.0\MicroLite.xml" target="lib\net40-client" />
-    <file src="..\build\4.5\MicroLite.dll" target="lib\net45" />
-    <file src="..\build\4.5\MicroLite.xml" target="lib\net45" />
-    <file src="..\build\4.6\MicroLite.dll" target="lib\net46" />
-    <file src="..\build\4.6\MicroLite.xml" target="lib\net46" />
+    <file src="..\build\4.5\MicroLite.dll" target="lib\net452" />
+    <file src="..\build\4.5\MicroLite.xml" target="lib\net452" />
+    <file src="..\build\4.6\MicroLite.dll" target="lib\net462" />
+    <file src="..\build\4.6\MicroLite.xml" target="lib\net462" />
     <file src="..\build\help\MicroLite.chm" target="" />
   </files>
 </package>
