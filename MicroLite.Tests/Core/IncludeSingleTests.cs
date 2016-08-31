@@ -136,7 +136,7 @@
                 Assert.Null(this.include.Value);
             }
         }
-        
+
         public class WhenCallingBuildValueAsyncAndTheDataReaderContainsMultipleResults
         {
             private IncludeSingle<Customer> include = new IncludeSingle<Customer>();
@@ -148,13 +148,12 @@
             }
 
             [Fact]
-            public void BuildValueAsyncShouldThrowAMicroLiteException()
+            public async void BuildValueAsyncShouldThrowAMicroLiteException()
             {
-                var exception = Assert.Throws<AggregateException>(
-                    () => this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait());
+                var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                    async () => await this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None));
 
-                Assert.IsType<MicroLiteException>(exception.InnerException);
-                Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.InnerException.Message);
+                Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.Message);
             }
         }
 

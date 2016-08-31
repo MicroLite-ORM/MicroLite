@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading;
+    using System.Threading.Tasks;
     using MicroLite.Characters;
     using Moq;
     using Xunit;
@@ -9,16 +10,16 @@
     public class SqlCharactersTests : UnitTest
     {
         [Fact]
-        public void CurrentIsVisibleAccrossTasks()
+        public async void CurrentIsVisibleAccrossTasks()
         {
             var sqlCharacters = new TestSqlCharacters();
             SqlCharacters.Current = sqlCharacters;
 
             SqlCharacters actual = null;
 
-            System.Threading.Tasks.Task.Factory.StartNew(
+            await Task.Factory.StartNew(
                 () => actual = SqlCharacters.Current,
-                System.Threading.Tasks.TaskCreationOptions.LongRunning).Wait();
+                TaskCreationOptions.LongRunning);
 
             Assert.Same(sqlCharacters, actual);
         }

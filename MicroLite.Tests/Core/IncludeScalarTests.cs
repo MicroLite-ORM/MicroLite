@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests.Core
 {
-    using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Threading;
@@ -273,13 +272,12 @@
             }
 
             [Fact]
-            public void BuildValueAsyncShouldThrowAMicroLiteException()
+            public async void BuildValueAsyncShouldThrowAMicroLiteException()
             {
-                var exception = Assert.Throws<AggregateException>(
-                    () => this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait());
+                var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                    async () => await this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None));
 
-                Assert.IsType<MicroLiteException>(exception.InnerException);
-                Assert.Equal(ExceptionMessages.IncludeScalar_MultipleColumns, exception.InnerException.Message);
+                Assert.Equal(ExceptionMessages.IncludeScalar_MultipleColumns, exception.Message);
             }
         }
 
@@ -296,13 +294,12 @@
             }
 
             [Fact]
-            public void BuildValueAsyncShouldThrowAMicroLiteException()
+            public async void BuildValueAsyncShouldThrowAMicroLiteException()
             {
-                var exception = Assert.Throws<AggregateException>(
-                    () => this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait());
+                var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                    async () => await this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None));
 
-                Assert.IsType<MicroLiteException>(exception.InnerException);
-                Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.InnerException.Message);
+                Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.Message);
             }
         }
     }

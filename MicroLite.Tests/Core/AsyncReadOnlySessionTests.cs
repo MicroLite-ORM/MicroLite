@@ -37,7 +37,7 @@
         }
 
         [Fact]
-        public void AllCreatesASelectAllQueryExecutesAndReturnsResults()
+        public async void AllCreatesASelectAllQueryExecutesAndReturnsResults()
         {
             var mockSqlDialect = new Mock<ISqlDialect>();
             mockSqlDialect.Setup(x => x.SqlCharacters).Returns(SqlCharacters.Empty);
@@ -62,7 +62,7 @@
 
             var customers = session.Include.All<Customer>();
 
-            session.ExecutePendingQueriesAsync().Wait();
+            await session.ExecutePendingQueriesAsync();
 
             Assert.Equal(1, customers.Values.Count);
 
@@ -73,7 +73,7 @@
         }
 
         [Fact]
-        public void FetchExecutesAndReturnsResults()
+        public async void FetchExecutesAndReturnsResults()
         {
             var mockSqlDialect = new Mock<ISqlDialect>();
 
@@ -95,7 +95,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customers = session.FetchAsync<Customer>(new SqlQuery("")).Result;
+            var customers = await session.FetchAsync<Customer>(new SqlQuery(""));
 
             Assert.Equal(1, customers.Count);
 
@@ -106,21 +106,21 @@
         }
 
         [Fact]
-        public void FetchThrowsArgumentNullExceptionForNullSqlQuery()
+        public async void FetchThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new AsyncReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.FetchAsync<Customer>(null).Result);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.FetchAsync<Customer>(null));
 
-            Assert.Equal("sqlQuery", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]
-        public void FetchThrowsObjectDisposedExceptionIfDisposed()
+        public async void FetchThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new AsyncReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -131,10 +131,8 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.FetchAsync<Customer>(null).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            await Assert.ThrowsAsync<ObjectDisposedException>(
+                async () => await session.FetchAsync<Customer>(null));
         }
 
         [Fact]
@@ -167,7 +165,7 @@
         }
 
         [Fact]
-        public void IncludeScalarSqlQueryExecutesAndReturnsResult()
+        public async void IncludeScalarSqlQueryExecutesAndReturnsResult()
         {
             var mockSqlDialect = new Mock<ISqlDialect>();
 
@@ -193,7 +191,7 @@
 
             var includeScalar = session.Include.Scalar<int>(new SqlQuery(""));
 
-            session.ExecutePendingQueriesAsync().Wait();
+            await session.ExecutePendingQueriesAsync();
 
             Assert.Equal(10, includeScalar.Value);
 
@@ -252,7 +250,7 @@
         }
 
         [Fact]
-        public void MicroLiteExceptionsCaughtByExecutePendingQueriesShouldNotBeWrappedInAnotherMicroLiteException()
+        public async void MicroLiteExceptionsCaughtByExecutePendingQueriesShouldNotBeWrappedInAnotherMicroLiteException()
         {
             var mockSqlDialect = new Mock<ISqlDialect>();
 
@@ -267,15 +265,14 @@
             // We need at least 1 queued query otherwise we will get an exception when doing queries.Dequeue() instead.
             session.Include.Scalar<int>(new SqlQuery(""));
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.ExecutePendingQueriesAsync().Wait());
+            var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                async () => await session.ExecutePendingQueriesAsync());
 
-            Assert.IsType<MicroLiteException>(exception.InnerException);
-            Assert.IsNotType<MicroLiteException>(exception.InnerException.InnerException);
+            Assert.IsNotType<MicroLiteException>(exception.InnerException);
         }
 
         [Fact]
-        public void PagedExecutesAndReturnsResultsForFirstPageWithOnePerPage()
+        public async void PagedExecutesAndReturnsResultsForFirstPageWithOnePerPage()
         {
             var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
             var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
@@ -309,7 +306,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var page = session.PagedAsync<Customer>(sqlQuery, PagingOptions.ForPage(1, 1)).Result;
+            var page = await session.PagedAsync<Customer>(sqlQuery, PagingOptions.ForPage(1, 1));
 
             Assert.Equal(1, page.Page);
             Assert.Equal(1, page.Results.Count);
@@ -321,7 +318,7 @@
         }
 
         [Fact]
-        public void PagedExecutesAndReturnsResultsForFirstPageWithTwentyFivePerPage()
+        public async void PagedExecutesAndReturnsResultsForFirstPageWithTwentyFivePerPage()
         {
             var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
             var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
@@ -355,7 +352,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var page = session.PagedAsync<Customer>(sqlQuery, PagingOptions.ForPage(1, 25)).Result;
+            var page = await session.PagedAsync<Customer>(sqlQuery, PagingOptions.ForPage(1, 25));
 
             Assert.Equal(1, page.Page);
             Assert.Equal(1, page.Results.Count);
@@ -367,7 +364,7 @@
         }
 
         [Fact]
-        public void PagedExecutesAndReturnsResultsForTenthPageWithTwentyFivePerPage()
+        public async void PagedExecutesAndReturnsResultsForTenthPageWithTwentyFivePerPage()
         {
             var sqlQuery = new SqlQuery("SELECT * FROM TABLE");
             var countQuery = new SqlQuery("SELECT COUNT(*) FROM TABLE");
@@ -401,7 +398,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var page = session.PagedAsync<Customer>(sqlQuery, PagingOptions.ForPage(10, 25)).Result;
+            var page = await session.PagedAsync<Customer>(sqlQuery, PagingOptions.ForPage(10, 25));
 
             Assert.Equal(10, page.Page);
             Assert.Equal(1, page.Results.Count);
@@ -413,21 +410,21 @@
         }
 
         [Fact]
-        public void PagedThrowsArgumentNullExceptionForNullSqlQuery()
+        public async void PagedThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new AsyncReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.PagedAsync<Customer>(null, PagingOptions.ForPage(1, 25)).Result);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.PagedAsync<Customer>(null, PagingOptions.ForPage(1, 25)));
 
-            Assert.Equal("sqlQuery", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]
-        public void PagedThrowsObjectDisposedExceptionIfDisposed()
+        public async void PagedThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new AsyncReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -438,14 +435,12 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.PagedAsync<Customer>(null, PagingOptions.ForPage(1, 25)).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            var exception = await Assert.ThrowsAsync<ObjectDisposedException>(
+                async () => await session.PagedAsync<Customer>(null, PagingOptions.ForPage(1, 25)));
         }
 
         [Fact]
-        public void SingleIdentifierExecutesAndReturnsNull()
+        public async void SingleIdentifierExecutesAndReturnsNull()
         {
             object identifier = 100;
 
@@ -469,7 +464,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customer = session.SingleAsync<Customer>(identifier).Result;
+            var customer = await session.SingleAsync<Customer>(identifier);
 
             Assert.Null(customer);
 
@@ -480,7 +475,7 @@
         }
 
         [Fact]
-        public void SingleIdentifierExecutesAndReturnsResult()
+        public async void SingleIdentifierExecutesAndReturnsResult()
         {
             object identifier = 100;
 
@@ -505,7 +500,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customer = session.SingleAsync<Customer>(identifier).Result;
+            var customer = await session.SingleAsync<Customer>(identifier);
 
             Assert.NotNull(customer);
 
@@ -516,7 +511,7 @@
         }
 
         [Fact]
-        public void SingleIdentifierThrowsArgumentNullExceptionForNullIdentifier()
+        public async void SingleIdentifierThrowsArgumentNullExceptionForNullIdentifier()
         {
             var session = new AsyncReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -525,14 +520,14 @@
 
             object identifier = null;
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.SingleAsync<Customer>(identifier).Result);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.SingleAsync<Customer>(identifier));
 
-            Assert.Equal("identifier", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("identifier", exception.ParamName);
         }
 
         [Fact]
-        public void SingleIdentifierThrowsObjectDisposedExceptionIfDisposed()
+        public async void SingleIdentifierThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new AsyncReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -543,14 +538,12 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.SingleAsync<Customer>(1).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            await Assert.ThrowsAsync<ObjectDisposedException>(
+                async () => await session.SingleAsync<Customer>(1));
         }
 
         [Fact]
-        public void SingleSqlQueryExecutesAndReturnsNull()
+        public async void SingleSqlQueryExecutesAndReturnsNull()
         {
             var mockSqlDialect = new Mock<ISqlDialect>();
 
@@ -572,7 +565,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customer = session.SingleAsync<Customer>(new SqlQuery("")).Result;
+            var customer = await session.SingleAsync<Customer>(new SqlQuery(""));
 
             Assert.Null(customer);
 
@@ -582,7 +575,7 @@
         }
 
         [Fact]
-        public void SingleSqlQueryExecutesAndReturnsResult()
+        public async void SingleSqlQueryExecutesAndReturnsResult()
         {
             var mockSqlDialect = new Mock<ISqlDialect>();
 
@@ -604,7 +597,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customer = session.SingleAsync<Customer>(new SqlQuery("")).Result;
+            var customer = await session.SingleAsync<Customer>(new SqlQuery(""));
 
             Assert.NotNull(customer);
 
@@ -614,7 +607,7 @@
         }
 
         [Fact]
-        public void SingleSqlQueryThrowsArgumentNullExceptionForNullSqlQuery()
+        public async void SingleSqlQueryThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new AsyncReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -623,14 +616,14 @@
 
             SqlQuery sqlQuery = null;
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.SingleAsync<Customer>(sqlQuery).Result);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.SingleAsync<Customer>(sqlQuery));
 
-            Assert.Equal("sqlQuery", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]
-        public void SingleSqlQueryThrowsObjectDisposedExceptionIfDisposed()
+        public async void SingleSqlQueryThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new AsyncReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -641,27 +634,24 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.SingleAsync<Customer>(new SqlQuery("")).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            await Assert.ThrowsAsync<ObjectDisposedException>(
+                async () => await session.SingleAsync<Customer>(new SqlQuery("")));
         }
 
         public class WhenCallingPagedUsingPagingOptionsNone
         {
             [Fact]
-            public void AMicroLiteExceptionIsThrown()
+            public async void AMicroLiteExceptionIsThrown()
             {
                 var session = new AsyncReadOnlySession(
                     ConnectionScope.PerTransaction,
                     new Mock<ISqlDialect>().Object,
                     new Mock<IDbDriver>().Object);
 
-                var exception = Assert.Throws<AggregateException>(
-                    () => session.PagedAsync<Customer>(new SqlQuery(""), PagingOptions.None).Result);
+                var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                    async () => await session.PagedAsync<Customer>(new SqlQuery(""), PagingOptions.None));
 
-                Assert.IsType<MicroLiteException>(exception.InnerException);
-                Assert.Equal(ExceptionMessages.Session_PagingOptionsMustNotBeNone, exception.InnerException.Message);
+                Assert.Equal(ExceptionMessages.Session_PagingOptionsMustNotBeNone, exception.Message);
             }
         }
 

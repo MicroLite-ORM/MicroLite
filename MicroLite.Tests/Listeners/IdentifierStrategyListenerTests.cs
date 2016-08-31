@@ -20,7 +20,7 @@
             var listener = new IdentifierStrategyListener();
             var customer = new Customer();
 
-            Assert.DoesNotThrow(() => listener.AfterInsert(customer, null));
+            listener.AfterInsert(customer, null);
 
             Assert.Equal(0, customer.Id);
         }
@@ -34,7 +34,7 @@
             var listener = new IdentifierStrategyListener();
             var customer = new Customer();
 
-            Assert.DoesNotThrow(() => listener.AfterInsert(customer, null));
+            listener.AfterInsert(customer, null);
 
             Assert.Equal(0, customer.Id);
         }
@@ -47,7 +47,7 @@
 
             var listener = new IdentifierStrategyListener();
 
-            Assert.DoesNotThrow(() => listener.AfterInsert(new Customer(), null));
+            listener.AfterInsert(new Customer(), null);
         }
 
         [Fact]

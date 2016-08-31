@@ -31,7 +31,7 @@
         }
 
         [Fact]
-        public void DeleteInstanceInvokesListeners()
+        public async void DeleteInstanceInvokesListeners()
         {
             var customer = new Customer
             {
@@ -69,14 +69,14 @@
                     new IInsertListener[0],
                     new IUpdateListener[0]));
 
-            session.DeleteAsync(customer).Wait();
+            await session.DeleteAsync(customer);
 
             mockListener1.VerifyAll();
             mockListener2.VerifyAll();
         }
 
         [Fact]
-        public void DeleteInstanceReturnsFalseIfNoRecordsDeleted()
+        public async void DeleteInstanceReturnsFalseIfNoRecordsDeleted()
         {
             var customer = new Customer
             {
@@ -101,7 +101,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.False(session.DeleteAsync(customer).Result);
+            Assert.False(await session.DeleteAsync(customer));
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -109,7 +109,7 @@
         }
 
         [Fact]
-        public void DeleteInstanceReturnsTrueIfRecordDeleted()
+        public async void DeleteInstanceReturnsTrueIfRecordDeleted()
         {
             var customer = new Customer
             {
@@ -134,7 +134,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.True(session.DeleteAsync(customer).Result);
+            Assert.True(await session.DeleteAsync(customer));
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -142,7 +142,7 @@
         }
 
         [Fact]
-        public void DeleteInstanceThrowsArgumentNullExceptionForNullInstance()
+        public async void DeleteInstanceThrowsArgumentNullExceptionForNullInstance()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -150,14 +150,14 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.DeleteAsync(null).Result);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.DeleteAsync(null));
 
-            Assert.Equal("instance", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
         [Fact]
-        public void DeleteInstanceThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
+        public async void DeleteInstanceThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
         {
             var customer = new Customer
             {
@@ -182,18 +182,18 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(customer).Wait());
+            var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                async () => await session.DeleteAsync(customer));
 
-            Assert.IsType<MicroLiteException>(exception.InnerException);
-            Assert.IsType<InvalidOperationException>(exception.InnerException.InnerException);
-            Assert.Equal(exception.InnerException.InnerException.Message, exception.InnerException.Message);
+            Assert.IsType<InvalidOperationException>(exception.InnerException);
+            Assert.Equal(exception.InnerException.Message, exception.Message);
 
             // Command should still be disposed.
             mockCommand.VerifyAll();
         }
 
         [Fact]
-        public void DeleteInstanceThrowsMicroLiteExceptionIfIdentifierNotSet()
+        public async void DeleteInstanceThrowsMicroLiteExceptionIfIdentifierNotSet()
         {
             var customer = new Customer
             {
@@ -212,15 +212,14 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.DeleteAsync(customer).Result);
+            var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                async () => await session.DeleteAsync(customer));
 
-            Assert.IsType<MicroLiteException>(exception.InnerException);
-            Assert.Equal(ExceptionMessages.Session_IdentifierNotSetForDelete, exception.InnerException.Message);
+            Assert.Equal(ExceptionMessages.Session_IdentifierNotSetForDelete, exception.Message);
         }
 
         [Fact]
-        public void DeleteInstanceThrowsObjectDisposedExceptionIfDisposed()
+        public async void DeleteInstanceThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -232,14 +231,12 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.DeleteAsync(new Customer()).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            await Assert.ThrowsAsync<ObjectDisposedException>(
+                async () => await session.DeleteAsync(new Customer()));
         }
 
         [Fact]
-        public void DeleteTypeByIdentifierReturnsFalseIfNoRecordsDeleted()
+        public async void DeleteTypeByIdentifierReturnsFalseIfNoRecordsDeleted()
         {
             var type = typeof(Customer);
             var identifier = 1234;
@@ -262,7 +259,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.False(session.DeleteAsync(type, identifier).Result);
+            Assert.False(await session.DeleteAsync(type, identifier));
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -270,7 +267,7 @@
         }
 
         [Fact]
-        public void DeleteTypeByIdentifierReturnsTrueIfRecordDeleted()
+        public async void DeleteTypeByIdentifierReturnsTrueIfRecordDeleted()
         {
             var type = typeof(Customer);
             var identifier = 1234;
@@ -293,7 +290,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.True(session.DeleteAsync(type, identifier).Result);
+            Assert.True(await session.DeleteAsync(type, identifier));
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -301,7 +298,7 @@
         }
 
         [Fact]
-        public void DeleteTypeByIdentifierThrowsArgumentNullExceptionForNullIdentifier()
+        public async void DeleteTypeByIdentifierThrowsArgumentNullExceptionForNullIdentifier()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -309,14 +306,14 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.DeleteAsync(typeof(Customer), null).Result);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.DeleteAsync(typeof(Customer), null));
 
-            Assert.Equal("identifier", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("identifier", exception.ParamName);
         }
 
         [Fact]
-        public void DeleteTypeByIdentifierThrowsArgumentNullExceptionForNullType()
+        public async void DeleteTypeByIdentifierThrowsArgumentNullExceptionForNullType()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -324,14 +321,12 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.DeleteAsync(null, 1234).Result);
-
-            Assert.Equal("type", ((ArgumentNullException)exception.InnerException).ParamName);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.DeleteAsync(null, 1234));
         }
 
         [Fact]
-        public void DeleteTypeByIdentifierThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
+        public async void DeleteTypeByIdentifierThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
         {
             var type = typeof(Customer);
             var identifier = 1234;
@@ -354,18 +349,18 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(type, identifier).Result);
+            var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                async () => await session.DeleteAsync(type, identifier));
 
-            Assert.IsType<MicroLiteException>(exception.InnerException);
-            Assert.IsType<InvalidOperationException>(exception.InnerException.InnerException);
-            Assert.Equal(exception.InnerException.InnerException.Message, exception.InnerException.Message);
+            Assert.IsType<InvalidOperationException>(exception.InnerException);
+            Assert.Equal(exception.InnerException.Message, exception.Message);
 
             // Command should still be disposed.
             mockCommand.VerifyAll();
         }
 
         [Fact]
-        public void DeleteTypeByIdentifierThrowsObjectDisposedExceptionIfDisposed()
+        public async void DeleteTypeByIdentifierThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -377,14 +372,12 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.DeleteAsync(typeof(Customer), 1234).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            await Assert.ThrowsAsync<ObjectDisposedException>(
+                async () => await session.DeleteAsync(typeof(Customer), 1234));
         }
 
         [Fact]
-        public void ExecuteBuildsAndExecutesCommandNotInTransaction()
+        public async void ExecuteBuildsAndExecutesCommandNotInTransaction()
         {
             var result = 1;
 
@@ -405,14 +398,14 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.Equal(result, session.ExecuteAsync(new SqlQuery("")).Result);
+            Assert.Equal(result, await session.ExecuteAsync(new SqlQuery("")));
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
         }
 
         [Fact]
-        public void ExecuteScalarBuildsAndExecutesCommand()
+        public async void ExecuteScalarBuildsAndExecutesCommand()
         {
             var result = new object();
 
@@ -433,14 +426,14 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.Equal(result, session.ExecuteScalarAsync<object>(new SqlQuery("")).Result);
+            Assert.Equal(result, await session.ExecuteScalarAsync<object>(new SqlQuery("")));
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
         }
 
         [Fact]
-        public void ExecuteScalarThrowsArgumentNullExceptionForNullSqlQuery()
+        public async void ExecuteScalarThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -448,14 +441,14 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.ExecuteScalarAsync<object>(null).Result);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.ExecuteScalarAsync<object>(null));
 
-            Assert.Equal("sqlQuery", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]
-        public void ExecuteScalarThrowsObjectDisposedExceptionIfDisposed()
+        public async void ExecuteScalarThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -467,14 +460,12 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.ExecuteScalarAsync<int>(new SqlQuery("SELECT")).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            await Assert.ThrowsAsync<ObjectDisposedException>(
+                async () => await session.ExecuteScalarAsync<int>(new SqlQuery("SELECT")));
         }
 
         [Fact]
-        public void ExecuteScalarUsesTypeConvertersToResolveResultType()
+        public async void ExecuteScalarUsesTypeConvertersToResolveResultType()
         {
             var result = (byte)1;
 
@@ -495,14 +486,14 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.Equal((CustomerStatus)result, session.ExecuteScalarAsync<CustomerStatus>(new SqlQuery("")).Result);
+            Assert.Equal((CustomerStatus)result, await session.ExecuteScalarAsync<CustomerStatus>(new SqlQuery("")));
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
         }
 
         [Fact]
-        public void ExecuteThrowsArgumentNullExceptionForNullSqlQuery()
+        public async void ExecuteThrowsArgumentNullExceptionForNullSqlQuery()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -510,14 +501,14 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.ExecuteAsync(null).Result);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.ExecuteAsync(null));
 
-            Assert.Equal("sqlQuery", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]
-        public void ExecuteThrowsObjectDisposedExceptionIfDisposed()
+        public async void ExecuteThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -529,14 +520,12 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.ExecuteAsync(new SqlQuery("SELECT")).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            await Assert.ThrowsAsync<ObjectDisposedException>(
+                async () => await session.ExecuteAsync(new SqlQuery("SELECT")));
         }
 
         [Fact]
-        public void InsertBuildsAndExecutesAnInsertCommandOnlyIfIdentifierStrategyAssigned()
+        public async void InsertBuildsAndExecutesAnInsertCommandOnlyIfIdentifierStrategyAssigned()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
@@ -567,7 +556,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            session.InsertAsync(customer).Wait();
+            await session.InsertAsync(customer);
 
             mockSqlDialect.Verify(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer), Times.Once());
             mockSqlDialect.Verify(x => x.BuildSelectInsertIdSqlQuery(It.IsAny<IObjectInfo>()), Times.Never());
@@ -577,7 +566,7 @@
         }
 
         [Fact]
-        public void InsertBuildsAndExecutesAnInsertCommandOnlyIfIdentifierStrategyNotAssignedAndSqlDialectDoesNotSupportSelectInsertedIdentifier()
+        public async void InsertBuildsAndExecutesAnInsertCommandOnlyIfIdentifierStrategyNotAssignedAndSqlDialectDoesNotSupportSelectInsertedIdentifier()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
@@ -605,7 +594,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            session.InsertAsync(customer).Wait();
+            await session.InsertAsync(customer);
 
             mockSqlDialect.Verify(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer), Times.Once());
             mockSqlDialect.Verify(x => x.BuildSelectInsertIdSqlQuery(It.IsAny<IObjectInfo>()), Times.Never());
@@ -615,7 +604,7 @@
         }
 
         [Fact]
-        public void InsertBuildsAndExecutesCombinedCommandIfIdentifierStrategyNotAssignedAndSqlDialectSupportsSelectInsertedIdentifierAndDbDriverSupportsBatchedQueries()
+        public async void InsertBuildsAndExecutesCombinedCommandIfIdentifierStrategyNotAssignedAndSqlDialectSupportsSelectInsertedIdentifierAndDbDriverSupportsBatchedQueries()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
@@ -648,7 +637,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            session.InsertAsync(customer).Wait();
+            await session.InsertAsync(customer);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -656,7 +645,7 @@
         }
 
         [Fact]
-        public void InsertBuildsAndExecutesIndividualCommandsIfIdentifierStrategyNotAssignedAndSqlDialectSupportsSelectInsertedIdentifierAndDbDriverDoesNotSupportBatchedQueries()
+        public async void InsertBuildsAndExecutesIndividualCommandsIfIdentifierStrategyNotAssignedAndSqlDialectSupportsSelectInsertedIdentifierAndDbDriverDoesNotSupportBatchedQueries()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
@@ -688,7 +677,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            session.InsertAsync(customer).Wait();
+            await session.InsertAsync(customer);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -696,7 +685,7 @@
         }
 
         [Fact]
-        public void InsertInvokesListeners()
+        public async void InsertInvokesListeners()
         {
             var customer = new Customer();
             object identifier = 23543;
@@ -733,14 +722,14 @@
                     new[] { mockListener1.Object, mockListener2.Object },
                     new IUpdateListener[0]));
 
-            session.InsertAsync(customer).Wait();
+            await session.InsertAsync(customer);
 
             mockListener1.VerifyAll();
             mockListener2.VerifyAll();
         }
 
         [Fact]
-        public void InsertThrowsArgumentNullExceptionForNullInstance()
+        public async void InsertThrowsArgumentNullExceptionForNullInstance()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -748,14 +737,14 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.InsertAsync(null).Wait());
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.InsertAsync(null));
 
-            Assert.Equal("instance", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
         [Fact]
-        public void InsertThrowsMicroLiteExceptionIfExecuteScalarThrowsException()
+        public async void InsertThrowsMicroLiteExceptionIfExecuteScalarThrowsException()
         {
             var customer = new Customer();
 
@@ -778,18 +767,18 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(() => session.InsertAsync(customer).Wait());
+            var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                async () => await session.InsertAsync(customer));
 
-            Assert.IsType<MicroLiteException>(exception.InnerException);
-            Assert.IsType<InvalidOperationException>(exception.InnerException.InnerException);
-            Assert.Equal(exception.InnerException.InnerException.Message, exception.InnerException.Message);
+            Assert.IsType<InvalidOperationException>(exception.InnerException);
+            Assert.Equal(exception.InnerException.Message, exception.Message);
 
             // Command should still be disposed.
             mockCommand.VerifyAll();
         }
 
         [Fact]
-        public void InsertThrowsObjectDisposedExceptionIfDisposed()
+        public async void InsertThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -801,14 +790,12 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.InsertAsync(new Customer()).Wait());
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            await Assert.ThrowsAsync<ObjectDisposedException>(
+                async () => await session.InsertAsync(new Customer()));
         }
 
         [Fact]
-        public void UpdateInstanceBuildsAndExecutesQuery()
+        public async void UpdateInstanceBuildsAndExecutesQuery()
         {
             var customer = new Customer
             {
@@ -835,7 +822,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            session.UpdateAsync(customer).Wait();
+            await session.UpdateAsync(customer);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -843,7 +830,7 @@
         }
 
         [Fact]
-        public void UpdateInstanceInvokesListeners()
+        public async void UpdateInstanceInvokesListeners()
         {
             var customer = new Customer
             {
@@ -883,14 +870,14 @@
                     new IInsertListener[0],
                     new[] { mockListener1.Object, mockListener2.Object }));
 
-            session.UpdateAsync(customer).Wait();
+            await session.UpdateAsync(customer);
 
             mockListener1.VerifyAll();
             mockListener2.VerifyAll();
         }
 
         [Fact]
-        public void UpdateInstanceReturnsFalseIfNoRecordsUpdated()
+        public async void UpdateInstanceReturnsFalseIfNoRecordsUpdated()
         {
             var customer = new Customer
             {
@@ -915,7 +902,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.False(session.UpdateAsync(customer).Result);
+            Assert.False(await session.UpdateAsync(customer));
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -923,7 +910,7 @@
         }
 
         [Fact]
-        public void UpdateInstanceReturnsTrueIfRecordUpdated()
+        public async void UpdateInstanceReturnsTrueIfRecordUpdated()
         {
             var customer = new Customer
             {
@@ -948,7 +935,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.True(session.UpdateAsync(customer).Result);
+            Assert.True(await session.UpdateAsync(customer));
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -956,7 +943,7 @@
         }
 
         [Fact]
-        public void UpdateInstanceThrowsArgumentNullExceptionForNullInstance()
+        public async void UpdateInstanceThrowsArgumentNullExceptionForNullInstance()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -964,14 +951,14 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.UpdateAsync((Customer)null).Result);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.UpdateAsync((Customer)null));
 
-            Assert.Equal("instance", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
         [Fact]
-        public void UpdateInstanceThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
+        public async void UpdateInstanceThrowsMicroLiteExceptionIfExecuteNonQueryThrowsException()
         {
             var customer = new Customer
             {
@@ -996,18 +983,18 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(() => session.UpdateAsync(customer).Wait());
+            var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                async () => await session.UpdateAsync(customer));
 
-            Assert.IsType<MicroLiteException>(exception.InnerException);
-            Assert.IsType<InvalidOperationException>(exception.InnerException.InnerException);
-            Assert.Equal(exception.InnerException.InnerException.Message, exception.InnerException.Message);
+            Assert.IsType<InvalidOperationException>(exception.InnerException);
+            Assert.Equal(exception.InnerException.Message, exception.Message);
 
             // Command should still be disposed.
             mockCommand.VerifyAll();
         }
 
         [Fact]
-        public void UpdateInstanceThrowsMicroLiteExceptionIfIdentifierNotSet()
+        public async void UpdateInstanceThrowsMicroLiteExceptionIfIdentifierNotSet()
         {
             var customer = new Customer
             {
@@ -1023,14 +1010,14 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(() => session.UpdateAsync(customer).Wait());
+            var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                async () => await session.UpdateAsync(customer));
 
-            Assert.IsType<MicroLiteException>(exception.InnerException);
-            Assert.Equal(ExceptionMessages.Session_IdentifierNotSetForUpdate, exception.InnerException.Message);
+            Assert.Equal(ExceptionMessages.Session_IdentifierNotSetForUpdate, exception.Message);
         }
 
         [Fact]
-        public void UpdateInstanceThrowsObjectDisposedExceptionIfDisposed()
+        public async void UpdateInstanceThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -1042,14 +1029,12 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.UpdateAsync(new Customer()).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            await Assert.ThrowsAsync<ObjectDisposedException>(
+                async () => await session.UpdateAsync(new Customer()));
         }
 
         [Fact]
-        public void UpdateObjectDeltaReturnsFalseIfNoRecordUpdated()
+        public async void UpdateObjectDeltaReturnsFalseIfNoRecordUpdated()
         {
             var objectDelta = new ObjectDelta(typeof(Customer), 1234);
             objectDelta.AddChange("Name", "Fred Flintstone");
@@ -1072,14 +1057,14 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.False(session.UpdateAsync(objectDelta).Result);
+            Assert.False(await session.UpdateAsync(objectDelta));
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
         }
 
         [Fact]
-        public void UpdateObjectDeltaReturnsTrueIfRecordUpdated()
+        public async void UpdateObjectDeltaReturnsTrueIfRecordUpdated()
         {
             var objectDelta = new ObjectDelta(typeof(Customer), 1234);
             objectDelta.AddChange("Name", "Fred Flintstone");
@@ -1102,14 +1087,14 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.True(session.UpdateAsync(objectDelta).Result);
+            Assert.True(await session.UpdateAsync(objectDelta));
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
         }
 
         [Fact]
-        public void UpdateObjectDeltaThrowsArgumentNullExceptionForNullObjectDelta()
+        public async void UpdateObjectDeltaThrowsArgumentNullExceptionForNullObjectDelta()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -1117,14 +1102,14 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.UpdateAsync((ObjectDelta)null).Result);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await session.UpdateAsync((ObjectDelta)null));
 
-            Assert.Equal("objectDelta", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("objectDelta", exception.ParamName);
         }
 
         [Fact]
-        public void UpdateObjectDeltaThrowsMicroLiteExceptionIfItContainsNoChanges()
+        public async void UpdateObjectDeltaThrowsMicroLiteExceptionIfItContainsNoChanges()
         {
             var objectDelta = new ObjectDelta(typeof(Customer), 1234);
 
@@ -1134,15 +1119,14 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.UpdateAsync(objectDelta).Result);
+            var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                async () => await session.UpdateAsync(objectDelta));
 
-            Assert.IsType<MicroLiteException>(exception.InnerException);
-            Assert.Equal(ExceptionMessages.ObjectDelta_MustContainAtLeastOneChange, exception.InnerException.Message);
+            Assert.Equal(ExceptionMessages.ObjectDelta_MustContainAtLeastOneChange, exception.Message);
         }
 
         [Fact]
-        public void UpdateObjectDeltaThrowsObjectDisposedExceptionIfDisposed()
+        public async void UpdateObjectDeltaThrowsObjectDisposedExceptionIfDisposed()
         {
             var session = new AsyncSession(
                 ConnectionScope.PerTransaction,
@@ -1154,10 +1138,8 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.UpdateAsync(new ObjectDelta(typeof(Customer), 1234)).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            await Assert.ThrowsAsync<ObjectDisposedException>(
+                async () => await session.UpdateAsync(new ObjectDelta(typeof(Customer), 1234)));
         }
     }
 }

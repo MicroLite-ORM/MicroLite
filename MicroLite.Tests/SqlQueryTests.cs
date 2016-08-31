@@ -15,7 +15,7 @@
 
             var sqlQuery = new SqlQuery(string.Empty, args);
 
-            Assert.ReferenceEquals(args, sqlQuery.ArgumentsArray);
+            Assert.Same(args, sqlQuery.ArgumentsArray);
         }
 
         [Fact]
