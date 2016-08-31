@@ -7,10 +7,9 @@ $projectName = "MicroLite"
 
 $scriptPath = Split-Path $MyInvocation.InvocationName
 $buildDir = "$scriptPath\build"
-$nuGetExe = "$scriptPath\.nuget\NuGet.exe"
+$nuGetExe = "$scriptPath\tools\NuGet.exe"
 $nuSpec = "$scriptPath\$projectName.nuspec"
 $nuGetPackage = "$buildDir\$projectName.$version.nupkg"
-$date = Get-Date
 $gitDir = $scriptPath + "\.git"
 $commit = git --git-dir $gitDir rev-list HEAD --count
 
@@ -49,14 +48,6 @@ Remove-Module psake -ErrorAction SilentlyContinue
 
 if ($version)
 {
-	Write-Host "Update NuGet.exe" -ForegroundColor Green
-	& $nuGetExe Update -self
-
-	if (Test-Path "$nuGetExe.old")
-	{
-  		Remove-Item -force "$nuGetExe.old" -ErrorAction SilentlyContinue
-	}
-
 	Write-Host "Pack $nuSpec -> $nuGetPackage" -ForegroundColor Green
 	& $nuGetExe Pack $nuSpec -Version $version -OutputDirectory $buildDir -BasePath $buildDir
 

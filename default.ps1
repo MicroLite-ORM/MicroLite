@@ -5,8 +5,8 @@ properties {
   $helpDir = "$buildDir\help\"
 
   $builds = @(
-    @{Name = "NET45"; Constants="NET45"; BuildDir="$buildDir\4.5\"; Framework="v4.5"},
-    @{Name = "NET46"; Constants="NET46"; BuildDir="$buildDir\4.6\"; Framework="v4.6"}
+    @{ Name = "NET45"; Constants="NET45"; BuildDir="$buildDir\4.5\"; Framework="v4.5" },
+    @{ Name = "NET46"; Constants="NET46"; BuildDir="$buildDir\4.6\"; Framework="v4.6" }
   )
 }
 
@@ -46,7 +46,7 @@ Task RunTests -Depends Build {
   Write-Host
 }
 
-Task BuildHelp -Depends RunTests {  
+Task BuildHelp -Depends RunTests {
   Write-Host "Building $projectName.shfbproj" -ForegroundColor Green
-  Exec { msbuild "$projectName.shfbproj" }  
+  Exec { msbuild "$projectName.shfbproj" }
 }
