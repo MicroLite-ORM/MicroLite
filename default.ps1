@@ -41,7 +41,7 @@ Task RunTests -Depends Build {
     Write-Host "Running $projectName.Tests.$name" -ForegroundColor Green
 
     $outDir = $build.BuildDir
-    Exec {  & $baseDir\packages\xunit.runners.1.9.2\tools\xunit.console.clr4.exe "$outDir\$projectName.Tests.dll" }
+    Exec {  & $baseDir\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe "$outDir\$projectName.Tests.dll" }
   }
   Write-Host
 }
