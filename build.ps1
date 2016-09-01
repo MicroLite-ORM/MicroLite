@@ -10,11 +10,8 @@ $buildDir = "$scriptPath\build"
 $nuGetExe = "$scriptPath\.nuget\NuGet.exe"
 $nuSpec = "$scriptPath\$projectName.nuspec"
 $nuGetPackage = "$buildDir\$projectName.$version.nupkg"
-$date = Get-Date
-$gitDir = $scriptPath + "\.git"
-$commit = git --git-dir $gitDir rev-list HEAD --count
 
-function UpdateAssemblyInfoFiles ([string] $buildVersion)
+function UpdateAssemblyInfoFiles ([string] $buildVersion, [string] $commit)
 {
 	$assemblyVersionPattern = 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
 	$fileVersionPattern = 'AssemblyFileVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
@@ -37,7 +34,10 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 
 if ($version)
 {
-	UpdateAssemblyInfoFiles($version)
+	$gitDir = $scriptPath + "\.git"
+	$commit = git --git-dir $gitDir rev-list HEAD --count
+
+	UpdateAssemblyInfoFiles($version, $commit)
 }
 
 # Run the psake build script to create the release binaries
@@ -49,14 +49,6 @@ Remove-Module psake -ErrorAction SilentlyContinue
 
 if ($version)
 {
-	Write-Host "Update NuGet.exe" -ForegroundColor Green
-	& $nuGetExe Update -self
-
-	if (Test-Path "$nuGetExe.old")
-	{
-  		Remove-Item -force "$nuGetExe.old" -ErrorAction SilentlyContinue
-	}
-
 	Write-Host "Pack $nuSpec -> $nuGetPackage" -ForegroundColor Green
 	& $nuGetExe Pack $nuSpec -Version $version -OutputDirectory $buildDir -BasePath $buildDir
 
