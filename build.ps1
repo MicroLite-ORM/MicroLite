@@ -10,10 +10,8 @@ $buildDir = "$scriptPath\build"
 $nuGetExe = "$scriptPath\tools\NuGet.exe"
 $nuSpec = "$scriptPath\$projectName.nuspec"
 $nuGetPackage = "$buildDir\$projectName.$version.nupkg"
-$gitDir = $scriptPath + "\.git"
-$commit = git --git-dir $gitDir rev-list HEAD --count
 
-function UpdateAssemblyInfoFiles ([string] $buildVersion)
+function UpdateAssemblyInfoFiles ([string] $buildVersion, [string] $commit)
 {
 	$assemblyVersionPattern = 'AssemblyVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
 	$fileVersionPattern = 'AssemblyFileVersion\("[0-9]+(\.([0-9]+|\*)){1,3}"\)'
@@ -36,7 +34,10 @@ function UpdateAssemblyInfoFiles ([string] $buildVersion)
 
 if ($version)
 {
-	UpdateAssemblyInfoFiles($version)
+	$gitDir = $scriptPath + "\.git"
+	$commit = git --git-dir $gitDir rev-list HEAD --count
+
+	UpdateAssemblyInfoFiles($version, $commit)
 }
 
 # Run the psake build script to create the release binaries
