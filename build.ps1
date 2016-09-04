@@ -37,7 +37,7 @@ if ($version)
 	$gitDir = $scriptPath + "\.git"
 	$commit = git --git-dir $gitDir rev-list HEAD --count
 
-	UpdateAssemblyInfoFiles($version, $commit)
+	UpdateAssemblyInfoFiles -buildVersion $version -commit $commit
 }
 
 # Run the psake build script to create the release binaries
