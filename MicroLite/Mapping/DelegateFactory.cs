@@ -215,15 +215,6 @@ namespace MicroLite.Mapping
                     ilGenerator.Emit(OpCodes.Ldarg_0);
                     ilGenerator.Emit(OpCodes.Ldloc_1);
                     ilGenerator.EmitCall(OpCodes.Callvirt, typeof(IDataRecord).GetMethod("Get" + actualPropertyType.Name), null);
-
-                    if (column.PropertyInfo.PropertyType.IsGenericType)
-                    {
-                        // This is for nullable<T> (e.g. Int?)
-                        ilGenerator.Emit(OpCodes.Newobj, column.PropertyInfo.PropertyType.GetConstructor(new[] { actualPropertyType }));
-                    }
-
-                    // entity.{Property} = dataReader.Get{PropertyType}(i);
-                    ilGenerator.EmitCall(OpCodes.Callvirt, column.PropertyInfo.GetSetMethod(), null);
                 }
                 else
                 {
@@ -253,9 +244,15 @@ namespace MicroLite.Mapping
                     // converted = ({PropertyType})converted;
                     ilGenerator.EmitUnboxOrCast(actualPropertyType);
 
-                    // entity.{Property} = converted;
-                    ilGenerator.EmitCall(OpCodes.Callvirt, column.PropertyInfo.GetSetMethod(), null);
                 }
+                if (column.PropertyInfo.PropertyType.IsGenericType)
+                {
+                    // This is for nullable<T> (e.g. Int?)
+                    ilGenerator.Emit(OpCodes.Newobj, column.PropertyInfo.PropertyType.GetConstructor(new[] { actualPropertyType }));
+                }
+
+                // entity.{Property} = dataReader.Get{PropertyType}(i);
+                ilGenerator.EmitCall(OpCodes.Callvirt, column.PropertyInfo.GetSetMethod(), null);
 
                 ilGenerator.Emit(OpCodes.Br, incrementIndex);
             }
