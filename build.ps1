@@ -43,7 +43,7 @@ if ($version)
 # Run the psake build script to create the release binaries
 Import-Module (Join-Path $scriptPath packages\psake.4.6.0\tools\psake.psm1) -ErrorAction SilentlyContinue
 
-Invoke-psake (Join-Path $scriptPath default.ps1)
+Invoke-psake (Join-Path $scriptPath default.ps1) -parameters @{"buildVersion"="$version"}
 
 Remove-Module psake -ErrorAction SilentlyContinue
 

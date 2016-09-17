@@ -1,4 +1,5 @@
 properties {
+  $buildVersion
   $projectName = "MicroLite"
   $baseDir = Resolve-Path .
   $buildDir = "$baseDir\build"
@@ -41,12 +42,14 @@ Task RunTests -Depends Build {
     Write-Host "Running $projectName.Tests.$name" -ForegroundColor Green
 
     $outDir = $build.BuildDir
-    Exec {  & $baseDir\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe "$outDir\$projectName.Tests.dll" }
+    Exec { & $baseDir\packages\xunit.runner.console.2.1.0\tools\xunit.console.exe "$outDir\$projectName.Tests.dll" }
   }
   Write-Host
 }
 
 Task BuildHelp -Depends RunTests {
-  Write-Host "Building $projectName.shfbproj" -ForegroundColor Green
-  Exec { msbuild "$projectName.shfbproj" }
+  if ($buildVersion) {
+    Write-Host "Building $projectName.shfbproj" -ForegroundColor Green
+    Exec { msbuild "$projectName.shfbproj" }
+  }
 }
