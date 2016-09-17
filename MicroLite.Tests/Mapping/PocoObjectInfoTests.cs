@@ -1,4 +1,6 @@
-﻿namespace MicroLite.Tests.Mapping
+﻿using MicroLite.TypeConverters;
+
+namespace MicroLite.Tests.Mapping
 {
     using System;
     using System.Data;
@@ -137,6 +139,41 @@
             Assert.Equal(CustomerStatus.Active, instance.Status);
             Assert.Equal(new DateTime(2014, 3, 27), instance.Updated);
             Assert.Equal(new Uri("http://microliteorm.wordpress.com"), instance.Website);
+        }
+
+        [Fact]
+        public void CreateInstanceWithNonNullValueToNullablePropUsingTypeConverter()
+        {
+            var someTypeConverterMock = new Mock<ITypeConverter>(MockBehavior.Strict);
+            someTypeConverterMock.Setup(_ => _.CanConvert(It.IsAny<Type>())).Returns(true);
+            someTypeConverterMock.Setup(_ => _.ConvertFromDbValue(It.IsAny<IDataReader>(), It.IsAny<int>(), It.IsAny<Type>())).Returns(DateTime.Now);
+            var someTypeConverter = someTypeConverterMock.Object;
+
+            try
+            {
+                TypeConverter.Converters.Add(someTypeConverter);
+
+                var objectInfo = ObjectInfo.For(typeof(SomeClassWithNullableProperty));
+
+                var mockDataReader = new Mock<IDataReader>(MockBehavior.Strict);
+                mockDataReader.Setup(_ => _.IsDBNull(It.IsAny<int>())).Returns(false);
+                mockDataReader.Setup(_ => _.FieldCount).Returns(1);
+                mockDataReader.Setup(_ => _[It.IsAny<int>()]).Returns(DateTime.Now);
+                mockDataReader.Setup(_ => _.GetName(It.IsAny<int>())).Returns("NullableProperty");
+
+                var instance = (SomeClassWithNullableProperty)objectInfo.CreateInstance(mockDataReader.Object);
+
+                Assert.NotNull(instance.NullableProperty);
+            }
+            finally
+            {
+                TypeConverter.Converters.Remove(someTypeConverter); // Need to cleanup else we affect other tests' setup.
+            }
+        }
+
+        public class SomeClassWithNullableProperty
+        {
+            public DateTime? NullableProperty { get; set; }
         }
 
         [Fact]
