@@ -27,6 +27,7 @@ namespace MicroLite.Mapping
         private static readonly MethodInfo dataRecordIsDBNull = typeof(IDataRecord).GetMethod("IsDBNull");
         private static readonly ConstructorInfo sqlArgumentConstructor = typeof(SqlArgument).GetConstructor(new[] { typeof(object), typeof(DbType) });
         private static readonly MethodInfo stringEquals = typeof(string).GetMethod("Equals", new[] { typeof(string), typeof(string) });
+        private static readonly MethodInfo typeConverterDefaultMethod = typeof(TypeConverter).GetProperty("Default").GetGetMethod();
         private static readonly MethodInfo typeConverterForMethod = typeof(TypeConverter).GetMethod("For", new[] { typeof(Type) });
         private static readonly MethodInfo typeGetTypeFromHandleMethod = typeof(Type).GetMethod("GetTypeFromHandle");
 
@@ -35,11 +36,11 @@ namespace MicroLite.Mapping
             var dynamicMethod = new DynamicMethod(
                 name: "MicroLite" + objectInfo.ForType.Name + "GetIdentifier",
                 returnType: typeof(object),
-                parameterTypes: new[] { typeof(object) });
+                parameterTypes: new[] { typeof(object) }); // arg_0
 
             var ilGenerator = dynamicMethod.GetILGenerator();
 
-            // var instance = ({ForType})arg_0;
+            // var instance = ({Type})arg_0;
             ilGenerator.Emit(OpCodes.Ldarg_0);
             ilGenerator.Emit(OpCodes.Castclass, objectInfo.ForType);
 
@@ -62,27 +63,27 @@ namespace MicroLite.Mapping
             var dynamicMethod = new DynamicMethod(
                 name: "MicroLite" + objectInfo.ForType.Name + "GetInsertValues",
                 returnType: typeof(SqlArgument[]),
-                parameterTypes: new[] { typeof(object) },
+                parameterTypes: new[] { typeof(object) }, // arg_0
                 m: typeof(ObjectInfo).Module);
 
             var ilGenerator = dynamicMethod.GetILGenerator();
 
-            ilGenerator.DeclareLocal(objectInfo.ForType);     // loc_0
-            ilGenerator.DeclareLocal(typeof(SqlArgument[]));  // loc_1
+            ilGenerator.DeclareLocal(objectInfo.ForType);     // loc_0 - {Type} instance;
+            ilGenerator.DeclareLocal(typeof(SqlArgument[]));  // loc_1 - SqlArgument[] sqlArguments;
 
-            // var instance = ({ForType})arg_0;
+            // instance = ({Type})arg_0;
             ilGenerator.Emit(OpCodes.Ldarg_0);
             ilGenerator.Emit(OpCodes.Castclass, objectInfo.ForType);
             ilGenerator.Emit(OpCodes.Stloc_0);
 
-            // var values = new SqlArgument[count];
+            // sqlArguments = new SqlArgument[count];
             ilGenerator.EmitEfficientInt(objectInfo.TableInfo.InsertColumnCount);
             ilGenerator.Emit(OpCodes.Newarr, typeof(SqlArgument));
             ilGenerator.Emit(OpCodes.Stloc_1);
 
             EmitGetPropertyValues(ilGenerator, objectInfo, c => c.AllowInsert);
 
-            // return values;
+            // return sqlArguments;
             ilGenerator.Emit(OpCodes.Ldloc_1);
             ilGenerator.Emit(OpCodes.Ret);
 
@@ -96,27 +97,27 @@ namespace MicroLite.Mapping
             var dynamicMethod = new DynamicMethod(
                 name: "MicroLite" + objectInfo.ForType.Name + "GetUpdateValues",
                 returnType: typeof(SqlArgument[]),
-                parameterTypes: new[] { typeof(object) },
+                parameterTypes: new[] { typeof(object) }, // arg_0
                 m: typeof(ObjectInfo).Module);
 
             var ilGenerator = dynamicMethod.GetILGenerator();
 
-            ilGenerator.DeclareLocal(objectInfo.ForType);     // loc_0
-            ilGenerator.DeclareLocal(typeof(SqlArgument[]));  // loc_1
+            ilGenerator.DeclareLocal(objectInfo.ForType);     // loc_0 - {Type} instance;
+            ilGenerator.DeclareLocal(typeof(SqlArgument[]));  // loc_1 - SqlArgument[] sqlArguments;
 
-            // var instance = ({ForType})arg_0;
+            // instance = ({Type})arg_0;
             ilGenerator.Emit(OpCodes.Ldarg_0);
             ilGenerator.Emit(OpCodes.Castclass, objectInfo.ForType);
             ilGenerator.Emit(OpCodes.Stloc_0);
 
-            // var values = new SqlArgument[count + 1]; // Add 1 for the identifier
+            // sqlArguments = new SqlArgument[count + 1]; // Add 1 for the identifier
             ilGenerator.EmitEfficientInt(objectInfo.TableInfo.UpdateColumnCount + 1);
             ilGenerator.Emit(OpCodes.Newarr, typeof(SqlArgument));
             ilGenerator.Emit(OpCodes.Stloc_1);
 
             EmitGetPropertyValues(ilGenerator, objectInfo, c => c.AllowUpdate);
 
-            // values[values.Length - 1] = entity.{Id};
+            // sqlArguments[values.Length - 1] = entity.{Id};
             ilGenerator.Emit(OpCodes.Ldloc_1);
             ilGenerator.EmitEfficientInt(objectInfo.TableInfo.UpdateColumnCount);
             ilGenerator.Emit(OpCodes.Ldelema, typeof(SqlArgument));
@@ -128,10 +129,10 @@ namespace MicroLite.Mapping
             ilGenerator.EmitEfficientInt((int)objectInfo.TableInfo.IdentifierColumn.DbType);
             ilGenerator.Emit(OpCodes.Newobj, sqlArgumentConstructor);
 
-            // values[i] = new SqlArgument(value, column.DbType); OR values[i] = new SqlArgument(converted, column.DbType);
+            // sqlArguments[i] = new SqlArgument(value, column.DbType); OR sqlArguments[i] = new SqlArgument(converted, column.DbType);
             ilGenerator.Emit(OpCodes.Stobj, typeof(SqlArgument));
 
-            // return values;
+            // return sqlArguments;
             ilGenerator.Emit(OpCodes.Ldloc_1);
             ilGenerator.Emit(OpCodes.Ret);
 
@@ -145,12 +146,12 @@ namespace MicroLite.Mapping
             var dynamicMethod = new DynamicMethod(
                 name: "MicroLite" + objectInfo.ForType.Name + "Factory",
                 returnType: typeof(object),
-                parameterTypes: new[] { typeof(IDataReader) },
+                parameterTypes: new[] { typeof(IDataReader) }, // arg_0
                 m: typeof(ObjectInfo).Module);
 
             var ilGenerator = dynamicMethod.GetILGenerator();
 
-            ilGenerator.DeclareLocal(objectInfo.ForType);     // loc_0 - {Type} instance = null;
+            ilGenerator.DeclareLocal(objectInfo.ForType);     // loc_0 - {Type} instance;
             ilGenerator.DeclareLocal(typeof(int));            // loc_1 - int i
             ilGenerator.DeclareLocal(typeof(string));         // loc_2 - string columnName
 
@@ -208,18 +209,18 @@ namespace MicroLite.Mapping
                 // case "{ColumnName}":
                 ilGenerator.MarkLabel(columnLabels[i]);
 
+                ilGenerator.Emit(OpCodes.Ldloc_0); // {Type} instance
+
                 if (TypeConverter.For(column.PropertyInfo.PropertyType) == null
                     && typeof(IDataRecord).GetMethod("Get" + actualPropertyType.Name) != null)
                 {
-                    ilGenerator.Emit(OpCodes.Ldloc_0);
-                    ilGenerator.Emit(OpCodes.Ldarg_0);
-                    ilGenerator.Emit(OpCodes.Ldloc_1);
+                    // var columnValue = dataReader.Get{PropertyType}(i);
+                    ilGenerator.Emit(OpCodes.Ldarg_0); // IDataReader
+                    ilGenerator.Emit(OpCodes.Ldloc_1); // int i
                     ilGenerator.EmitCall(OpCodes.Callvirt, typeof(IDataRecord).GetMethod("Get" + actualPropertyType.Name), null);
                 }
                 else
                 {
-                    ilGenerator.Emit(OpCodes.Ldloc_0);
-
                     if (TypeConverter.For(column.PropertyInfo.PropertyType) != null)
                     {
                         // typeConverter = TypeConverter.For(propertyType);
@@ -230,28 +231,28 @@ namespace MicroLite.Mapping
                     else
                     {
                         // typeConverter = TypeConverter.Default;
-                        ilGenerator.EmitCall(OpCodes.Call, typeof(TypeConverter).GetProperty("Default").GetGetMethod(), null);
+                        ilGenerator.EmitCall(OpCodes.Call, typeConverterDefaultMethod, null);
                     }
 
-                    ilGenerator.Emit(OpCodes.Ldarg_0);
-                    ilGenerator.Emit(OpCodes.Ldloc_1);
+                    ilGenerator.Emit(OpCodes.Ldarg_0); // IDataReader
+                    ilGenerator.Emit(OpCodes.Ldloc_1); // int i
 
-                    // var converted = typeConverter.ConvertFromDbValue(reader, i, {propertyType});
+                    // var columnValue = typeConverter.ConvertFromDbValue(dataReader, i, {propertyType});
                     ilGenerator.Emit(OpCodes.Ldtoken, column.PropertyInfo.PropertyType);
                     ilGenerator.EmitCall(OpCodes.Call, typeGetTypeFromHandleMethod, null);
                     ilGenerator.EmitCall(OpCodes.Callvirt, convertFromDbValueMethod, null);
 
-                    // converted = ({PropertyType})converted;
+                    // columnValue = ({PropertyType})columnValue;
                     ilGenerator.EmitUnboxOrCast(actualPropertyType);
-
                 }
-                if (column.PropertyInfo.PropertyType.IsGenericType)
+
+                if (column.PropertyInfo.PropertyType.IsGenericType && typeof(Nullable<>).IsAssignableFrom(column.PropertyInfo.PropertyType.GetGenericTypeDefinition()))
                 {
-                    // This is for nullable<T> (e.g. Int?)
+                    // columnValue = new Nullable<{PropertyType}>(columnValue);
                     ilGenerator.Emit(OpCodes.Newobj, column.PropertyInfo.PropertyType.GetConstructor(new[] { actualPropertyType }));
                 }
 
-                // entity.{Property} = dataReader.Get{PropertyType}(i);
+                // entity.{Property} = columnValue;
                 ilGenerator.EmitCall(OpCodes.Callvirt, column.PropertyInfo.GetSetMethod(), null);
 
                 ilGenerator.Emit(OpCodes.Br, incrementIndex);
@@ -286,11 +287,11 @@ namespace MicroLite.Mapping
             var dynamicMethod = new DynamicMethod(
                 name: "MicroLite" + objectInfo.ForType.Name + "SetIdentifier",
                 returnType: null,
-                parameterTypes: new[] { typeof(object), typeof(object) });
+                parameterTypes: new[] { typeof(object), typeof(object) }); // arg_0, arg_1
 
             var ilGenerator = dynamicMethod.GetILGenerator();
 
-            // var instance = ({ForType})arg_0;
+            // var instance = ({Type})arg_0;
             ilGenerator.Emit(OpCodes.Ldarg_0);
             ilGenerator.Emit(OpCodes.Castclass, objectInfo.ForType);
 
@@ -323,7 +324,7 @@ namespace MicroLite.Mapping
                     continue;
                 }
 
-                ilGenerator.Emit(OpCodes.Ldloc_1);
+                ilGenerator.Emit(OpCodes.Ldloc_1); // loc_1 - SqlArgument[] sqlArguments
                 ilGenerator.EmitEfficientInt(index++);
                 ilGenerator.Emit(OpCodes.Ldelema, typeof(SqlArgument));
 
@@ -355,7 +356,7 @@ namespace MicroLite.Mapping
                 ilGenerator.EmitEfficientInt((int)column.DbType);
                 ilGenerator.Emit(OpCodes.Newobj, sqlArgumentConstructor);
 
-                // values[i] = new SqlArgument(value, column.DbType); OR values[i] = new SqlArgument(converted, column.DbType);
+                // sqlArguments[i] = new SqlArgument(value, column.DbType); OR sqlArguments[i] = new SqlArgument(converted, column.DbType);
                 ilGenerator.Emit(OpCodes.Stobj, typeof(SqlArgument));
             }
         }

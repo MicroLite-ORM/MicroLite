@@ -1,12 +1,11 @@
-﻿using MicroLite.TypeConverters;
-
-namespace MicroLite.Tests.Mapping
+﻿namespace MicroLite.Tests.Mapping
 {
     using System;
     using System.Data;
     using MicroLite.FrameworkExtensions;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
+    using MicroLite.TypeConverters;
     using Moq;
     using Xunit;
 
@@ -31,6 +30,46 @@ namespace MicroLite.Tests.Mapping
                 () => new PocoObjectInfo(typeof(Customer), null));
 
             Assert.Equal("tableInfo", exception.ParamName);
+        }
+
+        /// <summary>
+        /// Issue #455 - Whole Process crashes with AccessViolationException when assigning a non-null value to a nullable Property while using ITypeConverter.
+        /// </summary>
+        [Fact]
+        public void CreateInstanceSettingNullablePropertyToNonNullValueFromTypeConverter()
+        {
+            var creditLimit = 12000M;
+
+            var mockTypeConverter = new Mock<ITypeConverter>();
+            mockTypeConverter.Setup(x => x.CanConvert(typeof(decimal?))).Returns(true);
+            mockTypeConverter.Setup(x => x.ConvertFromDbValue(It.IsAny<IDataReader>(), 0, It.IsAny<Type>())).Returns(creditLimit);
+
+            var typeConverter = mockTypeConverter.Object;
+
+            TypeConverter.Converters.Add(typeConverter);
+
+            var mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(1);
+            mockReader.Setup(x => x.IsDBNull(0)).Returns(false);
+            mockReader.Setup(x => x.GetName(0)).Returns("CreditLimit");
+
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            try
+            {
+                var instance = objectInfo.CreateInstance(mockReader.Object) as Customer;
+
+                Assert.NotNull(instance);
+                Assert.IsType<Customer>(instance);
+
+                Assert.NotNull(instance.CreditLimit);
+                Assert.Equal(creditLimit, instance.CreditLimit.Value);
+            }
+            finally
+            {
+                // Always remove the mock type converter to avoid breaking other tests.
+                TypeConverter.Converters.Remove(typeConverter);
+            }
         }
 
         [Fact]
@@ -139,41 +178,6 @@ namespace MicroLite.Tests.Mapping
             Assert.Equal(CustomerStatus.Active, instance.Status);
             Assert.Equal(new DateTime(2014, 3, 27), instance.Updated);
             Assert.Equal(new Uri("http://microliteorm.wordpress.com"), instance.Website);
-        }
-
-        [Fact]
-        public void CreateInstanceWithNonNullValueToNullablePropUsingTypeConverter()
-        {
-            var someTypeConverterMock = new Mock<ITypeConverter>(MockBehavior.Strict);
-            someTypeConverterMock.Setup(_ => _.CanConvert(It.IsAny<Type>())).Returns(true);
-            someTypeConverterMock.Setup(_ => _.ConvertFromDbValue(It.IsAny<IDataReader>(), It.IsAny<int>(), It.IsAny<Type>())).Returns(DateTime.Now);
-            var someTypeConverter = someTypeConverterMock.Object;
-
-            try
-            {
-                TypeConverter.Converters.Add(someTypeConverter);
-
-                var objectInfo = ObjectInfo.For(typeof(SomeClassWithNullableProperty));
-
-                var mockDataReader = new Mock<IDataReader>(MockBehavior.Strict);
-                mockDataReader.Setup(_ => _.IsDBNull(It.IsAny<int>())).Returns(false);
-                mockDataReader.Setup(_ => _.FieldCount).Returns(1);
-                mockDataReader.Setup(_ => _[It.IsAny<int>()]).Returns(DateTime.Now);
-                mockDataReader.Setup(_ => _.GetName(It.IsAny<int>())).Returns("NullableProperty");
-
-                var instance = (SomeClassWithNullableProperty)objectInfo.CreateInstance(mockDataReader.Object);
-
-                Assert.NotNull(instance.NullableProperty);
-            }
-            finally
-            {
-                TypeConverter.Converters.Remove(someTypeConverter); // Need to cleanup else we affect other tests' setup.
-            }
-        }
-
-        public class SomeClassWithNullableProperty
-        {
-            public DateTime? NullableProperty { get; set; }
         }
 
         [Fact]
@@ -681,7 +685,7 @@ namespace MicroLite.Tests.Mapping
 
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            objectInfo.VerifyInstanceForInsert(customer);
+            Assert.DoesNotThrow(() => objectInfo.VerifyInstanceForInsert(customer));
         }
 
         [Fact]
@@ -697,7 +701,7 @@ namespace MicroLite.Tests.Mapping
 
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            objectInfo.VerifyInstanceForInsert(customer);
+            Assert.DoesNotThrow(() => objectInfo.VerifyInstanceForInsert(customer));
         }
 
         [Fact]
@@ -713,7 +717,7 @@ namespace MicroLite.Tests.Mapping
 
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            objectInfo.VerifyInstanceForInsert(customer);
+            Assert.DoesNotThrow(() => objectInfo.VerifyInstanceForInsert(customer));
         }
 
         [Fact]
