@@ -21,7 +21,7 @@ namespace MicroLite.Listeners
     public static class Listener
     {
         private static readonly StackCollection<IDeleteListener> deleteListeners = new StackCollection<IDeleteListener>();
-        private static readonly StackCollection<IInsertListener> insertListeners = new StackCollection<IInsertListener>();
+        private static readonly StackCollection<IInsertListener> insertListeners = new StackCollection<IInsertListener> { new IdentifierStrategyListener() };
         private static readonly StackCollection<IUpdateListener> updateListeners = new StackCollection<IUpdateListener>();
 
         /// <summary>
