@@ -36,7 +36,7 @@ namespace MicroLite.Mapping
         {
             if (forType == null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
             var identifierStrategy = this.settings.ResolveIdentifierStrategy(forType);

@@ -40,7 +40,7 @@ namespace MicroLite.Driver
         {
             if (commandText == null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             if (this.IsStoredProcedureCall(commandText))
@@ -72,7 +72,7 @@ namespace MicroLite.Driver
         {
             if (commandText == null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             return this.SupportsStoredProcedures

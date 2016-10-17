@@ -42,7 +42,7 @@ namespace MicroLite.Mapping
         {
             if (reader == null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
             if (log.IsDebug)

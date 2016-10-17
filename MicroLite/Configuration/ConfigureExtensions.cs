@@ -34,7 +34,7 @@ namespace MicroLite.Configuration
         {
             if (mappingConvention == null)
             {
-                throw new ArgumentNullException("mappingConvention");
+                throw new ArgumentNullException(nameof(mappingConvention));
             }
 
             if (this.log.IsInfo)

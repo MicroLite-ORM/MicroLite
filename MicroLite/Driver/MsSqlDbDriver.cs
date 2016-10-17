@@ -41,7 +41,7 @@ namespace MicroLite.Driver
         {
             if (parameter == null)
             {
-                throw new ArgumentNullException("parameter");
+                throw new ArgumentNullException(nameof(parameter));
             }
 
             if (sqlArgument.DbType != DbType.Time)

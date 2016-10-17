@@ -54,7 +54,7 @@ namespace MicroLite.Core
                 return this.dbDriver;
             }
         }
-        
+
         public IAsyncReadOnlySession OpenAsyncReadOnlySession()
         {
             return this.OpenAsyncReadOnlySession(ConnectionScope.PerTransaction);

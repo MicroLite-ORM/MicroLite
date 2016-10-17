@@ -26,7 +26,7 @@ namespace MicroLite.Dialect
         {
             if (objectInfo == null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
@@ -41,7 +41,7 @@ namespace MicroLite.Dialect
         {
             if (sqlQuery == null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var arguments = new SqlArgument[sqlQuery.Arguments.Count + 2];
@@ -70,7 +70,7 @@ namespace MicroLite.Dialect
         {
             if (objectInfo == null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             var commandText = base.BuildInsertCommandText(objectInfo);

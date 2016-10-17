@@ -24,7 +24,6 @@ namespace MicroLite.Characters
     public class SqlCharacters : MarshalByRefObject
     {
         private const string LogicalGetDataName = "MicroLite.Characters.SqlCharacters_Current";
-        private static readonly SqlCharacters empty = new SqlCharacters();
         private static readonly char[] period = new[] { '.' };
         private static SqlCharacters defaultSqlCharacters = null;
 
@@ -50,13 +49,8 @@ namespace MicroLite.Characters
             get
             {
                 var current = CallContext.LogicalGetData(LogicalGetDataName) as SqlCharacters;
-
-                if (current != null)
-                {
-                    return current;
-                }
-
-                return defaultSqlCharacters ?? empty;
+                
+                return current ?? defaultSqlCharacters ?? Empty;
             }
 
             set
@@ -64,26 +58,20 @@ namespace MicroLite.Characters
                 if (value == null)
                 {
                     CallContext.FreeNamedDataSlot(LogicalGetDataName);
-                    defaultSqlCharacters = null;
                 }
                 else
                 {
                     CallContext.LogicalSetData(LogicalGetDataName, value);
-                    defaultSqlCharacters = value;
                 }
+
+                defaultSqlCharacters = value;
             }
         }
 
         /// <summary>
         /// Gets an Empty set of SqlCharacters which does not support named parameters or escaping of values.
         /// </summary>
-        public static SqlCharacters Empty
-        {
-            get
-            {
-                return empty;
-            }
-        }
+        public static SqlCharacters Empty { get; } = new SqlCharacters();
 
         /// <summary>
         /// Gets a string containing the delimiter used on the left hand side to escape an SQL value.
@@ -183,7 +171,7 @@ namespace MicroLite.Characters
         {
             if (sql == null)
             {
-                throw new ArgumentNullException("sql");
+                throw new ArgumentNullException(nameof(sql));
             }
 
             if (this.IsEscaped(sql))

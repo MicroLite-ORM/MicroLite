@@ -74,7 +74,7 @@ namespace MicroLite.Dialect
         {
             if (objectInfo == null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (log.IsDebug)
@@ -88,8 +88,10 @@ namespace MicroLite.Dialect
             {
                 deleteCommand = this.BuildDeleteCommandText(objectInfo);
 
-                var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
-                newDeleteCommandCache[objectInfo.ForType] = deleteCommand;
+                var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache)
+                {
+                    [objectInfo.ForType] = deleteCommand
+                };
 
                 this.deleteCommandCache = newDeleteCommandCache;
             }
@@ -109,7 +111,7 @@ namespace MicroLite.Dialect
         {
             if (objectInfo == null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (log.IsDebug)
@@ -123,8 +125,10 @@ namespace MicroLite.Dialect
             {
                 insertCommand = this.BuildInsertCommandText(objectInfo);
 
-                var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
-                newInsertCommandCache[objectInfo.ForType] = insertCommand;
+                var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache)
+                {
+                    [objectInfo.ForType] = insertCommand
+                };
 
                 this.insertCommandCache = newInsertCommandCache;
             }
@@ -158,7 +162,7 @@ namespace MicroLite.Dialect
         {
             if (objectInfo == null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (log.IsDebug)
@@ -172,8 +176,10 @@ namespace MicroLite.Dialect
             {
                 selectCommand = this.BuildSelectCommandText(objectInfo);
 
-                var newSelectCommandCache = new Dictionary<Type, string>(this.selectCommandCache);
-                newSelectCommandCache[objectInfo.ForType] = selectCommand;
+                var newSelectCommandCache = new Dictionary<Type, string>(this.selectCommandCache)
+                {
+                    [objectInfo.ForType] = selectCommand
+                };
 
                 this.selectCommandCache = newSelectCommandCache;
             }
@@ -193,7 +199,7 @@ namespace MicroLite.Dialect
         {
             if (objectInfo == null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (log.IsDebug)
@@ -207,8 +213,10 @@ namespace MicroLite.Dialect
             {
                 updateCommand = this.BuildUpdateCommandText(objectInfo);
 
-                var newUpdateCommandCache = new Dictionary<Type, string>(this.updateCommandCache);
-                newUpdateCommandCache[objectInfo.ForType] = updateCommand;
+                var newUpdateCommandCache = new Dictionary<Type, string>(this.updateCommandCache)
+                {
+                    [objectInfo.ForType] = updateCommand
+                };
 
                 this.updateCommandCache = newUpdateCommandCache;
             }
@@ -229,7 +237,7 @@ namespace MicroLite.Dialect
         {
             if (objectDelta == null)
             {
-                throw new ArgumentNullException("objectDelta");
+                throw new ArgumentNullException(nameof(objectDelta));
             }
 
             if (log.IsDebug)
@@ -265,7 +273,7 @@ namespace MicroLite.Dialect
         {
             if (sqlQuery == null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             if (log.IsDebug)
@@ -304,7 +312,7 @@ namespace MicroLite.Dialect
         {
             if (objectInfo == null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
@@ -326,7 +334,7 @@ namespace MicroLite.Dialect
         {
             if (objectInfo == null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             var counter = 0;
@@ -362,7 +370,7 @@ namespace MicroLite.Dialect
         {
             if (objectInfo == null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             var selectSqlQuery = new SelectSqlBuilder(this.SqlCharacters)
@@ -384,7 +392,7 @@ namespace MicroLite.Dialect
         {
             if (objectInfo == null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             var builder = new UpdateSqlBuilder(this.SqlCharacters)

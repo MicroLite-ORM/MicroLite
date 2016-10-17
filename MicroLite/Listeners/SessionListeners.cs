@@ -34,19 +34,16 @@ namespace MicroLite.Listeners
         internal IList<IDeleteListener> DeleteListeners
         {
             get;
-            private set;
         }
 
         internal IList<IInsertListener> InsertListeners
         {
             get;
-            private set;
         }
 
         internal IList<IUpdateListener> UpdateListeners
         {
             get;
-            private set;
         }
     }
 }

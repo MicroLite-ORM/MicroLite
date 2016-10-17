@@ -13,7 +13,6 @@
 namespace MicroLite.Core
 {
     using System;
-    using System.Data;
     using System.Data.Common;
     using System.Threading;
     using MicroLite.Mapping;
@@ -39,7 +38,7 @@ namespace MicroLite.Core
         {
             this.callback = action;
         }
-        
+
         internal override async System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
             if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
@@ -64,10 +63,7 @@ namespace MicroLite.Core
                     throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }
 
-                if (this.callback != null)
-                {
-                    this.callback(this);
-                }
+                this.callback?.Invoke(this);
             }
         }
     }

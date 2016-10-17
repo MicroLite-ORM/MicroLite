@@ -159,10 +159,7 @@ namespace MicroLite.Core
 
             this.DbDriver.BuildCommand(this.Command, sqlQuery);
 
-            if (this.currentTransaction != null)
-            {
-                this.currentTransaction.Enlist(this.Command);
-            }
+            this.currentTransaction?.Enlist(this.Command);
         }
 
         protected void Dispose(bool disposing)
@@ -174,33 +171,24 @@ namespace MicroLite.Core
 
             if (disposing)
             {
-                if (this.Command != null)
-                {
-                    this.Command.Dispose();
-                    this.Command = null;
-                }
+                this.Command?.Dispose();
+                this.Command = null;
 
-                if (this.currentTransaction != null)
-                {
-                    this.currentTransaction.Dispose();
-                    this.currentTransaction = null;
-                }
+                this.currentTransaction?.Dispose();
+                this.currentTransaction = null;
 
-                if (this.Connection != null)
+                if (this.ConnectionScope == ConnectionScope.PerSession)
                 {
-                    if (this.ConnectionScope == ConnectionScope.PerSession)
+                    if (Log.IsDebug)
                     {
-                        if (Log.IsDebug)
-                        {
-                            Log.Debug(LogMessages.Session_ClosingConnection);
-                        }
-
-                        this.Connection.Close();
+                        Log.Debug(LogMessages.Session_ClosingConnection);
                     }
 
-                    this.Connection.Dispose();
-                    this.Connection = null;
+                    this.Connection?.Close();
                 }
+
+                this.Connection?.Dispose();
+                this.Connection = null;
 
                 this.disposed = true;
 

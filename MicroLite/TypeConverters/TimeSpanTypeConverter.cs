@@ -54,7 +54,7 @@ namespace MicroLite.TypeConverters
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (value == null || value == DBNull.Value)
@@ -78,12 +78,12 @@ namespace MicroLite.TypeConverters
         {
             if (reader == null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (reader.IsDBNull(index))

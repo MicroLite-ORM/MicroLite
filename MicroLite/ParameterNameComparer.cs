@@ -23,8 +23,6 @@ namespace MicroLite
     /// </remarks>
     internal sealed class ParameterNameComparer : IComparer<string>
     {
-        private static readonly IComparer<string> instance = new ParameterNameComparer();
-
         /// <summary>
         /// Prevents a default instance of the <see cref="ParameterNameComparer"/> class from being created.
         /// </summary>
@@ -35,13 +33,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the parameter name comparer instance.
         /// </summary>
-        internal static IComparer<string> Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+        internal static IComparer<string> Instance { get; } = new ParameterNameComparer();
 
         /// <summary>
         /// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.

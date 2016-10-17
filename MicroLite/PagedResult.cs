@@ -21,11 +21,6 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("Page {Page} of {TotalPages} showing {ResultsPerPage} results per page with a total of {TotalResults} results")]
     public sealed class PagedResult<T>
     {
-        private readonly int page;
-        private readonly IList<T> results;
-        private readonly int resultsPerPage;
-        private readonly int totalResults;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="PagedResult&lt;T&gt;"/> class.
         /// </summary>
@@ -35,10 +30,10 @@ namespace MicroLite
         /// <param name="totalResults">The total number of results for the query.</param>
         public PagedResult(int page, IList<T> results, int resultsPerPage, int totalResults)
         {
-            this.page = page;
-            this.results = results;
-            this.resultsPerPage = resultsPerPage;
-            this.totalResults = totalResults;
+            this.Page = page;
+            this.Results = results;
+            this.ResultsPerPage = resultsPerPage;
+            this.TotalResults = totalResults;
         }
 
         /// <summary>
@@ -48,7 +43,7 @@ namespace MicroLite
         {
             get
             {
-                return this.results.Count > 0;
+                return this.Results.Count > 0;
             }
         }
 
@@ -68,10 +63,7 @@ namespace MicroLite
         /// </summary>
         public int Page
         {
-            get
-            {
-                return this.page;
-            }
+            get;
         }
 
         /// <summary>
@@ -79,10 +71,7 @@ namespace MicroLite
         /// </summary>
         public IList<T> Results
         {
-            get
-            {
-                return this.results;
-            }
+            get;
         }
 
         /// <summary>
@@ -90,10 +79,7 @@ namespace MicroLite
         /// </summary>
         public int ResultsPerPage
         {
-            get
-            {
-                return this.resultsPerPage;
-            }
+            get;
         }
 
         /// <summary>
@@ -112,10 +98,7 @@ namespace MicroLite
         /// </summary>
         public int TotalResults
         {
-            get
-            {
-                return this.totalResults;
-            }
+            get;
         }
     }
 }

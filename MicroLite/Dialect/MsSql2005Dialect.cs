@@ -49,7 +49,7 @@ namespace MicroLite.Dialect
         {
             if (sqlQuery == null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var arguments = new SqlArgument[sqlQuery.Arguments.Count + 2];

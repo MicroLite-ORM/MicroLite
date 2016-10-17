@@ -210,12 +210,12 @@ namespace MicroLite.Mapping
         /// <returns>The column name for the property.</returns>
         protected static string GetColumnName(PropertyInfo propertyInfo)
         {
-            if (propertyInfo.PropertyType.IsEnum)
+            if (propertyInfo?.PropertyType?.IsEnum == true)
             {
                 return propertyInfo.PropertyType.Name + "Id";
             }
 
-            return propertyInfo.Name;
+            return propertyInfo?.Name;
         }
 
         /// <summary>
@@ -225,12 +225,12 @@ namespace MicroLite.Mapping
         /// <returns>The table name for the type.</returns>
         protected static string GetTableName(Type type)
         {
-            if (type.IsGenericType)
+            if (type?.IsGenericType == true)
             {
                 return type.Name.Substring(0, type.Name.IndexOf("`", StringComparison.OrdinalIgnoreCase));
             }
 
-            return type.Name;
+            return type?.Name;
         }
     }
 }

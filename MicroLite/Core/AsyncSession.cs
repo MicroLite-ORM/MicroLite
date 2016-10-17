@@ -59,7 +59,7 @@ namespace MicroLite.Core
 
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             for (int i = 0; i < this.sessionListeners.DeleteListeners.Count; i++)
@@ -99,12 +99,12 @@ namespace MicroLite.Core
 
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (identifier == null)
             {
-                throw new ArgumentNullException("identifier");
+                throw new ArgumentNullException(nameof(identifier));
             }
 
             var objectInfo = ObjectInfo.For(type);
@@ -127,7 +127,7 @@ namespace MicroLite.Core
 
             if (sqlQuery == null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             return await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
@@ -144,7 +144,7 @@ namespace MicroLite.Core
 
             if (sqlQuery == null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             return await this.ExecuteScalarQueryAsync<T>(sqlQuery, cancellationToken).ConfigureAwait(false);
@@ -161,7 +161,7 @@ namespace MicroLite.Core
 
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             for (int i = 0; i < this.sessionListeners.InsertListeners.Count; i++)
@@ -191,7 +191,7 @@ namespace MicroLite.Core
 
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             for (int i = 0; i < this.sessionListeners.UpdateListeners.Count; i++)
@@ -229,7 +229,7 @@ namespace MicroLite.Core
 
             if (objectDelta == null)
             {
-                throw new ArgumentNullException("objectDelta");
+                throw new ArgumentNullException(nameof(objectDelta));
             }
 
             if (objectDelta.ChangeCount == 0)

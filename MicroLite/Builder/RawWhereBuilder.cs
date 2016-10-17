@@ -88,7 +88,7 @@ namespace MicroLite.Builder
         {
             if (selectFrom == null)
             {
-                throw new ArgumentNullException("selectFrom");
+                throw new ArgumentNullException(nameof(selectFrom));
             }
 
             var where = selectFrom.Where(this.builder.ToString(), this.arguments.ToArray());

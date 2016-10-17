@@ -75,7 +75,7 @@ namespace MicroLite.Configuration
         {
             if (connectionName == null)
             {
-                throw new ArgumentNullException("connectionName");
+                throw new ArgumentNullException(nameof(connectionName));
             }
 
             var configSection = ConfigurationManager.ConnectionStrings[connectionName];
@@ -92,27 +92,27 @@ namespace MicroLite.Configuration
         {
             if (connectionName == null)
             {
-                throw new ArgumentNullException("connectionName");
+                throw new ArgumentNullException(nameof(connectionName));
             }
 
             if (connectionString == null)
             {
-                throw new ArgumentNullException("connectionString");
+                throw new ArgumentNullException(nameof(connectionString));
             }
 
             if (providerName == null)
             {
-                throw new ArgumentNullException("providerName");
+                throw new ArgumentNullException(nameof(providerName));
             }
 
             if (sqlDialect == null)
             {
-                throw new ArgumentNullException("sqlDialect");
+                throw new ArgumentNullException(nameof(sqlDialect));
             }
 
             if (dbDriver == null)
             {
-                throw new ArgumentNullException("dbDriver");
+                throw new ArgumentNullException(nameof(dbDriver));
             }
 
             this.chosenConnectionName = connectionName;

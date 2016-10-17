@@ -30,12 +30,12 @@ namespace MicroLite.Mapping
         {
             if (objectInfo == null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (textWriter == null)
             {
-                throw new ArgumentNullException("textWriter");
+                throw new ArgumentNullException(nameof(textWriter));
             }
 
             textWriter.WriteLine("MicroLite Mapping:");

@@ -34,14 +34,14 @@ namespace MicroLite.TypeConverters
         /// </returns>
         public bool CanConvert(Type type)
         {
-            if (type != null && type.IsEnum)
+            if (type?.IsEnum == true)
             {
                 return true;
             }
 
             var actualType = TypeConverter.ResolveActualType(type);
 
-            return actualType != null ? actualType.IsEnum : false;
+            return actualType?.IsEnum == true;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace MicroLite.TypeConverters
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (value == null || value == DBNull.Value)
@@ -84,12 +84,12 @@ namespace MicroLite.TypeConverters
         {
             if (reader == null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (reader.IsDBNull(index))

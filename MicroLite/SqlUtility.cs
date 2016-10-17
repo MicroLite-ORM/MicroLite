@@ -59,7 +59,7 @@ namespace MicroLite
         {
             if (commandText == null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             var startIndex = GetParameterPosition(commandText, 0, namedParameterIdentifiers);
@@ -139,12 +139,12 @@ namespace MicroLite
         {
             if (commandText == null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             if (position > commandText.Length)
             {
-                throw new ArgumentOutOfRangeException("position");
+                throw new ArgumentOutOfRangeException(nameof(position));
             }
 
             var parameterPosition = commandText.IndexOfAny(matchParameterIdentifiers, position);

@@ -22,17 +22,14 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("Value: {Value}, DbType: {DbType}")]
     public struct SqlArgument : IEquatable<SqlArgument>
     {
-        private readonly DbType dbType;
-        private readonly object value;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlArgument"/> struct.
         /// </summary>
         /// <param name="value">The argument value.</param>
         public SqlArgument(object value)
         {
-            this.value = value;
-            this.dbType = value != null ? TypeConverter.ResolveDbType(value.GetType()) : default(DbType);
+            this.Value = value;
+            this.DbType = value != null ? TypeConverter.ResolveDbType(value.GetType()) : default(DbType);
         }
 
         /// <summary>
@@ -42,8 +39,8 @@ namespace MicroLite
         /// <param name="dbType">The DbType of the value.</param>
         public SqlArgument(object value, DbType dbType)
         {
-            this.value = value;
-            this.dbType = dbType;
+            this.Value = value;
+            this.DbType = dbType;
         }
 
         /// <summary>
@@ -51,10 +48,7 @@ namespace MicroLite
         /// </summary>
         public DbType DbType
         {
-            get
-            {
-                return this.dbType;
-            }
+            get;
         }
 
         /// <summary>
@@ -62,10 +56,7 @@ namespace MicroLite
         /// </summary>
         public object Value
         {
-            get
-            {
-                return this.value;
-            }
+            get;
         }
 
         /// <summary>

@@ -34,7 +34,7 @@ namespace MicroLite
         {
             get;
         }
-        
+
         /// <summary>
         /// Opens a new asynchronous read-only session to the database using <see cref="ConnectionScope"/>.PerTransaction.
         /// </summary>

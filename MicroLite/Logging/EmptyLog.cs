@@ -19,59 +19,21 @@ namespace MicroLite.Logging
     /// </summary>
     internal sealed class EmptyLog : ILog
     {
-        private static readonly ILog instance = new EmptyLog();
-
         private EmptyLog()
         {
         }
 
-        public bool IsDebug
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsDebug { get; } = false;
 
-        public bool IsError
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsError { get; } = false;
 
-        public bool IsFatal
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsFatal { get; } = false;
 
-        public bool IsInfo
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsInfo { get; } = false;
 
-        public bool IsWarn
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsWarn { get; } = false;
 
-        internal static ILog Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+        internal static ILog Instance { get; } = new EmptyLog();
 
         public void Debug(string message)
         {

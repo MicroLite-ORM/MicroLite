@@ -32,7 +32,7 @@ namespace MicroLite.Mapping.Attributes
         {
             if (forType == null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
             var tableAttribute = forType.GetAttribute<TableAttribute>(inherit: false);

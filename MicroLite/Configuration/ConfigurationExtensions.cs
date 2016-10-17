@@ -36,7 +36,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new FirebirdSqlDialect(), new FirebirdDbDriver());
@@ -56,7 +56,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new FirebirdSqlDialect(), new FirebirdDbDriver());
@@ -76,7 +76,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new MsSql2005Dialect(), new MsSqlDbDriver());
@@ -97,7 +97,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new MsSql2005Dialect(), new MsSqlDbDriver());
@@ -117,7 +117,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new MsSql2012Dialect(), new MsSqlDbDriver());
@@ -138,7 +138,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new MsSql2012Dialect(), new MsSqlDbDriver());
@@ -157,7 +157,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new MySqlDialect(), new MySqlDbDriver());
@@ -177,7 +177,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new MySqlDialect(), new MySqlDbDriver());
@@ -196,7 +196,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new PostgreSqlDialect(), new PostgreSqlDbDriver());
@@ -216,7 +216,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new PostgreSqlDialect(), new PostgreSqlDbDriver());
@@ -235,7 +235,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new SQLiteDialect(), new SQLiteDbDriver());
@@ -255,7 +255,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new SQLiteDialect(), new SQLiteDbDriver());
@@ -276,7 +276,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new SqlServerCeDialect(), new SqlServerCeDbDriver());
@@ -298,7 +298,7 @@ namespace MicroLite.Configuration
         {
             if (configureConnection == null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new SqlServerCeDialect(), new SqlServerCeDbDriver());
@@ -315,7 +315,7 @@ namespace MicroLite.Configuration
         {
             if (configureExtensions == null)
             {
-                throw new ArgumentNullException("configureExtensions");
+                throw new ArgumentNullException(nameof(configureExtensions));
             }
 
             configureExtensions.SetMappingConvention(new AttributeMappingConvention());
@@ -336,12 +336,12 @@ namespace MicroLite.Configuration
         {
             if (configureExtensions == null)
             {
-                throw new ArgumentNullException("configureExtensions");
+                throw new ArgumentNullException(nameof(configureExtensions));
             }
 
             if (settings == null)
             {
-                throw new ArgumentNullException("settings");
+                throw new ArgumentNullException(nameof(settings));
             }
 
             configureExtensions.SetMappingConvention(new ConventionMappingConvention(settings));

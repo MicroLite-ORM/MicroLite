@@ -39,9 +39,6 @@ namespace MicroLite.Mapping.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public sealed class TableAttribute : Attribute
     {
-        private readonly string name;
-        private readonly string schema;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="TableAttribute"/> class.
         /// </summary>
@@ -58,8 +55,8 @@ namespace MicroLite.Mapping.Attributes
         /// <param name="name">The name of the table.</param>
         public TableAttribute(string schema, string name)
         {
-            this.name = name;
-            this.schema = schema;
+            this.Name = name;
+            this.Schema = schema;
         }
 
         /// <summary>
@@ -67,10 +64,7 @@ namespace MicroLite.Mapping.Attributes
         /// </summary>
         public string Name
         {
-            get
-            {
-                return this.name;
-            }
+            get;
         }
 
         /// <summary>
@@ -78,10 +72,7 @@ namespace MicroLite.Mapping.Attributes
         /// </summary>
         public string Schema
         {
-            get
-            {
-                return this.schema;
-            }
+            get;
         }
     }
 }

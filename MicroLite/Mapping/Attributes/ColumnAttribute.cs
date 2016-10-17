@@ -13,7 +13,6 @@
 namespace MicroLite.Mapping.Attributes
 {
     using System;
-    using System.Data;
 
     /// <summary>
     /// An attribute which can be applied to a property to specify the column name that the property maps to.
@@ -50,10 +49,6 @@ namespace MicroLite.Mapping.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class ColumnAttribute : Attribute
     {
-        private readonly bool allowInsert;
-        private readonly bool allowUpdate;
-        private readonly string name;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnAttribute"/> class.
         /// </summary>
@@ -62,7 +57,7 @@ namespace MicroLite.Mapping.Attributes
             : this(name, true, true)
         {
         }
-        
+
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnAttribute" /> class.
         /// </summary>
@@ -71,9 +66,9 @@ namespace MicroLite.Mapping.Attributes
         /// <param name="allowUpdate">true if the column value can be updated, otherwise false.</param>
         public ColumnAttribute(string name, bool allowInsert, bool allowUpdate)
         {
-            this.name = name;
-            this.allowInsert = allowInsert;
-            this.allowUpdate = allowUpdate;
+            this.Name = name;
+            this.AllowInsert = allowInsert;
+            this.AllowUpdate = allowUpdate;
         }
 
         /// <summary>
@@ -81,10 +76,7 @@ namespace MicroLite.Mapping.Attributes
         /// </summary>
         public bool AllowInsert
         {
-            get
-            {
-                return this.allowInsert;
-            }
+            get;
         }
 
         /// <summary>
@@ -92,21 +84,15 @@ namespace MicroLite.Mapping.Attributes
         /// </summary>
         public bool AllowUpdate
         {
-            get
-            {
-                return this.allowUpdate;
-            }
+            get;
         }
-        
+
         /// <summary>
         /// Gets the name of the column in the database table that the property maps to
         /// </summary>
         public string Name
         {
-            get
-            {
-                return this.name;
-            }
+            get;
         }
     }
 }

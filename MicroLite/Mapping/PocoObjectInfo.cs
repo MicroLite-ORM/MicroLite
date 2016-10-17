@@ -45,18 +45,18 @@ namespace MicroLite.Mapping
         {
             if (forType == null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
             if (tableInfo == null)
             {
-                throw new ArgumentNullException("tableInfo");
+                throw new ArgumentNullException(nameof(tableInfo));
             }
 
             this.forType = forType;
             this.tableInfo = tableInfo;
 
-            if (this.tableInfo.IdentifierColumn != null && this.tableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
+            if (this.tableInfo.IdentifierColumn?.PropertyInfo?.PropertyType?.IsValueType == true)
             {
                 this.defaultIdentifierValue = (ValueType)Activator.CreateInstance(this.tableInfo.IdentifierColumn.PropertyInfo.PropertyType);
             }
@@ -104,7 +104,7 @@ namespace MicroLite.Mapping
         {
             if (reader == null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
             if (log.IsDebug)
@@ -282,7 +282,7 @@ namespace MicroLite.Mapping
         {
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             if (instance.GetType() != this.ForType)
