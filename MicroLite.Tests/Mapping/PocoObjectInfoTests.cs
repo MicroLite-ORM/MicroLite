@@ -250,8 +250,7 @@
         [Fact]
         public void GetIdentifierValueThrowsMicroLiteException_WhenNoIdentifierMapped()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new CustomerWithNoIdentifier();
 
@@ -265,8 +264,7 @@
         [Fact]
         public void GetInsertValues_ReturnsPropertyValues_WhenUsingAssigned()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
@@ -311,8 +309,7 @@
         [Fact]
         public void GetInsertValues_ReturnsPropertyValues_WhenUsingDbGenerated()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
@@ -367,8 +364,7 @@
         [Fact]
         public void GetInsertValuesThrowsMicroLiteException_WhenNoIdentifierMapped()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new CustomerWithNoIdentifier();
 
@@ -382,8 +378,7 @@
         [Fact]
         public void GetUpdateValues_ReturnsPropertyValues_WhenUsingAssigned()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
@@ -428,8 +423,7 @@
         [Fact]
         public void GetUpdateValues_ReturnsPropertyValues_WhenUsingDbGenerated()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
@@ -487,8 +481,7 @@
         [Fact]
         public void GetUpdateValuesThrowsMicroLiteException_WhenNoIdentifierMapped()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new CustomerWithNoIdentifier();
 
@@ -570,8 +563,7 @@
         [Fact]
         public void HasDefaultIdentifierValueThrowsMicroLiteException_WhenNoIdentifierMapped()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new CustomerWithNoIdentifier();
 
@@ -636,15 +628,6 @@
         }
 
         [Fact]
-        public void SetIdentifierValue_ThrowsNullReferenceException_IfIdentifierIsNull()
-        {
-            var objectInfo = ObjectInfo.For(typeof(Customer));
-
-            Assert.Throws<NullReferenceException>(
-                () => objectInfo.SetIdentifierValue(new Customer(), null));
-        }
-
-        [Fact]
         public void SetIdentifierValue_ThrowsMappingException_IfInstanceIsIncorrectType()
         {
             var objectInfo = ObjectInfo.For(typeof(Customer));
@@ -658,10 +641,18 @@
         }
 
         [Fact]
+        public void SetIdentifierValue_ThrowsNullReferenceException_IfIdentifierIsNull()
+        {
+            var objectInfo = ObjectInfo.For(typeof(Customer));
+
+            Assert.Throws<NullReferenceException>(
+                () => objectInfo.SetIdentifierValue(new Customer(), null));
+        }
+
+        [Fact]
         public void SetIdentifierValueThrowsMicroLiteException_WhenNoIdentifierMapped()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new CustomerWithNoIdentifier();
 
@@ -675,8 +666,7 @@
         [Fact]
         public void VerifyInstanceForInsertDoesNotThrowMicroLiteException_WhenIdentifierStrategyAssigned_AndIdentifierSet()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var customer = new Customer
             {
@@ -691,8 +681,7 @@
         [Fact]
         public void VerifyInstanceForInsertDoesNotThrowMicroLiteException_WhenIdentifierStrategyDbGenerated_AndIdentifierNotSet()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new Customer
             {
@@ -707,8 +696,7 @@
         [Fact]
         public void VerifyInstanceForInsertDoesNotThrowMicroLiteException_WhenIdentifierStrategySequence_AndIdentifierNotSet()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Sequence);
 
             var customer = new Customer
             {
@@ -723,8 +711,7 @@
         [Fact]
         public void VerifyInstanceForInsertThrowsMicroLiteException_WhenIdentifierStrategyAssigned_AndIdentifierNotSet()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var customer = new Customer
             {
@@ -741,8 +728,7 @@
         [Fact]
         public void VerifyInstanceForInsertThrowsMicroLiteException_WhenIdentifierStrategyDbGenerated_AndIdentifierSet()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new Customer
             {
@@ -759,8 +745,7 @@
         [Fact]
         public void VerifyInstanceForInsertThrowsMicroLiteException_WhenIdentifierStrategySequence_AndIdentifierSet()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Sequence);
 
             var customer = new Customer
             {
@@ -777,8 +762,7 @@
         [Fact]
         public void VerifyInstanceForInsertThrowsMicroLiteException_WhenNoIdentifierMapped()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new CustomerWithNoIdentifier();
 

@@ -23,7 +23,7 @@
 
             Assert.Same(sqlCharacters, actual);
         }
-        
+
         [Fact]
         public void CurrentIsVisibleAccrossThreadPools()
         {

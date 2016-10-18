@@ -17,8 +17,7 @@
         [Fact]
         public void BuildSelectInsertIdSqlQueryForIdentifierStrategyAssigned()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var sqlDialect = new MsSql2005Dialect();
 
@@ -31,8 +30,7 @@
         [Fact]
         public void BuildSelectInsertIdSqlQueryForIdentifierStrategyDbGenerated()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var sqlDialect = new MsSql2005Dialect();
 
@@ -45,8 +43,7 @@
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategyAssigned()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var sqlDialect = new MsSql2005Dialect();
 
@@ -92,8 +89,7 @@
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategyDbGenerated()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var sqlDialect = new MsSql2005Dialect();
 
@@ -448,8 +444,7 @@ ORDER BY
         [Fact]
         public void UpdateInstanceQuery()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var sqlDialect = new MsSql2005Dialect();
 

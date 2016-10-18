@@ -43,6 +43,12 @@
             };
         }
 
+        public static void SetConventionMapping(IdentifierStrategy identifierStrategy)
+        {
+            ObjectInfo.MappingConvention = new ConventionMappingConvention(
+                GetConventionMappingSettings(identifierStrategy));
+        }
+
         public void Dispose()
         {
             this.ResetMicroLiteInternalState();

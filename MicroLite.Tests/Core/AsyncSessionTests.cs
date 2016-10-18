@@ -527,8 +527,7 @@
         [Fact]
         public async void InsertBuildsAndExecutesAnInsertCommandOnlyIfIdentifierStrategyAssigned()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var customer = new Customer
             {
@@ -568,8 +567,7 @@
         [Fact]
         public async void InsertBuildsAndExecutesAnInsertCommandOnlyIfIdentifierStrategyNotAssignedAndSqlDialectDoesNotSupportSelectInsertedIdentifier()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new Customer();
             var insertSqlQuery = new SqlQuery("INSERT");
@@ -606,8 +604,7 @@
         [Fact]
         public async void InsertBuildsAndExecutesCombinedCommandIfIdentifierStrategyNotAssignedAndSqlDialectSupportsSelectInsertedIdentifierAndDbDriverSupportsBatchedQueries()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new Customer();
             var insertSqlQuery = new SqlQuery("INSERT");
@@ -647,8 +644,7 @@
         [Fact]
         public async void InsertBuildsAndExecutesIndividualCommandsIfIdentifierStrategyNotAssignedAndSqlDialectSupportsSelectInsertedIdentifierAndDbDriverDoesNotSupportBatchedQueries()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new Customer();
             var insertSqlQuery = new SqlQuery("INSERT");

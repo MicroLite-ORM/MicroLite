@@ -41,8 +41,7 @@
         [Fact]
         public void BuildSelectInsertIdSqlQueryReturnsSqlQueryWithEmptyCommandTextAndNoArguments()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
@@ -68,8 +67,7 @@
         [Fact]
         public void BuildUpdateSqlQueryForObjectDelta()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
@@ -220,8 +218,7 @@
         [Fact]
         public void DeleteByIdentifierQuery()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
@@ -251,8 +248,7 @@
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategyAssigned()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
@@ -338,8 +334,7 @@
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategyDbGenerated()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
@@ -418,8 +413,7 @@
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategySequence()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Sequence);
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
@@ -498,8 +492,7 @@
         [Fact]
         public void SelectByIdentifierQuery()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;
@@ -547,8 +540,7 @@
         [Fact]
         public void UpdateInstanceQuery()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var mockSqlDialect = new Mock<SqlDialect>(SqlCharacters.Empty);
             mockSqlDialect.CallBase = true;

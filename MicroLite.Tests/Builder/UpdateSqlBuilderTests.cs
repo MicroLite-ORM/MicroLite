@@ -16,8 +16,7 @@
     {
         public UpdateSqlBuilderTests()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
         }
 
         [Fact]

@@ -49,7 +49,7 @@ namespace MicroLite.Characters
             get
             {
                 var current = CallContext.LogicalGetData(LogicalGetDataName) as SqlCharacters;
-                
+
                 return current ?? defaultSqlCharacters ?? Empty;
             }
 

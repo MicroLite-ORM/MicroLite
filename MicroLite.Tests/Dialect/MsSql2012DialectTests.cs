@@ -15,8 +15,7 @@
         [Fact]
         public void BuildSelectInsertIdSqlQueryForIdentifierStrategyAssigned()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var sqlDialect = new MsSql2012Dialect();
 
@@ -29,8 +28,7 @@
         [Fact]
         public void BuildSelectInsertIdSqlQueryForIdentifierStrategyDbGenerated()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var sqlDialect = new MsSql2012Dialect();
 
@@ -43,8 +41,7 @@
         [Fact]
         public void BuildSelectInsertIdSqlQueryForIdentifierStrategySequence()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Sequence);
 
             var sqlDialect = new MsSql2012Dialect();
 
@@ -68,8 +65,7 @@
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategyAssigned()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var sqlDialect = new MsSql2012Dialect();
 
@@ -115,8 +111,7 @@
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategyDbGenerated()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var sqlDialect = new MsSql2012Dialect();
 
@@ -158,8 +153,7 @@
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategySequenceWithByteId()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Sequence);
 
             var sqlDialect = new MsSql2012Dialect();
 
@@ -201,8 +195,7 @@
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategySequenceWithInt16Id()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Sequence);
 
             var sqlDialect = new MsSql2012Dialect();
 
@@ -244,8 +237,7 @@
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategySequenceWithInt32Id()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Sequence);
 
             var sqlDialect = new MsSql2012Dialect();
 
@@ -287,8 +279,7 @@
         [Fact]
         public void InsertInstanceQueryForIdentifierStrategySequenceWithInt64Id()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Sequence);
 
             var customer = new CustomerWithLongId
             {

@@ -204,7 +204,7 @@
                 Assert.Equal(this.sqlCharacters, SqlCharacters.Current);
             }
         }
-        
+
         public class WhenConstructed : UnitTest
         {
             private readonly string connectionName = "Northwind";

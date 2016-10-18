@@ -1,6 +1,5 @@
 namespace MicroLite.Tests.Mapping
 {
-    using System;
     using System.Linq;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;

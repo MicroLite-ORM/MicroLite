@@ -18,7 +18,7 @@
 
             Assert.IsType<ExpandoObjectInfo>(objectInfo);
         }
-        
+
         [Fact]
         public void For_ReturnsPocoObjectInfo_ForPocoType()
         {
@@ -39,7 +39,7 @@
 
             Assert.Same(objectInfo1, objectInfo2);
         }
-        
+
         [Fact]
         public void For_ReturnsTupleObjectInfo_ForTypeOfTupleT1()
         {
@@ -95,7 +95,7 @@
 
             Assert.IsType<TupleObjectInfo>(objectInfo);
         }
-        
+
         [Fact]
         public void For_ThrowsArgumentNullExceptonForNullForType()
         {

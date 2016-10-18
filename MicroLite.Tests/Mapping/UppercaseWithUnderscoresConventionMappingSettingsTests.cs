@@ -1,6 +1,5 @@
 namespace MicroLite.Tests.Mapping
 {
-    using System;
     using System.Linq;
     using MicroLite.Mapping;
     using MicroLite.Tests.TestEntities;
@@ -59,6 +58,12 @@ namespace MicroLite.Tests.Mapping
             }
 
             [Fact]
+            public void TheTableNameShouldBeMapped()
+            {
+                Assert.Equal("CUSTOMERS", this.objectInfo.TableInfo.Name);
+            }
+
+            [Fact]
             public void TheTableNameShouldBeUppercasedWithUnderscoresIfMultipleWords()
             {
                 var mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.UppercaseWithUnderscores);
@@ -66,12 +71,6 @@ namespace MicroLite.Tests.Mapping
                 var creditCardObjectInfo = mappingConvention.CreateObjectInfo(typeof(CreditCard));
 
                 Assert.Equal("CREDIT_CARDS", creditCardObjectInfo.TableInfo.Name);
-            }
-
-            [Fact]
-            public void TheTableNameShouldBeMapped()
-            {
-                Assert.Equal("CUSTOMERS", this.objectInfo.TableInfo.Name);
             }
 
             [Fact]
