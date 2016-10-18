@@ -8,7 +8,7 @@ using Xunit;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MicroLite.Tests")]
-[assembly: AssemblyDescription("Unit Tests for the MicroLite ORM Framework")]
+[assembly: AssemblyDescription("Unit Tests for the MicroLite ORM Library")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MicroLite")]
 [assembly: AssemblyProduct("MicroLite.Tests")]
