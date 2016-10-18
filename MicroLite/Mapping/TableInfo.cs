@@ -65,7 +65,7 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Gets the columns that are mapped for the table.
         /// </summary>
-        public IList<ColumnInfo> Columns
+        public IReadOnlyList<ColumnInfo> Columns
         {
             get;
         }

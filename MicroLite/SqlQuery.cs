@@ -72,7 +72,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the <see cref="SqlArgument"/>s for the SQL command.
         /// </summary>
-        public IList<SqlArgument> Arguments
+        public IReadOnlyList<SqlArgument> Arguments
         {
             get
             {
