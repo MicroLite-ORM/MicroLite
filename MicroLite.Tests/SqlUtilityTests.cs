@@ -535,7 +535,7 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
         {
             var commandText = SqlUtility.RenumberParameters("SELECT * FROM[Table1] WHERE[Column1] >= :p8 AND[Column2] IN(:p9, :p11) AND[Column3] IN(:p10, :p11)", totalArgumentCount: 12);
 
-            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= :param8 AND [Column2] IN (:param9, :param11) AND [Column3] IN (:param10, :param11)", commandText);
+            Assert.Equal("SELECT * FROM[Table1] WHERE[Column1] >= :param8 AND[Column2] IN(:param9, :param11) AND[Column3] IN(:param10, :param11)", commandText);
         }
     }
 }
