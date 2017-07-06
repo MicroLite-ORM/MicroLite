@@ -293,6 +293,14 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
         }
 
         [Fact]
+        public void ReNumberParametersNoExistingArgumentsWithAtPrefix_AdditionalParameters()
+        {
+            var commandText = SqlUtility.RenumberParameters("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", totalArgumentCount: 12);
+
+            Assert.Equal("(Column1 = @p10 OR @p10 IS NULL) AND Column2 = @p11", commandText);
+        }
+
+        [Fact]
         public void ReNumberParametersNoExistingArgumentsWithAtPrefixAndMoreThanPrefixCharacter()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = @param0 OR @param0 IS NULL) AND Column2 = @param1", totalArgumentCount: 2);
@@ -484,6 +492,50 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
             var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= :param0 AND [Column2] <= :param1 AND [Column3] IN(:param2, :param3, :param4, :param5, :param6, :param7, :param8, :param9, :param10, :param11, :param12, :param13, :param14, :param15, :param16, :param17, :param18, :param19, :param20, :param21)", totalArgumentCount: 25);
 
             Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= :param3 AND [Column2] <= :param4 AND [Column3] IN(:param5, :param6, :param7, :param8, :param9, :param10, :param11, :param12, :param13, :param14, :param15, :param16, :param17, :param18, :param19, :param20, :param21, :param22, :param23, :param24)", commandText);
+        }
+
+
+        /// <summary>
+        /// Issue #443 - Incorrect parameter numbers when using SqlUtility.RenumberParameters, reoccurring with 12 params
+        /// </summary>
+        [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithThreeAndARepeatedValueAndLastIsFollowedByStatementSeparatorColonPrefix()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= :p0 AND [Column2] IN (:p1, :p3) AND [Column3] IN (:p2, :p3);", totalArgumentCount: 12);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= :p8 AND [Column2] IN (:p9, :p11) AND [Column3] IN (:p10, :p11);", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithFourAtPrefixAndARepeatedValue()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= @p0 AND [Column2] IN (@p1, @p2) AND [Column3] IN (@p3, @p2)", totalArgumentCount: 12);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= @p8 AND [Column2] IN (@p9, @p10) AND [Column3] IN (@p11, @p10)", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithThreeAtPrefixAndARepeatedValueAndMoreThanPrefixCharacter()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= @param0 AND [Column2] IN (@param1, @param3) AND [Column3] IN(@param2, @param3)", totalArgumentCount: 12);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= @param8 AND [Column2] IN (@param9, @param11) AND [Column3] IN(@param10, @param11)", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithThreeColonPrefixAndARepeatedValue()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM [Table1] WHERE [Column1] >= :p0 AND [Column2] IN (:p1, :p3) AND [Column3] IN (:p2, :p3)", totalArgumentCount: 12);
+
+            Assert.Equal("SELECT * FROM [Table1] WHERE [Column1] >= :p8 AND [Column2] IN (:p9, :p11) AND [Column3] IN (:p10, :p11)", commandText);
+        }
+
+        [Fact]
+        public void ReNumberParametersWithExistingArgumentsWithThreeColonPrefixAndARepeatedValueAndMoreThanPrefixCharacter()
+        {
+            var commandText = SqlUtility.RenumberParameters("SELECT * FROM[Table1] WHERE[Column1] >= :param8 AND[Column2] IN(:param9, :param11) AND[Column3] IN(:param10, :param11)", totalArgumentCount: 12);
+
+            Assert.Equal("SELECT * FROM[Table1] WHERE[Column1] >= :param8 AND[Column2] IN(:param9, :param11) AND[Column3] IN(:param10, :param11)", commandText);
         }
     }
 }

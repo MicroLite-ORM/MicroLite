@@ -128,6 +128,21 @@ namespace MicroLite
 
                 while ((charIndex = sql.LastIndexOf(parameterName, charIndex, StringComparison.Ordinal)) > -1)
                 {
+                    // If there is another digit following the parameter, continue (e.g. @p10 will match when looking for @p1
+                    var indexFollowingParameter = charIndex + parameterName.Length;
+                    if (indexFollowingParameter < sql.Length && char.IsDigit(sql[indexFollowingParameter]))
+                    {
+                        continue;
+                    }
+
+                    // If the parameters are out of sort-order in the SQL statement,
+                    // we end up altering the position of the lower parameter name
+                    // e.g. replacing @p3 with @p10 when @p3 is before @p2 in the string means that @p2 exists 1 postion later than before
+                    while (predicateReWriter[charIndex] != newParameterName[0])
+                    {
+                        charIndex++;
+                    }
+
                     predicateReWriter.Replace(parameterName, newParameterName, charIndex, parameterName.Length);
                 }
             }
