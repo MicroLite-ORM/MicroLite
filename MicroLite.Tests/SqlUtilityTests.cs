@@ -293,6 +293,14 @@ IF @@ROWCOUNT > 0 GOTO delete_more");
         }
 
         [Fact]
+        public void ReNumberParametersNoExistingArgumentsWithAtPrefix_AdditionalParameters()
+        {
+            var commandText = SqlUtility.RenumberParameters("(Column1 = @p0 OR @p0 IS NULL) AND Column2 = @p1", totalArgumentCount: 12);
+
+            Assert.Equal("(Column1 = @p10 OR @p10 IS NULL) AND Column2 = @p11", commandText);
+        }
+
+        [Fact]
         public void ReNumberParametersNoExistingArgumentsWithAtPrefixAndMoreThanPrefixCharacter()
         {
             var commandText = SqlUtility.RenumberParameters("(Column1 = @param0 OR @param0 IS NULL) AND Column2 = @param1", totalArgumentCount: 2);
