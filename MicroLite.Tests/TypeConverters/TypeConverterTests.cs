@@ -50,6 +50,7 @@
 
             // Set by EnumTypeConverter.
             Assert.Equal(DbType.Int32, TypeConverter.ResolveDbType(typeof(CustomerStatus)));
+            Assert.Equal(DbType.Int32, TypeConverter.ResolveDbType(typeof(CustomerStatus?)));
 
             // Set by TimeSpanTypeConverter.
             Assert.Equal(DbType.Int64, TypeConverter.ResolveDbType(typeof(TimeSpan)));
