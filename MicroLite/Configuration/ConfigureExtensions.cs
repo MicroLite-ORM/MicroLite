@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ConfigureExtensions.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ namespace MicroLite.Configuration
         {
             if (mappingConvention == null)
             {
-                throw new ArgumentNullException("mappingConvention");
+                throw new ArgumentNullException(nameof(mappingConvention));
             }
 
             if (this.log.IsInfo)

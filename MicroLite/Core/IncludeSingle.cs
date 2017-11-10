@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IncludeSingle.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@ namespace MicroLite.Core
     using System;
     using System.Data.Common;
     using System.Threading;
-    using System.Threading.Tasks;
     using MicroLite.Mapping;
     using MicroLite.TypeConverters;
 
@@ -40,7 +39,7 @@ namespace MicroLite.Core
             this.callback = action;
         }
 
-        internal override async Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
+        internal override async System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
             if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
@@ -64,10 +63,7 @@ namespace MicroLite.Core
                     throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }
 
-                if (this.callback != null)
-                {
-                    this.callback(this);
-                }
+                this.callback?.Invoke(this);
             }
         }
     }

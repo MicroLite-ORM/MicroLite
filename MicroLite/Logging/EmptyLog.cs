@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="EmptyLog.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,45 +19,21 @@ namespace MicroLite.Logging
     /// </summary>
     internal sealed class EmptyLog : ILog
     {
-        public bool IsDebug
+        private EmptyLog()
         {
-            get
-            {
-                return false;
-            }
         }
 
-        public bool IsError
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsDebug { get; } = false;
 
-        public bool IsFatal
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsError { get; } = false;
 
-        public bool IsInfo
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsFatal { get; } = false;
 
-        public bool IsWarn
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsInfo { get; } = false;
+
+        public bool IsWarn { get; } = false;
+
+        internal static ILog Instance { get; } = new EmptyLog();
 
         public void Debug(string message)
         {

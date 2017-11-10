@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SessionFactory.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ namespace MicroLite.Core
         private static readonly ILog log = LogManager.GetCurrentClassLog();
         private readonly string connectionName;
         private readonly IDbDriver dbDriver;
+        private readonly SessionListeners sessionListeners;
         private readonly ISqlDialect sqlDialect;
 
         internal SessionFactory(string connectionName, IDbDriver dbDriver, ISqlDialect sqlDialect)
@@ -34,6 +35,8 @@ namespace MicroLite.Core
             this.connectionName = connectionName;
             this.dbDriver = dbDriver;
             this.sqlDialect = sqlDialect;
+
+            this.sessionListeners = new SessionListeners(Listener.DeleteListeners, Listener.InsertListener, Listener.UpdateListeners);
         }
 
         public string ConnectionName
@@ -83,7 +86,7 @@ namespace MicroLite.Core
 
             SqlCharacters.Current = this.sqlDialect.SqlCharacters;
 
-            return new AsyncSession(connectionScope, this.sqlDialect, this.dbDriver, Listener.DeleteListeners, Listener.InsertListener, Listener.UpdateListeners);
+            return new AsyncSession(connectionScope, this.sqlDialect, this.dbDriver, this.sessionListeners);
         }
     }
 }

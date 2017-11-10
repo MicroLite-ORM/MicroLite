@@ -1,6 +1,6 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="SqlUtility.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ namespace MicroLite
         {
             if (commandText == null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             var startIndex = GetParameterPosition(commandText, 0, namedParameterIdentifiers);
@@ -117,15 +117,34 @@ namespace MicroLite
             }
 
             var argsAdded = 0;
+            var charIndex = 0;
             var parameterPrefix = parameterNames[0].Substring(0, parameterNames[0].IndexOfAny(digits));
+            var predicateReWriter = new StringBuilder(sql, capacity: sql.Length + parameterNames.Count);
 
-            var predicateReWriter = new StringBuilder(sql);
-
-            foreach (var parameterName in parameterNames.OrderByDescending(n => n))
+            foreach (var parameterName in parameterNames.OrderByDescending(n => n, ParameterNameComparer.Instance))
             {
+                charIndex = sql.Length;
                 var newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
 
-                predicateReWriter.Replace(parameterName, newParameterName);
+                while ((charIndex = sql.LastIndexOf(parameterName, charIndex, StringComparison.Ordinal)) > -1)
+                {
+                    // If there is another digit following the parameter, continue (e.g. @p10 will match when looking for @p1
+                    var indexFollowingParameter = charIndex + parameterName.Length;
+                    if (indexFollowingParameter < sql.Length && char.IsDigit(sql[indexFollowingParameter]))
+                    {
+                        continue;
+                    }
+
+                    // If the parameters are out of sort-order in the SQL statement,
+                    // we end up altering the position of the lower parameter name
+                    // e.g. replacing @p3 with @p10 when @p3 is before @p2 in the string means that @p2 exists 1 postion later than before
+                    while (predicateReWriter[charIndex] != newParameterName[0])
+                    {
+                        charIndex++;
+                    }
+
+                    predicateReWriter.Replace(parameterName, newParameterName, charIndex, parameterName.Length);
+                }
             }
 
             return predicateReWriter.ToString();
@@ -135,12 +154,12 @@ namespace MicroLite
         {
             if (commandText == null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             if (position > commandText.Length)
             {
-                throw new ArgumentOutOfRangeException("position");
+                throw new ArgumentOutOfRangeException(nameof(position));
             }
 
             var parameterPosition = commandText.IndexOfAny(matchParameterIdentifiers, position);

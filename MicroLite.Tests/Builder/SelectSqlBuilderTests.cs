@@ -16,8 +16,7 @@
     {
         public SelectSqlBuilderTests()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
         }
 
         [Fact]
@@ -957,10 +956,10 @@
             Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
             Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[1].DbType);
             Assert.Equal(DateTime.Today.AddDays(-1), sqlQuery.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[2].DbType);
             Assert.Equal(DateTime.Today, sqlQuery.Arguments[2].Value);
 
             Assert.Equal(DbType.Int32, sqlQuery.Arguments[3].DbType);
@@ -2007,7 +2006,7 @@
 
             Assert.Equal(2, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0].Value);
 
             Assert.Equal(DbType.Decimal, sqlQuery.Arguments[1].DbType);
@@ -2031,7 +2030,7 @@
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0].Value);
         }
 
@@ -2052,7 +2051,7 @@
 
             Assert.Equal(1, sqlQuery.Arguments.Count);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[0].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[0].DbType);
             Assert.Equal(new DateTime(2000, 1, 1), sqlQuery.Arguments[0].Value);
         }
 

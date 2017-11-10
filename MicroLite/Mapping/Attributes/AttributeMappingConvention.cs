@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="AttributeMappingConvention.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ namespace MicroLite.Mapping.Attributes
         {
             if (forType == null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
             var tableAttribute = forType.GetAttribute<TableAttribute>(inherit: false);
@@ -91,7 +91,14 @@ namespace MicroLite.Mapping.Attributes
                     identifierStrategy = identifierAttribute.IdentifierStrategy;
                 }
 
-                var columnInfo = new ColumnInfo(columnName: columnAttribute.Name, dbType: columnAttribute.DbType ?? TypeConverter.ResolveDbType(property.PropertyType), propertyInfo: property, isIdentifier: identifierAttribute != null, allowInsert: identifierAttribute != null ? identifierStrategy == IdentifierStrategy.Assigned : columnAttribute.AllowInsert, allowUpdate: identifierAttribute != null ? false : columnAttribute.AllowUpdate, sequenceName: identifierAttribute != null ? identifierAttribute.SequenceName : null);
+                var columnInfo = new ColumnInfo(
+                    columnName: columnAttribute.Name,
+                    dbType: TypeConverter.ResolveDbType(property.PropertyType),
+                    propertyInfo: property,
+                    isIdentifier: identifierAttribute != null,
+                    allowInsert: identifierAttribute != null ? identifierStrategy == IdentifierStrategy.Assigned : columnAttribute.AllowInsert,
+                    allowUpdate: identifierAttribute != null ? false : columnAttribute.AllowUpdate,
+                    sequenceName: identifierAttribute != null ? identifierAttribute.SequenceName : null);
 
                 if (this.log.IsDebug)
                 {

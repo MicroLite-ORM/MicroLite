@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="MsSql2005Dialect.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ namespace MicroLite.Dialect
         {
             if (sqlQuery == null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var arguments = new SqlArgument[sqlQuery.Arguments.Count + 2];
@@ -63,8 +63,8 @@ namespace MicroLite.Dialect
             var orderByClause = !string.IsNullOrEmpty(sqlString.OrderBy) ? sqlString.OrderBy : "(SELECT NULL)";
 
             var stringBuilder = new StringBuilder(sqlQuery.CommandText.Length * 2)
-                .AppendFormat(CultureInfo.InvariantCulture, "SELECT * FROM (SELECT {0},ROW_NUMBER() OVER(ORDER BY {1}) AS RowNumber FROM {2}{3}) AS [MicroLitePagedResults]", sqlString.Select, orderByClause, sqlString.From, whereClause)
-                .AppendFormat(CultureInfo.InvariantCulture, " WHERE (RowNumber >= {0} AND RowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Length - 2), this.SqlCharacters.GetParameterName(arguments.Length - 1));
+                .AppendFormat(CultureInfo.InvariantCulture, "SELECT * FROM (SELECT {0},ROW_NUMBER() OVER(ORDER BY {1}) AS MicroLiteRowNumber FROM {2}{3}) AS [MicroLitePagedResults]", sqlString.Select, orderByClause, sqlString.From, whereClause)
+                .AppendFormat(CultureInfo.InvariantCulture, " WHERE (MicroLiteRowNumber >= {0} AND MicroLiteRowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Length - 2), this.SqlCharacters.GetParameterName(arguments.Length - 1));
 
             return new SqlQuery(stringBuilder.ToString(), arguments);
         }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SqlQuery.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,8 +24,6 @@ namespace MicroLite
         private static readonly SqlArgument[] emptyArguments = new SqlArgument[0];
 
         private readonly SqlArgument[] arguments;
-        private readonly string commandText;
-        private int timeout;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlQuery"/> class with the specified command text and no argument values.
@@ -34,8 +32,8 @@ namespace MicroLite
         public SqlQuery(string commandText)
         {
             this.arguments = SqlQuery.emptyArguments;
-            this.commandText = commandText;
-            this.timeout = 30;
+            this.CommandText = commandText;
+            this.Timeout = 30;
         }
 
         /// <summary>
@@ -74,7 +72,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the <see cref="SqlArgument"/>s for the SQL command.
         /// </summary>
-        public IList<SqlArgument> Arguments
+        public IReadOnlyList<SqlArgument> Arguments
         {
             get
             {
@@ -87,10 +85,7 @@ namespace MicroLite
         /// </summary>
         public string CommandText
         {
-            get
-            {
-                return this.commandText;
-            }
+            get;
         }
 
         /// <summary>
@@ -99,15 +94,8 @@ namespace MicroLite
         /// <remarks>Defaults to 30 seconds.</remarks>
         public int Timeout
         {
-            get
-            {
-                return this.timeout;
-            }
-
-            set
-            {
-                this.timeout = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>

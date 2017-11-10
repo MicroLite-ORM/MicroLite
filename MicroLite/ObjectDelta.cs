@@ -22,8 +22,6 @@ namespace MicroLite
     public sealed class ObjectDelta
     {
         private readonly IDictionary<string, object> changes = new Dictionary<string, object>();
-        private readonly Type forType;
-        private readonly object identifier;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ObjectDelta"/> class.
@@ -34,16 +32,16 @@ namespace MicroLite
         {
             if (forType == null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
             if (identifier == null)
             {
-                throw new ArgumentNullException("identifier");
+                throw new ArgumentNullException(nameof(identifier));
             }
 
-            this.forType = forType;
-            this.identifier = identifier;
+            this.ForType = forType;
+            this.Identifier = identifier;
         }
 
         /// <summary>
@@ -74,10 +72,7 @@ namespace MicroLite
         /// </summary>
         public Type ForType
         {
-            get
-            {
-                return this.forType;
-            }
+            get;
         }
 
         /// <summary>
@@ -85,10 +80,7 @@ namespace MicroLite
         /// </summary>
         public object Identifier
         {
-            get
-            {
-                return this.identifier;
-            }
+            get;
         }
 
         /// <summary>

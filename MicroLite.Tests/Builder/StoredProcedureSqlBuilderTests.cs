@@ -29,10 +29,10 @@
             Assert.Equal(DbType.Int32, sqlQuery.Arguments[0].DbType);
             Assert.Equal(7633245, sqlQuery.Arguments[0].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[1].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[1].DbType);
             Assert.Equal(DateTime.Today.AddMonths(-3), sqlQuery.Arguments[1].Value);
 
-            Assert.Equal(DbType.DateTime, sqlQuery.Arguments[2].DbType);
+            Assert.Equal(DbType.DateTime2, sqlQuery.Arguments[2].DbType);
             Assert.Equal(DateTime.Today, sqlQuery.Arguments[2].Value);
         }
 

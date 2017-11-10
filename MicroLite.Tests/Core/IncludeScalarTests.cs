@@ -1,6 +1,5 @@
 ﻿namespace MicroLite.Tests.Core
 {
-    using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Threading;
@@ -17,40 +16,6 @@
         /// <summary>
         /// Issue #172 - Cannot use Session.Include.Scalar to return an enum
         /// </summary>
-        public class ForAnEnumTypeWhenBuildValueAsyncHasBeenCalledAndThereAreNoResults
-        {
-            private IncludeScalar<CustomerStatus> include = new IncludeScalar<CustomerStatus>();
-            private Mock<IDataReader> mockReader = new Mock<IDataReader>();
-
-            public ForAnEnumTypeWhenBuildValueAsyncHasBeenCalledAndThereAreNoResults()
-            {
-                this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { false }).Dequeue);
-
-                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None);
-            }
-
-            [Fact]
-            public void HasValueShouldBeFalse()
-            {
-                Assert.False(this.include.HasValue);
-            }
-
-            [Fact]
-            public void TheDataReaderShouldBeRead()
-            {
-                this.mockReader.VerifyAll();
-            }
-
-            [Fact]
-            public void ValueShouldBeDefaultValue()
-            {
-                Assert.Equal(default(CustomerStatus), this.include.Value);
-            }
-        }
-
-        /// <summary>
-        /// Issue #172 - Cannot use Session.Include.Scalar to return an enum
-        /// </summary>
         public class ForAnEnumTypeWhenBuildValueAsyncHasBeenCalledAndThereIsOneResult
         {
             private IncludeScalar<CustomerStatus> include = new IncludeScalar<CustomerStatus>();
@@ -62,7 +27,7 @@
                 this.mockReader.Setup(x => x.GetInt32(0)).Returns(1);
                 this.mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
-                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None);
+                this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait();
             }
 
             [Fact]
@@ -189,11 +154,11 @@
             }
         }
 
-        public class ForAReferenceTypeWhenBuildValueHasNotBeenCalled
+        public class ForAReferenceTypeWhenBuildValueAsyncHasNotBeenCalled
         {
             private IncludeScalar<string> include = new IncludeScalar<string>();
 
-            public ForAReferenceTypeWhenBuildValueHasNotBeenCalled()
+            public ForAReferenceTypeWhenBuildValueAsyncHasNotBeenCalled()
             {
             }
 
@@ -207,6 +172,27 @@
             public void ValueShouldBeNull()
             {
                 Assert.Null(this.include.Value);
+            }
+        }
+
+        public class ForAValueTypeWhenBuildAsyncValueHasNotBeenCalled
+        {
+            private IncludeScalar<int> include = new IncludeScalar<int>();
+
+            public ForAValueTypeWhenBuildAsyncValueHasNotBeenCalled()
+            {
+            }
+
+            [Fact]
+            public void HasValueShouldBeFalse()
+            {
+                Assert.False(this.include.HasValue);
+            }
+
+            [Fact]
+            public void ValueShouldBeDefaultValue()
+            {
+                Assert.Equal(0, this.include.Value);
             }
         }
 
@@ -274,27 +260,6 @@
             }
         }
 
-        public class ForAValueTypeWhenBuildValueHasNotBeenCalled
-        {
-            private IncludeScalar<int> include = new IncludeScalar<int>();
-
-            public ForAValueTypeWhenBuildValueHasNotBeenCalled()
-            {
-            }
-
-            [Fact]
-            public void HasValueShouldBeFalse()
-            {
-                Assert.False(this.include.HasValue);
-            }
-
-            [Fact]
-            public void ValueShouldBeDefaultValue()
-            {
-                Assert.Equal(0, this.include.Value);
-            }
-        }
-
         public class WhenCallingBuildValueAsyncAndTheDataReaderContainsMultipleColumns
         {
             private IncludeScalar<int> include = new IncludeScalar<int>();
@@ -307,13 +272,12 @@
             }
 
             [Fact]
-            public void BuildValueAsyncShouldThrowAMicroLiteException()
+            public async void BuildValueAsyncShouldThrowAMicroLiteException()
             {
-                var exception = Assert.Throws<AggregateException>(
-                    () => this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait());
+                var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                    async () => await this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None));
 
-                Assert.IsType<MicroLiteException>(exception.InnerException);
-                Assert.Equal(ExceptionMessages.IncludeScalar_MultipleColumns, exception.InnerException.Message);
+                Assert.Equal(ExceptionMessages.IncludeScalar_MultipleColumns, exception.Message);
             }
         }
 
@@ -330,13 +294,12 @@
             }
 
             [Fact]
-            public void BuildValueAsyncShouldThrowAMicroLiteException()
+            public async void BuildValueAsyncShouldThrowAMicroLiteException()
             {
-                var exception = Assert.Throws<AggregateException>(
-                    () => this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None).Wait());
+                var exception = await Assert.ThrowsAsync<MicroLiteException>(
+                    async () => await this.include.BuildValueAsync(new MockDbDataReaderWrapper(this.mockReader.Object), CancellationToken.None));
 
-                Assert.IsType<MicroLiteException>(exception.InnerException);
-                Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.InnerException.Message);
+                Assert.Equal(ExceptionMessages.Include_SingleRecordExpected, exception.Message);
             }
         }
     }

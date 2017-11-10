@@ -3,7 +3,7 @@ MicroLite ORM Framework
 
 [![NuGet version](https://badge.fury.io/nu/MicroLite.svg)](http://badge.fury.io/nu/MicroLite)
 
-MicroLite is a small lightweight or "micro" object relational mapping (ORM) framework written in C# for the Microsoft .NET framework. Its purpose is to provide a flexible and powerful feature set whilst maintaining a simple and concise API.
+MicroLite is a small lightweight or "micro" object relational mapping (ORM) library written in C# for the Microsoft .NET framework. Its purpose is to provide a flexible and powerful feature set whilst maintaining a simple and concise API.
 
 _Headline Features_
 
@@ -21,9 +21,8 @@ _Headline Features_
 
 The NuGet Package contains binaries compiled against:
 
-* .NET 3.5 (Client Profile)
-* .NET 4.0 (Client Profile)
-* .NET 4.5
+* .NET 4.5.2
+* .NET 4.6.2
 
 ## SQL Support
 

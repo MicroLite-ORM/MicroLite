@@ -41,8 +41,8 @@
             Assert.Equal(DbType.StringFixedLength, TypeConverter.ResolveDbType(typeof(char?)));
             Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(string)));
             Assert.Equal(DbType.Binary, TypeConverter.ResolveDbType(typeof(byte[])));
-            Assert.Equal(DbType.DateTime, TypeConverter.ResolveDbType(typeof(DateTime)));
-            Assert.Equal(DbType.DateTime, TypeConverter.ResolveDbType(typeof(DateTime?)));
+            Assert.Equal(DbType.DateTime2, TypeConverter.ResolveDbType(typeof(DateTime)));
+            Assert.Equal(DbType.DateTime2, TypeConverter.ResolveDbType(typeof(DateTime?)));
             Assert.Equal(DbType.DateTimeOffset, TypeConverter.ResolveDbType(typeof(DateTimeOffset)));
             Assert.Equal(DbType.DateTimeOffset, TypeConverter.ResolveDbType(typeof(DateTimeOffset?)));
             Assert.Equal(DbType.Guid, TypeConverter.ResolveDbType(typeof(Guid)));
@@ -60,7 +60,7 @@
             Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(Uri)));
 
             // Set by XDocumentTypeConverter.
-            Assert.Equal(DbType.String, TypeConverter.ResolveDbType(typeof(XDocument)));
+            Assert.Equal(DbType.Xml, TypeConverter.ResolveDbType(typeof(XDocument)));
         }
 
         [Fact]

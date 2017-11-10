@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="PagingOptions.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,9 +20,6 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("Count: {Count}, Offset: {Offset}")]
     public struct PagingOptions : IEquatable<PagingOptions>
     {
-        private readonly int count;
-        private readonly int offset;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="PagingOptions" /> struct.
         /// </summary>
@@ -30,8 +27,8 @@ namespace MicroLite
         /// <param name="offset">The offset (number of records to skip).</param>
         private PagingOptions(int count, int offset)
         {
-            this.count = count;
-            this.offset = offset;
+            this.Count = count;
+            this.Offset = offset;
         }
 
         /// <summary>
@@ -39,10 +36,7 @@ namespace MicroLite
         /// </summary>
         public int Count
         {
-            get
-            {
-                return this.count;
-            }
+            get;
         }
 
         /// <summary>
@@ -50,10 +44,7 @@ namespace MicroLite
         /// </summary>
         public int Offset
         {
-            get
-            {
-                return this.offset;
-            }
+            get;
         }
 
         /// <summary>
@@ -78,12 +69,12 @@ namespace MicroLite
         {
             if (page < 1)
             {
-                throw new ArgumentOutOfRangeException("page", ExceptionMessages.PagingOptions_PagesMustBeAtleastOne);
+                throw new ArgumentOutOfRangeException(nameof(page), ExceptionMessages.PagingOptions_PagesMustBeAtleastOne);
             }
 
             if (resultsPerPage < 1)
             {
-                throw new ArgumentOutOfRangeException("resultsPerPage", ExceptionMessages.PagingOptions_ResultsPerPageMustBeAtLeast1);
+                throw new ArgumentOutOfRangeException(nameof(resultsPerPage), ExceptionMessages.PagingOptions_ResultsPerPageMustBeAtLeast1);
             }
 
             var skip = (page - 1) * resultsPerPage;
@@ -124,12 +115,12 @@ namespace MicroLite
         {
             if (skip < 0)
             {
-                throw new ArgumentOutOfRangeException("skip", ExceptionMessages.PagingOptions_SkipMustBeZeroOrAbove);
+                throw new ArgumentOutOfRangeException(nameof(skip), ExceptionMessages.PagingOptions_SkipMustBeZeroOrAbove);
             }
 
             if (take < 1)
             {
-                throw new ArgumentOutOfRangeException("take", ExceptionMessages.PagingOptions_TakeMustBeZeroOrAbove);
+                throw new ArgumentOutOfRangeException(nameof(take), ExceptionMessages.PagingOptions_TakeMustBeZeroOrAbove);
             }
 
             return new PagingOptions(count: take, offset: skip);

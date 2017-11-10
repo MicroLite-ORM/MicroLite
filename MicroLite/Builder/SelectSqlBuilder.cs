@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SelectSqlBuilder.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ namespace MicroLite.Builder
 
             if (args == null)
             {
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             }
 
             for (int i = 0; i < args.Length; i++)
@@ -163,7 +163,7 @@ namespace MicroLite.Builder
         {
             if (columns == null)
             {
-                throw new ArgumentNullException("columns");
+                throw new ArgumentNullException(nameof(columns));
             }
 
             this.InnerSql.Append("DISTINCT ");
@@ -225,7 +225,7 @@ namespace MicroLite.Builder
         {
             if (columns == null)
             {
-                throw new ArgumentNullException("columns");
+                throw new ArgumentNullException(nameof(columns));
             }
 
             this.InnerSql.Append(" GROUP BY ");
@@ -497,7 +497,7 @@ namespace MicroLite.Builder
 
             if (args == null)
             {
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             }
 
             for (int i = 0; i < args.Length; i++)
@@ -605,7 +605,7 @@ namespace MicroLite.Builder
         {
             if (subQuery == null)
             {
-                throw new ArgumentNullException("subQuery");
+                throw new ArgumentNullException(nameof(subQuery));
             }
 
             this.Arguments.AddRange(subQuery.Arguments);
@@ -660,7 +660,7 @@ namespace MicroLite.Builder
         {
             if (columns == null)
             {
-                throw new ArgumentNullException("columns");
+                throw new ArgumentNullException(nameof(columns));
             }
 
             this.InnerSql.Append(!this.addedOrder ? " ORDER BY " : ",");

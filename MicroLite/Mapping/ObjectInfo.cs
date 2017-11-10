@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ObjectInfo.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ namespace MicroLite.Mapping
         {
             if (forType == null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
             if (log.IsDebug)
@@ -97,8 +97,10 @@ namespace MicroLite.Mapping
                     }
                 }
 
-                var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos);
-                newObjectInfos[forType] = objectInfo;
+                var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos)
+                {
+                    [forType] = objectInfo
+                };
 
                 objectInfos = newObjectInfos;
             }
@@ -108,20 +110,22 @@ namespace MicroLite.Mapping
 
         private static Dictionary<Type, IObjectInfo> GetObjectInfos()
         {
-            var dictionary = new Dictionary<Type, IObjectInfo>();
-
             var expandoObjectInfo = new ExpandoObjectInfo();
-            dictionary.Add(typeof(System.Dynamic.ExpandoObject), expandoObjectInfo);
-            dictionary.Add(typeof(object), expandoObjectInfo); // If the generic argument <dynamic> is used (in ISession.Fetch for example), typeof(T) will return object.
-
             var tupleObjectInfo = new TupleObjectInfo();
-            dictionary.Add(typeof(Tuple<>), tupleObjectInfo);
-            dictionary.Add(typeof(Tuple<,>), tupleObjectInfo);
-            dictionary.Add(typeof(Tuple<,,>), tupleObjectInfo);
-            dictionary.Add(typeof(Tuple<,,,>), tupleObjectInfo);
-            dictionary.Add(typeof(Tuple<,,,,>), tupleObjectInfo);
-            dictionary.Add(typeof(Tuple<,,,,,>), tupleObjectInfo);
-            dictionary.Add(typeof(Tuple<,,,,,,>), tupleObjectInfo);
+
+            var dictionary = new Dictionary<Type, IObjectInfo>()
+            {
+                [typeof(System.Dynamic.ExpandoObject)] = expandoObjectInfo,
+                [typeof(object)] = expandoObjectInfo, // If the generic argument <dynamic> is used (in ISession.Fetch for example), typeof(T) will return object.
+
+                [typeof(Tuple<>)] = tupleObjectInfo,
+                [typeof(Tuple<,>)] = tupleObjectInfo,
+                [typeof(Tuple<,,>)] = tupleObjectInfo,
+                [typeof(Tuple<,,,>)] = tupleObjectInfo,
+                [typeof(Tuple<,,,,>)] = tupleObjectInfo,
+                [typeof(Tuple<,,,,,>)] = tupleObjectInfo,
+                [typeof(Tuple<,,,,,,>)] = tupleObjectInfo
+            };
 
             return dictionary;
         }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ConventionMappingSettings.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ namespace MicroLite.Mapping
     using MicroLite.TypeConverters;
 
     /// <summary>
-    /// A class containing the configurable settings.
+    /// A class containing the default convention mapping settings
     /// </summary>
-    public sealed class ConventionMappingSettings
+    public class ConventionMappingSettings
     {
         /// <summary>
         /// Initialises a new instance of the <see cref="ConventionMappingSettings" /> class.
@@ -37,23 +37,14 @@ namespace MicroLite.Mapping
             {
                 return propertyInfo.Name == "Id" || propertyInfo.Name == propertyInfo.ReflectedType.Name + "Id";
             };
-            this.ResolveColumnName = (PropertyInfo propertyInfo) =>
-            {
-                if (propertyInfo.PropertyType.IsEnum)
-                {
-                    return propertyInfo.PropertyType.Name + "Id";
-                }
-
-                return propertyInfo.Name;
-            };
+            this.ResolveColumnName = (PropertyInfo propertyInfo) => GetColumnName(propertyInfo);
             this.ResolveDbType = (PropertyInfo propertyInfo) => TypeConverter.ResolveDbType(propertyInfo.PropertyType);
             this.ResolveIdentifierColumnName = (PropertyInfo propertyInfo) => propertyInfo.Name;
             this.ResolveIdentifierStrategy = (Type type) => IdentifierStrategy.DbGenerated;
             this.ResolveSequenceName = (PropertyInfo propertyInfo) => null;
             this.ResolveTableName = (Type type) =>
             {
-                var name = !type.IsGenericType ? type.Name : type.Name.Substring(0, type.Name.IndexOf("`", StringComparison.OrdinalIgnoreCase));
-                return this.UsePluralClassNameForTableName ? this.InflectionService.ToPlural(name) : name;
+                return this.UsePluralClassNameForTableName ? this.InflectionService.ToPlural(GetTableName(type)) : GetTableName(type);
             };
             this.ResolveTableSchema = (Type type) => null;
             this.UsePluralClassNameForTableName = true;
@@ -67,6 +58,28 @@ namespace MicroLite.Mapping
             get
             {
                 return new ConventionMappingSettings();
+            }
+        }
+
+        /// <summary>
+        /// Gets an instance of the settings with lowercase names with underscore separators (e.g. 'CreditCards' -> 'credit_cards').
+        /// </summary>
+        public static ConventionMappingSettings LowercaseWithUnderscores
+        {
+            get
+            {
+                return new LowercaseWithUnderscoresConventionMappingSettings();
+            }
+        }
+
+        /// <summary>
+        /// Gets an instance of the settings with uppercase names with underscore separators (e.g. 'CreditCards' -> 'CREDIT_CARDS').
+        /// </summary>
+        public static ConventionMappingSettings UppercaseWithUnderscores
+        {
+            get
+            {
+                return new UppercaseWithUnderscoresConventionMappingSettings();
             }
         }
 
@@ -188,6 +201,36 @@ namespace MicroLite.Mapping
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// Gets the column name for the specified <see cref="PropertyInfo"/> using the default convention settings.
+        /// </summary>
+        /// <param name="propertyInfo">The property info for the property.</param>
+        /// <returns>The column name for the property.</returns>
+        protected static string GetColumnName(PropertyInfo propertyInfo)
+        {
+            if (propertyInfo?.PropertyType?.IsEnum == true)
+            {
+                return propertyInfo.PropertyType.Name + "Id";
+            }
+
+            return propertyInfo?.Name;
+        }
+
+        /// <summary>
+        /// Gets the table name for the specified <see cref="Type"/> using the default contention settings.
+        /// </summary>
+        /// <param name="type">The type for the class.</param>
+        /// <returns>The table name for the type.</returns>
+        protected static string GetTableName(Type type)
+        {
+            if (type?.IsGenericType == true)
+            {
+                return type.Name.Substring(0, type.Name.IndexOf("`", StringComparison.OrdinalIgnoreCase));
+            }
+
+            return type?.Name;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="DbDriver.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -115,12 +115,12 @@ namespace MicroLite.Driver
         {
             if (command == null)
             {
-                throw new ArgumentNullException("command");
+                throw new ArgumentNullException(nameof(command));
             }
 
             if (sqlQuery == null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             if (log.IsDebug)
@@ -187,7 +187,7 @@ namespace MicroLite.Driver
         {
             if (sqlQueries == null)
             {
-                throw new ArgumentNullException("sqlQueries");
+                throw new ArgumentNullException(nameof(sqlQueries));
             }
 
             int argumentsCount = 0;
@@ -229,12 +229,12 @@ namespace MicroLite.Driver
         {
             if (sqlQuery1 == null)
             {
-                throw new ArgumentNullException("sqlQuery1");
+                throw new ArgumentNullException(nameof(sqlQuery1));
             }
 
             if (sqlQuery2 == null)
             {
-                throw new ArgumentNullException("sqlQuery2");
+                throw new ArgumentNullException(nameof(sqlQuery2));
             }
 
             int argumentsCount = sqlQuery1.Arguments.Count + sqlQuery2.Arguments.Count;
@@ -284,7 +284,7 @@ namespace MicroLite.Driver
         {
             if (parameter == null)
             {
-                throw new ArgumentNullException("parameter");
+                throw new ArgumentNullException(nameof(parameter));
             }
 
             parameter.DbType = sqlArgument.DbType;
@@ -302,7 +302,7 @@ namespace MicroLite.Driver
         {
             if (commandText == null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             if (this.IsStoredProcedureCall(commandText))
@@ -332,7 +332,7 @@ namespace MicroLite.Driver
         {
             if (commandText == null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             if (this.IsStoredProcedureCall(commandText))
@@ -352,7 +352,7 @@ namespace MicroLite.Driver
         {
             if (commandText == null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             return this.SupportsStoredProcedures

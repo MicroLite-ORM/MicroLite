@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="FluentConfiguration.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ namespace MicroLite.Configuration
         {
             if (connectionName == null)
             {
-                throw new ArgumentNullException("connectionName");
+                throw new ArgumentNullException(nameof(connectionName));
             }
 
             var configSection = ConfigurationManager.ConnectionStrings[connectionName];
@@ -92,27 +92,27 @@ namespace MicroLite.Configuration
         {
             if (connectionName == null)
             {
-                throw new ArgumentNullException("connectionName");
+                throw new ArgumentNullException(nameof(connectionName));
             }
 
             if (connectionString == null)
             {
-                throw new ArgumentNullException("connectionString");
+                throw new ArgumentNullException(nameof(connectionString));
             }
 
             if (providerName == null)
             {
-                throw new ArgumentNullException("providerName");
+                throw new ArgumentNullException(nameof(providerName));
             }
 
             if (sqlDialect == null)
             {
-                throw new ArgumentNullException("sqlDialect");
+                throw new ArgumentNullException(nameof(sqlDialect));
             }
 
             if (dbDriver == null)
             {
-                throw new ArgumentNullException("dbDriver");
+                throw new ArgumentNullException(nameof(dbDriver));
             }
 
             this.chosenConnectionName = connectionName;

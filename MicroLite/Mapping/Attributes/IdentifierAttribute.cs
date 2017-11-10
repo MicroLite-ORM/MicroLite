@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IdentifierAttribute.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -44,9 +44,6 @@ namespace MicroLite.Mapping.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class IdentifierAttribute : Attribute
     {
-        private readonly IdentifierStrategy identifierStrategy;
-        private readonly string sequenceName;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="IdentifierAttribute"/> class.
         /// </summary>
@@ -63,8 +60,8 @@ namespace MicroLite.Mapping.Attributes
         /// <param name="sequenceName">The name of the sequence which generates the identifier value.</param>
         public IdentifierAttribute(IdentifierStrategy identifierStrategy, string sequenceName)
         {
-            this.identifierStrategy = identifierStrategy;
-            this.sequenceName = sequenceName;
+            this.IdentifierStrategy = identifierStrategy;
+            this.SequenceName = sequenceName;
         }
 
         /// <summary>
@@ -72,10 +69,7 @@ namespace MicroLite.Mapping.Attributes
         /// </summary>
         public IdentifierStrategy IdentifierStrategy
         {
-            get
-            {
-                return this.identifierStrategy;
-            }
+            get;
         }
 
         /// <summary>
@@ -83,10 +77,7 @@ namespace MicroLite.Mapping.Attributes
         /// </summary>
         public string SequenceName
         {
-            get
-            {
-                return this.sequenceName;
-            }
+            get;
         }
     }
 }

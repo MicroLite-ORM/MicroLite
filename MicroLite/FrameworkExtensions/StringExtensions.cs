@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="StringExtensions.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,8 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.FrameworkExtensions
 {
+    using System.Text.RegularExpressions;
+
     internal static class StringExtensions
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object)", Justification = "We're not formatting numeric values and this overload saves the cost of the params array.")]
@@ -24,6 +26,11 @@ namespace MicroLite.FrameworkExtensions
         internal static string FormatWith(this string value, string arg0, string arg1)
         {
             return string.Format(value, arg0, arg1);
+        }
+
+        internal static string ToUnderscored(this string value)
+        {
+            return Regex.Replace(value, "(?!^)(?=[A-Z])", "_");
         }
     }
 }

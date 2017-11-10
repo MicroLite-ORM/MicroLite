@@ -14,13 +14,12 @@
         [Fact]
         public void AfterInsertDoesNotSetIdentifierIfExecuteScalarResultIsNullAndIdentifierDbGenerated()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var listener = new IdentifierStrategyListener();
             var customer = new Customer();
 
-            Assert.DoesNotThrow(() => listener.AfterInsert(customer, null));
+            listener.AfterInsert(customer, null);
 
             Assert.Equal(0, customer.Id);
         }
@@ -28,13 +27,12 @@
         [Fact]
         public void AfterInsertDoesNotSetIdentifierIfExecuteScalarResultIsNullAndIdentifierStrategySequence()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Sequence);
 
             var listener = new IdentifierStrategyListener();
             var customer = new Customer();
 
-            Assert.DoesNotThrow(() => listener.AfterInsert(customer, null));
+            listener.AfterInsert(customer, null);
 
             Assert.Equal(0, customer.Id);
         }
@@ -42,19 +40,17 @@
         [Fact]
         public void AfterInsertDoesNotThrowArgumentNullExceptionForNullExecuteScalarResultIfIdentifierStrategyAssigned()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Assigned));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Assigned);
 
             var listener = new IdentifierStrategyListener();
 
-            Assert.DoesNotThrow(() => listener.AfterInsert(new Customer(), null));
+            listener.AfterInsert(new Customer(), null);
         }
 
         [Fact]
         public void AfterInsertSetsIdentifierValueConvertingItToThePropertyType()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new Customer();
             decimal scalarResult = 4354;
@@ -68,8 +64,7 @@
         [Fact]
         public void AfterInsertSetsIdentifierValueForIdentifierStrategyDbGenerated()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
+            UnitTest.SetConventionMapping(IdentifierStrategy.DbGenerated);
 
             var customer = new Customer();
             int scalarResult = 4354;
@@ -83,8 +78,7 @@
         [Fact]
         public void AfterInsertSetsIdentifierValueForIdentifierStrategySequence()
         {
-            ObjectInfo.MappingConvention = new ConventionMappingConvention(
-                UnitTest.GetConventionMappingSettings(IdentifierStrategy.Sequence));
+            UnitTest.SetConventionMapping(IdentifierStrategy.Sequence);
 
             var customer = new Customer();
             int scalarResult = 4354;

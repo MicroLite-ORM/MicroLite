@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="TableInfo.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,14 +24,6 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("{Schema}.{Name}")]
     public sealed class TableInfo
     {
-        private readonly IList<ColumnInfo> columns;
-        private readonly ColumnInfo identifierColumn;
-        private readonly IdentifierStrategy identifierStrategy;
-        private readonly int insertColumnCount;
-        private readonly string name;
-        private readonly string schema;
-        private readonly int updateColumnCount;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="TableInfo"/> class.
         /// </summary>
@@ -49,23 +41,23 @@ namespace MicroLite.Mapping
         {
             if (columns == null)
             {
-                throw new ArgumentNullException("columns");
+                throw new ArgumentNullException(nameof(columns));
             }
 
             if (name == null)
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
 
-            this.columns = new ReadOnlyCollection<ColumnInfo>(columns);
-            this.identifierStrategy = identifierStrategy;
-            this.name = name;
-            this.schema = schema;
+            this.Columns = new ReadOnlyCollection<ColumnInfo>(columns);
+            this.IdentifierStrategy = identifierStrategy;
+            this.Name = name;
+            this.Schema = schema;
 
-            this.identifierColumn = columns.FirstOrDefault(c => c.IsIdentifier);
+            this.IdentifierColumn = columns.FirstOrDefault(c => c.IsIdentifier);
 
-            this.insertColumnCount = columns.Count(c => c.AllowInsert);
-            this.updateColumnCount = columns.Count(c => c.AllowUpdate);
+            this.InsertColumnCount = columns.Count(c => c.AllowInsert);
+            this.UpdateColumnCount = columns.Count(c => c.AllowUpdate);
 
             this.ValidateColumns();
         }
@@ -73,12 +65,9 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Gets the columns that are mapped for the table.
         /// </summary>
-        public IList<ColumnInfo> Columns
+        public IReadOnlyList<ColumnInfo> Columns
         {
-            get
-            {
-                return this.columns;
-            }
+            get;
         }
 
         /// <summary>
@@ -86,10 +75,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public ColumnInfo IdentifierColumn
         {
-            get
-            {
-                return this.identifierColumn;
-            }
+            get;
         }
 
         /// <summary>
@@ -97,10 +83,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public IdentifierStrategy IdentifierStrategy
         {
-            get
-            {
-                return this.identifierStrategy;
-            }
+            get;
         }
 
         /// <summary>
@@ -108,10 +91,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public int InsertColumnCount
         {
-            get
-            {
-                return this.insertColumnCount;
-            }
+            get;
         }
 
         /// <summary>
@@ -119,10 +99,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public string Name
         {
-            get
-            {
-                return this.name;
-            }
+            get;
         }
 
         /// <summary>
@@ -130,10 +107,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public string Schema
         {
-            get
-            {
-                return this.schema;
-            }
+            get;
         }
 
         /// <summary>
@@ -141,15 +115,12 @@ namespace MicroLite.Mapping
         /// </summary>
         public int UpdateColumnCount
         {
-            get
-            {
-                return this.updateColumnCount;
-            }
+            get;
         }
 
         private void ValidateColumns()
         {
-            var duplicatedColumn = this.columns
+            var duplicatedColumn = this.Columns
                 .GroupBy(c => c.ColumnName)
                 .Select(x => new
                 {
@@ -163,16 +134,16 @@ namespace MicroLite.Mapping
                 throw new MappingException(ExceptionMessages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
             }
 
-            if (this.columns.Count(c => c.IsIdentifier) > 1)
+            if (this.Columns.Count(c => c.IsIdentifier) > 1)
             {
-                throw new MappingException(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith(this.schema, this.name));
+                throw new MappingException(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith(this.Schema, this.Name));
             }
 
-            if (this.identifierStrategy == Mapping.IdentifierStrategy.Sequence
-                && this.identifierColumn != null
-                && string.IsNullOrEmpty(this.identifierColumn.SequenceName))
+            if (this.IdentifierStrategy == Mapping.IdentifierStrategy.Sequence
+                && this.IdentifierColumn != null
+                && string.IsNullOrEmpty(this.IdentifierColumn.SequenceName))
             {
-                throw new MappingException(ExceptionMessages.TableInfo_SequenceNameNotSet.FormatWith(this.identifierColumn.ColumnName));
+                throw new MappingException(ExceptionMessages.TableInfo_SequenceNameNotSet.FormatWith(this.IdentifierColumn.ColumnName));
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ColumnInfo.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,14 +22,6 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("Column: {ColumnName}, Identifier: {IsIdentifier}, Insert: {AllowInsert}, Update: {AllowUpdate}")]
     public sealed class ColumnInfo
     {
-        private readonly bool allowInsert;
-        private readonly bool allowUpdate;
-        private readonly string columnName;
-        private readonly DbType dbType;
-        private readonly bool isIdentifier;
-        private readonly PropertyInfo propertyInfo;
-        private readonly string sequenceName;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnInfo"/> class.
         /// </summary>
@@ -52,21 +44,21 @@ namespace MicroLite.Mapping
         {
             if (columnName == null)
             {
-                throw new ArgumentNullException("columnName");
+                throw new ArgumentNullException(nameof(columnName));
             }
 
             if (propertyInfo == null)
             {
-                throw new ArgumentNullException("propertyInfo");
+                throw new ArgumentNullException(nameof(propertyInfo));
             }
 
-            this.columnName = columnName;
-            this.dbType = dbType;
-            this.propertyInfo = propertyInfo;
-            this.isIdentifier = isIdentifier;
-            this.allowInsert = allowInsert;
-            this.allowUpdate = allowUpdate;
-            this.sequenceName = sequenceName;
+            this.ColumnName = columnName;
+            this.DbType = dbType;
+            this.PropertyInfo = propertyInfo;
+            this.IsIdentifier = isIdentifier;
+            this.AllowInsert = allowInsert;
+            this.AllowUpdate = allowUpdate;
+            this.SequenceName = sequenceName;
         }
 
         /// <summary>
@@ -74,10 +66,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public bool AllowInsert
         {
-            get
-            {
-                return this.allowInsert;
-            }
+            get;
         }
 
         /// <summary>
@@ -85,10 +74,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public bool AllowUpdate
         {
-            get
-            {
-                return this.allowUpdate;
-            }
+            get;
         }
 
         /// <summary>
@@ -96,10 +82,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public string ColumnName
         {
-            get
-            {
-                return this.columnName;
-            }
+            get;
         }
 
         /// <summary>
@@ -107,10 +90,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public DbType DbType
         {
-            get
-            {
-                return this.dbType;
-            }
+            get;
         }
 
         /// <summary>
@@ -118,10 +98,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public bool IsIdentifier
         {
-            get
-            {
-                return this.isIdentifier;
-            }
+            get;
         }
 
         /// <summary>
@@ -129,10 +106,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public PropertyInfo PropertyInfo
         {
-            get
-            {
-                return this.propertyInfo;
-            }
+            get;
         }
 
         /// <summary>
@@ -140,10 +114,7 @@ namespace MicroLite.Mapping
         /// </summary>
         public string SequenceName
         {
-            get
-            {
-                return this.sequenceName;
-            }
+            get;
         }
     }
 }

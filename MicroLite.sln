@@ -1,0 +1,76 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite", "MicroLite\MicroLite.csproj", "{3DEF63F2-C78B-461C-AC94-410BC45098AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Tests", "MicroLite.Tests\MicroLite.Tests.csproj", "{A693D0A7-1347-4FAA-9CB4-67E6C1C084A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Database.Firebird", "MicroLite.Database.Firebird\MicroLite.Database.Firebird.csproj", "{1A480D45-09AD-4A8B-B387-84CBD41AB7A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Database.Firebird.Tests", "MicroLite.Database.Firebird.Tests\MicroLite.Database.Firebird.Tests.csproj", "{E07FEBF4-8DFA-4195-91D1-DFFC8B99452E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Database.MySql", "MicroLite.Database.MySql\MicroLite.Database.MySql.csproj", "{3FCA94D8-71D3-4C83-9514-831DE1937208}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Database.MySql.Tests", "MicroLite.Database.MySql.Tests\MicroLite.Database.MySql.Tests.csproj", "{B0481EBE-0954-4867-96A4-8C40757DE2CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Database.PostgreSql", "MicroLite.Database.PostgreSql\MicroLite.Database.PostgreSql.csproj", "{B32BD5FE-357A-46F4-9B46-33CAD84D399C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Database.PostgreSql.Tests", "MicroLite.Database.PostgreSql.Tests\MicroLite.Database.PostgreSql.Tests.csproj", "{E2EA76ED-5CA0-43B7-91EC-957376DCC87C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Database.SQLite", "MicroLite.Database.SQLite\MicroLite.Database.SQLite.csproj", "{8E3221EC-4730-423A-B67C-08E8BC6994E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Database.SQLite.Tests", "MicroLite.Database.SQLite.Tests\MicroLite.Database.SQLite.Tests.csproj", "{63C5DCB6-7B2E-496C-B7BD-992566D2877C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DEF63F2-C78B-461C-AC94-410BC45098AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DEF63F2-C78B-461C-AC94-410BC45098AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DEF63F2-C78B-461C-AC94-410BC45098AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DEF63F2-C78B-461C-AC94-410BC45098AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A693D0A7-1347-4FAA-9CB4-67E6C1C084A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A693D0A7-1347-4FAA-9CB4-67E6C1C084A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A693D0A7-1347-4FAA-9CB4-67E6C1C084A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A693D0A7-1347-4FAA-9CB4-67E6C1C084A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A480D45-09AD-4A8B-B387-84CBD41AB7A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A480D45-09AD-4A8B-B387-84CBD41AB7A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A480D45-09AD-4A8B-B387-84CBD41AB7A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A480D45-09AD-4A8B-B387-84CBD41AB7A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E07FEBF4-8DFA-4195-91D1-DFFC8B99452E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E07FEBF4-8DFA-4195-91D1-DFFC8B99452E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E07FEBF4-8DFA-4195-91D1-DFFC8B99452E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E07FEBF4-8DFA-4195-91D1-DFFC8B99452E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FCA94D8-71D3-4C83-9514-831DE1937208}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FCA94D8-71D3-4C83-9514-831DE1937208}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FCA94D8-71D3-4C83-9514-831DE1937208}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FCA94D8-71D3-4C83-9514-831DE1937208}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0481EBE-0954-4867-96A4-8C40757DE2CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0481EBE-0954-4867-96A4-8C40757DE2CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0481EBE-0954-4867-96A4-8C40757DE2CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0481EBE-0954-4867-96A4-8C40757DE2CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B32BD5FE-357A-46F4-9B46-33CAD84D399C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B32BD5FE-357A-46F4-9B46-33CAD84D399C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B32BD5FE-357A-46F4-9B46-33CAD84D399C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B32BD5FE-357A-46F4-9B46-33CAD84D399C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2EA76ED-5CA0-43B7-91EC-957376DCC87C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2EA76ED-5CA0-43B7-91EC-957376DCC87C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2EA76ED-5CA0-43B7-91EC-957376DCC87C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2EA76ED-5CA0-43B7-91EC-957376DCC87C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E3221EC-4730-423A-B67C-08E8BC6994E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E3221EC-4730-423A-B67C-08E8BC6994E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E3221EC-4730-423A-B67C-08E8BC6994E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E3221EC-4730-423A-B67C-08E8BC6994E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63C5DCB6-7B2E-496C-B7BD-992566D2877C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63C5DCB6-7B2E-496C-B7BD-992566D2877C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63C5DCB6-7B2E-496C-B7BD-992566D2877C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63C5DCB6-7B2E-496C-B7BD-992566D2877C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

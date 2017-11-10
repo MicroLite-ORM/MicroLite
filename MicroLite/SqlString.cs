@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="SqlString.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -237,49 +237,32 @@ namespace MicroLite
 
         private struct SegmentPositions
         {
-            private readonly int fromIndex;
-            private readonly int groupByIndex;
-            private readonly int orderByIndex;
-            private readonly int whereIndex;
-
             private SegmentPositions(int fromIndex, int whereIndex, int groupByIndex, int orderByIndex)
             {
-                this.fromIndex = fromIndex;
-                this.whereIndex = whereIndex;
-                this.groupByIndex = groupByIndex;
-                this.orderByIndex = orderByIndex;
+                this.FromIndex = fromIndex;
+                this.WhereIndex = whereIndex;
+                this.GroupByIndex = groupByIndex;
+                this.OrderByIndex = orderByIndex;
             }
 
             internal int FromIndex
             {
-                get
-                {
-                    return this.fromIndex;
-                }
+                get;
             }
 
             internal int GroupByIndex
             {
-                get
-                {
-                    return this.groupByIndex;
-                }
+                get;
             }
 
             internal int OrderByIndex
             {
-                get
-                {
-                    return this.orderByIndex;
-                }
+                get;
             }
 
             internal int WhereIndex
             {
-                get
-                {
-                    return this.whereIndex;
-                }
+                get;
             }
 
             internal static SegmentPositions GetSegmentPositions(string commandText)

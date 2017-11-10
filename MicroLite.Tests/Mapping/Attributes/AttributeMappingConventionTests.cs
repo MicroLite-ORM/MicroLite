@@ -41,7 +41,7 @@
             Assert.Equal("Created", columns[0].ColumnName);
             Assert.True(columns[0].AllowInsert);
             Assert.False(columns[0].AllowUpdate);
-            Assert.Equal(DbType.DateTime, columns[0].DbType);
+            Assert.Equal(DbType.DateTime2, columns[0].DbType);
             Assert.False(columns[0].IsIdentifier);
             Assert.Equal(typeof(AssignedCustomer).GetProperty("Created"), columns[0].PropertyInfo);
             Assert.Null(columns[0].SequenceName);
@@ -49,7 +49,7 @@
             Assert.Equal("DoB", columns[1].ColumnName);
             Assert.True(columns[1].AllowInsert);
             Assert.True(columns[1].AllowUpdate);
-            Assert.Equal(DbType.DateTime, columns[1].DbType);
+            Assert.Equal(DbType.DateTime2, columns[1].DbType);
             Assert.False(columns[1].IsIdentifier);
             Assert.Equal(typeof(AssignedCustomer).GetProperty("DateOfBirth"), columns[1].PropertyInfo);
             Assert.Null(columns[1].SequenceName);
@@ -81,7 +81,7 @@
             Assert.Equal("Updated", columns[5].ColumnName);
             Assert.False(columns[5].AllowInsert);
             Assert.True(columns[5].AllowUpdate);
-            Assert.Equal(DbType.DateTime, columns[5].DbType);
+            Assert.Equal(DbType.DateTime2, columns[5].DbType);
             Assert.False(columns[5].IsIdentifier);
             Assert.Equal(typeof(AssignedCustomer).GetProperty("Updated"), columns[5].PropertyInfo);
             Assert.Null(columns[5].SequenceName);
@@ -100,7 +100,7 @@
             Assert.Equal("Created", columns[0].ColumnName);
             Assert.True(columns[0].AllowInsert);
             Assert.False(columns[0].AllowUpdate);
-            Assert.Equal(DbType.DateTime, columns[0].DbType);
+            Assert.Equal(DbType.DateTime2, columns[0].DbType);
             Assert.False(columns[0].IsIdentifier);
             Assert.Equal(typeof(DbGeneratedCustomer).GetProperty("Created"), columns[0].PropertyInfo);
             Assert.Null(columns[0].SequenceName);
@@ -108,7 +108,7 @@
             Assert.Equal("DoB", columns[1].ColumnName);
             Assert.True(columns[1].AllowInsert);
             Assert.True(columns[1].AllowUpdate);
-            Assert.Equal(DbType.DateTime, columns[1].DbType);
+            Assert.Equal(DbType.DateTime2, columns[1].DbType);
             Assert.False(columns[1].IsIdentifier);
             Assert.Equal(typeof(DbGeneratedCustomer).GetProperty("DateOfBirth"), columns[1].PropertyInfo);
             Assert.Null(columns[1].SequenceName);
@@ -140,7 +140,7 @@
             Assert.Equal("Updated", columns[5].ColumnName);
             Assert.False(columns[5].AllowInsert);
             Assert.True(columns[5].AllowUpdate);
-            Assert.Equal(DbType.DateTime, columns[5].DbType);
+            Assert.Equal(DbType.DateTime2, columns[5].DbType);
             Assert.False(columns[5].IsIdentifier);
             Assert.Equal(typeof(DbGeneratedCustomer).GetProperty("Updated"), columns[5].PropertyInfo);
             Assert.Null(columns[5].SequenceName);
@@ -159,7 +159,7 @@
             Assert.Equal("Created", columns[0].ColumnName);
             Assert.True(columns[0].AllowInsert);
             Assert.False(columns[0].AllowUpdate);
-            Assert.Equal(DbType.DateTime, columns[0].DbType);
+            Assert.Equal(DbType.DateTime2, columns[0].DbType);
             Assert.False(columns[0].IsIdentifier);
             Assert.Equal(typeof(SequenceCustomer).GetProperty("Created"), columns[0].PropertyInfo);
             Assert.Null(columns[0].SequenceName);
@@ -167,7 +167,7 @@
             Assert.Equal("DoB", columns[1].ColumnName);
             Assert.True(columns[1].AllowInsert);
             Assert.True(columns[1].AllowUpdate);
-            Assert.Equal(DbType.DateTime, columns[1].DbType);
+            Assert.Equal(DbType.DateTime2, columns[1].DbType);
             Assert.False(columns[1].IsIdentifier);
             Assert.Equal(typeof(SequenceCustomer).GetProperty("DateOfBirth"), columns[1].PropertyInfo);
             Assert.Null(columns[1].SequenceName);
@@ -199,7 +199,7 @@
             Assert.Equal("Updated", columns[5].ColumnName);
             Assert.False(columns[5].AllowInsert);
             Assert.True(columns[5].AllowUpdate);
-            Assert.Equal(DbType.DateTime, columns[5].DbType);
+            Assert.Equal(DbType.DateTime2, columns[5].DbType);
             Assert.False(columns[5].IsIdentifier);
             Assert.Equal(typeof(SequenceCustomer).GetProperty("Updated"), columns[5].PropertyInfo);
             Assert.Null(columns[5].SequenceName);

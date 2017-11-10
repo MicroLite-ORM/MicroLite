@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="AsyncSession.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
 namespace MicroLite.Core
 {
     using System;
-    using System.Collections.Generic;
     using System.Data.Common;
     using System.Threading;
     using System.Threading.Tasks;
@@ -29,22 +28,16 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("ConnectionScope: {ConnectionScope}")]
     internal sealed class AsyncSession : AsyncReadOnlySession, IAsyncSession, IAdvancedAsyncSession
     {
-        private readonly IList<IDeleteListener> deleteListeners;
-        private readonly IList<IInsertListener> insertListeners;
-        private readonly IList<IUpdateListener> updateListeners;
+        private readonly SessionListeners sessionListeners;
 
         internal AsyncSession(
             ConnectionScope connectionScope,
             ISqlDialect sqlDialect,
             IDbDriver sqlDriver,
-            IList<IDeleteListener> deleteListeners,
-            IList<IInsertListener> insertListeners,
-            IList<IUpdateListener> updateListeners)
+            SessionListeners sessionListeners)
             : base(connectionScope, sqlDialect, sqlDriver)
         {
-            this.deleteListeners = deleteListeners;
-            this.insertListeners = insertListeners;
-            this.updateListeners = updateListeners;
+            this.sessionListeners = sessionListeners;
         }
 
         public new IAdvancedAsyncSession Advanced
@@ -66,12 +59,12 @@ namespace MicroLite.Core
 
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
-            for (int i = 0; i < this.deleteListeners.Count; i++)
+            for (int i = 0; i < this.sessionListeners.DeleteListeners.Count; i++)
             {
-                this.deleteListeners[i].BeforeDelete(instance);
+                this.sessionListeners.DeleteListeners[i].BeforeDelete(instance);
             }
 
             var objectInfo = ObjectInfo.For(instance.GetType());
@@ -87,9 +80,9 @@ namespace MicroLite.Core
 
             var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
-            for (int i = this.deleteListeners.Count - 1; i >= 0; i--)
+            for (int i = this.sessionListeners.DeleteListeners.Count - 1; i >= 0; i--)
             {
-                this.deleteListeners[i].AfterDelete(instance, rowsAffected);
+                this.sessionListeners.DeleteListeners[i].AfterDelete(instance, rowsAffected);
             }
 
             return rowsAffected == 1;
@@ -106,12 +99,12 @@ namespace MicroLite.Core
 
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (identifier == null)
             {
-                throw new ArgumentNullException("identifier");
+                throw new ArgumentNullException(nameof(identifier));
             }
 
             var objectInfo = ObjectInfo.For(type);
@@ -134,7 +127,7 @@ namespace MicroLite.Core
 
             if (sqlQuery == null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             return await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
@@ -151,7 +144,7 @@ namespace MicroLite.Core
 
             if (sqlQuery == null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             return await this.ExecuteScalarQueryAsync<T>(sqlQuery, cancellationToken).ConfigureAwait(false);
@@ -168,12 +161,12 @@ namespace MicroLite.Core
 
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
-            for (int i = 0; i < this.insertListeners.Count; i++)
+            for (int i = 0; i < this.sessionListeners.InsertListeners.Count; i++)
             {
-                this.insertListeners[i].BeforeInsert(instance);
+                this.sessionListeners.InsertListeners[i].BeforeInsert(instance);
             }
 
             var objectInfo = ObjectInfo.For(instance.GetType());
@@ -181,9 +174,9 @@ namespace MicroLite.Core
 
             object identifier = await this.InsertReturningIdentifierAsync(objectInfo, instance, cancellationToken).ConfigureAwait(false);
 
-            for (int i = this.insertListeners.Count - 1; i >= 0; i--)
+            for (int i = this.sessionListeners.InsertListeners.Count - 1; i >= 0; i--)
             {
-                this.insertListeners[i].AfterInsert(instance, identifier);
+                this.sessionListeners.InsertListeners[i].AfterInsert(instance, identifier);
             }
         }
 
@@ -198,12 +191,12 @@ namespace MicroLite.Core
 
             if (instance == null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
-            for (int i = 0; i < this.updateListeners.Count; i++)
+            for (int i = 0; i < this.sessionListeners.UpdateListeners.Count; i++)
             {
-                this.updateListeners[i].BeforeUpdate(instance);
+                this.sessionListeners.UpdateListeners[i].BeforeUpdate(instance);
             }
 
             var objectInfo = ObjectInfo.For(instance.GetType());
@@ -217,9 +210,9 @@ namespace MicroLite.Core
 
             var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
-            for (int i = this.updateListeners.Count - 1; i >= 0; i--)
+            for (int i = this.sessionListeners.UpdateListeners.Count - 1; i >= 0; i--)
             {
-                this.updateListeners[i].AfterUpdate(instance, rowsAffected);
+                this.sessionListeners.UpdateListeners[i].AfterUpdate(instance, rowsAffected);
             }
 
             return rowsAffected == 1;
@@ -236,7 +229,7 @@ namespace MicroLite.Core
 
             if (objectDelta == null)
             {
-                throw new ArgumentNullException("objectDelta");
+                throw new ArgumentNullException(nameof(objectDelta));
             }
 
             if (objectDelta.ChangeCount == 0)

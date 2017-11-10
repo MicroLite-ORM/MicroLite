@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="RawWhereBuilder.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ namespace MicroLite.Builder
         {
             if (selectFrom == null)
             {
-                throw new ArgumentNullException("selectFrom");
+                throw new ArgumentNullException(nameof(selectFrom));
             }
 
             var where = selectFrom.Where(this.builder.ToString(), this.arguments.ToArray());

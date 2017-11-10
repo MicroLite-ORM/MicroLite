@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="TypeConverter.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,66 +23,51 @@ namespace MicroLite.TypeConverters
     {
         private static readonly IDictionary<Type, DbType> dbTypeMap = new Dictionary<Type, DbType>
         {
-            { typeof(byte), DbType.Byte },
-            { typeof(byte?), DbType.Byte },
-            { typeof(sbyte), DbType.SByte },
-            { typeof(sbyte?), DbType.SByte },
-            { typeof(short), DbType.Int16 },
-            { typeof(short?), DbType.Int16 },
-            { typeof(ushort), DbType.UInt16 },
-            { typeof(ushort?), DbType.UInt16 },
-            { typeof(int), DbType.Int32 },
-            { typeof(int?), DbType.Int32 },
-            { typeof(uint), DbType.UInt32 },
-            { typeof(uint?), DbType.UInt32 },
-            { typeof(long), DbType.Int64 },
-            { typeof(long?), DbType.Int64 },
-            { typeof(ulong), DbType.UInt64 },
-            { typeof(ulong?), DbType.UInt64 },
-            { typeof(float), DbType.Single },
-            { typeof(float?), DbType.Single },
-            { typeof(decimal), DbType.Decimal },
-            { typeof(decimal?), DbType.Decimal },
-            { typeof(double), DbType.Double },
-            { typeof(double?), DbType.Double },
-            { typeof(bool), DbType.Boolean },
-            { typeof(bool?), DbType.Boolean },
-            { typeof(char), DbType.StringFixedLength },
-            { typeof(char?), DbType.StringFixedLength },
-            { typeof(string), DbType.String },
-            { typeof(byte[]), DbType.Binary },
-            { typeof(DateTime), DbType.DateTime },
-            { typeof(DateTime?), DbType.DateTime },
-            { typeof(DateTimeOffset), DbType.DateTimeOffset },
-            { typeof(DateTimeOffset?), DbType.DateTimeOffset },
-            { typeof(Guid), DbType.Guid },
-            { typeof(Guid?), DbType.Guid }
+            [typeof(byte)] = DbType.Byte,
+            [typeof(byte?)] = DbType.Byte,
+            [typeof(sbyte)] = DbType.SByte,
+            [typeof(sbyte?)] = DbType.SByte,
+            [typeof(short)] = DbType.Int16,
+            [typeof(short?)] = DbType.Int16,
+            [typeof(ushort)] = DbType.UInt16,
+            [typeof(ushort?)] = DbType.UInt16,
+            [typeof(int)] = DbType.Int32,
+            [typeof(int?)] = DbType.Int32,
+            [typeof(uint)] = DbType.UInt32,
+            [typeof(uint?)] = DbType.UInt32,
+            [typeof(long)] = DbType.Int64,
+            [typeof(long?)] = DbType.Int64,
+            [typeof(ulong)] = DbType.UInt64,
+            [typeof(ulong?)] = DbType.UInt64,
+            [typeof(float)] = DbType.Single,
+            [typeof(float?)] = DbType.Single,
+            [typeof(decimal)] = DbType.Decimal,
+            [typeof(decimal?)] = DbType.Decimal,
+            [typeof(double)] = DbType.Double,
+            [typeof(double?)] = DbType.Double,
+            [typeof(bool)] = DbType.Boolean,
+            [typeof(bool?)] = DbType.Boolean,
+            [typeof(char)] = DbType.StringFixedLength,
+            [typeof(char?)] = DbType.StringFixedLength,
+            [typeof(string)] = DbType.String,
+            [typeof(byte[])] = DbType.Binary,
+            [typeof(DateTime)] = DbType.DateTime2,
+            [typeof(DateTime?)] = DbType.DateTime2,
+            [typeof(DateTimeOffset)] = DbType.DateTimeOffset,
+            [typeof(DateTimeOffset?)] = DbType.DateTimeOffset,
+            [typeof(Guid)] = DbType.Guid,
+            [typeof(Guid?)] = DbType.Guid
         };
-
-        private static readonly ITypeConverter defaultConverter = new ObjectTypeConverter();
-        private static readonly TypeConverterCollection typeConverters = new TypeConverterCollection();
 
         /// <summary>
         /// Gets the type converter collection which contains all type converters registered with the MicroLite ORM framework.
         /// </summary>
-        public static TypeConverterCollection Converters
-        {
-            get
-            {
-                return typeConverters;
-            }
-        }
+        public static TypeConverterCollection Converters { get; } = new TypeConverterCollection();
 
         /// <summary>
         /// Gets the default type converter which can be used if there is no specific type converter for a given type.
         /// </summary>
-        public static ITypeConverter Default
-        {
-            get
-            {
-                return defaultConverter;
-            }
-        }
+        public static ITypeConverter Default { get; } = new ObjectTypeConverter();
 
         /// <summary>
         /// Gets the <see cref="ITypeConverter"/> for the specified type.
@@ -119,7 +104,7 @@ namespace MicroLite.TypeConverters
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (type.IsValueType || type == typeof(string))
@@ -162,7 +147,7 @@ namespace MicroLite.TypeConverters
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             var actualType = type;
@@ -185,7 +170,7 @@ namespace MicroLite.TypeConverters
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             var actualType = ResolveActualType(type);

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="EnglishInflectionService.cs" company="MicroLite">
-// Copyright 2012 - 2015 Project Contributors
+// Copyright 2012 - 2016 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,18 +25,18 @@ namespace MicroLite.Mapping.Inflection
     {
         private readonly IDictionary<string, string> rules = new Dictionary<string, string>
         {
-            { "Person", "People" },
-            { "Child", "Children" },
-            { "(.*)fe?$", "$1ves" },
-            { "(M|(.*)m)an$", "$1en" },
-            { "(.+[aeiou]y)$", "$1s" },
-            { "(.+[^aeiou])y$", "$1ies" },
-            { "(.+z)$", "$1zes" },
-            { "([M|L])ouse$", "$1ice" },
-            { "(.+)(e|i)x$", @"$1ices" },
-            { "(Octop|Vir)us$", "$1i" },
-            { "(.+(s|x|sh|ch))$", @"$1es" },
-            { "(.+)", @"$1s" }
+            ["Person"] = "People",
+            ["Child"] = "Children",
+            ["(.*)fe?$"] = "$1ves",
+            ["(M|(.*)m)an$"] = "$1en",
+            ["(.+[aeiou]y)$"] = "$1s",
+            ["(.+[^aeiou])y$"] = "$1ies",
+            ["(.+z)$"] = "$1zes",
+            ["([M|L])ouse$"] = "$1ice",
+            ["(.+)(e|i)x$"] = @"$1ices",
+            ["(Octop|Vir)us$"] = "$1i",
+            ["(.+(s|x|sh|ch))$"] = @"$1es",
+            ["(.+)"] = @"$1s"
         };
 
         private readonly HashSet<string> singularWords = new HashSet<string>

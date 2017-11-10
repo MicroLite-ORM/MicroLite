@@ -16,7 +16,7 @@
         {
             private readonly Func<Type, ILog> resolver = (s) =>
             {
-                return new EmptyLog();
+                return EmptyLog.Instance;
             };
 
             public WhenCallingSetLogResolver()
