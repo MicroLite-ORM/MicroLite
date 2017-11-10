@@ -173,7 +173,7 @@ namespace MicroLite.TypeConverters
                 throw new ArgumentNullException(nameof(type));
             }
 
-            var actualType = type;
+            var actualType = ResolveActualType(type);
 
             if (actualType.IsEnum)
             {
