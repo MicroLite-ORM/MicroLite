@@ -48,8 +48,9 @@
             Assert.Equal(DbType.Guid, TypeConverter.ResolveDbType(typeof(Guid)));
             Assert.Equal(DbType.Guid, TypeConverter.ResolveDbType(typeof(Guid?)));
 
-            // Set by EnumTypeConverter.
+            // Enums.
             Assert.Equal(DbType.Int32, TypeConverter.ResolveDbType(typeof(CustomerStatus)));
+            Assert.Equal(DbType.Int32, TypeConverter.ResolveDbType(typeof(CustomerStatus?)));
 
             // Set by TimeSpanTypeConverter.
             Assert.Equal(DbType.Int64, TypeConverter.ResolveDbType(typeof(TimeSpan)));
