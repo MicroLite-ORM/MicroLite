@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+
 namespace MicroLite.Driver
 {
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.Common;
-
     /// <summary>
     /// The interface for a class which handles IDbConnections and IDbCommands for a specific database.
     /// </summary>

@@ -10,20 +10,20 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
+using MicroLite.Builder;
+using MicroLite.Dialect;
+using MicroLite.Driver;
+using MicroLite.Logging;
+using MicroLite.Mapping;
+
 namespace MicroLite.Core
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Common;
-    using System.Globalization;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using MicroLite.Builder;
-    using MicroLite.Dialect;
-    using MicroLite.Driver;
-    using MicroLite.Logging;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The default implementation of <see cref="IAsyncReadOnlySession" />.
     /// </summary>

@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+
 namespace MicroLite.TypeConverters
 {
-    using System;
-    using System.Data;
-
     /// <summary>
     /// The interface for a class which can convert between property type values and database values.
     /// </summary>

@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using MicroLite.Logging;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The implementation of <see cref="IMappingConvention"/> which uses a convention to map tables and columns
     /// to types and properties.

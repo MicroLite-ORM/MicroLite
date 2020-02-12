@@ -10,18 +10,18 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
+using MicroLite.Dialect;
+using MicroLite.Driver;
+using MicroLite.Listeners;
+using MicroLite.Mapping;
+using MicroLite.TypeConverters;
+
 namespace MicroLite.Core
 {
-    using System;
-    using System.Data.Common;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using MicroLite.Dialect;
-    using MicroLite.Driver;
-    using MicroLite.Listeners;
-    using MicroLite.Mapping;
-    using MicroLite.TypeConverters;
-
     /// <summary>
     /// The default implementation of <see cref="IAsyncSession"/>.
     /// </summary>

@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Builder.Syntax.Write
 {
-    using System;
-
     /// <summary>
     /// The interface which specifies the table method in the fluent update sql builder syntax.
     /// </summary>

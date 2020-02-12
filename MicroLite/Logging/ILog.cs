@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Logging
 {
-    using System;
-
     /// <summary>
     /// The interface for a framework independent logger.
     /// </summary>
@@ -76,7 +76,6 @@ namespace MicroLite.Logging
         /// Writes the message to the log as an error.
         /// </summary>
         /// <param name="message">The message to be logged.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error", Justification = "Acceptable for logging as it is used by log4net and nlog")]
         void Error(string message);
 
         /// <summary>
@@ -84,7 +83,6 @@ namespace MicroLite.Logging
         /// </summary>
         /// <param name="message">The message to be logged.</param>
         /// <param name="exception">The exception that occurred.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error", Justification = "Acceptable for logging as it is used by log4net and nlog")]
         void Error(string message, Exception exception);
 
         /// <summary>
@@ -92,7 +90,6 @@ namespace MicroLite.Logging
         /// </summary>
         /// <param name="message">The message to be logged.</param>
         /// <param name="formatArgs">The format args.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error", Justification = "Acceptable for logging as it is used by log4net and nlog")]
         void Error(string message, params string[] formatArgs);
 
         /// <summary>

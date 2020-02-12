@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using MicroLite.FrameworkExtensions;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using MicroLite.FrameworkExtensions;
-
     /// <summary>
     /// A class which contains information about a database table which a class is mapped to.
     /// </summary>
@@ -154,7 +154,7 @@ namespace MicroLite.Mapping
                 .Select(x => new
                 {
                     Key = x.Key,
-                    Count = x.Count()
+                    Count = x.Count(),
                 })
                 .FirstOrDefault(x => x.Count > 1);
 

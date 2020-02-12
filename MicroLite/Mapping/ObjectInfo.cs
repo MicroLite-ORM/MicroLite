@@ -10,15 +10,15 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Logging;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The class which describes a type and the table it is mapped to.
     /// </summary>

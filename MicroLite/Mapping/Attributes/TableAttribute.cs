@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Mapping.Attributes
 {
-    using System;
-
     /// <summary>
     /// An attribute which can be applied to a class to specify the table name and database schema the table
     /// exists within.

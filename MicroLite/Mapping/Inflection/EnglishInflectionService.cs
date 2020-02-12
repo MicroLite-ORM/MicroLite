@@ -10,16 +10,16 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
 namespace MicroLite.Mapping.Inflection
 {
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-
     /// <summary>
     /// A class for modifying the grammatical category of an English word.
     /// </summary>
     /// <remarks>
-    /// Based upon the example here <see href="http://mattgrande.wordpress.com/2009/10/28/pluralization-helper-for-c/" />
+    /// Based upon the example here <see href="http://mattgrande.wordpress.com/2009/10/28/pluralization-helper-for-c/" />.
     /// </remarks>
     internal sealed class EnglishInflectionService : IInflectionService
     {
@@ -36,7 +36,7 @@ namespace MicroLite.Mapping.Inflection
             { "(.+)(e|i)x$", @"$1ices" },
             { "(Octop|Vir)us$", "$1i" },
             { "(.+(s|x|sh|ch))$", @"$1es" },
-            { "(.+)", @"$1s" }
+            { "(.+)", @"$1s" },
         };
 
         private readonly HashSet<string> singularWords = new HashSet<string>
@@ -45,7 +45,7 @@ namespace MicroLite.Mapping.Inflection
             "Information",
             "Money",
             "Species",
-            "Series"
+            "Series",
         };
 
         /// <summary>

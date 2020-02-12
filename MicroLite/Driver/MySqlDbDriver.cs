@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Characters;
+
 namespace MicroLite.Driver
 {
-    using MicroLite.Characters;
-
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for MySql server.
     /// </summary>

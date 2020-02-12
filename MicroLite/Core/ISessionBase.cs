@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Data;
+
 namespace MicroLite.Core
 {
-    using System.Data;
-
     /// <summary>
     /// An abstraction for the session base which de-couples the dependency for the Transaction class.
     /// </summary>

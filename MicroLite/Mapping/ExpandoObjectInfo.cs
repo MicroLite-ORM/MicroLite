@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
+using MicroLite.Logging;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Dynamic;
-    using MicroLite.Logging;
-
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     internal sealed class ExpandoObjectInfo : IObjectInfo
     {
@@ -59,7 +59,7 @@ namespace MicroLite.Mapping
             {
                 var columnName = reader.GetName(i);
 
-                if (!"MicroLiteRowNumber".Equals(columnName))
+                if (!"MicroLiteRowNumber".Equals(columnName, StringComparison.Ordinal))
                 {
                     var value = reader.IsDBNull(i) ? null : reader.GetValue(i);
 

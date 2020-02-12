@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="ObjectDelta.cs" company="Project Contributors">
-// Copyright 2012 - 2013 Trevor Pilley
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+
 namespace MicroLite
 {
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// An class which contains partial (delta) changes to an object.
     /// </summary>
@@ -60,7 +60,6 @@ namespace MicroLite
         /// <summary>
         /// Gets the changes contained in the delta.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Ignored.")]
         public IEnumerable<KeyValuePair<string, object>> Changes
         {
             get

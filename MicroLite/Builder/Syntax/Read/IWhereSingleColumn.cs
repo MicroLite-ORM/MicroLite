@@ -34,7 +34,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Between(new DateTime(2000, 1, 1), new DateTime(2009, 12, 31))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered BETWEEN @p0 AND @p1)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered BETWEEN @p0 AND @p1).
         /// </example>
         IAndOrOrderBy Between(object lower, object upper);
 
@@ -54,9 +54,8 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .In("X", "Y", "Z")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 IN (@p0, @p1, @p2))
+        /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 IN (@p0, @p1, @p2)).
         /// </example>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
         IAndOrOrderBy In(params object[] args);
 
         /// <summary>
@@ -65,7 +64,6 @@ namespace MicroLite.Builder.Syntax.Read
         /// <param name="subQueries">The sub queries.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if subQueries is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
         IAndOrOrderBy In(params SqlQuery[] subQueries);
 
         /// <summary>
@@ -90,9 +88,8 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .In(customerQuery)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Invoices WHERE (CustomerId IN (SELECT CustomerId FROM Customers WHERE Age > @p0))
+        /// Will generate SELECT {Columns} FROM Invoices WHERE (CustomerId IN (SELECT CustomerId FROM Customers WHERE Age > @p0)).
         /// </example>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
         IAndOrOrderBy In(SqlQuery subQuery);
 
         /// <summary>
@@ -110,7 +107,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .IsEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered = @p0)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered = @p0).
         /// </example>
         IAndOrOrderBy IsEqualTo(object comparisonValue);
 
@@ -131,7 +128,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .IsEqualTo(subQuery)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (CustomerId = (SELECT TOP 1 CustomerId FROM Invoices ORDER BY Total DESC))
+        /// Will generate SELECT {Columns} FROM Customers WHERE (CustomerId = (SELECT TOP 1 CustomerId FROM Invoices ORDER BY Total DESC)).
         /// </example>
         IAndOrOrderBy IsEqualTo(SqlQuery subQuery);
 
@@ -150,7 +147,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .IsGreaterThan(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered > @p0)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered > @p0).
         /// </example>
         IAndOrOrderBy IsGreaterThan(object comparisonValue);
 
@@ -169,7 +166,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .IsGreaterThanOrEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered >= @p0)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered >= @p0).
         /// </example>
         IAndOrOrderBy IsGreaterThanOrEqualTo(object comparisonValue);
 
@@ -188,7 +185,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .IsLessThan(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<--> @p0)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered <!--<--> @p0).
         /// </example>
         IAndOrOrderBy IsLessThan(object comparisonValue);
 
@@ -207,7 +204,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .IsLessThanOrEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered &lt;= @p0)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered &lt;= @p0).
         /// </example>
         IAndOrOrderBy IsLessThanOrEqualTo(object comparisonValue);
 
@@ -226,7 +223,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .IsLike("Smi%")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (LastName LIKE @p0)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (LastName LIKE @p0).
         /// </example>
         IAndOrOrderBy IsLike(object comparisonValue);
 
@@ -245,7 +242,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .IsNotEqualTo(new DateTime(2000, 1, 1))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered &lt;&gt; @p0)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered &lt;&gt; @p0).
         /// </example>
         IAndOrOrderBy IsNotEqualTo(object comparisonValue);
 
@@ -266,7 +263,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .IsNotEqualTo(subQuery)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (CustomerId &lt;&gt; (SELECT TOP 1 CustomerId FROM Invoices ORDER BY Total DESC))
+        /// Will generate SELECT {Columns} FROM Customers WHERE (CustomerId &lt;&gt; (SELECT TOP 1 CustomerId FROM Invoices ORDER BY Total DESC)).
         /// </example>
         IAndOrOrderBy IsNotEqualTo(SqlQuery subQuery);
 
@@ -285,7 +282,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .IsNotLike("Smi%")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (LastName NOT LIKE @p0)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (LastName NOT LIKE @p0).
         /// </example>
         IAndOrOrderBy IsNotLike(object comparisonValue);
 
@@ -322,7 +319,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .NotBetween(new DateTime(2000, 1, 1), new DateTime(2009, 12, 31))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered NOT BETWEEN @p0 AND @p1)
+        /// Will generate SELECT {Columns} FROM Customers WHERE (DateRegistered NOT BETWEEN @p0 AND @p1).
         /// </example>
         IAndOrOrderBy NotBetween(object lower, object upper);
 
@@ -342,7 +339,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .NotIn("X", "Y", "Z")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 NOT IN (@p0, @p1, @p2))
+        /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 NOT IN (@p0, @p1, @p2)).
         /// </example>
         IAndOrOrderBy NotIn(params object[] args);
 
@@ -376,7 +373,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .NotIn(customerQuery)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Invoices WHERE (CustomerId NOT IN (SELECT CustomerId FROM Customers WHERE Age > @p0))
+        /// Will generate SELECT {Columns} FROM Invoices WHERE (CustomerId NOT IN (SELECT CustomerId FROM Customers WHERE Age > @p0)).
         /// </example>
         IAndOrOrderBy NotIn(SqlQuery subQuery);
     }

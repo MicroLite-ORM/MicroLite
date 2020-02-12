@@ -10,15 +10,15 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Text;
+using MicroLite.Builder.Syntax;
+using MicroLite.Characters;
+using MicroLite.Mapping;
+
 namespace MicroLite.Builder
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using MicroLite.Builder.Syntax;
-    using MicroLite.Characters;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The base class for classes which build an <see cref="SqlQuery" />.
     /// </summary>

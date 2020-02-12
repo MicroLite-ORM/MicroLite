@@ -32,7 +32,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .GroupBy("CustomerId")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId
+        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId.
         /// </example>
         IHavingOrOrderBy GroupBy(string column);
 
@@ -51,7 +51,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .GroupBy("CustomerId, OrderDate")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT CustomerId, OrderDate, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId, OrderDate
+        /// Will generate SELECT CustomerId, OrderDate, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId, OrderDate.
         /// </example>
         IHavingOrOrderBy GroupBy(params string[] columns);
     }

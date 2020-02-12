@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.ComponentModel;
+
 namespace MicroLite
 {
-    using System;
-    using System.ComponentModel;
-
     /// <summary>
     /// An interface used to hide the 4 System.Object instance methods from the API in Visual Studio intellisense.
     /// </summary>
@@ -22,11 +22,11 @@ namespace MicroLite
     public interface IHideObjectMethods
     {
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Determines whether the specified <see cref="object"/> is equal to this instance.
         /// </summary>
-        /// <param name="other">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <param name="other">The <see cref="object"/> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+        ///   <c>true</c> if the specified <see cref="object"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         bool Equals(object other);
@@ -45,15 +45,13 @@ namespace MicroLite
         /// </summary>
         /// <returns>The type of the object.</returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "The method is defined on System.Object, this interface is just to hide it from intelisense in Visual Studio")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "GetType", Justification = "The method is defined on System.Object, this interface is just to hide it from intelisense in Visual Studio")]
         Type GetType();
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// Returns a <see cref="string"/> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
+        /// A <see cref="string"/> that represents this instance.
         /// </returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         string ToString();

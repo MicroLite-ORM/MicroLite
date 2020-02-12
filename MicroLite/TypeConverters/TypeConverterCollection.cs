@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Collections.ObjectModel;
+
 namespace MicroLite.TypeConverters
 {
-    using System.Collections.ObjectModel;
-
     /// <summary>
     /// The class which contains the ITypeConverters used by the MicroLite ORM framework.
     /// </summary>
@@ -33,7 +33,7 @@ namespace MicroLite.TypeConverters
         }
 
         /// <summary>
-        /// Inserts an element into the <see cref="T:System.Collections.ObjectModel.Collection`1" /> at the specified index.
+        /// Inserts an element into the Collection at the specified index.
         /// </summary>
         /// <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
         /// <param name="item">The object to insert. The value can be null for reference types.</param>

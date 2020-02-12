@@ -10,13 +10,13 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
+
 namespace MicroLite.Characters
 {
-    using System;
-    using System.Globalization;
-    using System.Linq;
-    using System.Runtime.Remoting.Messaging;
-
     /// <summary>
     /// A class containing the SQL characters for an SQL Dialect.
     /// </summary>

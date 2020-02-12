@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+
 namespace MicroLite
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text;
-
     /// <summary>
     /// A utility class containing useful methods for manipulating SQL.
     /// </summary>
@@ -106,7 +106,7 @@ namespace MicroLite
         /// </summary>
         /// <param name="sql">The SQL.</param>
         /// <param name="totalArgumentCount">The total number of arguments.</param>
-        /// <returns>The re-numbered SQL</returns>
+        /// <returns>The re-numbered SQL.</returns>
         public static string RenumberParameters(string sql, int totalArgumentCount)
         {
             var parameterNames = GetParameterNames(sql);

@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite
 {
-    using System;
-
     /// <summary>
     /// The interface for a database transaction.
     /// </summary>

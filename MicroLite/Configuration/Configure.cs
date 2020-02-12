@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+
 namespace MicroLite.Configuration
 {
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// The class used to configure the MicroLite ORM framework.
     /// </summary>

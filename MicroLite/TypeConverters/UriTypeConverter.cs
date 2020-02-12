@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+
 namespace MicroLite.TypeConverters
 {
-    using System;
-    using System.Data;
-
     /// <summary>
     /// An ITypeConverter which can convert a Uri to and from the stored database value of a string column.
     /// </summary>

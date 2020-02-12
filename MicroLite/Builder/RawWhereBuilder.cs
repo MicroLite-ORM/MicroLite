@@ -10,13 +10,13 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Text;
+using MicroLite.Builder.Syntax.Read;
+
 namespace MicroLite.Builder
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using MicroLite.Builder.Syntax.Read;
-
     /// <summary>
     /// A class which can be used to build a raw SQL WHERE clause.
     /// </summary>
@@ -97,10 +97,10 @@ namespace MicroLite.Builder
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="string" /> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {

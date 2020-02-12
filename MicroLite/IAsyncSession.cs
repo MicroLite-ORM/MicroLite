@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace MicroLite
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-
     /// <summary>
     /// The interface which provides the asynchronous write methods to map objects to database records.
     /// </summary>

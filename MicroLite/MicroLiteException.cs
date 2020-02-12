@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Runtime.Serialization;
+
 namespace MicroLite
 {
-    using System;
-    using System.Runtime.Serialization;
-
     /// <summary>
     /// The base exception thrown by the MicroLite ORM framework.
     /// </summary>
@@ -54,10 +54,10 @@ namespace MicroLite
         /// <summary>
         /// Initialises a new instance of the <see cref="MicroLiteException"/> class.
         /// </summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is null. </exception>
-        /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0). </exception>
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual information about the source or destination.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="info"/> parameter is null. </exception>
+        /// <exception cref="SerializationException">The class name is null or HResult is zero (0). </exception>
         protected MicroLiteException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

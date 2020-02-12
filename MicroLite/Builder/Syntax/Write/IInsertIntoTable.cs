@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Builder.Syntax.Write
 {
-    using System;
-
     /// <summary>
     /// The interface which specifies the into method in the fluent insert sql builder syntax.
     /// </summary>

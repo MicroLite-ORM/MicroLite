@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Dialect;
+using MicroLite.Driver;
+using MicroLite.Mapping;
+using MicroLite.Mapping.Attributes;
+
 namespace MicroLite.Configuration
 {
-    using System;
-    using MicroLite.Dialect;
-    using MicroLite.Driver;
-    using MicroLite.Mapping;
-    using MicroLite.Mapping.Attributes;
-
     /// <summary>
     /// Extension methods for IConfigureExtensions.
     /// </summary>
@@ -71,7 +71,6 @@ namespace MicroLite.Configuration
         /// <returns>The next step in the fluent configuration.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
         public static ICreateSessionFactory ForMsSql2005Connection(this IConfigureConnection configureConnection, string connectionName)
         {
             if (configureConnection == null)
@@ -92,7 +91,6 @@ namespace MicroLite.Configuration
         /// <param name="providerName">The name of the provider.</param>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
         public static ICreateSessionFactory ForMsSql2005Connection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
         {
             if (configureConnection == null)
@@ -112,7 +110,6 @@ namespace MicroLite.Configuration
         /// <returns>The next step in the fluent configuration.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
         public static ICreateSessionFactory ForMsSql2012Connection(this IConfigureConnection configureConnection, string connectionName)
         {
             if (configureConnection == null)
@@ -133,7 +130,6 @@ namespace MicroLite.Configuration
         /// <param name="providerName">The name of the provider.</param>
         /// <returns>The next step in the fluent configuration.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ForMs", Justification = "For MS, not Forms.")]
         public static ICreateSessionFactory ForMsSql2012Connection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
         {
             if (configureConnection == null)

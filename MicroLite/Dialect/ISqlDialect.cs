@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Characters;
+using MicroLite.Mapping;
+
 namespace MicroLite.Dialect
 {
-    using MicroLite.Characters;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The interface for a class which builds SqlQueries for a specific database dialect.
     /// </summary>

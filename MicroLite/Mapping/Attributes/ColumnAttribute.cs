@@ -10,11 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Mapping.Attributes
 {
-    using System;
-    using System.Data;
-
     /// <summary>
     /// An attribute which can be applied to a property to specify the column name that the property maps to.
     /// </summary>
@@ -62,7 +61,7 @@ namespace MicroLite.Mapping.Attributes
             : this(name, true, true)
         {
         }
-        
+
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnAttribute" /> class.
         /// </summary>
@@ -97,9 +96,9 @@ namespace MicroLite.Mapping.Attributes
                 return this.allowUpdate;
             }
         }
-        
+
         /// <summary>
-        /// Gets the name of the column in the database table that the property maps to
+        /// Gets the name of the column in the database table that the property maps to.
         /// </summary>
         public string Name
         {

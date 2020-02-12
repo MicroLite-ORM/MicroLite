@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite
 {
-    using System;
-
     /// <summary>
     /// A struct containing the count and offset to be used for paged queries.
     /// </summary>
@@ -68,6 +68,28 @@ namespace MicroLite
         }
 
         /// <summary>
+        /// Checks whether two separate PagingOptions instances are not equal.
+        /// </summary>
+        /// <param name="pagingOptions1">The paging options to check.</param>
+        /// <param name="pagingOptions2">The paging options to check against.</param>
+        /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
+        public static bool operator !=(PagingOptions pagingOptions1, PagingOptions pagingOptions2)
+        {
+            return !pagingOptions1.Equals(pagingOptions2);
+        }
+
+        /// <summary>
+        /// Checks whether two separate PagingOptions instances are equal.
+        /// </summary>
+        /// <param name="pagingOptions1">The paging options to check.</param>
+        /// <param name="pagingOptions2">The paging options to check against.</param>
+        /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
+        public static bool operator ==(PagingOptions pagingOptions1, PagingOptions pagingOptions2)
+        {
+            return pagingOptions1.Equals(pagingOptions2);
+        }
+
+        /// <summary>
         /// Gets the paging options for the specified page number.
         /// </summary>
         /// <param name="page">The page number (starting at 1).</param>
@@ -89,28 +111,6 @@ namespace MicroLite
             var skip = (page - 1) * resultsPerPage;
 
             return new PagingOptions(count: resultsPerPage, offset: skip);
-        }
-
-        /// <summary>
-        /// Checks whether two separate PagingOptions instances are not equal.
-        /// </summary>
-        /// <param name="pagingOptions1">The paging options to check.</param>
-        /// <param name="pagingOptions2">The paging options to check against.</param>
-        /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(PagingOptions pagingOptions1, PagingOptions pagingOptions2)
-        {
-            return !pagingOptions1.Equals(pagingOptions2);
-        }
-
-        /// <summary>
-        /// Checks whether two separate PagingOptions instances are equal.
-        /// </summary>
-        /// <param name="pagingOptions1">The paging options to check.</param>
-        /// <param name="pagingOptions2">The paging options to check against.</param>
-        /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(PagingOptions pagingOptions1, PagingOptions pagingOptions2)
-        {
-            return pagingOptions1.Equals(pagingOptions2);
         }
 
         /// <summary>
@@ -136,11 +136,11 @@ namespace MicroLite
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+        /// Determines whether the specified <see cref="object" /> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {

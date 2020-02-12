@@ -67,10 +67,10 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("LastName = @p0", "Smith")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0)
+        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0).
         /// </example>
         /// <example>
-        /// You can refer to the same parameter multiple times
+        /// You can refer to the same parameter multiple times.
         /// <code>
         /// var query = SqlBuilder
         ///     .Select("*")
@@ -78,7 +78,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("LastName = @p0 OR @p0 IS NULL", lastName)
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR @p0 IS NULL)
+        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR @p0 IS NULL).
         /// </example>
         IAndOrOrderBy Where(string predicate, params object[] args);
     }

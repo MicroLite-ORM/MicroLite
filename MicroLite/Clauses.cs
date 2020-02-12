@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite
 {
-    using System;
-
     /// <summary>
     /// An enumeration which represents the various clauses in a SQL Command.
     /// </summary>
@@ -43,6 +43,6 @@ namespace MicroLite
         /// <summary>
         /// The group by clause.
         /// </summary>
-        GroupBy = 8
+        GroupBy = 8,
     }
 }

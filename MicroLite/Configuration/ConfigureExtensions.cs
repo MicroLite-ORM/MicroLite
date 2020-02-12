@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Logging;
+using MicroLite.Mapping;
+
 namespace MicroLite.Configuration
 {
-    using System;
-    using MicroLite.Logging;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The class used to configure extensions to the MicroLite ORM framework.
     /// </summary>

@@ -32,7 +32,6 @@ namespace MicroLite.Builder.Syntax.Write
         /// <param name="args">The arguments to filter the column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if args is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
         IAndOr In(params object[] args);
 
         /// <summary>
@@ -41,7 +40,6 @@ namespace MicroLite.Builder.Syntax.Write
         /// <param name="subQueries">The sub queries.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if subQueries is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
         IAndOr In(params SqlQuery[] subQueries);
 
         /// <summary>
@@ -50,7 +48,6 @@ namespace MicroLite.Builder.Syntax.Write
         /// <param name="subQuery">The sub query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if subQuery is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
         IAndOr In(SqlQuery subQuery);
 
         /// <summary>

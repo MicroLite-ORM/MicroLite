@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Text;
+using MicroLite.Characters;
+using MicroLite.Mapping;
+
 namespace MicroLite.Dialect
 {
-    using System;
-    using System.Data;
-    using System.Text;
-    using MicroLite.Characters;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The implementation of <see cref="ISqlDialect" /> for SQLite.
     /// </summary>
@@ -50,7 +50,7 @@ namespace MicroLite.Dialect
         /// <param name="sqlQuery">The SQL query.</param>
         /// <param name="pagingOptions">The paging options.</param>
         /// <returns>
-        /// A <see cref="T:MicroLite.SqlQuery" /> to return the paged results of the specified query.
+        /// A <see cref="SqlQuery" /> to return the paged results of the specified query.
         /// </returns>
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {

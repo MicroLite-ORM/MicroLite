@@ -10,18 +10,18 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Configuration;
+using System.Data.Common;
+using System.Linq;
+using MicroLite.Core;
+using MicroLite.Dialect;
+using MicroLite.Driver;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Logging;
+
 namespace MicroLite.Configuration
 {
-    using System;
-    using System.Configuration;
-    using System.Data.Common;
-    using System.Linq;
-    using MicroLite.Core;
-    using MicroLite.Dialect;
-    using MicroLite.Driver;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The class used to configure the MicroLite ORM framework using the fluent API.
     /// </summary>

@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
+
 namespace MicroLite.Listeners
 {
-    using System.Collections.Generic;
-
     internal sealed class SessionListeners
     {
         internal SessionListeners()

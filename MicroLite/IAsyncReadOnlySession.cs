@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace MicroLite
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Threading;
-    using System.Threading.Tasks;
-
     /// <summary>
     /// The interface which provides the asynchronous read methods to map objects to database records.
     /// </summary>
@@ -124,7 +124,6 @@ namespace MicroLite
         /// </code>
         /// </example>
         /// <remarks>Invokes FetchAsync&lt;T&gt;(SqlQuery, CancellationToken) with CancellationToken.None.</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Necessary to provide an async task which returns a generic collection")]
         Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery);
 
         /// <summary>
@@ -153,7 +152,6 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Necessary to provide an async task which returns a generic collection")]
         Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken);
 
         /// <summary>
@@ -182,7 +180,6 @@ namespace MicroLite
         /// </code>
         /// </example>
         /// <remarks>Invokes PagedAsync&lt;T&gt;(SqlQuery, PagingOptions, CancellationToken) with CancellationToken.None.</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Necessary to provide an async task which returns a generic collection")]
         Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions);
 
         /// <summary>
@@ -212,7 +209,6 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Necessary to provide an async task which returns a generic collection")]
         Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions, CancellationToken cancellationToken);
 
         /// <summary>
@@ -239,7 +235,8 @@ namespace MicroLite
         /// </code>
         /// </example>
         /// <remarks>Invokes SingleAsync&lt;T&gt;(object, CancellationToken) with CancellationToken.None.</remarks>
-        Task<T> SingleAsync<T>(object identifier) where T : class, new();
+        Task<T> SingleAsync<T>(object identifier)
+            where T : class, new();
 
         /// <summary>
         /// Returns the instance of the specified type which corresponds to the row with the specified identifier
@@ -266,7 +263,8 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        Task<T> SingleAsync<T>(object identifier, CancellationToken cancellationToken) where T : class, new();
+        Task<T> SingleAsync<T>(object identifier, CancellationToken cancellationToken)
+            where T : class, new();
 
         /// <summary>
         /// Returns a single instance based upon the specified SQL query, or null if no result is returned.

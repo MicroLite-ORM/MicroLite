@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+
 namespace MicroLite
 {
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// An implementation of <see cref="IComparer&lt;T&gt;"/> to sort parameter names.
     /// </summary>

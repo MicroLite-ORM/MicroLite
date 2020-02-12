@@ -36,7 +36,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Having("MAX(Total) > @p0", 10000M)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId HAVING MAX(Total) > @p0
+        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId HAVING MAX(Total) > @p0.
         /// </example>
         IOrderBy Having(string predicate, object value);
     }

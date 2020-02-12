@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Dialect;
+using MicroLite.Driver;
+
 namespace MicroLite.Configuration
 {
-    using MicroLite.Dialect;
-    using MicroLite.Driver;
-
     /// <summary>
     /// The interface which specifies the options for configuring the connection in the fluent configuration
     /// of the MicroLite ORM framework.

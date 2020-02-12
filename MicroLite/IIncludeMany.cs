@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+
 namespace MicroLite
 {
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// The interface for including a multiple results.
     /// </summary>
@@ -46,7 +46,6 @@ namespace MicroLite
         /// Called when the included value is loaded.
         /// </summary>
         /// <param name="action">The action to be invoked.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is for a callback where the parameter for the action is an instance of the IInclude")]
         void OnLoad(Action<IIncludeMany<T>> action);
     }
 }

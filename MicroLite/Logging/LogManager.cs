@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Diagnostics;
+
 namespace MicroLite.Logging
 {
-    using System;
-    using System.Diagnostics;
-
     /// <summary>
     /// A class which the MicroLite ORM framework can call to resolve an ILog implementation.
     /// </summary>
@@ -33,7 +33,6 @@ namespace MicroLite.Logging
         /// Gets the log for the current (calling) class.
         /// </summary>
         /// <returns>The <see cref="ILog"/> for the class which called the method.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "The method will return a different ILog depending on the caller, it shouldn't be a property.")]
         public static ILog GetCurrentClassLog()
         {
             var getLogger = GetLogger;

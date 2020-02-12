@@ -10,15 +10,15 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Globalization;
+using System.Text;
+using MicroLite.Characters;
+using MicroLite.Mapping;
+
 namespace MicroLite.Dialect
 {
-    using System;
-    using System.Data;
-    using System.Globalization;
-    using System.Text;
-    using MicroLite.Characters;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for MsSql Server 2005 or later.
     /// </summary>

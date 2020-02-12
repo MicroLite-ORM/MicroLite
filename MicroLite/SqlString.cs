@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite
 {
-    using System;
-
     /// <summary>
     /// A class which contains the clauses of a SQL command.
     /// </summary>

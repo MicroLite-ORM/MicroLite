@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Builder.Syntax;
+using MicroLite.Characters;
+
 namespace MicroLite.Builder
 {
-    using MicroLite.Builder.Syntax;
-    using MicroLite.Characters;
-
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class StoredProcedureSqlBuilder : SqlBuilderBase, IWithParameter
     {

@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite
 {
-    using System;
-
     /// <summary>
     /// The interface which provides access to include operations.
     /// </summary>
@@ -59,7 +59,8 @@ namespace MicroLite
         /// This will return an object for every row in the table,
         /// it should be used to retrieve un-filtered lookup lists (for example the list of countries on a shipping form).
         /// </remarks>
-        IIncludeMany<T> All<T>() where T : class, new();
+        IIncludeMany<T> All<T>()
+            where T : class, new();
 
         /// <summary>
         /// Includes many instances based upon the specified SQL query.
@@ -182,8 +183,10 @@ namespace MicroLite
         /// }
         /// </code>
         /// </example>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Single", Justification = "It's used in loads of places by the linq extension methods as a method name.")]
-        IInclude<T> Single<T>(object identifier) where T : class, new();
+#pragma warning disable CA1720 // Identifier contains type name
+        IInclude<T> Single<T>(object identifier)
+#pragma warning restore CA1720 // Identifier contains type name
+            where T : class, new();
 
         /// <summary>
         /// Includes a single instance based upon the specified SQL query.
@@ -194,7 +197,8 @@ namespace MicroLite
         /// <exception cref="ObjectDisposedException">Thrown if the session has been disposed.</exception>
         /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Single", Justification = "It's used in loads of places by the linq extension methods as a method name.")]
+#pragma warning disable CA1720 // Identifier contains type name
         IInclude<T> Single<T>(SqlQuery sqlQuery);
+#pragma warning restore CA1720 // Identifier contains type name
     }
 }

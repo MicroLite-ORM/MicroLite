@@ -10,13 +10,13 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using MicroLite.Driver;
+using MicroLite.Logging;
+
 namespace MicroLite.Core
 {
-    using System;
-    using System.Data;
-    using MicroLite.Driver;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The base class for a session.
     /// </summary>

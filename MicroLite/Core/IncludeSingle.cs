@@ -10,15 +10,15 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
+using MicroLite.Mapping;
+using MicroLite.TypeConverters;
+
 namespace MicroLite.Core
 {
-    using System;
-    using System.Data.Common;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using MicroLite.Mapping;
-    using MicroLite.TypeConverters;
-
     /// <summary>
     /// The default implementation of <see cref="IInclude&lt;T&gt;"/> for mapped objects.
     /// </summary>

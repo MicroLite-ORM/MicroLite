@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Xml.Linq;
+
 namespace MicroLite.TypeConverters
 {
-    using System;
-    using System.Data;
-    using System.Xml.Linq;
-
     /// <summary>
     /// An ITypeConverter which can convert an XDocument to and from the stored database value of either an xml or string column.
     /// </summary>

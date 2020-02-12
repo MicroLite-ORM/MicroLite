@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace MicroLite.Core
 {
-    using System.Data.Common;
-    using System.Threading;
-    using System.Threading.Tasks;
-
     /// <summary>
     /// The base class for include implementations.
     /// </summary>

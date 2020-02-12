@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Builder.Syntax.Write
 {
-    using System;
-
     /// <summary>
     /// The interface which specifies the from method in the fluent sql builder syntax.
     /// </summary>

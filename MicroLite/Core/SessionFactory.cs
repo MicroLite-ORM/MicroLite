@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Characters;
+using MicroLite.Dialect;
+using MicroLite.Driver;
+using MicroLite.Listeners;
+using MicroLite.Logging;
+
 namespace MicroLite.Core
 {
-    using MicroLite.Characters;
-    using MicroLite.Dialect;
-    using MicroLite.Driver;
-    using MicroLite.Listeners;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The default implementation of <see cref="ISessionFactory"/>.
     /// </summary>

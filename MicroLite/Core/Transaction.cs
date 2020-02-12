@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using MicroLite.Logging;
+
 namespace MicroLite.Core
 {
-    using System;
-    using System.Data;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The default implementation of <see cref="ITransaction"/>.
     /// </summary>
@@ -117,7 +117,6 @@ namespace MicroLite.Core
             command.Transaction = this.transaction;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We don't want to throw an excpetion when calling dispose.")]
         private void Dispose(bool disposing)
         {
             if (this.disposed)
@@ -140,7 +139,9 @@ namespace MicroLite.Core
                         this.RollbackTransaction();
                     }
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch
+#pragma warning restore CA1031 // Do not catch general exception types
                 {
                 }
                 finally

@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+
 namespace MicroLite.TypeConverters
 {
-    using System;
-    using System.Data;
-
     /// <summary>
     /// An ITypeConverter which can convert a TimeSpan to and from the stored database value of a 64 bit integer column.
     /// </summary>

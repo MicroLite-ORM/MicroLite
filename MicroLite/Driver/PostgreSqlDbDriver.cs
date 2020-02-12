@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Characters;
+
 namespace MicroLite.Driver
 {
-    using System;
-    using MicroLite.Characters;
-
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for PostgreSql server.
     /// </summary>

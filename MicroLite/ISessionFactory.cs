@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Driver;
+
 namespace MicroLite
 {
-    using MicroLite.Driver;
-
     /// <summary>
     /// The interface which defines the factory methods for creating MicroLite sessions.
     /// </summary>

@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Mapping
 {
-    using System;
-
     /// <summary>
     /// The interface for a class which implements a mapping convention between a class and a table.
     /// </summary>

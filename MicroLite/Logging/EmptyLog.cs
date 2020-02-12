@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Logging
 {
-    using System;
-
     /// <summary>
     /// An implementation of ILog which always returns false for all log levels and all methods are no-op.
     /// </summary>

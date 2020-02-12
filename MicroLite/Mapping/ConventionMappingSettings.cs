@@ -10,23 +10,22 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Reflection;
+using MicroLite.Mapping.Inflection;
+using MicroLite.TypeConverters;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Data;
-    using System.Reflection;
-    using MicroLite.Mapping.Inflection;
-    using MicroLite.TypeConverters;
-
     /// <summary>
-    /// A class containing the default convention mapping settings
+    /// A class containing the default convention mapping settings.
     /// </summary>
     public class ConventionMappingSettings
     {
         /// <summary>
         /// Initialises a new instance of the <see cref="ConventionMappingSettings" /> class.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Acceptable in this instance, it's still perfectly readable")]
         public ConventionMappingSettings()
         {
             this.AllowInsert = (PropertyInfo propertyInfo) => true;
@@ -208,8 +207,14 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="propertyInfo">The property info for the property.</param>
         /// <returns>The column name for the property.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="propertyInfo"/> is null.</exception>
         protected static string GetColumnName(PropertyInfo propertyInfo)
         {
+            if (propertyInfo is null)
+            {
+                throw new ArgumentNullException(nameof(propertyInfo));
+            }
+
             if (propertyInfo.PropertyType.IsEnum)
             {
                 return propertyInfo.PropertyType.Name + "Id";
@@ -223,8 +228,14 @@ namespace MicroLite.Mapping
         /// </summary>
         /// <param name="type">The type for the class.</param>
         /// <returns>The table name for the type.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         protected static string GetTableName(Type type)
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             if (type.IsGenericType)
             {
                 return type.Name.Substring(0, type.Name.IndexOf("`", StringComparison.OrdinalIgnoreCase));

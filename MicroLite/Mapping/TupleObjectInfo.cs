@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using MicroLite.Logging;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Data;
-    using MicroLite.Logging;
-
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     internal sealed class TupleObjectInfo : IObjectInfo
     {

@@ -10,19 +10,19 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using MicroLite.Characters;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Logging;
+
 namespace MicroLite.Driver
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.Common;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text;
-    using MicroLite.Characters;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The base class for implementations of <see cref="IDbDriver" />.
     /// </summary>
@@ -110,7 +110,6 @@ namespace MicroLite.Driver
         /// <param name="command">The command to build from the values in the specified SqlQuery.</param>
         /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
         /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
         public void BuildCommand(IDbCommand command, SqlQuery sqlQuery)
         {
             if (command == null)

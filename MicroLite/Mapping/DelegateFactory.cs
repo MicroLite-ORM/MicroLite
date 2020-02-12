@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Reflection;
+using System.Reflection.Emit;
+using MicroLite.TypeConverters;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Data;
-    using System.Reflection;
-    using System.Reflection.Emit;
-    using MicroLite.TypeConverters;
-
     internal static class DelegateFactory
     {
         private static readonly MethodInfo convertFromDbValueMethod = typeof(ITypeConverter).GetMethod("ConvertFromDbValue", new[] { typeof(IDataReader), typeof(int), typeof(Type) });

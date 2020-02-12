@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
+
 namespace MicroLite
 {
-    using System.Collections.Generic;
-
     /// <summary>
     /// A class which contains the result of a paged query.
     /// </summary>

@@ -31,6 +31,6 @@ namespace MicroLite
         /// and multiple transactions are to be used within a single session,
         /// or for SQLite in memory databases which only persist data whilst a connection exists.
         /// </remarks>
-        PerSession = 1
+        PerSession = 1,
     }
 }

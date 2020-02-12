@@ -10,16 +10,16 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Logging;
+using MicroLite.TypeConverters;
+
 namespace MicroLite.Mapping.Attributes
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
-    using MicroLite.TypeConverters;
-
     /// <summary>
     /// The implementation of <see cref="IMappingConvention"/> which uses attributes to map tables and columns
     /// to types and properties only maps if an attribute is present (opt-in).

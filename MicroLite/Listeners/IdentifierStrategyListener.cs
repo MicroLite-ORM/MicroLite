@@ -10,13 +10,13 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Globalization;
+using MicroLite.Logging;
+using MicroLite.Mapping;
+
 namespace MicroLite.Listeners
 {
-    using System;
-    using System.Globalization;
-    using MicroLite.Logging;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The implementation of <see cref="IInsertListener"/> for setting the instance identifier value if
     /// <see cref="IdentifierStrategy"/>.DbGenerated or <see cref="IdentifierStrategy"/>.Sequence is used.

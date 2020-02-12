@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Mapping.Attributes
 {
-    using System;
-
     /// <summary>
     /// An attribute which can be applied to a property to specify that it maps to the row identifier (primary key)
     /// in the table and also defines the <see cref="IdentifierStrategy"/> used to manage the identifier's value.

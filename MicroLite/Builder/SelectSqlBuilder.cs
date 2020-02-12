@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Builder.Syntax.Read;
+using MicroLite.Characters;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Mapping;
+
 namespace MicroLite.Builder
 {
-    using System;
-    using MicroLite.Builder.Syntax.Read;
-    using MicroLite.Characters;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Mapping;
-
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class SelectSqlBuilder : SqlBuilderBase, ISelectFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IWhereSingleColumn, IHavingOrOrderBy, IWhereExists
     {

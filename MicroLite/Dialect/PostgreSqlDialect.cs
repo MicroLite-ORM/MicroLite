@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Text;
+using MicroLite.Characters;
+using MicroLite.Mapping;
+
 namespace MicroLite.Dialect
 {
-    using System;
-    using System.Data;
-    using System.Text;
-    using MicroLite.Characters;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for Postgre server.
     /// </summary>

@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using MicroLite.Characters;
+
 namespace MicroLite.Driver
 {
-    using System;
-    using System.Data;
-    using MicroLite.Characters;
-
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for MsSql server.
     /// </summary>

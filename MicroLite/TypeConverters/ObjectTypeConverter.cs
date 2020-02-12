@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Globalization;
+
 namespace MicroLite.TypeConverters
 {
-    using System;
-    using System.Data;
-    using System.Globalization;
-
     /// <summary>
     /// An ITypeConverter which uses Convert.ChangeType.
     /// </summary>

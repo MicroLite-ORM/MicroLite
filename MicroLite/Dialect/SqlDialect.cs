@@ -10,15 +10,15 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using MicroLite.Builder;
+using MicroLite.Characters;
+using MicroLite.Logging;
+using MicroLite.Mapping;
+
 namespace MicroLite.Dialect
 {
-    using System;
-    using System.Collections.Generic;
-    using MicroLite.Builder;
-    using MicroLite.Characters;
-    using MicroLite.Logging;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The base class for implementations of <see cref="ISqlDialect" />.
     /// </summary>

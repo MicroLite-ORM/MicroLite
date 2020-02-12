@@ -39,7 +39,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .InExists(customerQuery)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Invoices WHERE EXISTS (SELECT CustomerId FROM Customers WHERE Age > @p0)
+        /// Will generate SELECT {Columns} FROM Invoices WHERE EXISTS (SELECT CustomerId FROM Customers WHERE Age > @p0).
         /// </example>
         IAndOrOrderBy Exists(SqlQuery subQuery);
 
@@ -65,7 +65,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .InExists(customerQuery)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Invoices WHERE EXISTS (SELECT CustomerId FROM Customers WHERE Age > @p0)
+        /// Will generate SELECT {Columns} FROM Invoices WHERE EXISTS (SELECT CustomerId FROM Customers WHERE Age > @p0).
         /// </example>
         IAndOrOrderBy NotExists(SqlQuery subQuery);
     }

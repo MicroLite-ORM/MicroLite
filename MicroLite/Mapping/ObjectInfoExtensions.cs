@@ -10,12 +10,13 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Globalization;
+using System.IO;
+using MicroLite.TypeConverters;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.IO;
-    using MicroLite.TypeConverters;
-
     /// <summary>
     /// Extension methods for <see cref="IObjectInfo"/>.
     /// </summary>
@@ -64,9 +65,9 @@ namespace MicroLite.Mapping
                     columnInfo.ColumnName,
                     columnInfo.DbType.ToString());
 
-                textWriter.WriteLine("\tAllow Insert: {0}", columnInfo.AllowInsert.ToString());
-                textWriter.WriteLine("\tAllow Update: {0}", columnInfo.AllowUpdate.ToString());
-                textWriter.WriteLine("\tIs Identifier: {0}", columnInfo.IsIdentifier.ToString());
+                textWriter.WriteLine("\tAllow Insert: {0}", columnInfo.AllowInsert.ToString(CultureInfo.InvariantCulture));
+                textWriter.WriteLine("\tAllow Update: {0}", columnInfo.AllowUpdate.ToString(CultureInfo.InvariantCulture));
+                textWriter.WriteLine("\tIs Identifier: {0}", columnInfo.IsIdentifier.ToString(CultureInfo.InvariantCulture));
 
                 if (columnInfo.IsIdentifier)
                 {

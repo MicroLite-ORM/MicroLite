@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
+using MicroLite.Collections;
+
 namespace MicroLite.Listeners
 {
-    using System.Collections.Generic;
-    using MicroLite.Collections;
-
     /// <summary>
     /// Static entry point for listener collections.
     /// </summary>

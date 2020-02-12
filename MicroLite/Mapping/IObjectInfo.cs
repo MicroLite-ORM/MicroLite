@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Data;
-
     /// <summary>
     /// The interface for a class which describes a type and the table it is mapped to.
     /// </summary>

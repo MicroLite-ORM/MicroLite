@@ -10,13 +10,13 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Builder.Syntax;
+using MicroLite.Builder.Syntax.Read;
+using MicroLite.Builder.Syntax.Write;
+using MicroLite.Characters;
+
 namespace MicroLite.Builder
 {
-    using MicroLite.Builder.Syntax;
-    using MicroLite.Builder.Syntax.Read;
-    using MicroLite.Builder.Syntax.Write;
-    using MicroLite.Characters;
-
     /// <summary>
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
@@ -77,7 +77,7 @@ namespace MicroLite.Builder
         /// <param name="column">The column (or wildcard *) to be included in the query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <example>
-        /// Option 1, enter * followed by a table name
+        /// Option 1, enter * followed by a table name.
         /// <code>
         /// var query = SqlBuilder.Select("*").From("Customers")...
         ///

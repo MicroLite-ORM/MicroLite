@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Reflection;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Reflection;
-
     internal static class MemberInfoExtensions
     {
         internal static T GetAttribute<T>(this MemberInfo memberInfo, bool inherit)

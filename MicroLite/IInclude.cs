@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite
 {
-    using System;
-
     /// <summary>
     /// The interface for including a single result.
     /// </summary>
@@ -45,7 +45,6 @@ namespace MicroLite
         /// Called when the included value is loaded.
         /// </summary>
         /// <param name="action">The action to be invoked.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "This is for a callback where the parameter for the action is an instance of the IInclude")]
         void OnLoad(Action<IInclude<T>> action);
     }
 }

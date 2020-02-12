@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace MicroLite
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-
     /// <summary>
     /// The interface which provides access to advanced read-only asynchronous session operations.
     /// </summary>

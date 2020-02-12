@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Data;
+
 namespace MicroLite.TypeConverters
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-
     /// <summary>
     /// A class which allows access to <see cref="ITypeConverter"/>s.
     /// </summary>
@@ -56,7 +56,7 @@ namespace MicroLite.TypeConverters
             { typeof(DateTimeOffset), DbType.DateTimeOffset },
             { typeof(DateTimeOffset?), DbType.DateTimeOffset },
             { typeof(Guid), DbType.Guid },
-            { typeof(Guid?), DbType.Guid }
+            { typeof(Guid?), DbType.Guid },
         };
 
         private static readonly ITypeConverter defaultConverter = new ObjectTypeConverter();

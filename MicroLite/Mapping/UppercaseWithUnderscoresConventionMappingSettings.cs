@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Reflection;
+using MicroLite.FrameworkExtensions;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Reflection;
-    using MicroLite.FrameworkExtensions;
-
     /// <summary>
     /// A class containing the convention mapping settings for uppercase with underscore separators (e.g. 'CreditCard' -> 'CREDIT_CARD').
     /// </summary>
@@ -24,7 +24,6 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Initialises a new instance of the <see cref="UppercaseWithUnderscoresConventionMappingSettings"/> class.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "This is specifically intended to be lowercase")]
         public UppercaseWithUnderscoresConventionMappingSettings()
         {
             this.ResolveColumnName = (PropertyInfo propertyInfo) => ConventionMappingSettings.GetColumnName(propertyInfo).ToUnderscored().ToUpperInvariant();

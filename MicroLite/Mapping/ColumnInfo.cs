@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Reflection;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Data;
-    using System.Reflection;
-
     /// <summary>
     /// A class which contains information about a database table column and the property it is mapped to.
     /// </summary>

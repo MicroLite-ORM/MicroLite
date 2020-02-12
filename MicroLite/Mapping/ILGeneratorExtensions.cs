@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Reflection.Emit;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Reflection.Emit;
-
     /// <summary>
     /// Extension methods for the ILGenerator class.
     /// </summary>

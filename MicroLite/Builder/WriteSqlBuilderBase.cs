@@ -10,13 +10,13 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Builder.Syntax.Write;
+using MicroLite.Characters;
+using MicroLite.FrameworkExtensions;
+
 namespace MicroLite.Builder
 {
-    using System;
-    using MicroLite.Builder.Syntax.Write;
-    using MicroLite.Characters;
-    using MicroLite.FrameworkExtensions;
-
     /// <summary>
     /// The base class for classes which build an <see cref="SqlQuery" /> to perform write operations.
     /// </summary>
