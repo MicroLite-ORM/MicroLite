@@ -60,31 +60,5 @@ namespace MicroLite
         /// <param name="connectionScope">The connection scope to use for the session.</param>
         /// <returns>A new asynchronous database session.</returns>
         IAsyncSession OpenAsyncSession(ConnectionScope connectionScope);
-
-        /// <summary>
-        /// Opens a new read-only session to the database using <see cref="ConnectionScope"/>.PerTransaction.
-        /// </summary>
-        /// <returns>A new read-only database session.</returns>
-        IReadOnlySession OpenReadOnlySession();
-
-        /// <summary>
-        /// Opens a new read-only session to the database using the specified <see cref="ConnectionScope"/>.
-        /// </summary>
-        /// <param name="connectionScope">The connection scope to use for the session.</param>
-        /// <returns>A new read-only database session.</returns>
-        IReadOnlySession OpenReadOnlySession(ConnectionScope connectionScope);
-
-        /// <summary>
-        /// Opens a new session to the database using <see cref="ConnectionScope"/>.PerTransaction.
-        /// </summary>
-        /// <returns>A new database session.</returns>
-        ISession OpenSession();
-
-        /// <summary>
-        /// Opens a new session to the database using the specified <see cref="ConnectionScope"/>.
-        /// </summary>
-        /// <param name="connectionScope">The connection scope to use for the session.</param>
-        /// <returns>A new database session.</returns>
-        ISession OpenSession(ConnectionScope connectionScope);
     }
 }

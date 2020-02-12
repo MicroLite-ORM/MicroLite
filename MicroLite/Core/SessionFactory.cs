@@ -88,39 +88,5 @@ namespace MicroLite.Core
 
             return new AsyncSession(connectionScope, this.sqlDialect, this.dbDriver, this.sessionListeners);
         }
-
-        public IReadOnlySession OpenReadOnlySession()
-        {
-            return this.OpenReadOnlySession(ConnectionScope.PerTransaction);
-        }
-
-        public IReadOnlySession OpenReadOnlySession(ConnectionScope connectionScope)
-        {
-            if (log.IsDebug)
-            {
-                log.Debug(LogMessages.SessionFactory_CreatingReadOnlySession, this.connectionName);
-            }
-
-            SqlCharacters.Current = this.sqlDialect.SqlCharacters;
-
-            return new ReadOnlySession(connectionScope, this.sqlDialect, this.dbDriver);
-        }
-
-        public ISession OpenSession()
-        {
-            return this.OpenSession(ConnectionScope.PerTransaction);
-        }
-
-        public ISession OpenSession(ConnectionScope connectionScope)
-        {
-            if (log.IsDebug)
-            {
-                log.Debug(LogMessages.SessionFactory_CreatingSession, this.connectionName);
-            }
-
-            SqlCharacters.Current = this.sqlDialect.SqlCharacters;
-
-            return new Session(connectionScope, this.sqlDialect, this.dbDriver, this.sessionListeners);
-        }
     }
 }
