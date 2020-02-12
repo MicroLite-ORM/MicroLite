@@ -45,42 +45,17 @@ namespace MicroLite.Core
             }
         }
 
-        public IDbConnection Connection
-        {
-            get;
-            private set;
-        }
+        public IDbConnection Connection { get; private set; }
 
-        public ITransaction CurrentTransaction
-        {
-            get
-            {
-                return this.currentTransaction;
-            }
-        }
+        public ITransaction CurrentTransaction => this.currentTransaction;
 
-        internal ConnectionScope ConnectionScope
-        {
-            get;
-            private set;
-        }
+        internal ConnectionScope ConnectionScope { get; }
 
-        protected IDbCommand Command
-        {
-            get;
-            private set;
-        }
+        protected IDbCommand Command { get; private set; }
 
-        protected IDbDriver DbDriver
-        {
-            get;
-            private set;
-        }
+        protected IDbDriver DbDriver { get; }
 
-        public ITransaction BeginTransaction()
-        {
-            return this.BeginTransaction(IsolationLevel.ReadCommitted);
-        }
+        public ITransaction BeginTransaction() => this.BeginTransaction(IsolationLevel.ReadCommitted);
 
         public ITransaction BeginTransaction(IsolationLevel isolationLevel)
         {

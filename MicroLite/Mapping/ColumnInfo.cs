@@ -22,14 +22,6 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("Column: {ColumnName}, Identifier: {IsIdentifier}, Insert: {AllowInsert}, Update: {AllowUpdate}")]
     public sealed class ColumnInfo
     {
-        private readonly bool allowInsert;
-        private readonly bool allowUpdate;
-        private readonly string columnName;
-        private readonly DbType dbType;
-        private readonly bool isIdentifier;
-        private readonly PropertyInfo propertyInfo;
-        private readonly string sequenceName;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnInfo"/> class.
         /// </summary>
@@ -50,100 +42,48 @@ namespace MicroLite.Mapping
             bool allowUpdate,
             string sequenceName)
         {
-            if (columnName is null)
-            {
-                throw new ArgumentNullException(nameof(columnName));
-            }
-
-            if (propertyInfo is null)
-            {
-                throw new ArgumentNullException(nameof(propertyInfo));
-            }
-
-            this.columnName = columnName;
-            this.dbType = dbType;
-            this.propertyInfo = propertyInfo;
-            this.isIdentifier = isIdentifier;
-            this.allowInsert = allowInsert;
-            this.allowUpdate = allowUpdate;
-            this.sequenceName = sequenceName;
+            this.ColumnName = columnName ?? throw new ArgumentNullException(nameof(columnName));
+            this.DbType = dbType;
+            this.PropertyInfo = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
+            this.IsIdentifier = isIdentifier;
+            this.AllowInsert = allowInsert;
+            this.AllowUpdate = allowUpdate;
+            this.SequenceName = sequenceName;
         }
 
         /// <summary>
         /// Gets a value indicating whether the column value is allowed to be inserted.
         /// </summary>
-        public bool AllowInsert
-        {
-            get
-            {
-                return this.allowInsert;
-            }
-        }
+        public bool AllowInsert { get; }
 
         /// <summary>
         /// Gets a value indicating whether the column value is allowed to be updated.
         /// </summary>
-        public bool AllowUpdate
-        {
-            get
-            {
-                return this.allowUpdate;
-            }
-        }
+        public bool AllowUpdate { get; }
 
         /// <summary>
         /// Gets the name of the column in the database table.
         /// </summary>
-        public string ColumnName
-        {
-            get
-            {
-                return this.columnName;
-            }
-        }
+        public string ColumnName { get; }
 
         /// <summary>
         /// Gets the <see cref="DbType"/> of the column in the database table.
         /// </summary>
-        public DbType DbType
-        {
-            get
-            {
-                return this.dbType;
-            }
-        }
+        public DbType DbType { get; }
 
         /// <summary>
         /// Gets a value indicating whether column is the table identifier column (primary key).
         /// </summary>
-        public bool IsIdentifier
-        {
-            get
-            {
-                return this.isIdentifier;
-            }
-        }
+        public bool IsIdentifier { get; }
 
         /// <summary>
         /// Gets the property info for the property the column maps to.
         /// </summary>
-        public PropertyInfo PropertyInfo
-        {
-            get
-            {
-                return this.propertyInfo;
-            }
-        }
+        public PropertyInfo PropertyInfo { get; }
 
         /// <summary>
         /// Gets the name of the sequence which generates the identifier value.
         /// </summary>
-        public string SequenceName
-        {
-            get
-            {
-                return this.sequenceName;
-            }
-        }
+        public string SequenceName { get; }
     }
 }

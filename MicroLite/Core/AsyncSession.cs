@@ -40,18 +40,9 @@ namespace MicroLite.Core
             this.sessionListeners = sessionListeners;
         }
 
-        public new IAdvancedAsyncSession Advanced
-        {
-            get
-            {
-                return this;
-            }
-        }
+        public new IAdvancedAsyncSession Advanced => this;
 
-        public Task<bool> DeleteAsync(object instance)
-        {
-            return this.DeleteAsync(instance, CancellationToken.None);
-        }
+        public Task<bool> DeleteAsync(object instance) => this.DeleteAsync(instance, CancellationToken.None);
 
         public async Task<bool> DeleteAsync(object instance, CancellationToken cancellationToken)
         {
@@ -88,10 +79,7 @@ namespace MicroLite.Core
             return rowsAffected == 1;
         }
 
-        public Task<bool> DeleteAsync(Type type, object identifier)
-        {
-            return this.DeleteAsync(type, identifier, CancellationToken.None);
-        }
+        public Task<bool> DeleteAsync(Type type, object identifier) => this.DeleteAsync(type, identifier, CancellationToken.None);
 
         public async Task<bool> DeleteAsync(Type type, object identifier, CancellationToken cancellationToken)
         {
@@ -116,10 +104,7 @@ namespace MicroLite.Core
             return rowsAffected == 1;
         }
 
-        public Task<int> ExecuteAsync(SqlQuery sqlQuery)
-        {
-            return this.ExecuteAsync(sqlQuery, CancellationToken.None);
-        }
+        public Task<int> ExecuteAsync(SqlQuery sqlQuery) => this.ExecuteAsync(sqlQuery, CancellationToken.None);
 
         public async Task<int> ExecuteAsync(SqlQuery sqlQuery, CancellationToken cancellationToken)
         {
@@ -133,10 +118,7 @@ namespace MicroLite.Core
             return await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
         }
 
-        public Task<T> ExecuteScalarAsync<T>(SqlQuery sqlQuery)
-        {
-            return this.ExecuteScalarAsync<T>(sqlQuery, CancellationToken.None);
-        }
+        public Task<T> ExecuteScalarAsync<T>(SqlQuery sqlQuery) => this.ExecuteScalarAsync<T>(sqlQuery, CancellationToken.None);
 
         public async Task<T> ExecuteScalarAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
         {
@@ -150,10 +132,7 @@ namespace MicroLite.Core
             return await this.ExecuteScalarQueryAsync<T>(sqlQuery, cancellationToken).ConfigureAwait(false);
         }
 
-        public Task InsertAsync(object instance)
-        {
-            return this.InsertAsync(instance, CancellationToken.None);
-        }
+        public Task InsertAsync(object instance) => this.InsertAsync(instance, CancellationToken.None);
 
         public async Task InsertAsync(object instance, CancellationToken cancellationToken)
         {
@@ -180,10 +159,7 @@ namespace MicroLite.Core
             }
         }
 
-        public Task<bool> UpdateAsync(object instance)
-        {
-            return this.UpdateAsync(instance, CancellationToken.None);
-        }
+        public Task<bool> UpdateAsync(object instance) => this.UpdateAsync(instance, CancellationToken.None);
 
         public async Task<bool> UpdateAsync(object instance, CancellationToken cancellationToken)
         {
@@ -218,10 +194,7 @@ namespace MicroLite.Core
             return rowsAffected == 1;
         }
 
-        public Task<bool> UpdateAsync(ObjectDelta objectDelta)
-        {
-            return this.UpdateAsync(objectDelta, CancellationToken.None);
-        }
+        public Task<bool> UpdateAsync(ObjectDelta objectDelta) => this.UpdateAsync(objectDelta, CancellationToken.None);
 
         public async Task<bool> UpdateAsync(ObjectDelta objectDelta, CancellationToken cancellationToken)
         {

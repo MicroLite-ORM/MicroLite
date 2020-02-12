@@ -24,21 +24,9 @@ namespace MicroLite.Mapping
         private static readonly Type forType = typeof(ExpandoObject);
         private static readonly ILog log = LogManager.GetCurrentClassLog();
 
-        public Type ForType
-        {
-            get
-            {
-                return forType;
-            }
-        }
+        public Type ForType => forType;
 
-        public TableInfo TableInfo
-        {
-            get
-            {
-                throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
-            }
-        }
+        public TableInfo TableInfo => throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
 
         public object CreateInstance(IDataReader reader)
         {
@@ -70,44 +58,20 @@ namespace MicroLite.Mapping
             return instance;
         }
 
-        public ColumnInfo GetColumnInfo(string columnName)
-        {
-            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
-        }
+        public ColumnInfo GetColumnInfo(string columnName) => throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
 
-        public object GetIdentifierValue(object instance)
-        {
-            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
-        }
+        public object GetIdentifierValue(object instance) => throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
 
-        public SqlArgument[] GetInsertValues(object instance)
-        {
-            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
-        }
+        public SqlArgument[] GetInsertValues(object instance) => throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
 
-        public SqlArgument[] GetUpdateValues(object instance)
-        {
-            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
-        }
+        public SqlArgument[] GetUpdateValues(object instance) => throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
 
-        public bool HasDefaultIdentifierValue(object instance)
-        {
-            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
-        }
+        public bool HasDefaultIdentifierValue(object instance) => throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
 
-        public bool IsDefaultIdentifier(object identifier)
-        {
-            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
-        }
+        public bool IsDefaultIdentifier(object identifier) => throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
 
-        public void SetIdentifierValue(object instance, object identifier)
-        {
-            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
-        }
+        public void SetIdentifierValue(object instance, object identifier) => throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
 
-        public void VerifyInstanceForInsert(object instance)
-        {
-            throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
-        }
+        public void VerifyInstanceForInsert(object instance) => throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
     }
 }

@@ -21,11 +21,6 @@ namespace MicroLite
     {
         private SqlString()
         {
-            this.From = string.Empty;
-            this.GroupBy = string.Empty;
-            this.OrderBy = string.Empty;
-            this.Select = string.Empty;
-            this.Where = string.Empty;
         }
 
         /// <summary>
@@ -33,55 +28,35 @@ namespace MicroLite
         /// or <see cref="Clauses"/>.From was not specified.
         /// </summary>
         /// <remarks>This is the value only without the FROM keyword.</remarks>
-        public string From
-        {
-            get;
-            private set;
-        }
+        public string From { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets value of the GROUP BY clause of the command text or an empty string if the command text does not contain a GROUP BY clause
         /// or <see cref="Clauses"/>.GroupBy was not specified.
         /// </summary>
         /// <remarks>This is the value only without the GROUP BY keyword.</remarks>
-        public string GroupBy
-        {
-            get;
-            private set;
-        }
+        public string GroupBy { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets value of the ORDER BY clause of the command text or an empty string if the command text does not contain a ORDER BY clause
         /// or <see cref="Clauses"/>.OrderBy was not specified.
         /// </summary>
         /// <remarks>This is the value only without the ORDER BY keyword.</remarks>
-        public string OrderBy
-        {
-            get;
-            private set;
-        }
+        public string OrderBy { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets value of the SELECT clause of the command text or an empty string if the command text does not contain a SELECT clause
         /// or <see cref="Clauses"/>.Select was not specified.
         /// </summary>
         /// <remarks>This is the value only without the SELECT keyword.</remarks>
-        public string Select
-        {
-            get;
-            private set;
-        }
+        public string Select { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets value of the WHERE clause of the command text or an empty string if the command text does not contain a WHERE clause
         /// or <see cref="Clauses"/>.Where was not specified.
         /// </summary>
         /// <remarks>This is the value only without the WHERE keyword.</remarks>
-        public string Where
-        {
-            get;
-            private set;
-        }
+        public string Where { get; private set; } = string.Empty;
 
         /// <summary>
         /// Parses the specified command text into a SqlString instance populating the specified <see cref="Clauses"/> if
@@ -237,50 +212,21 @@ namespace MicroLite
 
         private struct SegmentPositions
         {
-            private readonly int fromIndex;
-            private readonly int groupByIndex;
-            private readonly int orderByIndex;
-            private readonly int whereIndex;
-
             private SegmentPositions(int fromIndex, int whereIndex, int groupByIndex, int orderByIndex)
             {
-                this.fromIndex = fromIndex;
-                this.whereIndex = whereIndex;
-                this.groupByIndex = groupByIndex;
-                this.orderByIndex = orderByIndex;
+                this.FromIndex = fromIndex;
+                this.WhereIndex = whereIndex;
+                this.GroupByIndex = groupByIndex;
+                this.OrderByIndex = orderByIndex;
             }
 
-            internal int FromIndex
-            {
-                get
-                {
-                    return this.fromIndex;
-                }
-            }
+            internal int FromIndex { get; }
 
-            internal int GroupByIndex
-            {
-                get
-                {
-                    return this.groupByIndex;
-                }
-            }
+            internal int GroupByIndex { get; }
 
-            internal int OrderByIndex
-            {
-                get
-                {
-                    return this.orderByIndex;
-                }
-            }
+            internal int OrderByIndex { get; }
 
-            internal int WhereIndex
-            {
-                get
-                {
-                    return this.whereIndex;
-                }
-            }
+            internal int WhereIndex { get; }
 
             internal static SegmentPositions GetSegmentPositions(string commandText)
             {

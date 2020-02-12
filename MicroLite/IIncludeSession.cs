@@ -184,7 +184,9 @@ namespace MicroLite
         /// </code>
         /// </example>
 #pragma warning disable CA1720 // Identifier contains type name
+#pragma warning disable CA1716 // Identifiers should not match keywords
         IInclude<T> Single<T>(object identifier)
+#pragma warning restore CA1716 // Identifiers should not match keywords
 #pragma warning restore CA1720 // Identifier contains type name
             where T : class, new();
 
@@ -198,7 +200,9 @@ namespace MicroLite
         /// <exception cref="ArgumentNullException">Thrown if the specified SqlQuery is null.</exception>
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
 #pragma warning disable CA1720 // Identifier contains type name
+#pragma warning disable CA1716 // Identifiers should not match keywords
         IInclude<T> Single<T>(SqlQuery sqlQuery);
+#pragma warning restore CA1716 // Identifiers should not match keywords
 #pragma warning restore CA1720 // Identifier contains type name
     }
 }

@@ -23,11 +23,7 @@ namespace MicroLite.Logging
         /// <summary>
         /// Gets or sets the function which can be called by MicroLite to resolve the <see cref="ILog"/> to use.
         /// </summary>
-        internal static Func<Type, ILog> GetLogger
-        {
-            get;
-            set;
-        }
+        internal static Func<Type, ILog> GetLogger { get; set; }
 
         /// <summary>
         /// Gets the log for the current (calling) class.

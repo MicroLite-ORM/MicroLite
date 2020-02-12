@@ -22,18 +22,12 @@ namespace MicroLite
         /// <summary>
         /// Gets the name of the connection in the connection strings configuration section used by the session factory.
         /// </summary>
-        string ConnectionName
-        {
-            get;
-        }
+        string ConnectionName { get; }
 
         /// <summary>
         /// Gets the DB driver used by the session factory.
         /// </summary>
-        IDbDriver DbDriver
-        {
-            get;
-        }
+        IDbDriver DbDriver { get; }
 
         /// <summary>
         /// Opens a new asynchronous read-only session to the database using <see cref="ConnectionScope"/>.PerTransaction.

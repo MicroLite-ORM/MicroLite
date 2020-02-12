@@ -102,9 +102,6 @@ namespace MicroLite.Builder
         /// <returns>
         /// A <see cref="string" /> that represents this instance.
         /// </returns>
-        public override string ToString()
-        {
-            return this.builder.ToString();
-        }
+        public override string ToString() => this.builder.ToString();
     }
 }

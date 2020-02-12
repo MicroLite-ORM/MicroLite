@@ -32,7 +32,6 @@ namespace MicroLite.Core
     {
         private readonly Queue<Include> includes = new Queue<Include>();
         private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
-        private readonly ISqlDialect sqlDialect;
 
         internal AsyncReadOnlySession(
             ConnectionScope connectionScope,
@@ -40,37 +39,16 @@ namespace MicroLite.Core
             IDbDriver sqlDriver)
             : base(connectionScope, sqlDriver)
         {
-            this.sqlDialect = sqlDialect;
+            this.SqlDialect = sqlDialect;
         }
 
-        public IAdvancedAsyncReadOnlySession Advanced
-        {
-            get
-            {
-                return this;
-            }
-        }
+        public IAdvancedAsyncReadOnlySession Advanced => this;
 
-        public IIncludeSession Include
-        {
-            get
-            {
-                return this;
-            }
-        }
+        public IIncludeSession Include => this;
 
-        protected ISqlDialect SqlDialect
-        {
-            get
-            {
-                return this.sqlDialect;
-            }
-        }
+        protected ISqlDialect SqlDialect { get; }
 
-        public Task ExecutePendingQueriesAsync()
-        {
-            return this.ExecutePendingQueriesAsync(CancellationToken.None);
-        }
+        public Task ExecutePendingQueriesAsync() => this.ExecutePendingQueriesAsync(CancellationToken.None);
 
         public async Task ExecutePendingQueriesAsync(CancellationToken cancellationToken)
         {
@@ -111,10 +89,7 @@ namespace MicroLite.Core
             }
         }
 
-        public Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery)
-        {
-            return this.FetchAsync<T>(sqlQuery, CancellationToken.None);
-        }
+        public Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery) => this.FetchAsync<T>(sqlQuery, CancellationToken.None);
 
         public async Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
         {
@@ -208,9 +183,7 @@ namespace MicroLite.Core
         }
 
         public Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions)
-        {
-            return this.PagedAsync<T>(sqlQuery, pagingOptions, CancellationToken.None);
-        }
+            => this.PagedAsync<T>(sqlQuery, pagingOptions, CancellationToken.None);
 
         public async Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions, CancellationToken cancellationToken)
         {
@@ -246,10 +219,7 @@ namespace MicroLite.Core
         }
 
         public Task<T> SingleAsync<T>(object identifier)
-            where T : class, new()
-        {
-            return this.SingleAsync<T>(identifier, CancellationToken.None);
-        }
+            where T : class, new() => this.SingleAsync<T>(identifier, CancellationToken.None);
 
         public async Task<T> SingleAsync<T>(object identifier, CancellationToken cancellationToken)
             where T : class, new()
@@ -268,10 +238,7 @@ namespace MicroLite.Core
             return include.Value;
         }
 
-        public Task<T> SingleAsync<T>(SqlQuery sqlQuery)
-        {
-            return this.SingleAsync<T>(sqlQuery, CancellationToken.None);
-        }
+        public Task<T> SingleAsync<T>(SqlQuery sqlQuery) => this.SingleAsync<T>(sqlQuery, CancellationToken.None);
 
         public async Task<T> SingleAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
         {

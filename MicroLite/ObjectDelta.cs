@@ -22,8 +22,6 @@ namespace MicroLite
     public sealed class ObjectDelta
     {
         private readonly IDictionary<string, object> changes = new Dictionary<string, object>();
-        private readonly Type forType;
-        private readonly object identifier;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ObjectDelta"/> class.
@@ -32,72 +30,35 @@ namespace MicroLite
         /// <param name="identifier">The identifier for the instance of the type the changes relate to.</param>
         public ObjectDelta(Type forType, object identifier)
         {
-            if (forType is null)
-            {
-                throw new ArgumentNullException(nameof(forType));
-            }
-
-            if (identifier is null)
-            {
-                throw new ArgumentNullException(nameof(identifier));
-            }
-
-            this.forType = forType;
-            this.identifier = identifier;
+            this.ForType = forType ?? throw new ArgumentNullException(nameof(forType));
+            this.Identifier = identifier ?? throw new ArgumentNullException(nameof(identifier));
         }
 
         /// <summary>
         /// Gets the number of changes in the delta.
         /// </summary>
-        public int ChangeCount
-        {
-            get
-            {
-                return this.changes.Count;
-            }
-        }
+        public int ChangeCount => this.changes.Count;
 
         /// <summary>
         /// Gets the changes contained in the delta.
         /// </summary>
-        public IEnumerable<KeyValuePair<string, object>> Changes
-        {
-            get
-            {
-                return this.changes;
-            }
-        }
+        public IEnumerable<KeyValuePair<string, object>> Changes => this.changes;
 
         /// <summary>
         /// Gets for type the changes relate to.
         /// </summary>
-        public Type ForType
-        {
-            get
-            {
-                return this.forType;
-            }
-        }
+        public Type ForType { get; }
 
         /// <summary>
         /// Gets the identifier for the instance of the type the changes relate to.
         /// </summary>
-        public object Identifier
-        {
-            get
-            {
-                return this.identifier;
-            }
-        }
+        public object Identifier { get; }
 
         /// <summary>
         /// Adds the a property value change.
         /// </summary>
         /// <param name="propertyName">The name of the property to change.</param>
         /// <param name="newValue">The new value for the property (can be null).</param>
-        public void AddChange(string propertyName, object newValue)
-        {
-            this.changes.Add(propertyName, newValue);
-        }
+        public void AddChange(string propertyName, object newValue) => this.changes.Add(propertyName, newValue);
     }
 }

@@ -33,45 +33,21 @@ namespace MicroLite.Characters
         /// <summary>
         /// Gets the left delimiter character.
         /// </summary>
-        public override string LeftDelimiter
-        {
-            get
-            {
-                return "\"";
-            }
-        }
+        public override string LeftDelimiter => "\"";
 
         /// <summary>
         /// Gets the right delimiter character.
         /// </summary>
-        public override string RightDelimiter
-        {
-            get
-            {
-                return "\"";
-            }
-        }
+        public override string RightDelimiter => "\"";
 
         /// <summary>
         /// Gets the SQL parameter.
         /// </summary>
-        public override string SqlParameter
-        {
-            get
-            {
-                return "@";
-            }
-        }
+        public override string SqlParameter => "@";
 
         /// <summary>
         /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
-        public override bool SupportsNamedParameters
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool SupportsNamedParameters => true;
     }
 }

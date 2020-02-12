@@ -29,7 +29,6 @@ namespace MicroLite.Driver
     public abstract class DbDriver : IDbDriver
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private readonly SqlCharacters sqlCharacters;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="DbDriver" /> class.
@@ -37,72 +36,40 @@ namespace MicroLite.Driver
         /// <param name="sqlCharacters">The SQL characters.</param>
         protected DbDriver(SqlCharacters sqlCharacters)
         {
-            this.sqlCharacters = sqlCharacters;
+            this.SqlCharacters = sqlCharacters ?? throw new ArgumentNullException(nameof(sqlCharacters));
         }
 
         /// <summary>
         /// Gets or sets the connection string.
         /// </summary>
-        public string ConnectionString
-        {
-            get;
-            set;
-        }
+        public string ConnectionString { get; set; }
 
         /// <summary>
         /// Gets or sets the database provider factory.
         /// </summary>
-        public DbProviderFactory DbProviderFactory
-        {
-            get;
-            set;
-        }
+        public DbProviderFactory DbProviderFactory { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this DbDriver supports batched queries.
         /// </summary>
         /// <remarks>Returns false unless overridden.</remarks>
-        public virtual bool SupportsBatchedQueries
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool SupportsBatchedQueries => false;
 
         /// <summary>
         /// Gets the SQL characters used by the DbDriver.
         /// </summary>
-        protected SqlCharacters SqlCharacters
-        {
-            get
-            {
-                return this.sqlCharacters;
-            }
-        }
+        protected SqlCharacters SqlCharacters { get; }
 
         /// <summary>
         /// Gets a value indicating whether this DbDriver supports command timeout.
         /// </summary>
         /// <remarks>Returns true unless overridden.</remarks>
-        protected virtual bool SupportsCommandTimeout
-        {
-            get
-            {
-                return true;
-            }
-        }
+        protected virtual bool SupportsCommandTimeout => true;
 
         /// <summary>
         /// Gets a value indicating whether this DbDriver supports stored procedures.
         /// </summary>
-        protected bool SupportsStoredProcedures
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(this.sqlCharacters.StoredProcedureInvocationCommand);
-            }
-        }
+        protected bool SupportsStoredProcedures => !string.IsNullOrEmpty(this.SqlCharacters.StoredProcedureInvocationCommand);
 
         /// <summary>
         /// Builds the IDbCommand command using the values in the specified SqlQuery.
@@ -198,7 +165,7 @@ namespace MicroLite.Driver
 
                 if (sqlBuilder.Length == 0)
                 {
-                    sqlBuilder.Append(sqlQuery.CommandText).AppendLine(this.sqlCharacters.StatementSeparator);
+                    sqlBuilder.Append(sqlQuery.CommandText).AppendLine(this.SqlCharacters.StatementSeparator);
                 }
                 else
                 {
@@ -206,12 +173,14 @@ namespace MicroLite.Driver
                         ? sqlQuery.CommandText
                         : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                    sqlBuilder.Append(commandText).AppendLine(this.sqlCharacters.StatementSeparator);
+                    sqlBuilder.Append(commandText).AppendLine(this.SqlCharacters.StatementSeparator);
                 }
             }
 
-            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
-            combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
+            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray())
+            {
+                Timeout = sqlQueries.Max(s => s.Timeout),
+            };
 
             return combinedQuery;
         }
@@ -251,10 +220,12 @@ namespace MicroLite.Driver
                 ? sqlQuery2.CommandText
                 : SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
 
-            var commandText = sqlQuery1.CommandText + this.sqlCharacters.StatementSeparator + Environment.NewLine + query2CommandText;
+            var commandText = sqlQuery1.CommandText + this.SqlCharacters.StatementSeparator + Environment.NewLine + query2CommandText;
 
-            var combinedQuery = new SqlQuery(commandText, arguments);
-            combinedQuery.Timeout = Math.Max(sqlQuery1.Timeout, sqlQuery2.Timeout);
+            var combinedQuery = new SqlQuery(commandText, arguments)
+            {
+                Timeout = Math.Max(sqlQuery1.Timeout, sqlQuery2.Timeout),
+            };
 
             return combinedQuery;
         }
@@ -306,7 +277,7 @@ namespace MicroLite.Driver
 
             if (this.IsStoredProcedureCall(commandText))
             {
-                var invocationCommandLength = this.sqlCharacters.StoredProcedureInvocationCommand.Length;
+                var invocationCommandLength = this.SqlCharacters.StoredProcedureInvocationCommand.Length;
                 var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
 
                 if (firstParameterPosition > invocationCommandLength)
@@ -355,8 +326,8 @@ namespace MicroLite.Driver
             }
 
             return this.SupportsStoredProcedures
-                && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
-                && !commandText.Contains(this.sqlCharacters.StatementSeparator);
+                && commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                && !commandText.Contains(this.SqlCharacters.StatementSeparator);
         }
     }
 }

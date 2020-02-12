@@ -24,28 +24,17 @@ namespace MicroLite.Driver
         /// <summary>
         /// Gets or sets the connection string of the database this Db Driver is connecting to.
         /// </summary>
-        string ConnectionString
-        {
-            get;
-            set;
-        }
+        string ConnectionString { get; set; }
 
         /// <summary>
         /// Gets or sets the database provider factory.
         /// </summary>
-        DbProviderFactory DbProviderFactory
-        {
-            get;
-            set;
-        }
+        DbProviderFactory DbProviderFactory { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this DbDriver supports batched queries.
         /// </summary>
-        bool SupportsBatchedQueries
-        {
-            get;
-        }
+        bool SupportsBatchedQueries { get; }
 
         /// <summary>
         /// Builds the IDbCommand command using the values in the specified SqlQuery.

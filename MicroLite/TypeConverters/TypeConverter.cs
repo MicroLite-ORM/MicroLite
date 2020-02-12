@@ -59,30 +59,15 @@ namespace MicroLite.TypeConverters
             { typeof(Guid?), DbType.Guid },
         };
 
-        private static readonly ITypeConverter defaultConverter = new ObjectTypeConverter();
-        private static readonly TypeConverterCollection typeConverters = new TypeConverterCollection();
-
         /// <summary>
         /// Gets the type converter collection which contains all type converters registered with the MicroLite ORM framework.
         /// </summary>
-        public static TypeConverterCollection Converters
-        {
-            get
-            {
-                return typeConverters;
-            }
-        }
+        public static TypeConverterCollection Converters { get; } = new TypeConverterCollection();
 
         /// <summary>
         /// Gets the default type converter which can be used if there is no specific type converter for a given type.
         /// </summary>
-        public static ITypeConverter Default
-        {
-            get
-            {
-                return defaultConverter;
-            }
-        }
+        public static ITypeConverter Default { get; } = new ObjectTypeConverter();
 
         /// <summary>
         /// Gets the <see cref="ITypeConverter"/> for the specified type.
@@ -145,10 +130,7 @@ namespace MicroLite.TypeConverters
         /// </summary>
         /// <param name="type">The Type to be mapped.</param>
         /// <param name="dbType">The DbType to be mapped to.</param>
-        public static void RegisterTypeMapping(Type type, DbType dbType)
-        {
-            dbTypeMap[type] = dbType;
-        }
+        public static void RegisterTypeMapping(Type type, DbType dbType) => dbTypeMap[type] = dbType;
 
         /// <summary>
         /// Resolves the actual type.
@@ -195,9 +177,7 @@ namespace MicroLite.TypeConverters
                 actualType = Enum.GetUnderlyingType(actualType);
             }
 
-            DbType dbType;
-
-            if (dbTypeMap.TryGetValue(actualType, out dbType))
+            if (dbTypeMap.TryGetValue(actualType, out DbType dbType))
             {
                 return dbType;
             }

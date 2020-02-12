@@ -20,10 +20,6 @@ namespace MicroLite.Infrastructure
         /// <summary>
         /// Gets or sets the asynchronous MicroLite session.
         /// </summary>
-        IAsyncSession Session
-        {
-            get;
-            set;
-        }
+        IAsyncSession Session { get; set; }
     }
 }

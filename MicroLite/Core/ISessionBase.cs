@@ -22,10 +22,7 @@ namespace MicroLite.Core
         /// <summary>
         /// Gets the connection.
         /// </summary>
-        IDbConnection Connection
-        {
-            get;
-        }
+        IDbConnection Connection { get; }
 
         /// <summary>
         /// Informs the session that the Transaction has been completed.

@@ -37,9 +37,6 @@ namespace MicroLite.TypeConverters
         /// </summary>
         /// <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
         /// <param name="item">The object to insert. The value can be null for reference types.</param>
-        protected override void InsertItem(int index, ITypeConverter item)
-        {
-            this.Items.Insert(0, item);
-        }
+        protected override void InsertItem(int index, ITypeConverter item) => this.Items.Insert(0, item);
     }
 }

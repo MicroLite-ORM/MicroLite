@@ -32,18 +32,9 @@ namespace MicroLite.Dialect
         {
         }
 
-        public override bool SupportsSelectInsertedIdentifier
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool SupportsSelectInsertedIdentifier => true;
 
-        public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
-        {
-            return new SqlQuery("SELECT SCOPE_IDENTITY()");
-        }
+        public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo) => new SqlQuery("SELECT SCOPE_IDENTITY()");
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {

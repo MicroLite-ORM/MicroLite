@@ -25,11 +25,7 @@ namespace MicroLite.Core
         /// <summary>
         /// Gets or sets a value indicating whether this include has a value.
         /// </summary>
-        public bool HasValue
-        {
-            get;
-            protected set;
-        }
+        public bool HasValue { get; protected set; }
 
         /// <summary>
         /// Builds the included value from the results in the data reader.

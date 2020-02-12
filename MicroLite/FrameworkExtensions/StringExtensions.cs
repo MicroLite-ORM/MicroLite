@@ -16,19 +16,10 @@ namespace MicroLite.FrameworkExtensions
 {
     internal static class StringExtensions
     {
-        internal static string FormatWith(this string value, string arg0)
-        {
-            return string.Format(value, arg0);
-        }
+        internal static string FormatWith(this string value, string arg0) => string.Format(value, arg0);
 
-        internal static string FormatWith(this string value, string arg0, string arg1)
-        {
-            return string.Format(value, arg0, arg1);
-        }
+        internal static string FormatWith(this string value, string arg0, string arg1) => string.Format(value, arg0, arg1);
 
-        internal static string ToUnderscored(this string value)
-        {
-            return Regex.Replace(value, "(?!^)(?=[A-Z])", "_");
-        }
+        internal static string ToUnderscored(this string value) => Regex.Replace(value, "(?!^)(?=[A-Z])", "_");
     }
 }

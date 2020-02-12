@@ -45,7 +45,9 @@ namespace MicroLite
         /// </summary>
         /// <returns>The type of the object.</returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
+#pragma warning disable CA1716 // Identifiers should not match keywords
         Type GetType();
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Returns a <see cref="string"/> that represents this instance.

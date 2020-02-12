@@ -28,21 +28,11 @@ namespace MicroLite.Core
     internal sealed class IncludeMany<T> : Include, IIncludeMany<T>
     {
         private static readonly Type resultType = typeof(T);
-        private readonly IList<T> values = new List<T>();
         private Action<IIncludeMany<T>> callback;
 
-        public IList<T> Values
-        {
-            get
-            {
-                return this.values;
-            }
-        }
+        public IList<T> Values { get; } = new List<T>();
 
-        public void OnLoad(Action<IIncludeMany<T>> action)
-        {
-            this.callback = action;
-        }
+        public void OnLoad(Action<IIncludeMany<T>> action) => this.callback = action;
 
         internal override async Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
@@ -54,7 +44,7 @@ namespace MicroLite.Core
                 {
                     var value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
 
-                    this.values.Add(value);
+                    this.Values.Add(value);
                 }
             }
             else
@@ -65,16 +55,13 @@ namespace MicroLite.Core
                 {
                     var instance = (T)objectInfo.CreateInstance(reader);
 
-                    this.values.Add(instance);
+                    this.Values.Add(instance);
                 }
             }
 
-            this.HasValue = this.values.Count > 0;
+            this.HasValue = this.Values.Count > 0;
 
-            if (this.callback != null)
-            {
-                this.callback(this);
-            }
+            this.callback?.Invoke(this);
         }
     }
 }

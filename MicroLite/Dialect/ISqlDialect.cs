@@ -23,18 +23,12 @@ namespace MicroLite.Dialect
         /// <summary>
         /// Gets the SQL characters used by the SQL dialect.
         /// </summary>
-        SqlCharacters SqlCharacters
-        {
-            get;
-        }
+        SqlCharacters SqlCharacters { get; }
 
         /// <summary>
         /// Gets a value indicating whether the SQL Dialect supports selecting the identifier value of an inserted column.
         /// </summary>
-        bool SupportsSelectInsertedIdentifier
-        {
-            get;
-        }
+        bool SupportsSelectInsertedIdentifier { get; }
 
         /// <summary>
         /// Builds an SqlQuery to delete the database record with the specified identifier for the type specified by the IObjectInfo.

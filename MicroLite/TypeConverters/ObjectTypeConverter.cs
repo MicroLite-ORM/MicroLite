@@ -31,10 +31,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         ///   <c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanConvert(Type type)
-        {
-            return true;
-        }
+        public bool CanConvert(Type type) => true;
 
         /// <summary>
         /// Converts the specified database value into an instance of the specified type.
@@ -115,9 +112,6 @@ namespace MicroLite.TypeConverters
         /// <param name="value">The value to be converted.</param>
         /// <param name="type">The type to convert from.</param>
         /// <returns>An instance of the corresponding database type containing the value.</returns>
-        public object ConvertToDbValue(object value, Type type)
-        {
-            return value;
-        }
+        public object ConvertToDbValue(object value, Type type) => value;
     }
 }

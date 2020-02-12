@@ -49,10 +49,6 @@ namespace MicroLite.Mapping.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class ColumnAttribute : Attribute
     {
-        private readonly bool allowInsert;
-        private readonly bool allowUpdate;
-        private readonly string name;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnAttribute"/> class.
         /// </summary>
@@ -70,42 +66,24 @@ namespace MicroLite.Mapping.Attributes
         /// <param name="allowUpdate">true if the column value can be updated, otherwise false.</param>
         public ColumnAttribute(string name, bool allowInsert, bool allowUpdate)
         {
-            this.name = name;
-            this.allowInsert = allowInsert;
-            this.allowUpdate = allowUpdate;
+            this.Name = name;
+            this.AllowInsert = allowInsert;
+            this.AllowUpdate = allowUpdate;
         }
 
         /// <summary>
         /// Gets a value indicating whether the column value is allowed to be inserted.
         /// </summary>
-        public bool AllowInsert
-        {
-            get
-            {
-                return this.allowInsert;
-            }
-        }
+        public bool AllowInsert { get; }
 
         /// <summary>
         /// Gets a value indicating whether the column value is allowed to be updated.
         /// </summary>
-        public bool AllowUpdate
-        {
-            get
-            {
-                return this.allowUpdate;
-            }
-        }
+        public bool AllowUpdate { get; }
 
         /// <summary>
         /// Gets the name of the column in the database table that the property maps to.
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                return this.name;
-            }
-        }
+        public string Name { get; }
     }
 }

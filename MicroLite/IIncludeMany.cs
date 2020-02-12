@@ -24,10 +24,7 @@ namespace MicroLite
         /// <summary>
         /// Gets a value indicating whether this include has a value.
         /// </summary>
-        bool HasValue
-        {
-            get;
-        }
+        bool HasValue { get; }
 
         /// <summary>
         /// Gets the included values.
@@ -37,10 +34,7 @@ namespace MicroLite
         ///  - If the overall query has not been executed the value will be an empty collection.
         ///  - If the query yielded no results, it will be an empty collection; otherwise it will contain the results of the query.
         /// </value>
-        IList<T> Values
-        {
-            get;
-        }
+        IList<T> Values { get; }
 
         /// <summary>
         /// Called when the included value is loaded.

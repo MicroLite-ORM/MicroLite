@@ -27,12 +27,6 @@ namespace MicroLite.Driver
         {
         }
 
-        public override bool SupportsBatchedQueries
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool SupportsBatchedQueries => true;
     }
 }

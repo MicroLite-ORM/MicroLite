@@ -65,9 +65,7 @@ namespace MicroLite.Mapping
                 log.Debug(LogMessages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
             }
 
-            IObjectInfo objectInfo;
-
-            if (!objectInfos.TryGetValue(forType, out objectInfo))
+            if (!objectInfos.TryGetValue(forType, out IObjectInfo objectInfo))
             {
                 if (forType.IsGenericType)
                 {
@@ -97,8 +95,10 @@ namespace MicroLite.Mapping
                     }
                 }
 
-                var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos);
-                newObjectInfos[forType] = objectInfo;
+                var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos)
+                {
+                    [forType] = objectInfo,
+                };
 
                 objectInfos = newObjectInfos;
             }

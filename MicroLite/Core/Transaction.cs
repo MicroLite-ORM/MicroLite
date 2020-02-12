@@ -47,13 +47,7 @@ namespace MicroLite.Core
             this.transaction = this.sessionBase.Connection.BeginTransaction(isolationLevel);
         }
 
-        public bool IsActive
-        {
-            get
-            {
-                return !this.committed && !this.rolledBack && !this.failed;
-            }
-        }
+        public bool IsActive => !this.committed && !this.rolledBack && !this.failed;
 
         public void Commit()
         {

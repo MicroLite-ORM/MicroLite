@@ -28,16 +28,9 @@ namespace MicroLite.Core
         private static readonly Type resultType = typeof(T);
         private Action<IInclude<T>> callback;
 
-        public T Value
-        {
-            get;
-            private set;
-        }
+        public T Value { get; private set; }
 
-        public void OnLoad(Action<IInclude<T>> action)
-        {
-            this.callback = action;
-        }
+        public void OnLoad(Action<IInclude<T>> action) => this.callback = action;
 
         internal override async Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
@@ -58,10 +51,7 @@ namespace MicroLite.Core
                     throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }
 
-                if (this.callback != null)
-                {
-                    this.callback(this);
-                }
+                this.callback?.Invoke(this);
             }
         }
     }

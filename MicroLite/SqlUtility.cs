@@ -37,10 +37,7 @@ namespace MicroLite
         /// The position of the first parameter in the command text or -1 if no parameters are found.
         /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if commandText is null.</exception>
-        public static int GetFirstParameterPosition(string commandText)
-        {
-            return GetParameterPosition(commandText, 0, parameterIdentifiers);
-        }
+        public static int GetFirstParameterPosition(string commandText) => GetParameterPosition(commandText, 0, parameterIdentifiers);
 
         /// <summary>
         /// Gets the parameter names from the specified SQL command text or an empty list if the command text does not

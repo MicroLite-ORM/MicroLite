@@ -22,10 +22,7 @@ namespace MicroLite
         /// <summary>
         /// Gets a value indicating whether this transaction is active.
         /// </summary>
-        bool IsActive
-        {
-            get;
-        }
+        bool IsActive { get; }
 
         /// <summary>
         /// Commits the transaction, applying all changes made within the transaction scope.

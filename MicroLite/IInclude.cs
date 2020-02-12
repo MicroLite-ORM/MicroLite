@@ -23,10 +23,7 @@ namespace MicroLite
         /// <summary>
         /// Gets a value indicating whether this include has a value.
         /// </summary>
-        bool HasValue
-        {
-            get;
-        }
+        bool HasValue { get; }
 
         /// <summary>
         /// Gets the included value.
@@ -36,10 +33,7 @@ namespace MicroLite
         ///  - If the overall query has not been executed the value will be equal to its default value (null for reference types).
         ///  - If the query yielded no results, it will be its default value; otherwise it will be the result of the query.
         /// </value>
-        T Value
-        {
-            get;
-        }
+        T Value { get; }
 
         /// <summary>
         /// Called when the included value is loaded.

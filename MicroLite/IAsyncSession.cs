@@ -24,10 +24,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the advanced session operations.
         /// </summary>
-        new IAdvancedAsyncSession Advanced
-        {
-            get;
-        }
+        new IAdvancedAsyncSession Advanced { get; }
 
         /// <summary>
         /// Asynchronously deletes the database record for the specified instance.

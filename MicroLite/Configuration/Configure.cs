@@ -31,22 +31,12 @@ namespace MicroLite.Configuration
         /// - Output is added to Configure.SessionFactories.
         /// The purpose of the method is to allow the session factory to be wrapped for profiling.
         /// </remarks>
-        public static Func<ISessionFactory, ISessionFactory> OnSessionFactoryCreated
-        {
-            get;
-            set;
-        }
+        public static Func<ISessionFactory, ISessionFactory> OnSessionFactoryCreated { get; set; }
 
         /// <summary>
         /// Gets the collection of session factories which have created by the configuration.
         /// </summary>
-        public static ICollection<ISessionFactory> SessionFactories
-        {
-            get
-            {
-                return sessionFactories;
-            }
-        }
+        public static ICollection<ISessionFactory> SessionFactories => sessionFactories;
 
         /// <summary>
         /// Begins the process of specifying the extensions which should be used by MicroLite ORM.
@@ -64,10 +54,7 @@ namespace MicroLite.Configuration
         ///     .WithWebApi(); // To use the WebApi extensions, install the MicroLite.Extensions.WebApi package.
         /// </code>
         /// </example>
-        public static IConfigureExtensions Extensions()
-        {
-            return new ConfigureExtensions();
-        }
+        public static IConfigureExtensions Extensions() => new ConfigureExtensions();
 
         /// <summary>
         /// Begins the configuration process using the fluent API.
@@ -81,9 +68,6 @@ namespace MicroLite.Configuration
         ///     .CreateSessionFactory();
         /// </code>
         /// </example>
-        public static IConfigureConnection Fluently()
-        {
-            return new FluentConfiguration(OnSessionFactoryCreated);
-        }
+        public static IConfigureConnection Fluently() => new FluentConfiguration(OnSessionFactoryCreated);
     }
 }

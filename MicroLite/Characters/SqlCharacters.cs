@@ -24,7 +24,6 @@ namespace MicroLite.Characters
     public class SqlCharacters : MarshalByRefObject
     {
         private const string LogicalGetDataName = "MicroLite.Characters.SqlCharacters_Current";
-        private static readonly SqlCharacters empty = new SqlCharacters();
         private static readonly char[] period = new[] { '.' };
         private static SqlCharacters defaultSqlCharacters = null;
 
@@ -49,14 +48,12 @@ namespace MicroLite.Characters
         {
             get
             {
-                var current = CallContext.LogicalGetData(LogicalGetDataName) as SqlCharacters;
-
-                if (current != null)
+                if (CallContext.LogicalGetData(LogicalGetDataName) is SqlCharacters current)
                 {
                     return current;
                 }
 
-                return defaultSqlCharacters ?? empty;
+                return defaultSqlCharacters ?? Empty;
             }
 
             set
@@ -77,101 +74,47 @@ namespace MicroLite.Characters
         /// <summary>
         /// Gets an Empty set of SqlCharacters which does not support named parameters or escaping of values.
         /// </summary>
-        public static SqlCharacters Empty
-        {
-            get
-            {
-                return empty;
-            }
-        }
+        public static SqlCharacters Empty { get; } = new SqlCharacters();
 
         /// <summary>
         /// Gets a string containing the delimiter used on the left hand side to escape an SQL value.
         /// </summary>
-        public virtual string LeftDelimiter
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        public virtual string LeftDelimiter => string.Empty;
 
         /// <summary>
         /// Gets a string containing the wildcard value for use in LIKE statements.
         /// </summary>
-        public virtual string LikeWildcard
-        {
-            get
-            {
-                return "%";
-            }
-        }
+        public virtual string LikeWildcard => "%";
 
         /// <summary>
         /// Gets a string containing the delimiter used on the right hand side to escape an SQL value.
         /// </summary>
-        public virtual string RightDelimiter
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        public virtual string RightDelimiter => string.Empty;
 
         /// <summary>
         /// Gets a string containing the wildcard value for use in SELECT statements.
         /// </summary>
-        public virtual string SelectWildcard
-        {
-            get
-            {
-                return "*";
-            }
-        }
+        public virtual string SelectWildcard => "*";
 
         /// <summary>
         /// Gets a string containing the parameter value for use in parameterised statements.
         /// </summary>
-        public virtual string SqlParameter
-        {
-            get
-            {
-                return "?";
-            }
-        }
+        public virtual string SqlParameter => "?";
 
         /// <summary>
         /// Gets the character used to separate SQL statements.
         /// </summary>
-        public virtual string StatementSeparator
-        {
-            get
-            {
-                return ";";
-            }
-        }
+        public virtual string StatementSeparator => ";";
 
         /// <summary>
         /// Gets the stored procedure invocation command.
         /// </summary>
-        public virtual string StoredProcedureInvocationCommand
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        public virtual string StoredProcedureInvocationCommand => string.Empty;
 
         /// <summary>
         /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
-        public virtual bool SupportsNamedParameters
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool SupportsNamedParameters => false;
 
         /// <summary>
         /// Escapes the specified SQL using the left and right delimiters.

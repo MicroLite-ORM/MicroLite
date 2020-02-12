@@ -38,10 +38,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         ///   <c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanConvert(Type type)
-        {
-            return this.xdocumentType == type;
-        }
+        public bool CanConvert(Type type) => this.xdocumentType == type;
 
         /// <summary>
         /// Converts the specified database value into an instance of the specified type.

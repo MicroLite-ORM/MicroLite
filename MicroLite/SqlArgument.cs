@@ -22,17 +22,14 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("Value: {Value}, DbType: {DbType}")]
     public struct SqlArgument : IEquatable<SqlArgument>
     {
-        private readonly DbType dbType;
-        private readonly object value;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlArgument"/> struct.
         /// </summary>
         /// <param name="value">The argument value.</param>
         public SqlArgument(object value)
         {
-            this.value = value;
-            this.dbType = value != null ? TypeConverter.ResolveDbType(value.GetType()) : default(DbType);
+            this.Value = value;
+            this.DbType = value != null ? TypeConverter.ResolveDbType(value.GetType()) : default;
         }
 
         /// <summary>
@@ -42,31 +39,19 @@ namespace MicroLite
         /// <param name="dbType">The DbType of the value.</param>
         public SqlArgument(object value, DbType dbType)
         {
-            this.value = value;
-            this.dbType = dbType;
+            this.Value = value;
+            this.DbType = dbType;
         }
 
         /// <summary>
         /// Gets the DbType of the value.
         /// </summary>
-        public DbType DbType
-        {
-            get
-            {
-                return this.dbType;
-            }
-        }
+        public DbType DbType { get; }
 
         /// <summary>
         /// Gets the value of the argument.
         /// </summary>
-        public object Value
-        {
-            get
-            {
-                return this.value;
-            }
-        }
+        public object Value { get; }
 
         /// <summary>
         /// Checks whether two separate SqlArgument instances are not equal.
@@ -74,10 +59,7 @@ namespace MicroLite
         /// <param name="sqlArgument1">The SqlArgument to check.</param>
         /// <param name="sqlArgument2">The SqlArgument to check against.</param>
         /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(SqlArgument sqlArgument1, SqlArgument sqlArgument2)
-        {
-            return !sqlArgument1.Equals(sqlArgument2);
-        }
+        public static bool operator !=(SqlArgument sqlArgument1, SqlArgument sqlArgument2) => !sqlArgument1.Equals(sqlArgument2);
 
         /// <summary>
         /// Checks whether two separate SqlArgument instances are equal.
@@ -85,10 +67,7 @@ namespace MicroLite
         /// <param name="sqlArgument1">The SqlArgument to check.</param>
         /// <param name="sqlArgument2">The SqlArgument to check against.</param>
         /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(SqlArgument sqlArgument1, SqlArgument sqlArgument2)
-        {
-            return sqlArgument1.Equals(sqlArgument2);
-        }
+        public static bool operator ==(SqlArgument sqlArgument1, SqlArgument sqlArgument2) => sqlArgument1.Equals(sqlArgument2);
 
         /// <summary>
         /// Determines whether the specified <see cref="object" /> is equal to this instance.
@@ -116,10 +95,7 @@ namespace MicroLite
         /// <returns>
         ///   <c>true</c> if the specified <see cref="SqlArgument" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(SqlArgument other)
-        {
-            return this.DbType == other.DbType && object.Equals(this.Value, other.Value);
-        }
+        public bool Equals(SqlArgument other) => this.DbType == other.DbType && object.Equals(this.Value, other.Value);
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -127,9 +103,6 @@ namespace MicroLite
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public override int GetHashCode()
-        {
-            return ((int)this.DbType).GetHashCode() ^ (this.Value ?? string.Empty).GetHashCode();
-        }
+        public override int GetHashCode() => ((int)this.DbType).GetHashCode() ^ (this.Value ?? string.Empty).GetHashCode();
     }
 }

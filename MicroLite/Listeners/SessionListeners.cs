@@ -31,22 +31,10 @@ namespace MicroLite.Listeners
             this.UpdateListeners = updateListeners;
         }
 
-        internal IList<IDeleteListener> DeleteListeners
-        {
-            get;
-            private set;
-        }
+        internal IList<IDeleteListener> DeleteListeners { get; }
 
-        internal IList<IInsertListener> InsertListeners
-        {
-            get;
-            private set;
-        }
+        internal IList<IInsertListener> InsertListeners { get; }
 
-        internal IList<IUpdateListener> UpdateListeners
-        {
-            get;
-            private set;
-        }
+        internal IList<IUpdateListener> UpdateListeners { get; }
     }
 }

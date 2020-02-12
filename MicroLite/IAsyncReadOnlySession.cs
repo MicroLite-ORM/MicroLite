@@ -26,26 +26,17 @@ namespace MicroLite
         /// <summary>
         /// Gets the advanced async session operations.
         /// </summary>
-        IAdvancedAsyncReadOnlySession Advanced
-        {
-            get;
-        }
+        IAdvancedAsyncReadOnlySession Advanced { get; }
 
         /// <summary>
         /// Gets the current transaction or null if one has not been started.
         /// </summary>
-        ITransaction CurrentTransaction
-        {
-            get;
-        }
+        ITransaction CurrentTransaction { get; }
 
         /// <summary>
         /// Gets the operations which allow additional objects to be queried in a single database call.
         /// </summary>
-        IIncludeSession Include
-        {
-            get;
-        }
+        IIncludeSession Include { get; }
 
         /// <summary>
         /// Begins a transaction using <see cref="IsolationLevel"/>.ReadCommitted.

@@ -23,19 +23,13 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Gets type the object info relates to.
         /// </summary>
-        Type ForType
-        {
-            get;
-        }
+        Type ForType { get; }
 
         /// <summary>
         /// Gets the table info for the type the object info relates to.
         /// </summary>
         /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
-        TableInfo TableInfo
-        {
-            get;
-        }
+        TableInfo TableInfo { get; }
 
         /// <summary>
         /// Creates a new instance of the type populated with the values from the specified IDataReader.

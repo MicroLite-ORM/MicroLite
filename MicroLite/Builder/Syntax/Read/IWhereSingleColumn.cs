@@ -56,7 +56,9 @@ namespace MicroLite.Builder.Syntax.Read
         /// </code>
         /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 IN (@p0, @p1, @p2)).
         /// </example>
+#pragma warning disable CA1716 // Identifiers should not match keywords
         IAndOrOrderBy In(params object[] args);
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Uses the specified SQL queries as sub queries to filter the column.
@@ -64,7 +66,9 @@ namespace MicroLite.Builder.Syntax.Read
         /// <param name="subQueries">The sub queries.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if subQueries is null.</exception>
+#pragma warning disable CA1716 // Identifiers should not match keywords
         IAndOrOrderBy In(params SqlQuery[] subQueries);
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Uses the specified SqlQuery as a sub query to filter the column.
@@ -90,7 +94,9 @@ namespace MicroLite.Builder.Syntax.Read
         /// </code>
         /// Will generate SELECT {Columns} FROM Invoices WHERE (CustomerId IN (SELECT CustomerId FROM Customers WHERE Age > @p0)).
         /// </example>
+#pragma warning disable CA1716 // Identifiers should not match keywords
         IAndOrOrderBy In(SqlQuery subQuery);
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Uses the specified argument to filter the column.

@@ -20,41 +20,19 @@ namespace MicroLite.Listeners
     /// </summary>
     public static class Listener
     {
-        private static readonly StackCollection<IDeleteListener> deleteListeners = new StackCollection<IDeleteListener>();
-        private static readonly StackCollection<IInsertListener> insertListeners = new StackCollection<IInsertListener> { new IdentifierStrategyListener() };
-        private static readonly StackCollection<IUpdateListener> updateListeners = new StackCollection<IUpdateListener>();
-
         /// <summary>
         /// Gets the listener collection which contains all registered <see cref="IDeleteListener"/>s.
         /// </summary>
-        public static IList<IDeleteListener> DeleteListeners
-        {
-            get
-            {
-                return deleteListeners;
-            }
-        }
+        public static IList<IDeleteListener> DeleteListeners { get; } = new StackCollection<IDeleteListener>();
 
         /// <summary>
         /// Gets the listener collection which contains all registered <see cref="IInsertListener"/>s.
         /// </summary>
-        public static IList<IInsertListener> InsertListener
-        {
-            get
-            {
-                return insertListeners;
-            }
-        }
+        public static IList<IInsertListener> InsertListener { get; } = new StackCollection<IInsertListener>();
 
         /// <summary>
         /// Gets the listener collection which contains all registered <see cref="IUpdateListener"/>s.
         /// </summary>
-        public static IList<IUpdateListener> UpdateListeners
-        {
-            get
-            {
-                return updateListeners;
-            }
-        }
+        public static IList<IUpdateListener> UpdateListeners { get; } = new StackCollection<IUpdateListener>();
     }
 }

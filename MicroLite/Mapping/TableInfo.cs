@@ -24,14 +24,6 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("{Schema}.{Name}")]
     public sealed class TableInfo
     {
-        private readonly IList<ColumnInfo> columns;
-        private readonly ColumnInfo identifierColumn;
-        private readonly IdentifierStrategy identifierStrategy;
-        private readonly int insertColumnCount;
-        private readonly string name;
-        private readonly string schema;
-        private readonly int updateColumnCount;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="TableInfo"/> class.
         /// </summary>
@@ -47,25 +39,15 @@ namespace MicroLite.Mapping
             string name,
             string schema)
         {
-            if (columns is null)
-            {
-                throw new ArgumentNullException(nameof(columns));
-            }
+            this.Columns = new ReadOnlyCollection<ColumnInfo>(columns ?? throw new ArgumentNullException(nameof(columns)));
+            this.IdentifierStrategy = identifierStrategy;
+            this.Name = name ?? throw new ArgumentNullException(nameof(name));
+            this.Schema = schema;
 
-            if (name is null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
+            this.IdentifierColumn = columns.FirstOrDefault(c => c.IsIdentifier);
 
-            this.columns = new ReadOnlyCollection<ColumnInfo>(columns);
-            this.identifierStrategy = identifierStrategy;
-            this.name = name;
-            this.schema = schema;
-
-            this.identifierColumn = columns.FirstOrDefault(c => c.IsIdentifier);
-
-            this.insertColumnCount = columns.Count(c => c.AllowInsert);
-            this.updateColumnCount = columns.Count(c => c.AllowUpdate);
+            this.InsertColumnCount = columns.Count(c => c.AllowInsert);
+            this.UpdateColumnCount = columns.Count(c => c.AllowUpdate);
 
             this.ValidateColumns();
         }
@@ -73,87 +55,45 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Gets the columns that are mapped for the table.
         /// </summary>
-        public IList<ColumnInfo> Columns
-        {
-            get
-            {
-                return this.columns;
-            }
-        }
+        public IList<ColumnInfo> Columns { get; }
 
         /// <summary>
         /// Gets the ColumnInfo of the column that is the table identifier column (primary key).
         /// </summary>
-        public ColumnInfo IdentifierColumn
-        {
-            get
-            {
-                return this.identifierColumn;
-            }
-        }
+        public ColumnInfo IdentifierColumn { get; }
 
         /// <summary>
         /// Gets the identifier strategy used by the table.
         /// </summary>
-        public IdentifierStrategy IdentifierStrategy
-        {
-            get
-            {
-                return this.identifierStrategy;
-            }
-        }
+        public IdentifierStrategy IdentifierStrategy { get; }
 
         /// <summary>
         /// Gets the number of columns which can be inserted.
         /// </summary>
-        public int InsertColumnCount
-        {
-            get
-            {
-                return this.insertColumnCount;
-            }
-        }
+        public int InsertColumnCount { get; }
 
         /// <summary>
         /// Gets the database schema the table exists within (e.g. 'dbo'); otherwise null.
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                return this.name;
-            }
-        }
+        public string Name { get; }
 
         /// <summary>
         /// Gets the name of the schema the table exists within.
         /// </summary>
-        public string Schema
-        {
-            get
-            {
-                return this.schema;
-            }
-        }
+        public string Schema { get; }
 
         /// <summary>
         /// Gets the number of columns which can be updated.
         /// </summary>
-        public int UpdateColumnCount
-        {
-            get
-            {
-                return this.updateColumnCount;
-            }
-        }
+        public int UpdateColumnCount { get; }
 
         private void ValidateColumns()
         {
-            var duplicatedColumn = this.columns
+            var duplicatedColumn = this.Columns
                 .GroupBy(c => c.ColumnName)
                 .Select(x => new
                 {
-                    Key = x.Key,
+                    x.Key,
                     Count = x.Count(),
                 })
                 .FirstOrDefault(x => x.Count > 1);
@@ -163,16 +103,16 @@ namespace MicroLite.Mapping
                 throw new MappingException(ExceptionMessages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
             }
 
-            if (this.columns.Count(c => c.IsIdentifier) > 1)
+            if (this.Columns.Count(c => c.IsIdentifier) > 1)
             {
-                throw new MappingException(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith(this.schema, this.name));
+                throw new MappingException(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith(this.Schema, this.Name));
             }
 
-            if (this.identifierStrategy == Mapping.IdentifierStrategy.Sequence
-                && this.identifierColumn != null
-                && string.IsNullOrEmpty(this.identifierColumn.SequenceName))
+            if (this.IdentifierStrategy == Mapping.IdentifierStrategy.Sequence
+                && this.IdentifierColumn != null
+                && string.IsNullOrEmpty(this.IdentifierColumn.SequenceName))
             {
-                throw new MappingException(ExceptionMessages.TableInfo_SequenceNameNotSet.FormatWith(this.identifierColumn.ColumnName));
+                throw new MappingException(ExceptionMessages.TableInfo_SequenceNameNotSet.FormatWith(this.IdentifierColumn.ColumnName));
             }
         }
     }

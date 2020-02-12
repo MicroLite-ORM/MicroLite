@@ -25,79 +25,42 @@ namespace MicroLite.Builder
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal abstract class SqlBuilderBase : IToSqlQuery
     {
-        private readonly List<SqlArgument> arguments = new List<SqlArgument>();
-        private readonly StringBuilder innerSql = new StringBuilder(capacity: 128);
-        private readonly SqlCharacters sqlCharacters;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlBuilderBase"/> class.
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters for the builder.</param>
         protected SqlBuilderBase(SqlCharacters sqlCharacters)
         {
-            this.sqlCharacters = sqlCharacters;
+            this.SqlCharacters = sqlCharacters;
         }
 
-        protected bool AddedWhere
-        {
-            get;
-            set;
-        }
+        protected bool AddedWhere { get; set; }
 
         /// <summary>
         /// Gets the arguments currently added to the sql builder.
         /// </summary>
-        protected List<SqlArgument> Arguments
-        {
-            get
-            {
-                return this.arguments;
-            }
-        }
+        protected List<SqlArgument> Arguments { get; } = new List<SqlArgument>();
 
         /// <summary>
         /// Gets the inner sql the sql builder.
         /// </summary>
-        protected StringBuilder InnerSql
-        {
-            get
-            {
-                return this.innerSql;
-            }
-        }
+        protected StringBuilder InnerSql { get; } = new StringBuilder(capacity: 128);
 
-        protected string Operand
-        {
-            get;
-            set;
-        }
+        protected string Operand { get; set; }
 
         /// <summary>
         /// Gets the SQL characters.
         /// </summary>
-        protected SqlCharacters SqlCharacters
-        {
-            get
-            {
-                return this.sqlCharacters;
-            }
-        }
+        protected SqlCharacters SqlCharacters { get; }
 
-        protected string WhereColumnName
-        {
-            get;
-            set;
-        }
+        protected string WhereColumnName { get; set; }
 
         /// <summary>
         /// Creates a <see cref="SqlQuery"/> from the values specified.
         /// </summary>
         /// <returns>The created <see cref="SqlQuery"/>.</returns>
         /// <remarks>This method is called to return an SqlQuery once query has been defined.</remarks>
-        public virtual SqlQuery ToSqlQuery()
-        {
-            return new SqlQuery(this.innerSql.ToString(), this.arguments.ToArray());
-        }
+        public virtual SqlQuery ToSqlQuery() => new SqlQuery(this.InnerSql.ToString(), this.Arguments.ToArray());
 
         protected void AddBetween(object lower, object upper, bool negate)
         {
@@ -269,9 +232,9 @@ namespace MicroLite.Builder
         {
             if (!string.IsNullOrEmpty(objectInfo.TableInfo.Schema))
             {
-                this.InnerSql.Append(this.sqlCharacters.LeftDelimiter)
+                this.InnerSql.Append(this.SqlCharacters.LeftDelimiter)
                     .Append(objectInfo.TableInfo.Schema)
-                    .Append(this.sqlCharacters.RightDelimiter)
+                    .Append(this.SqlCharacters.RightDelimiter)
                     .Append('.');
             }
 
@@ -284,15 +247,15 @@ namespace MicroLite.Builder
         /// <param name="table">The name of the table.</param>
         protected void AppendTableName(string table)
         {
-            if (this.sqlCharacters.IsEscaped(table))
+            if (this.SqlCharacters.IsEscaped(table))
             {
-                this.innerSql.Append(table);
+                this.InnerSql.Append(table);
             }
             else
             {
-                this.InnerSql.Append(this.sqlCharacters.LeftDelimiter)
+                this.InnerSql.Append(this.SqlCharacters.LeftDelimiter)
                     .Append(table)
-                    .Append(this.sqlCharacters.RightDelimiter);
+                    .Append(this.SqlCharacters.RightDelimiter);
             }
         }
     }

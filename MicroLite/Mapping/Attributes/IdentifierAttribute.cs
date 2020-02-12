@@ -44,9 +44,6 @@ namespace MicroLite.Mapping.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class IdentifierAttribute : Attribute
     {
-        private readonly IdentifierStrategy identifierStrategy;
-        private readonly string sequenceName;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="IdentifierAttribute"/> class.
         /// </summary>
@@ -63,30 +60,18 @@ namespace MicroLite.Mapping.Attributes
         /// <param name="sequenceName">The name of the sequence which generates the identifier value.</param>
         public IdentifierAttribute(IdentifierStrategy identifierStrategy, string sequenceName)
         {
-            this.identifierStrategy = identifierStrategy;
-            this.sequenceName = sequenceName;
+            this.IdentifierStrategy = identifierStrategy;
+            this.SequenceName = sequenceName;
         }
 
         /// <summary>
         /// Gets the identifier strategy used to manage the identifier's value.
         /// </summary>
-        public IdentifierStrategy IdentifierStrategy
-        {
-            get
-            {
-                return this.identifierStrategy;
-            }
-        }
+        public IdentifierStrategy IdentifierStrategy { get; }
 
         /// <summary>
         /// Gets the name of the sequence which generates the identifier value.
         /// </summary>
-        public string SequenceName
-        {
-            get
-            {
-                return this.sequenceName;
-            }
-        }
+        public string SequenceName { get; }
     }
 }

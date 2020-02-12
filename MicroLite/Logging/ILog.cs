@@ -22,42 +22,27 @@ namespace MicroLite.Logging
         /// <summary>
         /// Gets a value indicating whether the logger is logging debug statements.
         /// </summary>
-        bool IsDebug
-        {
-            get;
-        }
+        bool IsDebug { get; }
 
         /// <summary>
         /// Gets a value indicating whether the logger is logging error statements.
         /// </summary>
-        bool IsError
-        {
-            get;
-        }
+        bool IsError { get; }
 
         /// <summary>
         /// Gets a value indicating whether the logger is logging fatal statements.
         /// </summary>
-        bool IsFatal
-        {
-            get;
-        }
+        bool IsFatal { get; }
 
         /// <summary>
         /// Gets a value indicating whether the logger is logging info statements.
         /// </summary>
-        bool IsInfo
-        {
-            get;
-        }
+        bool IsInfo { get; }
 
         /// <summary>
         /// Gets a value indicating whether the logger is logging warning statements.
         /// </summary>
-        bool IsWarn
-        {
-            get;
-        }
+        bool IsWarn { get; }
 
         /// <summary>
         /// Writes the message to the log as a debug statement.
@@ -76,21 +61,27 @@ namespace MicroLite.Logging
         /// Writes the message to the log as an error.
         /// </summary>
         /// <param name="message">The message to be logged.</param>
+#pragma warning disable CA1716 // Identifiers should not match keywords
         void Error(string message);
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Writes the message to the log as an error along with the exception that occurred.
         /// </summary>
         /// <param name="message">The message to be logged.</param>
         /// <param name="exception">The exception that occurred.</param>
+#pragma warning disable CA1716 // Identifiers should not match keywords
         void Error(string message, Exception exception);
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Writes the message to the log as an error.
         /// </summary>
         /// <param name="message">The message to be logged.</param>
         /// <param name="formatArgs">The format args.</param>
+#pragma warning disable CA1716 // Identifiers should not match keywords
         void Error(string message, params string[] formatArgs);
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Writes the message to the log as fatal.

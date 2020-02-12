@@ -31,18 +31,9 @@ namespace MicroLite.Dialect
         {
         }
 
-        public override bool SupportsSelectInsertedIdentifier
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool SupportsSelectInsertedIdentifier => true;
 
-        public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
-        {
-            return new SqlQuery("SELECT last_insert_rowid()");
-        }
+        public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo) => new SqlQuery("SELECT last_insert_rowid()");
 
         /// <summary>
         /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the paging options.

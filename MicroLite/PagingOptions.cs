@@ -20,9 +20,6 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("Count: {Count}, Offset: {Offset}")]
     public struct PagingOptions : IEquatable<PagingOptions>
     {
-        private readonly int count;
-        private readonly int offset;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="PagingOptions" /> struct.
         /// </summary>
@@ -30,42 +27,24 @@ namespace MicroLite
         /// <param name="offset">The offset (number of records to skip).</param>
         private PagingOptions(int count, int offset)
         {
-            this.count = count;
-            this.offset = offset;
+            this.Count = count;
+            this.Offset = offset;
         }
 
         /// <summary>
         /// Gets the number of record to return.
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return this.count;
-            }
-        }
+        public int Count { get; }
 
         /// <summary>
         /// Gets the number of records to skip.
         /// </summary>
-        public int Offset
-        {
-            get
-            {
-                return this.offset;
-            }
-        }
+        public int Offset { get; }
 
         /// <summary>
         /// Gets the paging options for when no paging is required.
         /// </summary>
-        internal static PagingOptions None
-        {
-            get
-            {
-                return new PagingOptions(count: 0, offset: 0);
-            }
-        }
+        internal static PagingOptions None => new PagingOptions(count: 0, offset: 0);
 
         /// <summary>
         /// Checks whether two separate PagingOptions instances are not equal.
@@ -73,10 +52,7 @@ namespace MicroLite
         /// <param name="pagingOptions1">The paging options to check.</param>
         /// <param name="pagingOptions2">The paging options to check against.</param>
         /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(PagingOptions pagingOptions1, PagingOptions pagingOptions2)
-        {
-            return !pagingOptions1.Equals(pagingOptions2);
-        }
+        public static bool operator !=(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => !pagingOptions1.Equals(pagingOptions2);
 
         /// <summary>
         /// Checks whether two separate PagingOptions instances are equal.
@@ -84,10 +60,7 @@ namespace MicroLite
         /// <param name="pagingOptions1">The paging options to check.</param>
         /// <param name="pagingOptions2">The paging options to check against.</param>
         /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(PagingOptions pagingOptions1, PagingOptions pagingOptions2)
-        {
-            return pagingOptions1.Equals(pagingOptions2);
-        }
+        public static bool operator ==(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => pagingOptions1.Equals(pagingOptions2);
 
         /// <summary>
         /// Gets the paging options for the specified page number.
@@ -161,10 +134,7 @@ namespace MicroLite
         /// <returns>
         ///   <c>true</c> if the specified <see cref="PagingOptions" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(PagingOptions other)
-        {
-            return other.Count == this.Count && other.Offset == this.Offset;
-        }
+        public bool Equals(PagingOptions other) => other.Count == this.Count && other.Offset == this.Offset;
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -172,9 +142,6 @@ namespace MicroLite
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public override int GetHashCode()
-        {
-            return this.Count.GetHashCode() ^ this.Offset.GetHashCode();
-        }
+        public override int GetHashCode() => this.Count.GetHashCode() ^ this.Offset.GetHashCode();
     }
 }

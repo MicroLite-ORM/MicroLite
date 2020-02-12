@@ -25,7 +25,6 @@ namespace MicroLite.Dialect
     public abstract class SqlDialect : ISqlDialect
     {
         private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private readonly SqlCharacters sqlCharacters;
         private Dictionary<Type, string> deleteCommandCache = new Dictionary<Type, string>();
         private Dictionary<Type, string> insertCommandCache = new Dictionary<Type, string>();
         private Dictionary<Type, string> selectCommandCache = new Dictionary<Type, string>();
@@ -37,30 +36,18 @@ namespace MicroLite.Dialect
         /// <param name="sqlCharacters">The SQL characters.</param>
         protected SqlDialect(SqlCharacters sqlCharacters)
         {
-            this.sqlCharacters = sqlCharacters;
+            this.SqlCharacters = sqlCharacters ?? throw new ArgumentNullException(nameof(sqlCharacters));
         }
 
         /// <summary>
         /// Gets the SQL characters used by the SQL dialect.
         /// </summary>
-        public SqlCharacters SqlCharacters
-        {
-            get
-            {
-                return this.sqlCharacters;
-            }
-        }
+        public SqlCharacters SqlCharacters { get; }
 
         /// <summary>
         /// Gets a value indicating whether the SQL Dialect supports selecting the identifier value of an inserted column.
         /// </summary>
-        public virtual bool SupportsSelectInsertedIdentifier
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool SupportsSelectInsertedIdentifier => false;
 
         /// <summary>
         /// Builds an SqlQuery to delete the database record with the specified identifier for the type specified by the IObjectInfo.
@@ -82,14 +69,14 @@ namespace MicroLite.Dialect
                 log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "DELETE");
             }
 
-            string deleteCommand;
-
-            if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out deleteCommand))
+            if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out string deleteCommand))
             {
                 deleteCommand = this.BuildDeleteCommandText(objectInfo);
 
-                var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
-                newDeleteCommandCache[objectInfo.ForType] = deleteCommand;
+                var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache)
+                {
+                    [objectInfo.ForType] = deleteCommand,
+                };
 
                 this.deleteCommandCache = newDeleteCommandCache;
             }
@@ -117,14 +104,14 @@ namespace MicroLite.Dialect
                 log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "INSERT");
             }
 
-            string insertCommand;
-
-            if (!this.insertCommandCache.TryGetValue(objectInfo.ForType, out insertCommand))
+            if (!this.insertCommandCache.TryGetValue(objectInfo.ForType, out string insertCommand))
             {
                 insertCommand = this.BuildInsertCommandText(objectInfo);
 
-                var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
-                newInsertCommandCache[objectInfo.ForType] = insertCommand;
+                var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache)
+                {
+                    [objectInfo.ForType] = insertCommand,
+                };
 
                 this.insertCommandCache = newInsertCommandCache;
             }
@@ -141,10 +128,7 @@ namespace MicroLite.Dialect
         /// <returns>
         /// The created <see cref="SqlQuery" />.
         /// </returns>
-        public virtual SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
-        {
-            return new SqlQuery(string.Empty);
-        }
+        public virtual SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo) => new SqlQuery(string.Empty);
 
         /// <summary>
         /// Builds an SqlQuery to select the database record with the specified identifier for the type specified by the IObjectInfo.
@@ -166,14 +150,14 @@ namespace MicroLite.Dialect
                 log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "SELECT");
             }
 
-            string selectCommand;
-
-            if (!this.selectCommandCache.TryGetValue(objectInfo.ForType, out selectCommand))
+            if (!this.selectCommandCache.TryGetValue(objectInfo.ForType, out string selectCommand))
             {
                 selectCommand = this.BuildSelectCommandText(objectInfo);
 
-                var newSelectCommandCache = new Dictionary<Type, string>(this.selectCommandCache);
-                newSelectCommandCache[objectInfo.ForType] = selectCommand;
+                var newSelectCommandCache = new Dictionary<Type, string>(this.selectCommandCache)
+                {
+                    [objectInfo.ForType] = selectCommand,
+                };
 
                 this.selectCommandCache = newSelectCommandCache;
             }
@@ -201,14 +185,14 @@ namespace MicroLite.Dialect
                 log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "UPDATE");
             }
 
-            string updateCommand;
-
-            if (!this.updateCommandCache.TryGetValue(objectInfo.ForType, out updateCommand))
+            if (!this.updateCommandCache.TryGetValue(objectInfo.ForType, out string updateCommand))
             {
                 updateCommand = this.BuildUpdateCommandText(objectInfo);
 
-                var newUpdateCommandCache = new Dictionary<Type, string>(this.updateCommandCache);
-                newUpdateCommandCache[objectInfo.ForType] = updateCommand;
+                var newUpdateCommandCache = new Dictionary<Type, string>(this.updateCommandCache)
+                {
+                    [objectInfo.ForType] = updateCommand,
+                };
 
                 this.updateCommandCache = newUpdateCommandCache;
             }
