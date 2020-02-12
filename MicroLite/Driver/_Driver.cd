@@ -3,7 +3,7 @@
   <Class Name="MicroLite.Driver.DbDriver">
     <Position X="5.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAEIAAAhQAAAIBAAAAEACAAAgAAQAAAAACABBBAACQA=</HashCode>
+      <HashCode>AAEAAAAhQAAAABEAAAEACAAAgAAQAAAAACABBAAACQA=</HashCode>
       <FileName>Driver\DbDriver.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -11,7 +11,7 @@
   <Class Name="MicroLite.Driver.MsSqlDbDriver">
     <Position X="2.25" Y="6.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAQA=</HashCode>
       <FileName>Driver\MsSqlDbDriver.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -36,13 +36,6 @@
       <FileName>Driver\SQLiteDbDriver.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="MicroLite.Driver.SqlServerCeDbDriver">
-    <Position X="11.25" Y="6.25" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
-      <FileName>Driver\SqlServerCeDbDriver.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="MicroLite.Driver.FirebirdDbDriver">
     <Position X="0.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
@@ -53,7 +46,7 @@
   <Interface Name="MicroLite.Driver.IDbDriver">
     <Position X="0.5" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAIAAAAAEAAAAAAAAQAAAAACABABAAAQA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAEAAAEAAAAAAAAQAAAAACABAAAAAQA=</HashCode>
       <FileName>Driver\IDbDriver.cs</FileName>
     </TypeIdentifier>
   </Interface>

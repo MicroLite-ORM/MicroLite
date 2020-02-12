@@ -92,7 +92,6 @@
     <Compile Include="Characters\PostgreSqlCharactersTests.cs" />
     <Compile Include="Characters\SqlCharactersTests.cs" />
     <Compile Include="Characters\SQLiteCharactersTests.cs" />
-    <Compile Include="Characters\SqlServerCeCharactersTests.cs" />
     <Compile Include="Collections\StackCollectionTests.cs" />
     <Compile Include="Configuration\ConfigurationExtensionsTests.cs" />
     <Compile Include="Configuration\ConfigureExtensionsTests.cs" />
@@ -113,14 +112,12 @@
     <Compile Include="Dialect\PostgreSqlDialectTests.cs" />
     <Compile Include="Dialect\SqlDialectTests.cs" />
     <Compile Include="Dialect\SQLiteDialectTests.cs" />
-    <Compile Include="Dialect\SqlServerCeDialectTests.cs" />
     <Compile Include="Driver\DbDriverTests.cs" />
     <Compile Include="Driver\FirebirdDbDriverTests.cs" />
     <Compile Include="Driver\MsSqlDbDriverTests.cs" />
     <Compile Include="Driver\MySqlDbDriverTests.cs" />
     <Compile Include="Driver\PostgreSqlDbDriverTests.cs" />
     <Compile Include="Driver\SQLiteDbDriverTests.cs" />
-    <Compile Include="Driver\SqlServerCeDbDriverTests.cs" />
     <Compile Include="Listeners\IdentifierStrategyListenerTests.cs" />
     <Compile Include="Logging\LogManagerTests.cs" />
     <Compile Include="Mapping\Attributes\AttributeMappingConventionTests.cs" />

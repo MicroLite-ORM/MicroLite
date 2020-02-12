@@ -3,7 +3,7 @@
   <Class Name="MicroLite.Dialect.SqlDialect">
     <Position X="7" Y="0.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAsAAQABAAAAAAAgIAAwQAQAAAEAABAAAAAQAAAAAAA=</HashCode>
+      <HashCode>AAsAAQABAAAAAAAgIAAwSAQAAAEgABAAAQgQAAAAAAA=</HashCode>
       <FileName>Dialect\SqlDialect.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -27,13 +27,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAQAAAAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dialect\SQLiteDialect.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MicroLite.Dialect.SqlServerCeDialect">
-    <Position X="13.75" Y="6" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAQAAAAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Dialect\SqlServerCeDialect.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MicroLite.Dialect.FirebirdSqlDialect">
