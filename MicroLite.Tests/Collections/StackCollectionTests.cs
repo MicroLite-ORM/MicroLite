@@ -13,7 +13,7 @@
             public void ItemsAreAddedToTheTopOfTheCollection()
             {
                 collection.Add("Added First");
-                Assert.Equal(1, collection.Count);
+                Assert.Single(collection);
                 Assert.Equal("Added First", collection[0]);
 
                 collection.Add("Added Second");

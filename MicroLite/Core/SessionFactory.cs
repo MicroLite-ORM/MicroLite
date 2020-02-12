@@ -55,8 +55,6 @@ namespace MicroLite.Core
             }
         }
 
-#if !NET35 && !NET40
-
         public IAsyncReadOnlySession OpenAsyncReadOnlySession()
         {
             return this.OpenAsyncReadOnlySession(ConnectionScope.PerTransaction);
@@ -90,8 +88,6 @@ namespace MicroLite.Core
 
             return new AsyncSession(connectionScope, this.sqlDialect, this.dbDriver, this.sessionListeners);
         }
-
-#endif
 
         public IReadOnlySession OpenReadOnlySession()
         {

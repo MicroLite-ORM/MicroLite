@@ -84,7 +84,7 @@
             }
         }
 
-#if !NET35 && !NET40
+
 
         public class ForAReferenceTypeWhenBuildValueAsyncHasBeenCalledAndThereAreNoResults
         {
@@ -191,7 +191,7 @@
             }
         }
 
-#endif
+
 
         public class ForAReferenceTypeWhenBuildValueHasBeenCalledAndThereAreNoResults
         {
@@ -319,7 +319,7 @@
             }
         }
 
-#if !NET35 && !NET40
+
 
         public class ForAValueTypeWhenBuildValueAsyncHasBeenCalledAndThereAreNoResults
         {
@@ -385,7 +385,7 @@
             }
         }
 
-#endif
+
 
         public class ForAValueTypeWhenBuildValueHasBeenCalledAndThereAreNoResults
         {
@@ -513,7 +513,7 @@
             }
         }
 
-#if !NET35 && !NET40
+
 
         public class WhenCallingBuildValueAsyncAndTheDataReaderContainsMultipleColumns
         {
@@ -560,6 +560,6 @@
             }
         }
 
-#endif
+
     }
 }

@@ -35,8 +35,6 @@ namespace MicroLite
             get;
         }
 
-#if !NET35 && !NET40
-
         /// <summary>
         /// Opens a new asynchronous read-only session to the database using <see cref="ConnectionScope"/>.PerTransaction.
         /// </summary>
@@ -62,8 +60,6 @@ namespace MicroLite
         /// <param name="connectionScope">The connection scope to use for the session.</param>
         /// <returns>A new asynchronous database session.</returns>
         IAsyncSession OpenAsyncSession(ConnectionScope connectionScope);
-
-#endif
 
         /// <summary>
         /// Opens a new read-only session to the database using <see cref="ConnectionScope"/>.PerTransaction.

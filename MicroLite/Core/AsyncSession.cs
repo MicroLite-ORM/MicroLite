@@ -12,8 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Core
 {
-#if !NET35 && !NET40
-
     using System;
     using System.Data.Common;
     using System.Threading;
@@ -344,6 +342,4 @@ namespace MicroLite.Core
             return identifier;
         }
     }
-
-#endif
 }

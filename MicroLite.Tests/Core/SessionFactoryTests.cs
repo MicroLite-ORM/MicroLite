@@ -13,7 +13,7 @@
     /// </summary>
     public class SessionFactoryTests
     {
-#if !NET35 && !NET40
+
 
         public class WhenCallingOpenAsyncReadOnlySession : UnitTest
         {
@@ -207,7 +207,7 @@
             }
         }
 
-#endif
+
 
         public class WhenCallingOpenReadOnlySession : UnitTest
         {

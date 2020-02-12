@@ -37,8 +37,6 @@ namespace MicroLite.Core
         /// <param name="reader">The <see cref="IDataReader"/> containing the results.</param>
         internal abstract void BuildValue(IDataReader reader);
 
-#if !NET35 && !NET40
-
         /// <summary>
         /// Builds the included value from the results in the data reader.
         /// </summary>
@@ -46,7 +44,5 @@ namespace MicroLite.Core
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         internal abstract System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken);
-
-#endif
     }
 }

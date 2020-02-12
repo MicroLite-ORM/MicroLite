@@ -1,6 +1,6 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
-#if !NET35
+
 
     using System;
     using System.Collections.Generic;
@@ -194,5 +194,5 @@
         }
     }
 
-#endif
+
 }

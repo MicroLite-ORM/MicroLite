@@ -12,8 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite
 {
-#if !NET35 && !NET40
-
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -327,6 +325,4 @@ namespace MicroLite
         /// </example>
         Task<T> SingleAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken);
     }
-
-#endif
 }

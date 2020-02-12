@@ -15,7 +15,7 @@
     /// </summary>
     public class IncludeManyTests
     {
-#if !NET35 && !NET40
+
 
         public class WhenBuildValueAsyncHasBeenCalledAndThereAreNoResults
         {
@@ -118,7 +118,7 @@
             }
         }
 
-#endif
+
 
         public class WhenBuildValueHasBeenCalledAndThereAreNoResults
         {

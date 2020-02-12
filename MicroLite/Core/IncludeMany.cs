@@ -77,8 +77,6 @@ namespace MicroLite.Core
             }
         }
 
-#if !NET35 && !NET40
-
         internal override async System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
             if (TypeConverter.IsNotEntityAndConvertible(resultType))
@@ -111,7 +109,5 @@ namespace MicroLite.Core
                 this.callback(this);
             }
         }
-
-#endif
     }
 }

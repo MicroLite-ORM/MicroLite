@@ -15,7 +15,7 @@
     /// </summary>
     public class IncludeSingleTests
     {
-#if !NET35 && !NET40
+
 
         public class WhenBuildValueAsyncHasBeenCalledAndThereAreNoResults
         {
@@ -118,7 +118,7 @@
             }
         }
 
-#endif
+
 
         public class WhenBuildValueHasBeenCalledAndThereAreNoResults
         {
@@ -262,7 +262,7 @@
             }
         }
 
-#if !NET35 && !NET40
+
 
         public class WhenCallingBuildValueAsyncAndTheDataReaderContainsMultipleResults
         {
@@ -285,7 +285,7 @@
             }
         }
 
-#endif
+
 
         public class WhenTheTypeIsAGuid
         {
@@ -310,12 +310,6 @@
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
-            }
-
-            [Fact]
-            public void ValueShouldNotBeNull()
-            {
-                Assert.NotNull(this.include.Value);
             }
 
             [Fact]
@@ -348,12 +342,6 @@
             public void TheDataReaderShouldBeRead()
             {
                 this.mockReader.VerifyAll();
-            }
-
-            [Fact]
-            public void ValueShouldNotBeNull()
-            {
-                Assert.NotNull(this.include.Value);
             }
 
             [Fact]

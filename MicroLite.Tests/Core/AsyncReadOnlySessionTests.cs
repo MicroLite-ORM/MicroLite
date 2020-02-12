@@ -1,7 +1,5 @@
 ﻿namespace MicroLite.Tests.Core
 {
-#if !NET35 && !NET40
-
     using System;
     using System.Collections.Generic;
     using System.Data;
@@ -822,6 +820,4 @@
             }
         }
     }
-
-#endif
 }

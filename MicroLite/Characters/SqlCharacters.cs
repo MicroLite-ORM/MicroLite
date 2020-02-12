@@ -198,11 +198,7 @@ namespace MicroLite.Characters
 
             var sqlPieces = sql.Split(period);
 
-#if NET35
-            return string.Join(".", sqlPieces.Select(s => this.LeftDelimiter + s + this.RightDelimiter).ToArray());
-#else
             return string.Join(".", sqlPieces.Select(s => this.LeftDelimiter + s + this.RightDelimiter));
-#endif
         }
 
         /// <summary>

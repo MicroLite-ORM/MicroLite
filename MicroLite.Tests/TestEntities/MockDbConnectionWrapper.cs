@@ -1,6 +1,6 @@
 ﻿namespace MicroLite.Tests.TestEntities
 {
-#if !NET35 && !NET40
+
 
     using System;
     using System.Data;
@@ -91,5 +91,5 @@
         }
     }
 
-#endif
+
 }

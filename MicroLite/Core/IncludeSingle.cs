@@ -71,8 +71,6 @@ namespace MicroLite.Core
             }
         }
 
-#if !NET35 && !NET40
-
         internal override async System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
             if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
@@ -103,7 +101,5 @@ namespace MicroLite.Core
                 }
             }
         }
-
-#endif
     }
 }

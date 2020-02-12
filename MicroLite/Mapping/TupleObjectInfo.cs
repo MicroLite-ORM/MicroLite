@@ -12,8 +12,6 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Mapping
 {
-#if !NET35
-
     using System;
     using System.Data;
     using MicroLite.Logging;
@@ -138,6 +136,4 @@ namespace MicroLite.Mapping
             }
         }
     }
-
-#endif
 }

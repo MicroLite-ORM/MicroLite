@@ -8,8 +8,6 @@
 
     public class SqlCharactersTests : UnitTest
     {
-#if !NET35
-
         [Fact]
         public void CurrentIsVisibleAccrossTasks()
         {
@@ -24,8 +22,6 @@
 
             Assert.Same(sqlCharacters, actual);
         }
-
-#endif
 
         [Fact]
         public void CurrentIsVisibleAccrossThreadPools()
@@ -113,7 +109,7 @@
             Assert.Equal("?", sqlCharacters.SqlParameter);
             Assert.Equal(";", sqlCharacters.StatementSeparator);
             Assert.Equal(string.Empty, sqlCharacters.StoredProcedureInvocationCommand);
-            Assert.Equal(false, sqlCharacters.SupportsNamedParameters);
+            Assert.False(sqlCharacters.SupportsNamedParameters);
         }
 
         [Fact]

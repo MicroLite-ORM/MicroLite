@@ -21,7 +21,7 @@
             var sessionBase = mockSessionBase.Object;
             sessionBase.Dispose();
 
-            Assert.DoesNotThrow(() => sessionBase.Dispose());
+            sessionBase.Dispose();
         }
 
         public class WhenCallingBeginTransaction
