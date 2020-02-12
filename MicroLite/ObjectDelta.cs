@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ObjectDelta.cs" company="MicroLite">
+// <copyright file="ObjectDelta.cs" company="Project Contributors">
 // Copyright 2012 - 2013 Trevor Pilley
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
