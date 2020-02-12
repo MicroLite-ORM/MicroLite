@@ -107,11 +107,11 @@ dotnet_style_prefer_conditional_expression_over_return = true:refactoring
 csharp_prefer_simple_default_expression = true:suggestion
 
 # Expression-bodied members
-csharp_style_expression_bodied_methods = true:refactoring
+csharp_style_expression_bodied_methods = true:suggestion
 csharp_style_expression_bodied_constructors = true:refactoring
 csharp_style_expression_bodied_operators = true:refactoring
-csharp_style_expression_bodied_properties = true:refactoring
-csharp_style_expression_bodied_indexers = true:refactoring
+csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_expression_bodied_indexers = true:suggestion
 csharp_style_expression_bodied_accessors = true:refactoring
 csharp_style_expression_bodied_lambdas = true:refactoring
 csharp_style_expression_bodied_local_functions = true:refactoring
