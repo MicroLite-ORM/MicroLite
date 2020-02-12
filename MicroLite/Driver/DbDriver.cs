@@ -112,14 +112,14 @@ namespace MicroLite.Driver
         /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
         public void BuildCommand(IDbCommand command, SqlQuery sqlQuery)
         {
-            if (command == null)
+            if (command is null)
             {
-                throw new ArgumentNullException("command");
+                throw new ArgumentNullException(nameof(command));
             }
 
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             if (log.IsDebug)
@@ -184,9 +184,9 @@ namespace MicroLite.Driver
         /// </returns>
         public SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
         {
-            if (sqlQueries == null)
+            if (sqlQueries is null)
             {
-                throw new ArgumentNullException("sqlQueries");
+                throw new ArgumentNullException(nameof(sqlQueries));
             }
 
             int argumentsCount = 0;
@@ -226,14 +226,14 @@ namespace MicroLite.Driver
         /// </returns>
         public SqlQuery Combine(SqlQuery sqlQuery1, SqlQuery sqlQuery2)
         {
-            if (sqlQuery1 == null)
+            if (sqlQuery1 is null)
             {
-                throw new ArgumentNullException("sqlQuery1");
+                throw new ArgumentNullException(nameof(sqlQuery1));
             }
 
-            if (sqlQuery2 == null)
+            if (sqlQuery2 is null)
             {
-                throw new ArgumentNullException("sqlQuery2");
+                throw new ArgumentNullException(nameof(sqlQuery2));
             }
 
             int argumentsCount = sqlQuery1.Arguments.Count + sqlQuery2.Arguments.Count;
@@ -281,9 +281,9 @@ namespace MicroLite.Driver
         /// <param name="sqlArgument">The <see cref="SqlArgument"/> for the parameter.</param>
         protected virtual void BuildParameter(IDbDataParameter parameter, string parameterName, SqlArgument sqlArgument)
         {
-            if (parameter == null)
+            if (parameter is null)
             {
-                throw new ArgumentNullException("parameter");
+                throw new ArgumentNullException(nameof(parameter));
             }
 
             parameter.DbType = sqlArgument.DbType;
@@ -299,9 +299,9 @@ namespace MicroLite.Driver
         /// <returns>The actual command text.</returns>
         protected virtual string GetCommandText(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             if (this.IsStoredProcedureCall(commandText))
@@ -329,9 +329,9 @@ namespace MicroLite.Driver
         /// <returns>The CommandType for the specified command text.</returns>
         protected virtual CommandType GetCommandType(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             if (this.IsStoredProcedureCall(commandText))
@@ -349,9 +349,9 @@ namespace MicroLite.Driver
         /// <returns>true if the command text is a stored procedure call, otherwise false.</returns>
         protected virtual bool IsStoredProcedureCall(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             return this.SupportsStoredProcedures

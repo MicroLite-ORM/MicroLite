@@ -120,9 +120,9 @@ namespace MicroLite.Core
         {
             this.ThrowIfDisposed();
 
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var include = new IncludeMany<T>();
@@ -148,9 +148,9 @@ namespace MicroLite.Core
 
         IIncludeMany<T> IIncludeSession.Many<T>(SqlQuery sqlQuery)
         {
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var include = new IncludeMany<T>();
@@ -163,9 +163,9 @@ namespace MicroLite.Core
 
         IInclude<T> IIncludeSession.Scalar<T>(SqlQuery sqlQuery)
         {
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var include = new IncludeScalar<T>();
@@ -178,9 +178,9 @@ namespace MicroLite.Core
 
         IInclude<T> IIncludeSession.Single<T>(object identifier)
         {
-            if (identifier == null)
+            if (identifier is null)
             {
-                throw new ArgumentNullException("identifier");
+                throw new ArgumentNullException(nameof(identifier));
             }
 
             var objectInfo = ObjectInfo.For(typeof(T));
@@ -194,9 +194,9 @@ namespace MicroLite.Core
 
         IInclude<T> IIncludeSession.Single<T>(SqlQuery sqlQuery)
         {
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var include = new IncludeSingle<T>();
@@ -216,9 +216,9 @@ namespace MicroLite.Core
         {
             this.ThrowIfDisposed();
 
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             if (pagingOptions == PagingOptions.None)
@@ -256,9 +256,9 @@ namespace MicroLite.Core
         {
             this.ThrowIfDisposed();
 
-            if (identifier == null)
+            if (identifier is null)
             {
-                throw new ArgumentNullException("identifier");
+                throw new ArgumentNullException(nameof(identifier));
             }
 
             var include = this.Include.Single<T>(identifier);
@@ -277,9 +277,9 @@ namespace MicroLite.Core
         {
             this.ThrowIfDisposed();
 
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var include = new IncludeSingle<T>();

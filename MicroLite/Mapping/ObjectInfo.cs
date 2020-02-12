@@ -32,7 +32,7 @@ namespace MicroLite.Mapping
         {
             get
             {
-                if (mappingConvention == null)
+                if (mappingConvention is null)
                 {
                     mappingConvention = mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
                 }
@@ -55,9 +55,9 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the specified type cannot be used with MicroLite.</exception>
         public static IObjectInfo For(Type forType)
         {
-            if (forType == null)
+            if (forType is null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
             if (log.IsDebug)
@@ -143,7 +143,7 @@ namespace MicroLite.Mapping
                 throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustBePublic.FormatWith(forType.Name));
             }
 
-            if (forType.GetConstructor(Type.EmptyTypes) == null)
+            if (forType.GetConstructor(Type.EmptyTypes) is null)
             {
                 throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(forType.Name));
             }

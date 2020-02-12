@@ -34,9 +34,9 @@ namespace MicroLite.Configuration
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         public static ICreateSessionFactory ForFirebirdConnection(this IConfigureConnection configureConnection, string connectionName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new FirebirdSqlDialect(), new FirebirdDbDriver());
@@ -54,9 +54,9 @@ namespace MicroLite.Configuration
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         public static ICreateSessionFactory ForFirebirdConnection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new FirebirdSqlDialect(), new FirebirdDbDriver());
@@ -73,9 +73,9 @@ namespace MicroLite.Configuration
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         public static ICreateSessionFactory ForMsSql2005Connection(this IConfigureConnection configureConnection, string connectionName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new MsSql2005Dialect(), new MsSqlDbDriver());
@@ -93,9 +93,9 @@ namespace MicroLite.Configuration
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         public static ICreateSessionFactory ForMsSql2005Connection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new MsSql2005Dialect(), new MsSqlDbDriver());
@@ -112,9 +112,9 @@ namespace MicroLite.Configuration
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         public static ICreateSessionFactory ForMsSql2012Connection(this IConfigureConnection configureConnection, string connectionName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new MsSql2012Dialect(), new MsSqlDbDriver());
@@ -132,9 +132,9 @@ namespace MicroLite.Configuration
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         public static ICreateSessionFactory ForMsSql2012Connection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new MsSql2012Dialect(), new MsSqlDbDriver());
@@ -151,9 +151,9 @@ namespace MicroLite.Configuration
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         public static ICreateSessionFactory ForMySqlConnection(this IConfigureConnection configureConnection, string connectionName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new MySqlDialect(), new MySqlDbDriver());
@@ -171,9 +171,9 @@ namespace MicroLite.Configuration
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         public static ICreateSessionFactory ForMySqlConnection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new MySqlDialect(), new MySqlDbDriver());
@@ -190,9 +190,9 @@ namespace MicroLite.Configuration
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         public static ICreateSessionFactory ForPostgreSqlConnection(this IConfigureConnection configureConnection, string connectionName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new PostgreSqlDialect(), new PostgreSqlDbDriver());
@@ -210,9 +210,9 @@ namespace MicroLite.Configuration
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         public static ICreateSessionFactory ForPostgreSqlConnection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new PostgreSqlDialect(), new PostgreSqlDbDriver());
@@ -229,9 +229,9 @@ namespace MicroLite.Configuration
         /// <exception cref="ConfigurationException">Thrown if the connection is not found in the app config.</exception>
         public static ICreateSessionFactory ForSQLiteConnection(this IConfigureConnection configureConnection, string connectionName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, new SQLiteDialect(), new SQLiteDbDriver());
@@ -249,9 +249,9 @@ namespace MicroLite.Configuration
         /// <exception cref="System.ArgumentNullException">Thrown if any argument is null.</exception>
         public static ICreateSessionFactory ForSQLiteConnection(this IConfigureConnection configureConnection, string connectionName, string connectionString, string providerName)
         {
-            if (configureConnection == null)
+            if (configureConnection is null)
             {
-                throw new ArgumentNullException("configureConnection");
+                throw new ArgumentNullException(nameof(configureConnection));
             }
 
             return configureConnection.ForConnection(connectionName, connectionString, providerName, new SQLiteDialect(), new SQLiteDbDriver());
@@ -266,9 +266,9 @@ namespace MicroLite.Configuration
         public static IConfigureExtensions WithAttributeBasedMapping(
             this IConfigureExtensions configureExtensions)
         {
-            if (configureExtensions == null)
+            if (configureExtensions is null)
             {
-                throw new ArgumentNullException("configureExtensions");
+                throw new ArgumentNullException(nameof(configureExtensions));
             }
 
             configureExtensions.SetMappingConvention(new AttributeMappingConvention());
@@ -287,14 +287,14 @@ namespace MicroLite.Configuration
             this IConfigureExtensions configureExtensions,
             ConventionMappingSettings settings)
         {
-            if (configureExtensions == null)
+            if (configureExtensions is null)
             {
-                throw new ArgumentNullException("configureExtensions");
+                throw new ArgumentNullException(nameof(configureExtensions));
             }
 
-            if (settings == null)
+            if (settings is null)
             {
-                throw new ArgumentNullException("settings");
+                throw new ArgumentNullException(nameof(settings));
             }
 
             configureExtensions.SetMappingConvention(new ConventionMappingConvention(settings));

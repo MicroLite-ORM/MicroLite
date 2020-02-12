@@ -39,9 +39,9 @@ namespace MicroLite.Driver
 
         protected override void BuildParameter(IDbDataParameter parameter, string parameterName, SqlArgument sqlArgument)
         {
-            if (parameter == null)
+            if (parameter is null)
             {
-                throw new ArgumentNullException("parameter");
+                throw new ArgumentNullException(nameof(parameter));
             }
 
             if (sqlArgument.DbType != DbType.Time)

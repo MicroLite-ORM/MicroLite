@@ -72,9 +72,9 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery BuildDeleteSqlQuery(IObjectInfo objectInfo, object identifier)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (log.IsDebug)
@@ -107,9 +107,9 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery BuildInsertSqlQuery(IObjectInfo objectInfo, object instance)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (log.IsDebug)
@@ -156,9 +156,9 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery BuildSelectSqlQuery(IObjectInfo objectInfo, object identifier)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (log.IsDebug)
@@ -191,9 +191,9 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery BuildUpdateSqlQuery(IObjectInfo objectInfo, object instance)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (log.IsDebug)
@@ -227,9 +227,9 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery BuildUpdateSqlQuery(ObjectDelta objectDelta)
         {
-            if (objectDelta == null)
+            if (objectDelta is null)
             {
-                throw new ArgumentNullException("objectDelta");
+                throw new ArgumentNullException(nameof(objectDelta));
             }
 
             if (log.IsDebug)
@@ -263,9 +263,9 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery CountQuery(SqlQuery sqlQuery)
         {
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             if (log.IsDebug)
@@ -302,9 +302,9 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildDeleteCommandText(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
@@ -324,9 +324,9 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildInsertCommandText(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             var counter = 0;
@@ -360,9 +360,9 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildSelectCommandText(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             var selectSqlQuery = new SelectSqlBuilder(this.SqlCharacters)
@@ -382,9 +382,9 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildUpdateCommandText(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             var builder = new UpdateSqlBuilder(this.SqlCharacters)

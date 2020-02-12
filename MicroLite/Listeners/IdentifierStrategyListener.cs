@@ -35,12 +35,12 @@ namespace MicroLite.Listeners
         /// and executeScalarResult is null.</exception>
         public void AfterInsert(object instance, object executeScalarResult)
         {
-            if (instance == null)
+            if (instance is null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
-            if (executeScalarResult == null)
+            if (executeScalarResult is null)
             {
                 return;
             }

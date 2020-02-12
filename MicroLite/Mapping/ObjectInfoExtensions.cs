@@ -29,14 +29,14 @@ namespace MicroLite.Mapping
         /// <param name="textWriter">The text writer to write to.</param>
         public static void EmitMappings(this IObjectInfo objectInfo, TextWriter textWriter)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            if (textWriter == null)
+            if (textWriter is null)
             {
-                throw new ArgumentNullException("textWriter");
+                throw new ArgumentNullException(nameof(textWriter));
             }
 
             textWriter.WriteLine("MicroLite Mapping:");

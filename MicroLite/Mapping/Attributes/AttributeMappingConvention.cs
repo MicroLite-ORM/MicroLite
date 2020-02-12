@@ -30,14 +30,14 @@ namespace MicroLite.Mapping.Attributes
 
         public IObjectInfo CreateObjectInfo(Type forType)
         {
-            if (forType == null)
+            if (forType is null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
             var tableAttribute = forType.GetAttribute<TableAttribute>(inherit: false);
 
-            if (tableAttribute == null)
+            if (tableAttribute is null)
             {
                 throw new MappingException(ExceptionMessages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName));
             }
@@ -74,7 +74,7 @@ namespace MicroLite.Mapping.Attributes
 
                 var columnAttribute = property.GetAttribute<ColumnAttribute>(inherit: true);
 
-                if (columnAttribute == null)
+                if (columnAttribute is null)
                 {
                     if (this.log.IsDebug)
                     {

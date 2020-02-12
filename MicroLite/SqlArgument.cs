@@ -101,7 +101,7 @@ namespace MicroLite
         {
             var other = obj as SqlArgument?;
 
-            if (other == null)
+            if (other is null)
             {
                 return false;
             }

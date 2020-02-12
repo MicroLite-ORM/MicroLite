@@ -40,9 +40,9 @@ namespace MicroLite.Mapping
 
         public object CreateInstance(IDataReader reader)
         {
-            if (reader == null)
+            if (reader is null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
             if (log.IsDebug)

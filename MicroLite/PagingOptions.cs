@@ -100,12 +100,12 @@ namespace MicroLite
         {
             if (page < 1)
             {
-                throw new ArgumentOutOfRangeException("page", ExceptionMessages.PagingOptions_PagesMustBeAtleastOne);
+                throw new ArgumentOutOfRangeException(nameof(page), ExceptionMessages.PagingOptions_PagesMustBeAtleastOne);
             }
 
             if (resultsPerPage < 1)
             {
-                throw new ArgumentOutOfRangeException("resultsPerPage", ExceptionMessages.PagingOptions_ResultsPerPageMustBeAtLeast1);
+                throw new ArgumentOutOfRangeException(nameof(resultsPerPage), ExceptionMessages.PagingOptions_ResultsPerPageMustBeAtLeast1);
             }
 
             var skip = (page - 1) * resultsPerPage;
@@ -124,12 +124,12 @@ namespace MicroLite
         {
             if (skip < 0)
             {
-                throw new ArgumentOutOfRangeException("skip", ExceptionMessages.PagingOptions_SkipMustBeZeroOrAbove);
+                throw new ArgumentOutOfRangeException(nameof(skip), ExceptionMessages.PagingOptions_SkipMustBeZeroOrAbove);
             }
 
             if (take < 1)
             {
-                throw new ArgumentOutOfRangeException("take", ExceptionMessages.PagingOptions_TakeMustBeZeroOrAbove);
+                throw new ArgumentOutOfRangeException(nameof(take), ExceptionMessages.PagingOptions_TakeMustBeZeroOrAbove);
             }
 
             return new PagingOptions(count: take, offset: skip);
@@ -146,7 +146,7 @@ namespace MicroLite
         {
             var other = obj as PagingOptions?;
 
-            if (other == null)
+            if (other is null)
             {
                 return false;
             }

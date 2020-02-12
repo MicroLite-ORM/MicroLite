@@ -47,9 +47,9 @@ namespace MicroLite.Dialect
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var arguments = new SqlArgument[sqlQuery.Arguments.Count + 2];

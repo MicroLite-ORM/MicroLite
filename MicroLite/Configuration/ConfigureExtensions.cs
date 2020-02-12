@@ -32,9 +32,9 @@ namespace MicroLite.Configuration
 
         public void SetMappingConvention(IMappingConvention mappingConvention)
         {
-            if (mappingConvention == null)
+            if (mappingConvention is null)
             {
-                throw new ArgumentNullException("mappingConvention");
+                throw new ArgumentNullException(nameof(mappingConvention));
             }
 
             if (this.log.IsInfo)

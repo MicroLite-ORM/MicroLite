@@ -86,9 +86,9 @@ namespace MicroLite.Builder
         /// <exception cref="System.ArgumentNullException">thrown if selectFrom is null.</exception>
         public IAndOrOrderBy ApplyTo(IWhereOrOrderBy selectFrom)
         {
-            if (selectFrom == null)
+            if (selectFrom is null)
             {
-                throw new ArgumentNullException("selectFrom");
+                throw new ArgumentNullException(nameof(selectFrom));
             }
 
             var where = selectFrom.Where(this.builder.ToString(), this.arguments.ToArray());

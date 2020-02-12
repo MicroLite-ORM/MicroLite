@@ -38,9 +38,9 @@ namespace MicroLite.Driver
 
         protected override string GetCommandText(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             if (this.IsStoredProcedureCall(commandText))
@@ -70,9 +70,9 @@ namespace MicroLite.Driver
 
         protected override bool IsStoredProcedureCall(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             return this.SupportsStoredProcedures

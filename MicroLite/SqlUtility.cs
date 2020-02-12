@@ -57,9 +57,9 @@ namespace MicroLite
         /// </remarks>
         public static IList<string> GetParameterNames(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             var startIndex = GetParameterPosition(commandText, 0, namedParameterIdentifiers);
@@ -152,14 +152,14 @@ namespace MicroLite
 
         private static int GetParameterPosition(string commandText, int position, char[] matchParameterIdentifiers)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
             if (position > commandText.Length)
             {
-                throw new ArgumentOutOfRangeException("position");
+                throw new ArgumentOutOfRangeException(nameof(position));
             }
 
             var parameterPosition = commandText.IndexOfAny(matchParameterIdentifiers, position);

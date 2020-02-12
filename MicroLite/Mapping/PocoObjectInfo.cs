@@ -43,14 +43,14 @@ namespace MicroLite.Mapping
         /// </exception>
         public PocoObjectInfo(Type forType, TableInfo tableInfo)
         {
-            if (forType == null)
+            if (forType is null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
-            if (tableInfo == null)
+            if (tableInfo is null)
             {
-                throw new ArgumentNullException("tableInfo");
+                throw new ArgumentNullException(nameof(tableInfo));
             }
 
             this.forType = forType;
@@ -102,9 +102,9 @@ namespace MicroLite.Mapping
         /// <exception cref="ArgumentNullException">Thrown if reader is null.</exception>
         public object CreateInstance(IDataReader reader)
         {
-            if (reader == null)
+            if (reader is null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
             if (log.IsDebug)
@@ -271,7 +271,7 @@ namespace MicroLite.Mapping
 
         private void VerifyIdentifierMapped()
         {
-            if (this.tableInfo.IdentifierColumn == null)
+            if (this.tableInfo.IdentifierColumn is null)
             {
                 throw new MicroLiteException(
                     ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith(this.tableInfo.Schema ?? string.Empty, this.tableInfo.Name));
@@ -280,9 +280,9 @@ namespace MicroLite.Mapping
 
         private void VerifyInstanceIsCorrectTypeForThisObjectInfo(object instance)
         {
-            if (instance == null)
+            if (instance is null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
             if (instance.GetType() != this.ForType)

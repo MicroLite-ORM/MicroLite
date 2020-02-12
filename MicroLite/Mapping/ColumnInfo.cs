@@ -50,14 +50,14 @@ namespace MicroLite.Mapping
             bool allowUpdate,
             string sequenceName)
         {
-            if (columnName == null)
+            if (columnName is null)
             {
-                throw new ArgumentNullException("columnName");
+                throw new ArgumentNullException(nameof(columnName));
             }
 
-            if (propertyInfo == null)
+            if (propertyInfo is null)
             {
-                throw new ArgumentNullException("propertyInfo");
+                throw new ArgumentNullException(nameof(propertyInfo));
             }
 
             this.columnName = columnName;

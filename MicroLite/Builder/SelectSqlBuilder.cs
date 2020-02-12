@@ -93,9 +93,9 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
             }
 
-            if (args == null)
+            if (args is null)
             {
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             }
 
             for (int i = 0; i < args.Length; i++)
@@ -161,9 +161,9 @@ namespace MicroLite.Builder
 
         public IFunctionOrFrom Distinct(params string[] columns)
         {
-            if (columns == null)
+            if (columns is null)
             {
-                throw new ArgumentNullException("columns");
+                throw new ArgumentNullException(nameof(columns));
             }
 
             this.InnerSql.Append("DISTINCT ");
@@ -223,9 +223,9 @@ namespace MicroLite.Builder
 
         public IHavingOrOrderBy GroupBy(params string[] columns)
         {
-            if (columns == null)
+            if (columns is null)
             {
-                throw new ArgumentNullException("columns");
+                throw new ArgumentNullException(nameof(columns));
             }
 
             this.InnerSql.Append(" GROUP BY ");
@@ -282,7 +282,7 @@ namespace MicroLite.Builder
 
         public IAndOrOrderBy IsEqualTo(object comparisonValue)
         {
-            if (comparisonValue == null)
+            if (comparisonValue is null)
             {
                 return this.IsNull();
             }
@@ -336,7 +336,7 @@ namespace MicroLite.Builder
 
         public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
         {
-            if (comparisonValue == null)
+            if (comparisonValue is null)
             {
                 return this.IsNotNull();
             }
@@ -495,9 +495,9 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
             }
 
-            if (args == null)
+            if (args is null)
             {
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             }
 
             for (int i = 0; i < args.Length; i++)
@@ -603,9 +603,9 @@ namespace MicroLite.Builder
 
         private void AddExists(SqlQuery subQuery, bool negate)
         {
-            if (subQuery == null)
+            if (subQuery is null)
             {
-                throw new ArgumentNullException("subQuery");
+                throw new ArgumentNullException(nameof(subQuery));
             }
 
             this.Arguments.AddRange(subQuery.Arguments);
@@ -658,9 +658,9 @@ namespace MicroLite.Builder
 
         private void AddOrder(string[] columns, string direction)
         {
-            if (columns == null)
+            if (columns is null)
             {
-                throw new ArgumentNullException("columns");
+                throw new ArgumentNullException(nameof(columns));
             }
 
             this.InnerSql.Append(!this.addedOrder ? " ORDER BY " : ",");

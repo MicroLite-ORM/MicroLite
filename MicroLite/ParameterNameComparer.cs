@@ -59,13 +59,13 @@ namespace MicroLite
                 return 0;
             }
 
-            if (x == null)
+            if (x is null)
             {
                 // As per default string comparison logic
                 return -1;
             }
 
-            if (y == null)
+            if (y is null)
             {
                 // As per default string comparison logic
                 return 1;

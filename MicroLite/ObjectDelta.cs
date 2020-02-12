@@ -32,14 +32,14 @@ namespace MicroLite
         /// <param name="identifier">The identifier for the instance of the type the changes relate to.</param>
         public ObjectDelta(Type forType, object identifier)
         {
-            if (forType == null)
+            if (forType is null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
-            if (identifier == null)
+            if (identifier is null)
             {
-                throw new ArgumentNullException("identifier");
+                throw new ArgumentNullException(nameof(identifier));
             }
 
             this.forType = forType;

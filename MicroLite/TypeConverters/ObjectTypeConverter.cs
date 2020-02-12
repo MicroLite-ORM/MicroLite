@@ -44,9 +44,9 @@ namespace MicroLite.TypeConverters
         /// <returns>An instance of the specified type containing the specified value.</returns>
         public object ConvertFromDbValue(object value, Type type)
         {
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (value == null || value == DBNull.Value)
@@ -78,14 +78,14 @@ namespace MicroLite.TypeConverters
         /// <exception cref="System.ArgumentNullException">thrown if propertyType is null.</exception>
         public object ConvertFromDbValue(IDataReader reader, int index, Type type)
         {
-            if (reader == null)
+            if (reader is null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (reader.IsDBNull(index))

@@ -46,7 +46,7 @@ namespace MicroLite.Configuration
                 var sessionFactory =
                     Configure.SessionFactories.SingleOrDefault(s => s.ConnectionName == this.chosenConnectionName);
 
-                if (sessionFactory == null)
+                if (sessionFactory is null)
                 {
                     if (this.log.IsDebug)
                     {
@@ -73,14 +73,14 @@ namespace MicroLite.Configuration
 
         public ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, IDbDriver dbDriver)
         {
-            if (connectionName == null)
+            if (connectionName is null)
             {
-                throw new ArgumentNullException("connectionName");
+                throw new ArgumentNullException(nameof(connectionName));
             }
 
             var configSection = ConfigurationManager.ConnectionStrings[connectionName];
 
-            if (configSection == null)
+            if (configSection is null)
             {
                 throw new ConfigurationException(ExceptionMessages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
@@ -90,29 +90,29 @@ namespace MicroLite.Configuration
 
         public ICreateSessionFactory ForConnection(string connectionName, string connectionString, string providerName, ISqlDialect sqlDialect, IDbDriver dbDriver)
         {
-            if (connectionName == null)
+            if (connectionName is null)
             {
-                throw new ArgumentNullException("connectionName");
+                throw new ArgumentNullException(nameof(connectionName));
             }
 
-            if (connectionString == null)
+            if (connectionString is null)
             {
-                throw new ArgumentNullException("connectionString");
+                throw new ArgumentNullException(nameof(connectionString));
             }
 
-            if (providerName == null)
+            if (providerName is null)
             {
-                throw new ArgumentNullException("providerName");
+                throw new ArgumentNullException(nameof(providerName));
             }
 
-            if (sqlDialect == null)
+            if (sqlDialect is null)
             {
-                throw new ArgumentNullException("sqlDialect");
+                throw new ArgumentNullException(nameof(sqlDialect));
             }
 
-            if (dbDriver == null)
+            if (dbDriver is null)
             {
-                throw new ArgumentNullException("dbDriver");
+                throw new ArgumentNullException(nameof(dbDriver));
             }
 
             this.chosenConnectionName = connectionName;

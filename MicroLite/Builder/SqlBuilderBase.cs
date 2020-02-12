@@ -101,14 +101,14 @@ namespace MicroLite.Builder
 
         protected void AddBetween(object lower, object upper, bool negate)
         {
-            if (lower == null)
+            if (lower is null)
             {
-                throw new ArgumentNullException("lower");
+                throw new ArgumentNullException(nameof(lower));
             }
 
-            if (upper == null)
+            if (upper is null)
             {
-                throw new ArgumentNullException("upper");
+                throw new ArgumentNullException(nameof(upper));
             }
 
             if (!string.IsNullOrEmpty(this.Operand))
@@ -134,9 +134,9 @@ namespace MicroLite.Builder
 
         protected void AddIn(object[] args, bool negate)
         {
-            if (args == null)
+            if (args is null)
             {
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             }
 
             if (!string.IsNullOrEmpty(this.Operand))
@@ -169,9 +169,9 @@ namespace MicroLite.Builder
 
         protected void AddIn(SqlQuery subQuery, bool negate)
         {
-            if (subQuery == null)
+            if (subQuery is null)
             {
-                throw new ArgumentNullException("subQuery");
+                throw new ArgumentNullException(nameof(subQuery));
             }
 
             if (!string.IsNullOrEmpty(this.Operand))
@@ -193,9 +193,9 @@ namespace MicroLite.Builder
 
         protected void AddIn(SqlQuery[] subQueries, bool negate)
         {
-            if (subQueries == null)
+            if (subQueries is null)
             {
-                throw new ArgumentNullException("subQueries");
+                throw new ArgumentNullException(nameof(subQueries));
             }
 
             if (!string.IsNullOrEmpty(this.Operand))

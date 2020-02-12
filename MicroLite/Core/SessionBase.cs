@@ -126,7 +126,7 @@ namespace MicroLite.Core
         {
             if (this.ConnectionScope == ConnectionScope.PerTransaction
                 && this.Connection.State == ConnectionState.Open
-                && this.currentTransaction == null)
+                && this.currentTransaction is null)
             {
                 if (Log.IsDebug)
                 {
@@ -141,7 +141,7 @@ namespace MicroLite.Core
         {
             if (this.ConnectionScope == ConnectionScope.PerTransaction
                 && this.Connection.State == ConnectionState.Closed
-                && this.currentTransaction == null)
+                && this.currentTransaction is null)
             {
                 if (Log.IsDebug)
                 {
@@ -151,7 +151,7 @@ namespace MicroLite.Core
                 this.Connection.Open();
             }
 
-            if (this.Command == null)
+            if (this.Command is null)
             {
                 this.Command = this.Connection.CreateCommand();
                 this.Command.Connection = this.Connection;

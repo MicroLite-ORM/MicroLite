@@ -117,9 +117,9 @@ namespace MicroLite.TypeConverters
         /// <exception cref="System.ArgumentNullException">Thrown if type is null.</exception>
         public static bool IsNotEntityAndConvertible(Type type)
         {
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (type.IsValueType || type == typeof(string))
@@ -160,9 +160,9 @@ namespace MicroLite.TypeConverters
         /// <exception cref="System.ArgumentNullException">Thrown if type is null.</exception>
         public static Type ResolveActualType(Type type)
         {
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             var actualType = type;
@@ -183,9 +183,9 @@ namespace MicroLite.TypeConverters
         /// <exception cref="System.NotSupportedException">Thrown if the Type is not mapped to a DbType.</exception>
         public static DbType ResolveDbType(Type type)
         {
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             var actualType = ResolveActualType(type);

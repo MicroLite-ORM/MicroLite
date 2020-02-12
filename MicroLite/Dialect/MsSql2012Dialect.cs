@@ -24,9 +24,9 @@ namespace MicroLite.Dialect
     {
         public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
@@ -39,9 +39,9 @@ namespace MicroLite.Dialect
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var arguments = new SqlArgument[sqlQuery.Arguments.Count + 2];
@@ -68,9 +68,9 @@ namespace MicroLite.Dialect
 
         protected override string BuildInsertCommandText(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             var commandText = base.BuildInsertCommandText(objectInfo);

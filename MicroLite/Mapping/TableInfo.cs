@@ -47,14 +47,14 @@ namespace MicroLite.Mapping
             string name,
             string schema)
         {
-            if (columns == null)
+            if (columns is null)
             {
-                throw new ArgumentNullException("columns");
+                throw new ArgumentNullException(nameof(columns));
             }
 
-            if (name == null)
+            if (name is null)
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
 
             this.columns = new ReadOnlyCollection<ColumnInfo>(columns);

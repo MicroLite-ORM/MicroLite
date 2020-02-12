@@ -144,7 +144,7 @@ namespace MicroLite
         /// </returns>
         public bool Equals(SqlQuery other)
         {
-            if (other == null)
+            if (other is null)
             {
                 return false;
             }

@@ -61,7 +61,7 @@ namespace MicroLite.Characters
 
             set
             {
-                if (value == null)
+                if (value is null)
                 {
                     CallContext.FreeNamedDataSlot(LogicalGetDataName);
                     defaultSqlCharacters = null;
@@ -181,9 +181,9 @@ namespace MicroLite.Characters
         /// <exception cref="ArgumentNullException">Thrown if sql is null.</exception>
         public string EscapeSql(string sql)
         {
-            if (sql == null)
+            if (sql is null)
             {
-                throw new ArgumentNullException("sql");
+                throw new ArgumentNullException(nameof(sql));
             }
 
             if (this.IsEscaped(sql))
