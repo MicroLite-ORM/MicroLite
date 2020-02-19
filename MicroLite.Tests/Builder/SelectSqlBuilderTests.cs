@@ -917,6 +917,24 @@
         }
 
         [Fact]
+        public void SelectFromWhereAlreadyParenthesised()
+        {
+            var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1", "Column2");
+
+            var sqlQuery = sqlBuilder
+                .From("Table")
+                .Where("(Column1 = @p0)", "Foo")
+                .ToSqlQuery();
+
+            Assert.Equal("SELECT Column1,Column2 FROM Table WHERE (Column1 = @p0)", sqlQuery.CommandText);
+
+            Assert.Equal(1, sqlQuery.Arguments.Count);
+
+            Assert.Equal(DbType.String, sqlQuery.Arguments[0].DbType);
+            Assert.Equal("Foo", sqlQuery.Arguments[0].Value);
+        }
+
+        [Fact]
         public void SelectFromWhereAnd()
         {
             var sqlBuilder = new SelectSqlBuilder(SqlCharacters.Empty, "Column1", "Column2");

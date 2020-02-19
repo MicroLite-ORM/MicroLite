@@ -572,7 +572,20 @@ namespace MicroLite.Builder
 
             var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
 
-            this.InnerSql.Append(" WHERE (").Append(renumberedPredicate).Append(')');
+            this.InnerSql.Append(" WHERE ");
+
+            if (!predicate.StartsWith("(", StringComparison.Ordinal) && !predicate.StartsWith(")", StringComparison.Ordinal))
+            {
+                this.InnerSql.Append('(');
+            }
+
+            this.InnerSql.Append(renumberedPredicate);
+
+            if (!predicate.StartsWith("(", StringComparison.Ordinal) && !predicate.StartsWith(")", StringComparison.Ordinal))
+            {
+                this.InnerSql.Append(')');
+            }
+
             this.AddedWhere = true;
 
             return this;
