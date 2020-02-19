@@ -1,0 +1,64 @@
+trigger:
+  branches:
+    include:
+      - master
+      - develop
+  paths:
+    exclude:
+      - .editorconfig
+      - README.md
+      - stylecop.json
+
+# Must be Windows due to the .NET 4.5 build target
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  buildPlatform: 'Any CPU'
+  buildVersion: '0.0.0'
+  projectPath: '.\MicroLite\MicroLite.csproj'
+  solution: '**/*.sln'
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: VSTest@2
+  inputs:
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    codeCoverageEnabled: true
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $projVersion = ([xml](Get-Content "$(projectPath)")) | Select-Xml -XPath "//Project/PropertyGroup[1]/Version"
+
+      Write-Host "##vso[task.setvariable variable=buildVersion]$projVersion"
+
+- script: dotnet pack "$(projectPath)" -o:$(Build.ArtifactStagingDirectory) -p:PackageVersion="$(buildVersion)-preview$(Build.BuildNumber)"
+  displayName: 'dotnet pack (pre)'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+
+- script: dotnet pack "$(projectPath)" -o:$(Build.ArtifactStagingDirectory) -p:PackageVersion=$(buildVersion)
+  displayName: 'dotnet pack'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'NuGet.org (MicroLite-ORM)'
+  condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI', 'Manual'))
