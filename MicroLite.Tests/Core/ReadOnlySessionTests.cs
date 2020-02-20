@@ -13,11 +13,11 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="AsyncReadOnlySession"/> class.
+    /// Unit Tests for the <see cref="ReadOnlySession"/> class.
     /// </summary>
-    public class AsyncReadOnlySessionTests : UnitTest
+    public class ReadOnlySessionTests : UnitTest
     {
-        public AsyncReadOnlySessionTests()
+        public ReadOnlySessionTests()
         {
             ObjectInfo.MappingConvention = new ConventionMappingConvention(
                 UnitTest.GetConventionMappingSettings(IdentifierStrategy.DbGenerated));
@@ -26,7 +26,7 @@
         [Fact]
         public void AdvancedReturnsSameSessionByDifferentInterface()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -55,7 +55,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -90,7 +90,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -108,7 +108,7 @@
         [Fact]
         public void FetchThrowsArgumentNullExceptionForNullSqlQuery()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -122,7 +122,7 @@
         [Fact]
         public void FetchThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -140,7 +140,7 @@
         [Fact]
         public void IncludeManyThrowsArgumentNullExceptionForNullSqlQuery()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -156,7 +156,7 @@
         [Fact]
         public void IncludeReturnsSameSessionByDifferentInterface()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -186,7 +186,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -206,7 +206,7 @@
         [Fact]
         public void IncludeScalarThrowsArgumentNullExceptionForNullSqlQuery()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -222,7 +222,7 @@
         [Fact]
         public void IncludeSingleThrowsArgumentNullExceptionForNullIdentifier()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -238,7 +238,7 @@
         [Fact]
         public void IncludeSingleThrowsArgumentNullExceptionForNullSqlQuery()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -259,7 +259,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.BuildCommand(It.IsNotNull<IDbCommand>(), It.IsNotNull<SqlQuery>())).Throws<MicroLiteException>();
 
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -304,7 +304,7 @@
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(countQuery, pagedQuery)).Returns(combinedQuery);
 
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -350,7 +350,7 @@
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(countQuery, pagedQuery)).Returns(combinedQuery);
 
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -396,7 +396,7 @@
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(countQuery, pagedQuery)).Returns(combinedQuery);
 
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -415,7 +415,7 @@
         [Fact]
         public void PagedThrowsArgumentNullExceptionForNullSqlQuery()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -429,7 +429,7 @@
         [Fact]
         public void PagedThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -464,7 +464,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -500,7 +500,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -518,7 +518,7 @@
         [Fact]
         public void SingleIdentifierThrowsArgumentNullExceptionForNullIdentifier()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -534,7 +534,7 @@
         [Fact]
         public void SingleIdentifierThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -567,7 +567,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -599,7 +599,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
@@ -616,7 +616,7 @@
         [Fact]
         public void SingleSqlQueryThrowsArgumentNullExceptionForNullSqlQuery()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -632,7 +632,7 @@
         [Fact]
         public void SingleSqlQueryThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new AsyncReadOnlySession(
+            var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
@@ -652,7 +652,7 @@
             [Fact]
             public void AMicroLiteExceptionIsThrown()
             {
-                var session = new AsyncReadOnlySession(
+                var session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
                     new Mock<ISqlDialect>().Object,
                     new Mock<IDbDriver>().Object);
@@ -689,7 +689,7 @@
                 mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(false);
 
-                var session = new AsyncReadOnlySession(
+                var session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
                     mockSqlDialect.Object,
                     mockDbDriver.Object);
@@ -740,7 +740,7 @@
                 mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
 
-                var session = new AsyncReadOnlySession(
+                var session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
                     mockSqlDialect.Object,
                     mockDbDriver.Object);
@@ -792,7 +792,7 @@
                 mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
 
-                var session = new AsyncReadOnlySession(
+                var session = new ReadOnlySession(
                     ConnectionScope.PerTransaction,
                     mockSqlDialect.Object,
                     mockDbDriver.Object);

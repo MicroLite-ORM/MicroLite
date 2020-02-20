@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="AsyncSession.cs" company="Project Contributors">
+// <copyright file="Session.cs" company="Project Contributors">
 // Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,14 +23,14 @@ using MicroLite.TypeConverters;
 namespace MicroLite.Core
 {
     /// <summary>
-    /// The default implementation of <see cref="IAsyncSession"/>.
+    /// The default implementation of <see cref="ISession"/>.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("ConnectionScope: {ConnectionScope}")]
-    internal sealed class AsyncSession : AsyncReadOnlySession, IAsyncSession, IAdvancedAsyncSession
+    internal sealed class Session : ReadOnlySession, ISession, IAdvancedSession
     {
         private readonly SessionListeners sessionListeners;
 
-        internal AsyncSession(
+        internal Session(
             ConnectionScope connectionScope,
             ISqlDialect sqlDialect,
             IDbDriver sqlDriver,
@@ -40,7 +40,7 @@ namespace MicroLite.Core
             this.sessionListeners = sessionListeners;
         }
 
-        public new IAdvancedAsyncSession Advanced => this;
+        public new IAdvancedSession Advanced => this;
 
         public Task<bool> DeleteAsync(object instance) => this.DeleteAsync(instance, CancellationToken.None);
 

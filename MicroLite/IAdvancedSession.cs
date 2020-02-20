@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IAdvancedAsyncSession.cs" company="Project Contributors">
+// <copyright file="IAdvancedSession.cs" company="Project Contributors">
 // Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ namespace MicroLite
     /// These operations allow for more advanced use and have been moved to a separate interface to avoid
     /// cluttering the IAsyncSession API.
     /// </remarks>
-    public interface IAdvancedAsyncSession : IHideObjectMethods, IAdvancedAsyncReadOnlySession
+    public interface IAdvancedSession : IHideObjectMethods, IAdvancedReadOnlySession
     {
         /// <summary>
         /// Asynchronously deletes the database record of the specified type with the specified identifier.

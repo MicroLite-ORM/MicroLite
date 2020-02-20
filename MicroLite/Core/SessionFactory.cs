@@ -41,9 +41,9 @@ namespace MicroLite.Core
 
         public IDbDriver DbDriver { get; }
 
-        public IAsyncReadOnlySession OpenAsyncReadOnlySession() => this.OpenAsyncReadOnlySession(ConnectionScope.PerTransaction);
+        public IReadOnlySession OpenReadOnlySession() => this.OpenReadOnlySession(ConnectionScope.PerTransaction);
 
-        public IAsyncReadOnlySession OpenAsyncReadOnlySession(ConnectionScope connectionScope)
+        public IReadOnlySession OpenReadOnlySession(ConnectionScope connectionScope)
         {
             if (log.IsDebug)
             {
@@ -52,12 +52,12 @@ namespace MicroLite.Core
 
             SqlCharacters.Current = this.sqlDialect.SqlCharacters;
 
-            return new AsyncReadOnlySession(connectionScope, this.sqlDialect, this.DbDriver);
+            return new ReadOnlySession(connectionScope, this.sqlDialect, this.DbDriver);
         }
 
-        public IAsyncSession OpenAsyncSession() => this.OpenAsyncSession(ConnectionScope.PerTransaction);
+        public ISession OpenSession() => this.OpenSession(ConnectionScope.PerTransaction);
 
-        public IAsyncSession OpenAsyncSession(ConnectionScope connectionScope)
+        public ISession OpenSession(ConnectionScope connectionScope)
         {
             if (log.IsDebug)
             {
@@ -66,7 +66,7 @@ namespace MicroLite.Core
 
             SqlCharacters.Current = this.sqlDialect.SqlCharacters;
 
-            return new AsyncSession(connectionScope, this.sqlDialect, this.DbDriver, this.sessionListeners);
+            return new Session(connectionScope, this.sqlDialect, this.DbDriver, this.sessionListeners);
         }
     }
 }

@@ -13,12 +13,12 @@
     /// </summary>
     public class SessionFactoryTests
     {
-        public class WhenCallingOpenAsyncReadOnlySession : UnitTest
+        public class WhenCallingOpenReadOnlySession : UnitTest
         {
-            private readonly IAsyncReadOnlySession readOnlyAsyncSession;
+            private readonly IReadOnlySession readOnlySession;
             private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
-            public WhenCallingOpenAsyncReadOnlySession()
+            public WhenCallingOpenReadOnlySession()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
                 mockDbDriver.Setup(x => x.CreateConnection());
@@ -28,20 +28,20 @@
 
                 var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
 
-                this.readOnlyAsyncSession = sessionFactory.OpenAsyncReadOnlySession();
+                this.readOnlySession = sessionFactory.OpenReadOnlySession();
             }
 
             [Fact]
-            public void AAsyncReadOnlySessionIsReturned()
+            public void AReadOnlySessionIsReturned()
             {
-                Assert.NotNull(this.readOnlyAsyncSession);
-                Assert.IsType<AsyncReadOnlySession>(this.readOnlyAsyncSession);
+                Assert.NotNull(this.readOnlySession);
+                Assert.IsType<ReadOnlySession>(this.readOnlySession);
             }
 
             [Fact]
-            public void TheConnectionScopeOfTheAsyncSessionIsPerTransactionByDefault()
+            public void TheConnectionScopeOfTheSessionIsPerTransactionByDefault()
             {
-                Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.readOnlyAsyncSession).ConnectionScope);
+                Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.readOnlySession).ConnectionScope);
             }
 
             [Fact]
@@ -51,32 +51,32 @@
             }
         }
 
-        public class WhenCallingOpenAsyncReadOnlySession_MultipleTimes : UnitTest
+        public class WhenCallingOpenReadOnlySession_MultipleTimes : UnitTest
         {
-            private readonly IAsyncReadOnlySession readOnlyAsyncSession1;
-            private readonly IAsyncReadOnlySession readOnlyAsyncSession2;
+            private readonly IReadOnlySession readOnlySession1;
+            private readonly IReadOnlySession readOnlySession2;
 
-            public WhenCallingOpenAsyncReadOnlySession_MultipleTimes()
+            public WhenCallingOpenReadOnlySession_MultipleTimes()
             {
                 var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
 
-                this.readOnlyAsyncSession1 = sessionFactory.OpenAsyncReadOnlySession();
-                this.readOnlyAsyncSession2 = sessionFactory.OpenAsyncReadOnlySession();
+                this.readOnlySession1 = sessionFactory.OpenReadOnlySession();
+                this.readOnlySession2 = sessionFactory.OpenReadOnlySession();
             }
 
             [Fact]
-            public void ANewAsyncSessionIsReturnedEachTime()
+            public void ANewSessionIsReturnedEachTime()
             {
-                Assert.NotSame(this.readOnlyAsyncSession1, this.readOnlyAsyncSession2);
+                Assert.NotSame(this.readOnlySession1, this.readOnlySession2);
             }
         }
 
-        public class WhenCallingOpenAsyncReadOnlySession_SpecifyingConnectionScope : UnitTest
+        public class WhenCallingOpenReadOnlySession_SpecifyingConnectionScope : UnitTest
         {
-            private readonly IAsyncReadOnlySession readOnlyAsyncSession;
+            private readonly IReadOnlySession readOnlySession;
             private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
-            public WhenCallingOpenAsyncReadOnlySession_SpecifyingConnectionScope()
+            public WhenCallingOpenReadOnlySession_SpecifyingConnectionScope()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
                 mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
@@ -86,20 +86,20 @@
 
                 var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
 
-                this.readOnlyAsyncSession = sessionFactory.OpenAsyncReadOnlySession(ConnectionScope.PerSession);
+                this.readOnlySession = sessionFactory.OpenReadOnlySession(ConnectionScope.PerSession);
             }
 
             [Fact]
-            public void AAsyncReadOnlySessionIsReturned()
+            public void AReadOnlySessionIsReturned()
             {
-                Assert.NotNull(this.readOnlyAsyncSession);
-                Assert.IsType<AsyncReadOnlySession>(this.readOnlyAsyncSession);
+                Assert.NotNull(this.readOnlySession);
+                Assert.IsType<ReadOnlySession>(this.readOnlySession);
             }
 
             [Fact]
-            public void TheConnectionScopeOfTheAsyncSessionIsSetCorrectly()
+            public void TheConnectionScopeOfTheSessionIsSetCorrectly()
             {
-                Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.readOnlyAsyncSession).ConnectionScope);
+                Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.readOnlySession).ConnectionScope);
             }
 
             [Fact]
@@ -109,12 +109,12 @@
             }
         }
 
-        public class WhenCallingOpenAsyncSession : UnitTest
+        public class WhenCallingOpenSession : UnitTest
         {
-            private readonly IAsyncSession session;
+            private readonly ISession session;
             private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
-            public WhenCallingOpenAsyncSession()
+            public WhenCallingOpenSession()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
                 mockDbDriver.Setup(x => x.CreateConnection());
@@ -124,18 +124,18 @@
 
                 var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
 
-                this.session = sessionFactory.OpenAsyncSession();
+                this.session = sessionFactory.OpenSession();
             }
 
             [Fact]
-            public void AAsyncSessionIsReturned()
+            public void ASessionIsReturned()
             {
                 Assert.NotNull(this.session);
-                Assert.IsType<AsyncSession>(this.session);
+                Assert.IsType<Session>(this.session);
             }
 
             [Fact]
-            public void TheConnectionScopeOfTheAsyncSessionIsPerTransactionByDefault()
+            public void TheConnectionScopeOfTheSessionIsPerTransactionByDefault()
             {
                 Assert.Equal(ConnectionScope.PerTransaction, ((SessionBase)this.session).ConnectionScope);
             }
@@ -147,32 +147,32 @@
             }
         }
 
-        public class WhenCallingOpenAsyncSession_MultipleTimes : UnitTest
+        public class WhenCallingOpenSession_MultipleTimes : UnitTest
         {
-            private readonly IAsyncSession session1;
-            private readonly IAsyncSession session2;
+            private readonly ISession session1;
+            private readonly ISession session2;
 
-            public WhenCallingOpenAsyncSession_MultipleTimes()
+            public WhenCallingOpenSession_MultipleTimes()
             {
                 var sessionFactory = new SessionFactory("SqlConnection", new Mock<IDbDriver>().Object, new Mock<ISqlDialect>().Object);
 
-                this.session1 = sessionFactory.OpenAsyncSession();
-                this.session2 = sessionFactory.OpenAsyncSession();
+                this.session1 = sessionFactory.OpenSession();
+                this.session2 = sessionFactory.OpenSession();
             }
 
             [Fact]
-            public void ANewAsyncSessionIsReturnedEachTime()
+            public void ANewSessionIsReturnedEachTime()
             {
                 Assert.NotSame(this.session1, this.session2);
             }
         }
 
-        public class WhenCallingOpenAsyncSession_SpecifyingConnectionScope : UnitTest
+        public class WhenCallingOpenSession_SpecifyingConnectionScope : UnitTest
         {
-            private readonly IAsyncSession session;
+            private readonly ISession session;
             private readonly SqlCharacters sqlCharacters = new Mock<SqlCharacters>().Object;
 
-            public WhenCallingOpenAsyncSession_SpecifyingConnectionScope()
+            public WhenCallingOpenSession_SpecifyingConnectionScope()
             {
                 var mockDbDriver = new Mock<IDbDriver>();
                 mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
@@ -182,18 +182,18 @@
 
                 var sessionFactory = new SessionFactory("SqlConnection", mockDbDriver.Object, mockSqlDialect.Object);
 
-                this.session = sessionFactory.OpenAsyncSession(ConnectionScope.PerSession);
+                this.session = sessionFactory.OpenSession(ConnectionScope.PerSession);
             }
 
             [Fact]
-            public void AAsyncSessionIsReturned()
+            public void ASessionIsReturned()
             {
                 Assert.NotNull(this.session);
-                Assert.IsType<AsyncSession>(this.session);
+                Assert.IsType<Session>(this.session);
             }
 
             [Fact]
-            public void TheConnectionScopeOfTheAsyncSessionIsSetCorrectly()
+            public void TheConnectionScopeOfTheSessionIsSetCorrectly()
             {
                 Assert.Equal(ConnectionScope.PerSession, ((SessionBase)this.session).ConnectionScope);
             }

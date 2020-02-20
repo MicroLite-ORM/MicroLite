@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IHaveAsyncSession.cs" company="Project Contributors">
+// <copyright file="IHaveSession.cs" company="Project Contributors">
 // Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,13 +13,13 @@
 namespace MicroLite.Infrastructure
 {
     /// <summary>
-    /// An interface for classes which have an <see cref="IAsyncSession"/> property.
+    /// An interface for classes which have an <see cref="ISession"/> property.
     /// </summary>
-    public interface IHaveAsyncSession
+    public interface IHaveSession
     {
         /// <summary>
         /// Gets or sets the asynchronous MicroLite session.
         /// </summary>
-        IAsyncSession Session { get; set; }
+        ISession Session { get; set; }
     }
 }

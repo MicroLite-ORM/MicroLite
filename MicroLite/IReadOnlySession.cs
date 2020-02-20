@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IAsyncReadOnlySession.cs" company="Project Contributors">
+// <copyright file="IReadOnlySession.cs" company="Project Contributors">
 // Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,12 +21,12 @@ namespace MicroLite
     /// <summary>
     /// The interface which provides the asynchronous read methods to map objects to database records.
     /// </summary>
-    public interface IAsyncReadOnlySession : IHideObjectMethods, IDisposable
+    public interface IReadOnlySession : IHideObjectMethods, IDisposable
     {
         /// <summary>
         /// Gets the advanced async session operations.
         /// </summary>
-        IAdvancedAsyncReadOnlySession Advanced { get; }
+        IAdvancedReadOnlySession Advanced { get; }
 
         /// <summary>
         /// Gets the current transaction or null if one has not been started.

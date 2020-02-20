@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="AsyncReadOnlySession.cs" company="Project Contributors">
+// <copyright file="ReadOnlySession.cs" company="Project Contributors">
 // Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,15 +25,15 @@ using MicroLite.Mapping;
 namespace MicroLite.Core
 {
     /// <summary>
-    /// The default implementation of <see cref="IAsyncReadOnlySession" />.
+    /// The default implementation of <see cref="IReadOnlySession" />.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("ConnectionScope: {ConnectionScope}")]
-    internal class AsyncReadOnlySession : SessionBase, IAsyncReadOnlySession, IIncludeSession, IAdvancedAsyncReadOnlySession
+    internal class ReadOnlySession : SessionBase, IReadOnlySession, IIncludeSession, IAdvancedReadOnlySession
     {
         private readonly Queue<Include> includes = new Queue<Include>();
         private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
 
-        internal AsyncReadOnlySession(
+        internal ReadOnlySession(
             ConnectionScope connectionScope,
             ISqlDialect sqlDialect,
             IDbDriver sqlDriver)
@@ -42,7 +42,7 @@ namespace MicroLite.Core
             this.SqlDialect = sqlDialect;
         }
 
-        public IAdvancedAsyncReadOnlySession Advanced => this;
+        public IAdvancedReadOnlySession Advanced => this;
 
         public IIncludeSession Include => this;
 

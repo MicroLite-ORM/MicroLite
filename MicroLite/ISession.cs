@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IAsyncSession.cs" company="Project Contributors">
+// <copyright file="ISession.cs" company="Project Contributors">
 // Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,12 +19,12 @@ namespace MicroLite
     /// <summary>
     /// The interface which provides the asynchronous write methods to map objects to database records.
     /// </summary>
-    public interface IAsyncSession : IHideObjectMethods, IAsyncReadOnlySession
+    public interface ISession : IHideObjectMethods, IReadOnlySession
     {
         /// <summary>
         /// Gets the advanced session operations.
         /// </summary>
-        new IAdvancedAsyncSession Advanced { get; }
+        new IAdvancedSession Advanced { get; }
 
         /// <summary>
         /// Asynchronously deletes the database record for the specified instance.

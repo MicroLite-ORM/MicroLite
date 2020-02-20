@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IAdvancedAsyncReadOnlySession.cs" company="Project Contributors">
+// <copyright file="IAdvancedReadOnlySession.cs" company="Project Contributors">
 // Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ namespace MicroLite
     /// These operations allow for more advanced use and have been moved to a separate interface to avoid
     /// cluttering the IAsyncReadOnlySession API.
     /// </remarks>
-    public interface IAdvancedAsyncReadOnlySession : IHideObjectMethods
+    public interface IAdvancedReadOnlySession : IHideObjectMethods
     {
         /// <summary>
         /// Asynchronously executes any pending queries which have been queued using the Include API.

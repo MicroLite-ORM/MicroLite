@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IHaveAsyncReadOnlySession.cs" company="Project Contributors">
+// <copyright file="IHaveReadOnlySession.cs" company="Project Contributors">
 // Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,13 +13,13 @@
 namespace MicroLite.Infrastructure
 {
     /// <summary>
-    /// An interface for classes which have an <see cref="IAsyncReadOnlySession"/> property.
+    /// An interface for classes which have an <see cref="IReadOnlySession"/> property.
     /// </summary>
-    public interface IHaveAsyncReadOnlySession
+    public interface IHaveReadOnlySession
     {
         /// <summary>
         /// Gets or sets the asynchronous read-only MicroLite session.
         /// </summary>
-        IAsyncReadOnlySession Session { get; set; }
+        IReadOnlySession Session { get; set; }
     }
 }

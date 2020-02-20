@@ -1,7 +1,5 @@
 ﻿namespace MicroLite.Tests.Core
 {
-
-
     using System;
     using System.Data;
     using MicroLite.Core;
@@ -14,14 +12,14 @@
     using Xunit;
 
     /// <summary>
-    /// Unit Tests for the <see cref="AsyncSession"/> class.
+    /// Unit Tests for the <see cref="Session"/> class.
     /// </summary>
-    public class AsyncSessionTests : UnitTest
+    public class SessionTests : UnitTest
     {
         [Fact]
         public void AdvancedReturnsSameSessionByDifferentInterface()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -62,7 +60,7 @@
             mockListener2.Setup(x => x.AfterDelete(customer, 1)).Callback(() => Assert.Equal(3, ++counter));
             mockListener2.Setup(x => x.BeforeDelete(customer)).Callback(() => Assert.Equal(2, ++counter));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -97,7 +95,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -130,7 +128,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -146,7 +144,7 @@
         [Fact]
         public void DeleteInstanceThrowsArgumentNullExceptionForNullInstance()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -178,7 +176,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -208,7 +206,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 mockDbDriver.Object,
@@ -224,7 +222,7 @@
         [Fact]
         public void DeleteInstanceThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -258,7 +256,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -289,7 +287,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -305,7 +303,7 @@
         [Fact]
         public void DeleteTypeByIdentifierThrowsArgumentNullExceptionForNullIdentifier()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -320,7 +318,7 @@
         [Fact]
         public void DeleteTypeByIdentifierThrowsArgumentNullExceptionForNullType()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -350,7 +348,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -369,7 +367,7 @@
         [Fact]
         public void DeleteTypeByIdentifierThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -401,7 +399,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -429,7 +427,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -444,7 +442,7 @@
         [Fact]
         public void ExecuteScalarThrowsArgumentNullExceptionForNullSqlQuery()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -459,7 +457,7 @@
         [Fact]
         public void ExecuteScalarThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -491,7 +489,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -506,7 +504,7 @@
         [Fact]
         public void ExecuteThrowsArgumentNullExceptionForNullSqlQuery()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -521,7 +519,7 @@
         [Fact]
         public void ExecuteThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -563,7 +561,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -601,7 +599,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -644,7 +642,7 @@
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(insertSqlQuery, selectIdSqlQuery)).Returns(combinedSqlQuery);
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -684,7 +682,7 @@
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(false);
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -726,7 +724,7 @@
             mockListener2.Setup(x => x.AfterInsert(customer, identifier)).Callback(() => Assert.Equal(3, ++counter));
             mockListener2.Setup(x => x.BeforeInsert(customer)).Callback(() => Assert.Equal(2, ++counter));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -744,7 +742,7 @@
         [Fact]
         public void InsertThrowsArgumentNullExceptionForNullInstance()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -774,7 +772,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -793,7 +791,7 @@
         [Fact]
         public void InsertThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -831,7 +829,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -876,7 +874,7 @@
             mockListener2.Setup(x => x.AfterUpdate(customer, 1)).Callback(() => Assert.Equal(3, ++counter));
             mockListener2.Setup(x => x.BeforeUpdate(customer)).Callback(() => Assert.Equal(2, ++counter));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -911,7 +909,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -944,7 +942,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -960,7 +958,7 @@
         [Fact]
         public void UpdateInstanceThrowsArgumentNullExceptionForNullInstance()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -992,7 +990,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -1019,7 +1017,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(new Mock<IDbConnection>().Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 mockDbDriver.Object,
@@ -1034,7 +1032,7 @@
         [Fact]
         public void UpdateInstanceThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -1068,7 +1066,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -1098,7 +1096,7 @@
             var mockDbDriver = new Mock<IDbDriver>();
             mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object,
@@ -1113,7 +1111,7 @@
         [Fact]
         public void UpdateObjectDeltaThrowsArgumentNullExceptionForNullObjectDelta()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -1130,7 +1128,7 @@
         {
             var objectDelta = new ObjectDelta(typeof(Customer), 1234);
 
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -1146,7 +1144,7 @@
         [Fact]
         public void UpdateObjectDeltaThrowsObjectDisposedExceptionIfDisposed()
         {
-            var session = new AsyncSession(
+            var session = new Session(
                 ConnectionScope.PerTransaction,
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object,
@@ -1162,6 +1160,4 @@
             Assert.IsType<ObjectDisposedException>(exception.InnerException);
         }
     }
-
-
 }
