@@ -18,8 +18,8 @@ namespace MicroLite.Infrastructure
     public interface IHaveReadOnlySession
     {
         /// <summary>
-        /// Gets or sets the asynchronous read-only MicroLite session.
+        /// Gets the read-only MicroLite session.
         /// </summary>
-        IReadOnlySession Session { get; set; }
+        IReadOnlySession Session { get; }
     }
 }

@@ -18,8 +18,8 @@ namespace MicroLite.Infrastructure
     public interface IHaveSession
     {
         /// <summary>
-        /// Gets or sets the asynchronous MicroLite session.
+        /// Gets the MicroLite session.
         /// </summary>
-        ISession Session { get; set; }
+        ISession Session { get; }
     }
 }
