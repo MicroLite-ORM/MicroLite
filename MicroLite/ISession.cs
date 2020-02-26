@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace MicroLite
 {
     /// <summary>
-    /// The interface which provides the asynchronous write methods to map objects to database records.
+    /// The interface which provides the write methods to map objects to database records.
     /// </summary>
     public interface ISession : IHideObjectMethods, IReadOnlySession
     {

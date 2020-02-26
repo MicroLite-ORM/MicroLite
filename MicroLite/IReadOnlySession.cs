@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 namespace MicroLite
 {
     /// <summary>
-    /// The interface which provides the asynchronous read methods to map objects to database records.
+    /// The interface which provides the read methods to map objects to database records.
     /// </summary>
     public interface IReadOnlySession : IHideObjectMethods, IDisposable
     {
