@@ -47,6 +47,22 @@ namespace MicroLite
         internal static PagingOptions None => new PagingOptions(count: 0, offset: 0);
 
         /// <summary>
+        /// Checks whether two separate PagingOptions instances are not equal.
+        /// </summary>
+        /// <param name="pagingOptions1">The paging options to check.</param>
+        /// <param name="pagingOptions2">The paging options to check against.</param>
+        /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
+        public static bool operator !=(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => !pagingOptions1.Equals(pagingOptions2);
+
+        /// <summary>
+        /// Checks whether two separate PagingOptions instances are equal.
+        /// </summary>
+        /// <param name="pagingOptions1">The paging options to check.</param>
+        /// <param name="pagingOptions2">The paging options to check against.</param>
+        /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
+        public static bool operator ==(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => pagingOptions1.Equals(pagingOptions2);
+
+        /// <summary>
         /// Gets the paging options for the specified page number.
         /// </summary>
         /// <param name="page">The page number (starting at 1).</param>
@@ -69,22 +85,6 @@ namespace MicroLite
 
             return new PagingOptions(count: resultsPerPage, offset: skip);
         }
-
-        /// <summary>
-        /// Checks whether two separate PagingOptions instances are not equal.
-        /// </summary>
-        /// <param name="pagingOptions1">The paging options to check.</param>
-        /// <param name="pagingOptions2">The paging options to check against.</param>
-        /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => !pagingOptions1.Equals(pagingOptions2);
-
-        /// <summary>
-        /// Checks whether two separate PagingOptions instances are equal.
-        /// </summary>
-        /// <param name="pagingOptions1">The paging options to check.</param>
-        /// <param name="pagingOptions2">The paging options to check against.</param>
-        /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => pagingOptions1.Equals(pagingOptions2);
 
         /// <summary>
         /// Gets the paging options for the specified skip and take numbers.
