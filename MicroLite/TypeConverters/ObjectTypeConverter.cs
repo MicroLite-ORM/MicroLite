@@ -59,7 +59,7 @@ namespace MicroLite.TypeConverters
             }
             else
             {
-                var converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+                object converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 
                 return converted;
             }
@@ -90,7 +90,7 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            var value = reader[index];
+            object value = reader[index];
 
             if (type.IsValueType && type.IsGenericType)
             {
@@ -100,7 +100,7 @@ namespace MicroLite.TypeConverters
             }
             else
             {
-                var converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+                object converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 
                 return converted;
             }

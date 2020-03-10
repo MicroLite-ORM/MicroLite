@@ -21,15 +21,13 @@ namespace MicroLite.TypeConverters
     /// </summary>
     public sealed class XDocumentTypeConverter : ITypeConverter
     {
-        private readonly Type xdocumentType = typeof(XDocument);
+        private readonly Type _xdocumentType = typeof(XDocument);
 
         /// <summary>
         /// Initialises a new instance of the <see cref="XDocumentTypeConverter"/> class.
         /// </summary>
         public XDocumentTypeConverter()
-        {
-            TypeConverter.RegisterTypeMapping(this.xdocumentType, DbType.Xml);
-        }
+            => TypeConverter.RegisterTypeMapping(_xdocumentType, DbType.Xml);
 
         /// <summary>
         /// Determines whether this type converter can convert values for the specified type.
@@ -38,7 +36,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         ///   <c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanConvert(Type type) => this.xdocumentType == type;
+        public bool CanConvert(Type type) => _xdocumentType == type;
 
         /// <summary>
         /// Converts the specified database value into an instance of the specified type.
@@ -87,7 +85,7 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            var value = reader.GetString(index);
+            string value = reader.GetString(index);
             var document = XDocument.Parse(value);
 
             return document;
@@ -108,7 +106,7 @@ namespace MicroLite.TypeConverters
 
             var document = (XDocument)value;
 
-            var xml = document.ToString(SaveOptions.DisableFormatting);
+            string xml = document.ToString(SaveOptions.DisableFormatting);
 
             return xml;
         }

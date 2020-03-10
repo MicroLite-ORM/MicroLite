@@ -26,14 +26,11 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters.</param>
         internal InsertSqlBuilder(SqlCharacters sqlCharacters)
-            : base(sqlCharacters)
-        {
-            this.InnerSql.Append("INSERT INTO ");
-        }
+            : base(sqlCharacters) => InnerSql.Append("INSERT INTO ");
 
         public IInsertValue Columns(params string[] columnNames)
         {
-            this.InnerSql.Append(" (");
+            InnerSql.Append(" (");
 
             if (columnNames != null)
             {
@@ -41,59 +38,59 @@ namespace MicroLite.Builder
                 {
                     if (i > 0)
                     {
-                        this.InnerSql.Append(',');
+                        InnerSql.Append(',');
                     }
 
-                    this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnNames[i]));
+                    InnerSql.Append(SqlCharacters.EscapeSql(columnNames[i]));
                 }
             }
 
-            this.InnerSql.Append(')');
+            InnerSql.Append(')');
 
             return this;
         }
 
         public IInsertColumn Into(string table)
         {
-            this.AppendTableName(table);
+            AppendTableName(table);
 
             return this;
         }
 
         public IInsertColumn Into(Type forType)
         {
-            var objectInfo = ObjectInfo.For(forType);
+            IObjectInfo objectInfo = ObjectInfo.For(forType);
 
-            return this.Into(objectInfo);
+            return Into(objectInfo);
         }
 
         public IToSqlQuery Values(params object[] columnValues)
         {
-            this.InnerSql.Append(" VALUES (");
+            InnerSql.Append(" VALUES (");
 
             if (columnValues != null)
             {
                 for (int i = 0; i < columnValues.Length; i++)
                 {
-                    this.Arguments.Add(new SqlArgument(columnValues[i]));
+                    Arguments.Add(new SqlArgument(columnValues[i]));
 
-                    this.InnerSql.Append(this.SqlCharacters.GetParameterName(i));
+                    InnerSql.Append(SqlCharacters.GetParameterName(i));
 
                     if (i < columnValues.Length - 1)
                     {
-                        this.InnerSql.Append(',');
+                        InnerSql.Append(',');
                     }
                 }
             }
 
-            this.InnerSql.Append(')');
+            InnerSql.Append(')');
 
             return this;
         }
 
         internal IInsertColumn Into(IObjectInfo objectInfo)
         {
-            this.AppendTableName(objectInfo);
+            AppendTableName(objectInfo);
 
             return this;
         }

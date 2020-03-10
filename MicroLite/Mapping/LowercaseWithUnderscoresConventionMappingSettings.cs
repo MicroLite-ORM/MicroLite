@@ -27,11 +27,11 @@ namespace MicroLite.Mapping
         public LowercaseWithUnderscoresConventionMappingSettings()
         {
 #pragma warning disable CA1308 // Normalize strings to uppercase
-            this.ResolveColumnName = (PropertyInfo propertyInfo) => ConventionMappingSettings.GetColumnName(propertyInfo).ToUnderscored().ToLowerInvariant();
-            this.ResolveIdentifierColumnName = (PropertyInfo propertyInfo) => propertyInfo.Name.ToUnderscored().ToLowerInvariant();
-            this.ResolveTableName = (Type type) =>
+            ResolveColumnName = (PropertyInfo propertyInfo) => ConventionMappingSettings.GetColumnName(propertyInfo).ToUnderscored().ToLowerInvariant();
+            ResolveIdentifierColumnName = (PropertyInfo propertyInfo) => propertyInfo.Name.ToUnderscored().ToLowerInvariant();
+            ResolveTableName = (Type type) =>
             {
-                var tableName = UsePluralClassNameForTableName ? this.InflectionService.ToPlural(GetTableName(type)) : GetTableName(type);
+                string tableName = UsePluralClassNameForTableName ? InflectionService.ToPlural(GetTableName(type)) : GetTableName(type);
 
                 return tableName.ToUnderscored().ToLowerInvariant();
 #pragma warning restore CA1308 // Normalize strings to uppercase

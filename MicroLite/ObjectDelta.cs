@@ -21,7 +21,7 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("{forType}")]
     public sealed class ObjectDelta
     {
-        private readonly IDictionary<string, object> changes = new Dictionary<string, object>();
+        private readonly IDictionary<string, object> _changes = new Dictionary<string, object>();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ObjectDelta"/> class.
@@ -30,19 +30,19 @@ namespace MicroLite
         /// <param name="identifier">The identifier for the instance of the type the changes relate to.</param>
         public ObjectDelta(Type forType, object identifier)
         {
-            this.ForType = forType ?? throw new ArgumentNullException(nameof(forType));
-            this.Identifier = identifier ?? throw new ArgumentNullException(nameof(identifier));
+            ForType = forType ?? throw new ArgumentNullException(nameof(forType));
+            Identifier = identifier ?? throw new ArgumentNullException(nameof(identifier));
         }
 
         /// <summary>
         /// Gets the number of changes in the delta.
         /// </summary>
-        public int ChangeCount => this.changes.Count;
+        public int ChangeCount => _changes.Count;
 
         /// <summary>
         /// Gets the changes contained in the delta.
         /// </summary>
-        public IEnumerable<KeyValuePair<string, object>> Changes => this.changes;
+        public IEnumerable<KeyValuePair<string, object>> Changes => _changes;
 
         /// <summary>
         /// Gets for type the changes relate to.
@@ -59,6 +59,6 @@ namespace MicroLite
         /// </summary>
         /// <param name="propertyName">The name of the property to change.</param>
         /// <param name="newValue">The new value for the property (can be null).</param>
-        public void AddChange(string propertyName, object newValue) => this.changes.Add(propertyName, newValue);
+        public void AddChange(string propertyName, object newValue) => _changes.Add(propertyName, newValue);
     }
 }

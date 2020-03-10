@@ -19,10 +19,10 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     internal sealed class TupleObjectInfo : IObjectInfo
     {
-        private static readonly Type forType = typeof(Tuple);
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
+        private static readonly Type s_forType = typeof(Tuple);
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
 
-        public Type ForType => forType;
+        public Type ForType => s_forType;
 
         public TableInfo TableInfo => throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
 
@@ -33,13 +33,13 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.ObjectInfo_CreatingInstance, forType.Name);
+                s_log.Debug(LogMessages.ObjectInfo_CreatingInstance, s_forType.Name);
             }
 
             var fieldTypes = new Type[reader.FieldCount];
-            var values = new object[reader.FieldCount];
+            object[] values = new object[reader.FieldCount];
 
             for (int i = 0; i < reader.FieldCount; i++)
             {
@@ -47,9 +47,9 @@ namespace MicroLite.Mapping
                 values[i] = reader.IsDBNull(i) ? null : reader.GetValue(i);
             }
 
-            var tupleType = GetTupleType(fieldTypes);
+            Type tupleType = GetTupleType(fieldTypes);
 
-            var tuple = Activator.CreateInstance(tupleType, values);
+            object tuple = Activator.CreateInstance(tupleType, values);
 
             return tuple;
         }

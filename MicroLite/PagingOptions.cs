@@ -27,8 +27,8 @@ namespace MicroLite
         /// <param name="offset">The offset (number of records to skip).</param>
         private PagingOptions(int count, int offset)
         {
-            this.Count = count;
-            this.Offset = offset;
+            Count = count;
+            Offset = offset;
         }
 
         /// <summary>
@@ -45,22 +45,6 @@ namespace MicroLite
         /// Gets the paging options for when no paging is required.
         /// </summary>
         internal static PagingOptions None => new PagingOptions(count: 0, offset: 0);
-
-        /// <summary>
-        /// Checks whether two separate PagingOptions instances are not equal.
-        /// </summary>
-        /// <param name="pagingOptions1">The paging options to check.</param>
-        /// <param name="pagingOptions2">The paging options to check against.</param>
-        /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => !pagingOptions1.Equals(pagingOptions2);
-
-        /// <summary>
-        /// Checks whether two separate PagingOptions instances are equal.
-        /// </summary>
-        /// <param name="pagingOptions1">The paging options to check.</param>
-        /// <param name="pagingOptions2">The paging options to check against.</param>
-        /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => pagingOptions1.Equals(pagingOptions2);
 
         /// <summary>
         /// Gets the paging options for the specified page number.
@@ -81,10 +65,26 @@ namespace MicroLite
                 throw new ArgumentOutOfRangeException(nameof(resultsPerPage), ExceptionMessages.PagingOptions_ResultsPerPageMustBeAtLeast1);
             }
 
-            var skip = (page - 1) * resultsPerPage;
+            int skip = (page - 1) * resultsPerPage;
 
             return new PagingOptions(count: resultsPerPage, offset: skip);
         }
+
+        /// <summary>
+        /// Checks whether two separate PagingOptions instances are not equal.
+        /// </summary>
+        /// <param name="pagingOptions1">The paging options to check.</param>
+        /// <param name="pagingOptions2">The paging options to check against.</param>
+        /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
+        public static bool operator !=(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => !pagingOptions1.Equals(pagingOptions2);
+
+        /// <summary>
+        /// Checks whether two separate PagingOptions instances are equal.
+        /// </summary>
+        /// <param name="pagingOptions1">The paging options to check.</param>
+        /// <param name="pagingOptions2">The paging options to check against.</param>
+        /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
+        public static bool operator ==(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => pagingOptions1.Equals(pagingOptions2);
 
         /// <summary>
         /// Gets the paging options for the specified skip and take numbers.
@@ -124,7 +124,7 @@ namespace MicroLite
                 return false;
             }
 
-            return this.Equals(other.Value);
+            return Equals(other.Value);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace MicroLite
         /// <returns>
         ///   <c>true</c> if the specified <see cref="PagingOptions" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(PagingOptions other) => other.Count == this.Count && other.Offset == this.Offset;
+        public bool Equals(PagingOptions other) => other.Count == Count && other.Offset == Offset;
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -142,6 +142,6 @@ namespace MicroLite
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public override int GetHashCode() => this.Count.GetHashCode() ^ this.Offset.GetHashCode();
+        public override int GetHashCode() => Count.GetHashCode() ^ Offset.GetHashCode();
     }
 }

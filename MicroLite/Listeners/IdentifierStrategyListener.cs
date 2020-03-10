@@ -23,7 +23,7 @@ namespace MicroLite.Listeners
     /// </summary>
     public sealed class IdentifierStrategyListener : IInsertListener
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
 
         /// <summary>
         /// Invoked after the SqlQuery to insert the record for the instance has been executed.
@@ -45,20 +45,20 @@ namespace MicroLite.Listeners
                 return;
             }
 
-            var objectInfo = ObjectInfo.For(instance.GetType());
+            IObjectInfo objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
-                if (log.IsDebug)
+                if (s_log.IsDebug)
                 {
-                    log.Debug(LogMessages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
+                    s_log.Debug(LogMessages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
                 }
 
-                var propertyType = objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType;
+                Type propertyType = objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType;
 
                 if (executeScalarResult.GetType() != propertyType)
                 {
-                    var converted = Convert.ChangeType(executeScalarResult, propertyType, CultureInfo.InvariantCulture);
+                    object converted = Convert.ChangeType(executeScalarResult, propertyType, CultureInfo.InvariantCulture);
 
                     objectInfo.SetIdentifierValue(instance, converted);
                 }

@@ -27,8 +27,8 @@ namespace MicroLite.Builder
     [System.Diagnostics.DebuggerDisplay("{builder}")]
     public sealed class RawWhereBuilder
     {
-        private readonly List<object> arguments = new List<object>();
-        private readonly StringBuilder builder = new StringBuilder();
+        private readonly List<object> _arguments = new List<object>();
+        private readonly StringBuilder _builder = new StringBuilder();
 
         /// <summary>
         /// Appends the specified predicate (the WHERE keyword will be set when calling ApplyTo so it doesn't need specifying in the predicate).
@@ -37,7 +37,7 @@ namespace MicroLite.Builder
         /// <returns>The raw builder.</returns>
         public RawWhereBuilder Append(string predicate)
         {
-            this.builder.Append(predicate);
+            _builder.Append(predicate);
 
             return this;
         }
@@ -50,11 +50,11 @@ namespace MicroLite.Builder
         /// <returns>The raw builder.</returns>
         public RawWhereBuilder Append(string predicate, object arg)
         {
-            this.arguments.Add(arg);
+            _arguments.Add(arg);
 
-            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.arguments.Count);
+            string renumberedPredicate = SqlUtility.RenumberParameters(predicate, _arguments.Count);
 
-            this.builder.Append(renumberedPredicate);
+            _builder.Append(renumberedPredicate);
 
             return this;
         }
@@ -67,11 +67,11 @@ namespace MicroLite.Builder
         /// <returns>The raw builder.</returns>
         public RawWhereBuilder Append(string predicate, params object[] args)
         {
-            this.arguments.AddRange(args);
+            _arguments.AddRange(args);
 
-            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.arguments.Count);
+            string renumberedPredicate = SqlUtility.RenumberParameters(predicate, _arguments.Count);
 
-            this.builder.Append(renumberedPredicate);
+            _builder.Append(renumberedPredicate);
 
             return this;
         }
@@ -91,7 +91,7 @@ namespace MicroLite.Builder
                 throw new ArgumentNullException(nameof(selectFrom));
             }
 
-            var where = selectFrom.Where(this.builder.ToString(), this.arguments.ToArray());
+            IAndOrOrderBy where = selectFrom.Where(_builder.ToString(), _arguments.ToArray());
 
             return where;
         }
@@ -102,6 +102,6 @@ namespace MicroLite.Builder
         /// <returns>
         /// A <see cref="string" /> that represents this instance.
         /// </returns>
-        public override string ToString() => this.builder.ToString();
+        public override string ToString() => _builder.ToString();
     }
 }

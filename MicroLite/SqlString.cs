@@ -96,8 +96,8 @@ namespace MicroLite
                 && (clauses & Clauses.From) == Clauses.From)
             {
                 // Remove the FROM keyword and the subsequent space
-                var startIndex = segmentPositions.FromIndex + 5;
-                var length = commandText.Length - startIndex;
+                int startIndex = segmentPositions.FromIndex + 5;
+                int length = commandText.Length - startIndex;
 
                 if (segmentPositions.WhereIndex > -1)
                 {
@@ -115,9 +115,9 @@ namespace MicroLite
                     length = segmentPositions.OrderByIndex - startIndex;
                 }
 
-                var segment = commandText.Substring(startIndex, length).Trim();
+                string segment = commandText.Substring(startIndex, length).Trim();
 
-                this.From = segment;
+                From = segment;
             }
 
             return this;
@@ -129,8 +129,8 @@ namespace MicroLite
                 && (clauses & Clauses.GroupBy) == Clauses.GroupBy)
             {
                 // Remove the GROUP BY keyword and the subsequent space
-                var startIndex = segmentPositions.GroupByIndex + 10;
-                var length = commandText.Length - startIndex;
+                int startIndex = segmentPositions.GroupByIndex + 10;
+                int length = commandText.Length - startIndex;
 
                 if (segmentPositions.OrderByIndex > -1)
                 {
@@ -138,9 +138,9 @@ namespace MicroLite
                     length = segmentPositions.OrderByIndex - startIndex;
                 }
 
-                var segment = commandText.Substring(startIndex, length).Trim();
+                string segment = commandText.Substring(startIndex, length).Trim();
 
-                this.GroupBy = segment;
+                GroupBy = segment;
             }
 
             return this;
@@ -152,12 +152,12 @@ namespace MicroLite
                 && (clauses & Clauses.OrderBy) == Clauses.OrderBy)
             {
                 // Remove the ORDER BY keyword and the subsequent space
-                var startIndex = segmentPositions.OrderByIndex + 10;
-                var length = commandText.Length - startIndex;
+                int startIndex = segmentPositions.OrderByIndex + 10;
+                int length = commandText.Length - startIndex;
 
-                var segment = commandText.Substring(startIndex, length).Trim();
+                string segment = commandText.Substring(startIndex, length).Trim();
 
-                this.OrderBy = segment;
+                OrderBy = segment;
             }
 
             return this;
@@ -169,14 +169,14 @@ namespace MicroLite
                 && (clauses & Clauses.Select) == Clauses.Select)
             {
                 // Remove the SELECT keyword and the subsequent space
-                var startIndex = 7;
+                int startIndex = 7;
 
                 // Remove the space before the FROM keyword
-                var length = segmentPositions.FromIndex - startIndex;
+                int length = segmentPositions.FromIndex - startIndex;
 
-                var segment = commandText.Substring(startIndex, length).Trim();
+                string segment = commandText.Substring(startIndex, length).Trim();
 
-                this.Select = segment;
+                Select = segment;
             }
 
             return this;
@@ -188,8 +188,8 @@ namespace MicroLite
                 && (clauses & Clauses.Where) == Clauses.Where)
             {
                 // Remove the WHERE keyword and the subsequent space
-                var startIndex = segmentPositions.WhereIndex + 6;
-                var length = commandText.Length - startIndex;
+                int startIndex = segmentPositions.WhereIndex + 6;
+                int length = commandText.Length - startIndex;
 
                 if (segmentPositions.GroupByIndex > -1)
                 {
@@ -202,9 +202,9 @@ namespace MicroLite
                     length = segmentPositions.OrderByIndex - startIndex;
                 }
 
-                var segment = commandText.Substring(startIndex, length).Trim();
+                string segment = commandText.Substring(startIndex, length).Trim();
 
-                this.Where = segment;
+                Where = segment;
             }
 
             return this;
@@ -214,10 +214,10 @@ namespace MicroLite
         {
             private SegmentPositions(int fromIndex, int whereIndex, int groupByIndex, int orderByIndex)
             {
-                this.FromIndex = fromIndex;
-                this.WhereIndex = whereIndex;
-                this.GroupByIndex = groupByIndex;
-                this.OrderByIndex = orderByIndex;
+                FromIndex = fromIndex;
+                WhereIndex = whereIndex;
+                GroupByIndex = groupByIndex;
+                OrderByIndex = orderByIndex;
             }
 
             internal int FromIndex { get; }

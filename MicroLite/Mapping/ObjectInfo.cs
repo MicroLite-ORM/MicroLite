@@ -24,26 +24,23 @@ namespace MicroLite.Mapping
     /// </summary>
     public static class ObjectInfo
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private static IMappingConvention mappingConvention;
-        private static IDictionary<Type, IObjectInfo> objectInfos = GetObjectInfos();
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
+        private static IMappingConvention s_mappingConvention;
+        private static IDictionary<Type, IObjectInfo> s_objectInfos = GetObjectInfos();
 
         internal static IMappingConvention MappingConvention
         {
             get
             {
-                if (mappingConvention is null)
+                if (s_mappingConvention is null)
                 {
-                    mappingConvention = mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+                    s_mappingConvention = s_mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
                 }
 
-                return mappingConvention;
+                return s_mappingConvention;
             }
 
-            set
-            {
-                mappingConvention = value;
-            }
+            set => s_mappingConvention = value;
         }
 
         /// <summary>
@@ -60,18 +57,18 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException(nameof(forType));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
+                s_log.Debug(LogMessages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
             }
 
-            if (!objectInfos.TryGetValue(forType, out IObjectInfo objectInfo))
+            if (!s_objectInfos.TryGetValue(forType, out IObjectInfo objectInfo))
             {
                 if (forType.IsGenericType)
                 {
-                    var forGenericType = forType.GetGenericTypeDefinition();
+                    Type forGenericType = forType.GetGenericTypeDefinition();
 
-                    if (objectInfos.TryGetValue(forGenericType, out objectInfo))
+                    if (s_objectInfos.TryGetValue(forGenericType, out objectInfo))
                     {
                         return objectInfo;
                     }
@@ -79,28 +76,28 @@ namespace MicroLite.Mapping
 
                 VerifyType(forType);
 
-                if (log.IsDebug)
+                if (s_log.IsDebug)
                 {
-                    log.Debug(LogMessages.ObjectInfo_CreatingObjectInfo, forType.FullName);
+                    s_log.Debug(LogMessages.ObjectInfo_CreatingObjectInfo, forType.FullName);
                 }
 
                 objectInfo = MappingConvention.CreateObjectInfo(forType);
 
-                if (log.IsDebug)
+                if (s_log.IsDebug)
                 {
                     using (var stringWriter = new StringWriter(CultureInfo.InvariantCulture))
                     {
                         objectInfo.EmitMappings(stringWriter);
-                        log.Debug(stringWriter.ToString());
+                        s_log.Debug(stringWriter.ToString());
                     }
                 }
 
-                var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos)
+                var newObjectInfos = new Dictionary<Type, IObjectInfo>(s_objectInfos)
                 {
                     [forType] = objectInfo,
                 };
 
-                objectInfos = newObjectInfos;
+                s_objectInfos = newObjectInfos;
             }
 
             return objectInfo;

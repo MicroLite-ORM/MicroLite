@@ -27,41 +27,41 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}, Values: {Values}")]
     internal sealed class IncludeMany<T> : Include, IIncludeMany<T>
     {
-        private static readonly Type resultType = typeof(T);
-        private Action<IIncludeMany<T>> callback;
+        private static readonly Type s_resultType = typeof(T);
+        private Action<IIncludeMany<T>> _callback;
 
         public IList<T> Values { get; } = new List<T>();
 
-        public void OnLoad(Action<IIncludeMany<T>> action) => this.callback = action;
+        public void OnLoad(Action<IIncludeMany<T>> action) => _callback = action;
 
         internal override async Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
-            if (TypeConverter.IsNotEntityAndConvertible(resultType))
+            if (TypeConverter.IsNotEntityAndConvertible(s_resultType))
             {
-                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                ITypeConverter typeConverter = TypeConverter.For(s_resultType) ?? TypeConverter.Default;
 
                 while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    var value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
+                    var value = (T)typeConverter.ConvertFromDbValue(reader, 0, s_resultType);
 
-                    this.Values.Add(value);
+                    Values.Add(value);
                 }
             }
             else
             {
-                var objectInfo = ObjectInfo.For(resultType);
+                IObjectInfo objectInfo = ObjectInfo.For(s_resultType);
 
                 while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
                     var instance = (T)objectInfo.CreateInstance(reader);
 
-                    this.Values.Add(instance);
+                    Values.Add(instance);
                 }
             }
 
-            this.HasValue = this.Values.Count > 0;
+            HasValue = Values.Count > 0;
 
-            this.callback?.Invoke(this);
+            _callback?.Invoke(this);
         }
     }
 }

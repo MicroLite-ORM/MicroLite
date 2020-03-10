@@ -39,17 +39,17 @@ namespace MicroLite.Mapping
             string name,
             string schema)
         {
-            this.Columns = new ReadOnlyCollection<ColumnInfo>(columns ?? throw new ArgumentNullException(nameof(columns)));
-            this.IdentifierStrategy = identifierStrategy;
-            this.Name = name ?? throw new ArgumentNullException(nameof(name));
-            this.Schema = schema;
+            Columns = new ReadOnlyCollection<ColumnInfo>(columns ?? throw new ArgumentNullException(nameof(columns)));
+            IdentifierStrategy = identifierStrategy;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Schema = schema;
 
-            this.IdentifierColumn = columns.FirstOrDefault(c => c.IsIdentifier);
+            IdentifierColumn = columns.FirstOrDefault(c => c.IsIdentifier);
 
-            this.InsertColumnCount = columns.Count(c => c.AllowInsert);
-            this.UpdateColumnCount = columns.Count(c => c.AllowUpdate);
+            InsertColumnCount = columns.Count(c => c.AllowInsert);
+            UpdateColumnCount = columns.Count(c => c.AllowUpdate);
 
-            this.ValidateColumns();
+            ValidateColumns();
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace MicroLite.Mapping
 
         private void ValidateColumns()
         {
-            var duplicatedColumn = this.Columns
+            var duplicatedColumn = Columns
                 .GroupBy(c => c.ColumnName)
                 .Select(x => new
                 {
@@ -103,16 +103,16 @@ namespace MicroLite.Mapping
                 throw new MappingException(ExceptionMessages.TableInfo_ColumnMappedMultipleTimes.FormatWith(duplicatedColumn.Key));
             }
 
-            if (this.Columns.Count(c => c.IsIdentifier) > 1)
+            if (Columns.Count(c => c.IsIdentifier) > 1)
             {
-                throw new MappingException(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith(this.Schema, this.Name));
+                throw new MappingException(ExceptionMessages.TableInfo_MultipleIdentifierColumns.FormatWith(Schema, Name));
             }
 
-            if (this.IdentifierStrategy == Mapping.IdentifierStrategy.Sequence
-                && this.IdentifierColumn != null
-                && string.IsNullOrEmpty(this.IdentifierColumn.SequenceName))
+            if (IdentifierStrategy == Mapping.IdentifierStrategy.Sequence
+                && IdentifierColumn != null
+                && string.IsNullOrEmpty(IdentifierColumn.SequenceName))
             {
-                throw new MappingException(ExceptionMessages.TableInfo_SequenceNameNotSet.FormatWith(this.IdentifierColumn.ColumnName));
+                throw new MappingException(ExceptionMessages.TableInfo_SequenceNameNotSet.FormatWith(IdentifierColumn.ColumnName));
             }
         }
     }

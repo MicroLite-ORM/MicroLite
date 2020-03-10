@@ -24,30 +24,30 @@ namespace MicroLite.Core
     internal abstract class SessionBase : ISessionBase, IDisposable
     {
         protected static readonly ILog Log = LogManager.GetCurrentClassLog();
-        private Transaction currentTransaction;
-        private bool disposed;
+        private Transaction _currentTransaction;
+        private bool _disposed;
 
         protected SessionBase(ConnectionScope connectionScope, IDbDriver dbDriver)
         {
-            this.ConnectionScope = connectionScope;
-            this.DbDriver = dbDriver;
+            ConnectionScope = connectionScope;
+            DbDriver = dbDriver;
 
-            this.Connection = dbDriver.CreateConnection();
+            Connection = dbDriver.CreateConnection();
 
-            if (this.ConnectionScope == ConnectionScope.PerSession)
+            if (ConnectionScope == ConnectionScope.PerSession)
             {
                 if (Log.IsDebug)
                 {
                     Log.Debug(LogMessages.Session_OpeningConnection);
                 }
 
-                this.Connection.Open();
+                Connection.Open();
             }
         }
 
         public IDbConnection Connection { get; private set; }
 
-        public ITransaction CurrentTransaction => this.currentTransaction;
+        public ITransaction CurrentTransaction => _currentTransaction;
 
         internal ConnectionScope ConnectionScope { get; }
 
@@ -55,129 +55,129 @@ namespace MicroLite.Core
 
         protected IDbDriver DbDriver { get; }
 
-        public ITransaction BeginTransaction() => this.BeginTransaction(IsolationLevel.ReadCommitted);
+        public ITransaction BeginTransaction() => BeginTransaction(IsolationLevel.ReadCommitted);
 
         public ITransaction BeginTransaction(IsolationLevel isolationLevel)
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
-            if (this.ConnectionScope == ConnectionScope.PerTransaction)
+            if (ConnectionScope == ConnectionScope.PerTransaction)
             {
                 if (Log.IsDebug)
                 {
                     Log.Debug(LogMessages.Session_OpeningConnection);
                 }
 
-                this.Connection.Open();
+                Connection.Open();
             }
 
-            this.currentTransaction = new Transaction(this, isolationLevel);
+            _currentTransaction = new Transaction(this, isolationLevel);
 
-            return this.currentTransaction;
+            return _currentTransaction;
         }
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         public void TransactionCompleted()
         {
-            if (this.ConnectionScope == ConnectionScope.PerTransaction)
+            if (ConnectionScope == ConnectionScope.PerTransaction)
             {
                 if (Log.IsDebug)
                 {
                     Log.Debug(LogMessages.Session_ClosingConnection);
                 }
 
-                this.Connection.Close();
+                Connection.Close();
             }
 
-            this.currentTransaction = null;
+            _currentTransaction = null;
         }
 
         protected void CommandCompleted()
         {
-            if (this.ConnectionScope == ConnectionScope.PerTransaction
-                && this.Connection.State == ConnectionState.Open
-                && this.currentTransaction is null)
+            if (ConnectionScope == ConnectionScope.PerTransaction
+                && Connection.State == ConnectionState.Open
+                && _currentTransaction is null)
             {
                 if (Log.IsDebug)
                 {
                     Log.Debug(LogMessages.Session_ClosingConnection);
                 }
 
-                this.Connection.Close();
+                Connection.Close();
             }
         }
 
         protected void ConfigureCommand(SqlQuery sqlQuery)
         {
-            if (this.ConnectionScope == ConnectionScope.PerTransaction
-                && this.Connection.State == ConnectionState.Closed
-                && this.currentTransaction is null)
+            if (ConnectionScope == ConnectionScope.PerTransaction
+                && Connection.State == ConnectionState.Closed
+                && _currentTransaction is null)
             {
                 if (Log.IsDebug)
                 {
                     Log.Debug(LogMessages.Session_OpeningConnection);
                 }
 
-                this.Connection.Open();
+                Connection.Open();
             }
 
-            if (this.Command is null)
+            if (Command is null)
             {
-                this.Command = this.Connection.CreateCommand();
-                this.Command.Connection = this.Connection;
+                Command = Connection.CreateCommand();
+                Command.Connection = Connection;
             }
 
-            this.DbDriver.BuildCommand(this.Command, sqlQuery);
+            DbDriver.BuildCommand(Command, sqlQuery);
 
-            if (this.currentTransaction != null)
+            if (_currentTransaction != null)
             {
-                this.currentTransaction.Enlist(this.Command);
+                _currentTransaction.Enlist(Command);
             }
         }
 
         protected void Dispose(bool disposing)
         {
-            if (this.disposed)
+            if (_disposed)
             {
                 return;
             }
 
             if (disposing)
             {
-                if (this.Command != null)
+                if (Command != null)
                 {
-                    this.Command.Dispose();
-                    this.Command = null;
+                    Command.Dispose();
+                    Command = null;
                 }
 
-                if (this.currentTransaction != null)
+                if (_currentTransaction != null)
                 {
-                    this.currentTransaction.Dispose();
-                    this.currentTransaction = null;
+                    _currentTransaction.Dispose();
+                    _currentTransaction = null;
                 }
 
-                if (this.Connection != null)
+                if (Connection != null)
                 {
-                    if (this.ConnectionScope == ConnectionScope.PerSession)
+                    if (ConnectionScope == ConnectionScope.PerSession)
                     {
                         if (Log.IsDebug)
                         {
                             Log.Debug(LogMessages.Session_ClosingConnection);
                         }
 
-                        this.Connection.Close();
+                        Connection.Close();
                     }
 
-                    this.Connection.Dispose();
-                    this.Connection = null;
+                    Connection.Dispose();
+                    Connection = null;
                 }
 
-                this.disposed = true;
+                _disposed = true;
 
                 if (Log.IsDebug)
                 {
@@ -188,9 +188,9 @@ namespace MicroLite.Core
 
         protected void ThrowIfDisposed()
         {
-            if (this.disposed)
+            if (_disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
         }
     }

@@ -29,10 +29,7 @@ namespace MicroLite.Builder
         /// Initialises a new instance of the <see cref="SqlBuilderBase"/> class.
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters for the builder.</param>
-        protected SqlBuilderBase(SqlCharacters sqlCharacters)
-        {
-            this.SqlCharacters = sqlCharacters;
-        }
+        protected SqlBuilderBase(SqlCharacters sqlCharacters) => SqlCharacters = sqlCharacters;
 
         protected bool AddedWhere { get; set; }
 
@@ -60,7 +57,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <returns>The created <see cref="SqlQuery"/>.</returns>
         /// <remarks>This method is called to return an SqlQuery once query has been defined.</remarks>
-        public virtual SqlQuery ToSqlQuery() => new SqlQuery(this.InnerSql.ToString(), this.Arguments.ToArray());
+        public virtual SqlQuery ToSqlQuery() => new SqlQuery(InnerSql.ToString(), Arguments.ToArray());
 
         protected void AddBetween(object lower, object upper, bool negate)
         {
@@ -74,19 +71,19 @@ namespace MicroLite.Builder
                 throw new ArgumentNullException(nameof(upper));
             }
 
-            if (!string.IsNullOrEmpty(this.Operand))
+            if (!string.IsNullOrEmpty(Operand))
             {
-                this.InnerSql.Append(this.Operand);
+                InnerSql.Append(Operand);
             }
 
-            this.Arguments.Add(new SqlArgument(lower));
-            this.Arguments.Add(new SqlArgument(upper));
+            Arguments.Add(new SqlArgument(lower));
+            Arguments.Add(new SqlArgument(upper));
 
-            var lowerParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 2);
-            var upperParam = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+            string lowerParam = SqlCharacters.GetParameterName(Arguments.Count - 2);
+            string upperParam = SqlCharacters.GetParameterName(Arguments.Count - 1);
 
-            this.InnerSql.Append(" (")
-                .Append(this.WhereColumnName)
+            InnerSql.Append(" (")
+                .Append(WhereColumnName)
                 .Append(negate ? " NOT" : string.Empty)
                 .Append(" BETWEEN ")
                 .Append(lowerParam)
@@ -102,32 +99,32 @@ namespace MicroLite.Builder
                 throw new ArgumentNullException(nameof(args));
             }
 
-            if (!string.IsNullOrEmpty(this.Operand))
+            if (!string.IsNullOrEmpty(Operand))
             {
-                this.InnerSql.Append(this.Operand);
+                InnerSql.Append(Operand);
             }
 
-            this.InnerSql.Append(" (")
-                .Append(this.WhereColumnName)
+            InnerSql.Append(" (")
+                .Append(WhereColumnName)
                 .Append(negate ? " NOT" : string.Empty)
                 .Append(" IN (");
 
             for (int i = 0; i < args.Length; i++)
             {
-                this.Arguments.Add(new SqlArgument(args[i]));
+                Arguments.Add(new SqlArgument(args[i]));
             }
 
             for (int i = 0; i < args.Length; i++)
             {
                 if (i > 0)
                 {
-                    this.InnerSql.Append(',');
+                    InnerSql.Append(',');
                 }
 
-                this.InnerSql.Append(this.SqlCharacters.GetParameterName((this.Arguments.Count - args.Length) + i));
+                InnerSql.Append(SqlCharacters.GetParameterName((Arguments.Count - args.Length) + i));
             }
 
-            this.InnerSql.Append("))");
+            InnerSql.Append("))");
         }
 
         protected void AddIn(SqlQuery subQuery, bool negate)
@@ -137,17 +134,17 @@ namespace MicroLite.Builder
                 throw new ArgumentNullException(nameof(subQuery));
             }
 
-            if (!string.IsNullOrEmpty(this.Operand))
+            if (!string.IsNullOrEmpty(Operand))
             {
-                this.InnerSql.Append(this.Operand);
+                InnerSql.Append(Operand);
             }
 
-            this.Arguments.AddRange(subQuery.Arguments);
+            Arguments.AddRange(subQuery.Arguments);
 
-            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+            string renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, Arguments.Count);
 
-            this.InnerSql.Append(" (")
-                .Append(this.WhereColumnName)
+            InnerSql.Append(" (")
+                .Append(WhereColumnName)
                 .Append(negate ? " NOT" : string.Empty)
                 .Append(" IN (")
                 .Append(renumberedPredicate)
@@ -161,45 +158,45 @@ namespace MicroLite.Builder
                 throw new ArgumentNullException(nameof(subQueries));
             }
 
-            if (!string.IsNullOrEmpty(this.Operand))
+            if (!string.IsNullOrEmpty(Operand))
             {
-                this.InnerSql.Append(this.Operand);
+                InnerSql.Append(Operand);
             }
 
-            this.InnerSql.Append(" (")
-                .Append(this.WhereColumnName)
+            InnerSql.Append(" (")
+                .Append(WhereColumnName)
                 .Append(negate ? " NOT" : string.Empty)
                 .Append(" IN (");
 
             for (int i = 0; i < subQueries.Length; i++)
             {
-                var subQuery = subQueries[i];
+                SqlQuery subQuery = subQueries[i];
 
-                this.Arguments.AddRange(subQuery.Arguments);
+                Arguments.AddRange(subQuery.Arguments);
 
-                var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+                string renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, Arguments.Count);
 
-                this.InnerSql.Append('(')
+                InnerSql.Append('(')
                     .Append(renumberedPredicate)
                     .Append(i < subQueries.Length - 1 ? "), " : ")");
             }
 
-            this.InnerSql.Append("))");
+            InnerSql.Append("))");
         }
 
         protected void AddLike(object comparisonValue, bool negate)
         {
-            if (!string.IsNullOrEmpty(this.Operand))
+            if (!string.IsNullOrEmpty(Operand))
             {
-                this.InnerSql.Append(this.Operand);
+                InnerSql.Append(Operand);
             }
 
-            this.Arguments.Add(new SqlArgument(comparisonValue));
+            Arguments.Add(new SqlArgument(comparisonValue));
 
-            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+            string parameter = SqlCharacters.GetParameterName(Arguments.Count - 1);
 
-            this.InnerSql.Append(" (")
-                .Append(this.WhereColumnName)
+            InnerSql.Append(" (")
+                .Append(WhereColumnName)
                 .Append(negate ? " NOT" : string.Empty)
                 .Append(" LIKE ")
                 .Append(parameter)
@@ -208,17 +205,17 @@ namespace MicroLite.Builder
 
         protected void AddWithComparisonOperator(object comparisonValue, string comparisonOperator)
         {
-            if (!string.IsNullOrEmpty(this.Operand))
+            if (!string.IsNullOrEmpty(Operand))
             {
-                this.InnerSql.Append(this.Operand);
+                InnerSql.Append(Operand);
             }
 
-            this.Arguments.Add(new SqlArgument(comparisonValue));
+            Arguments.Add(new SqlArgument(comparisonValue));
 
-            var parameter = this.SqlCharacters.GetParameterName(this.Arguments.Count - 1);
+            string parameter = SqlCharacters.GetParameterName(Arguments.Count - 1);
 
-            this.InnerSql.Append(" (")
-                .Append(this.WhereColumnName)
+            InnerSql.Append(" (")
+                .Append(WhereColumnName)
                 .Append(comparisonOperator)
                 .Append(parameter)
                 .Append(')');
@@ -232,13 +229,13 @@ namespace MicroLite.Builder
         {
             if (!string.IsNullOrEmpty(objectInfo.TableInfo.Schema))
             {
-                this.InnerSql.Append(this.SqlCharacters.LeftDelimiter)
+                InnerSql.Append(SqlCharacters.LeftDelimiter)
                     .Append(objectInfo.TableInfo.Schema)
-                    .Append(this.SqlCharacters.RightDelimiter)
+                    .Append(SqlCharacters.RightDelimiter)
                     .Append('.');
             }
 
-            this.AppendTableName(objectInfo.TableInfo.Name);
+            AppendTableName(objectInfo.TableInfo.Name);
         }
 
         /// <summary>
@@ -247,15 +244,15 @@ namespace MicroLite.Builder
         /// <param name="table">The name of the table.</param>
         protected void AppendTableName(string table)
         {
-            if (this.SqlCharacters.IsEscaped(table))
+            if (SqlCharacters.IsEscaped(table))
             {
-                this.InnerSql.Append(table);
+                InnerSql.Append(table);
             }
             else
             {
-                this.InnerSql.Append(this.SqlCharacters.LeftDelimiter)
+                InnerSql.Append(SqlCharacters.LeftDelimiter)
                     .Append(table)
-                    .Append(this.SqlCharacters.RightDelimiter);
+                    .Append(SqlCharacters.RightDelimiter);
             }
         }
     }

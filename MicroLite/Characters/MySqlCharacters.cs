@@ -19,11 +19,6 @@ namespace MicroLite.Characters
     internal sealed class MySqlCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of <see cref="SqlCharacters"/> for MySql.
-        /// </summary>
-        internal static readonly SqlCharacters Instance = new MySqlCharacters();
-
-        /// <summary>
         /// Prevents a default instance of the <see cref="MySqlCharacters"/> class from being created.
         /// </summary>
         private MySqlCharacters()
@@ -54,5 +49,10 @@ namespace MicroLite.Characters
         /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
         public override bool SupportsNamedParameters => true;
+
+        /// <summary>
+        /// Gets the single instance of <see cref="SqlCharacters"/> for MySql.
+        /// </summary>
+        internal static SqlCharacters Instance { get; } = new MySqlCharacters();
     }
 }

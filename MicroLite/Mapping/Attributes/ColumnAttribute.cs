@@ -66,9 +66,9 @@ namespace MicroLite.Mapping.Attributes
         /// <param name="allowUpdate">true if the column value can be updated, otherwise false.</param>
         public ColumnAttribute(string name, bool allowInsert, bool allowUpdate)
         {
-            this.Name = name;
-            this.AllowInsert = allowInsert;
-            this.AllowUpdate = allowUpdate;
+            Name = name;
+            AllowInsert = allowInsert;
+            AllowUpdate = allowUpdate;
         }
 
         /// <summary>

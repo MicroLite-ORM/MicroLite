@@ -55,8 +55,8 @@ namespace MicroLite.Mapping.Attributes
         /// <param name="name">The name of the table.</param>
         public TableAttribute(string schema, string name)
         {
-            this.Name = name;
-            this.Schema = schema;
+            Name = name;
+            Schema = schema;
         }
 
         /// <summary>

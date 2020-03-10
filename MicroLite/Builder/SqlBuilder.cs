@@ -84,7 +84,7 @@ namespace MicroLite.Builder
         /// </example>
         public static IFunctionOrFrom Select(string column)
         {
-            var sqlCharacters = SqlCharacters.Current;
+            SqlCharacters sqlCharacters = SqlCharacters.Current;
 
             if (column == sqlCharacters.SelectWildcard)
             {

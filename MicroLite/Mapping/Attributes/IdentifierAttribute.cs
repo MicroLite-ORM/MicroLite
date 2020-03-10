@@ -60,8 +60,8 @@ namespace MicroLite.Mapping.Attributes
         /// <param name="sequenceName">The name of the sequence which generates the identifier value.</param>
         public IdentifierAttribute(IdentifierStrategy identifierStrategy, string sequenceName)
         {
-            this.IdentifierStrategy = identifierStrategy;
-            this.SequenceName = sequenceName;
+            IdentifierStrategy = identifierStrategy;
+            SequenceName = sequenceName;
         }
 
         /// <summary>

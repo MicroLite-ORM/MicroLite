@@ -20,16 +20,16 @@ namespace MicroLite.TypeConverters
     /// </summary>
     public sealed class TimeSpanTypeConverter : ITypeConverter
     {
-        private readonly Type timeSpanType = typeof(TimeSpan);
-        private readonly Type timeSpanTypeNullable = typeof(TimeSpan?);
+        private readonly Type _timeSpanType = typeof(TimeSpan);
+        private readonly Type _timeSpanTypeNullable = typeof(TimeSpan?);
 
         /// <summary>
         /// Initialises a new instance of the <see cref="TimeSpanTypeConverter"/> class.
         /// </summary>
         public TimeSpanTypeConverter()
         {
-            TypeConverter.RegisterTypeMapping(this.timeSpanType, DbType.Int64);
-            TypeConverter.RegisterTypeMapping(this.timeSpanTypeNullable, DbType.Int64);
+            TypeConverter.RegisterTypeMapping(_timeSpanType, DbType.Int64);
+            TypeConverter.RegisterTypeMapping(_timeSpanTypeNullable, DbType.Int64);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         ///   <c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanConvert(Type type) => this.timeSpanType == type || this.timeSpanTypeNullable == type;
+        public bool CanConvert(Type type) => _timeSpanType == type || _timeSpanTypeNullable == type;
 
         /// <summary>
         /// Converts the specified database value into an instance of the specified type.
@@ -88,7 +88,7 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            var value = reader.GetInt64(index);
+            long value = reader.GetInt64(index);
             var timeSpan = new TimeSpan(value);
 
             return timeSpan;
@@ -109,7 +109,7 @@ namespace MicroLite.TypeConverters
 
             var timeSpan = (TimeSpan)value;
 
-            var timeSpanTicks = timeSpan.Ticks;
+            long timeSpanTicks = timeSpan.Ticks;
 
             return timeSpanTicks;
         }

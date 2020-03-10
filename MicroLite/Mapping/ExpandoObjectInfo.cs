@@ -21,10 +21,10 @@ namespace MicroLite.Mapping
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     internal sealed class ExpandoObjectInfo : IObjectInfo
     {
-        private static readonly Type forType = typeof(ExpandoObject);
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
+        private static readonly Type s_forType = typeof(ExpandoObject);
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
 
-        public Type ForType => forType;
+        public Type ForType => s_forType;
 
         public TableInfo TableInfo => throw new NotSupportedException(ExceptionMessages.ExpandoObjectInfo_NotSupportedReason);
 
@@ -35,9 +35,9 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.ObjectInfo_CreatingInstance, forType.Name);
+                s_log.Debug(LogMessages.ObjectInfo_CreatingInstance, s_forType.Name);
             }
 
             var instance = new ExpandoObject();
@@ -45,11 +45,11 @@ namespace MicroLite.Mapping
 
             for (int i = 0; i < reader.FieldCount; i++)
             {
-                var columnName = reader.GetName(i);
+                string columnName = reader.GetName(i);
 
                 if (!"MicroLiteRowNumber".Equals(columnName, StringComparison.Ordinal))
                 {
-                    var value = reader.IsDBNull(i) ? null : reader.GetValue(i);
+                    object value = reader.IsDBNull(i) ? null : reader.GetValue(i);
 
                     dictionary[columnName] = value;
                 }

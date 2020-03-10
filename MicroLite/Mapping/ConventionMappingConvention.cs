@@ -24,13 +24,11 @@ namespace MicroLite.Mapping
     /// </summary>
     internal sealed class ConventionMappingConvention : IMappingConvention
     {
-        private readonly ILog log = LogManager.GetCurrentClassLog();
-        private readonly ConventionMappingSettings settings;
+        private readonly ILog _log = LogManager.GetCurrentClassLog();
+        private readonly ConventionMappingSettings _settings;
 
         internal ConventionMappingConvention(ConventionMappingSettings settings)
-        {
-            this.settings = settings;
-        }
+            => _settings = settings;
 
         public IObjectInfo CreateObjectInfo(Type forType)
         {
@@ -39,18 +37,18 @@ namespace MicroLite.Mapping
                 throw new ArgumentNullException(nameof(forType));
             }
 
-            var identifierStrategy = this.settings.ResolveIdentifierStrategy(forType);
-            var columns = this.CreateColumnInfos(forType, identifierStrategy);
+            IdentifierStrategy identifierStrategy = _settings.ResolveIdentifierStrategy(forType);
+            List<ColumnInfo> columns = CreateColumnInfos(forType, identifierStrategy);
 
             var tableInfo = new TableInfo(
                 columns,
                 identifierStrategy,
-                this.settings.ResolveTableName(forType),
-                this.settings.ResolveTableSchema(forType));
+                _settings.ResolveTableName(forType),
+                _settings.ResolveTableSchema(forType));
 
-            if (this.log.IsDebug)
+            if (_log.IsDebug)
             {
-                this.log.Debug(LogMessages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
+                _log.Debug(LogMessages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             }
 
             return new PocoObjectInfo(forType, tableInfo);
@@ -58,45 +56,45 @@ namespace MicroLite.Mapping
 
         private List<ColumnInfo> CreateColumnInfos(Type forType, IdentifierStrategy identifierStrategy)
         {
-            var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            PropertyInfo[] properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var columns = new List<ColumnInfo>(properties.Length);
 
-            foreach (var property in properties.OrderBy(p => p.Name))
+            foreach (PropertyInfo property in properties.OrderBy(p => p.Name))
             {
                 if (!property.CanRead || !property.CanWrite)
                 {
-                    if (this.log.IsDebug)
+                    if (_log.IsDebug)
                     {
-                        this.log.Debug(LogMessages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                        _log.Debug(LogMessages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
                     }
 
                     continue;
                 }
 
-                if (this.settings.Ignore(property))
+                if (_settings.Ignore(property))
                 {
-                    if (this.log.IsDebug)
+                    if (_log.IsDebug)
                     {
-                        this.log.Debug(LogMessages.ConventionMappingConvention_IgnoringProperty, forType.Name, property.Name);
+                        _log.Debug(LogMessages.ConventionMappingConvention_IgnoringProperty, forType.Name, property.Name);
                     }
 
                     continue;
                 }
 
-                var isIdentifier = this.settings.IsIdentifier(property);
+                bool isIdentifier = _settings.IsIdentifier(property);
 
                 var columnInfo = new ColumnInfo(
-                    columnName: isIdentifier ? this.settings.ResolveIdentifierColumnName(property) : this.settings.ResolveColumnName(property),
-                    dbType: this.settings.ResolveDbType(property),
+                    columnName: isIdentifier ? _settings.ResolveIdentifierColumnName(property) : _settings.ResolveColumnName(property),
+                    dbType: _settings.ResolveDbType(property),
                     propertyInfo: property,
                     isIdentifier: isIdentifier,
-                    allowInsert: isIdentifier ? identifierStrategy == IdentifierStrategy.Assigned : this.settings.AllowInsert(property),
-                    allowUpdate: isIdentifier ? false : this.settings.AllowUpdate(property),
-                    sequenceName: isIdentifier && identifierStrategy == IdentifierStrategy.Sequence ? this.settings.ResolveSequenceName(property) : null);
+                    allowInsert: isIdentifier ? identifierStrategy == IdentifierStrategy.Assigned : _settings.AllowInsert(property),
+                    allowUpdate: isIdentifier ? false : _settings.AllowUpdate(property),
+                    sequenceName: isIdentifier && identifierStrategy == IdentifierStrategy.Sequence ? _settings.ResolveSequenceName(property) : null);
 
-                if (this.log.IsDebug)
+                if (_log.IsDebug)
                 {
-                    this.log.Debug(LogMessages.MappingConvention_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                    _log.Debug(LogMessages.MappingConvention_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
                 }
 
                 columns.Add(columnInfo);

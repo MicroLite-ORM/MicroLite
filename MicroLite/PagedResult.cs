@@ -30,21 +30,21 @@ namespace MicroLite
         /// <param name="totalResults">The total number of results for the query.</param>
         public PagedResult(int page, IList<T> results, int resultsPerPage, int totalResults)
         {
-            this.Page = page;
-            this.Results = results;
-            this.ResultsPerPage = resultsPerPage;
-            this.TotalResults = totalResults;
+            Page = page;
+            Results = results;
+            ResultsPerPage = resultsPerPage;
+            TotalResults = totalResults;
         }
 
         /// <summary>
         /// Gets a value indicating whether this page contains any results.
         /// </summary>
-        public bool HasResults => this.Results.Count > 0;
+        public bool HasResults => Results.Count > 0;
 
         /// <summary>
         /// Gets a value indicating whether there are more results available.
         /// </summary>
-        public bool MoreResultsAvailable => this.Page < this.TotalPages;
+        public bool MoreResultsAvailable => Page < TotalPages;
 
         /// <summary>
         /// Gets the page number for the results.
@@ -64,7 +64,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the total number of pages for the query.
         /// </summary>
-        public int TotalPages => ((this.TotalResults - 1) / this.ResultsPerPage) + 1;
+        public int TotalPages => ((TotalResults - 1) / ResultsPerPage) + 1;
 
         /// <summary>
         /// Gets the total number of results for the query.

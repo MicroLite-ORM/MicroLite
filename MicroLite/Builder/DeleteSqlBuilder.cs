@@ -26,10 +26,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters.</param>
         internal DeleteSqlBuilder(SqlCharacters sqlCharacters)
-            : base(sqlCharacters)
-        {
-            this.InnerSql.Append("DELETE");
-        }
+            : base(sqlCharacters) => InnerSql.Append("DELETE");
 
         public IWhere From(string table)
         {
@@ -38,23 +35,23 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("table"));
             }
 
-            this.InnerSql.Append(" FROM ");
-            this.AppendTableName(table);
+            InnerSql.Append(" FROM ");
+            AppendTableName(table);
 
             return this;
         }
 
         public IWhere From(Type forType)
         {
-            var objectInfo = ObjectInfo.For(forType);
+            IObjectInfo objectInfo = ObjectInfo.For(forType);
 
-            return this.From(objectInfo);
+            return From(objectInfo);
         }
 
         internal IWhere From(IObjectInfo objectInfo)
         {
-            this.InnerSql.Append(" FROM ");
-            this.AppendTableName(objectInfo);
+            InnerSql.Append(" FROM ");
+            AppendTableName(objectInfo);
 
             return this;
         }

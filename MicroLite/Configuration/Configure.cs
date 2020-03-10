@@ -20,7 +20,7 @@ namespace MicroLite.Configuration
     /// </summary>
     public static class Configure
     {
-        private static readonly IList<ISessionFactory> sessionFactories = new List<ISessionFactory>();
+        private static readonly IList<ISessionFactory> s_sessionFactories = new List<ISessionFactory>();
 
         /// <summary>
         /// Gets or sets a function which will be called when a session factory is created.
@@ -36,7 +36,7 @@ namespace MicroLite.Configuration
         /// <summary>
         /// Gets the collection of session factories which have created by the configuration.
         /// </summary>
-        public static ICollection<ISessionFactory> SessionFactories => sessionFactories;
+        public static ICollection<ISessionFactory> SessionFactories => s_sessionFactories;
 
         /// <summary>
         /// Begins the process of specifying the extensions which should be used by MicroLite ORM.

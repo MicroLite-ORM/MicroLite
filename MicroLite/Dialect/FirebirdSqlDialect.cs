@@ -43,12 +43,12 @@ namespace MicroLite.Dialect
             arguments[arguments.Length - 2] = new SqlArgument(pagingOptions.Offset + 1, DbType.Int32);
             arguments[arguments.Length - 1] = new SqlArgument(pagingOptions.Offset + pagingOptions.Count, DbType.Int32);
 
-            var stringBuilder = new StringBuilder(sqlQuery.CommandText)
+            StringBuilder stringBuilder = new StringBuilder(sqlQuery.CommandText)
                 .Replace(Environment.NewLine, string.Empty)
                 .Append(" ROWS ")
-                .Append(this.SqlCharacters.GetParameterName(arguments.Length - 2))
+                .Append(SqlCharacters.GetParameterName(arguments.Length - 2))
                 .Append(" TO ")
-                .Append(this.SqlCharacters.GetParameterName(arguments.Length - 1));
+                .Append(SqlCharacters.GetParameterName(arguments.Length - 1));
 
             return new SqlQuery(stringBuilder.ToString(), arguments);
         }
@@ -60,17 +60,17 @@ namespace MicroLite.Dialect
                 throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            var commandText = base.BuildInsertCommandText(objectInfo);
+            string commandText = base.BuildInsertCommandText(objectInfo);
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
             {
-                var firstParenthesisIndex = commandText.IndexOf('(') + 1;
+                int firstParenthesisIndex = commandText.IndexOf('(') + 1;
 
                 commandText = commandText.Insert(
                     firstParenthesisIndex,
-                    this.SqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn.ColumnName) + ",");
+                    SqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn.ColumnName) + ",");
 
-                var secondParenthesisIndex = commandText.IndexOf('(', firstParenthesisIndex) + 1;
+                int secondParenthesisIndex = commandText.IndexOf('(', firstParenthesisIndex) + 1;
 
                 commandText = commandText.Insert(
                     secondParenthesisIndex,

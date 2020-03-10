@@ -28,8 +28,8 @@ namespace MicroLite
         /// <param name="value">The argument value.</param>
         public SqlArgument(object value)
         {
-            this.Value = value;
-            this.DbType = value != null ? TypeConverter.ResolveDbType(value.GetType()) : default;
+            Value = value;
+            DbType = value != null ? TypeConverter.ResolveDbType(value.GetType()) : default;
         }
 
         /// <summary>
@@ -39,8 +39,8 @@ namespace MicroLite
         /// <param name="dbType">The DbType of the value.</param>
         public SqlArgument(object value, DbType dbType)
         {
-            this.Value = value;
-            this.DbType = dbType;
+            Value = value;
+            DbType = dbType;
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace MicroLite
                 return false;
             }
 
-            return this.Equals(other.Value);
+            return Equals(other.Value);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace MicroLite
         /// <returns>
         ///   <c>true</c> if the specified <see cref="SqlArgument" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(SqlArgument other) => this.DbType == other.DbType && object.Equals(this.Value, other.Value);
+        public bool Equals(SqlArgument other) => DbType == other.DbType && object.Equals(Value, other.Value);
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -103,6 +103,6 @@ namespace MicroLite
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public override int GetHashCode() => ((int)this.DbType).GetHashCode() ^ (this.Value ?? string.Empty).GetHashCode();
+        public override int GetHashCode() => ((int)DbType).GetHashCode() ^ (Value ?? string.Empty).GetHashCode();
     }
 }

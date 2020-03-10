@@ -19,11 +19,6 @@ namespace MicroLite.Characters
     internal sealed class SQLiteCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of <see cref="SqlCharacters"/> for SQLite.
-        /// </summary>
-        internal static readonly SqlCharacters Instance = new SQLiteCharacters();
-
-        /// <summary>
         /// Prevents a default instance of the <see cref="SQLiteCharacters"/> class from being created.
         /// </summary>
         private SQLiteCharacters()
@@ -49,5 +44,10 @@ namespace MicroLite.Characters
         /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
         public override bool SupportsNamedParameters => true;
+
+        /// <summary>
+        /// Gets the single instance of <see cref="SqlCharacters"/> for SQLite.
+        /// </summary>
+        internal static SqlCharacters Instance { get; } = new SQLiteCharacters();
     }
 }

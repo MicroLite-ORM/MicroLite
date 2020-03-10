@@ -28,25 +28,25 @@ namespace MicroLite.Mapping
         /// </summary>
         public ConventionMappingSettings()
         {
-            this.AllowInsert = (PropertyInfo propertyInfo) => true;
-            this.AllowUpdate = (PropertyInfo propertyInfo) => true;
-            this.Ignore = (PropertyInfo propertyInfo) => false;
-            this.InflectionService = Inflection.InflectionService.English;
-            this.IsIdentifier = (PropertyInfo propertyInfo) =>
+            AllowInsert = (PropertyInfo propertyInfo) => true;
+            AllowUpdate = (PropertyInfo propertyInfo) => true;
+            Ignore = (PropertyInfo propertyInfo) => false;
+            InflectionService = Inflection.InflectionService.English;
+            IsIdentifier = (PropertyInfo propertyInfo) =>
             {
                 return propertyInfo.Name == "Id" || propertyInfo.Name == propertyInfo.ReflectedType.Name + "Id";
             };
-            this.ResolveColumnName = (PropertyInfo propertyInfo) => GetColumnName(propertyInfo);
-            this.ResolveDbType = (PropertyInfo propertyInfo) => TypeConverter.ResolveDbType(propertyInfo.PropertyType);
-            this.ResolveIdentifierColumnName = (PropertyInfo propertyInfo) => propertyInfo.Name;
-            this.ResolveIdentifierStrategy = (Type type) => IdentifierStrategy.DbGenerated;
-            this.ResolveSequenceName = (PropertyInfo propertyInfo) => null;
-            this.ResolveTableName = (Type type) =>
+            ResolveColumnName = (PropertyInfo propertyInfo) => GetColumnName(propertyInfo);
+            ResolveDbType = (PropertyInfo propertyInfo) => TypeConverter.ResolveDbType(propertyInfo.PropertyType);
+            ResolveIdentifierColumnName = (PropertyInfo propertyInfo) => propertyInfo.Name;
+            ResolveIdentifierStrategy = (Type type) => IdentifierStrategy.DbGenerated;
+            ResolveSequenceName = (PropertyInfo propertyInfo) => null;
+            ResolveTableName = (Type type) =>
             {
-                return this.UsePluralClassNameForTableName ? this.InflectionService.ToPlural(GetTableName(type)) : GetTableName(type);
+                return UsePluralClassNameForTableName ? InflectionService.ToPlural(GetTableName(type)) : GetTableName(type);
             };
-            this.ResolveTableSchema = (Type type) => null;
-            this.UsePluralClassNameForTableName = true;
+            ResolveTableSchema = (Type type) => null;
+            UsePluralClassNameForTableName = true;
         }
 
         /// <summary>

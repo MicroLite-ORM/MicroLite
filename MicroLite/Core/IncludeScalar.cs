@@ -25,12 +25,12 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}, Value: {Value}")]
     internal sealed class IncludeScalar<T> : Include, IInclude<T>
     {
-        private static readonly Type resultType = typeof(T);
-        private Action<IInclude<T>> callback;
+        private static readonly Type s_resultType = typeof(T);
+        private Action<IInclude<T>> _callback;
 
         public T Value { get; private set; }
 
-        public void OnLoad(Action<IInclude<T>> action) => this.callback = action;
+        public void OnLoad(Action<IInclude<T>> action) => _callback = action;
 
         internal override async Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
@@ -41,17 +41,17 @@ namespace MicroLite.Core
                     throw new MicroLiteException(ExceptionMessages.IncludeScalar_MultipleColumns);
                 }
 
-                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                ITypeConverter typeConverter = TypeConverter.For(s_resultType) ?? TypeConverter.Default;
 
-                this.Value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
-                this.HasValue = true;
+                Value = (T)typeConverter.ConvertFromDbValue(reader, 0, s_resultType);
+                HasValue = true;
 
                 if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
                     throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }
 
-                this.callback?.Invoke(this);
+                _callback?.Invoke(this);
             }
         }
     }

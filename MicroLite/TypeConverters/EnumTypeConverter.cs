@@ -39,7 +39,7 @@ namespace MicroLite.TypeConverters
                 return true;
             }
 
-            var actualType = TypeConverter.ResolveActualType(type);
+            Type actualType = TypeConverter.ResolveActualType(type);
 
             return actualType != null ? actualType.IsEnum : false;
         }
@@ -62,13 +62,13 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            var enumType = TypeConverter.ResolveActualType(type);
+            Type enumType = TypeConverter.ResolveActualType(type);
 
-            var enumStorageType = Enum.GetUnderlyingType(enumType);
+            Type enumStorageType = Enum.GetUnderlyingType(enumType);
 
-            var underlyingValue = Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
+            object underlyingValue = Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
 
-            var enumValue = Enum.ToObject(enumType, underlyingValue);
+            object enumValue = Enum.ToObject(enumType, underlyingValue);
 
             return enumValue;
         }
@@ -99,9 +99,9 @@ namespace MicroLite.TypeConverters
 
             object enumValue;
 
-            var enumType = TypeConverter.ResolveActualType(type);
+            Type enumType = TypeConverter.ResolveActualType(type);
 
-            var enumStorageType = Enum.GetUnderlyingType(enumType);
+            Type enumStorageType = Enum.GetUnderlyingType(enumType);
 
             switch (enumStorageType.Name)
             {
@@ -142,11 +142,11 @@ namespace MicroLite.TypeConverters
                 return value;
             }
 
-            var enumType = TypeConverter.ResolveActualType(type);
+            Type enumType = TypeConverter.ResolveActualType(type);
 
-            var enumStorageType = Enum.GetUnderlyingType(enumType);
+            Type enumStorageType = Enum.GetUnderlyingType(enumType);
 
-            var underlyingValue = Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
+            object underlyingValue = Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
 
             return underlyingValue;
         }

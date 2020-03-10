@@ -21,7 +21,7 @@ namespace MicroLite
     [System.Diagnostics.DebuggerDisplay("{CommandText}")]
     public sealed class SqlQuery : IEquatable<SqlQuery>
     {
-        private static readonly SqlArgument[] emptyArguments = new SqlArgument[0];
+        private static readonly SqlArgument[] s_emptyArguments = new SqlArgument[0];
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlQuery"/> class with the specified command text and no argument values.
@@ -29,9 +29,9 @@ namespace MicroLite
         /// <param name="commandText">The SQL command text to be executed against the data source.</param>
         public SqlQuery(string commandText)
         {
-            this.ArgumentsArray = SqlQuery.emptyArguments;
-            this.CommandText = commandText;
-            this.Timeout = 30;
+            ArgumentsArray = SqlQuery.s_emptyArguments;
+            CommandText = commandText;
+            Timeout = 30;
         }
 
         /// <summary>
@@ -44,11 +44,11 @@ namespace MicroLite
         {
             if (arguments != null)
             {
-                this.ArgumentsArray = new SqlArgument[arguments.Length];
+                ArgumentsArray = new SqlArgument[arguments.Length];
 
                 for (int i = 0; i < arguments.Length; i++)
                 {
-                    this.ArgumentsArray[i] = new SqlArgument(arguments[i]);
+                    ArgumentsArray[i] = new SqlArgument(arguments[i]);
                 }
             }
         }
@@ -63,14 +63,14 @@ namespace MicroLite
         {
             if (arguments != null)
             {
-                this.ArgumentsArray = arguments;
+                ArgumentsArray = arguments;
             }
         }
 
         /// <summary>
         /// Gets the <see cref="SqlArgument"/>s for the SQL command.
         /// </summary>
-        public IList<SqlArgument> Arguments => this.ArgumentsArray;
+        public IList<SqlArgument> Arguments => ArgumentsArray;
 
         /// <summary>
         /// Gets the SQL command text to be executed against the data source.
@@ -95,7 +95,7 @@ namespace MicroLite
         /// <returns>
         ///   <c>true</c> if the specified <see cref="object"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj) => this.Equals(obj as SqlQuery);
+        public override bool Equals(object obj) => Equals(obj as SqlQuery);
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -111,15 +111,15 @@ namespace MicroLite
                 return false;
             }
 
-            if (other.Arguments.Count != this.Arguments.Count
-                || other.CommandText != this.CommandText)
+            if (other.Arguments.Count != Arguments.Count
+                || other.CommandText != CommandText)
             {
                 return false;
             }
 
-            for (int i = 0; i < this.Arguments.Count; i++)
+            for (int i = 0; i < Arguments.Count; i++)
             {
-                if (!other.Arguments[i].Equals(this.Arguments[i]))
+                if (!other.Arguments[i].Equals(Arguments[i]))
                 {
                     return false;
                 }
@@ -134,7 +134,7 @@ namespace MicroLite
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public override int GetHashCode() => this.CommandText.GetHashCode() ^ this.Arguments.GetHashCode();
+        public override int GetHashCode() => CommandText.GetHashCode() ^ Arguments.GetHashCode();
 
         /// <summary>
         /// Returns a <see cref="string"/> that represents this instance.
@@ -142,6 +142,6 @@ namespace MicroLite
         /// <returns>
         /// A <see cref="string"/> that represents this instance.
         /// </returns>
-        public override string ToString() => this.CommandText;
+        public override string ToString() => CommandText;
     }
 }

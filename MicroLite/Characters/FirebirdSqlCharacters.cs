@@ -19,11 +19,6 @@ namespace MicroLite.Characters
     internal sealed class FirebirdSqlCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of <see cref="SqlCharacters"/> for Firebird.
-        /// </summary>
-        internal static readonly SqlCharacters Instance = new FirebirdSqlCharacters();
-
-        /// <summary>
         /// Prevents a default instance of the <see cref="FirebirdSqlCharacters"/> class from being created.
         /// </summary>
         private FirebirdSqlCharacters()
@@ -49,5 +44,10 @@ namespace MicroLite.Characters
         /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
         public override bool SupportsNamedParameters => true;
+
+        /// <summary>
+        /// Gets the single instance of <see cref="SqlCharacters"/> for Firebird.
+        /// </summary>
+        internal static SqlCharacters Instance { get; } = new FirebirdSqlCharacters();
     }
 }

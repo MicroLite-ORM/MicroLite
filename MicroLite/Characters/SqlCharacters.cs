@@ -24,8 +24,8 @@ namespace MicroLite.Characters
     public class SqlCharacters : MarshalByRefObject
     {
         private const string LogicalGetDataName = "MicroLite.Characters.SqlCharacters_Current";
-        private static readonly char[] period = new[] { '.' };
-        private static SqlCharacters defaultSqlCharacters = null;
+        private static readonly char[] s_period = new[] { '.' };
+        private static SqlCharacters s_defaultSqlCharacters = null;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlCharacters"/> class.
@@ -53,7 +53,7 @@ namespace MicroLite.Characters
                     return current;
                 }
 
-                return defaultSqlCharacters ?? Empty;
+                return s_defaultSqlCharacters ?? Empty;
             }
 
             set
@@ -61,12 +61,12 @@ namespace MicroLite.Characters
                 if (value is null)
                 {
                     CallContext.FreeNamedDataSlot(LogicalGetDataName);
-                    defaultSqlCharacters = null;
+                    s_defaultSqlCharacters = null;
                 }
                 else
                 {
                     CallContext.LogicalSetData(LogicalGetDataName, value);
-                    defaultSqlCharacters = value;
+                    s_defaultSqlCharacters = value;
                 }
             }
         }
@@ -129,19 +129,19 @@ namespace MicroLite.Characters
                 throw new ArgumentNullException(nameof(sql));
             }
 
-            if (this.IsEscaped(sql))
+            if (IsEscaped(sql))
             {
                 return sql;
             }
 
             if (!sql.Contains('.'))
             {
-                return this.LeftDelimiter + sql + this.RightDelimiter;
+                return LeftDelimiter + sql + RightDelimiter;
             }
 
-            var sqlPieces = sql.Split(period);
+            string[] sqlPieces = sql.Split(s_period);
 
-            return string.Join(".", sqlPieces.Select(s => this.LeftDelimiter + s + this.RightDelimiter));
+            return string.Join(".", sqlPieces.Select(s => LeftDelimiter + s + RightDelimiter));
         }
 
         /// <summary>
@@ -151,12 +151,12 @@ namespace MicroLite.Characters
         /// <returns>The name of the parameter for the specified position.</returns>
         public string GetParameterName(int position)
         {
-            if (this.SupportsNamedParameters)
+            if (SupportsNamedParameters)
             {
-                return this.SqlParameter + "p" + position.ToString(CultureInfo.InvariantCulture);
+                return SqlParameter + "p" + position.ToString(CultureInfo.InvariantCulture);
             }
 
-            return this.SqlParameter;
+            return SqlParameter;
         }
 
         /// <summary>
@@ -173,8 +173,8 @@ namespace MicroLite.Characters
                 return false;
             }
 
-            return sql.StartsWith(this.LeftDelimiter, StringComparison.OrdinalIgnoreCase)
-                && sql.EndsWith(this.RightDelimiter, StringComparison.OrdinalIgnoreCase);
+            return sql.StartsWith(LeftDelimiter, StringComparison.OrdinalIgnoreCase)
+                && sql.EndsWith(RightDelimiter, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

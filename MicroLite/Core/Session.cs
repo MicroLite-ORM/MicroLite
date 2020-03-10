@@ -28,7 +28,7 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("ConnectionScope: {ConnectionScope}")]
     internal sealed class Session : ReadOnlySession, ISession, IAdvancedSession
     {
-        private readonly SessionListeners sessionListeners;
+        private readonly SessionListeners _sessionListeners;
 
         internal Session(
             ConnectionScope connectionScope,
@@ -36,54 +36,52 @@ namespace MicroLite.Core
             IDbDriver sqlDriver,
             SessionListeners sessionListeners)
             : base(connectionScope, sqlDialect, sqlDriver)
-        {
-            this.sessionListeners = sessionListeners;
-        }
+            => _sessionListeners = sessionListeners;
 
         public new IAdvancedSession Advanced => this;
 
-        public Task<bool> DeleteAsync(object instance) => this.DeleteAsync(instance, CancellationToken.None);
+        public Task<bool> DeleteAsync(object instance) => DeleteAsync(instance, CancellationToken.None);
 
         public async Task<bool> DeleteAsync(object instance, CancellationToken cancellationToken)
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
             if (instance is null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            for (int i = 0; i < this.sessionListeners.DeleteListeners.Count; i++)
+            for (int i = 0; i < _sessionListeners.DeleteListeners.Count; i++)
             {
-                this.sessionListeners.DeleteListeners[i].BeforeDelete(instance);
+                _sessionListeners.DeleteListeners[i].BeforeDelete(instance);
             }
 
-            var objectInfo = ObjectInfo.For(instance.GetType());
+            IObjectInfo objectInfo = ObjectInfo.For(instance.GetType());
 
-            var identifier = objectInfo.GetIdentifierValue(instance);
+            object identifier = objectInfo.GetIdentifierValue(instance);
 
             if (objectInfo.IsDefaultIdentifier(identifier))
             {
                 throw new MicroLiteException(ExceptionMessages.Session_IdentifierNotSetForDelete);
             }
 
-            var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
+            SqlQuery sqlQuery = SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
 
-            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
+            int rowsAffected = await ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
-            for (int i = this.sessionListeners.DeleteListeners.Count - 1; i >= 0; i--)
+            for (int i = _sessionListeners.DeleteListeners.Count - 1; i >= 0; i--)
             {
-                this.sessionListeners.DeleteListeners[i].AfterDelete(instance, rowsAffected);
+                _sessionListeners.DeleteListeners[i].AfterDelete(instance, rowsAffected);
             }
 
             return rowsAffected == 1;
         }
 
-        public Task<bool> DeleteAsync(Type type, object identifier) => this.DeleteAsync(type, identifier, CancellationToken.None);
+        public Task<bool> DeleteAsync(Type type, object identifier) => DeleteAsync(type, identifier, CancellationToken.None);
 
         public async Task<bool> DeleteAsync(Type type, object identifier, CancellationToken cancellationToken)
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
             if (type is null)
             {
@@ -95,110 +93,110 @@ namespace MicroLite.Core
                 throw new ArgumentNullException(nameof(identifier));
             }
 
-            var objectInfo = ObjectInfo.For(type);
+            IObjectInfo objectInfo = ObjectInfo.For(type);
 
-            var sqlQuery = this.SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
+            SqlQuery sqlQuery = SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
 
-            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
+            int rowsAffected = await ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
             return rowsAffected == 1;
         }
 
-        public Task<int> ExecuteAsync(SqlQuery sqlQuery) => this.ExecuteAsync(sqlQuery, CancellationToken.None);
+        public Task<int> ExecuteAsync(SqlQuery sqlQuery) => ExecuteAsync(sqlQuery, CancellationToken.None);
 
         public async Task<int> ExecuteAsync(SqlQuery sqlQuery, CancellationToken cancellationToken)
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
             if (sqlQuery is null)
             {
                 throw new ArgumentNullException(nameof(sqlQuery));
             }
 
-            return await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
+            return await ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
         }
 
-        public Task<T> ExecuteScalarAsync<T>(SqlQuery sqlQuery) => this.ExecuteScalarAsync<T>(sqlQuery, CancellationToken.None);
+        public Task<T> ExecuteScalarAsync<T>(SqlQuery sqlQuery) => ExecuteScalarAsync<T>(sqlQuery, CancellationToken.None);
 
         public async Task<T> ExecuteScalarAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
             if (sqlQuery is null)
             {
                 throw new ArgumentNullException(nameof(sqlQuery));
             }
 
-            return await this.ExecuteScalarQueryAsync<T>(sqlQuery, cancellationToken).ConfigureAwait(false);
+            return await ExecuteScalarQueryAsync<T>(sqlQuery, cancellationToken).ConfigureAwait(false);
         }
 
-        public Task InsertAsync(object instance) => this.InsertAsync(instance, CancellationToken.None);
+        public Task InsertAsync(object instance) => InsertAsync(instance, CancellationToken.None);
 
         public async Task InsertAsync(object instance, CancellationToken cancellationToken)
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
             if (instance is null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            for (int i = 0; i < this.sessionListeners.InsertListeners.Count; i++)
+            for (int i = 0; i < _sessionListeners.InsertListeners.Count; i++)
             {
-                this.sessionListeners.InsertListeners[i].BeforeInsert(instance);
+                _sessionListeners.InsertListeners[i].BeforeInsert(instance);
             }
 
-            var objectInfo = ObjectInfo.For(instance.GetType());
+            IObjectInfo objectInfo = ObjectInfo.For(instance.GetType());
             objectInfo.VerifyInstanceForInsert(instance);
 
-            object identifier = await this.InsertReturningIdentifierAsync(objectInfo, instance, cancellationToken).ConfigureAwait(false);
+            object identifier = await InsertReturningIdentifierAsync(objectInfo, instance, cancellationToken).ConfigureAwait(false);
 
-            for (int i = this.sessionListeners.InsertListeners.Count - 1; i >= 0; i--)
+            for (int i = _sessionListeners.InsertListeners.Count - 1; i >= 0; i--)
             {
-                this.sessionListeners.InsertListeners[i].AfterInsert(instance, identifier);
+                _sessionListeners.InsertListeners[i].AfterInsert(instance, identifier);
             }
         }
 
-        public Task<bool> UpdateAsync(object instance) => this.UpdateAsync(instance, CancellationToken.None);
+        public Task<bool> UpdateAsync(object instance) => UpdateAsync(instance, CancellationToken.None);
 
         public async Task<bool> UpdateAsync(object instance, CancellationToken cancellationToken)
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
             if (instance is null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }
 
-            for (int i = 0; i < this.sessionListeners.UpdateListeners.Count; i++)
+            for (int i = 0; i < _sessionListeners.UpdateListeners.Count; i++)
             {
-                this.sessionListeners.UpdateListeners[i].BeforeUpdate(instance);
+                _sessionListeners.UpdateListeners[i].BeforeUpdate(instance);
             }
 
-            var objectInfo = ObjectInfo.For(instance.GetType());
+            IObjectInfo objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.HasDefaultIdentifierValue(instance))
             {
                 throw new MicroLiteException(ExceptionMessages.Session_IdentifierNotSetForUpdate);
             }
 
-            var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectInfo, instance);
+            SqlQuery sqlQuery = SqlDialect.BuildUpdateSqlQuery(objectInfo, instance);
 
-            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
+            int rowsAffected = await ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
-            for (int i = this.sessionListeners.UpdateListeners.Count - 1; i >= 0; i--)
+            for (int i = _sessionListeners.UpdateListeners.Count - 1; i >= 0; i--)
             {
-                this.sessionListeners.UpdateListeners[i].AfterUpdate(instance, rowsAffected);
+                _sessionListeners.UpdateListeners[i].AfterUpdate(instance, rowsAffected);
             }
 
             return rowsAffected == 1;
         }
 
-        public Task<bool> UpdateAsync(ObjectDelta objectDelta) => this.UpdateAsync(objectDelta, CancellationToken.None);
+        public Task<bool> UpdateAsync(ObjectDelta objectDelta) => UpdateAsync(objectDelta, CancellationToken.None);
 
         public async Task<bool> UpdateAsync(ObjectDelta objectDelta, CancellationToken cancellationToken)
         {
-            this.ThrowIfDisposed();
+            ThrowIfDisposed();
 
             if (objectDelta is null)
             {
@@ -210,9 +208,9 @@ namespace MicroLite.Core
                 throw new MicroLiteException(ExceptionMessages.ObjectDelta_MustContainAtLeastOneChange);
             }
 
-            var sqlQuery = this.SqlDialect.BuildUpdateSqlQuery(objectDelta);
+            SqlQuery sqlQuery = SqlDialect.BuildUpdateSqlQuery(objectDelta);
 
-            var rowsAffected = await this.ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
+            int rowsAffected = await ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
             return rowsAffected == 1;
         }
@@ -221,13 +219,13 @@ namespace MicroLite.Core
         {
             try
             {
-                this.ConfigureCommand(sqlQuery);
+                ConfigureCommand(sqlQuery);
 
-                var command = (DbCommand)this.Command;
+                var command = (DbCommand)Command;
 
-                var result = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
+                int result = await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
 
-                this.CommandCompleted();
+                CommandCompleted();
 
                 return result;
             }
@@ -251,16 +249,16 @@ namespace MicroLite.Core
         {
             try
             {
-                this.ConfigureCommand(sqlQuery);
+                ConfigureCommand(sqlQuery);
 
-                var command = (DbCommand)this.Command;
+                var command = (DbCommand)Command;
 
-                var result = await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
+                object result = await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false);
 
-                this.CommandCompleted();
+                CommandCompleted();
 
-                var resultType = typeof(T);
-                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                Type resultType = typeof(T);
+                ITypeConverter typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
                 var converted = (T)typeConverter.ConvertFromDbValue(result, resultType);
 
                 return converted;
@@ -285,31 +283,31 @@ namespace MicroLite.Core
         {
             object identifier = null;
 
-            var insertSqlQuery = this.SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
+            SqlQuery insertSqlQuery = SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
 
-            if (this.SqlDialect.SupportsSelectInsertedIdentifier
+            if (SqlDialect.SupportsSelectInsertedIdentifier
                 && objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
-                var selectInsertIdSqlQuery = this.SqlDialect.BuildSelectInsertIdSqlQuery(objectInfo);
+                SqlQuery selectInsertIdSqlQuery = SqlDialect.BuildSelectInsertIdSqlQuery(objectInfo);
 
-                if (this.DbDriver.SupportsBatchedQueries)
+                if (DbDriver.SupportsBatchedQueries)
                 {
-                    var combined = this.DbDriver.Combine(insertSqlQuery, selectInsertIdSqlQuery);
-                    identifier = await this.ExecuteScalarQueryAsync<object>(combined, cancellationToken).ConfigureAwait(false);
+                    SqlQuery combined = DbDriver.Combine(insertSqlQuery, selectInsertIdSqlQuery);
+                    identifier = await ExecuteScalarQueryAsync<object>(combined, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    await this.ExecuteQueryAsync(insertSqlQuery, cancellationToken).ConfigureAwait(false);
-                    identifier = await this.ExecuteScalarQueryAsync<object>(selectInsertIdSqlQuery, cancellationToken).ConfigureAwait(false);
+                    await ExecuteQueryAsync(insertSqlQuery, cancellationToken).ConfigureAwait(false);
+                    identifier = await ExecuteScalarQueryAsync<object>(selectInsertIdSqlQuery, cancellationToken).ConfigureAwait(false);
                 }
             }
             else if (objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
-                identifier = await this.ExecuteScalarQueryAsync<object>(insertSqlQuery, cancellationToken).ConfigureAwait(false);
+                identifier = await ExecuteScalarQueryAsync<object>(insertSqlQuery, cancellationToken).ConfigureAwait(false);
             }
             else
             {
-                await this.ExecuteQueryAsync(insertSqlQuery, cancellationToken).ConfigureAwait(false);
+                await ExecuteQueryAsync(insertSqlQuery, cancellationToken).ConfigureAwait(false);
             }
 
             return identifier;

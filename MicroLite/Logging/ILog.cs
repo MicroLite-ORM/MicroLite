@@ -62,7 +62,9 @@ namespace MicroLite.Logging
         /// </summary>
         /// <param name="message">The message to be logged.</param>
 #pragma warning disable CA1716 // Identifiers should not match keywords
+
         void Error(string message);
+
 #pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
@@ -71,7 +73,9 @@ namespace MicroLite.Logging
         /// <param name="message">The message to be logged.</param>
         /// <param name="exception">The exception that occurred.</param>
 #pragma warning disable CA1716 // Identifiers should not match keywords
+
         void Error(string message, Exception exception);
+
 #pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
@@ -80,7 +84,9 @@ namespace MicroLite.Logging
         /// <param name="message">The message to be logged.</param>
         /// <param name="formatArgs">The format args.</param>
 #pragma warning disable CA1716 // Identifiers should not match keywords
+
         void Error(string message, params string[] formatArgs);
+
 #pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>

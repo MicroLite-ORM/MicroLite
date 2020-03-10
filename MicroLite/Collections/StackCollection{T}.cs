@@ -33,6 +33,6 @@ namespace MicroLite.Collections
         /// <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
         /// <param name="item">The object to insert. The value can be null for reference types.</param>
         /// <remarks>In order to maintain the behaviour of a stack, keep inserting at position 0 which will shift the items down.</remarks>
-        protected override void InsertItem(int index, T item) => this.Items.Insert(0, item);
+        protected override void InsertItem(int index, T item) => Items.Insert(0, item);
     }
 }

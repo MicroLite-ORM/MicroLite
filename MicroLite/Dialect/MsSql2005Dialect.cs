@@ -50,12 +50,12 @@ namespace MicroLite.Dialect
 
             var sqlString = SqlString.Parse(sqlQuery.CommandText, Clauses.Select | Clauses.From | Clauses.Where | Clauses.OrderBy);
 
-            var whereClause = !string.IsNullOrEmpty(sqlString.Where) ? " WHERE " + sqlString.Where : string.Empty;
-            var orderByClause = !string.IsNullOrEmpty(sqlString.OrderBy) ? sqlString.OrderBy : "(SELECT NULL)";
+            string whereClause = !string.IsNullOrEmpty(sqlString.Where) ? " WHERE " + sqlString.Where : string.Empty;
+            string orderByClause = !string.IsNullOrEmpty(sqlString.OrderBy) ? sqlString.OrderBy : "(SELECT NULL)";
 
-            var stringBuilder = new StringBuilder(sqlQuery.CommandText.Length * 2)
+            StringBuilder stringBuilder = new StringBuilder(sqlQuery.CommandText.Length * 2)
                 .AppendFormat(CultureInfo.InvariantCulture, "SELECT * FROM (SELECT {0},ROW_NUMBER() OVER(ORDER BY {1}) AS MicroLiteRowNumber FROM {2}{3}) AS [MicroLitePagedResults]", sqlString.Select, orderByClause, sqlString.From, whereClause)
-                .AppendFormat(CultureInfo.InvariantCulture, " WHERE (MicroLiteRowNumber >= {0} AND MicroLiteRowNumber <= {1})", this.SqlCharacters.GetParameterName(arguments.Length - 2), this.SqlCharacters.GetParameterName(arguments.Length - 1));
+                .AppendFormat(CultureInfo.InvariantCulture, " WHERE (MicroLiteRowNumber >= {0} AND MicroLiteRowNumber <= {1})", SqlCharacters.GetParameterName(arguments.Length - 2), SqlCharacters.GetParameterName(arguments.Length - 1));
 
             return new SqlQuery(stringBuilder.ToString(), arguments);
         }

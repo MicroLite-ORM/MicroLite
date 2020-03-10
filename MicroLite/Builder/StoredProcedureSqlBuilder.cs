@@ -20,23 +20,18 @@ namespace MicroLite.Builder
     {
         internal StoredProcedureSqlBuilder(SqlCharacters sqlCharacters, string procedureName)
             : base(sqlCharacters)
-        {
-            this.InnerSql.Append(sqlCharacters.StoredProcedureInvocationCommand)
-                .Append(' ')
-                .Append(procedureName)
-                .Append(' ');
-        }
+            => InnerSql.Append(sqlCharacters.StoredProcedureInvocationCommand).Append(' ').Append(procedureName).Append(' ');
 
         public IWithParameter WithParameter(string parameter, object arg)
         {
-            if (this.Arguments.Count > 0)
+            if (Arguments.Count > 0)
             {
-                this.InnerSql.Append(',');
+                InnerSql.Append(',');
             }
 
-            this.Arguments.Add(new SqlArgument(arg));
+            Arguments.Add(new SqlArgument(arg));
 
-            this.InnerSql.Append(parameter);
+            InnerSql.Append(parameter);
 
             return this;
         }

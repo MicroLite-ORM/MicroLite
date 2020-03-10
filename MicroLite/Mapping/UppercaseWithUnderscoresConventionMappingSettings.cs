@@ -26,11 +26,11 @@ namespace MicroLite.Mapping
         /// </summary>
         public UppercaseWithUnderscoresConventionMappingSettings()
         {
-            this.ResolveColumnName = (PropertyInfo propertyInfo) => ConventionMappingSettings.GetColumnName(propertyInfo).ToUnderscored().ToUpperInvariant();
-            this.ResolveIdentifierColumnName = (PropertyInfo propertyInfo) => propertyInfo.Name.ToUnderscored().ToUpperInvariant();
-            this.ResolveTableName = (Type type) =>
+            ResolveColumnName = (PropertyInfo propertyInfo) => ConventionMappingSettings.GetColumnName(propertyInfo).ToUnderscored().ToUpperInvariant();
+            ResolveIdentifierColumnName = (PropertyInfo propertyInfo) => propertyInfo.Name.ToUnderscored().ToUpperInvariant();
+            ResolveTableName = (Type type) =>
             {
-                var tableName = UsePluralClassNameForTableName ? this.InflectionService.ToPlural(GetTableName(type)) : GetTableName(type);
+                string tableName = UsePluralClassNameForTableName ? InflectionService.ToPlural(GetTableName(type)) : GetTableName(type);
 
                 return tableName.ToUnderscored().ToUpperInvariant();
             };

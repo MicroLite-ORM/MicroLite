@@ -26,23 +26,20 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters.</param>
         internal UpdateSqlBuilder(SqlCharacters sqlCharacters)
-            : base(sqlCharacters)
-        {
-            this.InnerSql.Append("UPDATE ");
-        }
+            : base(sqlCharacters) => InnerSql.Append("UPDATE ");
 
         public ISetOrWhere SetColumnValue(string columnName, object columnValue)
         {
-            if (this.Arguments.Count > 0)
+            if (Arguments.Count > 0)
             {
-                this.InnerSql.Append(',');
+                InnerSql.Append(',');
             }
 
-            this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnName))
+            InnerSql.Append(SqlCharacters.EscapeSql(columnName))
                 .Append(" = ")
-                .Append(this.SqlCharacters.GetParameterName(this.Arguments.Count));
+                .Append(SqlCharacters.GetParameterName(Arguments.Count));
 
-            this.Arguments.Add(new SqlArgument(columnValue));
+            Arguments.Add(new SqlArgument(columnValue));
 
             return this;
         }
@@ -54,23 +51,23 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("tableName"));
             }
 
-            this.AppendTableName(tableName);
-            this.InnerSql.Append(" SET ");
+            AppendTableName(tableName);
+            InnerSql.Append(" SET ");
 
             return this;
         }
 
         public ISetOrWhere Table(Type forType)
         {
-            var objectInfo = ObjectInfo.For(forType);
+            IObjectInfo objectInfo = ObjectInfo.For(forType);
 
-            return this.Table(objectInfo);
+            return Table(objectInfo);
         }
 
         internal ISetOrWhere Table(IObjectInfo objectInfo)
         {
-            this.AppendTableName(objectInfo);
-            this.InnerSql.Append(" SET ");
+            AppendTableName(objectInfo);
+            InnerSql.Append(" SET ");
 
             return this;
         }

@@ -20,15 +20,13 @@ namespace MicroLite.TypeConverters
     /// </summary>
     public sealed class UriTypeConverter : ITypeConverter
     {
-        private readonly Type uriType = typeof(Uri);
+        private readonly Type _uriType = typeof(Uri);
 
         /// <summary>
         /// Initialises a new instance of the <see cref="UriTypeConverter"/> class.
         /// </summary>
         public UriTypeConverter()
-        {
-            TypeConverter.RegisterTypeMapping(this.uriType, DbType.String);
-        }
+            => TypeConverter.RegisterTypeMapping(_uriType, DbType.String);
 
         /// <summary>
         /// Determines whether this type converter can convert values for the specified type.
@@ -37,7 +35,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         ///   <c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanConvert(Type type) => this.uriType == type;
+        public bool CanConvert(Type type) => _uriType == type;
 
         /// <summary>
         /// Converts the specified database value into an instance of the specified type.
@@ -86,7 +84,7 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            var value = reader.GetString(index);
+            string value = reader.GetString(index);
             var uri = new Uri(value);
 
             return uri;
@@ -107,7 +105,7 @@ namespace MicroLite.TypeConverters
 
             var uri = (Uri)value;
 
-            var uriString = uri.ToString();
+            string uriString = uri.ToString();
 
             return uriString;
         }

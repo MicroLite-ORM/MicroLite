@@ -42,13 +42,13 @@ namespace MicroLite.Mapping
             bool allowUpdate,
             string sequenceName)
         {
-            this.ColumnName = columnName ?? throw new ArgumentNullException(nameof(columnName));
-            this.DbType = dbType;
-            this.PropertyInfo = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
-            this.IsIdentifier = isIdentifier;
-            this.AllowInsert = allowInsert;
-            this.AllowUpdate = allowUpdate;
-            this.SequenceName = sequenceName;
+            ColumnName = columnName ?? throw new ArgumentNullException(nameof(columnName));
+            DbType = dbType;
+            PropertyInfo = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
+            IsIdentifier = isIdentifier;
+            AllowInsert = allowInsert;
+            AllowUpdate = allowUpdate;
+            SequenceName = sequenceName;
         }
 
         /// <summary>

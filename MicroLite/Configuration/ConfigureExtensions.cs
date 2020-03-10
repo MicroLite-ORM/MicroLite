@@ -21,13 +21,13 @@ namespace MicroLite.Configuration
     /// </summary>
     internal sealed class ConfigureExtensions : IConfigureExtensions
     {
-        private ILog log = LogManager.GetCurrentClassLog();
+        private ILog _log = LogManager.GetCurrentClassLog();
 
         public void SetLogResolver(Func<Type, ILog> logResolver)
         {
             LogManager.GetLogger = logResolver;
 
-            this.log = LogManager.GetCurrentClassLog();
+            _log = LogManager.GetCurrentClassLog();
         }
 
         public void SetMappingConvention(IMappingConvention mappingConvention)
@@ -37,9 +37,9 @@ namespace MicroLite.Configuration
                 throw new ArgumentNullException(nameof(mappingConvention));
             }
 
-            if (this.log.IsInfo)
+            if (_log.IsInfo)
             {
-                this.log.Info(LogMessages.ConfigureExtensions_UsingMappingConvention, mappingConvention.GetType().FullName);
+                _log.Info(LogMessages.ConfigureExtensions_UsingMappingConvention, mappingConvention.GetType().FullName);
             }
 
             ObjectInfo.MappingConvention = mappingConvention;

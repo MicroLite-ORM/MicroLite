@@ -31,7 +31,7 @@ namespace MicroLite.Logging
         /// <returns>The <see cref="ILog"/> for the class which called the method.</returns>
         public static ILog GetCurrentClassLog()
         {
-            var getLogger = GetLogger;
+            Func<Type, ILog> getLogger = GetLogger;
 
             if (getLogger != null)
             {

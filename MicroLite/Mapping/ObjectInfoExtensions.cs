@@ -54,9 +54,9 @@ namespace MicroLite.Mapping
 
             textWriter.WriteLine();
 
-            foreach (var columnInfo in objectInfo.TableInfo.Columns)
+            foreach (ColumnInfo columnInfo in objectInfo.TableInfo.Columns)
             {
-                var actualPropertyType = TypeConverter.ResolveActualType(columnInfo.PropertyInfo.PropertyType);
+                Type actualPropertyType = TypeConverter.ResolveActualType(columnInfo.PropertyInfo.PropertyType);
 
                 textWriter.WriteLine(
                     "Property '{0} ({1})' mapped to Column '{2} (DbType.{3})'",

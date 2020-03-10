@@ -23,11 +23,11 @@ namespace MicroLite
     /// </summary>
     public static class SqlUtility
     {
-        private static readonly char[] digits = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-        private static readonly string[] emptyParameterNames = new string[0];
-        private static readonly char[] namedParameterIdentifiers = new[] { '@', ':' };
-        private static readonly char[] parameterIdentifiers = new[] { '@', ':', '?' };
-        private static readonly char[] quoteCharacters = new[] { '\'' };
+        private static readonly char[] s_digits = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        private static readonly string[] s_emptyParameterNames = new string[0];
+        private static readonly char[] s_namedParameterIdentifiers = new[] { '@', ':' };
+        private static readonly char[] s_parameterIdentifiers = new[] { '@', ':', '?' };
+        private static readonly char[] s_quoteCharacters = new[] { '\'' };
 
         /// <summary>
         /// Gets the position of the first parameter in the specified SQL command text.
@@ -37,7 +37,7 @@ namespace MicroLite
         /// The position of the first parameter in the command text or -1 if no parameters are found.
         /// </returns>
         /// <exception cref="ArgumentNullException">Thrown if commandText is null.</exception>
-        public static int GetFirstParameterPosition(string commandText) => GetParameterPosition(commandText, 0, parameterIdentifiers);
+        public static int GetFirstParameterPosition(string commandText) => GetParameterPosition(commandText, 0, s_parameterIdentifiers);
 
         /// <summary>
         /// Gets the parameter names from the specified SQL command text or an empty list if the command text does not
@@ -59,22 +59,22 @@ namespace MicroLite
                 throw new ArgumentNullException(nameof(commandText));
             }
 
-            var startIndex = GetParameterPosition(commandText, 0, namedParameterIdentifiers);
+            int startIndex = GetParameterPosition(commandText, 0, s_namedParameterIdentifiers);
 
             if (startIndex == -1)
             {
-                return emptyParameterNames;
+                return s_emptyParameterNames;
             }
 
             var parameterNames = new List<string>();
 
             while (startIndex > -1 && startIndex < commandText.Length)
             {
-                var endIndex = commandText.Length;
+                int endIndex = commandText.Length;
 
                 for (int i = startIndex + 1; i < commandText.Length; i++)
                 {
-                    var character = commandText[i];
+                    char character = commandText[i];
 
                     if (!char.IsLetterOrDigit(character) && character != '_')
                     {
@@ -83,16 +83,16 @@ namespace MicroLite
                     }
                 }
 
-                var length = endIndex - startIndex;
+                int length = endIndex - startIndex;
 
-                var parameter = commandText.Substring(startIndex, length);
+                string parameter = commandText.Substring(startIndex, length);
 
                 if (!parameterNames.Contains(parameter))
                 {
                     parameterNames.Add(parameter);
                 }
 
-                startIndex = GetParameterPosition(commandText, startIndex + 1, namedParameterIdentifiers);
+                startIndex = GetParameterPosition(commandText, startIndex + 1, s_namedParameterIdentifiers);
             }
 
             return parameterNames;
@@ -106,27 +106,27 @@ namespace MicroLite
         /// <returns>The re-numbered SQL.</returns>
         public static string RenumberParameters(string sql, int totalArgumentCount)
         {
-            var parameterNames = GetParameterNames(sql);
+            IList<string> parameterNames = GetParameterNames(sql);
 
             if (parameterNames.Count == 0)
             {
                 return sql;
             }
 
-            var argsAdded = 0;
-            var charIndex = 0;
-            var parameterPrefix = parameterNames[0].Substring(0, parameterNames[0].IndexOfAny(digits));
+            int argsAdded = 0;
+            int charIndex = 0;
+            string parameterPrefix = parameterNames[0].Substring(0, parameterNames[0].IndexOfAny(s_digits));
             var predicateReWriter = new StringBuilder(sql, capacity: sql.Length + parameterNames.Count);
 
-            foreach (var parameterName in parameterNames.OrderByDescending(n => n, ParameterNameComparer.Instance))
+            foreach (string parameterName in parameterNames.OrderByDescending(n => n, ParameterNameComparer.Instance))
             {
                 charIndex = sql.Length;
-                var newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
+                string newParameterName = parameterPrefix + (totalArgumentCount - ++argsAdded).ToString(CultureInfo.InvariantCulture);
 
                 while ((charIndex = sql.LastIndexOf(parameterName, charIndex, StringComparison.Ordinal)) > -1)
                 {
                     // If there is another digit following the parameter, continue (e.g. @p10 will match when looking for @p1
-                    var indexFollowingParameter = charIndex + parameterName.Length;
+                    int indexFollowingParameter = charIndex + parameterName.Length;
                     if (indexFollowingParameter < sql.Length && char.IsDigit(sql[indexFollowingParameter]))
                     {
                         continue;
@@ -159,7 +159,7 @@ namespace MicroLite
                 throw new ArgumentOutOfRangeException(nameof(position));
             }
 
-            var parameterPosition = commandText.IndexOfAny(matchParameterIdentifiers, position);
+            int parameterPosition = commandText.IndexOfAny(matchParameterIdentifiers, position);
 
             while (parameterPosition > -1)
             {
@@ -179,8 +179,8 @@ namespace MicroLite
                 }
 
                 // Ignore identifiers inside a quoted string.
-                if (commandText.IndexOfAny(quoteCharacters, position, parameterPosition - position) > -1
-                    && commandText.IndexOfAny(quoteCharacters, parameterPosition) > -1)
+                if (commandText.IndexOfAny(s_quoteCharacters, position, parameterPosition - position) > -1
+                    && commandText.IndexOfAny(s_quoteCharacters, parameterPosition) > -1)
                 {
                     int quoteCount = 0;
 

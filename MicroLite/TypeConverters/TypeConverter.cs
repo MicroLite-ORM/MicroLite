@@ -21,7 +21,7 @@ namespace MicroLite.TypeConverters
     /// </summary>
     public static class TypeConverter
     {
-        private static readonly IDictionary<Type, DbType> dbTypeMap = new Dictionary<Type, DbType>
+        private static readonly IDictionary<Type, DbType> s_dbTypeMap = new Dictionary<Type, DbType>
         {
             { typeof(byte), DbType.Byte },
             { typeof(byte?), DbType.Byte },
@@ -81,7 +81,7 @@ namespace MicroLite.TypeConverters
         {
             for (int i = 0; i < Converters.Count; i++)
             {
-                var typeConverter = Converters[i];
+                ITypeConverter typeConverter = Converters[i];
 
                 if (typeConverter.CanConvert(type))
                 {
@@ -114,7 +114,7 @@ namespace MicroLite.TypeConverters
 
             for (int i = 0; i < Converters.Count; i++)
             {
-                var typeConverter = Converters[i];
+                ITypeConverter typeConverter = Converters[i];
 
                 if (typeConverter.CanConvert(type))
                 {
@@ -130,7 +130,7 @@ namespace MicroLite.TypeConverters
         /// </summary>
         /// <param name="type">The Type to be mapped.</param>
         /// <param name="dbType">The DbType to be mapped to.</param>
-        public static void RegisterTypeMapping(Type type, DbType dbType) => dbTypeMap[type] = dbType;
+        public static void RegisterTypeMapping(Type type, DbType dbType) => s_dbTypeMap[type] = dbType;
 
         /// <summary>
         /// Resolves the actual type.
@@ -147,7 +147,7 @@ namespace MicroLite.TypeConverters
                 throw new ArgumentNullException(nameof(type));
             }
 
-            var actualType = type;
+            Type actualType = type;
 
             if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
             {
@@ -170,14 +170,14 @@ namespace MicroLite.TypeConverters
                 throw new ArgumentNullException(nameof(type));
             }
 
-            var actualType = ResolveActualType(type);
+            Type actualType = ResolveActualType(type);
 
             if (actualType.IsEnum)
             {
                 actualType = Enum.GetUnderlyingType(actualType);
             }
 
-            if (dbTypeMap.TryGetValue(actualType, out DbType dbType))
+            if (s_dbTypeMap.TryGetValue(actualType, out DbType dbType))
             {
                 return dbType;
             }

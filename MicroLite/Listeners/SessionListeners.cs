@@ -26,9 +26,9 @@ namespace MicroLite.Listeners
             IList<IInsertListener> insertListeners,
             IList<IUpdateListener> updateListeners)
         {
-            this.DeleteListeners = deleteListeners;
-            this.InsertListeners = insertListeners;
-            this.UpdateListeners = updateListeners;
+            DeleteListeners = deleteListeners;
+            InsertListeners = insertListeners;
+            UpdateListeners = updateListeners;
         }
 
         internal IList<IDeleteListener> DeleteListeners { get; }

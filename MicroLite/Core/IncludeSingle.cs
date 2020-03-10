@@ -26,38 +26,38 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}, Value: {Value}")]
     internal sealed class IncludeSingle<T> : Include, IInclude<T>
     {
-        private static readonly Type resultType = typeof(T);
-        private Action<IInclude<T>> callback;
+        private static readonly Type s_resultType = typeof(T);
+        private Action<IInclude<T>> _callback;
 
         public T Value { get; private set; }
 
-        public void OnLoad(Action<IInclude<T>> action) => this.callback = action;
+        public void OnLoad(Action<IInclude<T>> action) => _callback = action;
 
         internal override async Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
             if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
-                if (TypeConverter.IsNotEntityAndConvertible(resultType))
+                if (TypeConverter.IsNotEntityAndConvertible(s_resultType))
                 {
-                    var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                    ITypeConverter typeConverter = TypeConverter.For(s_resultType) ?? TypeConverter.Default;
 
-                    this.Value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
+                    Value = (T)typeConverter.ConvertFromDbValue(reader, 0, s_resultType);
                 }
                 else
                 {
-                    var objectInfo = ObjectInfo.For(resultType);
+                    IObjectInfo objectInfo = ObjectInfo.For(s_resultType);
 
-                    this.Value = (T)objectInfo.CreateInstance(reader);
+                    Value = (T)objectInfo.CreateInstance(reader);
                 }
 
-                this.HasValue = true;
+                HasValue = true;
 
                 if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
                     throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }
 
-                this.callback?.Invoke(this);
+                _callback?.Invoke(this);
             }
         }
     }
