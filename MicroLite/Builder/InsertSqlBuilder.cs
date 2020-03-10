@@ -19,7 +19,7 @@ using MicroLite.Mapping;
 namespace MicroLite.Builder
 {
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class InsertSqlBuilder : SqlBuilderBase, IInsertIntoTable, IInsertColumn, IInsertValue
+    internal sealed class InsertSqlBuilder : SqlBuilderBase, IInsertIntoTable, IInsertColumn
     {
         /// <summary>
         /// Initialises a new instance of the <see cref="InsertSqlBuilder"/> class with the starting command text 'INSERT INTO '.

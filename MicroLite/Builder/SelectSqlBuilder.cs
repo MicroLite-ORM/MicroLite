@@ -19,7 +19,7 @@ using MicroLite.Mapping;
 namespace MicroLite.Builder
 {
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class SelectSqlBuilder : SqlBuilderBase, ISelectFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IWhereSingleColumn, IHavingOrOrderBy, IWhereExists
+    internal sealed class SelectSqlBuilder : SqlBuilderBase, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IWhereSingleColumn, IHavingOrOrderBy, IWhereExists
     {
         private bool _addedOrder = false;
 

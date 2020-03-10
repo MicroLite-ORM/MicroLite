@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the where method in the fluent sql builder syntax.
     /// </summary>
-    public interface IWhereOrOrderBy : IGroupBy, IOrderBy, IToSqlQuery
+    public interface IWhereOrOrderBy : IGroupBy, IOrderBy
     {
         /// <summary>
         /// Specifies the where clause for the query.

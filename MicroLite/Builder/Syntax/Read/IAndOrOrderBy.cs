@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the and/or methods to extend the where clause in the fluent sql builder syntax.
     /// </summary>
-    public interface IAndOrOrderBy : IGroupBy, IOrderBy, IToSqlQuery
+    public interface IAndOrOrderBy : IGroupBy, IOrderBy
     {
         /// <summary>
         /// Adds a column as an AND to the where clause of the query.
