@@ -37,50 +37,62 @@ namespace MicroLite.Logging
 
         public void Debug(string message)
         {
+            // no-op
         }
 
         public void Debug(string message, params string[] formatArgs)
         {
+            // no-op
         }
 
         public void Error(string message)
         {
+            // no-op
         }
 
         public void Error(string message, Exception exception)
         {
+            // no-op
         }
 
         public void Error(string message, params string[] formatArgs)
         {
+            // no-op
         }
 
         public void Fatal(string message)
         {
+            // no-op
         }
 
         public void Fatal(string message, Exception exception)
         {
+            // no-op
         }
 
         public void Fatal(string message, params string[] formatArgs)
         {
+            // no-op
         }
 
         public void Info(string message)
         {
+            // no-op
         }
 
         public void Info(string message, params string[] formatArgs)
         {
+            // no-op
         }
 
         public void Warn(string message)
         {
+            // no-op
         }
 
         public void Warn(string message, params string[] formatArgs)
         {
+            // no-op
         }
     }
 }

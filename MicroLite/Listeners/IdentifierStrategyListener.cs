@@ -75,7 +75,7 @@ namespace MicroLite.Listeners
         /// <param name="instance">The instance to be inserted.</param>
         public void BeforeInsert(object instance)
         {
-            return; // no-op
+            // no-op
         }
     }
 }
