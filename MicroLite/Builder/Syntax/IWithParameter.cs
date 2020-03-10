@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax
     /// <summary>
     /// The interface which specifies a parameter and argument for a stored procedure in the fluent sql builder syntax.
     /// </summary>
-    public interface IWithParameter : IHideObjectMethods, IToSqlQuery
+    public interface IWithParameter : IToSqlQuery
     {
         /// <summary>
         /// Specifies that the stored procedure should be executed the specified parameter and argument.

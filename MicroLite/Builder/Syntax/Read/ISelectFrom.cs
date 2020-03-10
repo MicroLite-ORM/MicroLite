@@ -17,7 +17,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the from method in the fluent sql builder syntax.
     /// </summary>
-    public interface ISelectFrom : IHideObjectMethods
+    public interface ISelectFrom
     {
         /// <summary>
         /// Specifies the table to perform the query against.

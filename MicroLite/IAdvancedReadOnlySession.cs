@@ -22,7 +22,7 @@ namespace MicroLite
     /// These operations allow for more advanced use and have been moved to a separate interface to avoid
     /// cluttering the IAsyncReadOnlySession API.
     /// </remarks>
-    public interface IAdvancedReadOnlySession : IHideObjectMethods
+    public interface IAdvancedReadOnlySession
     {
         /// <summary>
         /// Asynchronously executes any pending queries which have been queued using the Include API.

@@ -17,7 +17,7 @@ namespace MicroLite
     /// <summary>
     /// The interface which defines the factory methods for creating MicroLite sessions.
     /// </summary>
-    public interface ISessionFactory : IHideObjectMethods
+    public interface ISessionFactory
     {
         /// <summary>
         /// Gets the name of the connection in the connection strings configuration section used by the session factory.

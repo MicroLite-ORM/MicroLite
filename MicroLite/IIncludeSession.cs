@@ -21,7 +21,7 @@ namespace MicroLite
     /// These operations allow for batch included values and have been moved to a separate interface to avoid
     /// cluttering the ISession API.
     /// </remarks>
-    public interface IIncludeSession : IHideObjectMethods
+    public interface IIncludeSession
     {
         /// <summary>
         /// Includes all instances of the specified type.
@@ -185,6 +185,7 @@ namespace MicroLite
         /// </example>
 #pragma warning disable CA1720 // Identifier contains type name
 #pragma warning disable CA1716 // Identifiers should not match keywords
+
         IInclude<T> Single<T>(object identifier)
 #pragma warning restore CA1716 // Identifiers should not match keywords
 #pragma warning restore CA1720 // Identifier contains type name
@@ -201,7 +202,9 @@ namespace MicroLite
         /// <exception cref="MicroLiteException">Thrown if there is an error executing the query.</exception>
 #pragma warning disable CA1720 // Identifier contains type name
 #pragma warning disable CA1716 // Identifiers should not match keywords
+
         IInclude<T> Single<T>(SqlQuery sqlQuery);
+
 #pragma warning restore CA1716 // Identifiers should not match keywords
 #pragma warning restore CA1720 // Identifier contains type name
     }

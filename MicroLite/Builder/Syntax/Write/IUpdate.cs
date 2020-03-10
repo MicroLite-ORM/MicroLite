@@ -17,7 +17,7 @@ namespace MicroLite.Builder.Syntax.Write
     /// <summary>
     /// The interface which specifies the table method in the fluent update sql builder syntax.
     /// </summary>
-    public interface IUpdate : IHideObjectMethods
+    public interface IUpdate
     {
         /// <summary>
         /// Specifies the table to perform the query against.

@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the from method or function in the fluent sql builder syntax.
     /// </summary>
-    public interface IFunctionOrFrom : IHideObjectMethods, ISelectFrom
+    public interface IFunctionOrFrom : ISelectFrom
     {
         /// <summary>
         /// Selects the average value in the specified column.

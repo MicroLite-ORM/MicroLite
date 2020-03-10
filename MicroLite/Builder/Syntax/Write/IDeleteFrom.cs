@@ -17,7 +17,7 @@ namespace MicroLite.Builder.Syntax.Write
     /// <summary>
     /// The interface which specifies the from method in the fluent sql builder syntax.
     /// </summary>
-    public interface IDeleteFrom : IHideObjectMethods
+    public interface IDeleteFrom
     {
         /// <summary>
         /// Specifies the table to delete from.

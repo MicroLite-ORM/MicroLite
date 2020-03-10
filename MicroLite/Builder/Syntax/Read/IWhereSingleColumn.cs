@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the where in method in the fluent sql builder syntax.
     /// </summary>
-    public interface IWhereSingleColumn : IHideObjectMethods
+    public interface IWhereSingleColumn
     {
         /// <summary>
         /// Uses the specified arguments to filter the column.
@@ -57,7 +57,9 @@ namespace MicroLite.Builder.Syntax.Read
         /// Will generate SELECT {Columns} FROM Customers WHERE (Column1 IN (@p0, @p1, @p2)).
         /// </example>
 #pragma warning disable CA1716 // Identifiers should not match keywords
+
         IAndOrOrderBy In(params object[] args);
+
 #pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
@@ -67,7 +69,9 @@ namespace MicroLite.Builder.Syntax.Read
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if subQueries is null.</exception>
 #pragma warning disable CA1716 // Identifiers should not match keywords
+
         IAndOrOrderBy In(params SqlQuery[] subQueries);
+
 #pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
@@ -95,7 +99,9 @@ namespace MicroLite.Builder.Syntax.Read
         /// Will generate SELECT {Columns} FROM Invoices WHERE (CustomerId IN (SELECT CustomerId FROM Customers WHERE Age > @p0)).
         /// </example>
 #pragma warning disable CA1716 // Identifiers should not match keywords
+
         IAndOrOrderBy In(SqlQuery subQuery);
+
 #pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>

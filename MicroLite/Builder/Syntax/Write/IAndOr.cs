@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Write
     /// <summary>
     /// The interface which specifies the and/or methods to extend the where clause in the fluent sql builder syntax.
     /// </summary>
-    public interface IAndOr : IHideObjectMethods, IToSqlQuery
+    public interface IAndOr : IToSqlQuery
     {
         /// <summary>
         /// Adds a column as an AND to the where clause of the query.

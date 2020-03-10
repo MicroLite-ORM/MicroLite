@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Write
     /// <summary>
     /// The interface which specifies the where method in the fluent sql builder syntax.
     /// </summary>
-    public interface IWhere : IHideObjectMethods, IToSqlQuery
+    public interface IWhere : IToSqlQuery
     {
         /// <summary>
         /// Specifies the where clause for the query.

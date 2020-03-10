@@ -19,7 +19,7 @@ namespace MicroLite.Configuration
     /// The interface which specifies the options for configuring the connection in the fluent configuration
     /// of the MicroLite ORM framework.
     /// </summary>
-    public interface IConfigureConnection : IHideObjectMethods
+    public interface IConfigureConnection
     {
         /// <summary>
         /// Specifies the name of the connection and the ISqlDialect and IDbDriver to use for the connection.

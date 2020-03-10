@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the having method in the fluent sql builder syntax.
     /// </summary>
-    public interface IHavingOrOrderBy : IHideObjectMethods, IOrderBy
+    public interface IHavingOrOrderBy : IOrderBy
     {
         /// <summary>
         /// Specifies the having clause for the query.

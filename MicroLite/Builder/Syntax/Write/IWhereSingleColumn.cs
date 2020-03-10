@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Write
     /// <summary>
     /// The interface which specifies the where in method in the fluent sql builder syntax.
     /// </summary>
-    public interface IWhereSingleColumn : IHideObjectMethods
+    public interface IWhereSingleColumn
     {
         /// <summary>
         /// Uses the specified arguments to filter the column.
@@ -33,7 +33,9 @@ namespace MicroLite.Builder.Syntax.Write
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if args is null.</exception>
 #pragma warning disable CA1716 // Identifiers should not match keywords
+
         IAndOr In(params object[] args);
+
 #pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
@@ -43,7 +45,9 @@ namespace MicroLite.Builder.Syntax.Write
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if subQueries is null.</exception>
 #pragma warning disable CA1716 // Identifiers should not match keywords
+
         IAndOr In(params SqlQuery[] subQueries);
+
 #pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
@@ -53,7 +57,9 @@ namespace MicroLite.Builder.Syntax.Write
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if subQuery is null.</exception>
 #pragma warning disable CA1716 // Identifiers should not match keywords
+
         IAndOr In(SqlQuery subQuery);
+
 #pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>

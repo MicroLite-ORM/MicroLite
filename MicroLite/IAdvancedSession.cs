@@ -23,7 +23,7 @@ namespace MicroLite
     /// These operations allow for more advanced use and have been moved to a separate interface to avoid
     /// cluttering the IAsyncSession API.
     /// </remarks>
-    public interface IAdvancedSession : IHideObjectMethods, IAdvancedReadOnlySession
+    public interface IAdvancedSession : IAdvancedReadOnlySession
     {
         /// <summary>
         /// Asynchronously deletes the database record of the specified type with the specified identifier.

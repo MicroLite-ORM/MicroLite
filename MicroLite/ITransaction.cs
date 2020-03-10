@@ -17,7 +17,7 @@ namespace MicroLite
     /// <summary>
     /// The interface for a database transaction.
     /// </summary>
-    public interface ITransaction : IHideObjectMethods, IDisposable
+    public interface ITransaction : IDisposable
     {
         /// <summary>
         /// Gets a value indicating whether this transaction is active.

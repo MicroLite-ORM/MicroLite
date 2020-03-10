@@ -21,7 +21,7 @@ namespace MicroLite
     /// <summary>
     /// The interface which provides the read methods to map objects to database records.
     /// </summary>
-    public interface IReadOnlySession : IHideObjectMethods, IDisposable
+    public interface IReadOnlySession : IDisposable
     {
         /// <summary>
         /// Gets the advanced async session operations.

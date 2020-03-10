@@ -19,7 +19,7 @@ namespace MicroLite.Configuration
     /// <summary>
     /// The interface which specifies the options for configuring extensions to the MicroLite ORM framework.
     /// </summary>
-    public interface IConfigureExtensions : IHideObjectMethods
+    public interface IConfigureExtensions
     {
         /// <summary>
         /// Sets the function which can be called by MicroLite to resolve the <see cref="ILog"/> to use.

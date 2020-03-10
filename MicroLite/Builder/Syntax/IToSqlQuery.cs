@@ -18,7 +18,7 @@ namespace MicroLite.Builder.Syntax
     /// <remarks>
     /// It's a bit of a verbose hack, need to see if I can use cast operators instead somehow...
     /// </remarks>
-    public interface IToSqlQuery : IHideObjectMethods
+    public interface IToSqlQuery
     {
         /// <summary>
         /// Creates a <see cref="SqlQuery"/> from the values specified.

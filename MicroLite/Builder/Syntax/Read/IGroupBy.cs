@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the group by method in the fluent sql builder syntax.
     /// </summary>
-    public interface IGroupBy : IHideObjectMethods
+    public interface IGroupBy
     {
         /// <summary>
         /// Groups the results of the query by the specified column.
