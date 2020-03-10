@@ -11,6 +11,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using MicroLite.Builder;
 using MicroLite.Builder.Syntax.Write;
@@ -26,10 +27,10 @@ namespace MicroLite.Dialect
     public abstract class SqlDialect : ISqlDialect
     {
         private static readonly ILog s_log = LogManager.GetCurrentClassLog();
-        private Dictionary<Type, string> _deleteCommandCache = new Dictionary<Type, string>();
-        private Dictionary<Type, string> _insertCommandCache = new Dictionary<Type, string>();
-        private Dictionary<Type, string> _selectCommandCache = new Dictionary<Type, string>();
-        private Dictionary<Type, string> _updateCommandCache = new Dictionary<Type, string>();
+        private readonly ConcurrentDictionary<Type, string> _deleteCommandCache = new ConcurrentDictionary<Type, string>();
+        private readonly ConcurrentDictionary<Type, string> _insertCommandCache = new ConcurrentDictionary<Type, string>();
+        private readonly ConcurrentDictionary<Type, string> _selectCommandCache = new ConcurrentDictionary<Type, string>();
+        private readonly ConcurrentDictionary<Type, string> _updateCommandCache = new ConcurrentDictionary<Type, string>();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlDialect"/> class.
@@ -68,17 +69,7 @@ namespace MicroLite.Dialect
                 s_log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "DELETE");
             }
 
-            if (!_deleteCommandCache.TryGetValue(objectInfo.ForType, out string deleteCommand))
-            {
-                deleteCommand = BuildDeleteCommandText(objectInfo);
-
-                var newDeleteCommandCache = new Dictionary<Type, string>(_deleteCommandCache)
-                {
-                    [objectInfo.ForType] = deleteCommand,
-                };
-
-                _deleteCommandCache = newDeleteCommandCache;
-            }
+            string deleteCommand = _deleteCommandCache.GetOrAdd(objectInfo.ForType, _ => BuildDeleteCommandText(objectInfo));
 
             return new SqlQuery(deleteCommand, new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType));
         }
@@ -103,17 +94,7 @@ namespace MicroLite.Dialect
                 s_log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "INSERT");
             }
 
-            if (!_insertCommandCache.TryGetValue(objectInfo.ForType, out string insertCommand))
-            {
-                insertCommand = BuildInsertCommandText(objectInfo);
-
-                var newInsertCommandCache = new Dictionary<Type, string>(_insertCommandCache)
-                {
-                    [objectInfo.ForType] = insertCommand,
-                };
-
-                _insertCommandCache = newInsertCommandCache;
-            }
+            string insertCommand = _insertCommandCache.GetOrAdd(objectInfo.ForType, _ => BuildInsertCommandText(objectInfo));
 
             SqlArgument[] insertValues = objectInfo.GetInsertValues(instance);
 
@@ -149,17 +130,7 @@ namespace MicroLite.Dialect
                 s_log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "SELECT");
             }
 
-            if (!_selectCommandCache.TryGetValue(objectInfo.ForType, out string selectCommand))
-            {
-                selectCommand = BuildSelectCommandText(objectInfo);
-
-                var newSelectCommandCache = new Dictionary<Type, string>(_selectCommandCache)
-                {
-                    [objectInfo.ForType] = selectCommand,
-                };
-
-                _selectCommandCache = newSelectCommandCache;
-            }
+            string selectCommand = _selectCommandCache.GetOrAdd(objectInfo.ForType, _ => BuildSelectCommandText(objectInfo));
 
             return new SqlQuery(selectCommand, new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType));
         }
@@ -184,17 +155,7 @@ namespace MicroLite.Dialect
                 s_log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "UPDATE");
             }
 
-            if (!_updateCommandCache.TryGetValue(objectInfo.ForType, out string updateCommand))
-            {
-                updateCommand = BuildUpdateCommandText(objectInfo);
-
-                var newUpdateCommandCache = new Dictionary<Type, string>(_updateCommandCache)
-                {
-                    [objectInfo.ForType] = updateCommand,
-                };
-
-                _updateCommandCache = newUpdateCommandCache;
-            }
+            string updateCommand = _updateCommandCache.GetOrAdd(objectInfo.ForType, _ => BuildUpdateCommandText(objectInfo));
 
             SqlArgument[] updateValues = objectInfo.GetUpdateValues(instance);
 
