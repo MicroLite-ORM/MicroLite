@@ -28,7 +28,8 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters.</param>
         internal SelectSqlBuilder(SqlCharacters sqlCharacters)
-            : base(sqlCharacters) => InnerSql.Append("SELECT *");
+            : base(sqlCharacters)
+            => InnerSql.Append("SELECT *");
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SelectSqlBuilder"/> class with an optional list of columns to select.
@@ -198,12 +199,7 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IWhereOrOrderBy From(Type forType)
-        {
-            IObjectInfo objectInfo = ObjectInfo.For(forType);
-
-            return From(objectInfo);
-        }
+        public IWhereOrOrderBy From(Type forType) => From(ObjectInfo.For(forType));
 
         public IHavingOrOrderBy GroupBy(string column)
         {

@@ -112,17 +112,7 @@ namespace MicroLite.TypeConverters
                 return true;
             }
 
-            for (int i = 0; i < Converters.Count; i++)
-            {
-                ITypeConverter typeConverter = Converters[i];
-
-                if (typeConverter.CanConvert(type))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return For(type) != null;
         }
 
         /// <summary>

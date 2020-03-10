@@ -53,16 +53,10 @@ namespace MicroLite.TypeConverters
 
             if (type.IsValueType && type.IsGenericType)
             {
-                ValueType converted = (ValueType)value;
-
-                return converted;
+                return (ValueType)value;
             }
-            else
-            {
-                object converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 
-                return converted;
-            }
+            return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -94,16 +88,10 @@ namespace MicroLite.TypeConverters
 
             if (type.IsValueType && type.IsGenericType)
             {
-                ValueType converted = (ValueType)value;
-
-                return converted;
+                return (ValueType)value;
             }
-            else
-            {
-                object converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 
-                return converted;
-            }
+            return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
         }
 
         /// <summary>

@@ -95,7 +95,7 @@ namespace MicroLite
         /// <returns>
         ///   <c>true</c> if the specified <see cref="SqlArgument" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(SqlArgument other) => DbType == other.DbType && object.Equals(Value, other.Value);
+        public bool Equals(SqlArgument other) => DbType == other.DbType && Equals(Value, other.Value);
 
         /// <summary>
         /// Returns a hash code for this instance.

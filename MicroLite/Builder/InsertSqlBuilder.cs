@@ -26,7 +26,8 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters.</param>
         internal InsertSqlBuilder(SqlCharacters sqlCharacters)
-            : base(sqlCharacters) => InnerSql.Append("INSERT INTO ");
+            : base(sqlCharacters)
+            => InnerSql.Append("INSERT INTO ");
 
         public IInsertValue Columns(params string[] columnNames)
         {
@@ -57,12 +58,7 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IInsertColumn Into(Type forType)
-        {
-            IObjectInfo objectInfo = ObjectInfo.For(forType);
-
-            return Into(objectInfo);
-        }
+        public IInsertColumn Into(Type forType) => Into(ObjectInfo.For(forType));
 
         public IToSqlQuery Values(params object[] columnValues)
         {

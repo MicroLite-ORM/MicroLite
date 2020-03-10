@@ -29,7 +29,8 @@ namespace MicroLite.Builder
         /// Initialises a new instance of the <see cref="SqlBuilderBase"/> class.
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters for the builder.</param>
-        protected SqlBuilderBase(SqlCharacters sqlCharacters) => SqlCharacters = sqlCharacters;
+        protected SqlBuilderBase(SqlCharacters sqlCharacters)
+            => SqlCharacters = sqlCharacters;
 
         protected bool AddedWhere { get; set; }
 

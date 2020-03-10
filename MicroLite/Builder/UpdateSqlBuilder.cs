@@ -26,7 +26,8 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters.</param>
         internal UpdateSqlBuilder(SqlCharacters sqlCharacters)
-            : base(sqlCharacters) => InnerSql.Append("UPDATE ");
+            : base(sqlCharacters)
+            => InnerSql.Append("UPDATE ");
 
         public ISetOrWhere SetColumnValue(string columnName, object columnValue)
         {
@@ -57,12 +58,7 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public ISetOrWhere Table(Type forType)
-        {
-            IObjectInfo objectInfo = ObjectInfo.For(forType);
-
-            return Table(objectInfo);
-        }
+        public ISetOrWhere Table(Type forType) => Table(ObjectInfo.For(forType));
 
         internal ISetOrWhere Table(IObjectInfo objectInfo)
         {

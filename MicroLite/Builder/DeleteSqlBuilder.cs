@@ -26,7 +26,8 @@ namespace MicroLite.Builder
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters.</param>
         internal DeleteSqlBuilder(SqlCharacters sqlCharacters)
-            : base(sqlCharacters) => InnerSql.Append("DELETE");
+            : base(sqlCharacters)
+            => InnerSql.Append("DELETE");
 
         public IWhere From(string table)
         {
@@ -41,12 +42,7 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IWhere From(Type forType)
-        {
-            IObjectInfo objectInfo = ObjectInfo.For(forType);
-
-            return From(objectInfo);
-        }
+        public IWhere From(Type forType) => From(ObjectInfo.For(forType));
 
         internal IWhere From(IObjectInfo objectInfo)
         {

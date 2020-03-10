@@ -91,9 +91,7 @@ namespace MicroLite.Builder
                 throw new ArgumentNullException(nameof(selectFrom));
             }
 
-            IAndOrOrderBy where = selectFrom.Where(_builder.ToString(), _arguments.ToArray());
-
-            return where;
+            return selectFrom.Where(_builder.ToString(), _arguments.ToArray());
         }
 
         /// <summary>

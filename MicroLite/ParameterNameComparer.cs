@@ -45,7 +45,7 @@ namespace MicroLite
         /// </returns>
         public int Compare(string x, string y)
         {
-            if (object.ReferenceEquals(x, y))
+            if (ReferenceEquals(x, y))
             {
                 // As per default string comparison logic
                 return 0;
