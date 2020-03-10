@@ -146,7 +146,7 @@ namespace MicroLite
             return this;
         }
 
-        private SqlString AppendOrderBy(string commandText, Clauses clauses, SegmentPositions segmentPositions)
+        private void AppendOrderBy(string commandText, Clauses clauses, SegmentPositions segmentPositions)
         {
             if (segmentPositions.OrderByIndex > -1
                 && (clauses & Clauses.OrderBy) == Clauses.OrderBy)
@@ -159,8 +159,6 @@ namespace MicroLite
 
                 OrderBy = segment;
             }
-
-            return this;
         }
 
         private SqlString AppendSelect(string commandText, Clauses clauses, SegmentPositions segmentPositions)

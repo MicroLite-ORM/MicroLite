@@ -231,12 +231,9 @@ namespace MicroLite.Mapping
                     throw new MicroLiteException(ExceptionMessages.PocoObjectInfo_IdentifierSetForInsert);
                 }
             }
-            else if (TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
+            else if (TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned && HasDefaultIdentifierValue(instance))
             {
-                if (HasDefaultIdentifierValue(instance))
-                {
-                    throw new MicroLiteException(ExceptionMessages.PocoObjectInfo_IdentifierNotSetForInsert);
-                }
+                throw new MicroLiteException(ExceptionMessages.PocoObjectInfo_IdentifierNotSetForInsert);
             }
         }
 

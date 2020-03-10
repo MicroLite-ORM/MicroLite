@@ -172,7 +172,7 @@ namespace MicroLite.TypeConverters
 
             Type actualType = ResolveActualType(type);
 
-            if (actualType.IsEnum)
+            if (actualType?.IsEnum == true)
             {
                 actualType = Enum.GetUnderlyingType(actualType);
             }

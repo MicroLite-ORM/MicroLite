@@ -33,10 +33,7 @@ namespace MicroLite.Core
         private readonly Queue<Include> _includes = new Queue<Include>();
         private readonly Queue<SqlQuery> _queries = new Queue<SqlQuery>();
 
-        internal ReadOnlySession(
-            ConnectionScope connectionScope,
-            ISqlDialect sqlDialect,
-            IDbDriver sqlDriver)
+        internal ReadOnlySession(ConnectionScope connectionScope, ISqlDialect sqlDialect, IDbDriver sqlDriver)
             : base(connectionScope, sqlDriver)
             => SqlDialect = sqlDialect;
 
@@ -47,17 +44,10 @@ namespace MicroLite.Core
         protected ISqlDialect SqlDialect { get; }
 
         IIncludeMany<T> IIncludeSession.All<T>()
-        {
-            var sqlQuery = new SelectSqlBuilder(SqlDialect.SqlCharacters)
-                .From(typeof(T))
-                .ToSqlQuery();
+            => Include.Many<T>(new SelectSqlBuilder(SqlDialect.SqlCharacters).From(typeof(T)).ToSqlQuery());
 
-            IIncludeMany<T> include = Include.Many<T>(sqlQuery);
-
-            return include;
-        }
-
-        public Task ExecutePendingQueriesAsync() => ExecutePendingQueriesAsync(CancellationToken.None);
+        public Task ExecutePendingQueriesAsync()
+            => ExecutePendingQueriesAsync(CancellationToken.None);
 
         public async Task ExecutePendingQueriesAsync(CancellationToken cancellationToken)
         {
@@ -98,9 +88,10 @@ namespace MicroLite.Core
             }
         }
 
-        public Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery) => FetchAsync<T>(sqlQuery, CancellationToken.None);
+        public Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery)
+            => FetchAsync<T>(sqlQuery, CancellationToken.None);
 
-        public async Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
+        public Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
         {
             ThrowIfDisposed();
 
@@ -109,14 +100,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException(nameof(sqlQuery));
             }
 
-            var include = new IncludeMany<T>();
-
-            _includes.Enqueue(include);
-            _queries.Enqueue(sqlQuery);
-
-            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
-
-            return include.Values;
+            return FetchAsyncInternal<T>(sqlQuery, cancellationToken);
         }
 
         IIncludeMany<T> IIncludeSession.Many<T>(SqlQuery sqlQuery)
@@ -137,7 +121,7 @@ namespace MicroLite.Core
         public Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions)
             => PagedAsync<T>(sqlQuery, pagingOptions, CancellationToken.None);
 
-        public async Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions, CancellationToken cancellationToken)
+        public Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions, CancellationToken cancellationToken)
         {
             ThrowIfDisposed();
 
@@ -151,23 +135,7 @@ namespace MicroLite.Core
                 throw new MicroLiteException(ExceptionMessages.Session_PagingOptionsMustNotBeNone);
             }
 
-            var includeCount = new IncludeScalar<int>();
-            _includes.Enqueue(includeCount);
-
-            SqlQuery countSqlQuery = SqlDialect.CountQuery(sqlQuery);
-            _queries.Enqueue(countSqlQuery);
-
-            var includeMany = new IncludeMany<T>();
-            _includes.Enqueue(includeMany);
-
-            SqlQuery pagedSqlQuery = SqlDialect.PageQuery(sqlQuery, pagingOptions);
-            _queries.Enqueue(pagedSqlQuery);
-
-            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
-
-            int page = (pagingOptions.Offset / pagingOptions.Count) + 1;
-
-            return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
+            return PagedAsyncInternal<T>(sqlQuery, pagingOptions, cancellationToken);
         }
 
         IInclude<T> IIncludeSession.Scalar<T>(SqlQuery sqlQuery)
@@ -196,9 +164,7 @@ namespace MicroLite.Core
 
             SqlQuery sqlQuery = SqlDialect.BuildSelectSqlQuery(objectInfo, identifier);
 
-            IInclude<T> include = Include.Single<T>(sqlQuery);
-
-            return include;
+            return Include.Single<T>(sqlQuery);
         }
 
         IInclude<T> IIncludeSession.Single<T>(SqlQuery sqlQuery)
@@ -217,9 +183,10 @@ namespace MicroLite.Core
         }
 
         public Task<T> SingleAsync<T>(object identifier)
-            where T : class, new() => SingleAsync<T>(identifier, CancellationToken.None);
+            where T : class, new()
+            => SingleAsync<T>(identifier, CancellationToken.None);
 
-        public async Task<T> SingleAsync<T>(object identifier, CancellationToken cancellationToken)
+        public Task<T> SingleAsync<T>(object identifier, CancellationToken cancellationToken)
             where T : class, new()
         {
             ThrowIfDisposed();
@@ -229,16 +196,13 @@ namespace MicroLite.Core
                 throw new ArgumentNullException(nameof(identifier));
             }
 
-            IInclude<T> include = Include.Single<T>(identifier);
-
-            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
-
-            return include.Value;
+            return SingleAsyncInternal<T>(identifier, cancellationToken);
         }
 
-        public Task<T> SingleAsync<T>(SqlQuery sqlQuery) => SingleAsync<T>(sqlQuery, CancellationToken.None);
+        public Task<T> SingleAsync<T>(SqlQuery sqlQuery)
+            => SingleAsync<T>(sqlQuery, CancellationToken.None);
 
-        public async Task<T> SingleAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
+        public Task<T> SingleAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
         {
             ThrowIfDisposed();
 
@@ -247,14 +211,7 @@ namespace MicroLite.Core
                 throw new ArgumentNullException(nameof(sqlQuery));
             }
 
-            var include = new IncludeSingle<T>();
-
-            _includes.Enqueue(include);
-            _queries.Enqueue(sqlQuery);
-
-            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
-
-            return include.Value;
+            return SingleAsyncInternal<T>(sqlQuery, cancellationToken);
         }
 
         private async Task ExecuteQueriesCombinedAsync(CancellationToken cancellationToken)
@@ -309,6 +266,61 @@ namespace MicroLite.Core
                 }
             }
             while (_queries.Count > 0);
+        }
+
+        private async Task<IList<T>> FetchAsyncInternal<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
+        {
+            var include = new IncludeMany<T>();
+
+            _includes.Enqueue(include);
+            _queries.Enqueue(sqlQuery);
+
+            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
+
+            return include.Values;
+        }
+
+        private async Task<PagedResult<T>> PagedAsyncInternal<T>(SqlQuery sqlQuery, PagingOptions pagingOptions, CancellationToken cancellationToken)
+        {
+            var includeCount = new IncludeScalar<int>();
+            _includes.Enqueue(includeCount);
+
+            SqlQuery countSqlQuery = SqlDialect.CountQuery(sqlQuery);
+            _queries.Enqueue(countSqlQuery);
+
+            var includeMany = new IncludeMany<T>();
+            _includes.Enqueue(includeMany);
+
+            SqlQuery pagedSqlQuery = SqlDialect.PageQuery(sqlQuery, pagingOptions);
+            _queries.Enqueue(pagedSqlQuery);
+
+            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
+
+            int page = (pagingOptions.Offset / pagingOptions.Count) + 1;
+
+            return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
+        }
+
+        private async Task<T> SingleAsyncInternal<T>(object identifier, CancellationToken cancellationToken)
+            where T : class, new()
+        {
+            IInclude<T> include = Include.Single<T>(identifier);
+
+            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
+
+            return include.Value;
+        }
+
+        private async Task<T> SingleAsyncInternal<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
+        {
+            var include = new IncludeSingle<T>();
+
+            _includes.Enqueue(include);
+            _queries.Enqueue(sqlQuery);
+
+            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
+
+            return include.Value;
         }
     }
 }

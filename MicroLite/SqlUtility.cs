@@ -104,8 +104,14 @@ namespace MicroLite
         /// <param name="sql">The SQL.</param>
         /// <param name="totalArgumentCount">The total number of arguments.</param>
         /// <returns>The re-numbered SQL.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sql"/> is null.</exception>
         public static string RenumberParameters(string sql, int totalArgumentCount)
         {
+            if (sql is null)
+            {
+                throw new ArgumentNullException(nameof(sql));
+            }
+
             IList<string> parameterNames = GetParameterNames(sql);
 
             if (parameterNames.Count == 0)

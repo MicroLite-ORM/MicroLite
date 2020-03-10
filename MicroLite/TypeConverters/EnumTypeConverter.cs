@@ -41,7 +41,7 @@ namespace MicroLite.TypeConverters
 
             Type actualType = TypeConverter.ResolveActualType(type);
 
-            return actualType != null ? actualType.IsEnum : false;
+            return actualType?.IsEnum == true;
         }
 
         /// <summary>

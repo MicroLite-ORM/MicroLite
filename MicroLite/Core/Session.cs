@@ -30,19 +30,16 @@ namespace MicroLite.Core
     {
         private readonly SessionListeners _sessionListeners;
 
-        internal Session(
-            ConnectionScope connectionScope,
-            ISqlDialect sqlDialect,
-            IDbDriver sqlDriver,
-            SessionListeners sessionListeners)
+        internal Session(ConnectionScope connectionScope, ISqlDialect sqlDialect, IDbDriver sqlDriver, SessionListeners sessionListeners)
             : base(connectionScope, sqlDialect, sqlDriver)
             => _sessionListeners = sessionListeners;
 
         public new IAdvancedSession Advanced => this;
 
-        public Task<bool> DeleteAsync(object instance) => DeleteAsync(instance, CancellationToken.None);
+        public Task<bool> DeleteAsync(object instance)
+            => DeleteAsync(instance, CancellationToken.None);
 
-        public async Task<bool> DeleteAsync(object instance, CancellationToken cancellationToken)
+        public Task<bool> DeleteAsync(object instance, CancellationToken cancellationToken)
         {
             ThrowIfDisposed();
 
@@ -51,6 +48,111 @@ namespace MicroLite.Core
                 throw new ArgumentNullException(nameof(instance));
             }
 
+            return DeleteAsyncInternal(instance, cancellationToken);
+        }
+
+        public Task<bool> DeleteAsync(Type type, object identifier)
+            => DeleteAsync(type, identifier, CancellationToken.None);
+
+        public Task<bool> DeleteAsync(Type type, object identifier, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (identifier is null)
+            {
+                throw new ArgumentNullException(nameof(identifier));
+            }
+
+            return DeleteAsyncInternal(type, identifier, cancellationToken);
+        }
+
+        public Task<int> ExecuteAsync(SqlQuery sqlQuery)
+            => ExecuteAsync(sqlQuery, CancellationToken.None);
+
+        public Task<int> ExecuteAsync(SqlQuery sqlQuery, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+
+            if (sqlQuery is null)
+            {
+                throw new ArgumentNullException(nameof(sqlQuery));
+            }
+
+            return ExecuteQueryAsync(sqlQuery, cancellationToken);
+        }
+
+        public Task<T> ExecuteScalarAsync<T>(SqlQuery sqlQuery)
+            => ExecuteScalarAsync<T>(sqlQuery, CancellationToken.None);
+
+        public Task<T> ExecuteScalarAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+
+            if (sqlQuery is null)
+            {
+                throw new ArgumentNullException(nameof(sqlQuery));
+            }
+
+            return ExecuteScalarQueryAsync<T>(sqlQuery, cancellationToken);
+        }
+
+        public Task InsertAsync(object instance)
+            => InsertAsync(instance, CancellationToken.None);
+
+        public Task InsertAsync(object instance, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+
+            if (instance is null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+
+            return InsertAsyncInternal(instance, cancellationToken);
+        }
+
+        public Task<bool> UpdateAsync(object instance)
+            => UpdateAsync(instance, CancellationToken.None);
+
+        public Task<bool> UpdateAsync(object instance, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+
+            if (instance is null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+
+            return UpdateAsyncInternal(instance, cancellationToken);
+        }
+
+        public Task<bool> UpdateAsync(ObjectDelta objectDelta)
+            => UpdateAsync(objectDelta, CancellationToken.None);
+
+        public Task<bool> UpdateAsync(ObjectDelta objectDelta, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+
+            if (objectDelta is null)
+            {
+                throw new ArgumentNullException(nameof(objectDelta));
+            }
+
+            if (objectDelta.ChangeCount == 0)
+            {
+                throw new MicroLiteException(ExceptionMessages.ObjectDelta_MustContainAtLeastOneChange);
+            }
+
+            return UpdateAsyncInternal(objectDelta, cancellationToken);
+        }
+
+        private async Task<bool> DeleteAsyncInternal(object instance, CancellationToken cancellationToken)
+        {
             for (int i = 0; i < _sessionListeners.DeleteListeners.Count; i++)
             {
                 _sessionListeners.DeleteListeners[i].BeforeDelete(instance);
@@ -77,138 +179,11 @@ namespace MicroLite.Core
             return rowsAffected == 1;
         }
 
-        public Task<bool> DeleteAsync(Type type, object identifier) => DeleteAsync(type, identifier, CancellationToken.None);
-
-        public async Task<bool> DeleteAsync(Type type, object identifier, CancellationToken cancellationToken)
+        private async Task<bool> DeleteAsyncInternal(Type type, object identifier, CancellationToken cancellationToken)
         {
-            ThrowIfDisposed();
-
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            if (identifier is null)
-            {
-                throw new ArgumentNullException(nameof(identifier));
-            }
-
             IObjectInfo objectInfo = ObjectInfo.For(type);
 
             SqlQuery sqlQuery = SqlDialect.BuildDeleteSqlQuery(objectInfo, identifier);
-
-            int rowsAffected = await ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
-
-            return rowsAffected == 1;
-        }
-
-        public Task<int> ExecuteAsync(SqlQuery sqlQuery) => ExecuteAsync(sqlQuery, CancellationToken.None);
-
-        public async Task<int> ExecuteAsync(SqlQuery sqlQuery, CancellationToken cancellationToken)
-        {
-            ThrowIfDisposed();
-
-            if (sqlQuery is null)
-            {
-                throw new ArgumentNullException(nameof(sqlQuery));
-            }
-
-            return await ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
-        }
-
-        public Task<T> ExecuteScalarAsync<T>(SqlQuery sqlQuery) => ExecuteScalarAsync<T>(sqlQuery, CancellationToken.None);
-
-        public async Task<T> ExecuteScalarAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
-        {
-            ThrowIfDisposed();
-
-            if (sqlQuery is null)
-            {
-                throw new ArgumentNullException(nameof(sqlQuery));
-            }
-
-            return await ExecuteScalarQueryAsync<T>(sqlQuery, cancellationToken).ConfigureAwait(false);
-        }
-
-        public Task InsertAsync(object instance) => InsertAsync(instance, CancellationToken.None);
-
-        public async Task InsertAsync(object instance, CancellationToken cancellationToken)
-        {
-            ThrowIfDisposed();
-
-            if (instance is null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            for (int i = 0; i < _sessionListeners.InsertListeners.Count; i++)
-            {
-                _sessionListeners.InsertListeners[i].BeforeInsert(instance);
-            }
-
-            IObjectInfo objectInfo = ObjectInfo.For(instance.GetType());
-            objectInfo.VerifyInstanceForInsert(instance);
-
-            object identifier = await InsertReturningIdentifierAsync(objectInfo, instance, cancellationToken).ConfigureAwait(false);
-
-            for (int i = _sessionListeners.InsertListeners.Count - 1; i >= 0; i--)
-            {
-                _sessionListeners.InsertListeners[i].AfterInsert(instance, identifier);
-            }
-        }
-
-        public Task<bool> UpdateAsync(object instance) => UpdateAsync(instance, CancellationToken.None);
-
-        public async Task<bool> UpdateAsync(object instance, CancellationToken cancellationToken)
-        {
-            ThrowIfDisposed();
-
-            if (instance is null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            for (int i = 0; i < _sessionListeners.UpdateListeners.Count; i++)
-            {
-                _sessionListeners.UpdateListeners[i].BeforeUpdate(instance);
-            }
-
-            IObjectInfo objectInfo = ObjectInfo.For(instance.GetType());
-
-            if (objectInfo.HasDefaultIdentifierValue(instance))
-            {
-                throw new MicroLiteException(ExceptionMessages.Session_IdentifierNotSetForUpdate);
-            }
-
-            SqlQuery sqlQuery = SqlDialect.BuildUpdateSqlQuery(objectInfo, instance);
-
-            int rowsAffected = await ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
-
-            for (int i = _sessionListeners.UpdateListeners.Count - 1; i >= 0; i--)
-            {
-                _sessionListeners.UpdateListeners[i].AfterUpdate(instance, rowsAffected);
-            }
-
-            return rowsAffected == 1;
-        }
-
-        public Task<bool> UpdateAsync(ObjectDelta objectDelta) => UpdateAsync(objectDelta, CancellationToken.None);
-
-        public async Task<bool> UpdateAsync(ObjectDelta objectDelta, CancellationToken cancellationToken)
-        {
-            ThrowIfDisposed();
-
-            if (objectDelta is null)
-            {
-                throw new ArgumentNullException(nameof(objectDelta));
-            }
-
-            if (objectDelta.ChangeCount == 0)
-            {
-                throw new MicroLiteException(ExceptionMessages.ObjectDelta_MustContainAtLeastOneChange);
-            }
-
-            SqlQuery sqlQuery = SqlDialect.BuildUpdateSqlQuery(objectDelta);
 
             int rowsAffected = await ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
 
@@ -279,14 +254,31 @@ namespace MicroLite.Core
             }
         }
 
+        private async Task InsertAsyncInternal(object instance, CancellationToken cancellationToken)
+        {
+            for (int i = 0; i < _sessionListeners.InsertListeners.Count; i++)
+            {
+                _sessionListeners.InsertListeners[i].BeforeInsert(instance);
+            }
+
+            IObjectInfo objectInfo = ObjectInfo.For(instance.GetType());
+            objectInfo.VerifyInstanceForInsert(instance);
+
+            object identifier = await InsertReturningIdentifierAsync(objectInfo, instance, cancellationToken).ConfigureAwait(false);
+
+            for (int i = _sessionListeners.InsertListeners.Count - 1; i >= 0; i--)
+            {
+                _sessionListeners.InsertListeners[i].AfterInsert(instance, identifier);
+            }
+        }
+
         private async Task<object> InsertReturningIdentifierAsync(IObjectInfo objectInfo, object instance, CancellationToken cancellationToken)
         {
             object identifier = null;
 
             SqlQuery insertSqlQuery = SqlDialect.BuildInsertSqlQuery(objectInfo, instance);
 
-            if (SqlDialect.SupportsSelectInsertedIdentifier
-                && objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
+            if (SqlDialect.SupportsSelectInsertedIdentifier && objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
                 SqlQuery selectInsertIdSqlQuery = SqlDialect.BuildSelectInsertIdSqlQuery(objectInfo);
 
@@ -311,6 +303,41 @@ namespace MicroLite.Core
             }
 
             return identifier;
+        }
+
+        private async Task<bool> UpdateAsyncInternal(object instance, CancellationToken cancellationToken)
+        {
+            for (int i = 0; i < _sessionListeners.UpdateListeners.Count; i++)
+            {
+                _sessionListeners.UpdateListeners[i].BeforeUpdate(instance);
+            }
+
+            IObjectInfo objectInfo = ObjectInfo.For(instance.GetType());
+
+            if (objectInfo.HasDefaultIdentifierValue(instance))
+            {
+                throw new MicroLiteException(ExceptionMessages.Session_IdentifierNotSetForUpdate);
+            }
+
+            SqlQuery sqlQuery = SqlDialect.BuildUpdateSqlQuery(objectInfo, instance);
+
+            int rowsAffected = await ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
+
+            for (int i = _sessionListeners.UpdateListeners.Count - 1; i >= 0; i--)
+            {
+                _sessionListeners.UpdateListeners[i].AfterUpdate(instance, rowsAffected);
+            }
+
+            return rowsAffected == 1;
+        }
+
+        private async Task<bool> UpdateAsyncInternal(ObjectDelta objectDelta, CancellationToken cancellationToken)
+        {
+            SqlQuery sqlQuery = SqlDialect.BuildUpdateSqlQuery(objectDelta);
+
+            int rowsAffected = await ExecuteQueryAsync(sqlQuery, cancellationToken).ConfigureAwait(false);
+
+            return rowsAffected == 1;
         }
     }
 }

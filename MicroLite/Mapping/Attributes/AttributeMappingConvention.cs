@@ -97,7 +97,7 @@ namespace MicroLite.Mapping.Attributes
                     propertyInfo: property,
                     isIdentifier: identifierAttribute != null,
                     allowInsert: identifierAttribute != null ? identifierStrategy == IdentifierStrategy.Assigned : columnAttribute.AllowInsert,
-                    allowUpdate: identifierAttribute != null ? false : columnAttribute.AllowUpdate,
+                    allowUpdate: identifierAttribute == null && columnAttribute.AllowUpdate,
                     sequenceName: identifierAttribute?.SequenceName);
 
                 if (_log.IsDebug)

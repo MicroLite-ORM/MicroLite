@@ -150,10 +150,10 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => session.DeleteAsync(null).Result);
 
-            Assert.Equal("instance", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
         [Fact]
@@ -232,10 +232,7 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.DeleteAsync(new Customer()).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            Assert.Throws<ObjectDisposedException>(() => session.DeleteAsync(new Customer()).Result);
         }
 
         [Fact]
@@ -309,10 +306,10 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => session.DeleteAsync(typeof(Customer), null).Result);
 
-            Assert.Equal("identifier", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("identifier", exception.ParamName);
         }
 
         [Fact]
@@ -324,10 +321,10 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => session.DeleteAsync(null, 1234).Result);
 
-            Assert.Equal("type", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("type", exception.ParamName);
         }
 
         [Fact]
@@ -377,10 +374,7 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.DeleteAsync(typeof(Customer), 1234).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            Assert.Throws<ObjectDisposedException>(() => session.DeleteAsync(typeof(Customer), 1234).Result);
         }
 
         [Fact]
@@ -448,10 +442,10 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => session.ExecuteScalarAsync<object>(null).Result);
 
-            Assert.Equal("sqlQuery", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]
@@ -467,10 +461,7 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.ExecuteScalarAsync<int>(new SqlQuery("SELECT")).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            Assert.Throws<ObjectDisposedException>(() => session.ExecuteScalarAsync<int>(new SqlQuery("SELECT")).Result);
         }
 
         [Fact]
@@ -510,10 +501,10 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => session.ExecuteAsync(null).Result);
 
-            Assert.Equal("sqlQuery", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]
@@ -529,10 +520,7 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.ExecuteAsync(new SqlQuery("SELECT")).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            Assert.Throws<ObjectDisposedException>(() => session.ExecuteAsync(new SqlQuery("SELECT")).Result);
         }
 
         [Fact]
@@ -748,10 +736,10 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => session.InsertAsync(null).Wait());
 
-            Assert.Equal("instance", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
         [Fact]
@@ -801,10 +789,7 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.InsertAsync(new Customer()).Wait());
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            Assert.Throws<ObjectDisposedException>(() => session.InsertAsync(new Customer()).Wait());
         }
 
         [Fact]
@@ -964,10 +949,10 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => session.UpdateAsync((Customer)null).Result);
 
-            Assert.Equal("instance", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("instance", exception.ParamName);
         }
 
         [Fact]
@@ -1042,10 +1027,7 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.UpdateAsync(new Customer()).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            Assert.Throws<ObjectDisposedException>(() => session.UpdateAsync(new Customer()).Result);
         }
 
         [Fact]
@@ -1117,10 +1099,10 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.UpdateAsync((ObjectDelta)null).Result);
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.UpdateAsync(default(ObjectDelta)).Result);
 
-            Assert.Equal("objectDelta", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("objectDelta", exception.ParamName);
         }
 
         [Fact]
@@ -1134,11 +1116,9 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.UpdateAsync(objectDelta).Result);
+            var exception = Assert.Throws<MicroLiteException>(() => session.UpdateAsync(objectDelta).Result);
 
-            Assert.IsType<MicroLiteException>(exception.InnerException);
-            Assert.Equal(ExceptionMessages.ObjectDelta_MustContainAtLeastOneChange, exception.InnerException.Message);
+            Assert.Equal(ExceptionMessages.ObjectDelta_MustContainAtLeastOneChange, exception.Message);
         }
 
         [Fact]
@@ -1154,10 +1134,7 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.UpdateAsync(new ObjectDelta(typeof(Customer), 1234)).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            Assert.Throws<ObjectDisposedException>(() => session.UpdateAsync(new ObjectDelta(typeof(Customer), 1234)).Result);
         }
     }
 }

@@ -113,10 +113,10 @@
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
 
-            var exception = Assert.Throws<AggregateException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => session.FetchAsync<Customer>(null).Result);
 
-            Assert.Equal("sqlQuery", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]
@@ -131,10 +131,7 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.FetchAsync<Customer>(null).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            Assert.Throws<ObjectDisposedException>(() => session.FetchAsync<Customer>(null).Result);
         }
 
         [Fact]
@@ -420,10 +417,10 @@
                 new Mock<ISqlDialect>().Object,
                 new Mock<IDbDriver>().Object);
 
-            var exception = Assert.Throws<AggregateException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => session.PagedAsync<Customer>(null, PagingOptions.ForPage(1, 25)).Result);
 
-            Assert.Equal("sqlQuery", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]
@@ -438,10 +435,7 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.PagedAsync<Customer>(null, PagingOptions.ForPage(1, 25)).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            Assert.Throws<ObjectDisposedException>(() => session.PagedAsync<Customer>(null, PagingOptions.ForPage(1, 25)).Result);
         }
 
         [Fact]
@@ -525,10 +519,10 @@
 
             object identifier = null;
 
-            var exception = Assert.Throws<AggregateException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => session.SingleAsync<Customer>(identifier).Result);
 
-            Assert.Equal("identifier", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("identifier", exception.ParamName);
         }
 
         [Fact]
@@ -543,10 +537,7 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.SingleAsync<Customer>(1).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            Assert.Throws<ObjectDisposedException>(() => session.SingleAsync<Customer>(1).Result);
         }
 
         [Fact]
@@ -623,10 +614,10 @@
 
             SqlQuery sqlQuery = null;
 
-            var exception = Assert.Throws<AggregateException>(
+            var exception = Assert.Throws<ArgumentNullException>(
                 () => session.SingleAsync<Customer>(sqlQuery).Result);
 
-            Assert.Equal("sqlQuery", ((ArgumentNullException)exception.InnerException).ParamName);
+            Assert.Equal("sqlQuery", exception.ParamName);
         }
 
         [Fact]
@@ -641,10 +632,7 @@
             {
             }
 
-            var exception = Assert.Throws<AggregateException>(
-                () => session.SingleAsync<Customer>(new SqlQuery("")).Result);
-
-            Assert.IsType<ObjectDisposedException>(exception.InnerException);
+            Assert.Throws<ObjectDisposedException>(() => session.SingleAsync<Customer>(new SqlQuery("")).Result);
         }
 
         public class WhenCallingPagedUsingPagingOptionsNone
@@ -657,11 +645,10 @@
                     new Mock<ISqlDialect>().Object,
                     new Mock<IDbDriver>().Object);
 
-                var exception = Assert.Throws<AggregateException>(
+                var exception = Assert.Throws<MicroLiteException>(
                     () => session.PagedAsync<Customer>(new SqlQuery(""), PagingOptions.None).Result);
 
-                Assert.IsType<MicroLiteException>(exception.InnerException);
-                Assert.Equal(ExceptionMessages.Session_PagingOptionsMustNotBeNone, exception.InnerException.Message);
+                Assert.Equal(ExceptionMessages.Session_PagingOptionsMustNotBeNone, exception.Message);
             }
         }
 
