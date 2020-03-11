@@ -52,14 +52,16 @@ namespace MicroLite.Mapping.Inflection
         /// Adds a word which is considered invariant such as equipment or species.
         /// </summary>
         /// <param name="word">The invariant word.</param>
-        public void AddInvariantWord(string word) => _singularWords.Add(word);
+        public void AddInvariantWord(string word)
+            => _singularWords.Add(word);
 
         /// <summary>
         /// Adds (or replaces) the rule.
         /// </summary>
         /// <param name="searchPattern">The pattern to match upon.</param>
         /// <param name="replacementPattern">The replacement pattern.</param>
-        public void AddRule(string searchPattern, string replacementPattern) => _rules[searchPattern] = replacementPattern;
+        public void AddRule(string searchPattern, string replacementPattern)
+            => _rules[searchPattern] = replacementPattern;
 
         /// <summary>
         /// Returns the plural version of the specified singular word or the specified word if there

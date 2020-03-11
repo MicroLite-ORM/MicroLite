@@ -54,7 +54,8 @@ namespace MicroLite.Configuration
         ///     .WithWebApi(); // To use the WebApi extensions, install the MicroLite.Extensions.WebApi package.
         /// </code>
         /// </example>
-        public static IConfigureExtensions Extensions() => new ConfigureExtensions();
+        public static IConfigureExtensions Extensions()
+            => new ConfigureExtensions();
 
         /// <summary>
         /// Begins the configuration process using the fluent API.
@@ -68,6 +69,7 @@ namespace MicroLite.Configuration
         ///     .CreateSessionFactory();
         /// </code>
         /// </example>
-        public static IConfigureConnection Fluently() => new FluentConfiguration(OnSessionFactoryCreated);
+        public static IConfigureConnection Fluently()
+            => new FluentConfiguration(OnSessionFactoryCreated);
     }
 }

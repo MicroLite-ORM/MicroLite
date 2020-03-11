@@ -199,7 +199,8 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IWhereOrOrderBy From(Type forType) => From(ObjectInfo.For(forType));
+        public IWhereOrOrderBy From(Type forType)
+            => From(ObjectInfo.For(forType));
 
         public IHavingOrOrderBy GroupBy(string column)
         {

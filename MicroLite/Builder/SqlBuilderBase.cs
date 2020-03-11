@@ -58,7 +58,8 @@ namespace MicroLite.Builder
         /// </summary>
         /// <returns>The created <see cref="SqlQuery"/>.</returns>
         /// <remarks>This method is called to return an SqlQuery once query has been defined.</remarks>
-        public virtual SqlQuery ToSqlQuery() => new SqlQuery(InnerSql.ToString(), Arguments.ToArray());
+        public virtual SqlQuery ToSqlQuery()
+            => new SqlQuery(InnerSql.ToString(), Arguments.ToArray());
 
         protected void AddBetween(object lower, object upper, bool negate)
         {

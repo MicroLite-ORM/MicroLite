@@ -58,7 +58,8 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public ISetOrWhere Table(Type forType) => Table(ObjectInfo.For(forType));
+        public ISetOrWhere Table(Type forType)
+            => Table(ObjectInfo.For(forType));
 
         internal ISetOrWhere Table(IObjectInfo objectInfo)
         {

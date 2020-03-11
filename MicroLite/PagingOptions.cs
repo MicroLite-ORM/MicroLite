@@ -134,7 +134,8 @@ namespace MicroLite
         /// <returns>
         ///   <c>true</c> if the specified <see cref="PagingOptions" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(PagingOptions other) => other.Count == Count && other.Offset == Offset;
+        public bool Equals(PagingOptions other)
+            => other.Count == Count && other.Offset == Offset;
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -142,6 +143,7 @@ namespace MicroLite
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public override int GetHashCode() => Count.GetHashCode() ^ Offset.GetHashCode();
+        public override int GetHashCode()
+            => Count.GetHashCode() ^ Offset.GetHashCode();
     }
 }

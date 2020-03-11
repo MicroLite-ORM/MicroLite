@@ -59,6 +59,7 @@ namespace MicroLite
         /// </summary>
         /// <param name="propertyName">The name of the property to change.</param>
         /// <param name="newValue">The new value for the property (can be null).</param>
-        public void AddChange(string propertyName, object newValue) => _changes.Add(propertyName, newValue);
+        public void AddChange(string propertyName, object newValue)
+            => _changes.Add(propertyName, newValue);
     }
 }

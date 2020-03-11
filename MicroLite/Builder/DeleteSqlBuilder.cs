@@ -42,7 +42,8 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IWhere From(Type forType) => From(ObjectInfo.For(forType));
+        public IWhere From(Type forType)
+            => From(ObjectInfo.For(forType));
 
         internal IWhere From(IObjectInfo objectInfo)
         {

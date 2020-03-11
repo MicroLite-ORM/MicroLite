@@ -58,7 +58,8 @@ namespace MicroLite.Builder
             return this;
         }
 
-        public IInsertColumn Into(Type forType) => Into(ObjectInfo.For(forType));
+        public IInsertColumn Into(Type forType)
+            => Into(ObjectInfo.For(forType));
 
         public IToSqlQuery Values(params object[] columnValues)
         {

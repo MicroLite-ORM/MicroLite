@@ -95,7 +95,8 @@ namespace MicroLite
         /// <returns>
         ///   <c>true</c> if the specified <see cref="object"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj) => Equals(obj as SqlQuery);
+        public override bool Equals(object obj)
+            => Equals(obj as SqlQuery);
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -134,7 +135,8 @@ namespace MicroLite
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public override int GetHashCode() => CommandText.GetHashCode() ^ Arguments.GetHashCode();
+        public override int GetHashCode()
+            => CommandText.GetHashCode() ^ Arguments.GetHashCode();
 
         /// <summary>
         /// Returns a <see cref="string"/> that represents this instance.

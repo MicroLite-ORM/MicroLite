@@ -18,6 +18,7 @@ namespace MicroLite.Mapping
     internal static class MemberInfoExtensions
     {
         internal static T GetAttribute<T>(this MemberInfo memberInfo, bool inherit)
-            where T : Attribute => memberInfo.GetCustomAttributes(typeof(T), inherit) is T[] attributes && attributes.Length == 1 ? attributes[0] : null;
+            where T : Attribute
+            => memberInfo.GetCustomAttributes(typeof(T), inherit) is T[] attributes && attributes.Length == 1 ? attributes[0] : null;
     }
 }

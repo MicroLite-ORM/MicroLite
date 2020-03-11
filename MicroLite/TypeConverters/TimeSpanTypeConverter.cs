@@ -39,7 +39,8 @@ namespace MicroLite.TypeConverters
         /// <returns>
         ///   <c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanConvert(Type type) => _timeSpanType == type || _timeSpanTypeNullable == type;
+        public bool CanConvert(Type type)
+            => _timeSpanType == type || _timeSpanTypeNullable == type;
 
         /// <summary>
         /// Converts the specified database value into an instance of the specified type.

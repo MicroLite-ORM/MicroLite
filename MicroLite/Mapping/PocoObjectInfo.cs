@@ -195,7 +195,8 @@ namespace MicroLite.Mapping
         /// <returns>
         /// True if the identifier is the default value, otherwise false.
         /// </returns>
-        public bool IsDefaultIdentifier(object identifier) => Equals(identifier, _defaultIdentifierValue);
+        public bool IsDefaultIdentifier(object identifier)
+            => Equals(identifier, _defaultIdentifierValue);
 
         /// <summary>
         /// Sets the property value for the object identifier to the supplied value.

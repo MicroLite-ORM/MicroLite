@@ -59,7 +59,8 @@ namespace MicroLite
         /// <param name="sqlArgument1">The SqlArgument to check.</param>
         /// <param name="sqlArgument2">The SqlArgument to check against.</param>
         /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(SqlArgument sqlArgument1, SqlArgument sqlArgument2) => !sqlArgument1.Equals(sqlArgument2);
+        public static bool operator !=(SqlArgument sqlArgument1, SqlArgument sqlArgument2)
+            => !sqlArgument1.Equals(sqlArgument2);
 
         /// <summary>
         /// Checks whether two separate SqlArgument instances are equal.
@@ -67,7 +68,8 @@ namespace MicroLite
         /// <param name="sqlArgument1">The SqlArgument to check.</param>
         /// <param name="sqlArgument2">The SqlArgument to check against.</param>
         /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(SqlArgument sqlArgument1, SqlArgument sqlArgument2) => sqlArgument1.Equals(sqlArgument2);
+        public static bool operator ==(SqlArgument sqlArgument1, SqlArgument sqlArgument2)
+            => sqlArgument1.Equals(sqlArgument2);
 
         /// <summary>
         /// Determines whether the specified <see cref="object" /> is equal to this instance.
@@ -95,7 +97,8 @@ namespace MicroLite
         /// <returns>
         ///   <c>true</c> if the specified <see cref="SqlArgument" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(SqlArgument other) => DbType == other.DbType && Equals(Value, other.Value);
+        public bool Equals(SqlArgument other)
+            => DbType == other.DbType && Equals(Value, other.Value);
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -103,6 +106,7 @@ namespace MicroLite
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public override int GetHashCode() => ((int)DbType).GetHashCode() ^ (Value ?? string.Empty).GetHashCode();
+        public override int GetHashCode()
+            => ((int)DbType).GetHashCode() ^ (Value ?? string.Empty).GetHashCode();
     }
 }

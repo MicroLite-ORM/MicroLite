@@ -120,7 +120,8 @@ namespace MicroLite.TypeConverters
         /// </summary>
         /// <param name="type">The Type to be mapped.</param>
         /// <param name="dbType">The DbType to be mapped to.</param>
-        public static void RegisterTypeMapping(Type type, DbType dbType) => s_dbTypeMap[type] = dbType;
+        public static void RegisterTypeMapping(Type type, DbType dbType)
+            => s_dbTypeMap[type] = dbType;
 
         /// <summary>
         /// Resolves the actual type.
