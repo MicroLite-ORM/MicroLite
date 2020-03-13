@@ -4,8 +4,8 @@ MicroLite
 |Service|Status|
 |-------|------|
 ||[![NuGet version](https://badge.fury.io/nu/MicroLite.svg)](http://badge.fury.io/nu/MicroLite)|
-|/develop|[![Build Status](https://dev.azure.com/MicroLite-ORM/MicroLite-ORM/_apis/build/status/MicroLite-ORM.MicroLite?branchName=develop)](https://dev.azure.com/MicroLite-ORM/MicroLite-ORM/_build/latest?definitionId=36&branchName=develop)|
-|/master|[![Build Status](https://dev.azure.com/MicroLite-ORM/MicroLite-ORM/_apis/build/status/MicroLite-ORM.MicroLite?branchName=master)](https://dev.azure.com/MicroLite-ORM/MicroLite-ORM/_build/latest?definitionId=36&branchName=master)|
+|/develop|[![Build Status](https://dev.azure.com/trevorpilley/MicroLite-ORM/_apis/build/status/MicroLite-ORM.MicroLite?branchName=develop)](https://dev.azure.com/trevorpilley/MicroLite-ORM/_build/latest?definitionId=36&branchName=develop)|
+|/master|[![Build Status](https://dev.azure.com/trevorpilley/MicroLite-ORM/_apis/build/status/MicroLite-ORM.MicroLite?branchName=master)](https://dev.azure.com/trevorpilley/MicroLite-ORM/_build/latest?definitionId=36&branchName=master)|
 
 MicroLite is a .NET 4.5 library providing a small lightweight or "micro" object relational mapping (ORM) for the Microsoft .NET framework. Its purpose is to provide a flexible and powerful feature set whilst maintaining a simple and concise API.
 
@@ -21,7 +21,7 @@ _Headline Features_
 * Fluent SQL Builder which makes it easier to create more complex queries
 * Interface based API which makes unit testing easy
 
-### SQL Support
+## SQL Support
 
 * [Microsoft SQL Server](https://github.com/MicroLite-ORM/MicroLite/wiki#configuring-the-connection) 2005 or newer
 * [MySql](https://github.com/MicroLite-ORM/MicroLite/wiki/Using-MySql) 5.5 or newer
@@ -29,7 +29,7 @@ _Headline Features_
 * [PostgreSQL](https://github.com/MicroLite-ORM/MicroLite/wiki/Using-PostgreSQL) 9.2 or newer
 * [Firebird](https://github.com/MicroLite-ORM/MicroLite/wiki/Using-Firebird) 2.5 or newer
 
-### Supported .NET Versions
+## Supported .NET Versions
 
 The NuGet Package contains binaries compiled against:
 
