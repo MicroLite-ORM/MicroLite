@@ -1,12 +1,12 @@
 MicroLite
 =========
 
-|Service|Status|
+![Nuget](https://img.shields.io/nuget/dt/MicroLite)
+
+|Branch|Status|
 |-------|------|
-||![Nuget](https://img.shields.io/nuget/dt/MicroLite)![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/MicroLite)![Nuget](https://img.shields.io/nuget/v/MicroLite)|
-|/develop|[![Build Status](https://dev.azure.com/trevorpilley/MicroLite-ORM/_apis/build/status/MicroLite-ORM.MicroLite?branchName=develop)](https://dev.azure.com/trevorpilley/MicroLite-ORM/_build/latest?definitionId=36&branchName=develop)|
-|/master|[![Build Status](https://dev.azure.com/trevorpilley/MicroLite-ORM/_apis/build/status/MicroLite-ORM.MicroLite?branchName=master)](https://dev.azure.com/trevorpilley/MicroLite-ORM/_build/latest?definitionId=36&branchName=master)|
-||![GitHub last commit](https://img.shields.io/github/last-commit/MicroLite-ORM/MicroLite) ![GitHub Release Date](https://img.shields.io/github/release-date/MicroLite-ORM/MicroLite)|
+|/develop|![GitHub last commit (branch)](https://img.shields.io/github/last-commit/MicroLite-ORM/MicroLite/develop) [![Build Status](https://dev.azure.com/trevorpilley/MicroLite-ORM/_apis/build/status/MicroLite-ORM.MicroLite?branchName=develop)](https://dev.azure.com/trevorpilley/MicroLite-ORM/_build/latest?definitionId=36&branchName=develop) ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/MicroLite)|
+|/master|![GitHub last commit](https://img.shields.io/github/last-commit/MicroLite-ORM/MicroLite/master) [![Build Status](https://dev.azure.com/trevorpilley/MicroLite-ORM/_apis/build/status/MicroLite-ORM.MicroLite?branchName=master)](https://dev.azure.com/trevorpilley/MicroLite-ORM/_build/latest?definitionId=36&branchName=master) ![Nuget](https://img.shields.io/nuget/v/MicroLite) ![GitHub Release Date](https://img.shields.io/github/release-date/MicroLite-ORM/MicroLite)|
 
 MicroLite is a .NET 4.5 library providing a small lightweight or "micro" object relational mapping (ORM) for the Microsoft .NET framework. Its purpose is to provide a flexible and powerful feature set whilst maintaining a simple and concise API.
 
