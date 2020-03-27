@@ -685,7 +685,7 @@
 
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            Assert.DoesNotThrow(() => objectInfo.VerifyInstanceForInsert(customer));
+            objectInfo.VerifyInstanceForInsert(customer);
         }
 
         [Fact]
@@ -701,7 +701,7 @@
 
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            Assert.DoesNotThrow(() => objectInfo.VerifyInstanceForInsert(customer));
+            objectInfo.VerifyInstanceForInsert(customer);
         }
 
         [Fact]
@@ -717,7 +717,7 @@
 
             var objectInfo = ObjectInfo.For(typeof(Customer));
 
-            Assert.DoesNotThrow(() => objectInfo.VerifyInstanceForInsert(customer));
+            objectInfo.VerifyInstanceForInsert(customer);
         }
 
         [Fact]

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TypeConverter.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="TypeConverter.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,18 +10,18 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Data;
+
 namespace MicroLite.TypeConverters
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-
     /// <summary>
     /// A class which allows access to <see cref="ITypeConverter"/>s.
     /// </summary>
     public static class TypeConverter
     {
-        private static readonly IDictionary<Type, DbType> dbTypeMap = new Dictionary<Type, DbType>
+        private static readonly IDictionary<Type, DbType> s_dbTypeMap = new Dictionary<Type, DbType>
         {
             { typeof(byte), DbType.Byte },
             { typeof(byte?), DbType.Byte },
@@ -56,33 +56,18 @@ namespace MicroLite.TypeConverters
             { typeof(DateTimeOffset), DbType.DateTimeOffset },
             { typeof(DateTimeOffset?), DbType.DateTimeOffset },
             { typeof(Guid), DbType.Guid },
-            { typeof(Guid?), DbType.Guid }
+            { typeof(Guid?), DbType.Guid },
         };
-
-        private static readonly ITypeConverter defaultConverter = new ObjectTypeConverter();
-        private static readonly TypeConverterCollection typeConverters = new TypeConverterCollection();
 
         /// <summary>
         /// Gets the type converter collection which contains all type converters registered with the MicroLite ORM framework.
         /// </summary>
-        public static TypeConverterCollection Converters
-        {
-            get
-            {
-                return typeConverters;
-            }
-        }
+        public static TypeConverterCollection Converters { get; } = new TypeConverterCollection();
 
         /// <summary>
         /// Gets the default type converter which can be used if there is no specific type converter for a given type.
         /// </summary>
-        public static ITypeConverter Default
-        {
-            get
-            {
-                return defaultConverter;
-            }
-        }
+        public static ITypeConverter Default { get; } = new ObjectTypeConverter();
 
         /// <summary>
         /// Gets the <see cref="ITypeConverter"/> for the specified type.
@@ -96,7 +81,7 @@ namespace MicroLite.TypeConverters
         {
             for (int i = 0; i < Converters.Count; i++)
             {
-                var typeConverter = Converters[i];
+                ITypeConverter typeConverter = Converters[i];
 
                 if (typeConverter.CanConvert(type))
                 {
@@ -117,9 +102,9 @@ namespace MicroLite.TypeConverters
         /// <exception cref="System.ArgumentNullException">Thrown if type is null.</exception>
         public static bool IsNotEntityAndConvertible(Type type)
         {
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (type.IsValueType || type == typeof(string))
@@ -127,17 +112,7 @@ namespace MicroLite.TypeConverters
                 return true;
             }
 
-            for (int i = 0; i < Converters.Count; i++)
-            {
-                var typeConverter = Converters[i];
-
-                if (typeConverter.CanConvert(type))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return For(type) != null;
         }
 
         /// <summary>
@@ -146,9 +121,7 @@ namespace MicroLite.TypeConverters
         /// <param name="type">The Type to be mapped.</param>
         /// <param name="dbType">The DbType to be mapped to.</param>
         public static void RegisterTypeMapping(Type type, DbType dbType)
-        {
-            dbTypeMap[type] = dbType;
-        }
+            => s_dbTypeMap[type] = dbType;
 
         /// <summary>
         /// Resolves the actual type.
@@ -160,12 +133,12 @@ namespace MicroLite.TypeConverters
         /// <exception cref="System.ArgumentNullException">Thrown if type is null.</exception>
         public static Type ResolveActualType(Type type)
         {
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
-            var actualType = type;
+            Type actualType = type;
 
             if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
             {
@@ -183,21 +156,19 @@ namespace MicroLite.TypeConverters
         /// <exception cref="System.NotSupportedException">Thrown if the Type is not mapped to a DbType.</exception>
         public static DbType ResolveDbType(Type type)
         {
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
-            var actualType = ResolveActualType(type);
+            Type actualType = ResolveActualType(type);
 
-            if (actualType.IsEnum)
+            if (actualType?.IsEnum == true)
             {
                 actualType = Enum.GetUnderlyingType(actualType);
             }
 
-            DbType dbType;
-
-            if (dbTypeMap.TryGetValue(actualType, out dbType))
+            if (s_dbTypeMap.TryGetValue(actualType, out DbType dbType))
             {
                 return dbType;
             }

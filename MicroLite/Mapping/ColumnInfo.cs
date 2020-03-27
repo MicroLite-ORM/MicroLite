@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ColumnInfo.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ColumnInfo.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,26 +10,18 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Reflection;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Data;
-    using System.Reflection;
-
     /// <summary>
     /// A class which contains information about a database table column and the property it is mapped to.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("Column: {ColumnName}, Identifier: {IsIdentifier}, Insert: {AllowInsert}, Update: {AllowUpdate}")]
     public sealed class ColumnInfo
     {
-        private readonly bool allowInsert;
-        private readonly bool allowUpdate;
-        private readonly string columnName;
-        private readonly DbType dbType;
-        private readonly bool isIdentifier;
-        private readonly PropertyInfo propertyInfo;
-        private readonly string sequenceName;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="ColumnInfo"/> class.
         /// </summary>
@@ -50,100 +42,48 @@ namespace MicroLite.Mapping
             bool allowUpdate,
             string sequenceName)
         {
-            if (columnName == null)
-            {
-                throw new ArgumentNullException("columnName");
-            }
-
-            if (propertyInfo == null)
-            {
-                throw new ArgumentNullException("propertyInfo");
-            }
-
-            this.columnName = columnName;
-            this.dbType = dbType;
-            this.propertyInfo = propertyInfo;
-            this.isIdentifier = isIdentifier;
-            this.allowInsert = allowInsert;
-            this.allowUpdate = allowUpdate;
-            this.sequenceName = sequenceName;
+            ColumnName = columnName ?? throw new ArgumentNullException(nameof(columnName));
+            DbType = dbType;
+            PropertyInfo = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
+            IsIdentifier = isIdentifier;
+            AllowInsert = allowInsert;
+            AllowUpdate = allowUpdate;
+            SequenceName = sequenceName;
         }
 
         /// <summary>
         /// Gets a value indicating whether the column value is allowed to be inserted.
         /// </summary>
-        public bool AllowInsert
-        {
-            get
-            {
-                return this.allowInsert;
-            }
-        }
+        public bool AllowInsert { get; }
 
         /// <summary>
         /// Gets a value indicating whether the column value is allowed to be updated.
         /// </summary>
-        public bool AllowUpdate
-        {
-            get
-            {
-                return this.allowUpdate;
-            }
-        }
+        public bool AllowUpdate { get; }
 
         /// <summary>
         /// Gets the name of the column in the database table.
         /// </summary>
-        public string ColumnName
-        {
-            get
-            {
-                return this.columnName;
-            }
-        }
+        public string ColumnName { get; }
 
         /// <summary>
         /// Gets the <see cref="DbType"/> of the column in the database table.
         /// </summary>
-        public DbType DbType
-        {
-            get
-            {
-                return this.dbType;
-            }
-        }
+        public DbType DbType { get; }
 
         /// <summary>
         /// Gets a value indicating whether column is the table identifier column (primary key).
         /// </summary>
-        public bool IsIdentifier
-        {
-            get
-            {
-                return this.isIdentifier;
-            }
-        }
+        public bool IsIdentifier { get; }
 
         /// <summary>
         /// Gets the property info for the property the column maps to.
         /// </summary>
-        public PropertyInfo PropertyInfo
-        {
-            get
-            {
-                return this.propertyInfo;
-            }
-        }
+        public PropertyInfo PropertyInfo { get; }
 
         /// <summary>
         /// Gets the name of the sequence which generates the identifier value.
         /// </summary>
-        public string SequenceName
-        {
-            get
-            {
-                return this.sequenceName;
-            }
-        }
+        public string SequenceName { get; }
     }
 }

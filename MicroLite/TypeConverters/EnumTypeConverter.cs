@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="EnumTypeConverter.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="EnumTypeConverter.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Globalization;
+
 namespace MicroLite.TypeConverters
 {
-    using System;
-    using System.Data;
-    using System.Globalization;
-
     /// <summary>
     /// An ITypeConverter which can convert Enum values to and from database values.
     /// </summary>
@@ -39,9 +39,9 @@ namespace MicroLite.TypeConverters
                 return true;
             }
 
-            var actualType = TypeConverter.ResolveActualType(type);
+            Type actualType = TypeConverter.ResolveActualType(type);
 
-            return actualType != null ? actualType.IsEnum : false;
+            return actualType?.IsEnum == true;
         }
 
         /// <summary>
@@ -52,9 +52,9 @@ namespace MicroLite.TypeConverters
         /// <returns>An instance of the specified type containing the specified value.</returns>
         public object ConvertFromDbValue(object value, Type type)
         {
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (value == null || value == DBNull.Value)
@@ -62,13 +62,13 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            var enumType = TypeConverter.ResolveActualType(type);
+            Type enumType = TypeConverter.ResolveActualType(type);
 
-            var enumStorageType = Enum.GetUnderlyingType(enumType);
+            Type enumStorageType = Enum.GetUnderlyingType(enumType);
 
-            var underlyingValue = Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
+            object underlyingValue = Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
 
-            var enumValue = Enum.ToObject(enumType, underlyingValue);
+            object enumValue = Enum.ToObject(enumType, underlyingValue);
 
             return enumValue;
         }
@@ -82,14 +82,14 @@ namespace MicroLite.TypeConverters
         /// <returns>An instance of the specified type containing the specified value.</returns>
         public object ConvertFromDbValue(IDataReader reader, int index, Type type)
         {
-            if (reader == null)
+            if (reader is null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (reader.IsDBNull(index))
@@ -99,9 +99,9 @@ namespace MicroLite.TypeConverters
 
             object enumValue;
 
-            var enumType = TypeConverter.ResolveActualType(type);
+            Type enumType = TypeConverter.ResolveActualType(type);
 
-            var enumStorageType = Enum.GetUnderlyingType(enumType);
+            Type enumStorageType = Enum.GetUnderlyingType(enumType);
 
             switch (enumStorageType.Name)
             {
@@ -137,16 +137,16 @@ namespace MicroLite.TypeConverters
         /// <returns>An instance of the corresponding database type containing the value.</returns>
         public object ConvertToDbValue(object value, Type type)
         {
-            if (value == null)
+            if (value is null)
             {
                 return value;
             }
 
-            var enumType = TypeConverter.ResolveActualType(type);
+            Type enumType = TypeConverter.ResolveActualType(type);
 
-            var enumStorageType = Enum.GetUnderlyingType(enumType);
+            Type enumStorageType = Enum.GetUnderlyingType(enumType);
 
-            var underlyingValue = Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
+            object underlyingValue = Convert.ChangeType(value, enumStorageType, CultureInfo.InvariantCulture);
 
             return underlyingValue;
         }

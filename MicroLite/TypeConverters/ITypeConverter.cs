@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ITypeConverter.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ITypeConverter.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+
 namespace MicroLite.TypeConverters
 {
-    using System;
-    using System.Data;
-
     /// <summary>
     /// The interface for a class which can convert between property type values and database values.
     /// </summary>

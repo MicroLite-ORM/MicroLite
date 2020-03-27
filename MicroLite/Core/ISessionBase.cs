@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ISessionBase.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ISessionBase.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Data;
+
 namespace MicroLite.Core
 {
-    using System.Data;
-
     /// <summary>
     /// An abstraction for the session base which de-couples the dependency for the Transaction class.
     /// </summary>
@@ -22,10 +22,7 @@ namespace MicroLite.Core
         /// <summary>
         /// Gets the connection.
         /// </summary>
-        IDbConnection Connection
-        {
-            get;
-        }
+        IDbConnection Connection { get; }
 
         /// <summary>
         /// Informs the session that the Transaction has been completed.

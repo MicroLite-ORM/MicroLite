@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ParameterNameComparer.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ParameterNameComparer.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+
 namespace MicroLite
 {
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// An implementation of <see cref="IComparer&lt;T&gt;"/> to sort parameter names.
     /// </summary>
@@ -23,8 +23,6 @@ namespace MicroLite
     /// </remarks>
     internal sealed class ParameterNameComparer : IComparer<string>
     {
-        private static readonly IComparer<string> instance = new ParameterNameComparer();
-
         /// <summary>
         /// Prevents a default instance of the <see cref="ParameterNameComparer"/> class from being created.
         /// </summary>
@@ -35,13 +33,7 @@ namespace MicroLite
         /// <summary>
         /// Gets the parameter name comparer instance.
         /// </summary>
-        internal static IComparer<string> Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+        internal static IComparer<string> Instance { get; } = new ParameterNameComparer();
 
         /// <summary>
         /// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
@@ -53,19 +45,19 @@ namespace MicroLite
         /// </returns>
         public int Compare(string x, string y)
         {
-            if (object.ReferenceEquals(x, y))
+            if (ReferenceEquals(x, y))
             {
                 // As per default string comparison logic
                 return 0;
             }
 
-            if (x == null)
+            if (x is null)
             {
                 // As per default string comparison logic
                 return -1;
             }
 
-            if (y == null)
+            if (y is null)
             {
                 // As per default string comparison logic
                 return 1;

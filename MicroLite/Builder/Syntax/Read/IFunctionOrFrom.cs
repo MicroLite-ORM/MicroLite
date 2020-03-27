@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IFunctionOrFrom.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IFunctionOrFrom.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the from method or function in the fluent sql builder syntax.
     /// </summary>
-    public interface IFunctionOrFrom : IHideObjectMethods, ISelectFrom
+    public interface IFunctionOrFrom : ISelectFrom
     {
         /// <summary>
         /// Selects the average value in the specified column.
@@ -33,7 +33,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT AVG(Total) AS Total FROM Invoices WHERE (CustomerId = @p0).
         /// </example>
         IFunctionOrFrom Average(string columnName);
 
@@ -54,7 +54,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT AVG(Total) AS AverageTotal FROM Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT AVG(Total) AS AverageTotal FROM Invoices WHERE (CustomerId = @p0).
         /// </example>
         IFunctionOrFrom Average(string columnName, string columnAlias);
 
@@ -73,7 +73,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .From(typeof(Customer))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT COUNT(CustomerId) AS CustomerId FROM Customers
+        /// Will generate SELECT COUNT(CustomerId) AS CustomerId FROM Customers.
         /// </example>
         IFunctionOrFrom Count(string columnName);
 
@@ -93,7 +93,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .From(typeof(Customer))
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT COUNT(CustomerId) AS CustomerCount FROM Customers
+        /// Will generate SELECT COUNT(CustomerId) AS CustomerCount FROM Customers.
         /// </example>
         IFunctionOrFrom Count(string columnName, string columnAlias);
 
@@ -113,7 +113,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT DISTINCT Total FROM Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT DISTINCT Total FROM Invoices WHERE (CustomerId = @p0).
         /// </example>
         IFunctionOrFrom Distinct(string column);
 
@@ -133,7 +133,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT DISTINCT Total, Date FROM Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT DISTINCT Total, Date FROM Invoices WHERE (CustomerId = @p0).
         /// </example>
         IFunctionOrFrom Distinct(params string[] columns);
 
@@ -153,7 +153,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MAX(Total) AS Total FROM Invoices WHERE (CustomerId = @p0).
         /// </example>
         IFunctionOrFrom Max(string columnName);
 
@@ -174,7 +174,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MAX(Total) AS MaxTotal FROM Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MAX(Total) AS MaxTotal FROM Invoices WHERE (CustomerId = @p0).
         /// </example>
         IFunctionOrFrom Max(string columnName, string columnAlias);
 
@@ -194,7 +194,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MIN(Total) AS Total FROM Invoices WHERE (CustomerId = @p0).
         /// </example>
         IFunctionOrFrom Min(string columnName);
 
@@ -215,7 +215,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT MIN(Total) AS MinTotal FROM Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT MIN(Total) AS MinTotal FROM Invoices WHERE (CustomerId = @p0).
         /// </example>
         IFunctionOrFrom Min(string columnName, string columnAlias);
 
@@ -235,7 +235,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT SUM(Total) AS Total FROM Invoices WHERE (CustomerId = @p0).
         /// </example>
         IFunctionOrFrom Sum(string columnName);
 
@@ -256,7 +256,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("CustomerId = @p0", 1022)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT SUM(Total) AS SumTotal FROM Invoices WHERE (CustomerId = @p0)
+        /// Will generate SELECT SUM(Total) AS SumTotal FROM Invoices WHERE (CustomerId = @p0).
         /// </example>
         IFunctionOrFrom Sum(string columnName, string columnAlias);
     }

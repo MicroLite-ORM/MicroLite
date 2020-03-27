@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="FirebirdSqlDialect.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="FirebirdSqlDialect.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Text;
+using MicroLite.Characters;
+using MicroLite.Mapping;
+
 namespace MicroLite.Dialect
 {
-    using System;
-    using System.Data;
-    using System.Text;
-    using MicroLite.Characters;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for Firebird.
     /// </summary>
@@ -33,9 +33,9 @@ namespace MicroLite.Dialect
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var arguments = new SqlArgument[sqlQuery.Arguments.Count + 2];
@@ -43,34 +43,34 @@ namespace MicroLite.Dialect
             arguments[arguments.Length - 2] = new SqlArgument(pagingOptions.Offset + 1, DbType.Int32);
             arguments[arguments.Length - 1] = new SqlArgument(pagingOptions.Offset + pagingOptions.Count, DbType.Int32);
 
-            var stringBuilder = new StringBuilder(sqlQuery.CommandText)
+            StringBuilder stringBuilder = new StringBuilder(sqlQuery.CommandText)
                 .Replace(Environment.NewLine, string.Empty)
                 .Append(" ROWS ")
-                .Append(this.SqlCharacters.GetParameterName(arguments.Length - 2))
+                .Append(SqlCharacters.GetParameterName(arguments.Length - 2))
                 .Append(" TO ")
-                .Append(this.SqlCharacters.GetParameterName(arguments.Length - 1));
+                .Append(SqlCharacters.GetParameterName(arguments.Length - 1));
 
             return new SqlQuery(stringBuilder.ToString(), arguments);
         }
 
         protected override string BuildInsertCommandText(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            var commandText = base.BuildInsertCommandText(objectInfo);
+            string commandText = base.BuildInsertCommandText(objectInfo);
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
             {
-                var firstParenthesisIndex = commandText.IndexOf('(') + 1;
+                int firstParenthesisIndex = commandText.IndexOf('(') + 1;
 
                 commandText = commandText.Insert(
                     firstParenthesisIndex,
-                    this.SqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn.ColumnName) + ",");
+                    SqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn.ColumnName) + ",");
 
-                var secondParenthesisIndex = commandText.IndexOf('(', firstParenthesisIndex) + 1;
+                int secondParenthesisIndex = commandText.IndexOf('(', firstParenthesisIndex) + 1;
 
                 commandText = commandText.Insert(
                     secondParenthesisIndex,

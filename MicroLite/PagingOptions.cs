@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="PagingOptions.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="PagingOptions.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,19 +10,16 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite
 {
-    using System;
-
     /// <summary>
     /// A struct containing the count and offset to be used for paged queries.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("Count: {Count}, Offset: {Offset}")]
     public struct PagingOptions : IEquatable<PagingOptions>
     {
-        private readonly int count;
-        private readonly int offset;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="PagingOptions" /> struct.
         /// </summary>
@@ -30,42 +27,40 @@ namespace MicroLite
         /// <param name="offset">The offset (number of records to skip).</param>
         private PagingOptions(int count, int offset)
         {
-            this.count = count;
-            this.offset = offset;
+            Count = count;
+            Offset = offset;
         }
 
         /// <summary>
         /// Gets the number of record to return.
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return this.count;
-            }
-        }
+        public int Count { get; }
 
         /// <summary>
         /// Gets the number of records to skip.
         /// </summary>
-        public int Offset
-        {
-            get
-            {
-                return this.offset;
-            }
-        }
+        public int Offset { get; }
 
         /// <summary>
         /// Gets the paging options for when no paging is required.
         /// </summary>
-        internal static PagingOptions None
-        {
-            get
-            {
-                return new PagingOptions(count: 0, offset: 0);
-            }
-        }
+        internal static PagingOptions None => new PagingOptions(count: 0, offset: 0);
+
+        /// <summary>
+        /// Checks whether two separate PagingOptions instances are not equal.
+        /// </summary>
+        /// <param name="pagingOptions1">The paging options to check.</param>
+        /// <param name="pagingOptions2">The paging options to check against.</param>
+        /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
+        public static bool operator !=(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => !pagingOptions1.Equals(pagingOptions2);
+
+        /// <summary>
+        /// Checks whether two separate PagingOptions instances are equal.
+        /// </summary>
+        /// <param name="pagingOptions1">The paging options to check.</param>
+        /// <param name="pagingOptions2">The paging options to check against.</param>
+        /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
+        public static bool operator ==(PagingOptions pagingOptions1, PagingOptions pagingOptions2) => pagingOptions1.Equals(pagingOptions2);
 
         /// <summary>
         /// Gets the paging options for the specified page number.
@@ -78,39 +73,17 @@ namespace MicroLite
         {
             if (page < 1)
             {
-                throw new ArgumentOutOfRangeException("page", ExceptionMessages.PagingOptions_PagesMustBeAtleastOne);
+                throw new ArgumentOutOfRangeException(nameof(page), ExceptionMessages.PagingOptions_PagesMustBeAtleastOne);
             }
 
             if (resultsPerPage < 1)
             {
-                throw new ArgumentOutOfRangeException("resultsPerPage", ExceptionMessages.PagingOptions_ResultsPerPageMustBeAtLeast1);
+                throw new ArgumentOutOfRangeException(nameof(resultsPerPage), ExceptionMessages.PagingOptions_ResultsPerPageMustBeAtLeast1);
             }
 
-            var skip = (page - 1) * resultsPerPage;
+            int skip = (page - 1) * resultsPerPage;
 
             return new PagingOptions(count: resultsPerPage, offset: skip);
-        }
-
-        /// <summary>
-        /// Checks whether two separate PagingOptions instances are not equal.
-        /// </summary>
-        /// <param name="pagingOptions1">The paging options to check.</param>
-        /// <param name="pagingOptions2">The paging options to check against.</param>
-        /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator !=(PagingOptions pagingOptions1, PagingOptions pagingOptions2)
-        {
-            return !pagingOptions1.Equals(pagingOptions2);
-        }
-
-        /// <summary>
-        /// Checks whether two separate PagingOptions instances are equal.
-        /// </summary>
-        /// <param name="pagingOptions1">The paging options to check.</param>
-        /// <param name="pagingOptions2">The paging options to check against.</param>
-        /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(PagingOptions pagingOptions1, PagingOptions pagingOptions2)
-        {
-            return pagingOptions1.Equals(pagingOptions2);
         }
 
         /// <summary>
@@ -124,34 +97,34 @@ namespace MicroLite
         {
             if (skip < 0)
             {
-                throw new ArgumentOutOfRangeException("skip", ExceptionMessages.PagingOptions_SkipMustBeZeroOrAbove);
+                throw new ArgumentOutOfRangeException(nameof(skip), ExceptionMessages.PagingOptions_SkipMustBeZeroOrAbove);
             }
 
             if (take < 1)
             {
-                throw new ArgumentOutOfRangeException("take", ExceptionMessages.PagingOptions_TakeMustBeZeroOrAbove);
+                throw new ArgumentOutOfRangeException(nameof(take), ExceptionMessages.PagingOptions_TakeMustBeZeroOrAbove);
             }
 
             return new PagingOptions(count: take, offset: skip);
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+        /// Determines whether the specified <see cref="object" /> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
             var other = obj as PagingOptions?;
 
-            if (other == null)
+            if (other is null)
             {
                 return false;
             }
 
-            return this.Equals(other.Value);
+            return Equals(other.Value);
         }
 
         /// <summary>
@@ -162,9 +135,7 @@ namespace MicroLite
         ///   <c>true</c> if the specified <see cref="PagingOptions" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(PagingOptions other)
-        {
-            return other.Count == this.Count && other.Offset == this.Offset;
-        }
+            => other.Count == Count && other.Offset == Offset;
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -173,8 +144,6 @@ namespace MicroLite
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
-        {
-            return this.Count.GetHashCode() ^ this.Offset.GetHashCode();
-        }
+            => Count.GetHashCode() ^ Offset.GetHashCode();
     }
 }

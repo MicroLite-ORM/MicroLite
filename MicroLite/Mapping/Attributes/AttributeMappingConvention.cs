@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="AttributeMappingConvention.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="AttributeMappingConvention.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,46 +10,46 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Logging;
+using MicroLite.TypeConverters;
+
 namespace MicroLite.Mapping.Attributes
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
-    using MicroLite.TypeConverters;
-
     /// <summary>
     /// The implementation of <see cref="IMappingConvention"/> which uses attributes to map tables and columns
     /// to types and properties only maps if an attribute is present (opt-in).
     /// </summary>
     internal sealed class AttributeMappingConvention : IMappingConvention
     {
-        private readonly ILog log = LogManager.GetCurrentClassLog();
+        private readonly ILog _log = LogManager.GetCurrentClassLog();
 
         public IObjectInfo CreateObjectInfo(Type forType)
         {
-            if (forType == null)
+            if (forType is null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
-            var tableAttribute = forType.GetAttribute<TableAttribute>(inherit: false);
+            TableAttribute tableAttribute = forType.GetAttribute<TableAttribute>(inherit: false);
 
-            if (tableAttribute == null)
+            if (tableAttribute is null)
             {
                 throw new MappingException(ExceptionMessages.AttributeMappingConvention_NoTableAttribute.FormatWith(forType.FullName));
             }
 
-            var identifierStrategy = IdentifierStrategy.DbGenerated;
-            var columns = this.CreateColumnInfos(forType, ref identifierStrategy);
+            IdentifierStrategy identifierStrategy = IdentifierStrategy.DbGenerated;
+            List<ColumnInfo> columns = CreateColumnInfos(forType, ref identifierStrategy);
 
             var tableInfo = new TableInfo(columns, identifierStrategy, tableAttribute.Name, tableAttribute.Schema);
 
-            if (this.log.IsDebug)
+            if (_log.IsDebug)
             {
-                this.log.Debug(LogMessages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
+                _log.Debug(LogMessages.MappingConvention_MappingTypeToTable, forType.FullName, tableInfo.Schema, tableInfo.Name);
             }
 
             return new PocoObjectInfo(forType, tableInfo);
@@ -57,34 +57,34 @@ namespace MicroLite.Mapping.Attributes
 
         private List<ColumnInfo> CreateColumnInfos(Type forType, ref IdentifierStrategy identifierStrategy)
         {
-            var properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            PropertyInfo[] properties = forType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             var columns = new List<ColumnInfo>(properties.Length);
 
-            foreach (var property in properties.OrderBy(p => p.Name))
+            foreach (PropertyInfo property in properties.OrderBy(p => p.Name))
             {
                 if (!property.CanRead || !property.CanWrite)
                 {
-                    if (this.log.IsDebug)
+                    if (_log.IsDebug)
                     {
-                        this.log.Debug(LogMessages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
+                        _log.Debug(LogMessages.MappingConvention_PropertyNotGetAndSet, forType.Name, property.Name);
                     }
 
                     continue;
                 }
 
-                var columnAttribute = property.GetAttribute<ColumnAttribute>(inherit: true);
+                ColumnAttribute columnAttribute = property.GetAttribute<ColumnAttribute>(inherit: true);
 
-                if (columnAttribute == null)
+                if (columnAttribute is null)
                 {
-                    if (this.log.IsDebug)
+                    if (_log.IsDebug)
                     {
-                        this.log.Debug(LogMessages.AttributeMappingConvention_IgnoringProperty, forType.FullName, property.Name);
+                        _log.Debug(LogMessages.AttributeMappingConvention_IgnoringProperty, forType.FullName, property.Name);
                     }
 
                     continue;
                 }
 
-                var identifierAttribute = property.GetAttribute<IdentifierAttribute>(inherit: true);
+                IdentifierAttribute identifierAttribute = property.GetAttribute<IdentifierAttribute>(inherit: true);
 
                 if (identifierAttribute != null)
                 {
@@ -97,12 +97,12 @@ namespace MicroLite.Mapping.Attributes
                     propertyInfo: property,
                     isIdentifier: identifierAttribute != null,
                     allowInsert: identifierAttribute != null ? identifierStrategy == IdentifierStrategy.Assigned : columnAttribute.AllowInsert,
-                    allowUpdate: identifierAttribute != null ? false : columnAttribute.AllowUpdate,
-                    sequenceName: identifierAttribute != null ? identifierAttribute.SequenceName : null);
+                    allowUpdate: identifierAttribute == null && columnAttribute.AllowUpdate,
+                    sequenceName: identifierAttribute?.SequenceName);
 
-                if (this.log.IsDebug)
+                if (_log.IsDebug)
                 {
-                    this.log.Debug(LogMessages.MappingConvention_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
+                    _log.Debug(LogMessages.MappingConvention_MappingColumnToProperty, forType.Name, columnInfo.PropertyInfo.Name, columnInfo.ColumnName);
                 }
 
                 columns.Add(columnInfo);

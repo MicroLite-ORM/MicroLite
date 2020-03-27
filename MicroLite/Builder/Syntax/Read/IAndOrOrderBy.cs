@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IAndOrOrderBy.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IAndOrOrderBy.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the and/or methods to extend the where clause in the fluent sql builder syntax.
     /// </summary>
-    public interface IAndOrOrderBy : IHideObjectMethods, IGroupBy, IOrderBy, IToSqlQuery
+    public interface IAndOrOrderBy : IGroupBy, IOrderBy
     {
         /// <summary>
         /// Adds a column as an AND to the where clause of the query.
@@ -55,7 +55,7 @@ namespace MicroLite.Builder.Syntax.Read
         /// </code>
         /// Would generate SELECT {Columns} FROM Customers WHERE (FirstName = @p0) AND (LastName = @p1)
         /// @p0 would be John
-        /// @p1 would be Smith
+        /// @p1 would be Smith.
         /// </example>
         /// <example>
         /// Additionally, we could construct the query as follows:
@@ -68,7 +68,7 @@ namespace MicroLite.Builder.Syntax.Read
         /// </code>
         /// Would generate SELECT {Columns} FROM Customers WHERE (FirstName = @p0 AND LastName = @p1)
         /// @p0 would be John
-        /// @p1 would be Smith
+        /// @p1 would be Smith.
         /// </example>
         IAndOrOrderBy AndWhere(string predicate, params object[] args);
 
@@ -110,7 +110,7 @@ namespace MicroLite.Builder.Syntax.Read
         /// </code>
         /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0) OR (LastName = @p1)
         /// @p0 would be Smith
-        /// @p1 would be Smithson
+        /// @p1 would be Smithson.
         /// </example>
         /// <example>
         /// Additionally, we could construct the query as follows:
@@ -123,7 +123,7 @@ namespace MicroLite.Builder.Syntax.Read
         /// </code>
         /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR LastName = @p1)
         /// @p0 would be Smith
-        /// @p1 would be Smithson
+        /// @p1 would be Smithson.
         /// </example>
         IAndOrOrderBy OrWhere(string predicate, params object[] args);
     }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IHavingOrOrderBy.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IHavingOrOrderBy.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the having method in the fluent sql builder syntax.
     /// </summary>
-    public interface IHavingOrOrderBy : IHideObjectMethods, IOrderBy
+    public interface IHavingOrOrderBy : IOrderBy
     {
         /// <summary>
         /// Specifies the having clause for the query.
@@ -36,7 +36,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Having("MAX(Total) > @p0", 10000M)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId HAVING MAX(Total) > @p0
+        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId HAVING MAX(Total) > @p0.
         /// </example>
         IOrderBy Having(string predicate, object value);
     }

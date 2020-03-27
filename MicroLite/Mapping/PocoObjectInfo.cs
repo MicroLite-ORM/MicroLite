@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="PocoObjectInfo.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="PocoObjectInfo.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,28 +10,26 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Logging;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Data;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The class which describes a type and the table it is mapped to.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     public sealed class PocoObjectInfo : IObjectInfo
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private readonly object defaultIdentifierValue;
-        private readonly Type forType;
-        private readonly Func<object, object> getIdentifierValue;
-        private readonly Func<object, SqlArgument[]> getInsertValues;
-        private readonly Func<object, SqlArgument[]> getUpdateValues;
-        private readonly Func<IDataReader, object> instanceFactory;
-        private readonly Action<object, object> setIdentifierValue;
-        private readonly TableInfo tableInfo;
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
+        private readonly object _defaultIdentifierValue;
+        private readonly Func<object, object> _getIdentifierValue;
+        private readonly Func<object, SqlArgument[]> _getInsertValues;
+        private readonly Func<object, SqlArgument[]> _getUpdateValues;
+        private readonly Func<IDataReader, object> _instanceFactory;
+        private readonly Action<object, object> _setIdentifierValue;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="PocoObjectInfo" /> class.
@@ -43,56 +41,34 @@ namespace MicroLite.Mapping
         /// </exception>
         public PocoObjectInfo(Type forType, TableInfo tableInfo)
         {
-            if (forType == null)
+            ForType = forType ?? throw new ArgumentNullException(nameof(forType));
+            TableInfo = tableInfo ?? throw new ArgumentNullException(nameof(tableInfo));
+
+            if (TableInfo.IdentifierColumn != null && TableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
             {
-                throw new ArgumentNullException("forType");
+                _defaultIdentifierValue = (ValueType)Activator.CreateInstance(TableInfo.IdentifierColumn.PropertyInfo.PropertyType);
             }
 
-            if (tableInfo == null)
+            if (TableInfo.IdentifierColumn != null)
             {
-                throw new ArgumentNullException("tableInfo");
+                _getIdentifierValue = DelegateFactory.CreateGetIdentifier(this);
+                _getInsertValues = DelegateFactory.CreateGetInsertValues(this);
+                _getUpdateValues = DelegateFactory.CreateGetUpdateValues(this);
+                _setIdentifierValue = DelegateFactory.CreateSetIdentifier(this);
             }
 
-            this.forType = forType;
-            this.tableInfo = tableInfo;
-
-            if (this.tableInfo.IdentifierColumn != null && this.tableInfo.IdentifierColumn.PropertyInfo.PropertyType.IsValueType)
-            {
-                this.defaultIdentifierValue = (ValueType)Activator.CreateInstance(this.tableInfo.IdentifierColumn.PropertyInfo.PropertyType);
-            }
-
-            if (this.tableInfo.IdentifierColumn != null)
-            {
-                this.getIdentifierValue = DelegateFactory.CreateGetIdentifier(this);
-                this.getInsertValues = DelegateFactory.CreateGetInsertValues(this);
-                this.getUpdateValues = DelegateFactory.CreateGetUpdateValues(this);
-                this.setIdentifierValue = DelegateFactory.CreateSetIdentifier(this);
-            }
-
-            this.instanceFactory = DelegateFactory.CreateInstanceFactory(this);
+            _instanceFactory = DelegateFactory.CreateInstanceFactory(this);
         }
 
         /// <summary>
         /// Gets type the object info relates to.
         /// </summary>
-        public Type ForType
-        {
-            get
-            {
-                return this.forType;
-            }
-        }
+        public Type ForType { get; }
 
         /// <summary>
         /// Gets the table info for the type the object info relates to.
         /// </summary>
-        public TableInfo TableInfo
-        {
-            get
-            {
-                return this.tableInfo;
-            }
-        }
+        public TableInfo TableInfo { get; }
 
         /// <summary>
         /// Creates a new instance of the type populated with the values from the specified IDataReader.
@@ -102,17 +78,17 @@ namespace MicroLite.Mapping
         /// <exception cref="ArgumentNullException">Thrown if reader is null.</exception>
         public object CreateInstance(IDataReader reader)
         {
-            if (reader == null)
+            if (reader is null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.ObjectInfo_CreatingInstance, this.forType.FullName);
+                s_log.Debug(LogMessages.ObjectInfo_CreatingInstance, ForType.FullName);
             }
 
-            var instance = this.instanceFactory(reader);
+            object instance = _instanceFactory(reader);
 
             return instance;
         }
@@ -128,11 +104,11 @@ namespace MicroLite.Mapping
         {
             ColumnInfo columnInfo = null;
 
-            for (int i = 0; i < this.tableInfo.Columns.Count; i++)
+            for (int i = 0; i < TableInfo.Columns.Count; i++)
             {
-                if (this.tableInfo.Columns[i].ColumnName == columnName)
+                if (TableInfo.Columns[i].ColumnName == columnName)
                 {
-                    columnInfo = this.tableInfo.Columns[i];
+                    columnInfo = TableInfo.Columns[i];
                     break;
                 }
             }
@@ -149,10 +125,10 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public object GetIdentifierValue(object instance)
         {
-            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
-            this.VerifyIdentifierMapped();
+            VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            VerifyIdentifierMapped();
 
-            var value = this.getIdentifierValue(instance);
+            object value = _getIdentifierValue(instance);
 
             return value;
         }
@@ -166,10 +142,10 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public SqlArgument[] GetInsertValues(object instance)
         {
-            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
-            this.VerifyIdentifierMapped();
+            VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            VerifyIdentifierMapped();
 
-            var insertValues = this.getInsertValues(instance);
+            SqlArgument[] insertValues = _getInsertValues(instance);
 
             return insertValues;
         }
@@ -183,10 +159,10 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public SqlArgument[] GetUpdateValues(object instance)
         {
-            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
-            this.VerifyIdentifierMapped();
+            VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            VerifyIdentifierMapped();
 
-            var updateValues = this.getUpdateValues(instance);
+            SqlArgument[] updateValues = _getUpdateValues(instance);
 
             return updateValues;
         }
@@ -202,12 +178,12 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public bool HasDefaultIdentifierValue(object instance)
         {
-            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
-            this.VerifyIdentifierMapped();
+            VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            VerifyIdentifierMapped();
 
-            var identifierValue = this.getIdentifierValue(instance);
+            object identifierValue = _getIdentifierValue(instance);
 
-            bool hasDefaultIdentifier = object.Equals(identifierValue, this.defaultIdentifierValue);
+            bool hasDefaultIdentifier = Equals(identifierValue, _defaultIdentifierValue);
 
             return hasDefaultIdentifier;
         }
@@ -220,11 +196,7 @@ namespace MicroLite.Mapping
         /// True if the identifier is the default value, otherwise false.
         /// </returns>
         public bool IsDefaultIdentifier(object identifier)
-        {
-            bool isDefaultIdentifier = object.Equals(identifier, this.defaultIdentifierValue);
-
-            return isDefaultIdentifier;
-        }
+            => Equals(identifier, _defaultIdentifierValue);
 
         /// <summary>
         /// Sets the property value for the object identifier to the supplied value.
@@ -235,10 +207,10 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the instance is not of the correct type.</exception>
         public void SetIdentifierValue(object instance, object identifier)
         {
-            this.VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
-            this.VerifyIdentifierMapped();
+            VerifyInstanceIsCorrectTypeForThisObjectInfo(instance);
+            VerifyIdentifierMapped();
 
-            this.setIdentifierValue(instance, identifier);
+            _setIdentifierValue(instance, identifier);
         }
 
         /// <summary>
@@ -251,43 +223,40 @@ namespace MicroLite.Mapping
         /// </exception>
         public void VerifyInstanceForInsert(object instance)
         {
-            this.VerifyIdentifierMapped();
+            VerifyIdentifierMapped();
 
-            if (this.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
+            if (TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
-                if (!this.HasDefaultIdentifierValue(instance))
+                if (!HasDefaultIdentifierValue(instance))
                 {
                     throw new MicroLiteException(ExceptionMessages.PocoObjectInfo_IdentifierSetForInsert);
                 }
             }
-            else if (this.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned)
+            else if (TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned && HasDefaultIdentifierValue(instance))
             {
-                if (this.HasDefaultIdentifierValue(instance))
-                {
-                    throw new MicroLiteException(ExceptionMessages.PocoObjectInfo_IdentifierNotSetForInsert);
-                }
+                throw new MicroLiteException(ExceptionMessages.PocoObjectInfo_IdentifierNotSetForInsert);
             }
         }
 
         private void VerifyIdentifierMapped()
         {
-            if (this.tableInfo.IdentifierColumn == null)
+            if (TableInfo.IdentifierColumn is null)
             {
                 throw new MicroLiteException(
-                    ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith(this.tableInfo.Schema ?? string.Empty, this.tableInfo.Name));
+                    ExceptionMessages.PocoObjectInfo_NoIdentifierColumn.FormatWith(TableInfo.Schema ?? string.Empty, TableInfo.Name));
             }
         }
 
         private void VerifyInstanceIsCorrectTypeForThisObjectInfo(object instance)
         {
-            if (instance == null)
+            if (instance is null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
-            if (instance.GetType() != this.ForType)
+            if (instance.GetType() != ForType)
             {
-                throw new MappingException(ExceptionMessages.PocoObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, this.ForType.Name));
+                throw new MappingException(ExceptionMessages.PocoObjectInfo_TypeMismatch.FormatWith(instance.GetType().Name, ForType.Name));
             }
         }
     }

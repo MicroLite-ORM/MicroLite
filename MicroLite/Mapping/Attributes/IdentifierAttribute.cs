@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IdentifierAttribute.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IdentifierAttribute.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Mapping.Attributes
 {
-    using System;
-
     /// <summary>
     /// An attribute which can be applied to a property to specify that it maps to the row identifier (primary key)
     /// in the table and also defines the <see cref="IdentifierStrategy"/> used to manage the identifier's value.
@@ -44,9 +44,6 @@ namespace MicroLite.Mapping.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class IdentifierAttribute : Attribute
     {
-        private readonly IdentifierStrategy identifierStrategy;
-        private readonly string sequenceName;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="IdentifierAttribute"/> class.
         /// </summary>
@@ -63,30 +60,18 @@ namespace MicroLite.Mapping.Attributes
         /// <param name="sequenceName">The name of the sequence which generates the identifier value.</param>
         public IdentifierAttribute(IdentifierStrategy identifierStrategy, string sequenceName)
         {
-            this.identifierStrategy = identifierStrategy;
-            this.sequenceName = sequenceName;
+            IdentifierStrategy = identifierStrategy;
+            SequenceName = sequenceName;
         }
 
         /// <summary>
         /// Gets the identifier strategy used to manage the identifier's value.
         /// </summary>
-        public IdentifierStrategy IdentifierStrategy
-        {
-            get
-            {
-                return this.identifierStrategy;
-            }
-        }
+        public IdentifierStrategy IdentifierStrategy { get; }
 
         /// <summary>
         /// Gets the name of the sequence which generates the identifier value.
         /// </summary>
-        public string SequenceName
-        {
-            get
-            {
-                return this.sequenceName;
-            }
-        }
+        public string SequenceName { get; }
     }
 }

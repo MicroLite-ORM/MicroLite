@@ -24,7 +24,7 @@
             transaction.Commit();
             transaction.Dispose();
 
-            Assert.DoesNotThrow(() => transaction.Dispose());
+            transaction.Dispose();
         }
 
         [Fact]
@@ -50,7 +50,7 @@
             {
             }
 
-            Assert.DoesNotThrow(() => transaction.Dispose());
+            transaction.Dispose();
         }
 
         public class WhenCallingCommit

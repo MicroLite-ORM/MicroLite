@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SqlString.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="SqlString.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite
 {
-    using System;
-
     /// <summary>
     /// A class which contains the clauses of a SQL command.
     /// </summary>
@@ -21,11 +21,6 @@ namespace MicroLite
     {
         private SqlString()
         {
-            this.From = string.Empty;
-            this.GroupBy = string.Empty;
-            this.OrderBy = string.Empty;
-            this.Select = string.Empty;
-            this.Where = string.Empty;
         }
 
         /// <summary>
@@ -33,55 +28,35 @@ namespace MicroLite
         /// or <see cref="Clauses"/>.From was not specified.
         /// </summary>
         /// <remarks>This is the value only without the FROM keyword.</remarks>
-        public string From
-        {
-            get;
-            private set;
-        }
+        public string From { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets value of the GROUP BY clause of the command text or an empty string if the command text does not contain a GROUP BY clause
         /// or <see cref="Clauses"/>.GroupBy was not specified.
         /// </summary>
         /// <remarks>This is the value only without the GROUP BY keyword.</remarks>
-        public string GroupBy
-        {
-            get;
-            private set;
-        }
+        public string GroupBy { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets value of the ORDER BY clause of the command text or an empty string if the command text does not contain a ORDER BY clause
         /// or <see cref="Clauses"/>.OrderBy was not specified.
         /// </summary>
         /// <remarks>This is the value only without the ORDER BY keyword.</remarks>
-        public string OrderBy
-        {
-            get;
-            private set;
-        }
+        public string OrderBy { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets value of the SELECT clause of the command text or an empty string if the command text does not contain a SELECT clause
         /// or <see cref="Clauses"/>.Select was not specified.
         /// </summary>
         /// <remarks>This is the value only without the SELECT keyword.</remarks>
-        public string Select
-        {
-            get;
-            private set;
-        }
+        public string Select { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets value of the WHERE clause of the command text or an empty string if the command text does not contain a WHERE clause
         /// or <see cref="Clauses"/>.Where was not specified.
         /// </summary>
         /// <remarks>This is the value only without the WHERE keyword.</remarks>
-        public string Where
-        {
-            get;
-            private set;
-        }
+        public string Where { get; private set; } = string.Empty;
 
         /// <summary>
         /// Parses the specified command text into a SqlString instance populating the specified <see cref="Clauses"/> if
@@ -121,8 +96,8 @@ namespace MicroLite
                 && (clauses & Clauses.From) == Clauses.From)
             {
                 // Remove the FROM keyword and the subsequent space
-                var startIndex = segmentPositions.FromIndex + 5;
-                var length = commandText.Length - startIndex;
+                int startIndex = segmentPositions.FromIndex + 5;
+                int length = commandText.Length - startIndex;
 
                 if (segmentPositions.WhereIndex > -1)
                 {
@@ -140,9 +115,9 @@ namespace MicroLite
                     length = segmentPositions.OrderByIndex - startIndex;
                 }
 
-                var segment = commandText.Substring(startIndex, length).Trim();
+                string segment = commandText.Substring(startIndex, length).Trim();
 
-                this.From = segment;
+                From = segment;
             }
 
             return this;
@@ -154,8 +129,8 @@ namespace MicroLite
                 && (clauses & Clauses.GroupBy) == Clauses.GroupBy)
             {
                 // Remove the GROUP BY keyword and the subsequent space
-                var startIndex = segmentPositions.GroupByIndex + 10;
-                var length = commandText.Length - startIndex;
+                int startIndex = segmentPositions.GroupByIndex + 10;
+                int length = commandText.Length - startIndex;
 
                 if (segmentPositions.OrderByIndex > -1)
                 {
@@ -163,29 +138,27 @@ namespace MicroLite
                     length = segmentPositions.OrderByIndex - startIndex;
                 }
 
-                var segment = commandText.Substring(startIndex, length).Trim();
+                string segment = commandText.Substring(startIndex, length).Trim();
 
-                this.GroupBy = segment;
+                GroupBy = segment;
             }
 
             return this;
         }
 
-        private SqlString AppendOrderBy(string commandText, Clauses clauses, SegmentPositions segmentPositions)
+        private void AppendOrderBy(string commandText, Clauses clauses, SegmentPositions segmentPositions)
         {
             if (segmentPositions.OrderByIndex > -1
                 && (clauses & Clauses.OrderBy) == Clauses.OrderBy)
             {
                 // Remove the ORDER BY keyword and the subsequent space
-                var startIndex = segmentPositions.OrderByIndex + 10;
-                var length = commandText.Length - startIndex;
+                int startIndex = segmentPositions.OrderByIndex + 10;
+                int length = commandText.Length - startIndex;
 
-                var segment = commandText.Substring(startIndex, length).Trim();
+                string segment = commandText.Substring(startIndex, length).Trim();
 
-                this.OrderBy = segment;
+                OrderBy = segment;
             }
-
-            return this;
         }
 
         private SqlString AppendSelect(string commandText, Clauses clauses, SegmentPositions segmentPositions)
@@ -194,14 +167,14 @@ namespace MicroLite
                 && (clauses & Clauses.Select) == Clauses.Select)
             {
                 // Remove the SELECT keyword and the subsequent space
-                var startIndex = 7;
+                int startIndex = 7;
 
                 // Remove the space before the FROM keyword
-                var length = segmentPositions.FromIndex - startIndex;
+                int length = segmentPositions.FromIndex - startIndex;
 
-                var segment = commandText.Substring(startIndex, length).Trim();
+                string segment = commandText.Substring(startIndex, length).Trim();
 
-                this.Select = segment;
+                Select = segment;
             }
 
             return this;
@@ -213,8 +186,8 @@ namespace MicroLite
                 && (clauses & Clauses.Where) == Clauses.Where)
             {
                 // Remove the WHERE keyword and the subsequent space
-                var startIndex = segmentPositions.WhereIndex + 6;
-                var length = commandText.Length - startIndex;
+                int startIndex = segmentPositions.WhereIndex + 6;
+                int length = commandText.Length - startIndex;
 
                 if (segmentPositions.GroupByIndex > -1)
                 {
@@ -227,9 +200,9 @@ namespace MicroLite
                     length = segmentPositions.OrderByIndex - startIndex;
                 }
 
-                var segment = commandText.Substring(startIndex, length).Trim();
+                string segment = commandText.Substring(startIndex, length).Trim();
 
-                this.Where = segment;
+                Where = segment;
             }
 
             return this;
@@ -237,50 +210,21 @@ namespace MicroLite
 
         private struct SegmentPositions
         {
-            private readonly int fromIndex;
-            private readonly int groupByIndex;
-            private readonly int orderByIndex;
-            private readonly int whereIndex;
-
             private SegmentPositions(int fromIndex, int whereIndex, int groupByIndex, int orderByIndex)
             {
-                this.fromIndex = fromIndex;
-                this.whereIndex = whereIndex;
-                this.groupByIndex = groupByIndex;
-                this.orderByIndex = orderByIndex;
+                FromIndex = fromIndex;
+                WhereIndex = whereIndex;
+                GroupByIndex = groupByIndex;
+                OrderByIndex = orderByIndex;
             }
 
-            internal int FromIndex
-            {
-                get
-                {
-                    return this.fromIndex;
-                }
-            }
+            internal int FromIndex { get; }
 
-            internal int GroupByIndex
-            {
-                get
-                {
-                    return this.groupByIndex;
-                }
-            }
+            internal int GroupByIndex { get; }
 
-            internal int OrderByIndex
-            {
-                get
-                {
-                    return this.orderByIndex;
-                }
-            }
+            internal int OrderByIndex { get; }
 
-            internal int WhereIndex
-            {
-                get
-                {
-                    return this.whereIndex;
-                }
-            }
+            internal int WhereIndex { get; }
 
             internal static SegmentPositions GetSegmentPositions(string commandText)
             {

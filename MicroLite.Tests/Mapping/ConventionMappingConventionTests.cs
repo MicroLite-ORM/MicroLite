@@ -40,13 +40,13 @@
             [Fact]
             public void ReadOnlyPropertiesAreNotMapped()
             {
-                Assert.False(this.objectInfo.TableInfo.Columns.Any(x => x.ColumnName == "ReadOnlyProperty"));
+                Assert.DoesNotContain(this.objectInfo.TableInfo.Columns, x => x.ColumnName == "ReadOnlyProperty");
             }
 
             [Fact]
             public void WriteOnlyPropertiesAreNotMapped()
             {
-                Assert.False(this.objectInfo.TableInfo.Columns.Any(x => x.ColumnName == "WriteOnlyProperty"));
+                Assert.DoesNotContain(this.objectInfo.TableInfo.Columns, x => x.ColumnName == "WriteOnlyProperty");
             }
         }
 

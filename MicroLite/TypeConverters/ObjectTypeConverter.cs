@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ObjectTypeConverter.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ObjectTypeConverter.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Globalization;
+
 namespace MicroLite.TypeConverters
 {
-    using System;
-    using System.Data;
-    using System.Globalization;
-
     /// <summary>
     /// An ITypeConverter which uses Convert.ChangeType.
     /// </summary>
@@ -31,10 +31,7 @@ namespace MicroLite.TypeConverters
         /// <returns>
         ///   <c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.
         /// </returns>
-        public bool CanConvert(Type type)
-        {
-            return true;
-        }
+        public bool CanConvert(Type type) => true;
 
         /// <summary>
         /// Converts the specified database value into an instance of the specified type.
@@ -44,9 +41,9 @@ namespace MicroLite.TypeConverters
         /// <returns>An instance of the specified type containing the specified value.</returns>
         public object ConvertFromDbValue(object value, Type type)
         {
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (value == null || value == DBNull.Value)
@@ -56,16 +53,10 @@ namespace MicroLite.TypeConverters
 
             if (type.IsValueType && type.IsGenericType)
             {
-                ValueType converted = (ValueType)value;
-
-                return converted;
+                return (ValueType)value;
             }
-            else
-            {
-                var converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 
-                return converted;
-            }
+            return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -78,14 +69,14 @@ namespace MicroLite.TypeConverters
         /// <exception cref="System.ArgumentNullException">thrown if propertyType is null.</exception>
         public object ConvertFromDbValue(IDataReader reader, int index, Type type)
         {
-            if (reader == null)
+            if (reader is null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
-            if (type == null)
+            if (type is null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
 
             if (reader.IsDBNull(index))
@@ -93,20 +84,14 @@ namespace MicroLite.TypeConverters
                 return null;
             }
 
-            var value = reader[index];
+            object value = reader[index];
 
             if (type.IsValueType && type.IsGenericType)
             {
-                ValueType converted = (ValueType)value;
-
-                return converted;
+                return (ValueType)value;
             }
-            else
-            {
-                var converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 
-                return converted;
-            }
+            return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -115,9 +100,6 @@ namespace MicroLite.TypeConverters
         /// <param name="value">The value to be converted.</param>
         /// <param name="type">The type to convert from.</param>
         /// <returns>An instance of the corresponding database type containing the value.</returns>
-        public object ConvertToDbValue(object value, Type type)
-        {
-            return value;
-        }
+        public object ConvertToDbValue(object value, Type type) => value;
     }
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IAndOr.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IAndOr.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Write
     /// <summary>
     /// The interface which specifies the and/or methods to extend the where clause in the fluent sql builder syntax.
     /// </summary>
-    public interface IAndOr : IHideObjectMethods, IToSqlQuery
+    public interface IAndOr : IToSqlQuery
     {
         /// <summary>
         /// Adds a column as an AND to the where clause of the query.

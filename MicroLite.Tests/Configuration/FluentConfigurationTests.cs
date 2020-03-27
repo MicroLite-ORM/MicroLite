@@ -105,7 +105,7 @@
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection(null, @"Data Source=.\;Initial Catalog=Northwind;", "System.Data.SqlClient", new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
 
-                Assert.Equal(exception.ParamName, "connectionName");
+                Assert.Equal("connectionName", exception.ParamName);
             }
         }
 
@@ -119,7 +119,7 @@
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection("SqlConnection", null, "System.Data.SqlClient", new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
 
-                Assert.Equal(exception.ParamName, "connectionString");
+                Assert.Equal("connectionString", exception.ParamName);
             }
         }
 
@@ -133,7 +133,7 @@
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection("SqlConnection", @"Data Source=.\;Initial Catalog=Northwind;", "System.Data.SqlClient", new Mock<ISqlDialect>().Object, null));
 
-                Assert.Equal(exception.ParamName, "dbDriver");
+                Assert.Equal("dbDriver", exception.ParamName);
             }
         }
 
@@ -147,7 +147,7 @@
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection("SqlConnection", @"Data Source=.\;Initial Catalog=Northwind;", null, new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
 
-                Assert.Equal(exception.ParamName, "providerName");
+                Assert.Equal("providerName", exception.ParamName);
             }
         }
 
@@ -161,7 +161,7 @@
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection("SqlConnection", @"Data Source=.\;Initial Catalog=Northwind;", "System.Data.SqlClient", null, new Mock<IDbDriver>().Object));
 
-                Assert.Equal(exception.ParamName, "sqlDialect");
+                Assert.Equal("sqlDialect", exception.ParamName);
             }
         }
 
@@ -189,7 +189,7 @@
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection(null, new Mock<ISqlDialect>().Object, new Mock<IDbDriver>().Object));
 
-                Assert.Equal(exception.ParamName, "connectionName");
+                Assert.Equal("connectionName", exception.ParamName);
             }
         }
 
@@ -203,7 +203,7 @@
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection("SqlConnection", new Mock<ISqlDialect>().Object, null));
 
-                Assert.Equal(exception.ParamName, "dbDriver");
+                Assert.Equal("dbDriver", exception.ParamName);
             }
         }
 
@@ -217,7 +217,7 @@
                 var exception = Assert.Throws<ArgumentNullException>(
                     () => fluentConfiguration.ForConnection("SqlConnection", null, new Mock<IDbDriver>().Object));
 
-                Assert.Equal(exception.ParamName, "sqlDialect");
+                Assert.Equal("sqlDialect", exception.ParamName);
             }
         }
     }

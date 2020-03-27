@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="InsertSqlBuilder.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="InsertSqlBuilder.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,16 +10,16 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Builder.Syntax;
+using MicroLite.Builder.Syntax.Write;
+using MicroLite.Characters;
+using MicroLite.Mapping;
+
 namespace MicroLite.Builder
 {
-    using System;
-    using MicroLite.Builder.Syntax;
-    using MicroLite.Builder.Syntax.Write;
-    using MicroLite.Characters;
-    using MicroLite.Mapping;
-
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class InsertSqlBuilder : SqlBuilderBase, IInsertIntoTable, IInsertColumn, IInsertValue
+    internal sealed class InsertSqlBuilder : SqlBuilderBase, IInsertIntoTable, IInsertColumn
     {
         /// <summary>
         /// Initialises a new instance of the <see cref="InsertSqlBuilder"/> class with the starting command text 'INSERT INTO '.
@@ -27,13 +27,11 @@ namespace MicroLite.Builder
         /// <param name="sqlCharacters">The SQL characters.</param>
         internal InsertSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)
-        {
-            this.InnerSql.Append("INSERT INTO ");
-        }
+            => InnerSql.Append("INSERT INTO ");
 
         public IInsertValue Columns(params string[] columnNames)
         {
-            this.InnerSql.Append(" (");
+            InnerSql.Append(" (");
 
             if (columnNames != null)
             {
@@ -41,59 +39,55 @@ namespace MicroLite.Builder
                 {
                     if (i > 0)
                     {
-                        this.InnerSql.Append(',');
+                        InnerSql.Append(',');
                     }
 
-                    this.InnerSql.Append(this.SqlCharacters.EscapeSql(columnNames[i]));
+                    InnerSql.Append(SqlCharacters.EscapeSql(columnNames[i]));
                 }
             }
 
-            this.InnerSql.Append(')');
+            InnerSql.Append(')');
 
             return this;
         }
 
         public IInsertColumn Into(string table)
         {
-            this.AppendTableName(table);
+            AppendTableName(table);
 
             return this;
         }
 
         public IInsertColumn Into(Type forType)
-        {
-            var objectInfo = ObjectInfo.For(forType);
-
-            return this.Into(objectInfo);
-        }
+            => Into(ObjectInfo.For(forType));
 
         public IToSqlQuery Values(params object[] columnValues)
         {
-            this.InnerSql.Append(" VALUES (");
+            InnerSql.Append(" VALUES (");
 
             if (columnValues != null)
             {
                 for (int i = 0; i < columnValues.Length; i++)
                 {
-                    this.Arguments.Add(new SqlArgument(columnValues[i]));
+                    Arguments.Add(new SqlArgument(columnValues[i]));
 
-                    this.InnerSql.Append(this.SqlCharacters.GetParameterName(i));
+                    InnerSql.Append(SqlCharacters.GetParameterName(i));
 
                     if (i < columnValues.Length - 1)
                     {
-                        this.InnerSql.Append(',');
+                        InnerSql.Append(',');
                     }
                 }
             }
 
-            this.InnerSql.Append(')');
+            InnerSql.Append(')');
 
             return this;
         }
 
         internal IInsertColumn Into(IObjectInfo objectInfo)
         {
-            this.AppendTableName(objectInfo);
+            AppendTableName(objectInfo);
 
             return this;
         }

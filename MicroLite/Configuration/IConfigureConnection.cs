@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IConfigureConnection.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IConfigureConnection.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,16 +10,16 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Dialect;
+using MicroLite.Driver;
+
 namespace MicroLite.Configuration
 {
-    using MicroLite.Dialect;
-    using MicroLite.Driver;
-
     /// <summary>
     /// The interface which specifies the options for configuring the connection in the fluent configuration
     /// of the MicroLite ORM framework.
     /// </summary>
-    public interface IConfigureConnection : IHideObjectMethods
+    public interface IConfigureConnection
     {
         /// <summary>
         /// Specifies the name of the connection and the ISqlDialect and IDbDriver to use for the connection.

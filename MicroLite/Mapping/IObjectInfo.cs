@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IObjectInfo.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IObjectInfo.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Data;
-
     /// <summary>
     /// The interface for a class which describes a type and the table it is mapped to.
     /// </summary>
@@ -23,19 +23,13 @@ namespace MicroLite.Mapping
         /// <summary>
         /// Gets type the object info relates to.
         /// </summary>
-        Type ForType
-        {
-            get;
-        }
+        Type ForType { get; }
 
         /// <summary>
         /// Gets the table info for the type the object info relates to.
         /// </summary>
         /// <exception cref="NotSupportedException">Thrown if the object info does not support Insert, Update or Delete.</exception>
-        TableInfo TableInfo
-        {
-            get;
-        }
+        TableInfo TableInfo { get; }
 
         /// <summary>
         /// Creates a new instance of the type populated with the values from the specified IDataReader.

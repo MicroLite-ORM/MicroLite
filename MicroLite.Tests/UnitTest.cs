@@ -66,10 +66,10 @@
             // Use reflection to assasinate the currently chosen mapping convention and objectinfos.
             var objectInfoType = typeof(ObjectInfo);
 
-            var mappingConventionField = objectInfoType.GetField("mappingConvention", BindingFlags.Static | BindingFlags.NonPublic);
+            var mappingConventionField = objectInfoType.GetField("s_mappingConvention", BindingFlags.Static | BindingFlags.NonPublic);
             mappingConventionField.SetValue(null, null);
 
-            var objectInfosField = objectInfoType.GetField("objectInfos", BindingFlags.Static | BindingFlags.NonPublic);
+            var objectInfosField = objectInfoType.GetField("s_objectInfos", BindingFlags.Static | BindingFlags.NonPublic);
             var getObjectInfosMethod = objectInfoType.GetMethod("GetObjectInfos", BindingFlags.Static | BindingFlags.NonPublic);
 
             var objectInfos = getObjectInfosMethod.Invoke(null, null);

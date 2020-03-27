@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SQLiteDialect.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="SQLiteDialect.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Text;
+using MicroLite.Characters;
+using MicroLite.Mapping;
+
 namespace MicroLite.Dialect
 {
-    using System;
-    using System.Data;
-    using System.Text;
-    using MicroLite.Characters;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The implementation of <see cref="ISqlDialect" /> for SQLite.
     /// </summary>
@@ -31,18 +31,9 @@ namespace MicroLite.Dialect
         {
         }
 
-        public override bool SupportsSelectInsertedIdentifier
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool SupportsSelectInsertedIdentifier => true;
 
-        public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
-        {
-            return new SqlQuery("SELECT last_insert_rowid()");
-        }
+        public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo) => new SqlQuery("SELECT last_insert_rowid()");
 
         /// <summary>
         /// Creates an SqlQuery to page the records which would be returned by the specified SqlQuery based upon the paging options.
@@ -50,13 +41,13 @@ namespace MicroLite.Dialect
         /// <param name="sqlQuery">The SQL query.</param>
         /// <param name="pagingOptions">The paging options.</param>
         /// <returns>
-        /// A <see cref="T:MicroLite.SqlQuery" /> to return the paged results of the specified query.
+        /// A <see cref="SqlQuery" /> to return the paged results of the specified query.
         /// </returns>
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var arguments = new SqlArgument[sqlQuery.Arguments.Count + 2];
@@ -64,12 +55,12 @@ namespace MicroLite.Dialect
             arguments[arguments.Length - 2] = new SqlArgument(pagingOptions.Offset, DbType.Int32);
             arguments[arguments.Length - 1] = new SqlArgument(pagingOptions.Count, DbType.Int32);
 
-            var stringBuilder = new StringBuilder(sqlQuery.CommandText)
+            StringBuilder stringBuilder = new StringBuilder(sqlQuery.CommandText)
                 .Replace(Environment.NewLine, string.Empty)
                 .Append(" LIMIT ")
-                .Append(this.SqlCharacters.GetParameterName(arguments.Length - 2))
+                .Append(SqlCharacters.GetParameterName(arguments.Length - 2))
                 .Append(',')
-                .Append(this.SqlCharacters.GetParameterName(arguments.Length - 1));
+                .Append(SqlCharacters.GetParameterName(arguments.Length - 1));
 
             return new SqlQuery(stringBuilder.ToString(), arguments);
         }

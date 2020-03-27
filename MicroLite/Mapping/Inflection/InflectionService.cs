@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="InflectionService.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="InflectionService.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,17 +17,9 @@ namespace MicroLite.Mapping.Inflection
     /// </summary>
     public static class InflectionService
     {
-        private static readonly IInflectionService english = new EnglishInflectionService();
-
         /// <summary>
         /// Gets the IInflection service for English (en-GB).
         /// </summary>
-        public static IInflectionService English
-        {
-            get
-            {
-                return english;
-            }
-        }
+        public static IInflectionService English { get; } = new EnglishInflectionService();
     }
 }

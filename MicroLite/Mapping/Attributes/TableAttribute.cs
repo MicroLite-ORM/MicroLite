@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TableAttribute.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="TableAttribute.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Mapping.Attributes
 {
-    using System;
-
     /// <summary>
     /// An attribute which can be applied to a class to specify the table name and database schema the table
     /// exists within.
@@ -39,9 +39,6 @@ namespace MicroLite.Mapping.Attributes
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public sealed class TableAttribute : Attribute
     {
-        private readonly string name;
-        private readonly string schema;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="TableAttribute"/> class.
         /// </summary>
@@ -58,30 +55,18 @@ namespace MicroLite.Mapping.Attributes
         /// <param name="name">The name of the table.</param>
         public TableAttribute(string schema, string name)
         {
-            this.name = name;
-            this.schema = schema;
+            Name = name;
+            Schema = schema;
         }
 
         /// <summary>
         /// Gets the name of the table.
         /// </summary>
-        public string Name
-        {
-            get
-            {
-                return this.name;
-            }
-        }
+        public string Name { get; }
 
         /// <summary>
         /// Gets the database schema the table exists within (e.g. 'dbo'); otherwise null.
         /// </summary>
-        public string Schema
-        {
-            get
-            {
-                return this.schema;
-            }
-        }
+        public string Schema { get; }
     }
 }

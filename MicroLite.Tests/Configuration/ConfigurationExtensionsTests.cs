@@ -374,66 +374,6 @@
             }
         }
 
-        public class WhenCallingForSqlServerCeConnection_WithConnectionDetails
-        {
-            private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();
-
-            public WhenCallingForSqlServerCeConnection_WithConnectionDetails()
-            {
-                ConfigurationExtensions.ForSqlServerCeConnection(this.mockConfigureConnection.Object, "TestConnection", "Data Source=.", "System.Data.SqlServerCe.4.0");
-            }
-
-            [Fact]
-            public void ForConnectionIsCalledWithTheConnectionNameConnectionStringProviderNameAndAnInstanceOfTheSqlDialectAndDbDriver()
-            {
-                this.mockConfigureConnection.Verify(
-                    x => x.ForConnection("TestConnection", "Data Source=.", "System.Data.SqlServerCe.4.0", It.IsNotNull<SqlServerCeDialect>(), It.IsNotNull<SqlServerCeDbDriver>()),
-                    Times.Once());
-            }
-        }
-
-        public class WhenCallingForSqlServerCeConnection_WithConnectionDetails_AndTheConfigureConnectionIsNull
-        {
-            [Fact]
-            public void AnArgumentNullExceptionIsThrown()
-            {
-                var exception = Assert.Throws<ArgumentNullException>(
-                    () => ConfigurationExtensions.ForSqlServerCeConnection(null, "TestConnection", "Data Source=.", "System.Data.SqlServerCe.4.0"));
-
-                Assert.Equal("configureConnection", exception.ParamName);
-            }
-        }
-
-        public class WhenCallingForSqlServerCeConnection_WithNamedConnection
-        {
-            private readonly Mock<IConfigureConnection> mockConfigureConnection = new Mock<IConfigureConnection>();
-
-            public WhenCallingForSqlServerCeConnection_WithNamedConnection()
-            {
-                ConfigurationExtensions.ForSqlServerCeConnection(this.mockConfigureConnection.Object, "TestConnection");
-            }
-
-            [Fact]
-            public void ForConnectionIsCalledWithAnInstanceOfTheSqlDialectAndDbDriver()
-            {
-                this.mockConfigureConnection.Verify(
-                    x => x.ForConnection("TestConnection", It.IsNotNull<SqlServerCeDialect>(), It.IsNotNull<SqlServerCeDbDriver>()),
-                    Times.Once());
-            }
-        }
-
-        public class WhenCallingForSqlServerCeConnection_WithNamedConnection_AndTheConfigureConnectionIsNull
-        {
-            [Fact]
-            public void AnArgumentNullExceptionIsThrown()
-            {
-                var exception = Assert.Throws<ArgumentNullException>(
-                    () => ConfigurationExtensions.ForSqlServerCeConnection(null, "TestConnection"));
-
-                Assert.Equal("configureConnection", exception.ParamName);
-            }
-        }
-
         public class WhenCallingWithAttributeBasedMapping_AndTheConfigureExtensionsIsNull
         {
             [Fact]

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ReadOnlySession.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ReadOnlySession.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,77 +10,67 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
+using MicroLite.Builder;
+using MicroLite.Dialect;
+using MicroLite.Driver;
+using MicroLite.Logging;
+using MicroLite.Mapping;
+
 namespace MicroLite.Core
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using MicroLite.Builder;
-    using MicroLite.Dialect;
-    using MicroLite.Driver;
-    using MicroLite.Logging;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The default implementation of <see cref="IReadOnlySession" />.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("ConnectionScope: {ConnectionScope}")]
     internal class ReadOnlySession : SessionBase, IReadOnlySession, IIncludeSession, IAdvancedReadOnlySession
     {
-        private readonly Queue<Include> includes = new Queue<Include>();
-        private readonly Queue<SqlQuery> queries = new Queue<SqlQuery>();
-        private readonly ISqlDialect sqlDialect;
+        private readonly Queue<Include> _includes = new Queue<Include>();
+        private readonly Queue<SqlQuery> _queries = new Queue<SqlQuery>();
 
-        internal ReadOnlySession(
-            ConnectionScope connectionScope,
-            ISqlDialect sqlDialect,
-            IDbDriver sqlDriver)
+        internal ReadOnlySession(ConnectionScope connectionScope, ISqlDialect sqlDialect, IDbDriver sqlDriver)
             : base(connectionScope, sqlDriver)
-        {
-            this.sqlDialect = sqlDialect;
-        }
+            => SqlDialect = sqlDialect;
 
-        public IAdvancedReadOnlySession Advanced
-        {
-            get
-            {
-                return this;
-            }
-        }
+        public IAdvancedReadOnlySession Advanced => this;
 
-        public IIncludeSession Include
-        {
-            get
-            {
-                return this;
-            }
-        }
+        public IIncludeSession Include => this;
 
-        protected ISqlDialect SqlDialect
-        {
-            get
-            {
-                return this.sqlDialect;
-            }
-        }
+        protected ISqlDialect SqlDialect { get; }
 
-        public void ExecutePendingQueries()
+        IIncludeMany<T> IIncludeSession.All<T>()
+            => Include.Many<T>(new SelectSqlBuilder(SqlDialect.SqlCharacters).From(typeof(T)).ToSqlQuery());
+
+        public Task ExecutePendingQueriesAsync()
+            => ExecutePendingQueriesAsync(CancellationToken.None);
+
+        public async Task ExecutePendingQueriesAsync(CancellationToken cancellationToken)
         {
             if (Log.IsDebug)
             {
-                Log.Debug(LogMessages.Session_ExecutingQueries, this.queries.Count.ToString(CultureInfo.InvariantCulture));
+                Log.Debug(LogMessages.Session_ExecutingQueries, _queries.Count.ToString(CultureInfo.InvariantCulture));
             }
 
             try
             {
-                if (this.DbDriver.SupportsBatchedQueries && this.queries.Count > 1)
+                if (DbDriver.SupportsBatchedQueries && _queries.Count > 1)
                 {
-                    this.ExecuteQueriesCombined();
+                    await ExecuteQueriesCombinedAsync(cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    this.ExecuteQueriesIndividually();
+                    await ExecuteQueriesIndividuallyAsync(cancellationToken).ConfigureAwait(false);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                // Don't re-wrap Operation Canceled exceptions
+                throw;
             }
             catch (MicroLiteException)
             {
@@ -93,109 +83,51 @@ namespace MicroLite.Core
             }
             finally
             {
-                this.includes.Clear();
-                this.queries.Clear();
+                _includes.Clear();
+                _queries.Clear();
             }
         }
 
-        public IList<T> Fetch<T>(SqlQuery sqlQuery)
-        {
-            this.ThrowIfDisposed();
+        public Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery)
+            => FetchAsync<T>(sqlQuery, CancellationToken.None);
 
-            if (sqlQuery == null)
+        public Task<IList<T>> FetchAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
-            var include = new IncludeMany<T>();
-
-            this.includes.Enqueue(include);
-            this.queries.Enqueue(sqlQuery);
-
-            this.ExecutePendingQueries();
-
-            return include.Values;
-        }
-
-        IIncludeMany<T> IIncludeSession.All<T>()
-        {
-            var sqlQuery = new SelectSqlBuilder(this.SqlDialect.SqlCharacters)
-                .From(typeof(T))
-                .ToSqlQuery();
-
-            var include = this.Include.Many<T>(sqlQuery);
-
-            return include;
+            return FetchAsyncInternal<T>(sqlQuery, cancellationToken);
         }
 
         IIncludeMany<T> IIncludeSession.Many<T>(SqlQuery sqlQuery)
         {
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var include = new IncludeMany<T>();
 
-            this.includes.Enqueue(include);
-            this.queries.Enqueue(sqlQuery);
+            _includes.Enqueue(include);
+            _queries.Enqueue(sqlQuery);
 
             return include;
         }
 
-        IInclude<T> IIncludeSession.Scalar<T>(SqlQuery sqlQuery)
+        public Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions)
+            => PagedAsync<T>(sqlQuery, pagingOptions, CancellationToken.None);
+
+        public Task<PagedResult<T>> PagedAsync<T>(SqlQuery sqlQuery, PagingOptions pagingOptions, CancellationToken cancellationToken)
         {
-            if (sqlQuery == null)
+            ThrowIfDisposed();
+
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            var include = new IncludeScalar<T>();
-
-            this.includes.Enqueue(include);
-            this.queries.Enqueue(sqlQuery);
-
-            return include;
-        }
-
-        IInclude<T> IIncludeSession.Single<T>(object identifier)
-        {
-            if (identifier == null)
-            {
-                throw new ArgumentNullException("identifier");
-            }
-
-            var objectInfo = ObjectInfo.For(typeof(T));
-
-            var sqlQuery = this.SqlDialect.BuildSelectSqlQuery(objectInfo, identifier);
-
-            var include = this.Include.Single<T>(sqlQuery);
-
-            return include;
-        }
-
-        IInclude<T> IIncludeSession.Single<T>(SqlQuery sqlQuery)
-        {
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
-            }
-
-            var include = new IncludeSingle<T>();
-
-            this.includes.Enqueue(include);
-            this.queries.Enqueue(sqlQuery);
-
-            return include;
-        }
-
-        public PagedResult<T> Paged<T>(SqlQuery sqlQuery, PagingOptions pagingOptions)
-        {
-            this.ThrowIfDisposed();
-
-            if (sqlQuery == null)
-            {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             if (pagingOptions == PagingOptions.None)
@@ -203,109 +135,192 @@ namespace MicroLite.Core
                 throw new MicroLiteException(ExceptionMessages.Session_PagingOptionsMustNotBeNone);
             }
 
-            var includeCount = new IncludeScalar<int>();
-            this.includes.Enqueue(includeCount);
-
-            var countSqlQuery = this.SqlDialect.CountQuery(sqlQuery);
-            this.queries.Enqueue(countSqlQuery);
-
-            var includeMany = new IncludeMany<T>();
-            this.includes.Enqueue(includeMany);
-
-            var pagedSqlQuery = this.SqlDialect.PageQuery(sqlQuery, pagingOptions);
-            this.queries.Enqueue(pagedSqlQuery);
-
-            this.ExecutePendingQueries();
-
-            var page = (pagingOptions.Offset / pagingOptions.Count) + 1;
-
-            return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
+            return PagedAsyncInternal<T>(sqlQuery, pagingOptions, cancellationToken);
         }
 
-        public T Single<T>(object identifier)
-            where T : class, new()
+        IInclude<T> IIncludeSession.Scalar<T>(SqlQuery sqlQuery)
         {
-            this.ThrowIfDisposed();
-
-            if (identifier == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("identifier");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
-            var include = this.Include.Single<T>(identifier);
+            var include = new IncludeScalar<T>();
 
-            this.ExecutePendingQueries();
+            _includes.Enqueue(include);
+            _queries.Enqueue(sqlQuery);
 
-            return include.Value;
+            return include;
         }
 
-        public T Single<T>(SqlQuery sqlQuery)
+        IInclude<T> IIncludeSession.Single<T>(object identifier)
         {
-            this.ThrowIfDisposed();
-
-            if (sqlQuery == null)
+            if (identifier is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(identifier));
+            }
+
+            IObjectInfo objectInfo = ObjectInfo.For(typeof(T));
+
+            SqlQuery sqlQuery = SqlDialect.BuildSelectSqlQuery(objectInfo, identifier);
+
+            return Include.Single<T>(sqlQuery);
+        }
+
+        IInclude<T> IIncludeSession.Single<T>(SqlQuery sqlQuery)
+        {
+            if (sqlQuery is null)
+            {
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var include = new IncludeSingle<T>();
 
-            this.includes.Enqueue(include);
-            this.queries.Enqueue(sqlQuery);
+            _includes.Enqueue(include);
+            _queries.Enqueue(sqlQuery);
 
-            this.ExecutePendingQueries();
-
-            return include.Value;
+            return include;
         }
 
-        private void ExecuteQueriesCombined()
-        {
-            var combinedSqlQuery = this.queries.Count == 2
-                ? this.DbDriver.Combine(this.queries.Dequeue(), this.queries.Dequeue())
-                : this.DbDriver.Combine(this.queries);
+        public Task<T> SingleAsync<T>(object identifier)
+            where T : class, new()
+            => SingleAsync<T>(identifier, CancellationToken.None);
 
-            this.ConfigureCommand(combinedSqlQuery);
+        public Task<T> SingleAsync<T>(object identifier, CancellationToken cancellationToken)
+            where T : class, new()
+        {
+            ThrowIfDisposed();
+
+            if (identifier is null)
+            {
+                throw new ArgumentNullException(nameof(identifier));
+            }
+
+            return SingleAsyncInternal<T>(identifier, cancellationToken);
+        }
+
+        public Task<T> SingleAsync<T>(SqlQuery sqlQuery)
+            => SingleAsync<T>(sqlQuery, CancellationToken.None);
+
+        public Task<T> SingleAsync<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+
+            if (sqlQuery is null)
+            {
+                throw new ArgumentNullException(nameof(sqlQuery));
+            }
+
+            return SingleAsyncInternal<T>(sqlQuery, cancellationToken);
+        }
+
+        private async Task ExecuteQueriesCombinedAsync(CancellationToken cancellationToken)
+        {
+            SqlQuery combinedSqlQuery = _queries.Count == 2
+                ? DbDriver.Combine(_queries.Dequeue(), _queries.Dequeue())
+                : DbDriver.Combine(_queries);
+
+            ConfigureCommand(combinedSqlQuery);
 
             try
             {
-                using (var reader = this.Command.ExecuteReader())
+                var command = (DbCommand)Command;
+
+                using (DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
                 {
                     do
                     {
-                        var include = this.includes.Dequeue();
-                        include.BuildValue(reader);
+                        Include include = _includes.Dequeue();
+                        await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
                     }
                     while (reader.NextResult());
                 }
             }
             finally
             {
-                this.CommandCompleted();
+                CommandCompleted();
             }
         }
 
-        private void ExecuteQueriesIndividually()
+        private async Task ExecuteQueriesIndividuallyAsync(CancellationToken cancellationToken)
         {
             do
             {
-                var sqlQuery = this.queries.Dequeue();
+                SqlQuery sqlQuery = _queries.Dequeue();
 
-                this.ConfigureCommand(sqlQuery);
+                ConfigureCommand(sqlQuery);
 
                 try
                 {
-                    using (var reader = this.Command.ExecuteReader())
+                    var command = (DbCommand)Command;
+
+                    using (DbDataReader reader = await command.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false))
                     {
-                        var include = this.includes.Dequeue();
-                        include.BuildValue(reader);
+                        Include include = _includes.Dequeue();
+                        await include.BuildValueAsync(reader, cancellationToken).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    this.CommandCompleted();
+                    CommandCompleted();
                 }
             }
-            while (this.queries.Count > 0);
+            while (_queries.Count > 0);
+        }
+
+        private async Task<IList<T>> FetchAsyncInternal<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
+        {
+            var include = new IncludeMany<T>();
+
+            _includes.Enqueue(include);
+            _queries.Enqueue(sqlQuery);
+
+            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
+
+            return include.Values;
+        }
+
+        private async Task<PagedResult<T>> PagedAsyncInternal<T>(SqlQuery sqlQuery, PagingOptions pagingOptions, CancellationToken cancellationToken)
+        {
+            var includeCount = new IncludeScalar<int>();
+            _includes.Enqueue(includeCount);
+
+            SqlQuery countSqlQuery = SqlDialect.CountQuery(sqlQuery);
+            _queries.Enqueue(countSqlQuery);
+
+            var includeMany = new IncludeMany<T>();
+            _includes.Enqueue(includeMany);
+
+            SqlQuery pagedSqlQuery = SqlDialect.PageQuery(sqlQuery, pagingOptions);
+            _queries.Enqueue(pagedSqlQuery);
+
+            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
+
+            int page = (pagingOptions.Offset / pagingOptions.Count) + 1;
+
+            return new PagedResult<T>(page, includeMany.Values, pagingOptions.Count, includeCount.Value);
+        }
+
+        private async Task<T> SingleAsyncInternal<T>(object identifier, CancellationToken cancellationToken)
+            where T : class, new()
+        {
+            IInclude<T> include = Include.Single<T>(identifier);
+
+            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
+
+            return include.Value;
+        }
+
+        private async Task<T> SingleAsyncInternal<T>(SqlQuery sqlQuery, CancellationToken cancellationToken)
+        {
+            var include = new IncludeSingle<T>();
+
+            _includes.Enqueue(include);
+            _queries.Enqueue(sqlQuery);
+
+            await ExecutePendingQueriesAsync(cancellationToken).ConfigureAwait(false);
+
+            return include.Value;
         }
     }
 }

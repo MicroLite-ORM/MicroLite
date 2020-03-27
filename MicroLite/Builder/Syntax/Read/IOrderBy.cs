@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IOrderBy.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IOrderBy.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the order by method in the fluent sql builder syntax.
     /// </summary>
-    public interface IOrderBy : IHideObjectMethods, IToSqlQuery
+    public interface IOrderBy : IToSqlQuery
     {
         /// <summary>
         /// Orders the results of the query by the specified column in ascending order.
@@ -31,7 +31,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .OrderByAscending("CustomerId")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers ORDER BY CustomerId ASC
+        /// Would generate SELECT [Columns] FROM Customers ORDER BY CustomerId ASC.
         /// </example>
         IOrderBy OrderByAscending(string column);
 
@@ -49,7 +49,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .OrderByDescending("FirstName", "LastName")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers ORDER BY FirstName, LastName ASC
+        /// Would generate SELECT [Columns] FROM Customers ORDER BY FirstName, LastName ASC.
         /// </example>
         IOrderBy OrderByAscending(params string[] columns);
 
@@ -67,7 +67,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .OrderByDescending("CustomerId")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers ORDER BY CustomerId DESC
+        /// Would generate SELECT [Columns] FROM Customers ORDER BY CustomerId DESC.
         /// </example>
         IOrderBy OrderByDescending(string column);
 
@@ -85,7 +85,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .OrderByDescending("FirstName", "LastName")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers ORDER BY FirstName, LastName DESC
+        /// Would generate SELECT [Columns] FROM Customers ORDER BY FirstName, LastName DESC.
         /// </example>
         IOrderBy OrderByDescending(params string[] columns);
     }

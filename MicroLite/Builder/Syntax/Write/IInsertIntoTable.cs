@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IInsertIntoTable.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IInsertIntoTable.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Builder.Syntax.Write
 {
-    using System;
-
     /// <summary>
     /// The interface which specifies the into method in the fluent insert sql builder syntax.
     /// </summary>
-    public interface IInsertIntoTable : IHideObjectMethods
+    public interface IInsertIntoTable
     {
         /// <summary>
         /// Specifies the table to perform the query against.

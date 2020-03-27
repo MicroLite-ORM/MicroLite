@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SessionFactory.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="SessionFactory.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,121 +10,63 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Characters;
+using MicroLite.Dialect;
+using MicroLite.Driver;
+using MicroLite.Listeners;
+using MicroLite.Logging;
+
 namespace MicroLite.Core
 {
-    using MicroLite.Characters;
-    using MicroLite.Dialect;
-    using MicroLite.Driver;
-    using MicroLite.Listeners;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The default implementation of <see cref="ISessionFactory"/>.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("SessionFactory for {ConnectionName}")]
     internal sealed class SessionFactory : ISessionFactory
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private readonly string connectionName;
-        private readonly IDbDriver dbDriver;
-        private readonly SessionListeners sessionListeners;
-        private readonly ISqlDialect sqlDialect;
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
+        private readonly SessionListeners _sessionListeners;
+        private readonly ISqlDialect _sqlDialect;
 
         internal SessionFactory(string connectionName, IDbDriver dbDriver, ISqlDialect sqlDialect)
         {
-            this.connectionName = connectionName;
-            this.dbDriver = dbDriver;
-            this.sqlDialect = sqlDialect;
+            ConnectionName = connectionName;
+            DbDriver = dbDriver;
+            _sqlDialect = sqlDialect;
 
-            this.sessionListeners = new SessionListeners(Listener.DeleteListeners, Listener.InsertListener, Listener.UpdateListeners);
+            _sessionListeners = new SessionListeners(Listener.DeleteListeners, Listener.InsertListener, Listener.UpdateListeners);
         }
 
-        public string ConnectionName
-        {
-            get
-            {
-                return this.connectionName;
-            }
-        }
+        public string ConnectionName { get; }
 
-        public IDbDriver DbDriver
-        {
-            get
-            {
-                return this.dbDriver;
-            }
-        }
+        public IDbDriver DbDriver { get; }
 
-#if !NET35 && !NET40
-
-        public IAsyncReadOnlySession OpenAsyncReadOnlySession()
-        {
-            return this.OpenAsyncReadOnlySession(ConnectionScope.PerTransaction);
-        }
-
-        public IAsyncReadOnlySession OpenAsyncReadOnlySession(ConnectionScope connectionScope)
-        {
-            if (log.IsDebug)
-            {
-                log.Debug(LogMessages.SessionFactory_CreatingAsyncReadOnlySession, this.connectionName);
-            }
-
-            SqlCharacters.Current = this.sqlDialect.SqlCharacters;
-
-            return new AsyncReadOnlySession(connectionScope, this.sqlDialect, this.dbDriver);
-        }
-
-        public IAsyncSession OpenAsyncSession()
-        {
-            return this.OpenAsyncSession(ConnectionScope.PerTransaction);
-        }
-
-        public IAsyncSession OpenAsyncSession(ConnectionScope connectionScope)
-        {
-            if (log.IsDebug)
-            {
-                log.Debug(LogMessages.SessionFactory_CreatingAsyncSession, this.connectionName);
-            }
-
-            SqlCharacters.Current = this.sqlDialect.SqlCharacters;
-
-            return new AsyncSession(connectionScope, this.sqlDialect, this.dbDriver, this.sessionListeners);
-        }
-
-#endif
-
-        public IReadOnlySession OpenReadOnlySession()
-        {
-            return this.OpenReadOnlySession(ConnectionScope.PerTransaction);
-        }
+        public IReadOnlySession OpenReadOnlySession() => OpenReadOnlySession(ConnectionScope.PerTransaction);
 
         public IReadOnlySession OpenReadOnlySession(ConnectionScope connectionScope)
         {
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.SessionFactory_CreatingReadOnlySession, this.connectionName);
+                s_log.Debug(LogMessages.SessionFactory_CreatingAsyncReadOnlySession, ConnectionName);
             }
 
-            SqlCharacters.Current = this.sqlDialect.SqlCharacters;
+            SqlCharacters.Current = _sqlDialect.SqlCharacters;
 
-            return new ReadOnlySession(connectionScope, this.sqlDialect, this.dbDriver);
+            return new ReadOnlySession(connectionScope, _sqlDialect, DbDriver);
         }
 
-        public ISession OpenSession()
-        {
-            return this.OpenSession(ConnectionScope.PerTransaction);
-        }
+        public ISession OpenSession() => OpenSession(ConnectionScope.PerTransaction);
 
         public ISession OpenSession(ConnectionScope connectionScope)
         {
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.SessionFactory_CreatingSession, this.connectionName);
+                s_log.Debug(LogMessages.SessionFactory_CreatingAsyncSession, ConnectionName);
             }
 
-            SqlCharacters.Current = this.sqlDialect.SqlCharacters;
+            SqlCharacters.Current = _sqlDialect.SqlCharacters;
 
-            return new Session(connectionScope, this.sqlDialect, this.dbDriver, this.sessionListeners);
+            return new Session(connectionScope, _sqlDialect, DbDriver, _sessionListeners);
         }
     }
 }

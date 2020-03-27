@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ConfigureExtensions.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ConfigureExtensions.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,36 +10,36 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Logging;
+using MicroLite.Mapping;
+
 namespace MicroLite.Configuration
 {
-    using System;
-    using MicroLite.Logging;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The class used to configure extensions to the MicroLite ORM framework.
     /// </summary>
     internal sealed class ConfigureExtensions : IConfigureExtensions
     {
-        private ILog log = LogManager.GetCurrentClassLog();
+        private ILog _log = LogManager.GetCurrentClassLog();
 
         public void SetLogResolver(Func<Type, ILog> logResolver)
         {
             LogManager.GetLogger = logResolver;
 
-            this.log = LogManager.GetCurrentClassLog();
+            _log = LogManager.GetCurrentClassLog();
         }
 
         public void SetMappingConvention(IMappingConvention mappingConvention)
         {
-            if (mappingConvention == null)
+            if (mappingConvention is null)
             {
-                throw new ArgumentNullException("mappingConvention");
+                throw new ArgumentNullException(nameof(mappingConvention));
             }
 
-            if (this.log.IsInfo)
+            if (_log.IsInfo)
             {
-                this.log.Info(LogMessages.ConfigureExtensions_UsingMappingConvention, mappingConvention.GetType().FullName);
+                _log.Info(LogMessages.ConfigureExtensions_UsingMappingConvention, mappingConvention.GetType().FullName);
             }
 
             ObjectInfo.MappingConvention = mappingConvention;

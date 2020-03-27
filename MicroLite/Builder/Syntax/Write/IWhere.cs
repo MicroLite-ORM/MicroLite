@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IWhere.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IWhere.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Write
     /// <summary>
     /// The interface which specifies the where method in the fluent sql builder syntax.
     /// </summary>
-    public interface IWhere : IHideObjectMethods, IToSqlQuery
+    public interface IWhere : IToSqlQuery
     {
         /// <summary>
         /// Specifies the where clause for the query.

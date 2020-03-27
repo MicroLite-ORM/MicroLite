@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IHaveReadOnlySession.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IHaveReadOnlySession.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,12 +18,8 @@ namespace MicroLite.Infrastructure
     public interface IHaveReadOnlySession
     {
         /// <summary>
-        /// Gets or sets the read-only MicroLite session.
+        /// Gets the read-only MicroLite session.
         /// </summary>
-        IReadOnlySession Session
-        {
-            get;
-            set;
-        }
+        IReadOnlySession Session { get; }
     }
 }

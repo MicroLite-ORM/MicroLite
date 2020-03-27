@@ -1,7 +1,6 @@
-﻿using System;
-using System.Reflection;
-using System.Resources;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using Xunit;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
@@ -9,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("MicroLite.Tests")]
 [assembly: AssemblyDescription("Unit Tests for the MicroLite ORM Framework")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("MicroLite")]
+[assembly: AssemblyCompany("Project Contributors")]
 [assembly: AssemblyProduct("MicroLite.Tests")]
-[assembly: AssemblyCopyright("Copyright 2012 - 2017 Project Contributors all rights reserved.")]
+[assembly: AssemblyCopyright("Copyright Project Contributors all rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,7 +28,9 @@ using System.Runtime.InteropServices;
 //      Minor Version
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion("6.3.0.0")]
-[assembly: AssemblyFileVersion("6.3.4.0")]
-[assembly: CLSCompliant(true)]
-[assembly: NeutralResourcesLanguageAttribute("en-GB")]
+//
+// You can specify all the values or you can default the Build and Revision Numbers
+// by using the '*' as shown below:
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: CollectionBehavior(DisableTestParallelization = true)]

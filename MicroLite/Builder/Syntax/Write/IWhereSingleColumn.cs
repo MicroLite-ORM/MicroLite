@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IWhereSingleColumn.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IWhereSingleColumn.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Write
     /// <summary>
     /// The interface which specifies the where in method in the fluent sql builder syntax.
     /// </summary>
-    public interface IWhereSingleColumn : IHideObjectMethods
+    public interface IWhereSingleColumn
     {
         /// <summary>
         /// Uses the specified arguments to filter the column.
@@ -32,8 +32,11 @@ namespace MicroLite.Builder.Syntax.Write
         /// <param name="args">The arguments to filter the column.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if args is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
+#pragma warning disable CA1716 // Identifiers should not match keywords
+
         IAndOr In(params object[] args);
+
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Uses the specified SQL queries as sub queries to filter the column.
@@ -41,8 +44,11 @@ namespace MicroLite.Builder.Syntax.Write
         /// <param name="subQueries">The sub queries.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if subQueries is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
+#pragma warning disable CA1716 // Identifiers should not match keywords
+
         IAndOr In(params SqlQuery[] subQueries);
+
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Uses the specified SqlQuery as a sub query to filter the column.
@@ -50,8 +56,11 @@ namespace MicroLite.Builder.Syntax.Write
         /// <param name="subQuery">The sub query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown if subQuery is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "In", Justification = "The method is to specify an In list.")]
+#pragma warning disable CA1716 // Identifiers should not match keywords
+
         IAndOr In(SqlQuery subQuery);
+
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Uses the specified argument to filter the column.

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ObjectInfoExtensions.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ObjectInfoExtensions.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,12 +10,13 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Globalization;
+using System.IO;
+using MicroLite.TypeConverters;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.IO;
-    using MicroLite.TypeConverters;
-
     /// <summary>
     /// Extension methods for <see cref="IObjectInfo"/>.
     /// </summary>
@@ -28,14 +29,14 @@ namespace MicroLite.Mapping
         /// <param name="textWriter">The text writer to write to.</param>
         public static void EmitMappings(this IObjectInfo objectInfo, TextWriter textWriter)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            if (textWriter == null)
+            if (textWriter is null)
             {
-                throw new ArgumentNullException("textWriter");
+                throw new ArgumentNullException(nameof(textWriter));
             }
 
             textWriter.WriteLine("MicroLite Mapping:");
@@ -53,9 +54,9 @@ namespace MicroLite.Mapping
 
             textWriter.WriteLine();
 
-            foreach (var columnInfo in objectInfo.TableInfo.Columns)
+            foreach (ColumnInfo columnInfo in objectInfo.TableInfo.Columns)
             {
-                var actualPropertyType = TypeConverter.ResolveActualType(columnInfo.PropertyInfo.PropertyType);
+                Type actualPropertyType = TypeConverter.ResolveActualType(columnInfo.PropertyInfo.PropertyType);
 
                 textWriter.WriteLine(
                     "Property '{0} ({1})' mapped to Column '{2} (DbType.{3})'",
@@ -64,9 +65,9 @@ namespace MicroLite.Mapping
                     columnInfo.ColumnName,
                     columnInfo.DbType.ToString());
 
-                textWriter.WriteLine("\tAllow Insert: {0}", columnInfo.AllowInsert.ToString());
-                textWriter.WriteLine("\tAllow Update: {0}", columnInfo.AllowUpdate.ToString());
-                textWriter.WriteLine("\tIs Identifier: {0}", columnInfo.IsIdentifier.ToString());
+                textWriter.WriteLine("\tAllow Insert: {0}", columnInfo.AllowInsert.ToString(CultureInfo.InvariantCulture));
+                textWriter.WriteLine("\tAllow Update: {0}", columnInfo.AllowUpdate.ToString(CultureInfo.InvariantCulture));
+                textWriter.WriteLine("\tIs Identifier: {0}", columnInfo.IsIdentifier.ToString(CultureInfo.InvariantCulture));
 
                 if (columnInfo.IsIdentifier)
                 {

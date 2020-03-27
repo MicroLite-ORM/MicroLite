@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="FluentConfiguration.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="FluentConfiguration.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,58 +10,56 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Configuration;
+using System.Data.Common;
+using System.Linq;
+using MicroLite.Core;
+using MicroLite.Dialect;
+using MicroLite.Driver;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Logging;
+
 namespace MicroLite.Configuration
 {
-    using System;
-    using System.Configuration;
-    using System.Data.Common;
-    using System.Linq;
-    using MicroLite.Core;
-    using MicroLite.Dialect;
-    using MicroLite.Driver;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The class used to configure the MicroLite ORM framework using the fluent API.
     /// </summary>
     internal sealed class FluentConfiguration : IConfigureConnection, ICreateSessionFactory
     {
-        private static readonly object locker = new object();
-        private readonly ILog log = LogManager.GetCurrentClassLog();
-        private readonly Func<ISessionFactory, ISessionFactory> sessionFactoryCreated;
-        private string chosenConnectionName;
-        private IDbDriver chosenDbDriver;
-        private ISqlDialect chosenSqlDialect;
+        private static readonly object s_locker = new object();
+        private readonly ILog _log = LogManager.GetCurrentClassLog();
+        private readonly Func<ISessionFactory, ISessionFactory> _sessionFactoryCreated;
+        private string _chosenConnectionName;
+        private IDbDriver _chosenDbDriver;
+        private ISqlDialect _chosenSqlDialect;
 
         internal FluentConfiguration(Func<ISessionFactory, ISessionFactory> sessionFactoryCreated)
-        {
-            this.sessionFactoryCreated = sessionFactoryCreated;
-        }
+            => _sessionFactoryCreated = sessionFactoryCreated;
 
         public ISessionFactory CreateSessionFactory()
         {
-            lock (locker)
+            lock (s_locker)
             {
-                var sessionFactory =
-                    Configure.SessionFactories.SingleOrDefault(s => s.ConnectionName == this.chosenConnectionName);
+                ISessionFactory sessionFactory =
+                    Configure.SessionFactories.SingleOrDefault(s => s.ConnectionName == _chosenConnectionName);
 
-                if (sessionFactory == null)
+                if (sessionFactory is null)
                 {
-                    if (this.log.IsDebug)
+                    if (_log.IsDebug)
                     {
-                        this.log.Debug(
+                        _log.Debug(
                             LogMessages.FluentConfiguration_CreatingSessionFactory,
-                            this.chosenConnectionName,
-                            this.chosenDbDriver.GetType().Name,
-                            this.chosenSqlDialect.GetType().Name);
+                            _chosenConnectionName,
+                            _chosenDbDriver.GetType().Name,
+                            _chosenSqlDialect.GetType().Name);
                     }
 
-                    sessionFactory = new SessionFactory(this.chosenConnectionName, this.chosenDbDriver, this.chosenSqlDialect);
+                    sessionFactory = new SessionFactory(_chosenConnectionName, _chosenDbDriver, _chosenSqlDialect);
 
-                    if (this.sessionFactoryCreated != null)
+                    if (_sessionFactoryCreated != null)
                     {
-                        sessionFactory = this.sessionFactoryCreated(sessionFactory);
+                        sessionFactory = _sessionFactoryCreated(sessionFactory);
                     }
 
                     Configure.SessionFactories.Add(sessionFactory);
@@ -73,53 +71,53 @@ namespace MicroLite.Configuration
 
         public ICreateSessionFactory ForConnection(string connectionName, ISqlDialect sqlDialect, IDbDriver dbDriver)
         {
-            if (connectionName == null)
+            if (connectionName is null)
             {
-                throw new ArgumentNullException("connectionName");
+                throw new ArgumentNullException(nameof(connectionName));
             }
 
-            var configSection = ConfigurationManager.ConnectionStrings[connectionName];
+            ConnectionStringSettings configSection = ConfigurationManager.ConnectionStrings[connectionName];
 
-            if (configSection == null)
+            if (configSection is null)
             {
                 throw new ConfigurationException(ExceptionMessages.FluentConfiguration_ConnectionNotFound.FormatWith(connectionName));
             }
 
-            return this.ForConnection(configSection.Name, configSection.ConnectionString, configSection.ProviderName, sqlDialect, dbDriver);
+            return ForConnection(configSection.Name, configSection.ConnectionString, configSection.ProviderName, sqlDialect, dbDriver);
         }
 
         public ICreateSessionFactory ForConnection(string connectionName, string connectionString, string providerName, ISqlDialect sqlDialect, IDbDriver dbDriver)
         {
-            if (connectionName == null)
+            if (connectionName is null)
             {
-                throw new ArgumentNullException("connectionName");
+                throw new ArgumentNullException(nameof(connectionName));
             }
 
-            if (connectionString == null)
+            if (connectionString is null)
             {
-                throw new ArgumentNullException("connectionString");
+                throw new ArgumentNullException(nameof(connectionString));
             }
 
-            if (providerName == null)
+            if (providerName is null)
             {
-                throw new ArgumentNullException("providerName");
+                throw new ArgumentNullException(nameof(providerName));
             }
 
-            if (sqlDialect == null)
+            if (sqlDialect is null)
             {
-                throw new ArgumentNullException("sqlDialect");
+                throw new ArgumentNullException(nameof(sqlDialect));
             }
 
-            if (dbDriver == null)
+            if (dbDriver is null)
             {
-                throw new ArgumentNullException("dbDriver");
+                throw new ArgumentNullException(nameof(dbDriver));
             }
 
-            this.chosenConnectionName = connectionName;
-            this.chosenDbDriver = dbDriver;
-            this.chosenDbDriver.ConnectionString = connectionString;
-            this.chosenDbDriver.DbProviderFactory = DbProviderFactories.GetFactory(providerName);
-            this.chosenSqlDialect = sqlDialect;
+            _chosenConnectionName = connectionName;
+            _chosenDbDriver = dbDriver;
+            _chosenDbDriver.ConnectionString = connectionString;
+            _chosenDbDriver.DbProviderFactory = DbProviderFactories.GetFactory(providerName);
+            _chosenSqlDialect = sqlDialect;
 
             return this;
         }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SqlBuilder.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="SqlBuilder.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,13 +10,13 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Builder.Syntax;
+using MicroLite.Builder.Syntax.Read;
+using MicroLite.Builder.Syntax.Write;
+using MicroLite.Characters;
+
 namespace MicroLite.Builder
 {
-    using MicroLite.Builder.Syntax;
-    using MicroLite.Builder.Syntax.Read;
-    using MicroLite.Builder.Syntax.Write;
-    using MicroLite.Characters;
-
     /// <summary>
     /// A helper class for building an <see cref="SqlQuery" />.
     /// </summary>
@@ -27,9 +27,7 @@ namespace MicroLite.Builder
         /// </summary>
         /// <returns>The next step in the fluent sql builder.</returns>
         public static IDeleteFrom Delete()
-        {
-            return new DeleteSqlBuilder(SqlCharacters.Current);
-        }
+            => new DeleteSqlBuilder(SqlCharacters.Current);
 
         /// <summary>
         /// Species the name of the procedure to be executed.
@@ -43,18 +41,14 @@ namespace MicroLite.Builder
         /// </code>
         /// </example>
         public static IWithParameter Execute(string procedure)
-        {
-            return new StoredProcedureSqlBuilder(SqlCharacters.Current, procedure);
-        }
+            => new StoredProcedureSqlBuilder(SqlCharacters.Current, procedure);
 
         /// <summary>
         /// Creates a new insert query builder.
         /// </summary>
         /// <returns>The next step in the fluent sql builder.</returns>
         public static IInsertIntoTable Insert()
-        {
-            return new InsertSqlBuilder(SqlCharacters.Current);
-        }
+            => new InsertSqlBuilder(SqlCharacters.Current);
 
         /// <summary>
         /// Creates a new select query with no specified columns.
@@ -67,9 +61,7 @@ namespace MicroLite.Builder
         /// </code>
         /// </example>
         public static IFunctionOrFrom Select()
-        {
-            return new SelectSqlBuilder(SqlCharacters.Current, (string)null);
-        }
+            => new SelectSqlBuilder(SqlCharacters.Current, (string)null);
 
         /// <summary>
         /// Creates a new select query with a single specified column or '*'.
@@ -77,7 +69,7 @@ namespace MicroLite.Builder
         /// <param name="column">The column (or wildcard *) to be included in the query.</param>
         /// <returns>The next step in the fluent sql builder.</returns>
         /// <example>
-        /// Option 1, enter * followed by a table name
+        /// Option 1, enter * followed by a table name.
         /// <code>
         /// var query = SqlBuilder.Select("*").From("Customers")...
         ///
@@ -96,7 +88,7 @@ namespace MicroLite.Builder
         /// </example>
         public static IFunctionOrFrom Select(string column)
         {
-            var sqlCharacters = SqlCharacters.Current;
+            SqlCharacters sqlCharacters = SqlCharacters.Current;
 
             if (column == sqlCharacters.SelectWildcard)
             {
@@ -118,17 +110,13 @@ namespace MicroLite.Builder
         /// </code>
         /// </example>
         public static IFunctionOrFrom Select(params string[] columns)
-        {
-            return new SelectSqlBuilder(SqlCharacters.Current, columns);
-        }
+            => new SelectSqlBuilder(SqlCharacters.Current, columns);
 
         /// <summary>
         /// Creates a new update query builder.
         /// </summary>
         /// <returns>The next step in the fluent sql builder.</returns>
         public static IUpdate Update()
-        {
-            return new UpdateSqlBuilder(SqlCharacters.Current);
-        }
+            => new UpdateSqlBuilder(SqlCharacters.Current);
     }
 }

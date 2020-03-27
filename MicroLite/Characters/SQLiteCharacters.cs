@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SQLiteCharacters.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="SQLiteCharacters.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,11 +19,6 @@ namespace MicroLite.Characters
     internal sealed class SQLiteCharacters : SqlCharacters
     {
         /// <summary>
-        /// The single instance of <see cref="SqlCharacters"/> for SQLite.
-        /// </summary>
-        internal static readonly SqlCharacters Instance = new SQLiteCharacters();
-
-        /// <summary>
         /// Prevents a default instance of the <see cref="SQLiteCharacters"/> class from being created.
         /// </summary>
         private SQLiteCharacters()
@@ -33,45 +28,26 @@ namespace MicroLite.Characters
         /// <summary>
         /// Gets the left delimiter character.
         /// </summary>
-        public override string LeftDelimiter
-        {
-            get
-            {
-                return "\"";
-            }
-        }
+        public override string LeftDelimiter => "\"";
 
         /// <summary>
         /// Gets the right delimiter character.
         /// </summary>
-        public override string RightDelimiter
-        {
-            get
-            {
-                return "\"";
-            }
-        }
+        public override string RightDelimiter => "\"";
 
         /// <summary>
         /// Gets the SQL parameter.
         /// </summary>
-        public override string SqlParameter
-        {
-            get
-            {
-                return "@";
-            }
-        }
+        public override string SqlParameter => "@";
 
         /// <summary>
         /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
-        public override bool SupportsNamedParameters
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool SupportsNamedParameters => true;
+
+        /// <summary>
+        /// Gets the single instance of <see cref="SqlCharacters"/> for SQLite.
+        /// </summary>
+        internal static SqlCharacters Instance { get; } = new SQLiteCharacters();
     }
 }

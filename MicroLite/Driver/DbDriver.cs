@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="DbDriver.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="DbDriver.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,99 +10,64 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using MicroLite.Characters;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Logging;
+
 namespace MicroLite.Driver
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.Common;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text;
-    using MicroLite.Characters;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The base class for implementations of <see cref="IDbDriver" />.
     /// </summary>
     public abstract class DbDriver : IDbDriver
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private readonly SqlCharacters sqlCharacters;
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="DbDriver" /> class.
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters.</param>
         protected DbDriver(SqlCharacters sqlCharacters)
-        {
-            this.sqlCharacters = sqlCharacters;
-        }
+            => SqlCharacters = sqlCharacters ?? throw new ArgumentNullException(nameof(sqlCharacters));
 
         /// <summary>
         /// Gets or sets the connection string.
         /// </summary>
-        public string ConnectionString
-        {
-            get;
-            set;
-        }
+        public string ConnectionString { get; set; }
 
         /// <summary>
         /// Gets or sets the database provider factory.
         /// </summary>
-        public DbProviderFactory DbProviderFactory
-        {
-            get;
-            set;
-        }
+        public DbProviderFactory DbProviderFactory { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this DbDriver supports batched queries.
         /// </summary>
         /// <remarks>Returns false unless overridden.</remarks>
-        public virtual bool SupportsBatchedQueries
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool SupportsBatchedQueries => false;
 
         /// <summary>
         /// Gets the SQL characters used by the DbDriver.
         /// </summary>
-        protected SqlCharacters SqlCharacters
-        {
-            get
-            {
-                return this.sqlCharacters;
-            }
-        }
+        protected SqlCharacters SqlCharacters { get; }
 
         /// <summary>
         /// Gets a value indicating whether this DbDriver supports command timeout.
         /// </summary>
         /// <remarks>Returns true unless overridden.</remarks>
-        protected virtual bool SupportsCommandTimeout
-        {
-            get
-            {
-                return true;
-            }
-        }
+        protected virtual bool SupportsCommandTimeout => true;
 
         /// <summary>
         /// Gets a value indicating whether this DbDriver supports stored procedures.
         /// </summary>
-        protected bool SupportsStoredProcedures
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(this.sqlCharacters.StoredProcedureInvocationCommand);
-            }
-        }
+        protected bool SupportsStoredProcedures => !string.IsNullOrEmpty(SqlCharacters.StoredProcedureInvocationCommand);
 
         /// <summary>
         /// Builds the IDbCommand command using the values in the specified SqlQuery.
@@ -110,25 +75,24 @@ namespace MicroLite.Driver
         /// <param name="command">The command to build from the values in the specified SqlQuery.</param>
         /// <param name="sqlQuery">The SQL query containing the values for the command.</param>
         /// <exception cref="MicroLiteException">Thrown if the number of arguments does not match the number of parameter names.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "SqlQuery.CommandText is the parameterised query.")]
         public void BuildCommand(IDbCommand command, SqlQuery sqlQuery)
         {
-            if (command == null)
+            if (command is null)
             {
-                throw new ArgumentNullException("command");
+                throw new ArgumentNullException(nameof(command));
             }
 
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.DbDialect_BuildingCommand);
+                s_log.Debug(LogMessages.DbDialect_BuildingCommand);
             }
 
-            var parameterNames = SqlUtility.GetParameterNames(sqlQuery.CommandText);
+            IList<string> parameterNames = SqlUtility.GetParameterNames(sqlQuery.CommandText);
 
             if (parameterNames.Count == 0 && sqlQuery.Arguments.Count > 0)
             {
@@ -144,16 +108,16 @@ namespace MicroLite.Driver
 
             if (command.CommandText != sqlQuery.CommandText)
             {
-                command.CommandText = this.GetCommandText(sqlQuery.CommandText);
-                command.CommandType = this.GetCommandType(sqlQuery.CommandText);
+                command.CommandText = GetCommandText(sqlQuery.CommandText);
+                command.CommandType = GetCommandType(sqlQuery.CommandText);
 
                 command.Parameters.Clear();
             }
 
             for (int i = 0; i < parameterNames.Count; i++)
             {
-                var parameterName = parameterNames[i];
-                var sqlArgument = sqlQuery.Arguments[i];
+                string parameterName = parameterNames[i];
+                SqlArgument sqlArgument = sqlQuery.Arguments[i];
 
                 IDbDataParameter parameter;
 
@@ -167,10 +131,10 @@ namespace MicroLite.Driver
                     command.Parameters.Add(parameter);
                 }
 
-                this.BuildParameter(parameter, parameterName, sqlArgument);
+                BuildParameter(parameter, parameterName, sqlArgument);
             }
 
-            if (this.SupportsCommandTimeout)
+            if (SupportsCommandTimeout)
             {
                 command.CommandTimeout = sqlQuery.Timeout;
             }
@@ -185,34 +149,36 @@ namespace MicroLite.Driver
         /// </returns>
         public SqlQuery Combine(IEnumerable<SqlQuery> sqlQueries)
         {
-            if (sqlQueries == null)
+            if (sqlQueries is null)
             {
-                throw new ArgumentNullException("sqlQueries");
+                throw new ArgumentNullException(nameof(sqlQueries));
             }
 
             int argumentsCount = 0;
             var sqlBuilder = new StringBuilder(sqlQueries.Sum(s => s.CommandText.Length));
 
-            foreach (var sqlQuery in sqlQueries)
+            foreach (SqlQuery sqlQuery in sqlQueries)
             {
                 argumentsCount += sqlQuery.Arguments.Count;
 
                 if (sqlBuilder.Length == 0)
                 {
-                    sqlBuilder.Append(sqlQuery.CommandText).AppendLine(this.sqlCharacters.StatementSeparator);
+                    sqlBuilder.Append(sqlQuery.CommandText).AppendLine(SqlCharacters.StatementSeparator);
                 }
                 else
                 {
-                    var commandText = this.IsStoredProcedureCall(sqlQuery.CommandText)
+                    string commandText = IsStoredProcedureCall(sqlQuery.CommandText)
                         ? sqlQuery.CommandText
                         : SqlUtility.RenumberParameters(sqlQuery.CommandText, argumentsCount);
 
-                    sqlBuilder.Append(commandText).AppendLine(this.sqlCharacters.StatementSeparator);
+                    sqlBuilder.Append(commandText).AppendLine(SqlCharacters.StatementSeparator);
                 }
             }
 
-            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray());
-            combinedQuery.Timeout = sqlQueries.Max(s => s.Timeout);
+            var combinedQuery = new SqlQuery(sqlBuilder.ToString(0, sqlBuilder.Length - 3), sqlQueries.SelectMany(s => s.Arguments).ToArray())
+            {
+                Timeout = sqlQueries.Max(s => s.Timeout),
+            };
 
             return combinedQuery;
         }
@@ -227,14 +193,14 @@ namespace MicroLite.Driver
         /// </returns>
         public SqlQuery Combine(SqlQuery sqlQuery1, SqlQuery sqlQuery2)
         {
-            if (sqlQuery1 == null)
+            if (sqlQuery1 is null)
             {
-                throw new ArgumentNullException("sqlQuery1");
+                throw new ArgumentNullException(nameof(sqlQuery1));
             }
 
-            if (sqlQuery2 == null)
+            if (sqlQuery2 is null)
             {
-                throw new ArgumentNullException("sqlQuery2");
+                throw new ArgumentNullException(nameof(sqlQuery2));
             }
 
             int argumentsCount = sqlQuery1.Arguments.Count + sqlQuery2.Arguments.Count;
@@ -248,14 +214,16 @@ namespace MicroLite.Driver
                 Array.Copy(sqlQuery2.ArgumentsArray, 0, arguments, sqlQuery1.Arguments.Count, sqlQuery2.Arguments.Count);
             }
 
-            var query2CommandText = this.IsStoredProcedureCall(sqlQuery2.CommandText)
+            string query2CommandText = IsStoredProcedureCall(sqlQuery2.CommandText)
                 ? sqlQuery2.CommandText
                 : SqlUtility.RenumberParameters(sqlQuery2.CommandText, argumentsCount);
 
-            var commandText = sqlQuery1.CommandText + this.sqlCharacters.StatementSeparator + Environment.NewLine + query2CommandText;
+            string commandText = sqlQuery1.CommandText + SqlCharacters.StatementSeparator + Environment.NewLine + query2CommandText;
 
-            var combinedQuery = new SqlQuery(commandText, arguments);
-            combinedQuery.Timeout = Math.Max(sqlQuery1.Timeout, sqlQuery2.Timeout);
+            var combinedQuery = new SqlQuery(commandText, arguments)
+            {
+                Timeout = Math.Max(sqlQuery1.Timeout, sqlQuery2.Timeout),
+            };
 
             return combinedQuery;
         }
@@ -268,8 +236,8 @@ namespace MicroLite.Driver
         /// </returns>
         public IDbConnection CreateConnection()
         {
-            var connection = this.DbProviderFactory.CreateConnection();
-            connection.ConnectionString = this.ConnectionString;
+            DbConnection connection = DbProviderFactory.CreateConnection();
+            connection.ConnectionString = ConnectionString;
 
             return connection;
         }
@@ -282,9 +250,9 @@ namespace MicroLite.Driver
         /// <param name="sqlArgument">The <see cref="SqlArgument"/> for the parameter.</param>
         protected virtual void BuildParameter(IDbDataParameter parameter, string parameterName, SqlArgument sqlArgument)
         {
-            if (parameter == null)
+            if (parameter is null)
             {
-                throw new ArgumentNullException("parameter");
+                throw new ArgumentNullException(nameof(parameter));
             }
 
             parameter.DbType = sqlArgument.DbType;
@@ -300,15 +268,15 @@ namespace MicroLite.Driver
         /// <returns>The actual command text.</returns>
         protected virtual string GetCommandText(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
-            if (this.IsStoredProcedureCall(commandText))
+            if (IsStoredProcedureCall(commandText))
             {
-                var invocationCommandLength = this.sqlCharacters.StoredProcedureInvocationCommand.Length;
-                var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
+                int invocationCommandLength = SqlCharacters.StoredProcedureInvocationCommand.Length;
+                int firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
 
                 if (firstParameterPosition > invocationCommandLength)
                 {
@@ -330,12 +298,12 @@ namespace MicroLite.Driver
         /// <returns>The CommandType for the specified command text.</returns>
         protected virtual CommandType GetCommandType(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
-            if (this.IsStoredProcedureCall(commandText))
+            if (IsStoredProcedureCall(commandText))
             {
                 return CommandType.StoredProcedure;
             }
@@ -350,14 +318,14 @@ namespace MicroLite.Driver
         /// <returns>true if the command text is a stored procedure call, otherwise false.</returns>
         protected virtual bool IsStoredProcedureCall(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
-            return this.SupportsStoredProcedures
-                && commandText.StartsWith(this.sqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
-                && !commandText.Contains(this.sqlCharacters.StatementSeparator);
+            return SupportsStoredProcedures
+                && commandText.StartsWith(SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                && !commandText.Contains(SqlCharacters.StatementSeparator);
         }
     }
 }

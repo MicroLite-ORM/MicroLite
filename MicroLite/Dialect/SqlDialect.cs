@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SqlDialect.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="SqlDialect.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,57 +10,44 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using MicroLite.Builder;
+using MicroLite.Builder.Syntax.Write;
+using MicroLite.Characters;
+using MicroLite.Logging;
+using MicroLite.Mapping;
+
 namespace MicroLite.Dialect
 {
-    using System;
-    using System.Collections.Generic;
-    using MicroLite.Builder;
-    using MicroLite.Characters;
-    using MicroLite.Logging;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The base class for implementations of <see cref="ISqlDialect" />.
     /// </summary>
     public abstract class SqlDialect : ISqlDialect
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private readonly SqlCharacters sqlCharacters;
-        private Dictionary<Type, string> deleteCommandCache = new Dictionary<Type, string>();
-        private Dictionary<Type, string> insertCommandCache = new Dictionary<Type, string>();
-        private Dictionary<Type, string> selectCommandCache = new Dictionary<Type, string>();
-        private Dictionary<Type, string> updateCommandCache = new Dictionary<Type, string>();
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
+        private readonly ConcurrentDictionary<Type, string> _deleteCommandCache = new ConcurrentDictionary<Type, string>();
+        private readonly ConcurrentDictionary<Type, string> _insertCommandCache = new ConcurrentDictionary<Type, string>();
+        private readonly ConcurrentDictionary<Type, string> _selectCommandCache = new ConcurrentDictionary<Type, string>();
+        private readonly ConcurrentDictionary<Type, string> _updateCommandCache = new ConcurrentDictionary<Type, string>();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlDialect"/> class.
         /// </summary>
         /// <param name="sqlCharacters">The SQL characters.</param>
         protected SqlDialect(SqlCharacters sqlCharacters)
-        {
-            this.sqlCharacters = sqlCharacters;
-        }
+            => SqlCharacters = sqlCharacters ?? throw new ArgumentNullException(nameof(sqlCharacters));
 
         /// <summary>
         /// Gets the SQL characters used by the SQL dialect.
         /// </summary>
-        public SqlCharacters SqlCharacters
-        {
-            get
-            {
-                return this.sqlCharacters;
-            }
-        }
+        public SqlCharacters SqlCharacters { get; }
 
         /// <summary>
         /// Gets a value indicating whether the SQL Dialect supports selecting the identifier value of an inserted column.
         /// </summary>
-        public virtual bool SupportsSelectInsertedIdentifier
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool SupportsSelectInsertedIdentifier => false;
 
         /// <summary>
         /// Builds an SqlQuery to delete the database record with the specified identifier for the type specified by the IObjectInfo.
@@ -72,27 +59,17 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery BuildDeleteSqlQuery(IObjectInfo objectInfo, object identifier)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "DELETE");
+                s_log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "DELETE");
             }
 
-            string deleteCommand;
-
-            if (!this.deleteCommandCache.TryGetValue(objectInfo.ForType, out deleteCommand))
-            {
-                deleteCommand = this.BuildDeleteCommandText(objectInfo);
-
-                var newDeleteCommandCache = new Dictionary<Type, string>(this.deleteCommandCache);
-                newDeleteCommandCache[objectInfo.ForType] = deleteCommand;
-
-                this.deleteCommandCache = newDeleteCommandCache;
-            }
+            string deleteCommand = _deleteCommandCache.GetOrAdd(objectInfo.ForType, _ => BuildDeleteCommandText(objectInfo));
 
             return new SqlQuery(deleteCommand, new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType));
         }
@@ -107,29 +84,19 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery BuildInsertSqlQuery(IObjectInfo objectInfo, object instance)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "INSERT");
+                s_log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "INSERT");
             }
 
-            string insertCommand;
+            string insertCommand = _insertCommandCache.GetOrAdd(objectInfo.ForType, _ => BuildInsertCommandText(objectInfo));
 
-            if (!this.insertCommandCache.TryGetValue(objectInfo.ForType, out insertCommand))
-            {
-                insertCommand = this.BuildInsertCommandText(objectInfo);
-
-                var newInsertCommandCache = new Dictionary<Type, string>(this.insertCommandCache);
-                newInsertCommandCache[objectInfo.ForType] = insertCommand;
-
-                this.insertCommandCache = newInsertCommandCache;
-            }
-
-            var insertValues = objectInfo.GetInsertValues(instance);
+            SqlArgument[] insertValues = objectInfo.GetInsertValues(instance);
 
             return new SqlQuery(insertCommand, insertValues);
         }
@@ -141,10 +108,7 @@ namespace MicroLite.Dialect
         /// <returns>
         /// The created <see cref="SqlQuery" />.
         /// </returns>
-        public virtual SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
-        {
-            return new SqlQuery(string.Empty);
-        }
+        public virtual SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo) => new SqlQuery(string.Empty);
 
         /// <summary>
         /// Builds an SqlQuery to select the database record with the specified identifier for the type specified by the IObjectInfo.
@@ -156,27 +120,17 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery BuildSelectSqlQuery(IObjectInfo objectInfo, object identifier)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "SELECT");
+                s_log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "SELECT");
             }
 
-            string selectCommand;
-
-            if (!this.selectCommandCache.TryGetValue(objectInfo.ForType, out selectCommand))
-            {
-                selectCommand = this.BuildSelectCommandText(objectInfo);
-
-                var newSelectCommandCache = new Dictionary<Type, string>(this.selectCommandCache);
-                newSelectCommandCache[objectInfo.ForType] = selectCommand;
-
-                this.selectCommandCache = newSelectCommandCache;
-            }
+            string selectCommand = _selectCommandCache.GetOrAdd(objectInfo.ForType, _ => BuildSelectCommandText(objectInfo));
 
             return new SqlQuery(selectCommand, new SqlArgument(identifier, objectInfo.TableInfo.IdentifierColumn.DbType));
         }
@@ -191,29 +145,19 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery BuildUpdateSqlQuery(IObjectInfo objectInfo, object instance)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "UPDATE");
+                s_log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "UPDATE");
             }
 
-            string updateCommand;
+            string updateCommand = _updateCommandCache.GetOrAdd(objectInfo.ForType, _ => BuildUpdateCommandText(objectInfo));
 
-            if (!this.updateCommandCache.TryGetValue(objectInfo.ForType, out updateCommand))
-            {
-                updateCommand = this.BuildUpdateCommandText(objectInfo);
-
-                var newUpdateCommandCache = new Dictionary<Type, string>(this.updateCommandCache);
-                newUpdateCommandCache[objectInfo.ForType] = updateCommand;
-
-                this.updateCommandCache = newUpdateCommandCache;
-            }
-
-            var updateValues = objectInfo.GetUpdateValues(instance);
+            SqlArgument[] updateValues = objectInfo.GetUpdateValues(instance);
 
             return new SqlQuery(updateCommand, updateValues);
         }
@@ -227,22 +171,22 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery BuildUpdateSqlQuery(ObjectDelta objectDelta)
         {
-            if (objectDelta == null)
+            if (objectDelta is null)
             {
-                throw new ArgumentNullException("objectDelta");
+                throw new ArgumentNullException(nameof(objectDelta));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "UPDATE");
+                s_log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "UPDATE");
             }
 
-            var objectInfo = ObjectInfo.For(objectDelta.ForType);
+            IObjectInfo objectInfo = ObjectInfo.For(objectDelta.ForType);
 
-            var builder = new UpdateSqlBuilder(this.SqlCharacters)
+            ISetOrWhere builder = new UpdateSqlBuilder(SqlCharacters)
                 .Table(objectInfo);
 
-            foreach (var change in objectDelta.Changes)
+            foreach (KeyValuePair<string, object> change in objectDelta.Changes)
             {
                 builder.SetColumnValue(change.Key, change.Value);
             }
@@ -263,22 +207,22 @@ namespace MicroLite.Dialect
         /// </returns>
         public SqlQuery CountQuery(SqlQuery sqlQuery)
         {
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "COUNT");
+                s_log.Debug(LogMessages.SqlDialect_CreatingSqlQuery, "COUNT");
             }
 
             var sqlString = SqlString.Parse(sqlQuery.CommandText, Clauses.From | Clauses.Where);
 
-            var qualifiedTableName = sqlString.From;
-            var whereValue = sqlString.Where;
-            var whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
-            var argumentsArray = !string.IsNullOrEmpty(whereValue) ? sqlQuery.ArgumentsArray : null;
+            string qualifiedTableName = sqlString.From;
+            string whereValue = sqlString.Where;
+            string whereClause = !string.IsNullOrEmpty(whereValue) ? " WHERE " + whereValue : string.Empty;
+            SqlArgument[] argumentsArray = !string.IsNullOrEmpty(whereValue) ? sqlQuery.ArgumentsArray : null;
 
             return new SqlQuery("SELECT COUNT(*) FROM " + qualifiedTableName + whereClause, argumentsArray);
         }
@@ -302,12 +246,12 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildDeleteCommandText(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            var deleteSqlQuery = new DeleteSqlBuilder(this.SqlCharacters)
+            var deleteSqlQuery = new DeleteSqlBuilder(SqlCharacters)
                 .From(objectInfo)
                 .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0)
                 .ToSqlQuery();
@@ -324,17 +268,17 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildInsertCommandText(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            var counter = 0;
-            var insertColumns = new string[objectInfo.TableInfo.InsertColumnCount];
+            int counter = 0;
+            string[] insertColumns = new string[objectInfo.TableInfo.InsertColumnCount];
 
             for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
             {
-                var columnInfo = objectInfo.TableInfo.Columns[i];
+                ColumnInfo columnInfo = objectInfo.TableInfo.Columns[i];
 
                 if (columnInfo.AllowInsert)
                 {
@@ -342,7 +286,7 @@ namespace MicroLite.Dialect
                 }
             }
 
-            var insertSqlQuery = new InsertSqlBuilder(this.SqlCharacters)
+            var insertSqlQuery = new InsertSqlBuilder(SqlCharacters)
                 .Into(objectInfo)
                 .Columns(insertColumns)
                 .Values(new object[objectInfo.TableInfo.InsertColumnCount])
@@ -360,12 +304,12 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildSelectCommandText(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            var selectSqlQuery = new SelectSqlBuilder(this.SqlCharacters)
+            var selectSqlQuery = new SelectSqlBuilder(SqlCharacters)
                 .From(objectInfo)
                 .Where(objectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(0)
                 .ToSqlQuery();
@@ -382,17 +326,17 @@ namespace MicroLite.Dialect
         /// </returns>
         protected virtual string BuildUpdateCommandText(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            var builder = new UpdateSqlBuilder(this.SqlCharacters)
+            ISetOrWhere builder = new UpdateSqlBuilder(SqlCharacters)
                        .Table(objectInfo);
 
             for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
             {
-                var columnInfo = objectInfo.TableInfo.Columns[i];
+                ColumnInfo columnInfo = objectInfo.TableInfo.Columns[i];
 
                 if (columnInfo.AllowUpdate)
                 {

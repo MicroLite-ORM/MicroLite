@@ -1,6 +1,6 @@
 ﻿namespace MicroLite.Tests.Mapping
 {
-#if !NET35
+
 
     using System;
     using System.Data;
@@ -154,7 +154,7 @@
             Assert.Equal("Fred Flintstone", instance.Item2);
             Assert.Equal(238.335M, instance.Item3);
             Assert.Equal(DateTime.Today, instance.Item4);
-            Assert.Equal(true, instance.Item5);
+            Assert.True(instance.Item5);
         }
 
         [Fact]
@@ -188,7 +188,7 @@
             Assert.Equal("Fred Flintstone", instance.Item2);
             Assert.Equal(238.335M, instance.Item3);
             Assert.Equal(DateTime.Today, instance.Item4);
-            Assert.Equal(true, instance.Item5);
+            Assert.True(instance.Item5);
             Assert.Equal(new Guid("E7B529F9-3EAC-45C6-91F3-F05006D94BDD"), instance.Item6);
         }
 
@@ -225,7 +225,7 @@
             Assert.Equal("Fred Flintstone", instance.Item2);
             Assert.Equal(238.335M, instance.Item3);
             Assert.Equal(DateTime.Today, instance.Item4);
-            Assert.Equal(true, instance.Item5);
+            Assert.True(instance.Item5);
             Assert.Equal(new Guid("E7B529F9-3EAC-45C6-91F3-F05006D94BDD"), instance.Item6);
             Assert.Equal(986562.12455D, instance.Item7);
         }
@@ -366,5 +366,5 @@
         }
     }
 
-#endif
+
 }

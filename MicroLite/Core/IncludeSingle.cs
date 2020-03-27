@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IncludeSingle.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IncludeSingle.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,15 +10,15 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
+using MicroLite.Mapping;
+using MicroLite.TypeConverters;
+
 namespace MicroLite.Core
 {
-    using System;
-    using System.Data;
-    using System.Data.Common;
-    using System.Threading;
-    using MicroLite.Mapping;
-    using MicroLite.TypeConverters;
-
     /// <summary>
     /// The default implementation of <see cref="IInclude&lt;T&gt;"/> for mapped objects.
     /// </summary>
@@ -26,84 +26,39 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}, Value: {Value}")]
     internal sealed class IncludeSingle<T> : Include, IInclude<T>
     {
-        private static readonly Type resultType = typeof(T);
-        private Action<IInclude<T>> callback;
+        private static readonly Type s_resultType = typeof(T);
+        private Action<IInclude<T>> _callback;
 
-        public T Value
-        {
-            get;
-            private set;
-        }
+        public T Value { get; private set; }
 
-        public void OnLoad(Action<IInclude<T>> action)
-        {
-            this.callback = action;
-        }
+        public void OnLoad(Action<IInclude<T>> action) => _callback = action;
 
-        internal override void BuildValue(IDataReader reader)
-        {
-            if (reader.Read())
-            {
-                if (TypeConverter.IsNotEntityAndConvertible(resultType))
-                {
-                    var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
-
-                    this.Value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
-                }
-                else
-                {
-                    var objectInfo = ObjectInfo.For(resultType);
-
-                    this.Value = (T)objectInfo.CreateInstance(reader);
-                }
-
-                this.HasValue = true;
-
-                if (reader.Read())
-                {
-                    throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
-                }
-
-                if (this.callback != null)
-                {
-                    this.callback(this);
-                }
-            }
-        }
-
-#if !NET35 && !NET40
-
-        internal override async System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
+        internal override async Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
             if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
-                if (TypeConverter.IsNotEntityAndConvertible(resultType))
+                if (TypeConverter.IsNotEntityAndConvertible(s_resultType))
                 {
-                    var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                    ITypeConverter typeConverter = TypeConverter.For(s_resultType) ?? TypeConverter.Default;
 
-                    this.Value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
+                    Value = (T)typeConverter.ConvertFromDbValue(reader, 0, s_resultType);
                 }
                 else
                 {
-                    var objectInfo = ObjectInfo.For(resultType);
+                    IObjectInfo objectInfo = ObjectInfo.For(s_resultType);
 
-                    this.Value = (T)objectInfo.CreateInstance(reader);
+                    Value = (T)objectInfo.CreateInstance(reader);
                 }
 
-                this.HasValue = true;
+                HasValue = true;
 
                 if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
                     throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }
 
-                if (this.callback != null)
-                {
-                    this.callback(this);
-                }
+                _callback?.Invoke(this);
             }
         }
-
-#endif
     }
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SqlCharacters.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="SqlCharacters.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,13 +10,13 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
+
 namespace MicroLite.Characters
 {
-    using System;
-    using System.Globalization;
-    using System.Linq;
-    using System.Runtime.Remoting.Messaging;
-
     /// <summary>
     /// A class containing the SQL characters for an SQL Dialect.
     /// </summary>
@@ -24,9 +24,8 @@ namespace MicroLite.Characters
     public class SqlCharacters : MarshalByRefObject
     {
         private const string LogicalGetDataName = "MicroLite.Characters.SqlCharacters_Current";
-        private static readonly SqlCharacters empty = new SqlCharacters();
-        private static readonly char[] period = new[] { '.' };
-        private static SqlCharacters defaultSqlCharacters = null;
+        private static readonly char[] s_period = new[] { '.' };
+        private static SqlCharacters s_defaultSqlCharacters = null;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlCharacters"/> class.
@@ -49,27 +48,25 @@ namespace MicroLite.Characters
         {
             get
             {
-                var current = CallContext.LogicalGetData(LogicalGetDataName) as SqlCharacters;
-
-                if (current != null)
+                if (CallContext.LogicalGetData(LogicalGetDataName) is SqlCharacters current)
                 {
                     return current;
                 }
 
-                return defaultSqlCharacters ?? empty;
+                return s_defaultSqlCharacters ?? Empty;
             }
 
             set
             {
-                if (value == null)
+                if (value is null)
                 {
                     CallContext.FreeNamedDataSlot(LogicalGetDataName);
-                    defaultSqlCharacters = null;
+                    s_defaultSqlCharacters = null;
                 }
                 else
                 {
                     CallContext.LogicalSetData(LogicalGetDataName, value);
-                    defaultSqlCharacters = value;
+                    s_defaultSqlCharacters = value;
                 }
             }
         }
@@ -77,101 +74,47 @@ namespace MicroLite.Characters
         /// <summary>
         /// Gets an Empty set of SqlCharacters which does not support named parameters or escaping of values.
         /// </summary>
-        public static SqlCharacters Empty
-        {
-            get
-            {
-                return empty;
-            }
-        }
+        public static SqlCharacters Empty { get; } = new SqlCharacters();
 
         /// <summary>
         /// Gets a string containing the delimiter used on the left hand side to escape an SQL value.
         /// </summary>
-        public virtual string LeftDelimiter
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        public virtual string LeftDelimiter => string.Empty;
 
         /// <summary>
         /// Gets a string containing the wildcard value for use in LIKE statements.
         /// </summary>
-        public virtual string LikeWildcard
-        {
-            get
-            {
-                return "%";
-            }
-        }
+        public virtual string LikeWildcard => "%";
 
         /// <summary>
         /// Gets a string containing the delimiter used on the right hand side to escape an SQL value.
         /// </summary>
-        public virtual string RightDelimiter
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        public virtual string RightDelimiter => string.Empty;
 
         /// <summary>
         /// Gets a string containing the wildcard value for use in SELECT statements.
         /// </summary>
-        public virtual string SelectWildcard
-        {
-            get
-            {
-                return "*";
-            }
-        }
+        public virtual string SelectWildcard => "*";
 
         /// <summary>
         /// Gets a string containing the parameter value for use in parameterised statements.
         /// </summary>
-        public virtual string SqlParameter
-        {
-            get
-            {
-                return "?";
-            }
-        }
+        public virtual string SqlParameter => "?";
 
         /// <summary>
         /// Gets the character used to separate SQL statements.
         /// </summary>
-        public virtual string StatementSeparator
-        {
-            get
-            {
-                return ";";
-            }
-        }
+        public virtual string StatementSeparator => ";";
 
         /// <summary>
         /// Gets the stored procedure invocation command.
         /// </summary>
-        public virtual string StoredProcedureInvocationCommand
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
+        public virtual string StoredProcedureInvocationCommand => string.Empty;
 
         /// <summary>
         /// Gets a value indicating whether SQL parameters are named.
         /// </summary>
-        public virtual bool SupportsNamedParameters
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool SupportsNamedParameters => false;
 
         /// <summary>
         /// Escapes the specified SQL using the left and right delimiters.
@@ -181,28 +124,24 @@ namespace MicroLite.Characters
         /// <exception cref="ArgumentNullException">Thrown if sql is null.</exception>
         public string EscapeSql(string sql)
         {
-            if (sql == null)
+            if (sql is null)
             {
-                throw new ArgumentNullException("sql");
+                throw new ArgumentNullException(nameof(sql));
             }
 
-            if (this.IsEscaped(sql))
+            if (IsEscaped(sql))
             {
                 return sql;
             }
 
             if (!sql.Contains('.'))
             {
-                return this.LeftDelimiter + sql + this.RightDelimiter;
+                return LeftDelimiter + sql + RightDelimiter;
             }
 
-            var sqlPieces = sql.Split(period);
+            string[] sqlPieces = sql.Split(s_period);
 
-#if NET35
-            return string.Join(".", sqlPieces.Select(s => this.LeftDelimiter + s + this.RightDelimiter).ToArray());
-#else
-            return string.Join(".", sqlPieces.Select(s => this.LeftDelimiter + s + this.RightDelimiter));
-#endif
+            return string.Join(".", sqlPieces.Select(s => LeftDelimiter + s + RightDelimiter));
         }
 
         /// <summary>
@@ -212,12 +151,12 @@ namespace MicroLite.Characters
         /// <returns>The name of the parameter for the specified position.</returns>
         public string GetParameterName(int position)
         {
-            if (this.SupportsNamedParameters)
+            if (SupportsNamedParameters)
             {
-                return this.SqlParameter + "p" + position.ToString(CultureInfo.InvariantCulture);
+                return SqlParameter + "p" + position.ToString(CultureInfo.InvariantCulture);
             }
 
-            return this.SqlParameter;
+            return SqlParameter;
         }
 
         /// <summary>
@@ -234,8 +173,8 @@ namespace MicroLite.Characters
                 return false;
             }
 
-            return sql.StartsWith(this.LeftDelimiter, StringComparison.OrdinalIgnoreCase)
-                && sql.EndsWith(this.RightDelimiter, StringComparison.OrdinalIgnoreCase);
+            return sql.StartsWith(LeftDelimiter, StringComparison.OrdinalIgnoreCase)
+                && sql.EndsWith(RightDelimiter, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

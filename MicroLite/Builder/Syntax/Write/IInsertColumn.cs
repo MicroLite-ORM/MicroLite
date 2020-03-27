@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IInsertColumn.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IInsertColumn.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Write
     /// <summary>
     /// The interface which specifies the column(s) method in the fluent insert sql builder syntax.
     /// </summary>
-    public interface IInsertColumn : IHideObjectMethods, IInsertValue, IToSqlQuery
+    public interface IInsertColumn : IInsertValue
     {
         /// <summary>
         /// Specifies the columns in the table to have values inserted into.

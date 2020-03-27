@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IWhereOrOrderBy.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IWhereOrOrderBy.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the where method in the fluent sql builder syntax.
     /// </summary>
-    public interface IWhereOrOrderBy : IHideObjectMethods, IGroupBy, IOrderBy, IToSqlQuery
+    public interface IWhereOrOrderBy : IGroupBy, IOrderBy
     {
         /// <summary>
         /// Specifies the where clause for the query.
@@ -67,10 +67,10 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("LastName = @p0", "Smith")
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0)
+        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0).
         /// </example>
         /// <example>
-        /// You can refer to the same parameter multiple times
+        /// You can refer to the same parameter multiple times.
         /// <code>
         /// var query = SqlBuilder
         ///     .Select("*")
@@ -78,7 +78,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .Where("LastName = @p0 OR @p0 IS NULL", lastName)
         ///     .ToSqlQuery();
         /// </code>
-        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR @p0 IS NULL)
+        /// Would generate SELECT [Columns] FROM Customers WHERE (LastName = @p0 OR @p0 IS NULL).
         /// </example>
         IAndOrOrderBy Where(string predicate, params object[] args);
     }

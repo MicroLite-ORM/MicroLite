@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IdentifierStrategyListener.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IdentifierStrategyListener.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,20 +10,20 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Globalization;
+using MicroLite.Logging;
+using MicroLite.Mapping;
+
 namespace MicroLite.Listeners
 {
-    using System;
-    using System.Globalization;
-    using MicroLite.Logging;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The implementation of <see cref="IInsertListener"/> for setting the instance identifier value if
     /// <see cref="IdentifierStrategy"/>.DbGenerated or <see cref="IdentifierStrategy"/>.Sequence is used.
     /// </summary>
     public sealed class IdentifierStrategyListener : IInsertListener
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
 
         /// <summary>
         /// Invoked after the SqlQuery to insert the record for the instance has been executed.
@@ -35,30 +35,30 @@ namespace MicroLite.Listeners
         /// and executeScalarResult is null.</exception>
         public void AfterInsert(object instance, object executeScalarResult)
         {
-            if (instance == null)
+            if (instance is null)
             {
-                throw new ArgumentNullException("instance");
+                throw new ArgumentNullException(nameof(instance));
             }
 
-            if (executeScalarResult == null)
+            if (executeScalarResult is null)
             {
                 return;
             }
 
-            var objectInfo = ObjectInfo.For(instance.GetType());
+            IObjectInfo objectInfo = ObjectInfo.For(instance.GetType());
 
             if (objectInfo.TableInfo.IdentifierStrategy != IdentifierStrategy.Assigned)
             {
-                if (log.IsDebug)
+                if (s_log.IsDebug)
                 {
-                    log.Debug(LogMessages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
+                    s_log.Debug(LogMessages.IListener_SettingIdentifierValue, objectInfo.ForType.FullName, executeScalarResult.ToString());
                 }
 
-                var propertyType = objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType;
+                Type propertyType = objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType;
 
                 if (executeScalarResult.GetType() != propertyType)
                 {
-                    var converted = Convert.ChangeType(executeScalarResult, propertyType, CultureInfo.InvariantCulture);
+                    object converted = Convert.ChangeType(executeScalarResult, propertyType, CultureInfo.InvariantCulture);
 
                     objectInfo.SetIdentifierValue(instance, converted);
                 }
@@ -75,7 +75,7 @@ namespace MicroLite.Listeners
         /// <param name="instance">The instance to be inserted.</param>
         public void BeforeInsert(object instance)
         {
-            return; // no-op
+            // no-op
         }
     }
 }

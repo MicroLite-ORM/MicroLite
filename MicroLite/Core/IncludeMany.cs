@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IncludeMany.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IncludeMany.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,16 +10,16 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
+using MicroLite.Mapping;
+using MicroLite.TypeConverters;
+
 namespace MicroLite.Core
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.Common;
-    using System.Threading;
-    using MicroLite.Mapping;
-    using MicroLite.TypeConverters;
-
     /// <summary>
     /// The default implementation of <see cref="IIncludeMany&lt;T&gt;"/>.
     /// </summary>
@@ -27,91 +27,41 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}, Values: {Values}")]
     internal sealed class IncludeMany<T> : Include, IIncludeMany<T>
     {
-        private static readonly Type resultType = typeof(T);
-        private readonly IList<T> values = new List<T>();
-        private Action<IIncludeMany<T>> callback;
+        private static readonly Type s_resultType = typeof(T);
+        private Action<IIncludeMany<T>> _callback;
 
-        public IList<T> Values
+        public IList<T> Values { get; } = new List<T>();
+
+        public void OnLoad(Action<IIncludeMany<T>> action) => _callback = action;
+
+        internal override async Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
-            get
+            if (TypeConverter.IsNotEntityAndConvertible(s_resultType))
             {
-                return this.values;
-            }
-        }
-
-        public void OnLoad(Action<IIncludeMany<T>> action)
-        {
-            this.callback = action;
-        }
-
-        internal override void BuildValue(IDataReader reader)
-        {
-            if (TypeConverter.IsNotEntityAndConvertible(resultType))
-            {
-                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
-
-                while (reader.Read())
-                {
-                    var value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
-
-                    this.values.Add(value);
-                }
-            }
-            else
-            {
-                var objectInfo = ObjectInfo.For(resultType);
-
-                while (reader.Read())
-                {
-                    var instance = (T)objectInfo.CreateInstance(reader);
-
-                    this.values.Add(instance);
-                }
-            }
-
-            this.HasValue = this.values.Count > 0;
-
-            if (this.callback != null)
-            {
-                this.callback(this);
-            }
-        }
-
-#if !NET35 && !NET40
-
-        internal override async System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
-        {
-            if (TypeConverter.IsNotEntityAndConvertible(resultType))
-            {
-                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                ITypeConverter typeConverter = TypeConverter.For(s_resultType) ?? TypeConverter.Default;
 
                 while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
-                    var value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
+                    var value = (T)typeConverter.ConvertFromDbValue(reader, 0, s_resultType);
 
-                    this.values.Add(value);
+                    Values.Add(value);
                 }
             }
             else
             {
-                var objectInfo = ObjectInfo.For(resultType);
+                IObjectInfo objectInfo = ObjectInfo.For(s_resultType);
 
                 while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
                     var instance = (T)objectInfo.CreateInstance(reader);
 
-                    this.values.Add(instance);
+                    Values.Add(instance);
                 }
             }
 
-            this.HasValue = this.values.Count > 0;
+            HasValue = Values.Count > 0;
 
-            if (this.callback != null)
-            {
-                this.callback(this);
-            }
+            _callback?.Invoke(this);
         }
-
-#endif
     }
 }

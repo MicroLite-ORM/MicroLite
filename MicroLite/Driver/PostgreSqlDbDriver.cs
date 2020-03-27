@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="PostgreSqlDbDriver.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="PostgreSqlDbDriver.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Characters;
+
 namespace MicroLite.Driver
 {
-    using System;
-    using MicroLite.Characters;
-
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for PostgreSql server.
     /// </summary>
@@ -28,25 +28,19 @@ namespace MicroLite.Driver
         {
         }
 
-        public override bool SupportsBatchedQueries
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool SupportsBatchedQueries => true;
 
         protected override string GetCommandText(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
-            if (this.IsStoredProcedureCall(commandText))
+            if (IsStoredProcedureCall(commandText))
             {
-                var invocationCommandLength = this.SqlCharacters.StoredProcedureInvocationCommand.Length;
-                var firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
+                int invocationCommandLength = SqlCharacters.StoredProcedureInvocationCommand.Length;
+                int firstParameterPosition = SqlUtility.GetFirstParameterPosition(commandText);
 
                 if (commandText.Contains("("))
                 {
@@ -70,15 +64,15 @@ namespace MicroLite.Driver
 
         protected override bool IsStoredProcedureCall(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
-                throw new ArgumentNullException("commandText");
+                throw new ArgumentNullException(nameof(commandText));
             }
 
-            return this.SupportsStoredProcedures
+            return SupportsStoredProcedures
                 && commandText.IndexOf("FROM", StringComparison.OrdinalIgnoreCase) == -1
-                && commandText.StartsWith(this.SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
-                && !commandText.Contains(this.SqlCharacters.StatementSeparator);
+                && commandText.StartsWith(SqlCharacters.StoredProcedureInvocationCommand, StringComparison.OrdinalIgnoreCase)
+                && !commandText.Contains(SqlCharacters.StatementSeparator);
         }
     }
 }

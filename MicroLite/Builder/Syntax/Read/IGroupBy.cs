@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IGroupBy.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IGroupBy.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Read
     /// <summary>
     /// The interface which specifies the group by method in the fluent sql builder syntax.
     /// </summary>
-    public interface IGroupBy : IHideObjectMethods
+    public interface IGroupBy
     {
         /// <summary>
         /// Groups the results of the query by the specified column.
@@ -32,7 +32,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .GroupBy("CustomerId")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId
+        /// Will generate SELECT CustomerId, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId.
         /// </example>
         IHavingOrOrderBy GroupBy(string column);
 
@@ -51,7 +51,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .GroupBy("CustomerId, OrderDate")
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT CustomerId, OrderDate, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId, OrderDate
+        /// Will generate SELECT CustomerId, OrderDate, MAX(Total) AS Total FROM Invoices GROUP BY CustomerId, OrderDate.
         /// </example>
         IHavingOrOrderBy GroupBy(params string[] columns);
     }

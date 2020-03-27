@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IToSqlQuery.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IToSqlQuery.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ namespace MicroLite.Builder.Syntax
     /// <remarks>
     /// It's a bit of a verbose hack, need to see if I can use cast operators instead somehow...
     /// </remarks>
-    public interface IToSqlQuery : IHideObjectMethods
+    public interface IToSqlQuery
     {
         /// <summary>
         /// Creates a <see cref="SqlQuery"/> from the values specified.

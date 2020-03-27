@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ILGeneratorExtensions.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ILGeneratorExtensions.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Reflection.Emit;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Reflection.Emit;
-
     /// <summary>
     /// Extension methods for the ILGenerator class.
     /// </summary>

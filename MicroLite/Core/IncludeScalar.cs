@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IncludeScalar.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IncludeScalar.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
+using MicroLite.TypeConverters;
+
 namespace MicroLite.Core
 {
-    using System;
-    using System.Data;
-    using System.Data.Common;
-    using System.Threading;
-    using MicroLite.TypeConverters;
-
     /// <summary>
     /// The default implementation of <see cref="IInclude&lt;T&gt;"/> for scalar results.
     /// </summary>
@@ -25,49 +25,14 @@ namespace MicroLite.Core
     [System.Diagnostics.DebuggerDisplay("HasValue: {HasValue}, Value: {Value}")]
     internal sealed class IncludeScalar<T> : Include, IInclude<T>
     {
-        private static readonly Type resultType = typeof(T);
-        private Action<IInclude<T>> callback;
+        private static readonly Type s_resultType = typeof(T);
+        private Action<IInclude<T>> _callback;
 
-        public T Value
-        {
-            get;
-            private set;
-        }
+        public T Value { get; private set; }
 
-        public void OnLoad(Action<IInclude<T>> action)
-        {
-            this.callback = action;
-        }
+        public void OnLoad(Action<IInclude<T>> action) => _callback = action;
 
-        internal override void BuildValue(IDataReader reader)
-        {
-            if (reader.Read())
-            {
-                if (reader.FieldCount != 1)
-                {
-                    throw new MicroLiteException(ExceptionMessages.IncludeScalar_MultipleColumns);
-                }
-
-                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
-
-                this.Value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
-                this.HasValue = true;
-
-                if (reader.Read())
-                {
-                    throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
-                }
-
-                if (this.callback != null)
-                {
-                    this.callback(this);
-                }
-            }
-        }
-
-#if !NET35 && !NET40
-
-        internal override async System.Threading.Tasks.Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
+        internal override async Task BuildValueAsync(DbDataReader reader, CancellationToken cancellationToken)
         {
             if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
@@ -76,23 +41,18 @@ namespace MicroLite.Core
                     throw new MicroLiteException(ExceptionMessages.IncludeScalar_MultipleColumns);
                 }
 
-                var typeConverter = TypeConverter.For(resultType) ?? TypeConverter.Default;
+                ITypeConverter typeConverter = TypeConverter.For(s_resultType) ?? TypeConverter.Default;
 
-                this.Value = (T)typeConverter.ConvertFromDbValue(reader, 0, resultType);
-                this.HasValue = true;
+                Value = (T)typeConverter.ConvertFromDbValue(reader, 0, s_resultType);
+                HasValue = true;
 
                 if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
                 {
                     throw new MicroLiteException(ExceptionMessages.Include_SingleRecordExpected);
                 }
 
-                if (this.callback != null)
-                {
-                    this.callback(this);
-                }
+                _callback?.Invoke(this);
             }
         }
-
-#endif
     }
 }

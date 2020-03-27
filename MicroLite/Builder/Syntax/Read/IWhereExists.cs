@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IWhereExists.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IWhereExists.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .InExists(customerQuery)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Invoices WHERE EXISTS (SELECT CustomerId FROM Customers WHERE Age > @p0)
+        /// Will generate SELECT {Columns} FROM Invoices WHERE EXISTS (SELECT CustomerId FROM Customers WHERE Age > @p0).
         /// </example>
         IAndOrOrderBy Exists(SqlQuery subQuery);
 
@@ -65,7 +65,7 @@ namespace MicroLite.Builder.Syntax.Read
         ///     .InExists(customerQuery)
         ///     .ToSqlQuery();
         /// </code>
-        /// Will generate SELECT {Columns} FROM Invoices WHERE EXISTS (SELECT CustomerId FROM Customers WHERE Age > @p0)
+        /// Will generate SELECT {Columns} FROM Invoices WHERE EXISTS (SELECT CustomerId FROM Customers WHERE Age > @p0).
         /// </example>
         IAndOrOrderBy NotExists(SqlQuery subQuery);
     }

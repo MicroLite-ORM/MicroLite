@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ILog.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ILog.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Logging
 {
-    using System;
-
     /// <summary>
     /// The interface for a framework independent logger.
     /// </summary>
@@ -22,42 +22,27 @@ namespace MicroLite.Logging
         /// <summary>
         /// Gets a value indicating whether the logger is logging debug statements.
         /// </summary>
-        bool IsDebug
-        {
-            get;
-        }
+        bool IsDebug { get; }
 
         /// <summary>
         /// Gets a value indicating whether the logger is logging error statements.
         /// </summary>
-        bool IsError
-        {
-            get;
-        }
+        bool IsError { get; }
 
         /// <summary>
         /// Gets a value indicating whether the logger is logging fatal statements.
         /// </summary>
-        bool IsFatal
-        {
-            get;
-        }
+        bool IsFatal { get; }
 
         /// <summary>
         /// Gets a value indicating whether the logger is logging info statements.
         /// </summary>
-        bool IsInfo
-        {
-            get;
-        }
+        bool IsInfo { get; }
 
         /// <summary>
         /// Gets a value indicating whether the logger is logging warning statements.
         /// </summary>
-        bool IsWarn
-        {
-            get;
-        }
+        bool IsWarn { get; }
 
         /// <summary>
         /// Writes the message to the log as a debug statement.
@@ -76,24 +61,33 @@ namespace MicroLite.Logging
         /// Writes the message to the log as an error.
         /// </summary>
         /// <param name="message">The message to be logged.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error", Justification = "Acceptable for logging as it is used by log4net and nlog")]
+#pragma warning disable CA1716 // Identifiers should not match keywords
+
         void Error(string message);
+
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Writes the message to the log as an error along with the exception that occurred.
         /// </summary>
         /// <param name="message">The message to be logged.</param>
         /// <param name="exception">The exception that occurred.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error", Justification = "Acceptable for logging as it is used by log4net and nlog")]
+#pragma warning disable CA1716 // Identifiers should not match keywords
+
         void Error(string message, Exception exception);
+
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Writes the message to the log as an error.
         /// </summary>
         /// <param name="message">The message to be logged.</param>
         /// <param name="formatArgs">The format args.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Error", Justification = "Acceptable for logging as it is used by log4net and nlog")]
+#pragma warning disable CA1716 // Identifiers should not match keywords
+
         void Error(string message, params string[] formatArgs);
+
+#pragma warning restore CA1716 // Identifiers should not match keywords
 
         /// <summary>
         /// Writes the message to the log as fatal.

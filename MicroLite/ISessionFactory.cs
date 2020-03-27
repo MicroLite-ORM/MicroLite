@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ISessionFactory.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ISessionFactory.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,60 +10,24 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Driver;
+
 namespace MicroLite
 {
-    using MicroLite.Driver;
-
     /// <summary>
     /// The interface which defines the factory methods for creating MicroLite sessions.
     /// </summary>
-    public interface ISessionFactory : IHideObjectMethods
+    public interface ISessionFactory
     {
         /// <summary>
         /// Gets the name of the connection in the connection strings configuration section used by the session factory.
         /// </summary>
-        string ConnectionName
-        {
-            get;
-        }
+        string ConnectionName { get; }
 
         /// <summary>
         /// Gets the DB driver used by the session factory.
         /// </summary>
-        IDbDriver DbDriver
-        {
-            get;
-        }
-
-#if !NET35 && !NET40
-
-        /// <summary>
-        /// Opens a new asynchronous read-only session to the database using <see cref="ConnectionScope"/>.PerTransaction.
-        /// </summary>
-        /// <returns>A new asynchronous read-only database session.</returns>
-        IAsyncReadOnlySession OpenAsyncReadOnlySession();
-
-        /// <summary>
-        /// Opens a new asynchronous read-only session to the database using the specified <see cref="ConnectionScope"/>.
-        /// </summary>
-        /// <param name="connectionScope">The connection scope to use for the session.</param>
-        /// <returns>A new asynchronous read-only database session.</returns>
-        IAsyncReadOnlySession OpenAsyncReadOnlySession(ConnectionScope connectionScope);
-
-        /// <summary>
-        /// Opens a new asynchronous session to the database using <see cref="ConnectionScope"/>.PerTransaction.
-        /// </summary>
-        /// <returns>A new asynchronous database session.</returns>
-        IAsyncSession OpenAsyncSession();
-
-        /// <summary>
-        /// Opens a new asynchronous session to the database using the specified <see cref="ConnectionScope"/>.
-        /// </summary>
-        /// <param name="connectionScope">The connection scope to use for the session.</param>
-        /// <returns>A new asynchronous database session.</returns>
-        IAsyncSession OpenAsyncSession(ConnectionScope connectionScope);
-
-#endif
+        IDbDriver DbDriver { get; }
 
         /// <summary>
         /// Opens a new read-only session to the database using <see cref="ConnectionScope"/>.PerTransaction.

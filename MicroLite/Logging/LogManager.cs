@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="LogManager.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="LogManager.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Diagnostics;
+
 namespace MicroLite.Logging
 {
-    using System;
-    using System.Diagnostics;
-
     /// <summary>
     /// A class which the MicroLite ORM framework can call to resolve an ILog implementation.
     /// </summary>
@@ -23,20 +23,15 @@ namespace MicroLite.Logging
         /// <summary>
         /// Gets or sets the function which can be called by MicroLite to resolve the <see cref="ILog"/> to use.
         /// </summary>
-        internal static Func<Type, ILog> GetLogger
-        {
-            get;
-            set;
-        }
+        internal static Func<Type, ILog> GetLogger { get; set; }
 
         /// <summary>
         /// Gets the log for the current (calling) class.
         /// </summary>
         /// <returns>The <see cref="ILog"/> for the class which called the method.</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "The method will return a different ILog depending on the caller, it shouldn't be a property.")]
         public static ILog GetCurrentClassLog()
         {
-            var getLogger = GetLogger;
+            Func<Type, ILog> getLogger = GetLogger;
 
             if (getLogger != null)
             {

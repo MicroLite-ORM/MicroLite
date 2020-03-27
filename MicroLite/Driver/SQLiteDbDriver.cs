@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SQLiteDbDriver.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="SQLiteDbDriver.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Characters;
+
 namespace MicroLite.Driver
 {
-    using MicroLite.Characters;
-
     /// <summary>
     /// The implementation of <see cref="IDbDriver"/> for SQLite.
     /// </summary>
@@ -27,12 +27,6 @@ namespace MicroLite.Driver
         {
         }
 
-        public override bool SupportsBatchedQueries
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool SupportsBatchedQueries => true;
     }
 }

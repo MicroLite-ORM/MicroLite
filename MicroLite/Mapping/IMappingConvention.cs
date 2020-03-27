@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IMappingConvention.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IMappingConvention.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite.Mapping
 {
-    using System;
-
     /// <summary>
     /// The interface for a class which implements a mapping convention between a class and a table.
     /// </summary>

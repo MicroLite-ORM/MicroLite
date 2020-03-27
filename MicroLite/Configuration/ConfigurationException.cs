@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ConfigurationException.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ConfigurationException.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Runtime.Serialization;
+
 namespace MicroLite.Configuration
 {
-    using System;
-    using System.Runtime.Serialization;
-
     /// <summary>
     /// A <see cref="MicroLiteException"/> which is thrown for configuration exceptions.
     /// </summary>
@@ -50,10 +50,10 @@ namespace MicroLite.Configuration
         /// <summary>
         /// Initialises a new instance of the <see cref="ConfigurationException"/> class.
         /// </summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
-        /// <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is null. </exception>
-        /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0). </exception>
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual information about the source or destination.</param>
+        /// <exception cref="ArgumentNullException">The <paramref name="info"/> parameter is null. </exception>
+        /// <exception cref="SerializationException">The class name is null or HResult is zero (0). </exception>
         protected ConfigurationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

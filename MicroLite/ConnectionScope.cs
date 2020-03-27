@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ConnectionScope.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ConnectionScope.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,6 @@ namespace MicroLite
         /// and multiple transactions are to be used within a single session,
         /// or for SQLite in memory databases which only persist data whilst a connection exists.
         /// </remarks>
-        PerSession = 1
+        PerSession = 1,
     }
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Clauses.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="Clauses.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+
 namespace MicroLite
 {
-    using System;
-
     /// <summary>
     /// An enumeration which represents the various clauses in a SQL Command.
     /// </summary>
@@ -43,6 +43,6 @@ namespace MicroLite
         /// <summary>
         /// The group by clause.
         /// </summary>
-        GroupBy = 8
+        GroupBy = 8,
     }
 }

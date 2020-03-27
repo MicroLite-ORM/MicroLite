@@ -48,7 +48,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             int counter = 0;
 
@@ -69,7 +69,7 @@
                     new IInsertListener[0],
                     new IUpdateListener[0]));
 
-            session.Delete(customer);
+            session.DeleteAsync(customer).Wait();
 
             mockListener1.VerifyAll();
             mockListener2.VerifyAll();
@@ -93,7 +93,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -101,7 +101,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.False(session.Delete(customer));
+            Assert.False(session.DeleteAsync(customer).Result);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -126,7 +126,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -134,7 +134,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.True(session.Delete(customer));
+            Assert.True(session.DeleteAsync(customer).Result);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -150,7 +150,8 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Delete(null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.DeleteAsync(null).Result);
 
             Assert.Equal("instance", exception.ParamName);
         }
@@ -173,7 +174,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -181,10 +182,11 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<MicroLiteException>(() => session.Delete(customer));
+            var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(customer).Wait());
 
-            Assert.NotNull(exception.InnerException);
-            Assert.Equal(exception.InnerException.Message, exception.Message);
+            Assert.IsType<MicroLiteException>(exception.InnerException);
+            Assert.IsType<InvalidOperationException>(exception.InnerException.InnerException);
+            Assert.Equal(exception.InnerException.InnerException.Message, exception.InnerException.Message);
 
             // Command should still be disposed.
             mockCommand.VerifyAll();
@@ -202,7 +204,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(new Mock<IDbCommand>().Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -210,9 +212,11 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<MicroLiteException>(() => session.Delete(customer));
+            var exception = Assert.Throws<AggregateException>(
+                () => session.DeleteAsync(customer).Result);
 
-            Assert.Equal(ExceptionMessages.Session_IdentifierNotSetForDelete, exception.Message);
+            Assert.IsType<MicroLiteException>(exception.InnerException);
+            Assert.Equal(ExceptionMessages.Session_IdentifierNotSetForDelete, exception.InnerException.Message);
         }
 
         [Fact]
@@ -228,7 +232,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(() => session.Delete(new Customer()));
+            Assert.Throws<ObjectDisposedException>(() => session.DeleteAsync(new Customer()).Result);
         }
 
         [Fact]
@@ -247,7 +251,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -255,7 +259,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.False(session.Delete(type, identifier));
+            Assert.False(session.DeleteAsync(type, identifier).Result);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -278,7 +282,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -286,7 +290,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.True(session.Delete(type, identifier));
+            Assert.True(session.DeleteAsync(type, identifier).Result);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -302,7 +306,8 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Delete(typeof(Customer), null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.DeleteAsync(typeof(Customer), null).Result);
 
             Assert.Equal("identifier", exception.ParamName);
         }
@@ -316,7 +321,8 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Delete(null, 1234));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.DeleteAsync(null, 1234).Result);
 
             Assert.Equal("type", exception.ParamName);
         }
@@ -337,7 +343,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -345,10 +351,11 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<MicroLiteException>(() => session.Delete(type, identifier));
+            var exception = Assert.Throws<AggregateException>(() => session.DeleteAsync(type, identifier).Result);
 
-            Assert.NotNull(exception.InnerException);
-            Assert.Equal(exception.InnerException.Message, exception.Message);
+            Assert.IsType<MicroLiteException>(exception.InnerException);
+            Assert.IsType<InvalidOperationException>(exception.InnerException.InnerException);
+            Assert.Equal(exception.InnerException.InnerException.Message, exception.InnerException.Message);
 
             // Command should still be disposed.
             mockCommand.VerifyAll();
@@ -367,7 +374,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(() => session.Delete(typeof(Customer), 1234));
+            Assert.Throws<ObjectDisposedException>(() => session.DeleteAsync(typeof(Customer), 1234).Result);
         }
 
         [Fact]
@@ -384,7 +391,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -392,7 +399,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.Equal(result, session.Execute(new SqlQuery("")));
+            Assert.Equal(result, session.ExecuteAsync(new SqlQuery("")).Result);
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
@@ -412,7 +419,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -420,7 +427,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.Equal(result, session.ExecuteScalar<object>(new SqlQuery("")));
+            Assert.Equal(result, session.ExecuteScalarAsync<object>(new SqlQuery("")).Result);
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
@@ -435,7 +442,8 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.ExecuteScalar<object>(null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.ExecuteScalarAsync<object>(null).Result);
 
             Assert.Equal("sqlQuery", exception.ParamName);
         }
@@ -453,7 +461,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(() => session.ExecuteScalar<int>(new SqlQuery("SELECT")));
+            Assert.Throws<ObjectDisposedException>(() => session.ExecuteScalarAsync<int>(new SqlQuery("SELECT")).Result);
         }
 
         [Fact]
@@ -470,7 +478,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -478,7 +486,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.Equal((CustomerStatus)result, session.ExecuteScalar<CustomerStatus>(new SqlQuery("")));
+            Assert.Equal((CustomerStatus)result, session.ExecuteScalarAsync<CustomerStatus>(new SqlQuery("")).Result);
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
@@ -493,7 +501,8 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Execute(null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.ExecuteAsync(null).Result);
 
             Assert.Equal("sqlQuery", exception.ParamName);
         }
@@ -511,7 +520,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(() => session.Execute(new SqlQuery("SELECT")));
+            Assert.Throws<ObjectDisposedException>(() => session.ExecuteAsync(new SqlQuery("SELECT")).Result);
         }
 
         [Fact]
@@ -538,7 +547,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -546,7 +555,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            session.Insert(customer);
+            session.InsertAsync(customer).Wait();
 
             mockSqlDialect.Verify(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer), Times.Once());
             mockSqlDialect.Verify(x => x.BuildSelectInsertIdSqlQuery(It.IsAny<IObjectInfo>()), Times.Never());
@@ -576,7 +585,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -584,7 +593,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            session.Insert(customer);
+            session.InsertAsync(customer).Wait();
 
             mockSqlDialect.Verify(x => x.BuildInsertSqlQuery(It.IsNotNull<IObjectInfo>(), customer), Times.Once());
             mockSqlDialect.Verify(x => x.BuildSelectInsertIdSqlQuery(It.IsAny<IObjectInfo>()), Times.Never());
@@ -617,7 +626,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(insertSqlQuery, selectIdSqlQuery)).Returns(combinedSqlQuery);
 
@@ -627,7 +636,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            session.Insert(customer);
+            session.InsertAsync(customer).Wait();
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -658,7 +667,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(false);
 
             var session = new Session(
@@ -667,7 +676,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            session.Insert(customer);
+            session.InsertAsync(customer).Wait();
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -691,7 +700,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             int counter = 0;
 
@@ -712,7 +721,7 @@
                     new[] { mockListener1.Object, mockListener2.Object },
                     new IUpdateListener[0]));
 
-            session.Insert(customer);
+            session.InsertAsync(customer).Wait();
 
             mockListener1.VerifyAll();
             mockListener2.VerifyAll();
@@ -727,7 +736,8 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Insert(null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.InsertAsync(null).Wait());
 
             Assert.Equal("instance", exception.ParamName);
         }
@@ -748,7 +758,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -756,10 +766,11 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<MicroLiteException>(() => session.Insert(customer));
+            var exception = Assert.Throws<AggregateException>(() => session.InsertAsync(customer).Wait());
 
-            Assert.NotNull(exception.InnerException);
-            Assert.Equal(exception.InnerException.Message, exception.Message);
+            Assert.IsType<MicroLiteException>(exception.InnerException);
+            Assert.IsType<InvalidOperationException>(exception.InnerException.InnerException);
+            Assert.Equal(exception.InnerException.InnerException.Message, exception.InnerException.Message);
 
             // Command should still be disposed.
             mockCommand.VerifyAll();
@@ -778,7 +789,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(() => session.Insert(new Customer()));
+            Assert.Throws<ObjectDisposedException>(() => session.InsertAsync(new Customer()).Wait());
         }
 
         [Fact]
@@ -801,7 +812,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -809,7 +820,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            session.Update(customer);
+            session.UpdateAsync(customer).Wait();
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -836,7 +847,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             int counter = 0;
 
@@ -857,7 +868,7 @@
                     new IInsertListener[0],
                     new[] { mockListener1.Object, mockListener2.Object }));
 
-            session.Update(customer);
+            session.UpdateAsync(customer).Wait();
 
             mockListener1.VerifyAll();
             mockListener2.VerifyAll();
@@ -881,7 +892,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -889,7 +900,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.False(session.Update(customer));
+            Assert.False(session.UpdateAsync(customer).Result);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -914,7 +925,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -922,7 +933,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.True(session.Update(customer));
+            Assert.True(session.UpdateAsync(customer).Result);
 
             mockSqlDialect.VerifyAll();
             mockDbDriver.VerifyAll();
@@ -938,7 +949,8 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Update((Customer)null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.UpdateAsync((Customer)null).Result);
 
             Assert.Equal("instance", exception.ParamName);
         }
@@ -961,7 +973,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -969,10 +981,11 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<MicroLiteException>(() => session.Update(customer));
+            var exception = Assert.Throws<AggregateException>(() => session.UpdateAsync(customer).Wait());
 
-            Assert.NotNull(exception.InnerException);
-            Assert.Equal(exception.InnerException.Message, exception.Message);
+            Assert.IsType<MicroLiteException>(exception.InnerException);
+            Assert.IsType<InvalidOperationException>(exception.InnerException.InnerException);
+            Assert.Equal(exception.InnerException.InnerException.Message, exception.InnerException.Message);
 
             // Command should still be disposed.
             mockCommand.VerifyAll();
@@ -987,7 +1000,7 @@
             };
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new Mock<IDbConnection>().Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(new Mock<IDbConnection>().Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -995,9 +1008,10 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<MicroLiteException>(() => session.Update(customer));
+            var exception = Assert.Throws<AggregateException>(() => session.UpdateAsync(customer).Wait());
 
-            Assert.Equal(ExceptionMessages.Session_IdentifierNotSetForUpdate, exception.Message);
+            Assert.IsType<MicroLiteException>(exception.InnerException);
+            Assert.Equal(ExceptionMessages.Session_IdentifierNotSetForUpdate, exception.InnerException.Message);
         }
 
         [Fact]
@@ -1013,7 +1027,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(() => session.Update(new Customer()));
+            Assert.Throws<ObjectDisposedException>(() => session.UpdateAsync(new Customer()).Result);
         }
 
         [Fact]
@@ -1032,7 +1046,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -1040,7 +1054,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.False(session.Update(objectDelta));
+            Assert.False(session.UpdateAsync(objectDelta).Result);
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
@@ -1062,7 +1076,7 @@
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new Session(
                 ConnectionScope.PerTransaction,
@@ -1070,7 +1084,7 @@
                 mockDbDriver.Object,
                 new SessionListeners());
 
-            Assert.True(session.Update(objectDelta));
+            Assert.True(session.UpdateAsync(objectDelta).Result);
 
             mockDbDriver.VerifyAll();
             mockCommand.VerifyAll();
@@ -1085,7 +1099,8 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<ArgumentNullException>(() => session.Update((ObjectDelta)null));
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => session.UpdateAsync(default(ObjectDelta)).Result);
 
             Assert.Equal("objectDelta", exception.ParamName);
         }
@@ -1101,7 +1116,7 @@
                 new Mock<IDbDriver>().Object,
                 new SessionListeners());
 
-            var exception = Assert.Throws<MicroLiteException>(() => session.Update(objectDelta));
+            var exception = Assert.Throws<MicroLiteException>(() => session.UpdateAsync(objectDelta).Result);
 
             Assert.Equal(ExceptionMessages.ObjectDelta_MustContainAtLeastOneChange, exception.Message);
         }
@@ -1119,7 +1134,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(() => session.Update(new ObjectDelta(typeof(Customer), 1234)));
+            Assert.Throws<ObjectDisposedException>(() => session.UpdateAsync(new ObjectDelta(typeof(Customer), 1234)).Result);
         }
     }
 }

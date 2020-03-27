@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TupleObjectInfo.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="TupleObjectInfo.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,50 +10,36 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using MicroLite.Logging;
+
 namespace MicroLite.Mapping
 {
-#if !NET35
-
-    using System;
-    using System.Data;
-    using MicroLite.Logging;
-
     [System.Diagnostics.DebuggerDisplay("ObjectInfo for {ForType}")]
     internal sealed class TupleObjectInfo : IObjectInfo
     {
-        private static readonly Type forType = typeof(Tuple);
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
+        private static readonly Type s_forType = typeof(Tuple);
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
 
-        public Type ForType
-        {
-            get
-            {
-                return forType;
-            }
-        }
+        public Type ForType => s_forType;
 
-        public TableInfo TableInfo
-        {
-            get
-            {
-                throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
-            }
-        }
+        public TableInfo TableInfo => throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
 
         public object CreateInstance(IDataReader reader)
         {
-            if (reader == null)
+            if (reader is null)
             {
-                throw new ArgumentNullException("reader");
+                throw new ArgumentNullException(nameof(reader));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.ObjectInfo_CreatingInstance, forType.Name);
+                s_log.Debug(LogMessages.ObjectInfo_CreatingInstance, s_forType.Name);
             }
 
             var fieldTypes = new Type[reader.FieldCount];
-            var values = new object[reader.FieldCount];
+            object[] values = new object[reader.FieldCount];
 
             for (int i = 0; i < reader.FieldCount; i++)
             {
@@ -61,52 +47,36 @@ namespace MicroLite.Mapping
                 values[i] = reader.IsDBNull(i) ? null : reader.GetValue(i);
             }
 
-            var tupleType = GetTupleType(fieldTypes);
+            Type tupleType = GetTupleType(fieldTypes);
 
-            var tuple = Activator.CreateInstance(tupleType, values);
+            object tuple = Activator.CreateInstance(tupleType, values);
 
             return tuple;
         }
 
         public ColumnInfo GetColumnInfo(string columnName)
-        {
-            throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
-        }
+            => throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
 
         public object GetIdentifierValue(object instance)
-        {
-            throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
-        }
+            => throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
 
         public SqlArgument[] GetInsertValues(object instance)
-        {
-            throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
-        }
+            => throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
 
         public SqlArgument[] GetUpdateValues(object instance)
-        {
-            throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
-        }
+            => throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
 
         public bool HasDefaultIdentifierValue(object instance)
-        {
-            throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
-        }
+            => throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
 
         public bool IsDefaultIdentifier(object identifier)
-        {
-            throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
-        }
+            => throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
 
         public void SetIdentifierValue(object instance, object identifier)
-        {
-            throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
-        }
+            => throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
 
         public void VerifyInstanceForInsert(object instance)
-        {
-            throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
-        }
+            => throw new NotSupportedException(ExceptionMessages.TupleObjectInfo_NotSupportedReason);
 
         private static Type GetTupleType(Type[] fieldTypes)
         {
@@ -138,6 +108,4 @@ namespace MicroLite.Mapping
             }
         }
     }
-
-#endif
 }

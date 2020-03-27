@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="DeleteSqlBuilder.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="DeleteSqlBuilder.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,14 +10,14 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Builder.Syntax.Write;
+using MicroLite.Characters;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Mapping;
+
 namespace MicroLite.Builder
 {
-    using System;
-    using MicroLite.Builder.Syntax.Write;
-    using MicroLite.Characters;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Mapping;
-
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
     internal sealed class DeleteSqlBuilder : WriteSqlBuilderBase, IDeleteFrom
     {
@@ -27,9 +27,7 @@ namespace MicroLite.Builder
         /// <param name="sqlCharacters">The SQL characters.</param>
         internal DeleteSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)
-        {
-            this.InnerSql.Append("DELETE");
-        }
+            => InnerSql.Append("DELETE");
 
         public IWhere From(string table)
         {
@@ -38,23 +36,19 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("table"));
             }
 
-            this.InnerSql.Append(" FROM ");
-            this.AppendTableName(table);
+            InnerSql.Append(" FROM ");
+            AppendTableName(table);
 
             return this;
         }
 
         public IWhere From(Type forType)
-        {
-            var objectInfo = ObjectInfo.For(forType);
-
-            return this.From(objectInfo);
-        }
+            => From(ObjectInfo.For(forType));
 
         internal IWhere From(IObjectInfo objectInfo)
         {
-            this.InnerSql.Append(" FROM ");
-            this.AppendTableName(objectInfo);
+            InnerSql.Append(" FROM ");
+            AppendTableName(objectInfo);
 
             return this;
         }

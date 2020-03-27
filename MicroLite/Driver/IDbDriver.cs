@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IDbDriver.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IDbDriver.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+
 namespace MicroLite.Driver
 {
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Data.Common;
-
     /// <summary>
     /// The interface for a class which handles IDbConnections and IDbCommands for a specific database.
     /// </summary>
@@ -24,28 +24,17 @@ namespace MicroLite.Driver
         /// <summary>
         /// Gets or sets the connection string of the database this Db Driver is connecting to.
         /// </summary>
-        string ConnectionString
-        {
-            get;
-            set;
-        }
+        string ConnectionString { get; set; }
 
         /// <summary>
         /// Gets or sets the database provider factory.
         /// </summary>
-        DbProviderFactory DbProviderFactory
-        {
-            get;
-            set;
-        }
+        DbProviderFactory DbProviderFactory { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this DbDriver supports batched queries.
         /// </summary>
-        bool SupportsBatchedQueries
-        {
-            get;
-        }
+        bool SupportsBatchedQueries { get; }
 
         /// <summary>
         /// Builds the IDbCommand command using the values in the specified SqlQuery.

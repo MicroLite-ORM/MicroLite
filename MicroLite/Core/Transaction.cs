@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="Transaction.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="Transaction.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,25 +10,25 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using MicroLite.Logging;
+
 namespace MicroLite.Core
 {
-    using System;
-    using System.Data;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The default implementation of <see cref="ITransaction"/>.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("Active: {IsActive}, Committed: {committed}, RolledBack: {rolledBack}")]
     internal sealed class Transaction : ITransaction
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private bool committed;
-        private bool disposed;
-        private bool failed;
-        private bool rolledBack;
-        private ISessionBase sessionBase;
-        private IDbTransaction transaction;
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
+        private bool _committed;
+        private bool _disposed;
+        private bool _failed;
+        private bool _rolledBack;
+        private ISessionBase _sessionBase;
+        private IDbTransaction _transaction;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="Transaction" /> class.
@@ -37,48 +37,42 @@ namespace MicroLite.Core
         /// <param name="isolationLevel">The isolation level.</param>
         internal Transaction(ISessionBase sessionBase, IsolationLevel isolationLevel)
         {
-            this.sessionBase = sessionBase;
+            _sessionBase = sessionBase;
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.Transaction_BeginTransactionWithIsolationLevel, isolationLevel.ToString());
+                s_log.Debug(LogMessages.Transaction_BeginTransactionWithIsolationLevel, isolationLevel.ToString());
             }
 
-            this.transaction = this.sessionBase.Connection.BeginTransaction(isolationLevel);
+            _transaction = _sessionBase.Connection.BeginTransaction(isolationLevel);
         }
 
-        public bool IsActive
-        {
-            get
-            {
-                return !this.committed && !this.rolledBack && !this.failed;
-            }
-        }
+        public bool IsActive => !_committed && !_rolledBack && !_failed;
 
         public void Commit()
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfNotActive();
+            ThrowIfDisposed();
+            ThrowIfNotActive();
 
             try
             {
-                if (log.IsDebug)
+                if (s_log.IsDebug)
                 {
-                    log.Debug(LogMessages.Transaction_Committing);
+                    s_log.Debug(LogMessages.Transaction_Committing);
                 }
 
-                this.transaction.Commit();
-                this.sessionBase.TransactionCompleted();
-                this.committed = true;
+                _transaction.Commit();
+                _sessionBase.TransactionCompleted();
+                _committed = true;
 
-                if (log.IsDebug)
+                if (s_log.IsDebug)
                 {
-                    log.Debug(LogMessages.Transaction_Committed);
+                    s_log.Debug(LogMessages.Transaction_Committed);
                 }
             }
             catch (Exception e)
             {
-                this.failed = true;
+                _failed = true;
 
                 throw new MicroLiteException(e.Message, e);
             }
@@ -86,22 +80,22 @@ namespace MicroLite.Core
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         public void Rollback()
         {
-            this.ThrowIfDisposed();
-            this.ThrowIfRolledBackOrCommitted();
+            ThrowIfDisposed();
+            ThrowIfRolledBackOrCommitted();
 
             try
             {
-                this.RollbackTransaction();
+                RollbackTransaction();
             }
             catch (Exception e)
             {
-                this.failed = true;
+                _failed = true;
 
                 throw new MicroLiteException(e.Message, e);
             }
@@ -109,18 +103,17 @@ namespace MicroLite.Core
 
         internal void Enlist(IDbCommand command)
         {
-            if (!this.IsActive)
+            if (!IsActive)
             {
                 throw new InvalidOperationException();
             }
 
-            command.Transaction = this.transaction;
+            command.Transaction = _transaction;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We don't want to throw an excpetion when calling dispose.")]
         private void Dispose(bool disposing)
         {
-            if (this.disposed)
+            if (_disposed)
             {
                 return;
             }
@@ -129,30 +122,32 @@ namespace MicroLite.Core
             {
                 try
                 {
-                    if (this.IsActive)
+                    if (IsActive)
                     {
-                        log.Warn(LogMessages.Transaction_DisposedUncommitted);
-                        this.RollbackTransaction();
+                        s_log.Warn(LogMessages.Transaction_DisposedUncommitted);
+                        RollbackTransaction();
                     }
-                    else if (this.failed && !this.rolledBack)
+                    else if (_failed && !_rolledBack)
                     {
-                        log.Warn(LogMessages.Transaction_RollingBackFailedCommit);
-                        this.RollbackTransaction();
+                        s_log.Warn(LogMessages.Transaction_RollingBackFailedCommit);
+                        RollbackTransaction();
                     }
                 }
+#pragma warning disable CA1031 // Do not catch general exception types
                 catch
+#pragma warning restore CA1031 // Do not catch general exception types
                 {
                 }
                 finally
                 {
-                    this.transaction.Dispose();
-                    this.transaction = null;
-                    this.sessionBase = null;
-                    this.disposed = true;
+                    _transaction.Dispose();
+                    _transaction = null;
+                    _sessionBase = null;
+                    _disposed = true;
 
-                    if (log.IsDebug)
+                    if (s_log.IsDebug)
                     {
-                        log.Debug(LogMessages.Transaction_Disposed);
+                        s_log.Debug(LogMessages.Transaction_Disposed);
                     }
                 }
             }
@@ -160,32 +155,32 @@ namespace MicroLite.Core
 
         private void RollbackTransaction()
         {
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.Transaction_RollingBack);
+                s_log.Debug(LogMessages.Transaction_RollingBack);
             }
 
-            this.transaction.Rollback();
-            this.sessionBase.TransactionCompleted();
-            this.rolledBack = true;
+            _transaction.Rollback();
+            _sessionBase.TransactionCompleted();
+            _rolledBack = true;
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.Transaction_RolledBack);
+                s_log.Debug(LogMessages.Transaction_RolledBack);
             }
         }
 
         private void ThrowIfDisposed()
         {
-            if (this.disposed)
+            if (_disposed)
             {
-                throw new ObjectDisposedException(this.GetType().Name);
+                throw new ObjectDisposedException(GetType().Name);
             }
         }
 
         private void ThrowIfNotActive()
         {
-            if (!this.IsActive)
+            if (!IsActive)
             {
                 throw new InvalidOperationException(ExceptionMessages.Transaction_AlreadyCompleted);
             }
@@ -193,7 +188,7 @@ namespace MicroLite.Core
 
         private void ThrowIfRolledBackOrCommitted()
         {
-            if (this.rolledBack || this.committed)
+            if (_rolledBack || _committed)
             {
                 throw new InvalidOperationException(ExceptionMessages.Transaction_AlreadyCompleted);
             }

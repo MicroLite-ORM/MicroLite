@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SelectSqlBuilder.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="SelectSqlBuilder.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,18 +10,18 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Builder.Syntax.Read;
+using MicroLite.Characters;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Mapping;
+
 namespace MicroLite.Builder
 {
-    using System;
-    using MicroLite.Builder.Syntax.Read;
-    using MicroLite.Characters;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Mapping;
-
     [System.Diagnostics.DebuggerDisplay("{InnerSql}")]
-    internal sealed class SelectSqlBuilder : SqlBuilderBase, ISelectFrom, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IGroupBy, IOrderBy, IWhereSingleColumn, IHavingOrOrderBy, IWhereExists
+    internal sealed class SelectSqlBuilder : SqlBuilderBase, IFunctionOrFrom, IWhereOrOrderBy, IAndOrOrderBy, IWhereSingleColumn, IHavingOrOrderBy, IWhereExists
     {
-        private bool addedOrder = false;
+        private bool _addedOrder = false;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SelectSqlBuilder"/> class with the starting command text 'SELECT *'.
@@ -29,9 +29,7 @@ namespace MicroLite.Builder
         /// <param name="sqlCharacters">The SQL characters.</param>
         internal SelectSqlBuilder(SqlCharacters sqlCharacters)
             : base(sqlCharacters)
-        {
-            this.InnerSql.Append("SELECT *");
-        }
+            => InnerSql.Append("SELECT *");
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SelectSqlBuilder"/> class with an optional list of columns to select.
@@ -41,11 +39,11 @@ namespace MicroLite.Builder
         internal SelectSqlBuilder(SqlCharacters sqlCharacters, string column)
             : base(sqlCharacters)
         {
-            this.InnerSql.Append("SELECT ");
+            InnerSql.Append("SELECT ");
 
             if (column != null)
             {
-                this.InnerSql.Append(this.SqlCharacters.EscapeSql(column));
+                InnerSql.Append(SqlCharacters.EscapeSql(column));
             }
         }
 
@@ -57,7 +55,7 @@ namespace MicroLite.Builder
         internal SelectSqlBuilder(SqlCharacters sqlCharacters, params string[] columns)
             : base(sqlCharacters)
         {
-            this.InnerSql.Append("SELECT ");
+            InnerSql.Append("SELECT ");
 
             if (columns != null)
             {
@@ -65,10 +63,10 @@ namespace MicroLite.Builder
                 {
                     if (i > 0)
                     {
-                        this.InnerSql.Append(',');
+                        InnerSql.Append(',');
                     }
 
-                    this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
+                    InnerSql.Append(SqlCharacters.EscapeSql(columns[i]));
                 }
             }
         }
@@ -80,8 +78,8 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
             }
 
-            this.Operand = " AND";
-            this.WhereColumnName = this.SqlCharacters.EscapeSql(column);
+            Operand = " AND";
+            WhereColumnName = SqlCharacters.EscapeSql(column);
 
             return this;
         }
@@ -93,19 +91,19 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
             }
 
-            if (args == null)
+            if (args is null)
             {
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             }
 
             for (int i = 0; i < args.Length; i++)
             {
-                this.Arguments.Add(new SqlArgument(args[i]));
+                Arguments.Add(new SqlArgument(args[i]));
             }
 
-            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
+            string renumberedPredicate = SqlUtility.RenumberParameters(predicate, Arguments.Count);
 
-            this.InnerSql.Append(" AND (")
+            InnerSql.Append(" AND (")
                 .Append(renumberedPredicate)
                 .Append(')');
 
@@ -114,35 +112,35 @@ namespace MicroLite.Builder
 
         public IFunctionOrFrom Average(string columnName)
         {
-            this.AddFunctionCall("AVG", columnName, columnName);
+            AddFunctionCall("AVG", columnName, columnName);
 
             return this;
         }
 
         public IFunctionOrFrom Average(string columnName, string columnAlias)
         {
-            this.AddFunctionCall("AVG", columnName, columnAlias);
+            AddFunctionCall("AVG", columnName, columnAlias);
 
             return this;
         }
 
         public IAndOrOrderBy Between(object lower, object upper)
         {
-            this.AddBetween(lower, upper, negate: false);
+            AddBetween(lower, upper, negate: false);
 
             return this;
         }
 
         public IFunctionOrFrom Count(string columnName)
         {
-            this.AddFunctionCall("COUNT", columnName, columnName);
+            AddFunctionCall("COUNT", columnName, columnName);
 
             return this;
         }
 
         public IFunctionOrFrom Count(string columnName, string columnAlias)
         {
-            this.AddFunctionCall("COUNT", columnName, columnAlias);
+            AddFunctionCall("COUNT", columnName, columnAlias);
 
             return this;
         }
@@ -154,28 +152,28 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
             }
 
-            this.InnerSql.Append("DISTINCT ").Append(this.SqlCharacters.EscapeSql(column));
+            InnerSql.Append("DISTINCT ").Append(SqlCharacters.EscapeSql(column));
 
             return this;
         }
 
         public IFunctionOrFrom Distinct(params string[] columns)
         {
-            if (columns == null)
+            if (columns is null)
             {
-                throw new ArgumentNullException("columns");
+                throw new ArgumentNullException(nameof(columns));
             }
 
-            this.InnerSql.Append("DISTINCT ");
+            InnerSql.Append("DISTINCT ");
 
             for (int i = 0; i < columns.Length; i++)
             {
                 if (i > 0)
                 {
-                    this.InnerSql.Append(',');
+                    InnerSql.Append(',');
                 }
 
-                this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
+                InnerSql.Append(SqlCharacters.EscapeSql(columns[i]));
             }
 
             return this;
@@ -183,7 +181,7 @@ namespace MicroLite.Builder
 
         public IAndOrOrderBy Exists(SqlQuery subQuery)
         {
-            this.AddExists(subQuery, negate: false);
+            AddExists(subQuery, negate: false);
 
             return this;
         }
@@ -195,18 +193,14 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("table"));
             }
 
-            this.InnerSql.Append(" FROM ");
-            this.AppendTableName(table);
+            InnerSql.Append(" FROM ");
+            AppendTableName(table);
 
             return this;
         }
 
         public IWhereOrOrderBy From(Type forType)
-        {
-            var objectInfo = ObjectInfo.For(forType);
-
-            return this.From(objectInfo);
-        }
+            => From(ObjectInfo.For(forType));
 
         public IHavingOrOrderBy GroupBy(string column)
         {
@@ -215,29 +209,29 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
             }
 
-            this.InnerSql.Append(" GROUP BY ");
-            this.InnerSql.Append(this.SqlCharacters.EscapeSql(column));
+            InnerSql.Append(" GROUP BY ");
+            InnerSql.Append(SqlCharacters.EscapeSql(column));
 
             return this;
         }
 
         public IHavingOrOrderBy GroupBy(params string[] columns)
         {
-            if (columns == null)
+            if (columns is null)
             {
-                throw new ArgumentNullException("columns");
+                throw new ArgumentNullException(nameof(columns));
             }
 
-            this.InnerSql.Append(" GROUP BY ");
+            InnerSql.Append(" GROUP BY ");
 
             for (int i = 0; i < columns.Length; i++)
             {
                 if (i > 0)
                 {
-                    this.InnerSql.Append(',');
+                    InnerSql.Append(',');
                 }
 
-                this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
+                InnerSql.Append(SqlCharacters.EscapeSql(columns[i]));
             }
 
             return this;
@@ -250,227 +244,227 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
             }
 
-            this.Arguments.Add(new SqlArgument(value));
+            Arguments.Add(new SqlArgument(value));
 
-            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
+            string renumberedPredicate = SqlUtility.RenumberParameters(predicate, Arguments.Count);
 
-            this.InnerSql.Append(" HAVING ").Append(renumberedPredicate);
+            InnerSql.Append(" HAVING ").Append(renumberedPredicate);
 
             return this;
         }
 
         public IAndOrOrderBy In(params object[] args)
         {
-            this.AddIn(args, negate: false);
+            AddIn(args, negate: false);
 
             return this;
         }
 
         public IAndOrOrderBy In(params SqlQuery[] subQueries)
         {
-            this.AddIn(subQueries, negate: false);
+            AddIn(subQueries, negate: false);
 
             return this;
         }
 
         public IAndOrOrderBy In(SqlQuery subQuery)
         {
-            this.AddIn(subQuery, negate: false);
+            AddIn(subQuery, negate: false);
 
             return this;
         }
 
         public IAndOrOrderBy IsEqualTo(object comparisonValue)
         {
-            if (comparisonValue == null)
+            if (comparisonValue is null)
             {
-                return this.IsNull();
+                return IsNull();
             }
 
-            this.AddWithComparisonOperator(comparisonValue, " = ");
+            AddWithComparisonOperator(comparisonValue, " = ");
 
             return this;
         }
 
         public IAndOrOrderBy IsEqualTo(SqlQuery subQuery)
         {
-            this.AddWithComparisonOperator(subQuery, " = ");
+            AddWithComparisonOperator(subQuery, " = ");
 
             return this;
         }
 
         public IAndOrOrderBy IsGreaterThan(object comparisonValue)
         {
-            this.AddWithComparisonOperator(comparisonValue, " > ");
+            AddWithComparisonOperator(comparisonValue, " > ");
 
             return this;
         }
 
         public IAndOrOrderBy IsGreaterThanOrEqualTo(object comparisonValue)
         {
-            this.AddWithComparisonOperator(comparisonValue, " >= ");
+            AddWithComparisonOperator(comparisonValue, " >= ");
 
             return this;
         }
 
         public IAndOrOrderBy IsLessThan(object comparisonValue)
         {
-            this.AddWithComparisonOperator(comparisonValue, " < ");
+            AddWithComparisonOperator(comparisonValue, " < ");
 
             return this;
         }
 
         public IAndOrOrderBy IsLessThanOrEqualTo(object comparisonValue)
         {
-            this.AddWithComparisonOperator(comparisonValue, " <= ");
+            AddWithComparisonOperator(comparisonValue, " <= ");
 
             return this;
         }
 
         public IAndOrOrderBy IsLike(object comparisonValue)
         {
-            this.AddLike(comparisonValue, negate: false);
+            AddLike(comparisonValue, negate: false);
 
             return this;
         }
 
         public IAndOrOrderBy IsNotEqualTo(object comparisonValue)
         {
-            if (comparisonValue == null)
+            if (comparisonValue is null)
             {
-                return this.IsNotNull();
+                return IsNotNull();
             }
 
-            this.AddWithComparisonOperator(comparisonValue, " <> ");
+            AddWithComparisonOperator(comparisonValue, " <> ");
 
             return this;
         }
 
         public IAndOrOrderBy IsNotEqualTo(SqlQuery subQuery)
         {
-            this.AddWithComparisonOperator(subQuery, " <> ");
+            AddWithComparisonOperator(subQuery, " <> ");
 
             return this;
         }
 
         public IAndOrOrderBy IsNotLike(object comparisonValue)
         {
-            this.AddLike(comparisonValue, negate: true);
+            AddLike(comparisonValue, negate: true);
 
             return this;
         }
 
         public IAndOrOrderBy IsNotNull()
         {
-            if (!string.IsNullOrEmpty(this.Operand))
+            if (!string.IsNullOrEmpty(Operand))
             {
-                this.InnerSql.Append(this.Operand);
+                InnerSql.Append(Operand);
             }
 
-            this.InnerSql.Append(" (").Append(this.WhereColumnName).Append(" IS NOT NULL)");
+            InnerSql.Append(" (").Append(WhereColumnName).Append(" IS NOT NULL)");
 
             return this;
         }
 
         public IAndOrOrderBy IsNull()
         {
-            if (!string.IsNullOrEmpty(this.Operand))
+            if (!string.IsNullOrEmpty(Operand))
             {
-                this.InnerSql.Append(this.Operand);
+                InnerSql.Append(Operand);
             }
 
-            this.InnerSql.Append(" (").Append(this.WhereColumnName).Append(" IS NULL)");
+            InnerSql.Append(" (").Append(WhereColumnName).Append(" IS NULL)");
 
             return this;
         }
 
         public IFunctionOrFrom Max(string columnName)
         {
-            this.AddFunctionCall("MAX", columnName, columnName);
+            AddFunctionCall("MAX", columnName, columnName);
 
             return this;
         }
 
         public IFunctionOrFrom Max(string columnName, string columnAlias)
         {
-            this.AddFunctionCall("MAX", columnName, columnAlias);
+            AddFunctionCall("MAX", columnName, columnAlias);
 
             return this;
         }
 
         public IFunctionOrFrom Min(string columnName)
         {
-            this.AddFunctionCall("MIN", columnName, columnName);
+            AddFunctionCall("MIN", columnName, columnName);
 
             return this;
         }
 
         public IFunctionOrFrom Min(string columnName, string columnAlias)
         {
-            this.AddFunctionCall("MIN", columnName, columnAlias);
+            AddFunctionCall("MIN", columnName, columnAlias);
 
             return this;
         }
 
         public IAndOrOrderBy NotBetween(object lower, object upper)
         {
-            this.AddBetween(lower, upper, negate: true);
+            AddBetween(lower, upper, negate: true);
 
             return this;
         }
 
         public IAndOrOrderBy NotExists(SqlQuery subQuery)
         {
-            this.AddExists(subQuery, negate: true);
+            AddExists(subQuery, negate: true);
 
             return this;
         }
 
         public IAndOrOrderBy NotIn(params object[] args)
         {
-            this.AddIn(args, negate: true);
+            AddIn(args, negate: true);
 
             return this;
         }
 
         public IAndOrOrderBy NotIn(params SqlQuery[] subQueries)
         {
-            this.AddIn(subQueries, negate: true);
+            AddIn(subQueries, negate: true);
 
             return this;
         }
 
         public IAndOrOrderBy NotIn(SqlQuery subQuery)
         {
-            this.AddIn(subQuery, negate: true);
+            AddIn(subQuery, negate: true);
 
             return this;
         }
 
         public IOrderBy OrderByAscending(string column)
         {
-            this.AddOrder(column, " ASC");
+            AddOrder(column, " ASC");
 
             return this;
         }
 
         public IOrderBy OrderByAscending(params string[] columns)
         {
-            this.AddOrder(columns, " ASC");
+            AddOrder(columns, " ASC");
 
             return this;
         }
 
         public IOrderBy OrderByDescending(string column)
         {
-            this.AddOrder(column, " DESC");
+            AddOrder(column, " DESC");
 
             return this;
         }
 
         public IOrderBy OrderByDescending(params string[] columns)
         {
-            this.AddOrder(columns, " DESC");
+            AddOrder(columns, " DESC");
 
             return this;
         }
@@ -482,8 +476,8 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
             }
 
-            this.Operand = " OR";
-            this.WhereColumnName = this.SqlCharacters.EscapeSql(column);
+            Operand = " OR";
+            WhereColumnName = SqlCharacters.EscapeSql(column);
 
             return this;
         }
@@ -495,43 +489,43 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("predicate"));
             }
 
-            if (args == null)
+            if (args is null)
             {
-                throw new ArgumentNullException("args");
+                throw new ArgumentNullException(nameof(args));
             }
 
             for (int i = 0; i < args.Length; i++)
             {
-                this.Arguments.Add(new SqlArgument(args[i]));
+                Arguments.Add(new SqlArgument(args[i]));
             }
 
-            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
+            string renumberedPredicate = SqlUtility.RenumberParameters(predicate, Arguments.Count);
 
-            this.InnerSql.Append(" OR (").Append(renumberedPredicate).Append(')');
+            InnerSql.Append(" OR (").Append(renumberedPredicate).Append(')');
 
             return this;
         }
 
         public IFunctionOrFrom Sum(string columnName)
         {
-            this.AddFunctionCall("SUM", columnName, columnName);
+            AddFunctionCall("SUM", columnName, columnName);
 
             return this;
         }
 
         public IFunctionOrFrom Sum(string columnName, string columnAlias)
         {
-            this.AddFunctionCall("SUM", columnName, columnAlias);
+            AddFunctionCall("SUM", columnName, columnAlias);
 
             return this;
         }
 
         public IWhereExists Where()
         {
-            if (!this.AddedWhere)
+            if (!AddedWhere)
             {
-                this.InnerSql.Append(" WHERE");
-                this.AddedWhere = true;
+                InnerSql.Append(" WHERE");
+                AddedWhere = true;
             }
 
             return this;
@@ -544,12 +538,12 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
             }
 
-            this.WhereColumnName = this.SqlCharacters.EscapeSql(column);
+            WhereColumnName = SqlCharacters.EscapeSql(column);
 
-            if (!this.AddedWhere)
+            if (!AddedWhere)
             {
-                this.InnerSql.Append(" WHERE");
-                this.AddedWhere = true;
+                InnerSql.Append(" WHERE");
+                AddedWhere = true;
             }
 
             return this;
@@ -566,53 +560,66 @@ namespace MicroLite.Builder
             {
                 for (int i = 0; i < args.Length; i++)
                 {
-                    this.Arguments.Add(new SqlArgument(args[i]));
+                    Arguments.Add(new SqlArgument(args[i]));
                 }
             }
 
-            var renumberedPredicate = SqlUtility.RenumberParameters(predicate, this.Arguments.Count);
+            string renumberedPredicate = SqlUtility.RenumberParameters(predicate, Arguments.Count);
 
-            this.InnerSql.Append(" WHERE (").Append(renumberedPredicate).Append(')');
-            this.AddedWhere = true;
+            InnerSql.Append(" WHERE ");
+
+            if (!predicate.StartsWith("(", StringComparison.Ordinal) && !predicate.StartsWith(")", StringComparison.Ordinal))
+            {
+                InnerSql.Append('(');
+            }
+
+            InnerSql.Append(renumberedPredicate);
+
+            if (!predicate.StartsWith("(", StringComparison.Ordinal) && !predicate.StartsWith(")", StringComparison.Ordinal))
+            {
+                InnerSql.Append(')');
+            }
+
+            AddedWhere = true;
 
             return this;
         }
 
         internal IWhereOrOrderBy From(IObjectInfo objectInfo)
         {
-            if (this.InnerSql.Length == 8 && this.InnerSql[7].CompareTo('*') == 0)
+            if (InnerSql.Length == 8 && InnerSql[7].CompareTo('*') == 0)
             {
-                this.InnerSql.Remove(7, 1);
+                InnerSql.Remove(7, 1);
 
                 for (int i = 0; i < objectInfo.TableInfo.Columns.Count; i++)
                 {
                     if (i > 0)
                     {
-                        this.InnerSql.Append(',');
+                        InnerSql.Append(',');
                     }
 
-                    this.InnerSql.Append(this.SqlCharacters.EscapeSql(objectInfo.TableInfo.Columns[i].ColumnName));
+                    InnerSql.Append(SqlCharacters.EscapeSql(objectInfo.TableInfo.Columns[i].ColumnName));
                 }
             }
 
-            this.InnerSql.Append(" FROM ");
-            this.AppendTableName(objectInfo);
+            InnerSql.Append(" FROM ");
+            AppendTableName(objectInfo);
 
             return this;
         }
 
         private void AddExists(SqlQuery subQuery, bool negate)
         {
-            if (subQuery == null)
+            if (subQuery is null)
             {
-                throw new ArgumentNullException("subQuery");
+                throw new ArgumentNullException(nameof(subQuery));
             }
 
-            this.Arguments.AddRange(subQuery.Arguments);
+            Arguments.AddRange(subQuery.Arguments);
 
-            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+            string renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, Arguments.Count);
 
-            this.InnerSql.Append(negate ? " NOT" : string.Empty)
+            InnerSql.Append(negate ? " NOT" : string.Empty)
                 .Append(" EXISTS (")
                 .Append(renumberedPredicate)
                 .Append(")");
@@ -630,14 +637,14 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("columnAlias"));
             }
 
-            if (this.InnerSql.Length > 7)
+            if (InnerSql.Length > 7)
             {
-                this.InnerSql.Append(',');
+                InnerSql.Append(',');
             }
 
-            this.InnerSql.Append(functionName)
+            InnerSql.Append(functionName)
                 .Append('(')
-                .Append(this.SqlCharacters.EscapeSql(columnName))
+                .Append(SqlCharacters.EscapeSql(columnName))
                 .Append(") AS ")
                 .Append(columnAlias);
         }
@@ -649,49 +656,49 @@ namespace MicroLite.Builder
                 throw new ArgumentException(ExceptionMessages.ArgumentNullOrEmpty.FormatWith("column"));
             }
 
-            this.InnerSql.Append(!this.addedOrder ? " ORDER BY " : ",");
-            this.InnerSql.Append(this.SqlCharacters.EscapeSql(column));
-            this.InnerSql.Append(direction);
+            InnerSql.Append(!_addedOrder ? " ORDER BY " : ",");
+            InnerSql.Append(SqlCharacters.EscapeSql(column));
+            InnerSql.Append(direction);
 
-            this.addedOrder = true;
+            _addedOrder = true;
         }
 
         private void AddOrder(string[] columns, string direction)
         {
-            if (columns == null)
+            if (columns is null)
             {
-                throw new ArgumentNullException("columns");
+                throw new ArgumentNullException(nameof(columns));
             }
 
-            this.InnerSql.Append(!this.addedOrder ? " ORDER BY " : ",");
+            InnerSql.Append(!_addedOrder ? " ORDER BY " : ",");
 
             for (int i = 0; i < columns.Length; i++)
             {
                 if (i > 0)
                 {
-                    this.InnerSql.Append(',');
+                    InnerSql.Append(',');
                 }
 
-                this.InnerSql.Append(this.SqlCharacters.EscapeSql(columns[i]));
-                this.InnerSql.Append(direction);
+                InnerSql.Append(SqlCharacters.EscapeSql(columns[i]));
+                InnerSql.Append(direction);
             }
 
-            this.addedOrder = true;
+            _addedOrder = true;
         }
 
         private void AddWithComparisonOperator(SqlQuery subQuery, string comparisonOperator)
         {
-            if (!string.IsNullOrEmpty(this.Operand))
+            if (!string.IsNullOrEmpty(Operand))
             {
-                this.InnerSql.Append(this.Operand);
+                InnerSql.Append(Operand);
             }
 
-            this.Arguments.AddRange(subQuery.Arguments);
+            Arguments.AddRange(subQuery.Arguments);
 
-            var renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, this.Arguments.Count);
+            string renumberedPredicate = SqlUtility.RenumberParameters(subQuery.CommandText, Arguments.Count);
 
-            this.InnerSql.Append(" (")
-                .Append(this.WhereColumnName)
+            InnerSql.Append(" (")
+                .Append(WhereColumnName)
                 .Append(comparisonOperator)
                 .Append('(')
                 .Append(renumberedPredicate)

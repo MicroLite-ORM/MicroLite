@@ -47,13 +47,13 @@
             mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+            mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -62,7 +62,7 @@
 
             var customers = session.Include.All<Customer>();
 
-            session.ExecutePendingQueries();
+            session.ExecutePendingQueriesAsync().Wait();
 
             Assert.Equal(1, customers.Values.Count);
 
@@ -82,20 +82,20 @@
             mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+            mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customers = session.Fetch<Customer>(new SqlQuery(""));
+            var customers = session.FetchAsync<Customer>(new SqlQuery("")).Result;
 
             Assert.Equal(1, customers.Count);
 
@@ -114,7 +114,7 @@
                 new Mock<IDbDriver>().Object);
 
             var exception = Assert.Throws<ArgumentNullException>(
-                () => session.Fetch<Customer>(null));
+                () => session.FetchAsync<Customer>(null).Result);
 
             Assert.Equal("sqlQuery", exception.ParamName);
         }
@@ -131,8 +131,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(
-                () => session.Fetch<Customer>(null));
+            Assert.Throws<ObjectDisposedException>(() => session.FetchAsync<Customer>(null).Result);
         }
 
         [Fact]
@@ -176,13 +175,13 @@
             mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+            mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
@@ -191,7 +190,7 @@
 
             var includeScalar = session.Include.Scalar<int>(new SqlQuery(""));
 
-            session.ExecutePendingQueries();
+            session.ExecutePendingQueriesAsync().Wait();
 
             Assert.Equal(10, includeScalar.Value);
 
@@ -265,9 +264,11 @@
             // We need at least 1 queued query otherwise we will get an exception when doing queries.Dequeue() instead.
             session.Include.Scalar<int>(new SqlQuery(""));
 
-            var exception = Assert.Throws<MicroLiteException>(() => session.ExecutePendingQueries());
+            var exception = Assert.Throws<AggregateException>(
+                () => session.ExecutePendingQueriesAsync().Wait());
 
-            Assert.IsNotType<MicroLiteException>(exception.InnerException);
+            Assert.IsType<MicroLiteException>(exception.InnerException);
+            Assert.IsNotType<MicroLiteException>(exception.InnerException.InnerException);
         }
 
         [Fact]
@@ -290,13 +291,13 @@
             mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+            mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(countQuery, pagedQuery)).Returns(combinedQuery);
 
@@ -305,7 +306,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var page = session.Paged<Customer>(sqlQuery, PagingOptions.ForPage(1, 1));
+            var page = session.PagedAsync<Customer>(sqlQuery, PagingOptions.ForPage(1, 1)).Result;
 
             Assert.Equal(1, page.Page);
             Assert.Equal(1, page.Results.Count);
@@ -336,13 +337,13 @@
             mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+            mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(countQuery, pagedQuery)).Returns(combinedQuery);
 
@@ -351,7 +352,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var page = session.Paged<Customer>(sqlQuery, PagingOptions.ForPage(1, 25));
+            var page = session.PagedAsync<Customer>(sqlQuery, PagingOptions.ForPage(1, 25)).Result;
 
             Assert.Equal(1, page.Page);
             Assert.Equal(1, page.Results.Count);
@@ -382,13 +383,13 @@
             mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+            mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
             mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
             mockDbDriver.Setup(x => x.Combine(countQuery, pagedQuery)).Returns(combinedQuery);
 
@@ -397,7 +398,7 @@
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var page = session.Paged<Customer>(sqlQuery, PagingOptions.ForPage(10, 25));
+            var page = session.PagedAsync<Customer>(sqlQuery, PagingOptions.ForPage(10, 25)).Result;
 
             Assert.Equal(10, page.Page);
             Assert.Equal(1, page.Results.Count);
@@ -417,7 +418,7 @@
                 new Mock<IDbDriver>().Object);
 
             var exception = Assert.Throws<ArgumentNullException>(
-                () => session.Paged<Customer>(null, PagingOptions.ForPage(1, 25)));
+                () => session.PagedAsync<Customer>(null, PagingOptions.ForPage(1, 25)).Result);
 
             Assert.Equal("sqlQuery", exception.ParamName);
         }
@@ -434,8 +435,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(
-                () => session.Paged<Customer>(null, PagingOptions.ForPage(1, 25)));
+            Assert.Throws<ObjectDisposedException>(() => session.PagedAsync<Customer>(null, PagingOptions.ForPage(1, 25)).Result);
         }
 
         [Fact]
@@ -450,20 +450,20 @@
             mockReader.Setup(x => x.Read()).Returns(false);
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+            mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customer = session.Single<Customer>(identifier);
+            var customer = session.SingleAsync<Customer>(identifier).Result;
 
             Assert.Null(customer);
 
@@ -486,20 +486,20 @@
             mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+            mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customer = session.Single<Customer>(identifier);
+            var customer = session.SingleAsync<Customer>(identifier).Result;
 
             Assert.NotNull(customer);
 
@@ -520,7 +520,7 @@
             object identifier = null;
 
             var exception = Assert.Throws<ArgumentNullException>(
-                () => session.Single<Customer>(identifier));
+                () => session.SingleAsync<Customer>(identifier).Result);
 
             Assert.Equal("identifier", exception.ParamName);
         }
@@ -537,8 +537,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(
-                () => session.Single<Customer>(1));
+            Assert.Throws<ObjectDisposedException>(() => session.SingleAsync<Customer>(1).Result);
         }
 
         [Fact]
@@ -551,20 +550,20 @@
             mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+            mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customer = session.Single<Customer>(new SqlQuery(""));
+            var customer = session.SingleAsync<Customer>(new SqlQuery("")).Result;
 
             Assert.Null(customer);
 
@@ -583,20 +582,20 @@
             mockReader.As<IDisposable>().Setup(x => x.Dispose());
 
             var mockCommand = new Mock<IDbCommand>();
-            mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+            mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
             var mockConnection = new Mock<IDbConnection>();
             mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
             var mockDbDriver = new Mock<IDbDriver>();
-            mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+            mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
 
             var session = new ReadOnlySession(
                 ConnectionScope.PerTransaction,
                 mockSqlDialect.Object,
                 mockDbDriver.Object);
 
-            var customer = session.Single<Customer>(new SqlQuery(""));
+            var customer = session.SingleAsync<Customer>(new SqlQuery("")).Result;
 
             Assert.NotNull(customer);
 
@@ -616,7 +615,7 @@
             SqlQuery sqlQuery = null;
 
             var exception = Assert.Throws<ArgumentNullException>(
-                () => session.Single<Customer>(sqlQuery));
+                () => session.SingleAsync<Customer>(sqlQuery).Result);
 
             Assert.Equal("sqlQuery", exception.ParamName);
         }
@@ -633,8 +632,7 @@
             {
             }
 
-            Assert.Throws<ObjectDisposedException>(
-                () => session.Single<Customer>(new SqlQuery("")));
+            Assert.Throws<ObjectDisposedException>(() => session.SingleAsync<Customer>(new SqlQuery("")).Result);
         }
 
         public class WhenCallingPagedUsingPagingOptionsNone
@@ -648,7 +646,7 @@
                     new Mock<IDbDriver>().Object);
 
                 var exception = Assert.Throws<MicroLiteException>(
-                    () => session.Paged<Customer>(new SqlQuery(""), PagingOptions.None));
+                    () => session.PagedAsync<Customer>(new SqlQuery(""), PagingOptions.None).Result);
 
                 Assert.Equal(ExceptionMessages.Session_PagingOptionsMustNotBeNone, exception.Message);
             }
@@ -665,7 +663,7 @@
                 var mockSqlDialect = new Mock<ISqlDialect>();
                 mockSqlDialect.Setup(x => x.BuildSelectSqlQuery(It.IsNotNull<IObjectInfo>(), It.IsNotNull<object>())).Returns(new SqlQuery(""));
 
-                mockCommand.Setup(x => x.ExecuteReader()).Returns(() =>
+                mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(() =>
                 {
                     var mockReader = new Mock<IDataReader>();
                     mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
@@ -675,7 +673,7 @@
 
                 mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(false);
 
                 var session = new ReadOnlySession(
@@ -684,7 +682,7 @@
                     mockDbDriver.Object);
 
                 var includeCustomer = session.Include.Single<Customer>(2);
-                var customer = session.Single<Customer>(1);
+                var customer = session.SingleAsync<Customer>(1).Result;
             }
 
             [Fact]
@@ -721,12 +719,12 @@
                 mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false, true, false }).Dequeue);
 
                 var mockCommand = new Mock<IDbCommand>();
-                mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+                mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
                 var mockConnection = new Mock<IDbConnection>();
                 mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
 
                 var session = new ReadOnlySession(
@@ -736,7 +734,7 @@
 
                 var includeCustomerA = session.Include.Single<Customer>(3);
                 var includeCustomerB = session.Include.Single<Customer>(2);
-                var customer = session.Single<Customer>(1);
+                var customer = session.SingleAsync<Customer>(1).Result;
             }
 
             [Fact]
@@ -773,12 +771,12 @@
                 mockReader.Setup(x => x.Read()).Returns(new Queue<bool>(new[] { true, false }).Dequeue);
 
                 var mockCommand = new Mock<IDbCommand>();
-                mockCommand.Setup(x => x.ExecuteReader()).Returns(mockReader.Object);
+                mockCommand.Setup(x => x.ExecuteReader(It.IsAny<CommandBehavior>())).Returns(mockReader.Object);
 
                 var mockConnection = new Mock<IDbConnection>();
                 mockConnection.Setup(x => x.CreateCommand()).Returns(mockCommand.Object);
 
-                mockDbDriver.Setup(x => x.CreateConnection()).Returns(mockConnection.Object);
+                mockDbDriver.Setup(x => x.CreateConnection()).Returns(new MockDbConnectionWrapper(mockConnection.Object));
                 mockDbDriver.Setup(x => x.SupportsBatchedQueries).Returns(true);
 
                 var session = new ReadOnlySession(
@@ -787,7 +785,7 @@
                     mockDbDriver.Object);
 
                 var includeCustomer = session.Include.Single<Customer>(2);
-                var customer = session.Single<Customer>(1);
+                var customer = session.SingleAsync<Customer>(1).Result;
             }
 
             [Fact]

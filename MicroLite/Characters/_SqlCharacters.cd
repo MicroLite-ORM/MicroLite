@@ -31,7 +31,7 @@
   <Class Name="MicroLite.Characters.SqlCharacters">
     <Position X="7.75" Y="0.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAgAAAGAAAAAAAKAQAACCAgAAAAAIgAAAgAQABA=</HashCode>
+      <HashCode>AAAAAAgAAAGAACABAAKAQAACCAgAAAAAIgAAAgAYABA=</HashCode>
       <FileName>Characters\SqlCharacters.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -40,13 +40,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAAgAAACAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
       <FileName>Characters\SQLiteCharacters.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MicroLite.Characters.SqlServerCeCharacters">
-    <Position X="6.5" Y="5.75" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAgAAACAAAAAAAAAAAAAAAgAAAAAQAAAAAAAABA=</HashCode>
-      <FileName>Characters\SqlServerCeCharacters.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

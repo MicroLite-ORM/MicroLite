@@ -25,7 +25,7 @@
             var mappingConvention = new AttributeMappingConvention();
             var objectInfo = mappingConvention.CreateObjectInfo(typeof(AssignedCustomer));
 
-            Assert.False(objectInfo.TableInfo.Columns.Any(c => c.ColumnName == "UnMappedProperty"));
+            Assert.DoesNotContain(objectInfo.TableInfo.Columns, c => c.ColumnName == "UnMappedProperty");
         }
 
         [Fact]

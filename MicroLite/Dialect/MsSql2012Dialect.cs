@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="MsSql2012Dialect.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="MsSql2012Dialect.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,13 +10,13 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using System.Text;
+using MicroLite.Mapping;
+
 namespace MicroLite.Dialect
 {
-    using System;
-    using System.Data;
-    using System.Text;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The implementation of <see cref="ISqlDialect"/> for MsSql Server 2012 or later.
     /// </summary>
@@ -24,9 +24,9 @@ namespace MicroLite.Dialect
     {
         public override SqlQuery BuildSelectInsertIdSqlQuery(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
@@ -39,9 +39,9 @@ namespace MicroLite.Dialect
 
         public override SqlQuery PageQuery(SqlQuery sqlQuery, PagingOptions pagingOptions)
         {
-            if (sqlQuery == null)
+            if (sqlQuery is null)
             {
-                throw new ArgumentNullException("sqlQuery");
+                throw new ArgumentNullException(nameof(sqlQuery));
             }
 
             var arguments = new SqlArgument[sqlQuery.Arguments.Count + 2];
@@ -51,16 +51,16 @@ namespace MicroLite.Dialect
 
             var sqlString = SqlString.Parse(sqlQuery.CommandText, Clauses.OrderBy);
 
-            var commandText = string.IsNullOrEmpty(sqlString.OrderBy)
+            string commandText = string.IsNullOrEmpty(sqlString.OrderBy)
                 ? sqlQuery.CommandText + " ORDER BY CURRENT_TIMESTAMP"
                 : sqlQuery.CommandText;
 
-            var stringBuilder = new StringBuilder(commandText)
+            StringBuilder stringBuilder = new StringBuilder(commandText)
                 .Replace(Environment.NewLine, string.Empty)
                 .Append(" OFFSET ")
-                .Append(this.SqlCharacters.GetParameterName(arguments.Length - 2))
+                .Append(SqlCharacters.GetParameterName(arguments.Length - 2))
                 .Append(" ROWS FETCH NEXT ")
-                .Append(this.SqlCharacters.GetParameterName(arguments.Length - 1))
+                .Append(SqlCharacters.GetParameterName(arguments.Length - 1))
                 .Append(" ROWS ONLY");
 
             return new SqlQuery(stringBuilder.ToString(), arguments);
@@ -68,12 +68,12 @@ namespace MicroLite.Dialect
 
         protected override string BuildInsertCommandText(IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
-                throw new ArgumentNullException("objectInfo");
+                throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            var commandText = base.BuildInsertCommandText(objectInfo);
+            string commandText = base.BuildInsertCommandText(objectInfo);
 
             if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Sequence)
             {
@@ -81,13 +81,13 @@ namespace MicroLite.Dialect
                     + "SELECT @@id = NEXT VALUE FOR " + objectInfo.TableInfo.IdentifierColumn.SequenceName + ";"
                     + commandText;
 
-                var firstParenthesisIndex = commandText.IndexOf('(') + 1;
+                int firstParenthesisIndex = commandText.IndexOf('(') + 1;
 
                 commandText = commandText.Insert(
                     firstParenthesisIndex,
-                    this.SqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn.ColumnName) + ",");
+                    SqlCharacters.EscapeSql(objectInfo.TableInfo.IdentifierColumn.ColumnName) + ",");
 
-                var secondParenthesisIndex = commandText.IndexOf('(', firstParenthesisIndex) + 1;
+                int secondParenthesisIndex = commandText.IndexOf('(', firstParenthesisIndex) + 1;
 
                 commandText = commandText.Insert(
                     secondParenthesisIndex,

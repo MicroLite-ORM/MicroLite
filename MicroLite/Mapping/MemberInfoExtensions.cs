@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="MemberInfoExtensions.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="MemberInfoExtensions.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,19 +10,15 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Reflection;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Reflection;
-
     internal static class MemberInfoExtensions
     {
         internal static T GetAttribute<T>(this MemberInfo memberInfo, bool inherit)
             where T : Attribute
-        {
-            var attributes = memberInfo.GetCustomAttributes(typeof(T), inherit) as T[];
-
-            return attributes != null && attributes.Length == 1 ? attributes[0] : null;
-        }
+            => memberInfo.GetCustomAttributes(typeof(T), inherit) is T[] attributes && attributes.Length == 1 ? attributes[0] : null;
     }
 }

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ISetOrWhere.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ISetOrWhere.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ namespace MicroLite.Builder.Syntax.Write
     /// <summary>
     /// The interface which specifies the value method in the fluent update sql builder syntax.
     /// </summary>
-    public interface ISetOrWhere : IHideObjectMethods, IWhere
+    public interface ISetOrWhere : IWhere
     {
         /// <summary>
         /// Specifies the column in the table and the new value for it.

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ObjectInfo.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ObjectInfo.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,40 +10,37 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using MicroLite.FrameworkExtensions;
+using MicroLite.Logging;
+
 namespace MicroLite.Mapping
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using MicroLite.FrameworkExtensions;
-    using MicroLite.Logging;
-
     /// <summary>
     /// The class which describes a type and the table it is mapped to.
     /// </summary>
     public static class ObjectInfo
     {
-        private static readonly ILog log = LogManager.GetCurrentClassLog();
-        private static IMappingConvention mappingConvention;
-        private static IDictionary<Type, IObjectInfo> objectInfos = GetObjectInfos();
+        private static readonly ILog s_log = LogManager.GetCurrentClassLog();
+        private static IMappingConvention s_mappingConvention;
+        private static IDictionary<Type, IObjectInfo> s_objectInfos = GetObjectInfos();
 
         internal static IMappingConvention MappingConvention
         {
             get
             {
-                if (mappingConvention == null)
+                if (s_mappingConvention is null)
                 {
-                    mappingConvention = mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
+                    s_mappingConvention = s_mappingConvention = new ConventionMappingConvention(ConventionMappingSettings.Default);
                 }
 
-                return mappingConvention;
+                return s_mappingConvention;
             }
 
-            set
-            {
-                mappingConvention = value;
-            }
+            set => s_mappingConvention = value;
         }
 
         /// <summary>
@@ -55,25 +52,23 @@ namespace MicroLite.Mapping
         /// <exception cref="MicroLiteException">Thrown if the specified type cannot be used with MicroLite.</exception>
         public static IObjectInfo For(Type forType)
         {
-            if (forType == null)
+            if (forType is null)
             {
-                throw new ArgumentNullException("forType");
+                throw new ArgumentNullException(nameof(forType));
             }
 
-            if (log.IsDebug)
+            if (s_log.IsDebug)
             {
-                log.Debug(LogMessages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
+                s_log.Debug(LogMessages.ObjectInfo_RetrievingObjectInfo, forType.FullName);
             }
 
-            IObjectInfo objectInfo;
-
-            if (!objectInfos.TryGetValue(forType, out objectInfo))
+            if (!s_objectInfos.TryGetValue(forType, out IObjectInfo objectInfo))
             {
                 if (forType.IsGenericType)
                 {
-                    var forGenericType = forType.GetGenericTypeDefinition();
+                    Type forGenericType = forType.GetGenericTypeDefinition();
 
-                    if (objectInfos.TryGetValue(forGenericType, out objectInfo))
+                    if (s_objectInfos.TryGetValue(forGenericType, out objectInfo))
                     {
                         return objectInfo;
                     }
@@ -81,26 +76,28 @@ namespace MicroLite.Mapping
 
                 VerifyType(forType);
 
-                if (log.IsDebug)
+                if (s_log.IsDebug)
                 {
-                    log.Debug(LogMessages.ObjectInfo_CreatingObjectInfo, forType.FullName);
+                    s_log.Debug(LogMessages.ObjectInfo_CreatingObjectInfo, forType.FullName);
                 }
 
                 objectInfo = MappingConvention.CreateObjectInfo(forType);
 
-                if (log.IsDebug)
+                if (s_log.IsDebug)
                 {
                     using (var stringWriter = new StringWriter(CultureInfo.InvariantCulture))
                     {
                         objectInfo.EmitMappings(stringWriter);
-                        log.Debug(stringWriter.ToString());
+                        s_log.Debug(stringWriter.ToString());
                     }
                 }
 
-                var newObjectInfos = new Dictionary<Type, IObjectInfo>(objectInfos);
-                newObjectInfos[forType] = objectInfo;
+                var newObjectInfos = new Dictionary<Type, IObjectInfo>(s_objectInfos)
+                {
+                    [forType] = objectInfo,
+                };
 
-                objectInfos = newObjectInfos;
+                s_objectInfos = newObjectInfos;
             }
 
             return objectInfo;
@@ -110,7 +107,6 @@ namespace MicroLite.Mapping
         {
             var dictionary = new Dictionary<Type, IObjectInfo>();
 
-#if !NET35
             var expandoObjectInfo = new ExpandoObjectInfo();
             dictionary.Add(typeof(System.Dynamic.ExpandoObject), expandoObjectInfo);
             dictionary.Add(typeof(object), expandoObjectInfo); // If the generic argument <dynamic> is used (in ISession.Fetch for example), typeof(T) will return object.
@@ -123,7 +119,6 @@ namespace MicroLite.Mapping
             dictionary.Add(typeof(Tuple<,,,,>), tupleObjectInfo);
             dictionary.Add(typeof(Tuple<,,,,,>), tupleObjectInfo);
             dictionary.Add(typeof(Tuple<,,,,,,>), tupleObjectInfo);
-#endif
 
             return dictionary;
         }
@@ -145,7 +140,7 @@ namespace MicroLite.Mapping
                 throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustBePublic.FormatWith(forType.Name));
             }
 
-            if (forType.GetConstructor(Type.EmptyTypes) == null)
+            if (forType.GetConstructor(Type.EmptyTypes) is null)
             {
                 throw new MappingException(ExceptionMessages.ObjectInfo_TypeMustHaveDefaultConstructor.FormatWith(forType.Name));
             }

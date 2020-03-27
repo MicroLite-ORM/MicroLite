@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ICreateSessionFactory.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ICreateSessionFactory.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ namespace MicroLite.Configuration
     /// The interface which specifies the creation of the <see cref="ISessionFactory"/> in the fluent configuration
     /// of the MicroLite ORM framework.
     /// </summary>
-    public interface ICreateSessionFactory : IHideObjectMethods
+    public interface ICreateSessionFactory
     {
         /// <summary>
         /// Creates the session factory for the configured connection.

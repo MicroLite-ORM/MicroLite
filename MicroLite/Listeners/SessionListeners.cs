@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SessionListeners.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="SessionListeners.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,10 +10,10 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
+
 namespace MicroLite.Listeners
 {
-    using System.Collections.Generic;
-
     internal sealed class SessionListeners
     {
         internal SessionListeners()
@@ -26,27 +26,15 @@ namespace MicroLite.Listeners
             IList<IInsertListener> insertListeners,
             IList<IUpdateListener> updateListeners)
         {
-            this.DeleteListeners = deleteListeners;
-            this.InsertListeners = insertListeners;
-            this.UpdateListeners = updateListeners;
+            DeleteListeners = deleteListeners;
+            InsertListeners = insertListeners;
+            UpdateListeners = updateListeners;
         }
 
-        internal IList<IDeleteListener> DeleteListeners
-        {
-            get;
-            private set;
-        }
+        internal IList<IDeleteListener> DeleteListeners { get; }
 
-        internal IList<IInsertListener> InsertListeners
-        {
-            get;
-            private set;
-        }
+        internal IList<IInsertListener> InsertListeners { get; }
 
-        internal IList<IUpdateListener> UpdateListeners
-        {
-            get;
-            private set;
-        }
+        internal IList<IUpdateListener> UpdateListeners { get; }
     }
 }

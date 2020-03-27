@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="EnglishInflectionService.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="EnglishInflectionService.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,20 +10,20 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
 namespace MicroLite.Mapping.Inflection
 {
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-
     /// <summary>
     /// A class for modifying the grammatical category of an English word.
     /// </summary>
     /// <remarks>
-    /// Based upon the example here <see href="http://mattgrande.wordpress.com/2009/10/28/pluralization-helper-for-c/" />
+    /// Based upon the example here <see href="http://mattgrande.wordpress.com/2009/10/28/pluralization-helper-for-c/" />.
     /// </remarks>
     internal sealed class EnglishInflectionService : IInflectionService
     {
-        private readonly IDictionary<string, string> rules = new Dictionary<string, string>
+        private readonly IDictionary<string, string> _rules = new Dictionary<string, string>
         {
             { "Person", "People" },
             { "Child", "Children" },
@@ -36,16 +36,16 @@ namespace MicroLite.Mapping.Inflection
             { "(.+)(e|i)x$", @"$1ices" },
             { "(Octop|Vir)us$", "$1i" },
             { "(.+(s|x|sh|ch))$", @"$1es" },
-            { "(.+)", @"$1s" }
+            { "(.+)", @"$1s" },
         };
 
-        private readonly HashSet<string> singularWords = new HashSet<string>
+        private readonly HashSet<string> _singularWords = new HashSet<string>
         {
             "Equipment",
             "Information",
             "Money",
             "Species",
-            "Series"
+            "Series",
         };
 
         /// <summary>
@@ -53,9 +53,7 @@ namespace MicroLite.Mapping.Inflection
         /// </summary>
         /// <param name="word">The invariant word.</param>
         public void AddInvariantWord(string word)
-        {
-            this.singularWords.Add(word);
-        }
+            => _singularWords.Add(word);
 
         /// <summary>
         /// Adds (or replaces) the rule.
@@ -63,9 +61,7 @@ namespace MicroLite.Mapping.Inflection
         /// <param name="searchPattern">The pattern to match upon.</param>
         /// <param name="replacementPattern">The replacement pattern.</param>
         public void AddRule(string searchPattern, string replacementPattern)
-        {
-            this.rules[searchPattern] = replacementPattern;
-        }
+            => _rules[searchPattern] = replacementPattern;
 
         /// <summary>
         /// Returns the plural version of the specified singular word or the specified word if there
@@ -77,12 +73,12 @@ namespace MicroLite.Mapping.Inflection
         /// </returns>
         public string ToPlural(string word)
         {
-            if (this.singularWords.Contains(word))
+            if (_singularWords.Contains(word))
             {
                 return word;
             }
 
-            foreach (var pluralization in this.rules)
+            foreach (KeyValuePair<string, string> pluralization in _rules)
             {
                 if (Regex.IsMatch(word, pluralization.Key))
                 {

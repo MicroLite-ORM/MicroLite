@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ISqlDialect.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="ISqlDialect.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,11 +10,11 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using MicroLite.Characters;
+using MicroLite.Mapping;
+
 namespace MicroLite.Dialect
 {
-    using MicroLite.Characters;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The interface for a class which builds SqlQueries for a specific database dialect.
     /// </summary>
@@ -23,18 +23,12 @@ namespace MicroLite.Dialect
         /// <summary>
         /// Gets the SQL characters used by the SQL dialect.
         /// </summary>
-        SqlCharacters SqlCharacters
-        {
-            get;
-        }
+        SqlCharacters SqlCharacters { get; }
 
         /// <summary>
         /// Gets a value indicating whether the SQL Dialect supports selecting the identifier value of an inserted column.
         /// </summary>
-        bool SupportsSelectInsertedIdentifier
-        {
-            get;
-        }
+        bool SupportsSelectInsertedIdentifier { get; }
 
         /// <summary>
         /// Builds an SqlQuery to delete the database record with the specified identifier for the type specified by the IObjectInfo.

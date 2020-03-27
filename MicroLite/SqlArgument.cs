@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SqlArgument.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="SqlArgument.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,29 +10,26 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Data;
+using MicroLite.TypeConverters;
+
 namespace MicroLite
 {
-    using System;
-    using System.Data;
-    using MicroLite.TypeConverters;
-
     /// <summary>
     /// A representation of an object and its DbType in a SqlQuery.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("Value: {Value}, DbType: {DbType}")]
     public struct SqlArgument : IEquatable<SqlArgument>
     {
-        private readonly DbType dbType;
-        private readonly object value;
-
         /// <summary>
         /// Initialises a new instance of the <see cref="SqlArgument"/> struct.
         /// </summary>
         /// <param name="value">The argument value.</param>
         public SqlArgument(object value)
         {
-            this.value = value;
-            this.dbType = value != null ? TypeConverter.ResolveDbType(value.GetType()) : default(DbType);
+            Value = value;
+            DbType = value != null ? TypeConverter.ResolveDbType(value.GetType()) : default;
         }
 
         /// <summary>
@@ -42,31 +39,19 @@ namespace MicroLite
         /// <param name="dbType">The DbType of the value.</param>
         public SqlArgument(object value, DbType dbType)
         {
-            this.value = value;
-            this.dbType = dbType;
+            Value = value;
+            DbType = dbType;
         }
 
         /// <summary>
         /// Gets the DbType of the value.
         /// </summary>
-        public DbType DbType
-        {
-            get
-            {
-                return this.dbType;
-            }
-        }
+        public DbType DbType { get; }
 
         /// <summary>
         /// Gets the value of the argument.
         /// </summary>
-        public object Value
-        {
-            get
-            {
-                return this.value;
-            }
-        }
+        public object Value { get; }
 
         /// <summary>
         /// Checks whether two separate SqlArgument instances are not equal.
@@ -75,9 +60,7 @@ namespace MicroLite
         /// <param name="sqlArgument2">The SqlArgument to check against.</param>
         /// <returns><c>true</c> if the instances are not considered equal; otherwise, <c>false</c>.</returns>
         public static bool operator !=(SqlArgument sqlArgument1, SqlArgument sqlArgument2)
-        {
-            return !sqlArgument1.Equals(sqlArgument2);
-        }
+            => !sqlArgument1.Equals(sqlArgument2);
 
         /// <summary>
         /// Checks whether two separate SqlArgument instances are equal.
@@ -86,27 +69,25 @@ namespace MicroLite
         /// <param name="sqlArgument2">The SqlArgument to check against.</param>
         /// <returns><c>true</c> if the instances are considered equal; otherwise, <c>false</c>.</returns>
         public static bool operator ==(SqlArgument sqlArgument1, SqlArgument sqlArgument2)
-        {
-            return sqlArgument1.Equals(sqlArgument2);
-        }
+            => sqlArgument1.Equals(sqlArgument2);
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+        /// Determines whether the specified <see cref="object" /> is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
             var other = obj as SqlArgument?;
 
-            if (other == null)
+            if (other is null)
             {
                 return false;
             }
 
-            return this.Equals(other.Value);
+            return Equals(other.Value);
         }
 
         /// <summary>
@@ -117,9 +98,7 @@ namespace MicroLite
         ///   <c>true</c> if the specified <see cref="SqlArgument" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(SqlArgument other)
-        {
-            return this.DbType == other.DbType && object.Equals(this.Value, other.Value);
-        }
+            => DbType == other.DbType && Equals(Value, other.Value);
 
         /// <summary>
         /// Returns a hash code for this instance.
@@ -128,8 +107,6 @@ namespace MicroLite
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
-        {
-            return ((int)this.DbType).GetHashCode() ^ (this.Value ?? string.Empty).GetHashCode();
-        }
+            => ((int)DbType).GetHashCode() ^ (Value ?? string.Empty).GetHashCode();
     }
 }

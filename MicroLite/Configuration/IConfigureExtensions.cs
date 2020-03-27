@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="IConfigureExtensions.cs" company="MicroLite">
-// Copyright 2012 - 2016 Project Contributors
+// <copyright file="IConfigureExtensions.cs" company="Project Contributors">
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,16 +10,16 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Logging;
+using MicroLite.Mapping;
+
 namespace MicroLite.Configuration
 {
-    using System;
-    using MicroLite.Logging;
-    using MicroLite.Mapping;
-
     /// <summary>
     /// The interface which specifies the options for configuring extensions to the MicroLite ORM framework.
     /// </summary>
-    public interface IConfigureExtensions : IHideObjectMethods
+    public interface IConfigureExtensions
     {
         /// <summary>
         /// Sets the function which can be called by MicroLite to resolve the <see cref="ILog"/> to use.
