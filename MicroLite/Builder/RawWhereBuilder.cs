@@ -24,7 +24,7 @@ namespace MicroLite.Builder
     /// This class can be used to build a WHERE clause which can be applied to the SqlBuilder
     /// without having to build it up using the fluent interface.
     /// </remarks>
-    [System.Diagnostics.DebuggerDisplay("{builder}")]
+    [System.Diagnostics.DebuggerDisplay("{_builder}")]
     public sealed class RawWhereBuilder
     {
         private readonly List<object> _arguments = new List<object>();

@@ -18,7 +18,7 @@ namespace MicroLite
     /// <summary>
     /// An class which contains partial (delta) changes to an object.
     /// </summary>
-    [System.Diagnostics.DebuggerDisplay("{forType}")]
+    [System.Diagnostics.DebuggerDisplay("{ForType}")]
     public sealed class ObjectDelta
     {
         private readonly IDictionary<string, object> _changes = new Dictionary<string, object>();
